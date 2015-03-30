@@ -6,6 +6,7 @@
 #include <iostream>
 #include "glm/gtc/type_ptr.hpp"
 #include <typeinfo>
+#include <chrono>
 
 using namespace glm;
 using namespace std;
@@ -102,65 +103,16 @@ void Game::init()
     // Load world data.
     // TODO: replace with XML loader.
     //=============================================================================
-    std::unordered_map<string, Node*> theNodes;
-    tinyxml2::XMLDocument doc;
-    doc.LoadFile("../data/sampleQuery.xml");
-    tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
-    cout << docRoot->Value() << "\n";
+    cout << "starting to load with tinyxml";
+    auto begin = std::chrono::high_resolution_clock::now();
+    loadXML("../data/sampleQuery.xml");
+    auto end = std::chrono::high_resolution_clock::now();
+    cout << "finished loading xml: ";
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;
 
-    for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-    {
-        if (string(child->Value()).compare("node") == 0){
-//            cout << "Looking at a node \n";
-//            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
+    cout << "starting to load manually \n";
+    begin = std::chrono::high_resolution_clock::now();
 
-            string id = child->ToElement()->FindAttribute("id")->Value();
-            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value());
-            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value());
-
-            Node* node = new Node(id, latitude, longitude);
-
-            for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
-                string key = tag->ToElement()->FindAttribute("k")->Value();
-                string value = tag->ToElement()->FindAttribute("v")->Value();
-                node -> addTag(key, value);
-            }
-        }
-
-        else if (string(child->Value()).compare("way") == 0){
-//            cout << "Looking at a way \n";
-            string id = child->ToElement()->FindAttribute("id")->Value();
-            Way* way = new Way(id);
-
-            for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
-                if (string(way_child->Value()).compare("nd") == 0){
-                    string ref = way_child->ToElement()->FindAttribute("ref")->Value();
-                    way -> addRef(ref);
-                }
-                else if (string(way_child->Value()).compare("tag") == 0){
-                    string key = way_child->ToElement()->FindAttribute("k")->Value();
-                    string value = way_child->ToElement()->FindAttribute("v")->Value();
-//                    way -> addTag(key, value);
-                }
-            }
-        }
-        else if (string(child->Value()).compare("relation") == 0){
-            string id = child->ToElement()->FindAttribute("id")->Value();
-            Relation *relation = new Relation(id);
-
-//            for (tinyxml2::XMLNode* relation_child = child->FirstChildElement(); relation_child != NULL; relation_child = relation_child->NextSiblingElement()){
-//                if (string(relation_child->Value()).compare("member") == 0){
-//                    string type = relation_child->ToElement()->FindAttribute("type")->Value();
-//                    string id = relation_child->ToElement()->FindAttribute("ref")->Value();
-//                }
-//                else if (string(relation_child->Value()).compare("tag") == 0){
-//                    string key = relation_child->ToElement()->FindAttribute("k")->Value();
-//                    string value = relation_child->ToElement()->FindAttribute("v")->Value();
-//                }
-//            }
-
-        }
-    }
     // count total number of lines (used for the progress bar)
     int nbLines = 0;
     ifstream file("../data/result.txt", ios::in);
@@ -275,10 +227,12 @@ void Game::init()
             }
         }
         nbLines++;
-        if(nbLines % 1000==0) cout << nbLines << endl;
+//        if(nbLines % 1000==0) cout << nbLines << endl;
     }
     file.close();
-
+    end = std::chrono::high_resolution_clock::now();
+    cout << "finished loading manually xml: ";
+    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;
     //=============================================================================
     // create and fill VBOs with ways info.
     //=============================================================================
@@ -434,5 +388,67 @@ void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double
 
         game->oldMousePosition = vec2(x,y);
 
+    }
+}
+
+void Game::loadXML(string path){
+    std::unordered_map<string, Node*> theNodes;
+    tinyxml2::XMLDocument doc;
+    doc.LoadFile(path.c_str());
+    tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
+    cout << docRoot->Value() << "\n";
+
+    for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        if (string(child->Value()).compare("node") == 0){
+//            cout << "Looking at a node \n";
+//            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
+
+            string id = child->ToElement()->FindAttribute("id")->Value();
+            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value());
+            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value());
+
+            Node* node = new Node(id, latitude, longitude);
+
+            for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
+                string key = tag->ToElement()->FindAttribute("k")->Value();
+                string value = tag->ToElement()->FindAttribute("v")->Value();
+                node -> addTag(key, value);
+            }
+        }
+
+        else if (string(child->Value()).compare("way") == 0){
+//            cout << "Looking at a way \n";
+            string id = child->ToElement()->FindAttribute("id")->Value();
+            Way* way = new Way(id);
+
+            for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
+                if (string(way_child->Value()).compare("nd") == 0){
+                    string ref = way_child->ToElement()->FindAttribute("ref")->Value();
+                    way -> addRef(ref);
+                }
+                else if (string(way_child->Value()).compare("tag") == 0){
+                    string key = way_child->ToElement()->FindAttribute("k")->Value();
+                    string value = way_child->ToElement()->FindAttribute("v")->Value();
+                    way -> addTag(key, value);
+                }
+            }
+        }
+        else if (string(child->Value()).compare("relation") == 0){
+            string id = child->ToElement()->FindAttribute("id")->Value();
+            Relation *relation = new Relation(id);
+
+            for (tinyxml2::XMLNode* relation_child = child->FirstChildElement(); relation_child != NULL; relation_child = relation_child->NextSiblingElement()){
+                if (string(relation_child->Value()).compare("member") == 0){
+                    string type = relation_child->ToElement()->FindAttribute("type")->Value();
+                    string id = relation_child->ToElement()->FindAttribute("ref")->Value();
+                }
+                else if (string(relation_child->Value()).compare("tag") == 0){
+                    string key = relation_child->ToElement()->FindAttribute("k")->Value();
+                    string value = relation_child->ToElement()->FindAttribute("v")->Value();
+                }
+            }
+
+        }
     }
 }

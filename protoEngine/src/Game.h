@@ -25,6 +25,7 @@ public:
     bool running;
     void mainLoop();
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
+    void loadXML(std::string path);
     GLFWwindow* pWindow;
 
     // viewing
