@@ -7,7 +7,7 @@ GLFW_LIBPATH   = "$$PWD/libs/glfw"
 GLFW_DLLPATH = "$$PWD/libs/glfw"
 
 GLEW_INCLUDEPATH = "$$PWD/libs/glew/include"
-GLEW_LIBPATH   = "$$PWD/libs/glew/lib/Release/x64"
-GLEW_DLLPATH = "$$PWD/libs/glew/bin/Release/x64"
+GLEW_LIBPATH   = "$$PWD/libs/glew/lib/Release/win32"
+GLEW_DLLPATH = "$$PWD/libs/glew/bin/Release/win32"
 
 GLM_INCLUDEPATH = "$$PWD/libs/glm"
