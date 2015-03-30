@@ -7,9 +7,15 @@
 #include <string>
 #include <unordered_map>
 #include "glm/glm.hpp"
+#include "tinyxml2.h"
 
 #include "ProgramPipeline.h"
 #include "camera.h"
+#include "member.h"
+#include "node.h"
+#include "way.h"
+#include "relation.h"
+
 
 class Game {
 public:

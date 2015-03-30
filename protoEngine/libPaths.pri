@@ -11,3 +11,5 @@ GLEW_LIBPATH   = "$$PWD/libs/glew/lib/Release/win32"
 GLEW_DLLPATH = "$$PWD/libs/glew/bin/Release/win32"
 
 GLM_INCLUDEPATH = "$$PWD/libs/glm"
+
+TINYXML2_INCLUDEPATH = "$$PWD/libs/tinyxml2"

@@ -2,18 +2,18 @@
 #define NODE_H
 #include <string>
 #include <unordered_map>
+#include "member.h"
 
-class Node{
+class Node: public Member{
 private:
-    std::string id;
-    double latitude;
-    double longitude;
-    std::unordered_map<std::string, std::string> tags;
-    std::vector<Way*> ways; //needed?
+    float latitude;
+    float longitude;
 
 public:
 
     Node();
+    Node(std::string id, float latitude, float longitude);
+    std::string toString();
 };
 
 #endif // NODE
