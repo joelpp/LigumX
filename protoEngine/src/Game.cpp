@@ -36,6 +36,7 @@ void Game::init()
     camera = new Camera();
     camera->translateTo(vec2(0,0));
     camera->setViewSize(1);
+    draggingCamera = false;
 
     //=============================================================================
     // create window and GLcontext, register callbacks.
@@ -118,7 +119,10 @@ void Game::init()
     file.open("../data/result.txt", ios::in);
     stringstream stream;
     string word;
+    vec3 white = vec3(1.0f,1.0f,1.0f);
+
     while (getline(file, line)) {
+        // Handle the bounding box coordinates
         if (line.substr(0, 8)=="  <bound") {
             stream.clear();
             stream.str(line);
@@ -151,7 +155,7 @@ void Game::init()
             viewRectBottomLeft = vec2(viewRectLeft, viewRectBottom);
             viewRectTopRight = vec2(viewRectRight, viewRectTop);
             viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
-
+        //Handle nodes
         } else if(line.substr(0, 7)=="  <node") {
 
             vec2 point;
@@ -181,13 +185,18 @@ void Game::init()
             point = (point - viewRectBottomLeft)/viewRectVecDiago;
             point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
             nodes[id] = point;
+
+        // Handle ways
         } else if(line.substr(0, 6)=="  <way") {
             bool firstNode = true;
             vec2 oldPoint;
             vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
                               glm::linearRand(0.5f, 1.0f),
                               glm::linearRand(0.5f, 1.0f));
+
+            //Handle this way's nodes
             while (getline(file, line)) {
+                // Add the next node to the way
                 if (line.substr(0, 7)=="    <nd") {
                     auto ind1 = line.find_first_of("\"");
                     auto ind2 = line.find_last_of("\"");
@@ -201,6 +210,7 @@ void Game::init()
                     }
                     oldPoint = point;
                     firstNode = false;
+
                 } else if (line.substr(0, 7)=="  </way") {
                     break;
                 }
@@ -329,5 +339,42 @@ void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, doub
         game->camera->multViewSizeBy(factor);
     } else {
         game->camera->multViewSizeBy(1.f/factor);
+    }
+}
+
+void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
+{
+    // Left-click
+    if (button == GLFW_MOUSE_BUTTON_1){
+        if (action == GLFW_PRESS){
+            game->draggingCamera = true;
+            double x; double y;
+            glfwGetCursorPos(pWindow, &x, &y);
+            game->oldMousePosition = vec2(x,y);
+        }
+        else if (action == GLFW_RELEASE){
+            game->draggingCamera = false;
+        }
+    }
+    //Right Click
+    else if (button == GLFW_MOUSE_BUTTON_2){
+        game->camera->translateTo(vec2(0,0));
+    }
+
+
+}
+
+void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double yOffset)
+{
+    if (game->draggingCamera){
+        double x; double y;
+        glfwGetCursorPos(pWindow, &x, &y);
+        vec2 offset = vec2(x,y) - game->oldMousePosition;
+        offset.y *= -1; // reversed controls? this should be an option
+
+        game->camera->translateBy(offset/100.f);
+
+        game->oldMousePosition = vec2(x,y);
+
     }
 }
