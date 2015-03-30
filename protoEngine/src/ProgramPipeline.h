@@ -2,7 +2,7 @@
 #define PROGRAMPIPELINE_H
 
 #include "GL/glew.h"
-#include <initializer_list>
+//#include <initializer_list>
 #include <string>
 
 class ProgramPipeline
@@ -16,7 +16,8 @@ public:
     public:
         ShaderProgram();
         ShaderProgram(GLenum shaderType,
-                      std::initializer_list<std::string> srcFilenames,
+                      //std::initializer_list<std::string> srcFilenames,
+                      std::string srcFilename,
                       bool readSrcFilenamesAsSourceCode = false);
         ~ShaderProgram() {}
     };
@@ -34,7 +35,9 @@ public:
 
 public:
     ProgramPipeline();
-    void useShaders(std::initializer_list<ShaderProgram*> shaders);
+//    void useShaders(std::initializer_list<ShaderProgram*> shaders);
+    void useVertexShader(ShaderProgram* shader);
+    void useFragmentShader(ShaderProgram* shader);
     void removeShader(GLenum shaderStage);
     static GLbitfield sShaderTypeEnumToBitField(GLenum shaderType);
     ShaderProgram* getShader(GLenum shaderType);

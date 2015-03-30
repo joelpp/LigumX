@@ -265,16 +265,18 @@ void Game::init()
 
     pVertexShader =
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
-            {vertexShaderSource}, true);
+            vertexShaderSource, true);
 
     pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            {fragmentShaderSource}, true);
+            fragmentShaderSource, true);
 
 
 
     pPipeline = new ProgramPipeline();
-    pPipeline->useShaders({pVertexShader, pFragmentShader});
+    //pPipeline->useShaders({pVertexShader, pFragmentShader});
+    pPipeline->useVertexShader(pVertexShader);
+    pPipeline->useFragmentShader(pFragmentShader);
 
     // VAO
     glBindVertexArray(pPipeline->glidVao);

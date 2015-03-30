@@ -7,22 +7,24 @@ using namespace std;
 
 ProgramPipeline::ShaderProgram::ShaderProgram(
         GLenum shaderType,
-        initializer_list<string> srcFilenames,
+        //initializer_list<string> srcFilenames,
+        string srcFilenames,
         bool readSrcFilenamesAsSourceCode)
 {
     this->shaderType = shaderType;
 
-    int nbSources = int(srcFilenames.size());
+    int nbSources = 1;//int(srcFilenames.size());
     const char ** sourceCodes = new const char *[nbSources];
     int count = 0;
     string* sourceCodeStrings;
 
     if(readSrcFilenamesAsSourceCode) {
-        for(initializer_list<string>::iterator iSrc = srcFilenames.begin();
-                iSrc != srcFilenames.end(); iSrc++)
-        {
-            sourceCodes[count++] = iSrc->c_str();
-        }
+        //for(initializer_list<string>::iterator iSrc = srcFilenames.begin();
+        //        iSrc != srcFilenames.end(); iSrc++)
+        //{
+            //sourceCodes[count++] = iSrc->c_str();
+        //}
+        sourceCodes[count++] = srcFilenames.c_str();
 
     } else {
         // Read the Vertex Shader code from the files
@@ -30,10 +32,11 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 
         sourceCodeStrings = new string[nbSources];
 
-        for(initializer_list<string>::iterator iSrc = srcFilenames.begin();
-                iSrc != srcFilenames.end(); iSrc++)
-        {
-            ifstream sourceCodeStream(*iSrc, ios::in);
+        //for(initializer_list<string>::iterator iSrc = srcFilenames.begin();
+        //        iSrc != srcFilenames.end(); iSrc++)
+        //{
+            //ifstream sourceCodeStream(*iSrc, ios::in);
+            ifstream sourceCodeStream(srcFilenames, ios::in);
             if(sourceCodeStream.is_open())
             {
                 string line = "";
@@ -42,17 +45,19 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
                 }
                 sourceCodeStream.close();
             } else {
-                cout << "Error loading shader : " << *iSrc << endl;
+                //cout << "Error loading shader : " << *iSrc << endl;
+                cout << "Error loading shader : " << srcFilenames << endl;
             }
             sourceCodes[count] = sourceCodeStrings[count].c_str();
             count++;
-        }
+        //}
 
     }
 
     GLint result;
     int infoLength;
     char* info;
+
 
     const GLuint shader = glCreateShader(shaderType);
     glShaderSource(shader, nbSources, sourceCodes, NULL);
@@ -159,49 +164,116 @@ ProgramPipeline::ProgramPipeline()
     glCreateVertexArrays(1, &glidVao);
 }
 
-void ProgramPipeline::useShaders(
-        std::initializer_list<ProgramPipeline::ShaderProgram *> shaders)
+//void ProgramPipeline::useShaders(
+//        std::initializer_list<ProgramPipeline::ShaderProgram *> shaders)
+//{
+//    for(initializer_list<ShaderProgram*>::iterator iShader = shaders.begin();
+//            iShader != shaders.end(); iShader++)
+//    {
+//        GLbitfield shaderBit = sShaderTypeEnumToBitField((*iShader)->shaderType);
+
+//        // make sure we don't mix compute shaders with other shader types.
+//        if((*iShader)->shaderType == GL_COMPUTE_SHADER) {
+//            glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
+//        } else {
+//            glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
+//        }
+
+//        // store shader ID
+//        switch((*iShader)->shaderType) {
+//        case GL_VERTEX_SHADER:
+//            pVertexShader = *iShader;
+//            break;
+//        case GL_TESS_CONTROL_SHADER:
+//            pTessControlShader = *iShader;
+//            break;
+//        case GL_TESS_EVALUATION_SHADER:
+//            pTessEvalShader = *iShader;
+//            break;
+//        case GL_GEOMETRY_SHADER:
+//            pGeometryShader = *iShader;
+//            break;
+//        case GL_FRAGMENT_SHADER:
+//            pFragmentShader = *iShader;
+//            break;
+//        case GL_COMPUTE_SHADER:
+//            pComputeShader = *iShader;
+//            break;
+//        }
+
+
+//        // attach shader shage
+//        glUseProgramStages(glidProgramPipeline, shaderBit,
+//                           (*iShader)->glidShaderProgram);
+
+//    }
+
+//    // check for validation errors.
+//    GLint result;
+//    int infoLength;
+//    char* info;
+//    glValidateProgramPipeline(glidProgramPipeline);
+//    glGetProgramPipelineiv(glidProgramPipeline, GL_VALIDATE_STATUS, &result);
+//    if(!result) {
+//        glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
+//        info = new char[infoLength];
+//        glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
+//        cerr << "Validation error in program pipeline :" << endl;
+//        cerr << info << endl;
+//    }
+
+//}
+
+void ProgramPipeline::useVertexShader(
+        ProgramPipeline::ShaderProgram* shader)
 {
-    for(initializer_list<ShaderProgram*>::iterator iShader = shaders.begin();
-            iShader != shaders.end(); iShader++)
-    {
-        GLbitfield shaderBit = sShaderTypeEnumToBitField((*iShader)->shaderType);
+    GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);
 
-        // make sure we don't mix compute shaders with other shader types.
-        if((*iShader)->shaderType == GL_COMPUTE_SHADER) {
-            glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
-        } else {
-            glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
-        }
-
-        // store shader ID
-        switch((*iShader)->shaderType) {
-        case GL_VERTEX_SHADER:
-            pVertexShader = *iShader;
-            break;
-        case GL_TESS_CONTROL_SHADER:
-            pTessControlShader = *iShader;
-            break;
-        case GL_TESS_EVALUATION_SHADER:
-            pTessEvalShader = *iShader;
-            break;
-        case GL_GEOMETRY_SHADER:
-            pGeometryShader = *iShader;
-            break;
-        case GL_FRAGMENT_SHADER:
-            pFragmentShader = *iShader;
-            break;
-        case GL_COMPUTE_SHADER:
-            pComputeShader = *iShader;
-            break;
-        }
-
-
-        // attach shader shage
-        glUseProgramStages(glidProgramPipeline, shaderBit,
-                           (*iShader)->glidShaderProgram);
-
+    // make sure we don't mix compute shaders with other shader types.
+    if(shader->shaderType == GL_COMPUTE_SHADER) {
+        glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
+    } else {
+        glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
     }
+
+    pVertexShader = shader;
+
+    // attach shader shage
+    glUseProgramStages(glidProgramPipeline, shaderBit,
+                       shader->glidShaderProgram);
+
+    // check for validation errors.
+    GLint result;
+    int infoLength;
+    char* info;
+    glValidateProgramPipeline(glidProgramPipeline);
+    glGetProgramPipelineiv(glidProgramPipeline, GL_VALIDATE_STATUS, &result);
+    if(!result) {
+        glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
+        info = new char[infoLength];
+        glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
+        cerr << "Validation error in program pipeline :" << endl;
+        cerr << info << endl;
+    }
+
+}
+
+void ProgramPipeline::useFragmentShader(ProgramPipeline::ShaderProgram *shader)
+{
+    GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);
+
+    // make sure we don't mix compute shaders with other shader types.
+    if(shader->shaderType == GL_COMPUTE_SHADER) {
+        glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
+    } else {
+        glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
+    }
+
+    pFragmentShader = shader;
+
+    // attach shader shage
+    glUseProgramStages(glidProgramPipeline, shaderBit,
+                       shader->glidShaderProgram);
 
     // check for validation errors.
     GLint result;
