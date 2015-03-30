@@ -1,2 +1,4 @@
 /gta2net/
 /protoEngine/libPaths.pri
+/protoEngine/build
+/protoEngine/protoEngine.pro.user
