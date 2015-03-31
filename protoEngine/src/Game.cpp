@@ -8,6 +8,11 @@
 #include <typeinfo>
 #include <chrono>
 
+#define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
+                    x;\
+                    auto end = std::chrono::high_resolution_clock::now();\
+                    std::cout << "Profiled " << #x << " : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
+
 using namespace glm;
 using namespace std;
 
@@ -39,6 +44,7 @@ void Game::init()
     camera->translateTo(vec2(0,0));
     camera->setViewSize(1);
     draggingCamera = false;
+
 
     //=============================================================================
     // create window and GLcontext, register callbacks.
@@ -104,14 +110,12 @@ void Game::init()
     // TODO: replace with XML loader.
     //=============================================================================
     cout << "starting to load with tinyxml";
-    auto begin = std::chrono::high_resolution_clock::now();
-    loadXML("../data/sampleQuery.xml");
-    auto end = std::chrono::high_resolution_clock::now();
-    cout << "finished loading xml: ";
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;
+
+    TIME(loadXML("../data/sampleQuery.xml"));
+
 
     cout << "starting to load manually \n";
-    begin = std::chrono::high_resolution_clock::now();
+    auto begin = std::chrono::high_resolution_clock::now();
 
     // count total number of lines (used for the progress bar)
     int nbLines = 0;
@@ -192,9 +196,9 @@ void Game::init()
                 }
             }
 
-            point = (point - viewRectBottomLeft)/viewRectVecDiago;
-            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-            nodes[id] = point;
+//            point = (point - viewRectBottomLeft)/viewRectVecDiago;
+//            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+//            nodes[id] = point;
 
         // Handle ways
         } else if(line.substr(0, 6)=="  <way") {
@@ -213,10 +217,10 @@ void Game::init()
                     string id = line.substr(ind1+1, ind2-ind1-1);
                     vec2 point = nodes[id];
                     if(!firstNode) {
-                        waysNodesPositions.push_back(oldPoint);
-                        waysNodesColors.push_back(color);
-                        waysNodesPositions.push_back(point);
-                        waysNodesColors.push_back(color);
+//                        waysNodesPositions.push_back(oldPoint);
+//                        waysNodesColors.push_back(color);
+//                        waysNodesPositions.push_back(point);
+//                        waysNodesColors.push_back(color);
                     }
                     oldPoint = point;
                     firstNode = false;
@@ -230,7 +234,7 @@ void Game::init()
 //        if(nbLines % 1000==0) cout << nbLines << endl;
     }
     file.close();
-    end = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
     cout << "finished loading manually xml: ";
     std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;
     //=============================================================================
