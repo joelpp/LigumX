@@ -23,18 +23,17 @@ SOURCES += \
     src/way.cpp \
     src/node.cpp \
     src/tinyxml2.cpp \
-    src/member.cpp \
-    src/relation.cpp
+    src/relation.cpp \
+    src/OSMElement.cpp
 
 
 HEADERS += \
     src/ProgramPipeline.h \
-    src/Game.h \
     src/Camera.h \
     src/way.h \
     src/node.h \
     src/tinyxml2.h \
-    src/member.h \
     src/Game.h \
-    src/relation.h
+    src/relation.h \
+    src/OSMElement.h
 

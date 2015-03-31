@@ -2,19 +2,20 @@
 #define WAY_H
 
 #include "node.h"
-#include "member.h"
+#include "OSMElement.h"
 #include <vector>
 #include <string>
 
-class Way : public Member{
+class Way : public OSMElement{
 private:
     std::string id;
-    std::vector<std::string> nodes;
 
 public:
     Way();
     Way(std::string id);
-    void addRef(std::string ref);
+    void addRef(Node* ref);
+    std::string toString();
+    std::vector<Node*> nodes;
 
 };
 

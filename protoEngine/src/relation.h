@@ -1,8 +1,8 @@
 #ifndef RELATION
 #define RELATION
 #include <vector>
-#include "member.h"
-class Relation: public Member{
+#include "OSMElement.h"
+class Relation: public OSMElement{
 private:
     std::vector<std::string> members;
 

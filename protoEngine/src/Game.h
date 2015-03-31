@@ -11,7 +11,7 @@
 
 #include "ProgramPipeline.h"
 #include "camera.h"
-#include "member.h"
+#include "OSMElement.h"
 #include "node.h"
 #include "way.h"
 #include "relation.h"
@@ -70,6 +70,11 @@ public:
     Camera* camera;
     bool draggingCamera;
     glm::vec2 oldMousePosition;
+
+    // data
+    std::unordered_map<std::string, Node*> theNodes;
+    std::unordered_map<std::string, Way*> theWays;
+
 };
 
 extern Game* game;

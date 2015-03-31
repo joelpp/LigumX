@@ -11,7 +11,7 @@
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
                     x;\
                     auto end = std::chrono::high_resolution_clock::now();\
-                    std::cout << "Profiled " << #x << " : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
+                    std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
 
 using namespace glm;
 using namespace std;
@@ -109,134 +109,41 @@ void Game::init()
     // Load world data.
     // TODO: replace with XML loader.
     //=============================================================================
-    cout << "starting to load with tinyxml";
 
-    TIME(loadXML("../data/sampleQuery.xml"));
-
-
-    cout << "starting to load manually \n";
-    auto begin = std::chrono::high_resolution_clock::now();
-
-    // count total number of lines (used for the progress bar)
-    int nbLines = 0;
-    ifstream file("../data/result.txt", ios::in);
-    string line;
-    while (getline(file, line)) {
-        ++nbLines;
-    }
-    file.close();
-
-    std::unordered_map<string, vec2> nodes; // nodes without links, searchable by ID.
     vector<vec2> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
 
-    file.open("../data/result.txt", ios::in);
-    stringstream stream;
-    string word;
+    TIME(loadXML("../data/result.xml"));
+
+    bool first = true;
     vec3 white = vec3(1.0f,1.0f,1.0f);
 
-    while (getline(file, line)) {
-        // Handle the bounding box coordinates
-        if (line.substr(0, 8)=="  <bound") {
-            stream.clear();
-            stream.str(line);
+    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+        first = true;
+        vec2 point, oldPoint;
+        vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
+                          glm::linearRand(0.5f, 1.0f),
+                          glm::linearRand(0.5f, 1.0f));
+        Way* way = it->second;
 
-            while(stream.rdbuf()->in_avail() != 0) {
-                stream >> word;
-                if(word.substr(0,3)=="box") {
-                    string subWord = word.substr(5,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    string nums = subWord.substr(0,ind);
+        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
+            Node* node = *nodeIt;
+            point = vec2(node->latitude, node->longitude);
+            point = (point - viewRectBottomLeft)/viewRectVecDiago;
+            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
 
-                    ind = nums.find_first_of(",");
-                    viewRectLeft = atof(nums.substr(0, ind).c_str());
-                    nums = nums.substr(ind+1, nums.length());
-
-                    ind = nums.find_first_of(",");
-                    viewRectBottom = atof(nums.substr(0, ind).c_str());
-                    nums = nums.substr(ind+1, nums.length());
-
-                    ind = nums.find_first_of(",");
-                    viewRectRight = atof(nums.substr(0, ind).c_str());
-                    nums = nums.substr(ind+1, nums.length());
-
-                    ind = nums.find_first_of(",");
-                    viewRectTop = atof(nums.substr(0, ind).c_str());
-                }
+            if (!first){
+                waysNodesPositions.push_back(oldPoint);
+                waysNodesColors.push_back(color);
+                waysNodesPositions.push_back(point);
+                waysNodesColors.push_back(color);
             }
+            else first = false;
 
-            cout << viewRectLeft << " " << viewRectBottom << " " << viewRectRight << " " << viewRectTop << endl;
-            viewRectBottomLeft = vec2(viewRectLeft, viewRectBottom);
-            viewRectTopRight = vec2(viewRectRight, viewRectTop);
-            viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
-        //Handle nodes
-        } else if(line.substr(0, 7)=="  <node") {
-
-            vec2 point;
-            string id;
-
-            stream.clear();
-            stream.str(line);
-            while(stream.rdbuf()->in_avail() != 0) {
-                stream >> word;
-                if(word.substr(0,3)=="lat") {
-                    string subWord = word.substr(5,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    string num = subWord.substr(0,ind);
-                    point.x = atof(num.c_str());
-                } else if(word.substr(0,3)=="lon") {
-                    string subWord = word.substr(5,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    string num = subWord.substr(0,ind);
-                    point.y = atof(num.c_str());
-                } else if(word.substr(0,2)=="id") {
-                    string subWord = word.substr(4,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    id = subWord.substr(0,ind);
-                }
-            }
-
-//            point = (point - viewRectBottomLeft)/viewRectVecDiago;
-//            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-//            nodes[id] = point;
-
-        // Handle ways
-        } else if(line.substr(0, 6)=="  <way") {
-            bool firstNode = true;
-            vec2 oldPoint;
-            vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
-                              glm::linearRand(0.5f, 1.0f),
-                              glm::linearRand(0.5f, 1.0f));
-
-            //Handle this way's nodes
-            while (getline(file, line)) {
-                // Add the next node to the way
-                if (line.substr(0, 7)=="    <nd") {
-                    auto ind1 = line.find_first_of("\"");
-                    auto ind2 = line.find_last_of("\"");
-                    string id = line.substr(ind1+1, ind2-ind1-1);
-                    vec2 point = nodes[id];
-                    if(!firstNode) {
-//                        waysNodesPositions.push_back(oldPoint);
-//                        waysNodesColors.push_back(color);
-//                        waysNodesPositions.push_back(point);
-//                        waysNodesColors.push_back(color);
-                    }
-                    oldPoint = point;
-                    firstNode = false;
-
-                } else if (line.substr(0, 7)=="  </way") {
-                    break;
-                }
-            }
+            oldPoint = point;
         }
-        nbLines++;
-//        if(nbLines % 1000==0) cout << nbLines << endl;
     }
-    file.close();
-    auto end = std::chrono::high_resolution_clock::now();
-    cout << "finished loading manually xml: ";
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;
+
     //=============================================================================
     // create and fill VBOs with ways info.
     //=============================================================================
@@ -396,7 +303,6 @@ void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double
 }
 
 void Game::loadXML(string path){
-    std::unordered_map<string, Node*> theNodes;
     tinyxml2::XMLDocument doc;
     doc.LoadFile(path.c_str());
     tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
@@ -404,6 +310,20 @@ void Game::loadXML(string path){
 
     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
+        if (string(child->Value()).compare("bound") == 0){
+            string box = child->ToElement()->FindAttribute("box")->Value();
+            std::istringstream ss(box);
+            std::string token;
+
+            std::getline(ss, token, ','); viewRectLeft = atof(token.c_str());
+            std::getline(ss, token, ','); viewRectBottom = atof(token.c_str());
+            std::getline(ss, token, ','); viewRectRight = atof(token.c_str());
+            std::getline(ss, token, ','); viewRectTop = atof(token.c_str());
+
+            viewRectBottomLeft = vec2(viewRectLeft, viewRectBottom);
+            viewRectTopRight = vec2(viewRectRight, viewRectTop);
+            viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
+        }
         if (string(child->Value()).compare("node") == 0){
 //            cout << "Looking at a node \n";
 //            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
@@ -413,12 +333,12 @@ void Game::loadXML(string path){
             float longitude = atof(child->ToElement()->FindAttribute("lon")->Value());
 
             Node* node = new Node(id, latitude, longitude);
-
             for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
                 string key = tag->ToElement()->FindAttribute("k")->Value();
                 string value = tag->ToElement()->FindAttribute("v")->Value();
                 node -> addTag(key, value);
             }
+            theNodes.emplace(id, node);
         }
 
         else if (string(child->Value()).compare("way") == 0){
@@ -429,7 +349,7 @@ void Game::loadXML(string path){
             for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
                 if (string(way_child->Value()).compare("nd") == 0){
                     string ref = way_child->ToElement()->FindAttribute("ref")->Value();
-                    way -> addRef(ref);
+                    way -> addRef(theNodes[ref]);
                 }
                 else if (string(way_child->Value()).compare("tag") == 0){
                     string key = way_child->ToElement()->FindAttribute("k")->Value();
@@ -437,6 +357,7 @@ void Game::loadXML(string path){
                     way -> addTag(key, value);
                 }
             }
+            theWays.emplace(id, way);
         }
         else if (string(child->Value()).compare("relation") == 0){
             string id = child->ToElement()->FindAttribute("id")->Value();

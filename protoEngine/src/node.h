@@ -2,14 +2,14 @@
 #define NODE_H
 #include <string>
 #include <unordered_map>
-#include "member.h"
+#include "OSMElement.h"
 
-class Node: public Member{
+class Node: public OSMElement{
 private:
-    float latitude;
-    float longitude;
 
 public:
+    float latitude;
+    float longitude;
 
     Node();
     Node(std::string id, float latitude, float longitude);
