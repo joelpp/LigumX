@@ -26,6 +26,7 @@ public:
     void mainLoop();
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
     void loadXML(std::string path);
+    void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors);
     GLFWwindow* pWindow;
 
     // viewing

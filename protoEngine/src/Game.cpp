@@ -114,35 +114,8 @@ void Game::init()
     vector<vec3> waysNodesColors;
 
     TIME(loadXML("../data/result.xml"));
+    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors));
 
-    bool first = true;
-    vec3 white = vec3(1.0f,1.0f,1.0f);
-
-    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
-        first = true;
-        vec2 point, oldPoint;
-        vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
-                          glm::linearRand(0.5f, 1.0f),
-                          glm::linearRand(0.5f, 1.0f));
-        Way* way = it->second;
-
-        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
-            Node* node = *nodeIt;
-            point = vec2(node->latitude, node->longitude);
-            point = (point - viewRectBottomLeft)/viewRectVecDiago;
-            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-
-            if (!first){
-                waysNodesPositions.push_back(oldPoint);
-                waysNodesColors.push_back(color);
-                waysNodesPositions.push_back(point);
-                waysNodesColors.push_back(color);
-            }
-            else first = false;
-
-            oldPoint = point;
-        }
-    }
 
     //=============================================================================
     // create and fill VBOs with ways info.
@@ -374,6 +347,37 @@ void Game::loadXML(string path){
                 }
             }
 
+        }
+    }
+}
+
+void Game::fillBuffers(vector<vec2> *waysNodesPositions, vector<vec3> *waysNodesColors){
+    bool first = true;
+    vec3 white = vec3(1.0f,1.0f,1.0f);
+
+    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+        first = true;
+        vec2 point, oldPoint;
+        vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
+                          glm::linearRand(0.5f, 1.0f),
+                          glm::linearRand(0.5f, 1.0f));
+        Way* way = it->second;
+
+        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
+            Node* node = *nodeIt;
+            point = vec2(node->latitude, node->longitude);
+            point = (point - viewRectBottomLeft)/viewRectVecDiago;
+            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+
+            if (!first){
+                waysNodesPositions->push_back(oldPoint);
+                waysNodesColors->push_back(color);
+                waysNodesPositions->push_back(point);
+                waysNodesColors->push_back(color);
+            }
+            else first = false;
+
+            oldPoint = point;
         }
     }
 }
