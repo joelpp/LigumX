@@ -16,7 +16,6 @@ public:
     void addRef(Node* ref);
     std::string toString();
     std::vector<Node*> nodes;
-
 };
 
 #endif // WAY

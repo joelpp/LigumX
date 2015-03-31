@@ -23,6 +23,7 @@ int main()
     game = new Game();
     while(game->running) {
         glfwPollEvents();
+
         game->mainLoop();
         glfwSwapBuffers(game->pWindow);
     }
@@ -107,7 +108,6 @@ void Game::init()
 
     //=============================================================================
     // Load world data.
-    // TODO: replace with XML loader.
     //=============================================================================
 
     vector<vec2> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
@@ -362,6 +362,17 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions, vector<vec3> *waysNodes
                           glm::linearRand(0.5f, 1.0f),
                           glm::linearRand(0.5f, 1.0f));
         Way* way = it->second;
+
+      if (way->hasTagAndValue("highway", "trunk")) color = vec3(1,1,1);
+      else if (way->hasTagAndValue("highway", "primary")) color = vec3(0.9,0.9,0.9);
+      else if (way->hasTagAndValue("highway", "secondary")) color = vec3(0.8,0.8,0.8);
+      else if (way->hasTagAndValue("highway", "residential")) color = vec3(0.5,0.5,0.5);
+      else if (way->hasTag("building")) color = vec3(0,0,1);
+      else if (way->hasTag("railway")) color = vec3(1,0,1);
+      else if (way->hasTag("natural")) color = vec3(0,0.5,0);
+      else if (way->hasTagAndValue("leisure", "park")) color = vec3(0,1,0);
+      else continue;
+
 
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
