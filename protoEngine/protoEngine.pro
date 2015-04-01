@@ -38,5 +38,7 @@ HEADERS += \
     src/OSMElement.h
 
 OTHER_FILES += \
-    src/shaders/roads.gsh
+    src/shaders/roads.gsh \
+    src/shaders/roads2.gsh \
+    src/shaders/roads3.gsh
 

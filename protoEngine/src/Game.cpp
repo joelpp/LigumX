@@ -33,6 +33,9 @@ int main()
 
 void Game::init()
 {
+//    glEnable(GL_PROGRAM_POINT_SIZE);
+//    glEnable(GL_POINT_SPRITE);
+
     //=============================================================================
     // Parameters, camera setup.
     //=============================================================================
@@ -119,10 +122,18 @@ void Game::init()
 
 
     //=============================================================================
-    // create and fill VBOs with ways info.
+    // Screen quad data.
+    //=============================================================================
+
+    vec2 screenQuadPos[4] = {vec2(1,-1), vec2(1,1), vec2(-1,-1), vec2(-1,1)};
+    vec2 screenQuadTexCoords[4] = {vec2(1,0), vec2(1,1), vec2(0,0), vec2(0,1)};
+
+    //=============================================================================
+    // create and fill VBOs.
     //=============================================================================
 
     nbWaysVertices = waysNodesPositions.size();
+
 
     glCreateBuffers(1, &glidWaysPositions);
     glNamedBufferStorage(glidWaysPositions, nbWaysVertices * 2 * 4, // nbWaysNodes * vec2 * float
@@ -131,12 +142,14 @@ void Game::init()
                          GL_MAP_WRITE_BIT);
     glNamedBufferSubData(glidWaysPositions, 0, nbWaysVertices * 2 * 4, waysNodesPositions.data());
 
+
     glCreateBuffers(1, &glidWaysColors);
     glNamedBufferStorage(glidWaysColors, nbWaysVertices * 3 * 4, // nbWaysNodes * vec2 * float
                          NULL,
                          GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                          GL_MAP_WRITE_BIT);
     glNamedBufferSubData(glidWaysColors, 0, nbWaysVertices * 3 * 4, waysNodesColors.data());
+
 
     glCreateBuffers(1, &glidBufferRoadsPositions);
     glNamedBufferStorage(glidBufferRoadsPositions, roadsPositions.size() * 2 * 4, // nbWaysNodes * vec2 * float
@@ -145,6 +158,48 @@ void Game::init()
                          GL_MAP_WRITE_BIT);
     glNamedBufferSubData(glidBufferRoadsPositions, 0, roadsPositions.size() * 2 * 4, roadsPositions.data());
 
+
+    glCreateBuffers(1, &glidScreenQuadPositions);
+    glNamedBufferStorage(glidScreenQuadPositions, 4 * 2 * 4, // nbWaysNodes * vec2 * float
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidScreenQuadPositions, 0, 4 * 2 * 4, screenQuadPos);
+
+
+    glCreateBuffers(1, &glidScreenQuadTexCoords);
+    glNamedBufferStorage(glidScreenQuadTexCoords, 4 * 2 * 4, // nbWaysNodes * vec2 * float
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidScreenQuadTexCoords, 0, 4 * 2 * 4, screenQuadTexCoords);
+
+
+    //=============================================================================
+    // Textures, framebuffer, renderbuffer
+    //=============================================================================
+
+//    glCreateFramebuffers(1, &glidFramebuffer);
+    glGenFramebuffers(1, &glidFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
+
+//    glCreateTextures(GL_TEXTURE_2D, 1, &glidTextureScreenRoads);
+    glGenTextures(1, &glidTextureScreenRoads);
+    glBindTexture(GL_TEXTURE_2D, glidTextureScreenRoads);
+//    glTextureStorage2D(glidTextureScreenRoads, 1, GL_RED, windowWidth, windowHeight);
+//    glClearTexImage(glidTextureScreenRoads, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+//    glGenerateTextureMipmap(glidTextureScreenRoads);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, windowWidth, windowHeight, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, glidTextureScreenRoads, 0);
+    GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, drawBuffers);
+//    glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
+//    glNamedFramebufferDrawBuffers(glidFramebuffer, 1, drawBuffers);
+//    glNamedFramebufferTexture(glidFramebuffer, GL_COLOR_ATTACHMENT0, glidTextureScreenRoads, 0);
+//    glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
 
     //=============================================================================
     // initialize graphics, VAO
@@ -206,6 +261,8 @@ void Game::init()
     //--------------------------------------------------------------------------
 
     {
+            glEnable(GL_PROGRAM_POINT_SIZE);
+            glEnable(GL_POINT_SPRITE);
     const char* vertexShaderSource = " \
         #version 430 core\n \
         in layout(location=0) vec2 pos;\n \
@@ -213,46 +270,83 @@ void Game::init()
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
         };\n \
-        out float vDistance;\n \
+//        out float vDistance;\n \
         void main() {\n \
             gl_Position = vec4(pos, 0, 1);\n \
-            vDistance = distance;\n \
+//            vDistance = distance;\n \
         }";
 
-    const char* fragmentShaderSource = " \
+    const char* fragmentShaderSource1 = " \
         #version 430 core\n \
-        in vec2 gTexCoord;\n \
-        out vec3 fColor;\n \
+//        in vec2 gTexCoord;\n \
+        layout(location=0) out vec3 fColor;\n \
         void main() {\n \
             float lineWidth = 0.15;\n \
-//            fColor = vec3(1,1,1);\n \
-//            fColor = vec3(gTexCoord.x,gTexCoord.y,1);\n \
-            if(abs(gTexCoord.x-0.5) < lineWidth/2.0) {\n \
-                fColor = vec3(1,1,0);\n \
+            fColor = vec3(0.5, 0.5, 0.5);\n \
+////            fColor = vec3(1,1,1);\n \
+////            fColor = vec3(gTexCoord.x,gTexCoord.y,1);\n \
+//            if(abs(gTexCoord.x-0.5) < lineWidth/2.0) {\n \
+//                fColor = vec3(1,1,0);\n \
+//            } else {\n \
+//                fColor = vec3(0.3,0.3,0.3);\n \
+//            }\n \
+        }";
+
+    const char* fragmentShaderSource2 = " \
+        #version 430 core\n \
+//        in vec2 gTexCoord;\n \
+        in vec2 gl_PointCoord;\n \
+        layout(location=0) out vec3 fColor;\n \
+        void main() {\n \
+            if(distance(gl_PointCoord, vec2(0.5,0.5)) < 0.5) {\n \
+                fColor = vec3(0.5, 0.5, 0.5);\n \
             } else {\n \
-                fColor = vec3(0.3,0.3,0.3);\n \
+                discard;\n \
             }\n \
+        }";
+
+    const char* fragmentShaderSource3 = " \
+        #version 430 core\n \
+        layout(location=0) out vec3 fColor;\n \
+        void main() {\n \
+            fColor = vec3(1,1,0);\n \
         }";
 
     ProgramPipeline::ShaderProgram* pVertexShader =
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
             vertexShaderSource, true);
 
-    ProgramPipeline::ShaderProgram* pGeometryShader =
+    pGeometryShader1 =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
             "../src/shaders/roads.gsh", false);
 
-    ProgramPipeline::ShaderProgram* pFragmentShader =
+    pGeometryShader2 =
+            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+            "../src/shaders/roads2.gsh", false);
+
+    pGeometryShader3 =
+            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+            "../src/shaders/roads3.gsh", false);
+
+    pFragmentShader1 =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            fragmentShaderSource, true);
+            fragmentShaderSource1, true);
+
+    pFragmentShader2 =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource2, true);
+
+    pFragmentShader3 =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource3, true);
 
 
 
     pPipelineRoads = new ProgramPipeline();
     //pPipeline->useShaders({pVertexShader, pFragmentShader});
     pPipelineRoads->useVertexShader(pVertexShader);
-    pPipelineRoads->useGeometryShader(pGeometryShader);
-    pPipelineRoads->useFragmentShader(pFragmentShader);
+    pPipelineRoads->useGeometryShader(pGeometryShader1);
+    pPipelineRoads->useFragmentShader(pFragmentShader1);
 
     // VAO
     glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 0);
@@ -262,6 +356,59 @@ void Game::init()
 //    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 1, glidBufferRoadsPositions, 0, 1*4);
 //    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
     }
+
+
+    //--------------------------------------------------------------------------
+    // screen quad pipeline
+    //--------------------------------------------------------------------------
+
+    {
+    const char* vertexShaderSource = " \
+        #version 430 core\n \
+        in layout(location=0) vec2 pos;\n \
+        in layout(location=1) vec2 texCoord;\n \
+        out gl_PerVertex {\n \
+            vec4 gl_Position;\n \
+        };\n \
+        out vec2 vTexCoord;\n \
+        void main() {\n \
+            gl_Position = vec4(pos, 0, 1);\n \
+            vTexCoord = texCoord;\n \
+        }";
+
+    const char* fragmentShaderSource = " \
+        #version 430 core\n \
+        in vec2 vTexCoord;\n \
+        uniform sampler2D sampler;\n \
+        out vec3 color;\n \
+        void main() {\n \
+            color = texture(sampler, vTexCoord).rgb;\n \
+        }";
+
+    ProgramPipeline::ShaderProgram* pVertexShader =
+            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+            vertexShaderSource, true);
+
+    ProgramPipeline::ShaderProgram* pFragmentShader =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource, true);
+
+
+
+    pPipelineScreenQuad = new ProgramPipeline();
+    //pPipeline->useShaders({pVertexShader, pFragmentShader});
+    pPipelineScreenQuad->useVertexShader(pVertexShader);
+    pPipelineScreenQuad->useFragmentShader(pFragmentShader);
+
+    // VAO
+    glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 0, glidScreenQuadPositions, 0, 2*4);
+    glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 1);
+    glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 1, glidScreenQuadTexCoords, 0, 2*4);
+    glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 1, 2, GL_FLOAT, GL_FALSE, 0);
+    }
+
 }
 
 
@@ -269,20 +416,43 @@ void Game::mainLoop()
 {
     camera->moveFromUserInput(pWindow);
 
-    glClear(GL_COLOR_BUFFER_BIT);
-
     if(showWhat) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
         // draw lines
         pPipelineLines->usePipeline();
         glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
         glDrawArrays(GL_LINES, 0, nbWaysVertices);
     } else {
+        glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         // draw roads
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cout << "qweqwe" << endl;
         pPipelineRoads->usePipeline();
+        pPipelineRoads->useGeometryShader(pGeometryShader1);
+        pPipelineRoads->useFragmentShader(pFragmentShader1);
         glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
-        //glDrawArrays(GL_LINES_ADJACENCY, 0, nbRoadVertices);
-//        cout << nbRoads << endl;
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
+        // draw circles on road nodes
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cout << "qweqwe" << endl;
+        pPipelineRoads->usePipeline();
+        pPipelineRoads->useGeometryShader(pGeometryShader2);
+        pPipelineRoads->useFragmentShader(pFragmentShader2);
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
+        // draw road lines
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cout << "qweqwe" << endl;
+        pPipelineRoads->usePipeline();
+        pPipelineRoads->useGeometryShader(pGeometryShader3);
+        pPipelineRoads->useFragmentShader(pFragmentShader3);
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        pPipelineScreenQuad->usePipeline();
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }
 }
 

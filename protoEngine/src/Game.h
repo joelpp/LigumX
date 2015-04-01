@@ -60,8 +60,14 @@ public:
     // shaders
     ProgramPipeline* pPipelineLines;
     ProgramPipeline* pPipelineRoads;
-//    ProgramPipeline::ShaderProgram* pVertexShader;
-//    ProgramPipeline::ShaderProgram* pFragmentShader;
+    ProgramPipeline* pPipelineScreenQuad;
+    // need to keep those for swapping
+    ProgramPipeline::ShaderProgram* pGeometryShader1;
+    ProgramPipeline::ShaderProgram* pGeometryShader2;
+    ProgramPipeline::ShaderProgram* pGeometryShader3;
+    ProgramPipeline::ShaderProgram* pFragmentShader1;
+    ProgramPipeline::ShaderProgram* pFragmentShader2;
+    ProgramPipeline::ShaderProgram* pFragmentShader3;
 
     // VBOs
     GLuint glidWaysPositions;
@@ -71,6 +77,8 @@ public:
     unsigned int nbRoads;
     std::vector<GLint> firstVertexForEachRoad;
     std::vector<GLsizei> nbVerticesForEachRoad;
+    GLuint glidScreenQuadPositions;
+    GLuint glidScreenQuadTexCoords;
 
     // camera
     Camera* camera;
@@ -80,6 +88,10 @@ public:
     // data
     std::unordered_map<std::string, Node*> theNodes;
     std::unordered_map<std::string, Way*> theWays;
+
+    // textures
+    GLuint glidTextureScreenRoads; // for implicit definition of the roads.
+    GLuint glidFramebuffer;
 
     // debug stuff
     bool showWhat = true;
