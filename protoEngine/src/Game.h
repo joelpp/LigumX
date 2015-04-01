@@ -7,9 +7,15 @@
 #include <string>
 #include <unordered_map>
 #include "glm/glm.hpp"
+#include "tinyxml2.h"
 
 #include "ProgramPipeline.h"
 #include "camera.h"
+#include "OSMElement.h"
+#include "node.h"
+#include "way.h"
+#include "relation.h"
+
 
 class Game {
 public:
@@ -19,6 +25,8 @@ public:
     bool running;
     void mainLoop();
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
+    void loadXML(std::string path);
+    void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions);
     GLFWwindow* pWindow;
 
     // viewing
@@ -33,11 +41,11 @@ public:
     std::string windowTitle;
 
     // GLFW callbacks
-    static void glfwMouseButtonCallback(GLFWwindow* /*pGlfwWindow*/, int /*button*/, int /*action*/, int /*mods*/) {}
-    static void glfwMousePositionCallback(GLFWwindow* /*pGlfwWindow*/, double /*x*/, double /*y*/) {}
+    static void glfwMouseButtonCallback(GLFWwindow* /*pGlfwWindow*/, int /*button*/, int /*action*/, int /*mods*/);
+    static void glfwMousePositionCallback(GLFWwindow* /*pGlfwWindow*/, double /*x*/, double /*y*/);
     static void glfwMouseEntersCallback(GLFWwindow* /*pGlfwWindow*/, int /*entered*/) {}
     static void glfwMouseScrollCallback(GLFWwindow* /*pGlfwWindow*/, double /*x*/, double /*y*/);
-    static void glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/) {}
+    static void glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int /*key*/, int /*scancode*/, int /*action*/, int /*mods*/);
     static void glfwCharCallback(GLFWwindow* /*pGlfwWindow*/, unsigned int /*codepoint*/) {}
     static void glfwWindowPositionCallback(GLFWwindow* /*pGlfwWindow*/, int /*xpos*/, int /*ypos*/) {}
     static void glfwWindowSizeCallback(GLFWwindow* /*pGlfwWindow*/, int /*width*/, int /*height*/) {}
@@ -50,17 +58,31 @@ public:
 //                       GLsizei /*length*/, const GLchar* /*message*/, const void* /*pVoidWindow*/);
 
     // shaders
-    ProgramPipeline* pPipeline;
-    ProgramPipeline::ShaderProgram* pVertexShader;
-    ProgramPipeline::ShaderProgram* pFragmentShader;
+    ProgramPipeline* pPipelineLines;
+    ProgramPipeline* pPipelineRoads;
+//    ProgramPipeline::ShaderProgram* pVertexShader;
+//    ProgramPipeline::ShaderProgram* pFragmentShader;
 
     // VBOs
     GLuint glidWaysPositions;
     GLuint glidWaysColors;
     unsigned int nbWaysVertices;
+    GLuint glidBufferRoadsPositions;
+    unsigned int nbRoads;
+    std::vector<GLint> firstVertexForEachRoad;
+    std::vector<GLsizei> nbVerticesForEachRoad;
 
     // camera
     Camera* camera;
+    bool draggingCamera;
+    glm::vec2 oldMousePosition;
+
+    // data
+    std::unordered_map<std::string, Node*> theNodes;
+    std::unordered_map<std::string, Way*> theWays;
+
+    // debug stuff
+    bool showWhat = true;
 
 };
 

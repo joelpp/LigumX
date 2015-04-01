@@ -5,6 +5,13 @@
 #include <glm/gtc/random.hpp>
 #include <iostream>
 #include "glm/gtc/type_ptr.hpp"
+#include <typeinfo>
+#include <chrono>
+
+#define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
+                    x;\
+                    auto end = std::chrono::high_resolution_clock::now();\
+                    std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
 
 using namespace glm;
 using namespace std;
@@ -16,6 +23,7 @@ int main()
     game = new Game();
     while(game->running) {
         glfwPollEvents();
+
         game->mainLoop();
         glfwSwapBuffers(game->pWindow);
     }
@@ -36,6 +44,8 @@ void Game::init()
     camera = new Camera();
     camera->translateTo(vec2(0,0));
     camera->setViewSize(1);
+    draggingCamera = false;
+
 
     //=============================================================================
     // create window and GLcontext, register callbacks.
@@ -98,118 +108,15 @@ void Game::init()
 
     //=============================================================================
     // Load world data.
-    // TODO: replace with XML loader.
     //=============================================================================
 
-
-    // count total number of lines (used for the progress bar)
-    int nbLines = 0;
-    ifstream file("../data/result.txt", ios::in);
-    string line;
-    while (getline(file, line)) {
-        ++nbLines;
-    }
-    file.close();
-
-    std::unordered_map<string, vec2> nodes; // nodes without links, searchable by ID.
     vector<vec2> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
+    vector<vec2> roadsPositions;
 
-    file.open("../data/result.txt", ios::in);
-    stringstream stream;
-    string word;
-    while (getline(file, line)) {
-        if (line.substr(0, 8)=="  <bound") {
-            stream.clear();
-            stream.str(line);
+    TIME(loadXML("../data/result.xml"));
+    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 
-            while(stream.rdbuf()->in_avail() != 0) {
-                stream >> word;
-                if(word.substr(0,3)=="box") {
-                    string subWord = word.substr(5,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    string nums = subWord.substr(0,ind);
-
-                    ind = nums.find_first_of(",");
-                    viewRectLeft = atof(nums.substr(0, ind).c_str());
-                    nums = nums.substr(ind+1, nums.length());
-
-                    ind = nums.find_first_of(",");
-                    viewRectBottom = atof(nums.substr(0, ind).c_str());
-                    nums = nums.substr(ind+1, nums.length());
-
-                    ind = nums.find_first_of(",");
-                    viewRectRight = atof(nums.substr(0, ind).c_str());
-                    nums = nums.substr(ind+1, nums.length());
-
-                    ind = nums.find_first_of(",");
-                    viewRectTop = atof(nums.substr(0, ind).c_str());
-                }
-            }
-
-            cout << viewRectLeft << " " << viewRectBottom << " " << viewRectRight << " " << viewRectTop << endl;
-            viewRectBottomLeft = vec2(viewRectLeft, viewRectBottom);
-            viewRectTopRight = vec2(viewRectRight, viewRectTop);
-            viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
-
-        } else if(line.substr(0, 7)=="  <node") {
-
-            vec2 point;
-            string id;
-
-            stream.clear();
-            stream.str(line);
-            while(stream.rdbuf()->in_avail() != 0) {
-                stream >> word;
-                if(word.substr(0,3)=="lat") {
-                    string subWord = word.substr(5,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    string num = subWord.substr(0,ind);
-                    point.x = atof(num.c_str());
-                } else if(word.substr(0,3)=="lon") {
-                    string subWord = word.substr(5,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    string num = subWord.substr(0,ind);
-                    point.y = atof(num.c_str());
-                } else if(word.substr(0,2)=="id") {
-                    string subWord = word.substr(4,word.length());
-                    auto ind = subWord.find_first_of("\"");
-                    id = subWord.substr(0,ind);
-                }
-            }
-
-            point = (point - viewRectBottomLeft)/viewRectVecDiago;
-            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-            nodes[id] = point;
-        } else if(line.substr(0, 6)=="  <way") {
-            bool firstNode = true;
-            vec2 oldPoint;
-            vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
-                              glm::linearRand(0.5f, 1.0f),
-                              glm::linearRand(0.5f, 1.0f));
-            while (getline(file, line)) {
-                if (line.substr(0, 7)=="    <nd") {
-                    auto ind1 = line.find_first_of("\"");
-                    auto ind2 = line.find_last_of("\"");
-                    string id = line.substr(ind1+1, ind2-ind1-1);
-                    vec2 point = nodes[id];
-                    if(!firstNode) {
-                        waysNodesPositions.push_back(oldPoint);
-                        waysNodesColors.push_back(color);
-                        waysNodesPositions.push_back(point);
-                        waysNodesColors.push_back(color);
-                    }
-                    oldPoint = point;
-                    firstNode = false;
-                } else if (line.substr(0, 7)=="  </way") {
-                    break;
-                }
-            }
-        }
-        nbLines++;
-        if(nbLines % 1000==0) cout << nbLines << endl;
-    }
-    file.close();
 
     //=============================================================================
     // create and fill VBOs with ways info.
@@ -231,26 +138,34 @@ void Game::init()
                          GL_MAP_WRITE_BIT);
     glNamedBufferSubData(glidWaysColors, 0, nbWaysVertices * 3 * 4, waysNodesColors.data());
 
+    glCreateBuffers(1, &glidBufferRoadsPositions);
+    glNamedBufferStorage(glidBufferRoadsPositions, roadsPositions.size() * 2 * 4, // nbWaysNodes * vec2 * float
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidBufferRoadsPositions, 0, roadsPositions.size() * 2 * 4, roadsPositions.data());
+
+
     //=============================================================================
     // initialize graphics, VAO
     //=============================================================================
 
+    //--------------------------------------------------------------------------
+    // general lines pipeline
+    //--------------------------------------------------------------------------
 
+    {
     const char* vertexShaderSource = " \
         #version 430 core\n \
         in layout(location=0) vec2 pos;\n \
         in layout(location=1) vec3 color;\n \
         uniform mat4 vpMat;\n \
-//        uniform layout(location=4) float qweqwe;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
         };\n \
         out vec3 vColor;\n \
         void main() {\n \
             gl_Position = vpMat * vec4(pos, 0, 1);\n \
-            //gl_Position = vec4(pos, 0, 1);\n \
-//            gl_Position = vpMat * vec4(0.5, 0.5, 0, 1);\n \
-            //gl_Position = vec4(qweqwe, 0.5, 0, 1);\n \
             vColor = color;\n \
         }";
 
@@ -260,32 +175,93 @@ void Game::init()
         out vec3 color;\n \
         void main() {\n \
             color = vColor;\n \
-            //color = vec3(1,1,1);\n \
         }";
 
-    pVertexShader =
+    ProgramPipeline::ShaderProgram* pVertexShader =
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
             vertexShaderSource, true);
 
-    pFragmentShader =
+    ProgramPipeline::ShaderProgram* pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
             fragmentShaderSource, true);
 
 
 
-    pPipeline = new ProgramPipeline();
+    pPipelineLines = new ProgramPipeline();
     //pPipeline->useShaders({pVertexShader, pFragmentShader});
-    pPipeline->useVertexShader(pVertexShader);
-    pPipeline->useFragmentShader(pFragmentShader);
+    pPipelineLines->useVertexShader(pVertexShader);
+    pPipelineLines->useFragmentShader(pFragmentShader);
 
     // VAO
-    glBindVertexArray(pPipeline->glidVao);
-    glEnableVertexArrayAttrib(pPipeline->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipeline->glidVao, 0, glidWaysPositions, 0, 2*4);
-    glVertexArrayAttribFormat(pPipeline->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-    glEnableVertexArrayAttrib(pPipeline->glidVao, 1);
-    glVertexArrayVertexBuffer(pPipeline->glidVao, 1, glidWaysColors, 0, 3*4);
-    glVertexArrayAttribFormat(pPipeline->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexArrayAttrib(pPipelineLines->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysPositions, 0, 2*4);
+    glVertexArrayAttribFormat(pPipelineLines->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexArrayAttrib(pPipelineLines->glidVao, 1);
+    glVertexArrayVertexBuffer(pPipelineLines->glidVao, 1, glidWaysColors, 0, 3*4);
+    glVertexArrayAttribFormat(pPipelineLines->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    }
+
+    //--------------------------------------------------------------------------
+    // roads pipeline
+    //--------------------------------------------------------------------------
+
+    {
+    const char* vertexShaderSource = " \
+        #version 430 core\n \
+        in layout(location=0) vec2 pos;\n \
+        in layout(location=1) float distance;\n \
+        out gl_PerVertex {\n \
+            vec4 gl_Position;\n \
+        };\n \
+        out float vDistance;\n \
+        void main() {\n \
+            gl_Position = vec4(pos, 0, 1);\n \
+            vDistance = distance;\n \
+        }";
+
+    const char* fragmentShaderSource = " \
+        #version 430 core\n \
+        in vec2 gTexCoord;\n \
+        out vec3 fColor;\n \
+        void main() {\n \
+            float lineWidth = 0.15;\n \
+//            fColor = vec3(1,1,1);\n \
+//            fColor = vec3(gTexCoord.x,gTexCoord.y,1);\n \
+            if(abs(gTexCoord.x-0.5) < lineWidth/2.0) {\n \
+                fColor = vec3(1,1,0);\n \
+            } else {\n \
+                fColor = vec3(0.3,0.3,0.3);\n \
+            }\n \
+        }";
+
+    ProgramPipeline::ShaderProgram* pVertexShader =
+            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+            vertexShaderSource, true);
+
+    ProgramPipeline::ShaderProgram* pGeometryShader =
+            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+            "../src/shaders/roads.gsh", false);
+
+    ProgramPipeline::ShaderProgram* pFragmentShader =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource, true);
+
+
+
+    pPipelineRoads = new ProgramPipeline();
+    //pPipeline->useShaders({pVertexShader, pFragmentShader});
+    pPipelineRoads->useVertexShader(pVertexShader);
+    pPipelineRoads->useGeometryShader(pGeometryShader);
+    pPipelineRoads->useFragmentShader(pFragmentShader);
+
+    // VAO
+    glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 0, glidBufferRoadsPositions, 0, 2*4);
+    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+//    glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 1);
+//    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 1, glidBufferRoadsPositions, 0, 1*4);
+//    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
+    }
 }
 
 
@@ -294,9 +270,20 @@ void Game::mainLoop()
     camera->moveFromUserInput(pWindow);
 
     glClear(GL_COLOR_BUFFER_BIT);
-    pPipeline->usePipeline();
-    glProgramUniformMatrix4fv(pPipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
-    glDrawArrays(GL_LINES, 0, nbWaysVertices);
+
+    if(showWhat) {
+        // draw lines
+        pPipelineLines->usePipeline();
+        glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glDrawArrays(GL_LINES, 0, nbWaysVertices);
+    } else {
+        // draw roads
+        pPipelineRoads->usePipeline();
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        //glDrawArrays(GL_LINES_ADJACENCY, 0, nbRoadVertices);
+//        cout << nbRoads << endl;
+        glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
+    }
 }
 
 
@@ -329,5 +316,208 @@ void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, doub
         game->camera->multViewSizeBy(factor);
     } else {
         game->camera->multViewSizeBy(1.f/factor);
+    }
+}
+
+void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*/, int action, int /*mods*/)
+{
+    if(action == GLFW_PRESS && key == GLFW_KEY_SPACE) {
+         game->showWhat = !game->showWhat;
+    }
+}
+
+void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
+{
+    // Left-click
+    if (button == GLFW_MOUSE_BUTTON_1){
+        if (action == GLFW_PRESS){
+            game->draggingCamera = true;
+            double x; double y;
+            glfwGetCursorPos(pWindow, &x, &y);
+            game->oldMousePosition = vec2(x,y);
+        }
+        else if (action == GLFW_RELEASE){
+            game->draggingCamera = false;
+        }
+    }
+    //Right Click
+    else if (button == GLFW_MOUSE_BUTTON_2){
+        game->camera->translateTo(vec2(0,0));
+    }
+
+
+}
+
+void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double yOffset)
+{
+    if (game->draggingCamera){
+        double x; double y;
+        glfwGetCursorPos(pWindow, &x, &y);
+        vec2 offset = vec2(x,y) - game->oldMousePosition;
+        offset.y *= -1; // reversed controls? this should be an option
+
+        game->camera->translateBy(offset/100.f);
+
+        game->oldMousePosition = vec2(x,y);
+
+    }
+}
+
+void Game::loadXML(string path){
+    tinyxml2::XMLDocument doc;
+    doc.LoadFile(path.c_str());
+    tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
+    cout << docRoot->Value() << "\n";
+
+    for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+    {
+        if (string(child->Value()).compare("bound") == 0){
+            string box = child->ToElement()->FindAttribute("box")->Value();
+            std::istringstream ss(box);
+            std::string token;
+
+            std::getline(ss, token, ','); viewRectLeft = atof(token.c_str());
+            std::getline(ss, token, ','); viewRectBottom = atof(token.c_str());
+            std::getline(ss, token, ','); viewRectRight = atof(token.c_str());
+            std::getline(ss, token, ','); viewRectTop = atof(token.c_str());
+
+            viewRectBottomLeft = vec2(viewRectLeft, viewRectBottom);
+            viewRectTopRight = vec2(viewRectRight, viewRectTop);
+            viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
+        }
+        if (string(child->Value()).compare("node") == 0){
+//            cout << "Looking at a node \n";
+//            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
+
+            string id = child->ToElement()->FindAttribute("id")->Value();
+            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value());
+            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value());
+
+            Node* node = new Node(id, latitude, longitude);
+            for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
+                string key = tag->ToElement()->FindAttribute("k")->Value();
+                string value = tag->ToElement()->FindAttribute("v")->Value();
+                node -> addTag(key, value);
+            }
+            theNodes.emplace(id, node);
+        }
+
+        else if (string(child->Value()).compare("way") == 0){
+//            cout << "Looking at a way \n";
+            string id = child->ToElement()->FindAttribute("id")->Value();
+            Way* way = new Way(id);
+
+            for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
+                if (string(way_child->Value()).compare("nd") == 0){
+                    string ref = way_child->ToElement()->FindAttribute("ref")->Value();
+                    way -> addRef(theNodes[ref]);
+                }
+                else if (string(way_child->Value()).compare("tag") == 0){
+                    string key = way_child->ToElement()->FindAttribute("k")->Value();
+                    string value = way_child->ToElement()->FindAttribute("v")->Value();
+                    way -> addTag(key, value);
+                }
+            }
+            theWays.emplace(id, way);
+        }
+        else if (string(child->Value()).compare("relation") == 0){
+            string id = child->ToElement()->FindAttribute("id")->Value();
+            Relation *relation = new Relation(id);
+
+            for (tinyxml2::XMLNode* relation_child = child->FirstChildElement(); relation_child != NULL; relation_child = relation_child->NextSiblingElement()){
+                if (string(relation_child->Value()).compare("member") == 0){
+                    string type = relation_child->ToElement()->FindAttribute("type")->Value();
+                    string id = relation_child->ToElement()->FindAttribute("ref")->Value();
+                }
+                else if (string(relation_child->Value()).compare("tag") == 0){
+                    string key = relation_child->ToElement()->FindAttribute("k")->Value();
+                    string value = relation_child->ToElement()->FindAttribute("v")->Value();
+                }
+            }
+
+        }
+    }
+}
+
+void Game::fillBuffers(vector<vec2> *waysNodesPositions,
+                       vector<vec3> *waysNodesColors,
+                       vector<vec2> *roadsPositions){
+    bool first;
+    bool second;
+    vec3 white = vec3(1.0f,1.0f,1.0f);
+
+    nbRoads = 0;
+    GLint firstVertexForThisRoad = 0;
+    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+        first = true;
+        second = false;
+        GLsizei nbVertexForThisRoad = 0;
+        vec2 point, oldPoint, oldOldPoint;
+        vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
+                          glm::linearRand(0.5f, 1.0f),
+                          glm::linearRand(0.5f, 1.0f));
+        Way* way = it->second;
+
+        if (way->hasTagAndValue("highway", "trunk")) color = vec3(1,1,1);
+        else if (way->hasTagAndValue("highway", "primary")) color = vec3(0.9,0.9,0.9);
+        else if (way->hasTagAndValue("highway", "secondary")) color = vec3(0.8,0.8,0.8);
+        else if (way->hasTagAndValue("highway", "residential")) color = vec3(0.5,0.5,0.5);
+        else if (way->hasTag("building")) color = vec3(0,0,1);
+        else if (way->hasTag("railway")) color = vec3(1,0,1);
+        else if (way->hasTag("natural")) color = vec3(0,0.5,0);
+        else if (way->hasTagAndValue("leisure", "park")) color = vec3(0,1,0);
+        else continue;
+
+        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
+            Node* node = *nodeIt;
+            point = vec2(node->latitude, node->longitude);
+            point = (point - viewRectBottomLeft)/viewRectVecDiago;
+            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+
+            if (!first){
+                waysNodesPositions->push_back(oldPoint);
+                waysNodesColors->push_back(color);
+                waysNodesPositions->push_back(point);
+                waysNodesColors->push_back(color);
+
+                // create roads subgroup
+                if (way->hasTagAndValue("highway", "residential")) {
+                    if(second) {
+                        second = false;
+                        // first point for line adjacency, fake straight line
+                        roadsPositions->push_back(oldPoint - (point-oldPoint));
+                        roadsPositions->push_back(oldPoint);
+                        nbVertexForThisRoad += 2;
+                    }
+                    roadsPositions->push_back(point);
+                    ++nbVertexForThisRoad;
+                }
+            }
+            else
+            {
+                first = false;
+                if (way->hasTagAndValue("highway", "residential")) {
+                    second = true;
+//                    roadsPositions->push_back(point); // first point for line adjacency
+//                    ++nbVertexForThisRoad;
+                }
+            }
+
+            oldOldPoint = oldPoint;
+            oldPoint = point;
+        }
+
+        // push last road node for line adjacency, fake straight line
+        if (way->hasTagAndValue("highway", "residential")) {
+            roadsPositions->push_back(point + (point-oldOldPoint));
+            ++nbVertexForThisRoad;
+            ++nbRoads;
+
+            firstVertexForEachRoad.push_back(firstVertexForThisRoad);
+            nbVerticesForEachRoad.push_back(nbVertexForThisRoad);
+
+            // set first vertex index for next road
+            firstVertexForThisRoad += nbVertexForThisRoad;
+        }
     }
 }
