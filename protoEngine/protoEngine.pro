@@ -37,3 +37,6 @@ HEADERS += \
     src/relation.h \
     src/OSMElement.h
 
+OTHER_FILES += \
+    src/shaders/roads.gsh
+

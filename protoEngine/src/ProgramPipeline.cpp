@@ -258,6 +258,38 @@ void ProgramPipeline::useVertexShader(
 
 }
 
+void ProgramPipeline::useGeometryShader(ProgramPipeline::ShaderProgram* shader)
+{
+    GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);
+
+    // make sure we don't mix compute shaders with other shader types.
+    if(shader->shaderType == GL_COMPUTE_SHADER) {
+        glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
+    } else {
+        glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
+    }
+
+    pGeometryShader = shader;
+
+    // attach shader shage
+    glUseProgramStages(glidProgramPipeline, shaderBit,
+                       shader->glidShaderProgram);
+
+    // check for validation errors.
+    GLint result;
+    int infoLength;
+    char* info;
+    glValidateProgramPipeline(glidProgramPipeline);
+    glGetProgramPipelineiv(glidProgramPipeline, GL_VALIDATE_STATUS, &result);
+    if(!result) {
+        glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
+        info = new char[infoLength];
+        glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
+        cerr << "Validation error in program pipeline :" << endl;
+        cerr << info << endl;
+    }
+}
+
 void ProgramPipeline::useFragmentShader(ProgramPipeline::ShaderProgram *shader)
 {
     GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);

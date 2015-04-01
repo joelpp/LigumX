@@ -112,9 +112,10 @@ void Game::init()
 
     vector<vec2> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
+    vector<vec2> roadsPositions;
 
     TIME(loadXML("../data/result.xml"));
-    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors));
+    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 
 
     //=============================================================================
@@ -137,26 +138,34 @@ void Game::init()
                          GL_MAP_WRITE_BIT);
     glNamedBufferSubData(glidWaysColors, 0, nbWaysVertices * 3 * 4, waysNodesColors.data());
 
+    glCreateBuffers(1, &glidBufferRoadsPositions);
+    glNamedBufferStorage(glidBufferRoadsPositions, roadsPositions.size() * 2 * 4, // nbWaysNodes * vec2 * float
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidBufferRoadsPositions, 0, roadsPositions.size() * 2 * 4, roadsPositions.data());
+
+
     //=============================================================================
     // initialize graphics, VAO
     //=============================================================================
 
+    //--------------------------------------------------------------------------
+    // general lines pipeline
+    //--------------------------------------------------------------------------
 
+    {
     const char* vertexShaderSource = " \
         #version 430 core\n \
         in layout(location=0) vec2 pos;\n \
         in layout(location=1) vec3 color;\n \
         uniform mat4 vpMat;\n \
-//        uniform layout(location=4) float qweqwe;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
         };\n \
         out vec3 vColor;\n \
         void main() {\n \
             gl_Position = vpMat * vec4(pos, 0, 1);\n \
-            //gl_Position = vec4(pos, 0, 1);\n \
-//            gl_Position = vpMat * vec4(0.5, 0.5, 0, 1);\n \
-            //gl_Position = vec4(qweqwe, 0.5, 0, 1);\n \
             vColor = color;\n \
         }";
 
@@ -166,32 +175,93 @@ void Game::init()
         out vec3 color;\n \
         void main() {\n \
             color = vColor;\n \
-            //color = vec3(1,1,1);\n \
         }";
 
-    pVertexShader =
+    ProgramPipeline::ShaderProgram* pVertexShader =
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
             vertexShaderSource, true);
 
-    pFragmentShader =
+    ProgramPipeline::ShaderProgram* pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
             fragmentShaderSource, true);
 
 
 
-    pPipeline = new ProgramPipeline();
+    pPipelineLines = new ProgramPipeline();
     //pPipeline->useShaders({pVertexShader, pFragmentShader});
-    pPipeline->useVertexShader(pVertexShader);
-    pPipeline->useFragmentShader(pFragmentShader);
+    pPipelineLines->useVertexShader(pVertexShader);
+    pPipelineLines->useFragmentShader(pFragmentShader);
 
     // VAO
-    glBindVertexArray(pPipeline->glidVao);
-    glEnableVertexArrayAttrib(pPipeline->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipeline->glidVao, 0, glidWaysPositions, 0, 2*4);
-    glVertexArrayAttribFormat(pPipeline->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-    glEnableVertexArrayAttrib(pPipeline->glidVao, 1);
-    glVertexArrayVertexBuffer(pPipeline->glidVao, 1, glidWaysColors, 0, 3*4);
-    glVertexArrayAttribFormat(pPipeline->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexArrayAttrib(pPipelineLines->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysPositions, 0, 2*4);
+    glVertexArrayAttribFormat(pPipelineLines->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexArrayAttrib(pPipelineLines->glidVao, 1);
+    glVertexArrayVertexBuffer(pPipelineLines->glidVao, 1, glidWaysColors, 0, 3*4);
+    glVertexArrayAttribFormat(pPipelineLines->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    }
+
+    //--------------------------------------------------------------------------
+    // roads pipeline
+    //--------------------------------------------------------------------------
+
+    {
+    const char* vertexShaderSource = " \
+        #version 430 core\n \
+        in layout(location=0) vec2 pos;\n \
+        in layout(location=1) float distance;\n \
+        out gl_PerVertex {\n \
+            vec4 gl_Position;\n \
+        };\n \
+        out float vDistance;\n \
+        void main() {\n \
+            gl_Position = vec4(pos, 0, 1);\n \
+            vDistance = distance;\n \
+        }";
+
+    const char* fragmentShaderSource = " \
+        #version 430 core\n \
+        in vec2 gTexCoord;\n \
+        out vec3 fColor;\n \
+        void main() {\n \
+            float lineWidth = 0.15;\n \
+//            fColor = vec3(1,1,1);\n \
+//            fColor = vec3(gTexCoord.x,gTexCoord.y,1);\n \
+            if(abs(gTexCoord.x-0.5) < lineWidth/2.0) {\n \
+                fColor = vec3(1,1,0);\n \
+            } else {\n \
+                fColor = vec3(0.3,0.3,0.3);\n \
+            }\n \
+        }";
+
+    ProgramPipeline::ShaderProgram* pVertexShader =
+            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+            vertexShaderSource, true);
+
+    ProgramPipeline::ShaderProgram* pGeometryShader =
+            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+            "../src/shaders/roads.gsh", false);
+
+    ProgramPipeline::ShaderProgram* pFragmentShader =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource, true);
+
+
+
+    pPipelineRoads = new ProgramPipeline();
+    //pPipeline->useShaders({pVertexShader, pFragmentShader});
+    pPipelineRoads->useVertexShader(pVertexShader);
+    pPipelineRoads->useGeometryShader(pGeometryShader);
+    pPipelineRoads->useFragmentShader(pFragmentShader);
+
+    // VAO
+    glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 0, glidBufferRoadsPositions, 0, 2*4);
+    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+//    glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 1);
+//    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 1, glidBufferRoadsPositions, 0, 1*4);
+//    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
+    }
 }
 
 
@@ -200,9 +270,20 @@ void Game::mainLoop()
     camera->moveFromUserInput(pWindow);
 
     glClear(GL_COLOR_BUFFER_BIT);
-    pPipeline->usePipeline();
-    glProgramUniformMatrix4fv(pPipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
-    glDrawArrays(GL_LINES, 0, nbWaysVertices);
+
+    if(showWhat) {
+        // draw lines
+        pPipelineLines->usePipeline();
+        glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glDrawArrays(GL_LINES, 0, nbWaysVertices);
+    } else {
+        // draw roads
+        pPipelineRoads->usePipeline();
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        //glDrawArrays(GL_LINES_ADJACENCY, 0, nbRoadVertices);
+//        cout << nbRoads << endl;
+        glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
+    }
 }
 
 
@@ -235,6 +316,13 @@ void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, doub
         game->camera->multViewSizeBy(factor);
     } else {
         game->camera->multViewSizeBy(1.f/factor);
+    }
+}
+
+void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*/, int action, int /*mods*/)
+{
+    if(action == GLFW_PRESS && key == GLFW_KEY_SPACE) {
+         game->showWhat = !game->showWhat;
     }
 }
 
@@ -351,28 +439,34 @@ void Game::loadXML(string path){
     }
 }
 
-void Game::fillBuffers(vector<vec2> *waysNodesPositions, vector<vec3> *waysNodesColors){
-    bool first = true;
+void Game::fillBuffers(vector<vec2> *waysNodesPositions,
+                       vector<vec3> *waysNodesColors,
+                       vector<vec2> *roadsPositions){
+    bool first;
+    bool second;
     vec3 white = vec3(1.0f,1.0f,1.0f);
 
+    nbRoads = 0;
+    GLint firstVertexForThisRoad = 0;
     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
         first = true;
-        vec2 point, oldPoint;
+        second = false;
+        GLsizei nbVertexForThisRoad = 0;
+        vec2 point, oldPoint, oldOldPoint;
         vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
                           glm::linearRand(0.5f, 1.0f),
                           glm::linearRand(0.5f, 1.0f));
         Way* way = it->second;
 
-      if (way->hasTagAndValue("highway", "trunk")) color = vec3(1,1,1);
-      else if (way->hasTagAndValue("highway", "primary")) color = vec3(0.9,0.9,0.9);
-      else if (way->hasTagAndValue("highway", "secondary")) color = vec3(0.8,0.8,0.8);
-      else if (way->hasTagAndValue("highway", "residential")) color = vec3(0.5,0.5,0.5);
-      else if (way->hasTag("building")) color = vec3(0,0,1);
-      else if (way->hasTag("railway")) color = vec3(1,0,1);
-      else if (way->hasTag("natural")) color = vec3(0,0.5,0);
-      else if (way->hasTagAndValue("leisure", "park")) color = vec3(0,1,0);
-      else continue;
-
+        if (way->hasTagAndValue("highway", "trunk")) color = vec3(1,1,1);
+        else if (way->hasTagAndValue("highway", "primary")) color = vec3(0.9,0.9,0.9);
+        else if (way->hasTagAndValue("highway", "secondary")) color = vec3(0.8,0.8,0.8);
+        else if (way->hasTagAndValue("highway", "residential")) color = vec3(0.5,0.5,0.5);
+        else if (way->hasTag("building")) color = vec3(0,0,1);
+        else if (way->hasTag("railway")) color = vec3(1,0,1);
+        else if (way->hasTag("natural")) color = vec3(0,0.5,0);
+        else if (way->hasTagAndValue("leisure", "park")) color = vec3(0,1,0);
+        else continue;
 
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
@@ -385,10 +479,45 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions, vector<vec3> *waysNodes
                 waysNodesColors->push_back(color);
                 waysNodesPositions->push_back(point);
                 waysNodesColors->push_back(color);
-            }
-            else first = false;
 
+                // create roads subgroup
+                if (way->hasTagAndValue("highway", "residential")) {
+                    if(second) {
+                        second = false;
+                        // first point for line adjacency, fake straight line
+                        roadsPositions->push_back(oldPoint - (point-oldPoint));
+                        roadsPositions->push_back(oldPoint);
+                        nbVertexForThisRoad += 2;
+                    }
+                    roadsPositions->push_back(point);
+                    ++nbVertexForThisRoad;
+                }
+            }
+            else
+            {
+                first = false;
+                if (way->hasTagAndValue("highway", "residential")) {
+                    second = true;
+//                    roadsPositions->push_back(point); // first point for line adjacency
+//                    ++nbVertexForThisRoad;
+                }
+            }
+
+            oldOldPoint = oldPoint;
             oldPoint = point;
+        }
+
+        // push last road node for line adjacency, fake straight line
+        if (way->hasTagAndValue("highway", "residential")) {
+            roadsPositions->push_back(point + (point-oldOldPoint));
+            ++nbVertexForThisRoad;
+            ++nbRoads;
+
+            firstVertexForEachRoad.push_back(firstVertexForThisRoad);
+            nbVerticesForEachRoad.push_back(nbVertexForThisRoad);
+
+            // set first vertex index for next road
+            firstVertexForThisRoad += nbVertexForThisRoad;
         }
     }
 }

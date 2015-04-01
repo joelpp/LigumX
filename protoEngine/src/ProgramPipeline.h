@@ -37,6 +37,7 @@ public:
     ProgramPipeline();
 //    void useShaders(std::initializer_list<ShaderProgram*> shaders);
     void useVertexShader(ShaderProgram* shader);
+    void useGeometryShader(ShaderProgram* shader);
     void useFragmentShader(ShaderProgram* shader);
     void removeShader(GLenum shaderStage);
     static GLbitfield sShaderTypeEnumToBitField(GLenum shaderType);
