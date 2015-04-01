@@ -40,3 +40,6 @@ HEADERS += \
 OTHER_FILES += \
     src/shaders/roads.gsh
 
+DISTFILES += \
+    libPaths.pri
+

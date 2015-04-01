@@ -14,8 +14,8 @@ public:
     Way();
     Way(std::string id);
     void addRef(Node* ref);
-    std::string toString();
     std::vector<Node*> nodes;
+    std::string toString();
 };
 
 #endif // WAY

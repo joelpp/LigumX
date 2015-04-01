@@ -12,3 +12,7 @@ Relation::Relation(std::string id){
 void Relation::addMember(std::string id){
     members.push_back(id);
 }
+
+std::string Relation::toString(){
+    return "Unimplemented method :(";
+}

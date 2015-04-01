@@ -28,7 +28,7 @@ public:
     void loadXML(std::string path);
     void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions);
     GLFWwindow* pWindow;
-
+    OSMElement* findClosestElement(glm::vec2 xy);
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
@@ -76,13 +76,14 @@ public:
     Camera* camera;
     bool draggingCamera;
     glm::vec2 oldMousePosition;
-
+    glm::vec2 windowPosToWorldPos(glm::vec2 ij);
     // data
     std::unordered_map<std::string, Node*> theNodes;
     std::unordered_map<std::string, Way*> theWays;
 
     // debug stuff
-    bool showWhat = true;
+    bool showWhat;
+    std::string selectedNode;
 
 };
 

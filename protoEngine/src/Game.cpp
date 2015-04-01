@@ -12,7 +12,7 @@
                     x;\
                     auto end = std::chrono::high_resolution_clock::now();\
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
-
+#define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
 using namespace glm;
 using namespace std;
 
@@ -45,8 +45,8 @@ void Game::init()
     camera->translateTo(vec2(0,0));
     camera->setViewSize(1);
     draggingCamera = false;
-
-
+    showWhat = true;
+    selectedNode = "none";
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
@@ -70,6 +70,7 @@ void Game::init()
 
     // create GLFW window
     pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
+    glfwSetWindowPos(pWindow, 700, 200);
     glfwMakeContextCurrent(pWindow);
     if( pWindow == NULL )
     {
@@ -115,6 +116,7 @@ void Game::init()
     vector<vec2> roadsPositions;
 
     TIME(loadXML("../data/result.xml"));
+    camera->position = viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f;
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 
 
@@ -270,7 +272,6 @@ void Game::mainLoop()
     camera->moveFromUserInput(pWindow);
 
     glClear(GL_COLOR_BUFFER_BIT);
-
     if(showWhat) {
         // draw lines
         pPipelineLines->usePipeline();
@@ -329,7 +330,17 @@ void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*
 void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
     // Left-click
-    if (button == GLFW_MOUSE_BUTTON_1){
+    if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
+        double x,y;
+        glfwGetCursorPos(pWindow, &x, &y);
+        vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
+        PRINTVEC2(worldPos);
+        PRINTVEC2(game->camera->position);
+        TIME(OSMElement* closest = game->findClosestElement(worldPos);)
+//        cout << closest->toString() << "\n\n";
+    }
+    //Right Click
+    else if (button == GLFW_MOUSE_BUTTON_2){
         if (action == GLFW_PRESS){
             game->draggingCamera = true;
             double x; double y;
@@ -339,10 +350,6 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         else if (action == GLFW_RELEASE){
             game->draggingCamera = false;
         }
-    }
-    //Right Click
-    else if (button == GLFW_MOUSE_BUTTON_2){
-        game->camera->translateTo(vec2(0,0));
     }
 
 
@@ -381,8 +388,8 @@ void Game::loadXML(string path){
             std::getline(ss, token, ','); viewRectRight = atof(token.c_str());
             std::getline(ss, token, ','); viewRectTop = atof(token.c_str());
 
-            viewRectBottomLeft = vec2(viewRectLeft, viewRectBottom);
-            viewRectTopRight = vec2(viewRectRight, viewRectTop);
+            viewRectBottomLeft = vec2(viewRectBottom, viewRectLeft);
+            viewRectTopRight = vec2(viewRectTop, viewRectRight);
             viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
         }
         if (string(child->Value()).compare("node") == 0){
@@ -422,7 +429,7 @@ void Game::loadXML(string path){
         }
         else if (string(child->Value()).compare("relation") == 0){
             string id = child->ToElement()->FindAttribute("id")->Value();
-            Relation *relation = new Relation(id);
+//            Relation *relation = new Relation(id);
 
             for (tinyxml2::XMLNode* relation_child = child->FirstChildElement(); relation_child != NULL; relation_child = relation_child->NextSiblingElement()){
                 if (string(relation_child->Value()).compare("member") == 0){
@@ -470,9 +477,8 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
 
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
-            point = vec2(node->latitude, node->longitude);
-            point = (point - viewRectBottomLeft)/viewRectVecDiago;
-            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+            point = vec2(node->longitude, node->latitude);
+
 
             if (!first){
                 waysNodesPositions->push_back(oldPoint);
@@ -520,4 +526,42 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
             firstVertexForThisRoad += nbVertexForThisRoad;
         }
     }
+}
+
+OSMElement* Game::findClosestElement(vec2 xy){
+    OSMElement* closest;
+    double bestDist = 99999;
+    for ( auto it = theNodes.begin(); it != theNodes.end(); ++it ){
+        Node* n = it->second;
+
+        //This will go when we properly deal with element's positions
+        vec2 point = vec2(n->longitude, n->latitude);
+
+        double dist = glm::distance(point, xy);
+
+        if (dist < bestDist){
+            closest = n;
+            bestDist = dist;
+        }
+    }
+    return closest;
+}
+
+vec2 Game::windowPosToWorldPos(vec2 ij){
+    //if viewsize == x, you see between -x and x
+    //Find position according to the window, between -1 and 1
+    vec2 relativeToWindow;
+    relativeToWindow.x = 2*(ij.x / windowWidth)-1;
+    relativeToWindow.y = 2*(ij.y / windowHeight)-1;
+
+    //Required because maps have y going up while the screen has y going down
+    relativeToWindow.y *= -1;
+
+    //World position is then the camera position + the relative
+    //widnow position, scaled by the viewsize.
+    vec2 worldPos;
+    worldPos = camera->position + relativeToWindow * camera->viewSize;
+
+    return worldPos;
+
 }
