@@ -13,6 +13,9 @@
                     auto end = std::chrono::high_resolution_clock::now();\
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
 #define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
+#define PRINTFLOAT(f) std::cout << #f << ": x=" << f << "\n";
+#define PRINTELEMENT(e) std::cout << e->toString() << "\n";
+
 using namespace glm;
 using namespace std;
 
@@ -43,7 +46,7 @@ void Game::init()
 
     camera = new Camera();
     camera->translateTo(vec2(0,0));
-    camera->setViewSize(1);
+    camera->setViewSize(0.03);
     draggingCamera = false;
     showWhat = true;
     selectedNode = "none";
@@ -116,7 +119,7 @@ void Game::init()
     vector<vec2> roadsPositions;
 
     TIME(loadXML("../data/result.xml"));
-    camera->position = viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f;
+    camera->translateTo(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f);
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 
 
@@ -270,7 +273,6 @@ void Game::init()
 void Game::mainLoop()
 {
     camera->moveFromUserInput(pWindow);
-
     glClear(GL_COLOR_BUFFER_BIT);
     if(showWhat) {
         // draw lines
@@ -334,10 +336,9 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         double x,y;
         glfwGetCursorPos(pWindow, &x, &y);
         vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
-        PRINTVEC2(worldPos);
-        PRINTVEC2(game->camera->position);
-        TIME(OSMElement* closest = game->findClosestElement(worldPos);)
-//        cout << closest->toString() << "\n\n";
+
+        OSMElement* closest = game->findClosestElement(worldPos);
+        PRINTELEMENT(closest);
     }
     //Right Click
     else if (button == GLFW_MOUSE_BUTTON_2){
@@ -363,7 +364,7 @@ void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double
         vec2 offset = vec2(x,y) - game->oldMousePosition;
         offset.y *= -1; // reversed controls? this should be an option
 
-        game->camera->translateBy(offset/100.f);
+        game->camera->translateBy(offset/1000.f);
 
         game->oldMousePosition = vec2(x,y);
 
@@ -470,7 +471,7 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
         else if (way->hasTagAndValue("highway", "secondary")) color = vec3(0.8,0.8,0.8);
         else if (way->hasTagAndValue("highway", "residential")) color = vec3(0.5,0.5,0.5);
         else if (way->hasTag("building")) color = vec3(0,0,1);
-        else if (way->hasTag("railway")) color = vec3(1,0,1);
+        else if (way->hasTagAndValue("railway","subway")) color = vec3(1,0,1);
         else if (way->hasTag("natural")) color = vec3(0,0.5,0);
         else if (way->hasTagAndValue("leisure", "park")) color = vec3(0,1,0);
         else continue;
@@ -478,7 +479,6 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
             point = vec2(node->longitude, node->latitude);
-
 
             if (!first){
                 waysNodesPositions->push_back(oldPoint);
