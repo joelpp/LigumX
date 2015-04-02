@@ -28,7 +28,13 @@ public:
     void loadXML(std::string path);
     void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions);
     GLFWwindow* pWindow;
-    OSMElement* findClosestElement(glm::vec2 xy);
+    Node* findClosestNode(glm::vec2 xy);
+    Way* findClosestWay(glm::vec2 xy);
+    double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2);
+    bool isInterestingWay(Way* way);
+    void updateSelectedWay(Way* way);
+    void makeTagConverter();
+    glm::vec3 colorFromTags(Way* way);
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
@@ -80,11 +86,18 @@ public:
     // data
     std::unordered_map<std::string, Node*> theNodes;
     std::unordered_map<std::string, Way*> theWays;
+    std::unordered_map<std::string, int> tagConversionTable;
 
     // debug stuff
     bool showWhat;
-    std::string selectedNode;
 
+    struct WaySelection{
+        Way* way;
+        int numberOfBytesBefore;
+        int numberOfBytesToWrite;
+    };
+
+    WaySelection selectedWay;
 };
 
 extern Game* game;
