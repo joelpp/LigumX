@@ -15,6 +15,7 @@
 #include "node.h"
 #include "way.h"
 #include "relation.h"
+#include "Texture.h"
 
 
 class Game {
@@ -26,7 +27,7 @@ public:
     void mainLoop();
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
     void loadXML(std::string path);
-    void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions);
+    void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
     GLFWwindow* pWindow;
 
     // viewing
@@ -61,6 +62,7 @@ public:
     ProgramPipeline* pPipelineLines;
     ProgramPipeline* pPipelineRoads;
     ProgramPipeline* pPipelineScreenQuad;
+    ProgramPipeline* pPipelineBuildings;
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
     ProgramPipeline::ShaderProgram* pGeometryShader2;
@@ -79,6 +81,8 @@ public:
     std::vector<GLsizei> nbVerticesForEachRoad;
     GLuint glidScreenQuadPositions;
     GLuint glidScreenQuadTexCoords;
+    GLuint glidBufferBuildingTriangleVertices;
+    unsigned int nbBuildingTriangles;
 
     // camera
     Camera* camera;
@@ -92,6 +96,7 @@ public:
     // textures
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.
     GLuint glidFramebuffer;
+    Texture* pBuildingTex;
 
     // debug stuff
     bool showWhat = true;

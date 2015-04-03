@@ -14,6 +14,9 @@ public:
     Node();
     Node(std::string id, float latitude, float longitude);
     std::string toString();
+    bool operator == (Node& n) const {
+       return latitude==n.latitude && longitude==n.longitude;
+    }
 };
 
 #endif // NODE
