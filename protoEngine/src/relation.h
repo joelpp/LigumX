@@ -11,6 +11,7 @@ public:
     Relation(std::string id);
 
     void addMember(std::string);
+    std::string toString();
 };
 
 #endif // RELATION

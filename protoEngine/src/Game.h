@@ -29,7 +29,13 @@ public:
     void loadXML(std::string path);
     void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
     GLFWwindow* pWindow;
-
+    Node* findClosestNode(glm::vec2 xy);
+    Way* findClosestWay(glm::vec2 xy);
+    double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2);
+    bool isInterestingWay(Way* way);
+    void updateSelectedWay(Way* way);
+    void makeTagConverter();
+    glm::vec3 colorFromTags(Way* way);
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
@@ -88,10 +94,11 @@ public:
     Camera* camera;
     bool draggingCamera;
     glm::vec2 oldMousePosition;
-
+    glm::vec2 windowPosToWorldPos(glm::vec2 ij);
     // data
     std::unordered_map<std::string, Node*> theNodes;
     std::unordered_map<std::string, Way*> theWays;
+    std::unordered_map<std::string, int> tagConversionTable;
 
     // textures
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.
@@ -99,8 +106,15 @@ public:
     Texture* pBuildingTex;
 
     // debug stuff
-    bool showWhat = true;
+    bool showWhat;
 
+    struct WaySelection{
+        Way* way;
+        int numberOfBytesBefore;
+        int numberOfBytesToWrite;
+    };
+
+    WaySelection selectedWay;
 };
 
 extern Game* game;

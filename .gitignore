@@ -2,3 +2,4 @@
 /protoEngine/libPaths.pri
 /protoEngine/protoEngine.pro.user
 /protoEngine/build
+*.orig

@@ -46,3 +46,6 @@ OTHER_FILES += \
     src/shaders/roads2.gsh \
     src/shaders/roads3.gsh
 
+DISTFILES += \
+    libPaths.pri
+

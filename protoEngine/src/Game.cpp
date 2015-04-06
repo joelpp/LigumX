@@ -14,6 +14,10 @@
                     x;\
                     auto end = std::chrono::high_resolution_clock::now();\
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
+#define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
+#define PRINTFLOAT(f) std::cout << #f << ": x=" << f << "\n";
+#define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
+#define PRINTELEMENT(e) std::cout << e->toString() << "\n";
 
 using namespace glm;
 using namespace std;
@@ -48,10 +52,12 @@ void Game::init()
 
     camera = new Camera();
     camera->translateTo(vec2(0,0));
-    camera->setViewSize(1);
+    camera->setViewSize(0.03);
     draggingCamera = false;
+    showWhat = true;
 
-
+    makeTagConverter();
+    selectedWay.way = NULL;
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
@@ -75,6 +81,7 @@ void Game::init()
 
     // create GLFW window
     pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
+    glfwSetWindowPos(pWindow, 700, 200);
     glfwMakeContextCurrent(pWindow);
     if( pWindow == NULL )
     {
@@ -121,8 +128,8 @@ void Game::init()
     vector<vec2> buildingTrianglePositions;
 
     TIME(loadXML("../data/result.xml"));
-    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
-
+    //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
+    camera->translateTo(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f);    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
 
     //=============================================================================
     // Screen quad data.
@@ -148,7 +155,7 @@ void Game::init()
 
 
     glCreateBuffers(1, &glidWaysColors);
-    glNamedBufferStorage(glidWaysColors, nbWaysVertices * 3 * 4, // nbWaysNodes * vec2 * float
+    glNamedBufferStorage(glidWaysColors, nbWaysVertices * 3 * 4, // nbWaysNodes * vec3 * float
                          NULL,
                          GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                          GL_MAP_WRITE_BIT);
@@ -490,7 +497,6 @@ void Game::init()
 void Game::mainLoop()
 {
     camera->moveFromUserInput(pWindow);
-
     if(showWhat) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -584,7 +590,18 @@ void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*
 void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
     // Left-click
-    if (button == GLFW_MOUSE_BUTTON_1){
+    if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
+        double x,y;
+        glfwGetCursorPos(pWindow, &x, &y);
+        vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
+        int index = 0;
+        Way* closest;
+        TIME(closest = game->findClosestWay(worldPos));
+        TIME(game->updateSelectedWay(closest));
+        PRINTELEMENT(closest);
+    }
+    //Right Click
+    else if (button == GLFW_MOUSE_BUTTON_2){
         if (action == GLFW_PRESS){
             game->draggingCamera = true;
             double x; double y;
@@ -594,10 +611,6 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         else if (action == GLFW_RELEASE){
             game->draggingCamera = false;
         }
-    }
-    //Right Click
-    else if (button == GLFW_MOUSE_BUTTON_2){
-        game->camera->translateTo(vec2(0,0));
     }
 
 
@@ -611,7 +624,7 @@ void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double
         vec2 offset = vec2(x,y) - game->oldMousePosition;
         offset.y *= -1; // reversed controls? this should be an option
 
-        game->camera->translateBy(offset/100.f);
+        game->camera->translateBy(offset/1000.f);
 
         game->oldMousePosition = vec2(x,y);
 
@@ -623,7 +636,6 @@ void Game::loadXML(string path){
     doc.LoadFile(path.c_str());
     tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
     cout << docRoot->Value() << "\n";
-
     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         if (string(child->Value()).compare("bound") == 0){
@@ -636,8 +648,8 @@ void Game::loadXML(string path){
             std::getline(ss, token, ','); viewRectRight = atof(token.c_str());
             std::getline(ss, token, ','); viewRectTop = atof(token.c_str());
 
-            viewRectBottomLeft = vec2(viewRectLeft, viewRectBottom);
-            viewRectTopRight = vec2(viewRectRight, viewRectTop);
+            viewRectBottomLeft = vec2(viewRectBottom, viewRectLeft);
+            viewRectTopRight = vec2(viewRectTop, viewRectRight);
             viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
         }
         if (string(child->Value()).compare("node") == 0){
@@ -673,13 +685,24 @@ void Game::loadXML(string path){
                     string key = way_child->ToElement()->FindAttribute("k")->Value();
                     string value = way_child->ToElement()->FindAttribute("v")->Value();
                     way -> addTag(key, value);
+                    std::unordered_map<std::string,int>::const_iterator got = tagConversionTable.find(key);
+
+                    //EXPERIMENTAL. Not useful as of yet. Replace critical tags with ints
+//                    if ( got == tagConversionTable.end() );
+//                    else {
+//                       got = tagConversionTable.find(value);
+//                       if ( got == tagConversionTable.end() );
+//                       else{
+//                           way->addITag(tagConversionTable[key], tagConversionTable[value]);
+//                       }
+//                    }
                 }
             }
             theWays.emplace(id, way);
         }
         else if (string(child->Value()).compare("relation") == 0){
             string id = child->ToElement()->FindAttribute("id")->Value();
-            Relation *relation = new Relation(id);
+//            Relation *relation = new Relation(id);
 
             for (tinyxml2::XMLNode* relation_child = child->FirstChildElement(); relation_child != NULL; relation_child = relation_child->NextSiblingElement()){
                 if (string(relation_child->Value()).compare("member") == 0){
@@ -703,7 +726,6 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
     bool first;
     bool second;
     vec3 white = vec3(1.0f,1.0f,1.0f);
-
     unsigned int nbSuccessLoops = 0;
     unsigned int nbFailedLoops = 0;
 
@@ -721,21 +743,12 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
                           glm::linearRand(0.5f, 1.0f));
         Way* way = it->second;
 
-        if (way->hasTagAndValue("highway", "trunk")) color = vec3(1,1,1);
-        else if (way->hasTagAndValue("highway", "primary")) color = vec3(0.9,0.9,0.9);
-        else if (way->hasTagAndValue("highway", "secondary")) color = vec3(0.8,0.8,0.8);
-        else if (way->hasTagAndValue("highway", "residential")) color = vec3(0.5,0.5,0.5);
-        else if (way->hasTag("building")) color = vec3(0,0,1);
-        else if (way->hasTag("railway")) color = vec3(1,0,1);
-        else if (way->hasTag("natural")) color = vec3(0,0.5,0);
-        else if (way->hasTagAndValue("leisure", "park")) color = vec3(0,1,0);
-        else continue;
+        color = colorFromTags(way);
+        if (color == vec3(-1,-1,-1)) continue;
 
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
-            point = vec2(node->latitude, node->longitude);
-            point = (point - viewRectBottomLeft)/viewRectVecDiago;
-            point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+            point = vec2(node->longitude, node->latitude);
 
             if (!first){
                 waysNodesPositions->push_back(oldPoint);
@@ -918,4 +931,203 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
 
     cout << "succeeded loops: " << nbSuccessLoops << endl;
     cout << "failed loops: " << nbFailedLoops << endl;
+}
+
+Node* Game::findClosestNode(vec2 xy){
+    Node* closest;
+    double bestDist = 99999;
+    for ( auto it = theNodes.begin(); it != theNodes.end(); ++it ){
+        Node* n = it->second;
+
+        vec2 point = vec2(n->longitude, n->latitude);
+
+        double dist = glm::distance(point, xy);
+
+        if (dist < bestDist){
+            closest = n;
+            bestDist = dist;
+        }
+    }
+    return closest;
+}
+
+Way* Game::findClosestWay(vec2 xy){
+    Way* closest;
+    double bestDist = 99999;
+    int i = 0;
+    //Look at all the ways
+    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+        Way* way = it->second;
+        if (!isInterestingWay(way)) continue;
+        Node* firstNode;
+        Node* secondNode;
+        int counter = 1;
+        bool first = true;
+        vec2 p1, p2;
+
+        //Look at all this way's nodes
+        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
+
+            // Keep first node and continue
+            if (first){
+                firstNode = *nodeIt;
+                first = false;
+                continue;
+            }
+
+            // Prepare next pair by putting the old second in the new first
+            if (counter == 0) firstNode = secondNode;
+            // Look at next pair by looking at new second node
+            else{
+                secondNode = *nodeIt;
+                p1 = vec2(firstNode->longitude, firstNode->latitude);
+                p2 = vec2(secondNode->longitude, secondNode->latitude);
+                double dist = pointLineSegmentDistance(xy, p2, p1);
+                if (dist < bestDist){
+                    closest = way;
+                    bestDist = dist;
+                }
+            }
+
+            //flip-flop
+            counter = (counter + 1) % 2;
+        }
+        i++;
+    }
+    return closest;
+}
+
+vec2 Game::windowPosToWorldPos(vec2 ij){
+    //if viewsize == x, you see between -x and x
+    //Find position according to the window, between -1 and 1
+    vec2 relativeToWindow;
+    relativeToWindow.x = 2*(ij.x / windowWidth)-1;
+    relativeToWindow.y = 2*(ij.y / windowHeight)-1;
+
+    //Required because maps have y going up while the screen has y going down
+    relativeToWindow.y *= -1;
+
+    //World position is then the camera position + the relative
+    //widnow position, scaled by the viewsize.
+    vec2 worldPos;
+    worldPos = camera->position + relativeToWindow * camera->viewSize;
+
+    return worldPos;
+
+}
+
+double Game::pointLineSegmentDistance(vec2 p, vec2 v, vec2 w) {
+  // Return minimum distance between line segment vw and point p
+  const double l2 = glm::length(w-v) * glm::length(w-v);  // i.e. |w-v|^2 -  avoid a sqrt
+  if (l2 == 0.0) return glm::distance(p, v);   // v == w case
+  // Consider the line extending the segment, parameterized as v + t (w - v).
+  // We find projection of point p onto the line.
+  // It falls where t = [(p-v) . (w-v)] / |w-v|^2
+  const double t = glm::dot(p - v, w - v) / l2;
+  if (t < 0.0) return glm::distance(p, v);       // Beyond the 'v' end of the segment
+  else if (t > 1.0) return glm::distance(p, w);  // Beyond the 'w' end of the segment
+  const vec2 projection = v + (vec2(t,t) * (w - v));  // Projection falls on the segment
+  return glm::distance(p, projection);
+}
+
+/**
+ * @brief Game::isInterestingWay
+ * @param The way to look at
+ * @return Whether this way has tags ans values we're looking for
+ */
+bool Game::isInterestingWay(Way* way){
+    return (way->hasTag("building") ||
+            way->hasTagAndValue("highway", "trunk") ||
+            way->hasTagAndValue("highway", "primary") ||
+            way->hasTagAndValue("highway", "secondary") ||
+            way->hasTagAndValue("highway", "tertiary") ||
+            way->hasTagAndValue("highway", "residential") ||
+            way->hasTagAndValue("railway", "subway") ||
+            way->hasTagAndValue("leisure", "park") ||
+            way->hasTag("natural"));
+
+//EXPERIMENTAL. for when we'll want to increase performance and use ints for quick tag checking.
+//    return (way->hasITag(1) ||
+//            way->hasITagAndValue(0, 0) ||
+//            way->hasITagAndValue(0, 1) ||
+//            way->hasITagAndValue(0, 2) ||
+//            way->hasITagAndValue(0, 3) ||
+//            way->hasITagAndValue(0, 4) ||
+//            way->hasITagAndValue(4, 0) ||
+//            way->hasITagAndValue(2, 0) ||
+//            way->hasITag(3));
+}
+
+//EXPERIMENTAL. for when we'll want to increase performance and use ints for quick tag checking.
+void Game::makeTagConverter(){
+    cout << "hef";
+    tagConversionTable.emplace("highway", 0);
+    tagConversionTable.emplace("trunk", 0);
+    tagConversionTable.emplace("primary", 1);
+    tagConversionTable.emplace("secondary", 2);
+    tagConversionTable.emplace("tertiary", 3);
+    tagConversionTable.emplace("residential", 4);
+    tagConversionTable.emplace("building", 1);
+    tagConversionTable.emplace("leisure", 2);
+    tagConversionTable.emplace("park", 0);
+    tagConversionTable.emplace("natural", 3);
+    tagConversionTable.emplace("railway", 4);
+    tagConversionTable.emplace("subway", 0);
+
+}
+
+
+void Game::updateSelectedWay(Way* myWay){ //or the highway
+
+    if (selectedWay.way != NULL){
+        vector<vec3> toWrite;
+
+        for (int i = 0; i < (selectedWay.way->nodes.size() * 2) - 2; i++) toWrite.push_back(colorFromTags(selectedWay.way));
+
+        // push it to the buffer
+        glNamedBufferSubData(glidWaysColors, selectedWay.numberOfBytesBefore, selectedWay.numberOfBytesToWrite, toWrite.data());
+
+    }
+
+    // Figure out how many bytes into the buffer we have to start writing
+    int numberOfBytesBefore = 0;
+    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+        Way* way = it->second;
+
+        if (!isInterestingWay(way)) continue;
+        // If we havent yet reached the way we're looking for, add the current way's number of nodes to the offset
+        // Each color was pushed twice per node, except for the first and last which accounted for 1 push (so * 2 - 2)
+        if (way != myWay) numberOfBytesBefore += way->nodes.size() * 2 - 2;
+        // we found our way! get out.
+        else break;
+    }
+    //Offset is thus numberOfNodesBefore * sizeof(vec3) * sizeof(float)
+    numberOfBytesBefore *= 3 * 4;
+
+    // We want to write as many vec3's as there are nodes (-1) in the way
+    int numberOfBytesToWrite = (myWay->nodes.size()*2 - 2 ) * 3 * 4;
+
+    //Create the data to write
+    vector<vec3> toWrite;
+    for (int i = 0; i < (myWay->nodes.size() * 2) - 2; i++) toWrite.push_back(vec3(1.f,1.f,1.f));
+
+    // push it to the buffer
+    glNamedBufferSubData(glidWaysColors, numberOfBytesBefore, numberOfBytesToWrite, toWrite.data());
+
+    selectedWay.way = myWay;
+    selectedWay.numberOfBytesBefore = numberOfBytesBefore;
+    selectedWay.numberOfBytesToWrite = numberOfBytesToWrite;
+}
+
+vec3 Game::colorFromTags(Way* way){
+    if (way->hasTagAndValue("highway", "trunk")) return vec3(1,1,1);
+    else if (way->hasTagAndValue("highway", "primary")) return vec3(0.8,0.8,0.8);
+    else if (way->hasTagAndValue("highway", "secondary")) return vec3(0.7,0.7,0.7);
+    else if (way->hasTagAndValue("highway", "tertiary")) return vec3(0.6,0.6,0.6);
+    else if (way->hasTagAndValue("highway", "residential")) return vec3(0.5,0.5,0.5);
+    else if (way->hasTag("building")) return vec3(0,0,1);
+    else if (way->hasTagAndValue("railway","subway")) return vec3(1,0,1);
+    else if (way->hasTag("natural")) return vec3(0,0.5,0);
+    else if (way->hasTagAndValue("leisure", "park")) return vec3(0,1,0);
+    else return vec3(-1,-1,-1);
 }
