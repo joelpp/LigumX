@@ -836,9 +836,12 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
                     Node* n1 = *(nodeIt1);
                     Node* n2 = *(nodeIt2);
                     Node* n3 = *(nodeIt3);
-                    vec2 p1 = vec2(n1->latitude, n1->longitude);
-                    vec2 p2 = vec2(n2->latitude, n2->longitude);
-                    vec2 p3 = vec2(n3->latitude, n3->longitude);
+//                    vec2 p1 = vec2(n1->latitude, n1->longitude);
+//                    vec2 p2 = vec2(n2->latitude, n2->longitude);
+//                    vec2 p3 = vec2(n3->latitude, n3->longitude);
+                    vec2 p1 = vec2(n1->longitude, n1->latitude);
+                    vec2 p2 = vec2(n2->longitude, n2->latitude);
+                    vec2 p3 = vec2(n3->longitude, n3->latitude);
                     if(p1==p2 || p1==p3) cout << "bad precision" << endl;
                     vec2 v12 = p2 - p1;
                     vec2 v13 = p3 - p1;
@@ -854,7 +857,8 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
                         // make sure it doesn't include another active node
                         for(Node* node : loopNodes) {
                             if(node == n1 || node == n2 || node == n3) continue;
-                            vec3 n_3D = vec3(node->latitude, node->longitude, 0);
+                            //vec3 n_3D = vec3(node->latitude, node->longitude, 0);
+                            vec3 n_3D = vec3(node->longitude, node->latitude, 0);
                             if(clockwiseness * glm::cross(v12_3D, n_3D - vec3(p1.x, p1.y, 0)).z > 0.f &&
                                clockwiseness * glm::cross(v23_3D, n_3D - vec3(p2.x, p2.y, 0)).z > 0.f &&
                                clockwiseness * glm::cross(v31_3D, n_3D - vec3(p3.x, p3.y, 0)).z > 0.f ) {
@@ -865,21 +869,27 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
                     }
                     if(isGoodTriangle) {
                         // create triangle
-                        vec2 p1 = vec2(n1->latitude, n1->longitude);
-                        vec2 p2 = vec2(n2->latitude, n2->longitude);
-                        vec2 p3 = vec2(n3->latitude, n3->longitude);
+//                        vec2 p1 = vec2(n1->latitude, n1->longitude);
+//                        vec2 p2 = vec2(n2->latitude, n2->longitude);
+//                        vec2 p3 = vec2(n3->latitude, n3->longitude);
+                        vec2 p1 = vec2(n1->longitude, n1->latitude);
+                        vec2 p2 = vec2(n2->longitude, n2->latitude);
+                        vec2 p3 = vec2(n3->longitude, n3->latitude);
 
                         vec2 point;
-                        point = (p1 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+                        //point = (p1 - viewRectBottomLeft)/viewRectVecDiago;
+                        point = p1;
+//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
                         //buildingTrianglePositions->push_back(point);
                         tempTriangleVertices.push_back(point);
-                        point = (p2 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+//                        point = (p2 - viewRectBottomLeft)/viewRectVecDiago;
+                        point = p2;
+//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
 //                        buildingTrianglePositions->push_back(point);
                         tempTriangleVertices.push_back(point);
-                        point = (p3 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
+//                        point = (p3 - viewRectBottomLeft)/viewRectVecDiago;
+                        point = p3;
+//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
 //                        buildingTrianglePositions->push_back(point);
                         tempTriangleVertices.push_back(point);
 

@@ -17,7 +17,7 @@ out gl_PerVertex
 
 void main() {
 
-    float streetWidth = 0.005;
+    float streetWidth = 0.0001;
 
     // generate primitives
     vec2 p;

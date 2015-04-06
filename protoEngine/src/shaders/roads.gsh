@@ -17,7 +17,7 @@ out vec2 gTexCoord;
 
 void main() {
 
-    float streetWidth = 0.005;
+    float streetWidth = 0.0001;
 
     // find intersection point with previous line
     vec2 v2 = normalize((gl_in[2].gl_Position - gl_in[1].gl_Position).xy);
