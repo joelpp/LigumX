@@ -2,7 +2,11 @@
 #define OSMELEMENT
 #include <string>
 #include <unordered_map>
+
+#include "common.h"
 #include "filter.h"
+
+
 class OSMElement{
 protected:
 
@@ -48,7 +52,6 @@ public:
     virtual std::string toString() = 0;
 
     std::vector<OSMElement*> parents;
-
 };
 
 

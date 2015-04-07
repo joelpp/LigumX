@@ -2,22 +2,23 @@
 #define GAME_H
 
 #include "GL/glew.h"
-#include <glfw/glfw3.h>
-#include "stdarg.h"
+#include <GLFW/glfw3.h>
 
+#include <cstdarg>
 #include <string>
 #include <unordered_map>
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
 #include "AntTweakBar.h"
 
-#include "ProgramPipeline.h"
+#include "program_pipeline.h"
 #include "camera.h"
-#include "OSMElement.h"
+#include "osm_element.h"
 #include "node.h"
 #include "way.h"
 #include "relation.h"
-#include "Texture.h"
+#include "texture.h"
+#include "filter.h"
 
 
 class Game {
@@ -97,14 +98,12 @@ public:
     bool draggingCamera;
     glm::vec2 oldMousePosition;
     glm::vec2 windowPosToWorldPos(glm::vec2 ij);
-
     // data
     std::unordered_map<std::string, Node*> theNodes;
     std::unordered_map<std::string, Way*> theWays;
     std::unordered_map<std::string, Relation*> theRelations;
 
     std::unordered_map<std::string, int> tagConversionTable;
-
 
     // textures
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.

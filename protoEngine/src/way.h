@@ -2,7 +2,7 @@
 #define WAY_H
 
 #include "node.h"
-#include "OSMElement.h"
+#include "osm_element.h"
 #include <vector>
 #include <string>
 

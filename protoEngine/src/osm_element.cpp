@@ -1,5 +1,6 @@
-#include "OSMElement.h"
 #include <iostream>
+#include "osm_element.h"
+
 bool OSMElement::hasTag(std::string tag){
 
         std::unordered_map<std::string,std::string>::const_iterator got = tags.find(tag);

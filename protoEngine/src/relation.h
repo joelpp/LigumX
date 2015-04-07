@@ -1,7 +1,9 @@
 #ifndef RELATION
 #define RELATION
 #include <vector>
-#include "OSMElement.h"
+#include "osm_element.h"
+
+
 class Relation: public OSMElement{
 private:
 

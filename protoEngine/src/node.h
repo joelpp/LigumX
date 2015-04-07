@@ -2,7 +2,7 @@
 #define NODE_H
 #include <string>
 #include <unordered_map>
-#include "OSMElement.h"
+#include "osm_element.h"
 
 class Node: public OSMElement{
 private:

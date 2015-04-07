@@ -1,5 +1,5 @@
-#include "ProgramPipeline.h"
-#include "Game.h"
+#include "program_pipeline.h"
+#include "game.h"
 #include <fstream>
 #include <iostream>
 

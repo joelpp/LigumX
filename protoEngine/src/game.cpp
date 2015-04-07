@@ -1,14 +1,15 @@
-#include "Game.h"
 #include <sstream>
 #include <fstream>
 #include <unordered_map>
-#include <glm/gtc/random.hpp>
 #include <iostream>
-#include "glm/gtc/type_ptr.hpp"
 #include <typeinfo>
 #include <chrono>
+
+#include "glm/gtc/random.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
-#include "Texture.h"
+#include "game.h"
+#include "texture.h"
 
 
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
@@ -209,7 +210,6 @@ void Game::init()
                          GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                          GL_MAP_WRITE_BIT);
     glNamedBufferSubData(glidBufferBuildingTriangleVertices, 0, nbBuildingTriangles * 2 * 4, buildingTrianglePositions.data());
-
 
     //=============================================================================
     // Textures, framebuffer, renderbuffer
@@ -719,7 +719,6 @@ void Game::loadXML(string path){
             else way->selectable = false;
             theWays.emplace(id, way);
         }
-
         else if (string(child->Value()).compare("relation") == 0){
             string id = child->ToElement()->FindAttribute("id")->Value();
             Relation *relation = new Relation(id);
