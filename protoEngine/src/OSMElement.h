@@ -7,21 +7,31 @@ class OSMElement{
 protected:
 
 public:
-    enum tag_value { HIGHWAY_TRUNK = 0 << 1,
-                     HIGHWAY_PRIMARY = 1 << 1,
-                     HIGHWAY_SECONDARY = 2 << 1,
-                     HIGHWAY_TERTIARY = 3 << 1,
-                     HIGHWAY_RESIDENTIAL = 4 << 1,
-                     HIGHWAY_SERVICE = 5 << 1,
-                     CONTOUR = 6 << 1,
-                     BUILDING = 7 << 1,
-                     LEISURE_PARK = 8 << 1,
-                     NATURAL_WOOD = 9 << 1,
-                     RAILWAY_SUBWAY = 10 << 1 };
+
+    enum ElementType { HIGHWAY_TRUNK = 1 << 0,
+                       HIGHWAY_PRIMARY = 1 << 1,
+                       HIGHWAY_SECONDARY = 1 << 2,
+                       HIGHWAY_TERTIARY = 1 << 3,
+                       HIGHWAY_RESIDENTIAL = 1 << 4,
+                       HIGHWAY_SERVICE = 1 << 5,
+
+                       CONTOUR = 1 << 6,
+
+                       BUILDING_UNMARKED = 1 << 7,
+                       BUILDING_SCHOOL = 1 << 8,
+
+                       LEISURE_PARK = 1 << 9,
+                       NATURAL_WOOD = 1 << 10,
+
+                       RAILWAY_SUBWAY = 1 << 11,
+
+                       NOT_IMPLEMENTED = 1 << 12,
+                       ANY_TYPE = 1 << 13} ;
 
     std::unordered_map<std::string, std::string> tags;
     std::unordered_map<int, int> itags;
 
+    ElementType eType;
     std::string id;
 
     OSMElement(){};
@@ -38,6 +48,7 @@ public:
     virtual std::string toString() = 0;
 
     std::vector<OSMElement*> parents;
+
 };
 
 

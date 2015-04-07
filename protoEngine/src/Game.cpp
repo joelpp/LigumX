@@ -19,6 +19,9 @@
 #define PRINTFLOAT(f) std::cout << #f << ": x=" << f << "\n";
 #define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
 #define PRINTELEMENT(e) std::cout << e->toString() << "\n";
+#define PRINTELEMENTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
+                              for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_]->toString() << "\n";
+
 #define string_pair std::pair<std::string,std::string>
 
 using namespace glm;
@@ -61,7 +64,6 @@ void Game::init()
     draggingCamera = false;
     showWhat = true;
 
-    makeTagConverter();
     selectedWay.way = NULL;
 
     //=============================================================================
@@ -614,13 +616,14 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         glfwGetCursorPos(pWindow, &x, &y);
         vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
         int index = 0;
-        Way* closest;
+        std::vector<Way*> closests;
 
-        Filter filter = Filter(3,string_pair("highway","secondary"),string_pair("highway", "tertiary"),string_pair("leisure","park"));
-        TIME(closest = game->findClosestWay(worldPos, filter));
-        if (closest == NULL) return;
-        TIME(game->updateSelectedWay(closest));
-        PRINTELEMENT(closest);
+        int filter = OSMElement::CONTOUR;
+        TIME(closests = game->findClosestWay(worldPos, filter));
+
+        if (closests[0] == NULL) return;
+        TIME(game->updateSelectedWay(closests[0]));
+        PRINTELEMENTVECTOR(closests);
     }
     //Right Click
     else if (button == GLFW_MOUSE_BUTTON_2){
@@ -697,7 +700,7 @@ void Game::loadXML(string path){
 //            cout << "Looking at a way \n";
             string id = child->ToElement()->FindAttribute("id")->Value();
             Way* way = new Way(id);
-
+            way->eType = OSMElement::NOT_IMPLEMENTED;
             for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
                 if (string(way_child->Value()).compare("nd") == 0){
                     string ref = way_child->ToElement()->FindAttribute("ref")->Value();
@@ -707,24 +710,16 @@ void Game::loadXML(string path){
                     string key = way_child->ToElement()->FindAttribute("k")->Value();
                     string value = way_child->ToElement()->FindAttribute("v")->Value();
                     way -> addTag(key, value);
-                    //EXPERIMENTAL. Not useful as of yet. Replace critical tags with ints
 
-//                    std::unordered_map<std::string,int>::const_iterator got = tagConversionTable.find(key);
-
-//                    if ( got == tagConversionTable.end() );
-//                    else {
-//                       got = tagConversionTable.find(value);
-//                       if ( got == tagConversionTable.end() );
-//                       else{
-//                           way->addITag(tagConversionTable[key], tagConversionTable[value]);
-//                       }
-//                    }
+                    OSMElement::ElementType eType = typeFromStrings(key, value);
+                    if (eType != OSMElement::NOT_IMPLEMENTED) way->eType = eType;
                 }
             }
             if (isInterestingWay(way)) way->selectable = true;
             else way->selectable = false;
             theWays.emplace(id, way);
         }
+
         else if (string(child->Value()).compare("relation") == 0){
             string id = child->ToElement()->FindAttribute("id")->Value();
             Relation *relation = new Relation(id);
@@ -994,16 +989,30 @@ Node* Game::findClosestNode(vec2 xy){
     return closest;
 }
 
-Way* Game::findClosestWay(vec2 xy, Filter filter){
+std::vector<Way*> Game::findClosestWay(vec2 xy, int filter){
     Way* closest = NULL;
+    std::vector<Way*> closests;
+    int n = 2;
+    std::vector<double> bestDists;
+
+    for (int i = 0; i < n; i++){
+        bestDists.push_back(99999);
+        closests.push_back(NULL);
+    }
+
     double bestDist = 99999;
-    int i = 0;
     //Look at all the ways
     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
         Way* way = it->second;
-        if (!way->selectable) continue;
+//        if (!way->selectable) continue;
 
-        if (!way->passesFilter(filter)) continue;
+        // This way's type not yet implemented :( get to it!
+        if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
+
+        // A specific filter has been chosen. Check if this way passes it!
+        if (filter != OSMElement::ANY_TYPE)
+            if ((way->eType & filter) == 0) continue;
+
         Node* firstNode;
         Node* secondNode;
         int counter = 1;
@@ -1032,14 +1041,45 @@ Way* Game::findClosestWay(vec2 xy, Filter filter){
                     closest = way;
                     bestDist = dist;
                 }
+
+                //Iterate over all current closest list, from closest to farthest
+                for (int i = 0; i < n; i++){
+
+                    // Has the current way already been IDed as a nth "closest"?
+                    // Also has a better distance already been found for this way? if so get out
+                    if (closests[i] == way && bestDists[i] < dist) break;
+
+                    // Otherwise, we found a smaller distance (the way may have been seen or not)
+                    if (dist < bestDists[i]){
+
+                        // If we've seen the way before, just update the distance
+                        if (closests[i] == way){
+                            //update the current smallest distance
+                            bestDists[i] = dist;
+                        }
+                        // else, the way hasn't been seen before. Current dist is best for this way.
+                        else{
+                            // Move everything behind this element farther by 1
+                            for (int j = n-1; j > i; j--){
+                                bestDists[j] = bestDists[j-1];
+                                closests[j] = closests[j-1];
+                            }
+
+                            // Keep the way and the distance.
+                            bestDists[i] = dist;
+                            closests[i] = way;
+                        }
+
+                        break; //get out! you don't want to keep going in the array.
+                    }
+                }
             }
 
             //flip-flop
             counter = (counter + 1) % 2;
         }
-        i++;
     }
-    return closest;
+    return closests;
 }
 
 vec2 Game::windowPosToWorldPos(vec2 ij){
@@ -1105,20 +1145,29 @@ bool Game::isInterestingWay(Way* way){
 }
 
 //EXPERIMENTAL. for when we'll want to increase performance and use ints for quick tag checking.
-void Game::makeTagConverter(){
-    cout << "hef";
-    tagConversionTable.emplace("highway", 0);
-    tagConversionTable.emplace("trunk", 0);
-    tagConversionTable.emplace("primary", 1);
-    tagConversionTable.emplace("secondary", 2);
-    tagConversionTable.emplace("tertiary", 3);
-    tagConversionTable.emplace("residential", 4);
-    tagConversionTable.emplace("building", 1);
-    tagConversionTable.emplace("leisure", 2);
-    tagConversionTable.emplace("park", 0);
-    tagConversionTable.emplace("natural", 3);
-    tagConversionTable.emplace("railway", 4);
-    tagConversionTable.emplace("subway", 0);
+OSMElement::ElementType Game::typeFromStrings(string key, string value){
+
+    if (key.compare("highway") == 0){
+        if (value.compare("trunk") == 0) return OSMElement::HIGHWAY_TRUNK;
+        else if (value.compare("primary") == 0) return OSMElement::HIGHWAY_PRIMARY;
+        else if (value.compare("secondary") == 0) return OSMElement::HIGHWAY_SECONDARY;
+        else if (value.compare("tertiary") == 0) return OSMElement::HIGHWAY_TERTIARY;
+        else if (value.compare("residential") == 0) return OSMElement::HIGHWAY_RESIDENTIAL;
+//        if (value.compare("service") == 0) return OSMElement::HIGHWAY_SERVICE;
+    }
+    else if (key.compare("natural") == 0){
+        if (value.compare("wood") == 0) return OSMElement::NATURAL_WOOD;
+    }
+    else if (key.compare("building") == 0){
+        if (value.compare("yes") == 0) return OSMElement::BUILDING_UNMARKED;
+        else if (value.compare("school") == 0) return OSMElement::BUILDING_SCHOOL;
+    }
+    else if (key.compare("contour") == 0) return OSMElement::CONTOUR;
+    else if (key.compare("leisure") == 0){
+        if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
+    }
+
+    return OSMElement::NOT_IMPLEMENTED;
 
 }
 
@@ -1140,7 +1189,9 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
         Way* way = it->second;
 
-        if (!way->selectable) continue;
+//        if (!way->selectable) continue;
+        if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
+
         // If we havent yet reached the way we're looking for, add the current way's number of nodes to the offset
         // Each color was pushed twice per node, except for the first and last which accounted for 1 push (so * 2 - 2)
         if (way != myWay) numberOfBytesBefore += way->nodes.size() * 2 - 2;
@@ -1166,16 +1217,17 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
 }
 
 vec3 Game::colorFromTags(Way* way){
-    if (way->hasTagAndValue("highway", "trunk")) return vec3(1,1,1);
-    else if (way->hasTagAndValue("highway", "primary")) return vec3(0.8,0.8,0.8);
-    else if (way->hasTagAndValue("highway", "secondary")) return vec3(0.7,0.7,0.7);
-    else if (way->hasTagAndValue("highway", "tertiary")) return vec3(0.6,0.6,0.6);
-    else if (way->hasTagAndValue("highway", "residential")) return vec3(0.5,0.5,0.5);
-    else if (way->hasTag("building")) return vec3(0,0,1);
-    else if (way->hasTagAndValue("railway","subway")) return vec3(1,0,1);
-    else if (way->hasTag("natural")) return vec3(0,0.5,0);
-    else if (way->hasTagAndValue("leisure", "park")) return vec3(0,1,0);
-    else if (way->hasTag("contour")) return vec3(0.3,0.3,0.3);
+    if (way->eType == OSMElement::HIGHWAY_TRUNK) return vec3(1,1,1);
+    else if (way->eType == OSMElement::HIGHWAY_PRIMARY) return vec3(0.8,0.8,0.8);
+    else if (way->eType == OSMElement::HIGHWAY_SECONDARY) return vec3(0.7,0.7,0.7);
+    else if (way->eType == OSMElement::HIGHWAY_TERTIARY) return vec3(0.6,0.6,0.6);
+    else if (way->eType == OSMElement::HIGHWAY_RESIDENTIAL) return vec3(0.5,0.5,0.5);
+    else if (way->eType == OSMElement::BUILDING_UNMARKED) return vec3(0,0,1);
+    else if (way->eType == OSMElement::BUILDING_SCHOOL) return vec3(0,0,1);
+    else if (way->eType == OSMElement::RAILWAY_SUBWAY) return vec3(1,0,1);
+    else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
+    else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
+    else if (way->eType == OSMElement::CONTOUR) return vec3(0.3,0.3,0.3);
 
     else return vec3(-1,-1,-1);
 }
