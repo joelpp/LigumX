@@ -3,11 +3,13 @@
 
 #include "GL/glew.h"
 #include <glfw/glfw3.h>
+#include "stdarg.h"
 
 #include <string>
 #include <unordered_map>
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
+#include "AntTweakBar.h"
 
 #include "ProgramPipeline.h"
 #include "camera.h"
@@ -16,6 +18,7 @@
 #include "way.h"
 #include "relation.h"
 #include "Texture.h"
+#include "filter.h"
 
 
 class Game {
@@ -30,7 +33,7 @@ public:
     void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
     GLFWwindow* pWindow;
     Node* findClosestNode(glm::vec2 xy);
-    Way* findClosestWay(glm::vec2 xy);
+    Way* findClosestWay(glm::vec2 xy, Filter filter);
     double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2);
     bool isInterestingWay(Way* way);
     void updateSelectedWay(Way* way);
@@ -98,6 +101,8 @@ public:
     // data
     std::unordered_map<std::string, Node*> theNodes;
     std::unordered_map<std::string, Way*> theWays;
+    std::unordered_map<std::string, Relation*> theRelations;
+
     std::unordered_map<std::string, int> tagConversionTable;
 
     // textures
@@ -106,8 +111,9 @@ public:
     Texture* pBuildingTex;
 
     // debug stuff
-    bool showWhat;
 
+    bool showWhat;
+    TwBar *myBar;
     struct WaySelection{
         Way* way;
         int numberOfBytesBefore;

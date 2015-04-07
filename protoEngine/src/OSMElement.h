@@ -2,6 +2,7 @@
 #define OSMELEMENT
 #include <string>
 #include <unordered_map>
+#include "filter.h"
 class OSMElement{
 protected:
 
@@ -20,8 +21,11 @@ public:
 
     bool hasTagAndValue(std::string key, std::string value);
     bool hasITagAndValue(int key, int value);
+    bool passesFilter(Filter f);
 
     virtual std::string toString() = 0;
+
+    std::vector<OSMElement*> parents;
 };
 
 

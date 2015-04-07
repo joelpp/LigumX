@@ -3,3 +3,4 @@
 /protoEngine/protoEngine.pro.user
 /protoEngine/build
 *.orig
+/Srtm2Osm/

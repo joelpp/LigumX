@@ -10,6 +10,7 @@
 #include "glm/gtx/string_cast.hpp"
 #include "Texture.h"
 
+
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
                     x;\
                     auto end = std::chrono::high_resolution_clock::now();\
@@ -18,6 +19,7 @@
 #define PRINTFLOAT(f) std::cout << #f << ": x=" << f << "\n";
 #define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
 #define PRINTELEMENT(e) std::cout << e->toString() << "\n";
+#define string_pair std::pair<std::string,std::string>
 
 using namespace glm;
 using namespace std;
@@ -26,13 +28,16 @@ Game* game;
 
 int main()
 {
+
     game = new Game();
     while(game->running) {
         glfwPollEvents();
 
         game->mainLoop();
+
         glfwSwapBuffers(game->pWindow);
     }
+
     glfwTerminate();
     return 0;
 }
@@ -51,13 +56,14 @@ void Game::init()
     windowTitle = "LigumX";
 
     camera = new Camera();
-    camera->translateTo(vec2(0,0));
+    camera->translateTo(vec3(0,0,0));
     camera->setViewSize(0.03);
     draggingCamera = false;
     showWhat = true;
 
     makeTagConverter();
     selectedWay.way = NULL;
+
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
@@ -118,6 +124,15 @@ void Game::init()
 //    glDebugMessageCallback(Game::debugCallback, NULL);
 //    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
+
+    //Initialize AntTweakBar
+    TwInit(TW_OPENGL_CORE, NULL);
+    TwWindowSize(windowWidth, windowHeight);
+
+
+    myBar = TwNewBar("NameOfMyTweakBar");
+    TwAddVarRW(myBar, "showWhat", TW_TYPE_BOOLCPP, &showWhat, NULL);
+
     //=============================================================================
     // Load world data.
     //=============================================================================
@@ -129,7 +144,8 @@ void Game::init()
 
     TIME(loadXML("../data/result.xml"));
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
-    camera->translateTo(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f);    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
+    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0));
+    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
 
     //=============================================================================
     // Screen quad data.
@@ -497,6 +513,7 @@ void Game::init()
 void Game::mainLoop()
 {
     camera->moveFromUserInput(pWindow);
+
     if(showWhat) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -545,6 +562,8 @@ void Game::mainLoop()
 //        glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
         glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
     }
+    TwDraw();
+
 }
 
 
@@ -582,8 +601,8 @@ void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, doub
 
 void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*/, int action, int /*mods*/)
 {
-    if(action == GLFW_PRESS && key == GLFW_KEY_SPACE) {
-         game->showWhat = !game->showWhat;
+    if(action == GLFW_PRESS){
+        if (key == GLFW_KEY_SPACE) { game->showWhat = !game->showWhat; }
     }
 }
 
@@ -596,7 +615,10 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
         int index = 0;
         Way* closest;
-        TIME(closest = game->findClosestWay(worldPos));
+
+        Filter filter = Filter(3,string_pair("highway","secondary"),string_pair("highway", "tertiary"),string_pair("leisure","park"));
+        TIME(closest = game->findClosestWay(worldPos, filter));
+        if (closest == NULL) return;
         TIME(game->updateSelectedWay(closest));
         PRINTELEMENT(closest);
     }
@@ -624,7 +646,7 @@ void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double
         vec2 offset = vec2(x,y) - game->oldMousePosition;
         offset.y *= -1; // reversed controls? this should be an option
 
-        game->camera->translateBy(offset/1000.f);
+        game->camera->translateBy(vec3(offset/1000.f,0));
 
         game->oldMousePosition = vec2(x,y);
 
@@ -698,21 +720,31 @@ void Game::loadXML(string path){
 //                    }
                 }
             }
+            if (isInterestingWay(way)) way->selectable = true;
+            else way->selectable = false;
             theWays.emplace(id, way);
         }
         else if (string(child->Value()).compare("relation") == 0){
             string id = child->ToElement()->FindAttribute("id")->Value();
-//            Relation *relation = new Relation(id);
+            Relation *relation = new Relation(id);
 
             for (tinyxml2::XMLNode* relation_child = child->FirstChildElement(); relation_child != NULL; relation_child = relation_child->NextSiblingElement()){
                 if (string(relation_child->Value()).compare("member") == 0){
                     string type = relation_child->ToElement()->FindAttribute("type")->Value();
-                    string id = relation_child->ToElement()->FindAttribute("ref")->Value();
+                    string elementId = relation_child->ToElement()->FindAttribute("ref")->Value();
+
+                    //Odd. Ucommenting this crashes the program when trying to fill the buffers.
+//                    if (type.compare("node") == 0) relation->addMember(theNodes[elementId]);
+//                    else if (type.compare("way") == 0) relation->addMember(theWays[elementId]);
+//                    else if (type.compare("relation") == 0) relation->addMember(theRelations[elementId]);
+
                 }
                 else if (string(relation_child->Value()).compare("tag") == 0){
                     string key = relation_child->ToElement()->FindAttribute("k")->Value();
                     string value = relation_child->ToElement()->FindAttribute("v")->Value();
+                    relation->addTag(key, value);
                 }
+                theRelations.emplace(id, relation);
             }
 
         }
@@ -961,14 +993,16 @@ Node* Game::findClosestNode(vec2 xy){
     return closest;
 }
 
-Way* Game::findClosestWay(vec2 xy){
-    Way* closest;
+Way* Game::findClosestWay(vec2 xy, Filter filter){
+    Way* closest = NULL;
     double bestDist = 99999;
     int i = 0;
     //Look at all the ways
     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
         Way* way = it->second;
-        if (!isInterestingWay(way)) continue;
+        if (!way->selectable) continue;
+
+        if (!way->passesFilter(filter)) continue;
         Node* firstNode;
         Node* secondNode;
         int counter = 1;
@@ -1020,7 +1054,7 @@ vec2 Game::windowPosToWorldPos(vec2 ij){
     //World position is then the camera position + the relative
     //widnow position, scaled by the viewsize.
     vec2 worldPos;
-    worldPos = camera->position + relativeToWindow * camera->viewSize;
+    worldPos = vec2(camera->position.x,camera->position.y) + relativeToWindow * camera->viewSize;
 
     return worldPos;
 
@@ -1054,7 +1088,8 @@ bool Game::isInterestingWay(Way* way){
             way->hasTagAndValue("highway", "residential") ||
             way->hasTagAndValue("railway", "subway") ||
             way->hasTagAndValue("leisure", "park") ||
-            way->hasTag("natural"));
+            way->hasTag("natural") ||
+            way->hasTag("contour"));
 
 //EXPERIMENTAL. for when we'll want to increase performance and use ints for quick tag checking.
 //    return (way->hasITag(1) ||
@@ -1104,7 +1139,7 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
         Way* way = it->second;
 
-        if (!isInterestingWay(way)) continue;
+        if (!way->selectable) continue;
         // If we havent yet reached the way we're looking for, add the current way's number of nodes to the offset
         // Each color was pushed twice per node, except for the first and last which accounted for 1 push (so * 2 - 2)
         if (way != myWay) numberOfBytesBefore += way->nodes.size() * 2 - 2;
@@ -1139,5 +1174,7 @@ vec3 Game::colorFromTags(Way* way){
     else if (way->hasTagAndValue("railway","subway")) return vec3(1,0,1);
     else if (way->hasTag("natural")) return vec3(0,0.5,0);
     else if (way->hasTagAndValue("leisure", "park")) return vec3(0,1,0);
+    else if (way->hasTag("contour")) return vec3(0.3,0.3,0.3);
+
     else return vec3(-1,-1,-1);
 }

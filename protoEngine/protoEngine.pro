@@ -12,11 +12,14 @@ INCLUDEPATH += \
     $$GLM_INCLUDEPATH \
     $$TINYXML2_INCLUDEPATH \
     $$FREEIMAGE_INCLUDEPATH \
+    $$ANTTWEAKBAR_INCLUDEPATH
 
 LIBS += -L$$OPENGL_LIBPATH -L$$OPENGL_DLLPATH -lopengl32
 LIBS += -L$$GLFW_LIBPATH -L$$GLFW_DLLPATH -lglfw3dll
 LIBS += -L$$GLEW_LIBPATH -L$$GLEW_DLLPATH -lglew32
 LIBS += -L$$FREEIMAGE_LIBPATH -L$$FREEIMAGE_DLLPATH -lFreeImage
+LIBS += -L$$ANTTWEAKBAR_LIBPATH -L$$ANTTWEAKBAR_DLLPATH -lAntTweakBar
+
 
 SOURCES += \
     src/ProgramPipeline.cpp \
@@ -27,7 +30,8 @@ SOURCES += \
     src/tinyxml2.cpp \
     src/relation.cpp \
     src/OSMElement.cpp \
-    src/Texture.cpp
+    src/Texture.cpp \
+    src/filter.cpp
 
 
 HEADERS += \
@@ -39,7 +43,8 @@ HEADERS += \
     src/Game.h \
     src/relation.h \
     src/OSMElement.h \
-    src/Texture.h
+    src/Texture.h \
+    src/filter.h
 
 OTHER_FILES += \
     src/shaders/roads.gsh \

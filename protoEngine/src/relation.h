@@ -4,14 +4,16 @@
 #include "OSMElement.h"
 class Relation: public OSMElement{
 private:
-    std::vector<std::string> members;
 
 public:
+    std::vector<OSMElement*> members;
+
     Relation();
     Relation(std::string id);
 
-    void addMember(std::string);
+    void addMember(OSMElement* element);
     std::string toString();
+
 };
 
 #endif // RELATION
