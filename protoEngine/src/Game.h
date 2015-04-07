@@ -32,7 +32,7 @@ public:
     void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
     GLFWwindow* pWindow;
     Node* findClosestNode(glm::vec2 xy);
-    std::vector<Way*> findClosestWay(glm::vec2 xy, int filter);
+    std::vector<Way*> Game::findNClosestWays(int n, glm::vec2 xy, int filter);
     double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2);
     bool isInterestingWay(Way* way);
     void updateSelectedWay(Way* way);

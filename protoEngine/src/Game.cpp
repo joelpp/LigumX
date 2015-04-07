@@ -619,7 +619,7 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         std::vector<Way*> closests;
 
         int filter = OSMElement::CONTOUR;
-        TIME(closests = game->findClosestWay(worldPos, filter));
+        TIME(closests = game->findNClosestWays(2, worldPos, filter));
 
         if (closests[0] == NULL) return;
         TIME(game->updateSelectedWay(closests[0]));
@@ -989,10 +989,9 @@ Node* Game::findClosestNode(vec2 xy){
     return closest;
 }
 
-std::vector<Way*> Game::findClosestWay(vec2 xy, int filter){
+std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter){
     Way* closest = NULL;
     std::vector<Way*> closests;
-    int n = 2;
     std::vector<double> bestDists;
 
     for (int i = 0; i < n; i++){
@@ -1047,10 +1046,10 @@ std::vector<Way*> Game::findClosestWay(vec2 xy, int filter){
 
                     // Has the current way already been IDed as a nth "closest"?
                     // Also has a better distance already been found for this way? if so get out
-                    if (closests[i] == way && bestDists[i] < dist) break;
+                    if (closests[i] == way && bestDists[i] <= dist) break;
 
                     // Otherwise, we found a smaller distance (the way may have been seen or not)
-                    if (dist < bestDists[i]){
+                    if (dist <= bestDists[i]){
 
                         // If we've seen the way before, just update the distance
                         if (closests[i] == way){
