@@ -39,6 +39,7 @@ public:
     void updateSelectedWay(Way* way);
     OSMElement::ElementType Game::typeFromStrings(std::string key, std::string value);
     glm::vec3 colorFromTags(Way* way);
+    void generateGridLines();
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;

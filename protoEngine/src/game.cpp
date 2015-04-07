@@ -17,6 +17,7 @@
                     auto end = std::chrono::high_resolution_clock::now();\
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
 #define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
+#define PRINTVEC3(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n";
 #define PRINTFLOAT(f) std::cout << #f << ": x=" << f << "\n";
 #define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
 #define PRINTELEMENT(e) std::cout << e->toString() << "\n";
@@ -148,6 +149,7 @@ void Game::init()
     TIME(loadXML("../data/result.xml"));
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
     camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0));
+    generateGridLines();
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
 
     //=============================================================================
@@ -163,7 +165,6 @@ void Game::init()
 
     nbWaysVertices = waysNodesPositions.size();
     nbBuildingTriangles = buildingTrianglePositions.size();
-
 
     glCreateBuffers(1, &glidWaysPositions);
     glNamedBufferStorage(glidWaysPositions, nbWaysVertices * 2 * 4, // nbWaysNodes * vec2 * float
@@ -773,6 +774,8 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
         color = colorFromTags(way);
         if (color == vec3(-1,-1,-1)) continue;
 
+        if (way->eType == OSMElement::GRID_LINE) PRINTELEMENT(way);
+
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
             point = vec2(node->longitude, node->latitude);
@@ -1226,6 +1229,47 @@ vec3 Game::colorFromTags(Way* way){
     else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
     else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
     else if (way->eType == OSMElement::CONTOUR) return vec3(0.3,0.3,0.3);
+    else if (way->eType == OSMElement::GRID_LINE) return vec3(0.5,0.5,0);
 
     else return vec3(-1,-1,-1);
+}
+void Game::generateGridLines(){
+    int numLines = 5;
+    double supp = 0.5;
+    double lonStep = (viewRectRight - viewRectLeft) / (double)numLines;
+    double latStep = (viewRectTop - viewRectBottom) / (double)numLines;
+
+    for (double i = viewRectLeft; i <= viewRectRight; i += lonStep){
+        Way* w = new Way();
+        std::vector<Node*> localnodes;
+
+        for (double j = viewRectBottom; j <= viewRectTop; j += latStep){
+            Node* n = new Node();
+            n->latitude = i;
+            n->longitude = j;
+            w->addRef(n);
+        }
+        w->eType = OSMElement::GRID_LINE;
+        w->id = to_string(static_cast<long double>(i));
+
+        theWays.emplace(w->id, w);
+    }
+
+    for (double j = viewRectBottom; j <= viewRectTop; j += latStep){
+        Way* w = new Way();
+        std::vector<Node*> localnodes;
+
+        for (double i = viewRectLeft; i <= viewRectRight; i += lonStep){
+            Node* n = new Node();
+            n->latitude = i;
+            n->longitude = j;
+            w->addRef(n);
+        }
+        w->eType = OSMElement::GRID_LINE;
+        w->id = to_string(static_cast<long double>(j));
+
+        theWays.emplace(w->id, w);
+    }
+
+
 }

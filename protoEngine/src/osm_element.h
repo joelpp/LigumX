@@ -30,7 +30,8 @@ public:
                        RAILWAY_SUBWAY = 1 << 11,
 
                        NOT_IMPLEMENTED = 1 << 12,
-                       ANY_TYPE = 1 << 13} ;
+                       ANY_TYPE = 1 << 13,
+                       GRID_LINE = 1 << 14} ;
 
     std::unordered_map<std::string, std::string> tags;
     std::unordered_map<int, int> itags;
