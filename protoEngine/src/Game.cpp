@@ -707,9 +707,10 @@ void Game::loadXML(string path){
                     string key = way_child->ToElement()->FindAttribute("k")->Value();
                     string value = way_child->ToElement()->FindAttribute("v")->Value();
                     way -> addTag(key, value);
-                    std::unordered_map<std::string,int>::const_iterator got = tagConversionTable.find(key);
-
                     //EXPERIMENTAL. Not useful as of yet. Replace critical tags with ints
+
+//                    std::unordered_map<std::string,int>::const_iterator got = tagConversionTable.find(key);
+
 //                    if ( got == tagConversionTable.end() );
 //                    else {
 //                       got = tagConversionTable.find(value);
@@ -734,9 +735,9 @@ void Game::loadXML(string path){
                     string elementId = relation_child->ToElement()->FindAttribute("ref")->Value();
 
                     //Odd. Ucommenting this crashes the program when trying to fill the buffers.
-//                    if (type.compare("node") == 0) relation->addMember(theNodes[elementId]);
+                    if (type.compare("node") == 0) relation->addMember(theNodes[elementId]);
 //                    else if (type.compare("way") == 0) relation->addMember(theWays[elementId]);
-//                    else if (type.compare("relation") == 0) relation->addMember(theRelations[elementId]);
+                    else if (type.compare("relation") == 0) relation->addMember(theRelations[elementId]);
 
                 }
                 else if (string(relation_child->Value()).compare("tag") == 0){
