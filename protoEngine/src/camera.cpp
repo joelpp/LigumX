@@ -70,7 +70,8 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
 
 void Camera::updateMVPMatrix() {
     vpMat = ortho(-viewSize, viewSize, -viewSize, viewSize) *
-            translate(mat4(1), -vec3(position.x, position.y, 0)) * glm::rotate(mat4(1), angle, vec3(0,0,1));
+            glm::rotate(mat4(1), angle, vec3(0,0,1)) *
+            translate(mat4(1), -vec3(position.x, position.y, 0));
 
 
 }

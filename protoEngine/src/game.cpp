@@ -64,7 +64,7 @@ void Game::init()
     camera->translateTo(vec3(0,0,0));
     camera->setViewSize(0.03);
     draggingCamera = false;
-    showWhat = true;
+    fancyDisplayMode = true;
 
     selectedWay.way = NULL;
 
@@ -129,13 +129,14 @@ void Game::init()
 //    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
 
+
     //Initialize AntTweakBar
     TwInit(TW_OPENGL_CORE, NULL);
     TwWindowSize(windowWidth, windowHeight);
 
 
     myBar = TwNewBar("NameOfMyTweakBar");
-    TwAddVarRW(myBar, "showWhat", TW_TYPE_BOOLCPP, &showWhat, NULL);
+    TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &fancyDisplayMode, NULL);
 
     //=============================================================================
     // Load world data.
@@ -517,7 +518,7 @@ void Game::mainLoop()
 {
     camera->moveFromUserInput(pWindow);
 
-    if(showWhat) {
+    if(!fancyDisplayMode) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT);
         // draw lines
@@ -565,7 +566,8 @@ void Game::mainLoop()
 //        glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
         glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
     }
-    TwDraw();
+
+    if(showTweakBar) TwDraw();
 
 }
 
@@ -594,66 +596,72 @@ void Game::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 
 void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
 {
-    static const float factor = 1.1;
-    if(yOffset < 0) {
-        game->camera->multViewSizeBy(factor);
-    } else {
-        game->camera->multViewSizeBy(1.f/factor);
+    if(!TwEventMouseWheelGLFW(yOffset)) {
+        static const float factor = 1.1;
+        if(yOffset < 0) {
+            game->camera->multViewSizeBy(factor);
+        } else {
+            game->camera->multViewSizeBy(1.f/factor);
+        }
     }
 }
 
 void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*/, int action, int /*mods*/)
 {
-    if(action == GLFW_PRESS){
-        if (key == GLFW_KEY_SPACE) { game->showWhat = !game->showWhat; }
+    if(!TwEventKeyGLFW(key, action)) {
+        if(action == GLFW_PRESS){
+            if (key == GLFW_KEY_SPACE) { game->showTweakBar = !game->showTweakBar; }
+        }
     }
 }
 
 void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
-    // Left-click
-    if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
-        double x,y;
-        glfwGetCursorPos(pWindow, &x, &y);
-        vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
-        int index = 0;
-        std::vector<Way*> closests;
-
-        int filter = OSMElement::CONTOUR;
-        TIME(closests = game->findNClosestWays(2, worldPos, filter));
-
-        if (closests[0] == NULL) return;
-        TIME(game->updateSelectedWay(closests[0]));
-        PRINTELEMENTVECTOR(closests);
-    }
-    //Right Click
-    else if (button == GLFW_MOUSE_BUTTON_2){
-        if (action == GLFW_PRESS){
-            game->draggingCamera = true;
-            double x; double y;
+    if(!TwEventMouseButtonGLFW(button, action)) {
+        // Left-click
+        if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
+            double x,y;
             glfwGetCursorPos(pWindow, &x, &y);
-            game->oldMousePosition = vec2(x,y);
+            vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
+            int index = 0;
+            std::vector<Way*> closests;
+
+            int filter = OSMElement::CONTOUR;
+            TIME(closests = game->findNClosestWays(2, worldPos, filter));
+
+            if (closests[0] == NULL) return;
+            TIME(game->updateSelectedWay(closests[0]));
+            PRINTELEMENTVECTOR(closests);
         }
-        else if (action == GLFW_RELEASE){
-            game->draggingCamera = false;
+        //Right Click
+        else if (button == GLFW_MOUSE_BUTTON_2){
+            if (action == GLFW_PRESS){
+                game->draggingCamera = true;
+                double x; double y;
+                glfwGetCursorPos(pWindow, &x, &y);
+                game->oldMousePosition = vec2(x,y);
+            }
+            else if (action == GLFW_RELEASE){
+                game->draggingCamera = false;
+            }
         }
     }
-
-
 }
 
-void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double xOffset, double yOffset)
+void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 {
-    if (game->draggingCamera){
-        double x; double y;
-        glfwGetCursorPos(pWindow, &x, &y);
-        vec2 offset = vec2(x,y) - game->oldMousePosition;
-        offset.y *= -1; // reversed controls? this should be an option
+    if(!TwEventMousePosGLFW(x, y)) {
+        if (game->draggingCamera){
+            double x; double y;
+            glfwGetCursorPos(pWindow, &x, &y);
+            vec2 offset = vec2(x,y) - game->oldMousePosition;
+            offset.y *= -1; // reversed controls? this should be an option
 
-        game->camera->translateBy(vec3(offset/1000.f,0));
+            game->camera->translateBy(vec3(offset/1000.f,0));
 
-        game->oldMousePosition = vec2(x,y);
+            game->oldMousePosition = vec2(x,y);
 
+        }
     }
 }
 
