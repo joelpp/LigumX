@@ -61,7 +61,7 @@ void Game::init()
     windowTitle = "LigumX";
 
     camera = new Camera();
-    camera->translateTo(vec3(0,0,0));
+//    camera->translateTo(vec3(0,0,0));
     camera->setViewSize(0.03);
     draggingCamera = false;
     fancyDisplayMode = true;
@@ -134,9 +134,19 @@ void Game::init()
     TwInit(TW_OPENGL_CORE, NULL);
     TwWindowSize(windowWidth, windowHeight);
 
-
     myBar = TwNewBar("NameOfMyTweakBar");
     TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &fancyDisplayMode, NULL);
+
+    TwEnumVal CameraTypeEV[] = { {Camera::CameraType::AIRPLANE, "Airplane"}, {Camera::CameraType::AROUND_TARGET, "Around Target"}, {Camera::CameraType::CYLINDRICAL, "Cynlindrical"}, {Camera::CameraType::TOP_2D, "Top 2D"}, {Camera::CameraType::TOP_3D, "Top 3D"} };
+    TwType CameraTwType;
+    CameraTwType = TwDefineEnum("CameraType", CameraTypeEV, 5);
+    TwAddVarRW(myBar, "Camera Type", CameraTwType, &(camera->cameraType), NULL);
+
+    TwEnumVal ControlTypeEV[] = { {Camera::ControlType::QWEASDZXC_DRAG, "QWEASDZXC Drag"}, {Camera::ControlType::QWEASDZXC_CONTINUOUS, "QWEASDZXC Around Target"}, {Camera::ControlType::QWEASDZXC_ARROWS, "QWEASDZXC Arrows"} };
+    TwType ControlTwType;
+    ControlTwType = TwDefineEnum("ControlType", ControlTypeEV, 3);
+    TwAddVarRW(myBar, "Control Type", ControlTwType, &(camera->controlType), NULL);
+
 
     //=============================================================================
     // Load world data.
@@ -149,7 +159,7 @@ void Game::init()
 
     TIME(loadXML("../data/result.xml"));
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
-    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0));
+    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0.1));
     generateGridLines();
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
 
@@ -516,14 +526,15 @@ void Game::init()
 
 void Game::mainLoop()
 {
-    camera->moveFromUserInput(pWindow);
+//    camera->moveFromUserInput(pWindow);
+    camera->handlePresetNewFrame(pWindow);
 
     if(!fancyDisplayMode) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT);
         // draw lines
         pPipelineLines->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
         glDrawArrays(GL_LINES, 0, nbWaysVertices);
 //        glDrawArrays(GL_POINTS, 0, nbWaysVertices);
     } else {
@@ -536,21 +547,21 @@ void Game::mainLoop()
         pPipelineRoads->usePipeline();
         pPipelineRoads->useGeometryShader(pGeometryShader1);
         pPipelineRoads->useFragmentShader(pFragmentShader1);
-        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
         // draw circles on road nodes
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cout << "qweqwe" << endl;
         pPipelineRoads->usePipeline();
         pPipelineRoads->useGeometryShader(pGeometryShader2);
         pPipelineRoads->useFragmentShader(pFragmentShader2);
-        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
         // draw road lines
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cout << "qweqwe" << endl;
         pPipelineRoads->usePipeline();
         pPipelineRoads->useGeometryShader(pGeometryShader3);
         pPipelineRoads->useFragmentShader(pFragmentShader3);
-        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -562,7 +573,7 @@ void Game::mainLoop()
 //        // draw buildings
         glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
         pPipelineBuildings->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
 //        glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
         glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
     }
@@ -606,12 +617,13 @@ void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, doub
     }
 }
 
-void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*/, int action, int /*mods*/)
+void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
     if(!TwEventKeyGLFW(key, action)) {
         if(action == GLFW_PRESS){
             if (key == GLFW_KEY_SPACE) { game->showTweakBar = !game->showTweakBar; }
         }
+        game->camera->handlePresetKey(pWindow, key, scancode, action, mods);
     }
 }
 
@@ -645,6 +657,8 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
                 game->draggingCamera = false;
             }
         }
+
+        game->camera->handlePresetMouseButton(pWindow, button, action, mods);
     }
 }
 
@@ -662,6 +676,7 @@ void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
             game->oldMousePosition = vec2(x,y);
 
         }
+        game->camera->handlePresetCursorPos(pWindow, x, y);
     }
 }
 
