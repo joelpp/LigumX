@@ -16,7 +16,7 @@ public:
     void translateBy(glm::vec3 delta);
     void translateTo(glm::vec3 position);
     void moveFromUserInput(GLFWwindow* pWindow);
-    void updateVPMatrix();
+    void updateMVPMatrix();
     void setViewSize(float inViewSize);
     void multViewSizeBy(float factor);
     void rotate(float _angle);

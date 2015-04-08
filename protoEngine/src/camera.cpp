@@ -14,30 +14,30 @@ Camera::Camera()
 void Camera::translateBy(vec3 delta)
 {
     position += delta;
-    updateVPMatrix();
+    updateMVPMatrix();
 }
 
 void Camera::translateTo(vec3 inPosition)
 {
     position = inPosition;
-    updateVPMatrix();
+    updateMVPMatrix();
 }
 
 void Camera::setViewSize(float inViewSize)
 {
     viewSize = inViewSize;
-    updateVPMatrix();
+    updateMVPMatrix();
 }
 
 void Camera::multViewSizeBy(float factor)
 {
     viewSize *= factor;
-    updateVPMatrix();
+    updateMVPMatrix();
 }
 
 void Camera::rotate(float _angle){
     angle += _angle;
-    updateVPMatrix();
+    updateMVPMatrix();
 }
 
 void Camera::moveFromUserInput(GLFWwindow *pWindow)
@@ -68,7 +68,7 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
     }
 }
 
-void Camera::updateVPMatrix() {
+void Camera::updateMVPMatrix() {
     vpMat = ortho(-viewSize, viewSize, -viewSize, viewSize) *
             translate(mat4(1), -vec3(position.x, position.y, 0)) * glm::rotate(mat4(1), angle, vec3(0,0,1));
 
