@@ -691,6 +691,7 @@ void Game::loadXML(string path){
             //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
 
             Node* node = new Node(id, latitude, longitude);
+            node->elevation = 0;
             for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
                 string key = tag->ToElement()->FindAttribute("k")->Value();
                 string value = tag->ToElement()->FindAttribute("v")->Value();
