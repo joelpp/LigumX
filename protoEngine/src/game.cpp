@@ -18,8 +18,10 @@
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
 #define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
 #define PRINTVEC3(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n";
-#define PRINTFLOAT(f) std::cout << #f << ": x=" << f << "\n";
+#define PRINT(f) std::cout << #f << ": =" << f << "\n";
 #define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
+#define PRINTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
+                       for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_] << "\n";
 #define PRINTELEMENT(e) std::cout << e->toString() << "\n";
 #define PRINTELEMENTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
                               for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_]->toString() << "\n";
@@ -618,9 +620,9 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
         int index = 0;
         std::vector<Way*> closests;
-
+        std::vector<double> distances;
         int filter = OSMElement::CONTOUR;
-        TIME(closests = game->findNClosestWays(2, worldPos, filter));
+        TIME(closests = game->findNClosestWays(2, worldPos, filter, distances));
 
         if (closests[0] == NULL) return;
         TIME(game->updateSelectedWay(closests[0]));
@@ -773,8 +775,6 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
 
         color = colorFromTags(way);
         if (color == vec3(-1,-1,-1)) continue;
-
-        if (way->eType == OSMElement::GRID_LINE) PRINTELEMENT(way);
 
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
@@ -991,7 +991,8 @@ Node* Game::findClosestNode(vec2 xy){
     return closest;
 }
 
-std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter){
+
+std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<double> &distances){
     Way* closest = NULL;
     std::vector<Way*> closests;
     std::vector<double> bestDists;
@@ -1001,7 +1002,6 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter){
         closests.push_back(NULL);
     }
 
-    double bestDist = 99999;
     //Look at all the ways
     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
         Way* way = it->second;
@@ -1019,6 +1019,7 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter){
         int counter = 1;
         bool first = true;
         vec2 p1, p2;
+        double bestDist = 99999;
 
         //Look at all this way's nodes
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
@@ -1042,44 +1043,36 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter){
                     closest = way;
                     bestDist = dist;
                 }
-
-                //Iterate over all current closest list, from closest to farthest
-                for (int i = 0; i < n; i++){
-
-                    // Has the current way already been IDed as a nth "closest"?
-                    // Also has a better distance already been found for this way? if so get out
-                    if (closests[i] == way && bestDists[i] <= dist) break;
-
-                    // Otherwise, we found a smaller distance (the way may have been seen or not)
-                    if (dist <= bestDists[i]){
-
-                        // If we've seen the way before, just update the distance
-                        if (closests[i] == way){
-                            //update the current smallest distance
-                            bestDists[i] = dist;
-                        }
-                        // else, the way hasn't been seen before. Current dist is best for this way.
-                        else{
-                            // Move everything behind this element farther by 1
-                            for (int j = n-1; j > i; j--){
-                                bestDists[j] = bestDists[j-1];
-                                closests[j] = closests[j-1];
-                            }
-
-                            // Keep the way and the distance.
-                            bestDists[i] = dist;
-                            closests[i] = way;
-                        }
-
-                        break; //get out! you don't want to keep going in the array.
-                    }
-                }
             }
 
             //flip-flop
             counter = (counter + 1) % 2;
         }
+        //Now you're done looking at all the nodes.
+        //Iterate over all current closest list, from closest to farthest
+        for (int i = 0; i < n; i++){
+
+            // Otherwise, we found a smaller distance (the way may have been seen or not)
+            if (bestDist <= bestDists[i]){
+
+
+                // Move everything behind this element farther by 1
+                for (int j = n-1; j > i; j--){
+                    bestDists[j] = bestDists[j-1];
+                    closests[j] = closests[j-1];
+                }
+
+                // Keep the way and the distance.
+                bestDists[i] = bestDist;
+                closests[i] = way;
+                break; //get out! you don't want to keep going in the array.
+
+            }
+
+        }
+
     }
+    distances = bestDists;
     return closests;
 }
 
@@ -1229,47 +1222,77 @@ vec3 Game::colorFromTags(Way* way){
     else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
     else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
     else if (way->eType == OSMElement::CONTOUR) return vec3(0.3,0.3,0.3);
-    else if (way->eType == OSMElement::GRID_LINE) return vec3(0.5,0.5,0);
+    else if (way->eType == OSMElement::GRID_LINE) return vec3(1.0,0,1.0);
 
     else return vec3(-1,-1,-1);
 }
 void Game::generateGridLines(){
-    int numLines = 5;
-    double supp = 0.5;
-    double lonStep = (viewRectRight - viewRectLeft) / (double)numLines;
-    double latStep = (viewRectTop - viewRectBottom) / (double)numLines;
 
-    for (double i = viewRectLeft; i <= viewRectRight; i += lonStep){
-        Way* w = new Way();
-        std::vector<Node*> localnodes;
+    double step = 0.005;
 
-        for (double j = viewRectBottom; j <= viewRectTop; j += latStep){
+    int lonCounter = 0;
+    int latCounter = 0;
+    std::vector<Way*> horizontalWays;
+    std::vector<Way*> verticalWays;
+
+    // Start by making horizontal lines
+    for( double lon = viewRectLeft; lon <= viewRectRight; lon += step){
+        Way* way = new Way();
+        way->id = string("LON").append(to_string(static_cast<long double>(lon)));
+        way->eType = OSMElement::GRID_LINE;
+        latCounter = 0;
+
+//        For each line generate a bunch of nodes
+        for (double lat = viewRectBottom; lat <= viewRectTop; lat += step){
+
             Node* n = new Node();
-            n->latitude = i;
-            n->longitude = j;
-            w->addRef(n);
+            n->id = to_string(static_cast<long double>(lon)).append(",").append(to_string(static_cast<long double>(lat)));
+            n->longitude = lat;
+            n->latitude = lon;
+            n->elevation = contourLineInterpolate(vec2(n->longitude, n->latitude));
+            PRINT(n->elevation);
+            way->addRef(n);
+            latCounter++;
         }
-        w->eType = OSMElement::GRID_LINE;
-        w->id = to_string(static_cast<long double>(i));
-
-        theWays.emplace(w->id, w);
+        horizontalWays.push_back(way);
+        lonCounter++;
     }
 
-    for (double j = viewRectBottom; j <= viewRectTop; j += latStep){
-        Way* w = new Way();
-        std::vector<Node*> localnodes;
+    // Then, create as many vertical lines as there are nodes in the previous horizontal lines
+    for (int i = 0; i < latCounter; i++){
+        Way* way = new Way();
+        way->eType = OSMElement::GRID_LINE;
 
-        for (double i = viewRectLeft; i <= viewRectRight; i += lonStep){
-            Node* n = new Node();
-            n->latitude = i;
-            n->longitude = j;
-            w->addRef(n);
-        }
-        w->eType = OSMElement::GRID_LINE;
-        w->id = to_string(static_cast<long double>(j));
+        // For ith vertical line grab the ith nodes in each horizontal line previously created
+        for (int j = 0; j < lonCounter; j++) way->addRef(horizontalWays[j]->nodes[i]);
 
-        theWays.emplace(w->id, w);
+        way->id = string("LAT").append(to_string(static_cast<long double>((way->nodes[0]->longitude))));
+        verticalWays.push_back(way);
+
     }
 
+    // Add it all to the way database
+    for (int i = 0; i < horizontalWays.size(); i++){
+        theWays.emplace(horizontalWays[i]->id, horizontalWays[i]);
+    }
+    for (int i = 0; i < verticalWays.size(); i++){
+        theWays.emplace(verticalWays[i]->id, verticalWays[i]);
+    }
 
+}
+
+inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }
+
+double Game::contourLineInterpolate(vec2 xy){
+    vector<double> distances;
+    vector<Way*> closests = findNClosestWays(2, xy, OSMElement::CONTOUR, distances);
+
+    double sum = distances[0] + distances[1];
+    double t = 1 - distances[0] / sum;
+
+    std::vector<double> heights;
+    heights.push_back(stod(closests[0]->getValue("ele")));
+    heights.push_back(stod(closests[1]->getValue("ele")));
+
+    return lerp(heights[0], heights[1], distances[0]);
 }

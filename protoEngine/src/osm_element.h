@@ -50,6 +50,8 @@ public:
     bool hasITagAndValue(int key, int value);
     bool passesFilter(Filter f);
 
+    std::string getValue(std::string key);
+
     virtual std::string toString() = 0;
 
     std::vector<OSMElement*> parents;

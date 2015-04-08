@@ -33,13 +33,14 @@ public:
     void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
     GLFWwindow* pWindow;
     Node* findClosestNode(glm::vec2 xy);
-    std::vector<Way*> Game::findNClosestWays(int n, glm::vec2 xy, int filter);
+    std::vector<Way*> Game::findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances);
     double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2);
     bool isInterestingWay(Way* way);
     void updateSelectedWay(Way* way);
     OSMElement::ElementType Game::typeFromStrings(std::string key, std::string value);
     glm::vec3 colorFromTags(Way* way);
     void generateGridLines();
+    double contourLineInterpolate(glm::vec2 xy);
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;

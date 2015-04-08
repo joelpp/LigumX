@@ -10,7 +10,7 @@ private:
 public:
     float latitude;
     float longitude;
-
+    double elevation;
     Node();
     Node(std::string id, float latitude, float longitude);
     std::string toString();
