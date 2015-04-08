@@ -114,7 +114,8 @@ public:
 
     // debug stuff
 
-    bool showWhat;
+    bool fancyDisplayMode;
+    bool showTweakBar;
     TwBar *myBar;
     struct WaySelection{
         Way* way;
