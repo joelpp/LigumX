@@ -61,10 +61,9 @@ void Game::init()
     windowTitle = "LigumX";
 
     camera = new Camera();
-//    camera->translateTo(vec3(0,0,0));
     camera->setViewSize(0.03);
     draggingCamera = false;
-    fancyDisplayMode = true;
+    fancyDisplayMode = false;
 
     selectedWay.way = NULL;
 
@@ -142,10 +141,12 @@ void Game::init()
     CameraTwType = TwDefineEnum("CameraType", CameraTypeEV, 5);
     TwAddVarRW(myBar, "Camera Type", CameraTwType, &(camera->cameraType), NULL);
 
-    TwEnumVal ControlTypeEV[] = { {Camera::ControlType::QWEASDZXC_DRAG, "QWEASDZXC Drag"}, {Camera::ControlType::QWEASDZXC_CONTINUOUS, "QWEASDZXC Around Target"}, {Camera::ControlType::QWEASDZXC_ARROWS, "QWEASDZXC Arrows"} };
+    TwEnumVal ControlTypeEV[] = { {Camera::ControlType::QWEASDZXC_DRAG, "QWEASDZXC Drag"}, {Camera::ControlType::QWEASDZXC_CONTINUOUS, "QWEASDZXC Continuous"}, {Camera::ControlType::QWEASDZXC_ARROWS, "QWEASDZXC Arrows"} };
     TwType ControlTwType;
     ControlTwType = TwDefineEnum("ControlType", ControlTypeEV, 3);
     TwAddVarRW(myBar, "Control Type", ControlTwType, &(camera->controlType), NULL);
+
+
 
 
     //=============================================================================
@@ -159,7 +160,9 @@ void Game::init()
 
     TIME(loadXML("../data/result.xml"));
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
-    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0.1));
+//    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0.1));
+    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
+    camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
     generateGridLines();
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
 
@@ -622,6 +625,9 @@ void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int actio
     if(!TwEventKeyGLFW(key, action)) {
         if(action == GLFW_PRESS){
             if (key == GLFW_KEY_SPACE) { game->showTweakBar = !game->showTweakBar; }
+            if (key == GLFW_KEY_ESCAPE) {
+                if(game->camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) game->camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+            }
         }
         game->camera->handlePresetKey(pWindow, key, scancode, action, mods);
     }
@@ -647,15 +653,15 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){
-            if (action == GLFW_PRESS){
-                game->draggingCamera = true;
-                double x; double y;
-                glfwGetCursorPos(pWindow, &x, &y);
-                game->oldMousePosition = vec2(x,y);
-            }
-            else if (action == GLFW_RELEASE){
-                game->draggingCamera = false;
-            }
+//            if (action == GLFW_PRESS){
+//                game->draggingCamera = true;
+//                double x; double y;
+//                glfwGetCursorPos(pWindow, &x, &y);
+//                game->oldMousePosition = vec2(x,y);
+//            }
+//            else if (action == GLFW_RELEASE){
+//                game->draggingCamera = false;
+//            }
         }
 
         game->camera->handlePresetMouseButton(pWindow, button, action, mods);

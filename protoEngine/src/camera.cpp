@@ -16,19 +16,20 @@ Camera::Camera()
     viewSize = 1;
     angle = 0;
 
-    cameraType = CameraType::AIRPLANE;
+    cameraType = CameraType::CYLINDRICAL;
     controlType = ControlType::QWEASDZXC_DRAG;
-    cylindricalUpVec = vec3(0,1,0);
-    upVecReference = vec3(0,1,0);
-    frontVecReference = vec3(0,0,1);
-    rightVecReference = vec3(1,0,0);
-    upVec = vec3(0,1,0);
-    frontVec = vec3(0,0,1);
+    upVec = normalize(vec3(0,1,1));
+    frontVec = normalize(vec3(0,-1,1));
     rightVec = vec3(1,0,0);
+    cylindricalUpVec = vec3(0,0,1);
+    upVecReference = upVec;
+    frontVecReference = frontVec;
+    rightVecReference = rightVec;
 //    translateTo(vec3(45.47500,-73.65500,10000));
 //    scaleTo(vec3(1,1,1));
-    lookAtTargetPos = vec3(45.47500,-73.65500,0);
-    defaultViewMovementSpeed = 0.0001f;
+//    lookAtTargetPos = vec3(45.47500,-73.65500,0);
+    lookAtTargetPos = vec3(0,0,0);
+    defaultViewMovementSpeed = 0.1f;
     viewMovementSpeed = defaultViewMovementSpeed;
     defaultKeyMovementSpeed = 0.0001f;
     keyMovementSpeed = defaultKeyMovementSpeed;
@@ -107,13 +108,19 @@ void Camera::updateMVPMatrix()
     mvpMat = inverse(mvpMat);
 //    mvpMat = translate(position) * mvpMat;
 
-//    vpMat = perspective((float)PI/4.0f, 1.0f, 0.01f, 1000.0f) * vpMat;
-    mvpMat = perspective((float)PI/3.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
+    //mvpMat = perspective((float)PI/8.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
+    mvpMat = perspective((float)22.5, 1.0f, 0.0001f, 10.0f) * mvpMat;
+//    mvpMat = perspective((float)PI/3.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
 
-    std::cout << "=================" << std::endl;
-    std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-    std::cout << frontVec.x << " " << frontVec.y << " " << frontVec.z << std::endl;
-    std::cout << upVec.x << " " << upVec.y << " " << upVec.z << std::endl;
+
+    static unsigned int count = 0;
+    if(++count % 100 == 0) {
+        count = 0;
+        std::cout << "=================" << std::endl;
+        std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+        std::cout << frontVec.x << " " << frontVec.y << " " << frontVec.z << std::endl;
+        std::cout << upVec.x << " " << upVec.y << " " << upVec.z << std::endl;
+    }
 
 }
 
