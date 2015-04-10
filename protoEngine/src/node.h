@@ -12,7 +12,7 @@ public:
     float longitude;
     double elevation;
     Node();
-    Node(std::string id, float latitude, float longitude);
+    Node(std::string id, float longitude, float latitude);
     std::string toString();
     bool operator == (Node& n) const {
        return latitude==n.latitude && longitude==n.longitude;

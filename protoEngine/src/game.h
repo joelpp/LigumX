@@ -19,6 +19,7 @@
 #include "relation.h"
 #include "texture.h"
 #include "filter.h"
+#include "LineSegment.h"
 
 
 class Game {
@@ -30,17 +31,17 @@ public:
     void mainLoop();
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
     void loadXML(std::string path);
-    void fillBuffers(std::vector<glm::vec2> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
+    void fillBuffers(std::vector<glm::vec3> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
     GLFWwindow* pWindow;
     Node* findClosestNode(glm::vec2 xy);
-    std::vector<Way*> Game::findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances);
-    double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2);
-    bool isInterestingWay(Way* way);
+    std::vector<Way*> Game::findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances, std::vector<glm::vec2> &directions, std::vector<std::pair<Node*, Node*> > &_nodePairs);
+    double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2, glm::vec2 &direction);
     void updateSelectedWay(Way* way);
     OSMElement::ElementType Game::typeFromStrings(std::string key, std::string value);
     glm::vec3 colorFromTags(Way* way);
     void generateGridLines();
     double contourLineInterpolate(glm::vec2 xy);
+    int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, std::vector<std::pair<Node*, Node*>> nodePairs);
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
@@ -122,8 +123,11 @@ public:
         int numberOfBytesBefore;
         int numberOfBytesToWrite;
     };
-
+    int unsuccessfulInterpolations;
+    bool interpolateContours;
     WaySelection selectedWay;
+
+    double coordinateInflationFactor;
 };
 
 extern Game* game;

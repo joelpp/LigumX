@@ -48,7 +48,8 @@ SOURCES += \
     src/relation.cpp \
     src/osm_element.cpp \
     src/texture.cpp \
-    src/filter.cpp
+    src/filter.cpp \
+    src/linesegment.cpp
 
 
 HEADERS += \
@@ -62,7 +63,8 @@ HEADERS += \
     src/osm_element.h \
     src/texture.h \
     src/filter.h \
-    src/common.h
+    src/common.h \
+    src/linesegment.h
 
 OTHER_FILES += \
     src/shaders/roads.gsh \

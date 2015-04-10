@@ -16,13 +16,17 @@
                     x;\
                     auto end = std::chrono::high_resolution_clock::now();\
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
+#define PRINTVEC2VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y << "\n";
 #define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
 #define PRINTVEC3(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n";
-#define PRINT(f) std::cout << #f << ": =" << f << "\n";
+#define PRINT(f) std::cout << #f << ": = " << f << "\n";
+#define PRINTSTRING(f) std::cout << f << "\n";
+#define PRINTBOOL(B) string b = B==1?"TRUE":"FALSE"; std::cout << #B << " : " << b << "\n";
 #define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
 #define PRINTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
                        for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_] << "\n";
-#define PRINTELEMENT(e) std::cout << e->toString() << "\n";
+#define PRINTELEMENT(e) std::cout << #e << " " << e.toString() << "\n";
+#define PRINTELEMENTPTR(e) std::cout << #e << " " << e->toString() << "\n";
 #define PRINTELEMENTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
                               for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_]->toString() << "\n";
 
@@ -30,6 +34,8 @@
 
 using namespace glm;
 using namespace std;
+
+
 
 Game* game;
 
@@ -68,7 +74,8 @@ void Game::init()
     fancyDisplayMode = false;
 
     selectedWay.way = NULL;
-
+    unsuccessfulInterpolations = 0;
+    coordinateInflationFactor = 1;
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
@@ -155,17 +162,18 @@ void Game::init()
     // Load world data.
     //=============================================================================
 
-    vector<vec2> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
+    vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
     vector<vec2> roadsPositions;
     vector<vec2> buildingTrianglePositions;
-
+    interpolateContours = false;
+    TIME(loadXML("../data/srtm.xml"));
     TIME(loadXML("../data/result.xml"));
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 //    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0.1));
-    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
+    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + vec3(coordinateInflationFactor / 10.f)*camera->frontVec);
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
-    generateGridLines();
+    TIME(generateGridLines());
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
 
     //=============================================================================
@@ -183,11 +191,11 @@ void Game::init()
     nbBuildingTriangles = buildingTrianglePositions.size();
 
     glCreateBuffers(1, &glidWaysPositions);
-    glNamedBufferStorage(glidWaysPositions, nbWaysVertices * 2 * 4, // nbWaysNodes * vec2 * float
+    glNamedBufferStorage(glidWaysPositions, nbWaysVertices * 3 * 4, // nbWaysNodes * vec2 * float
                          NULL,
                          GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                          GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidWaysPositions, 0, nbWaysVertices * 2 * 4, waysNodesPositions.data());
+    glNamedBufferSubData(glidWaysPositions, 0, nbWaysVertices * 3 * 4, waysNodesPositions.data());
 
 
     glCreateBuffers(1, &glidWaysColors);
@@ -277,7 +285,7 @@ void Game::init()
     {
     const char* vertexShaderSource = " \
         #version 430 core\n \
-        in layout(location=0) vec2 pos;\n \
+        in layout(location=0) vec3 pos;\n \
         in layout(location=1) vec3 color;\n \
         uniform mat4 vpMat;\n \
         out gl_PerVertex {\n \
@@ -285,7 +293,7 @@ void Game::init()
         };\n \
         out vec3 vColor;\n \
         void main() {\n \
-            gl_Position = vpMat * vec4(pos, 0, 1);\n \
+            gl_Position = vpMat * vec4(pos, 1);\n \
             vColor = color;\n \
         }";
 
@@ -314,8 +322,8 @@ void Game::init()
 
     // VAO
     glEnableVertexArrayAttrib(pPipelineLines->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysPositions, 0, 2*4);
-    glVertexArrayAttribFormat(pPipelineLines->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysPositions, 0, 3*4);
+    glVertexArrayAttribFormat(pPipelineLines->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
     glEnableVertexArrayAttrib(pPipelineLines->glidVao, 1);
     glVertexArrayVertexBuffer(pPipelineLines->glidVao, 1, glidWaysColors, 0, 3*4);
     glVertexArrayAttribFormat(pPipelineLines->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
@@ -647,8 +655,10 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
             int index = 0;
             std::vector<Way*> closests;
             std::vector<double> distances;
+            std::vector<vec2> directions;
+            vector<std::pair<Node*, Node*>> nodePairs;
             int filter = OSMElement::CONTOUR;
-            TIME(closests = game->findNClosestWays(2, worldPos, filter, distances));
+            TIME(closests = game->findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
 
             if (closests[0] == NULL) return;
             TIME(game->updateSelectedWay(closests[0]));
@@ -701,13 +711,17 @@ void Game::loadXML(string path){
             std::istringstream ss(box);
             std::string token;
 
-            std::getline(ss, token, ','); viewRectLeft = atof(token.c_str());
-            std::getline(ss, token, ','); viewRectBottom = atof(token.c_str());
-            std::getline(ss, token, ','); viewRectRight = atof(token.c_str());
-            std::getline(ss, token, ','); viewRectTop = atof(token.c_str());
+            std::getline(ss, token, ','); viewRectBottom = atof(token.c_str()) * coordinateInflationFactor;
+            std::getline(ss, token, ','); viewRectLeft = atof(token.c_str()) * coordinateInflationFactor;
+            std::getline(ss, token, ','); viewRectTop = atof(token.c_str()) * coordinateInflationFactor;
+            std::getline(ss, token, ','); viewRectRight = atof(token.c_str()) * coordinateInflationFactor;
 
-            viewRectBottomLeft = vec2(viewRectBottom, viewRectLeft);
-            viewRectTopRight = vec2(viewRectTop, viewRectRight);
+            PRINT(viewRectBottom);
+            PRINT(viewRectLeft);
+            PRINT(viewRectTop);
+            PRINT(viewRectRight);
+            viewRectBottomLeft = vec2(viewRectLeft,viewRectBottom);
+            viewRectTopRight = vec2(viewRectRight,viewRectTop);
             viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
         }
         if (string(child->Value()).compare("node") == 0){
@@ -715,13 +729,14 @@ void Game::loadXML(string path){
 //            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
 
             string id = child->ToElement()->FindAttribute("id")->Value();
-            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value());
-            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value());
+            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) * coordinateInflationFactor;
+            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) * coordinateInflationFactor;
             //double latitude = strtod(child->ToElement()->FindAttribute("lat")->Value(), NULL);
             //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
 
-            Node* node = new Node(id, latitude, longitude);
+            Node* node = new Node(id, longitude, latitude);
             node->elevation = 0;
+//            if (path.compare("../data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude));
             for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
                 string key = tag->ToElement()->FindAttribute("k")->Value();
                 string value = tag->ToElement()->FindAttribute("v")->Value();
@@ -749,8 +764,8 @@ void Game::loadXML(string path){
                     if (eType != OSMElement::NOT_IMPLEMENTED) way->eType = eType;
                 }
             }
-            if (isInterestingWay(way)) way->selectable = true;
-            else way->selectable = false;
+
+
             theWays.emplace(id, way);
         }
         else if (string(child->Value()).compare("relation") == 0){
@@ -780,7 +795,7 @@ void Game::loadXML(string path){
     }
 }
 
-void Game::fillBuffers(vector<vec2> *waysNodesPositions,
+void Game::fillBuffers(vector<vec3> *waysNodesPositions,
                        vector<vec3> *waysNodesColors,
                        vector<vec2> *roadsPositions,
                        vector<vec2> *buildingTrianglePositions){
@@ -798,6 +813,7 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
         first = true;
         second = false;
         GLsizei nbVertexForThisRoad = 0;
+        vec3 pt, oldpt, oldoldpt;
         vec2 point, oldPoint, oldOldPoint;
         vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
                           glm::linearRand(0.5f, 1.0f),
@@ -810,11 +826,11 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
             point = vec2(node->longitude, node->latitude);
-
+            pt = vec3(node->longitude, node->latitude, node->elevation);
             if (!first){
-                waysNodesPositions->push_back(oldPoint);
+                waysNodesPositions->push_back(oldpt);
                 waysNodesColors->push_back(color);
-                waysNodesPositions->push_back(point);
+                waysNodesPositions->push_back(pt);
                 waysNodesColors->push_back(color);
 
                 // create roads subgroup
@@ -844,6 +860,9 @@ void Game::fillBuffers(vector<vec2> *waysNodesPositions,
 
             oldOldPoint = oldPoint;
             oldPoint = point;
+
+            oldoldpt = oldpt;
+            oldpt = pt;
         }
 
         // push last road node for line adjacency, fake straight line
@@ -1023,14 +1042,18 @@ Node* Game::findClosestNode(vec2 xy){
 }
 
 
-std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<double> &distances){
+std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<double> &distances, vector<vec2> &_directions, vector<std::pair<Node*, Node*>> &_nodePairs){
     Way* closest = NULL;
     std::vector<Way*> closests;
     std::vector<double> bestDists;
-
+    std::vector<vec2> directions;
+    std::pair<Node*, Node*> a;
+    vector<std::pair<Node*, Node*>> nodePairs;
     for (int i = 0; i < n; i++){
         bestDists.push_back(99999);
         closests.push_back(NULL);
+        directions.push_back(vec2(0,0));
+        nodePairs.push_back(a);
     }
 
     //Look at all the ways
@@ -1051,6 +1074,8 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<doub
         bool first = true;
         vec2 p1, p2;
         double bestDist = 99999;
+        vec2 direction;
+        std::pair<Node*, Node*> aPair;
 
         //Look at all this way's nodes
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
@@ -1069,10 +1094,14 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<doub
                 secondNode = *nodeIt;
                 p1 = vec2(firstNode->longitude, firstNode->latitude);
                 p2 = vec2(secondNode->longitude, secondNode->latitude);
-                double dist = pointLineSegmentDistance(xy, p2, p1);
+                vec2 dir;
+                double dist = pointLineSegmentDistance(xy, p2, p1, dir);
+
                 if (dist < bestDist){
                     closest = way;
                     bestDist = dist;
+                    direction = dir;
+                    aPair = std::pair<Node*, Node*>(firstNode, secondNode);
                 }
             }
 
@@ -1091,11 +1120,15 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<doub
                 for (int j = n-1; j > i; j--){
                     bestDists[j] = bestDists[j-1];
                     closests[j] = closests[j-1];
+                    directions[j] = directions[j-1];
+                    nodePairs[j] = nodePairs[j-1];
                 }
 
                 // Keep the way and the distance.
                 bestDists[i] = bestDist;
                 closests[i] = way;
+                directions[i] = direction;
+                nodePairs[i] = aPair;
                 break; //get out! you don't want to keep going in the array.
 
             }
@@ -1103,7 +1136,9 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<doub
         }
 
     }
+    _directions = directions;
     distances = bestDists;
+    _nodePairs = nodePairs;
     return closests;
 }
 
@@ -1126,50 +1161,31 @@ vec2 Game::windowPosToWorldPos(vec2 ij){
 
 }
 
-double Game::pointLineSegmentDistance(vec2 p, vec2 v, vec2 w) {
+double Game::pointLineSegmentDistance(vec2 p, vec2 v, vec2 w, vec2 &direction) {
   // Return minimum distance between line segment vw and point p
   const double l2 = glm::length(w-v) * glm::length(w-v);  // i.e. |w-v|^2 -  avoid a sqrt
-  if (l2 == 0.0) return glm::distance(p, v);   // v == w case
+  if (l2 == 0.0){
+      direction = v - p;
+      return glm::distance(p, v);   // v == w case
+  }
   // Consider the line extending the segment, parameterized as v + t (w - v).
   // We find projection of point p onto the line.
   // It falls where t = [(p-v) . (w-v)] / |w-v|^2
   const double t = glm::dot(p - v, w - v) / l2;
-  if (t < 0.0) return glm::distance(p, v);       // Beyond the 'v' end of the segment
-  else if (t > 1.0) return glm::distance(p, w);  // Beyond the 'w' end of the segment
+  if (t < 0.0){
+      direction = v - p;
+      return glm::distance(p, v); // Beyond the 'v' end of the segment
+  }
+  else if (t > 1.0){
+      direction = w - p;
+      return glm::distance(p, w);  // Beyond the 'w' end of the segment
+  }
   const vec2 projection = v + (vec2(t,t) * (w - v));  // Projection falls on the segment
+  direction = projection - p;
   return glm::distance(p, projection);
 }
 
-/**
- * @brief Game::isInterestingWay
- * @param The way to look at
- * @return Whether this way has tags ans values we're looking for
- */
-bool Game::isInterestingWay(Way* way){
-    return (way->hasTag("building") ||
-            way->hasTagAndValue("highway", "trunk") ||
-            way->hasTagAndValue("highway", "primary") ||
-            way->hasTagAndValue("highway", "secondary") ||
-            way->hasTagAndValue("highway", "tertiary") ||
-            way->hasTagAndValue("highway", "residential") ||
-            way->hasTagAndValue("railway", "subway") ||
-            way->hasTagAndValue("leisure", "park") ||
-            way->hasTag("natural") ||
-            way->hasTag("contour"));
 
-//EXPERIMENTAL. for when we'll want to increase performance and use ints for quick tag checking.
-//    return (way->hasITag(1) ||
-//            way->hasITagAndValue(0, 0) ||
-//            way->hasITagAndValue(0, 1) ||
-//            way->hasITagAndValue(0, 2) ||
-//            way->hasITagAndValue(0, 3) ||
-//            way->hasITagAndValue(0, 4) ||
-//            way->hasITagAndValue(4, 0) ||
-//            way->hasITagAndValue(2, 0) ||
-//            way->hasITag(3));
-}
-
-//EXPERIMENTAL. for when we'll want to increase performance and use ints for quick tag checking.
 OSMElement::ElementType Game::typeFromStrings(string key, string value){
 
     if (key.compare("highway") == 0){
@@ -1252,24 +1268,24 @@ vec3 Game::colorFromTags(Way* way){
     else if (way->eType == OSMElement::RAILWAY_SUBWAY) return vec3(1,0,1);
     else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
     else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
-    else if (way->eType == OSMElement::CONTOUR) return vec3(0.3,0.3,0.3);
-    else if (way->eType == OSMElement::GRID_LINE) return vec3(1.0,0,1.0);
+    else if (way->eType == OSMElement::CONTOUR) return vec3(0,0.5,0.5);
+    else if (way->eType == OSMElement::GRID_LINE) return vec3(0.4,0.4,0.4);
 
     else return vec3(-1,-1,-1);
 }
 void Game::generateGridLines(){
 
-    double step = 0.005;
+    double step = 0.0005;
 
     int lonCounter = 0;
     int latCounter = 0;
-    std::vector<Way*> horizontalWays;
-    std::vector<Way*> verticalWays;
+    std::vector<Way*> latitudeLines;
+    std::vector<Way*> longitudeLines;
 
     // Start by making horizontal lines
     for( double lon = viewRectLeft; lon <= viewRectRight; lon += step){
         Way* way = new Way();
-        way->id = string("LON").append(to_string(static_cast<long double>(lon)));
+
         way->eType = OSMElement::GRID_LINE;
         latCounter = 0;
 
@@ -1278,36 +1294,38 @@ void Game::generateGridLines(){
 
             Node* n = new Node();
             n->id = to_string(static_cast<long double>(lon)).append(",").append(to_string(static_cast<long double>(lat)));
-            n->longitude = lat;
-            n->latitude = lon;
-            n->elevation = contourLineInterpolate(vec2(n->longitude, n->latitude));
-            PRINT(n->elevation);
+            n->longitude = lon;
+            n->latitude = lat;
+            n->elevation = (contourLineInterpolate(vec2(n->longitude, n->latitude)));
+//            n->elevation = 0;
+
             way->addRef(n);
             latCounter++;
         }
-        horizontalWays.push_back(way);
+        way->id = string("LON").append(to_string(static_cast<long double>((way->nodes[0]->longitude))));
+        longitudeLines.push_back(way);
         lonCounter++;
     }
-
+    PRINTINT(unsuccessfulInterpolations);
     // Then, create as many vertical lines as there are nodes in the previous horizontal lines
     for (int i = 0; i < latCounter; i++){
         Way* way = new Way();
         way->eType = OSMElement::GRID_LINE;
 
         // For ith vertical line grab the ith nodes in each horizontal line previously created
-        for (int j = 0; j < lonCounter; j++) way->addRef(horizontalWays[j]->nodes[i]);
+        for (int j = 0; j < lonCounter; j++) way->addRef(longitudeLines[j]->nodes[i]);
 
-        way->id = string("LAT").append(to_string(static_cast<long double>((way->nodes[0]->longitude))));
-        verticalWays.push_back(way);
+        way->id = string("LAT").append(to_string(static_cast<long double>((way->nodes[0]->latitude))));
+        latitudeLines.push_back(way);
 
     }
 
     // Add it all to the way database
-    for (int i = 0; i < horizontalWays.size(); i++){
-        theWays.emplace(horizontalWays[i]->id, horizontalWays[i]);
+    for (int i = 0; i < latitudeLines.size(); i++){
+        theWays.emplace(latitudeLines[i]->id, latitudeLines[i]);
     }
-    for (int i = 0; i < verticalWays.size(); i++){
-        theWays.emplace(verticalWays[i]->id, verticalWays[i]);
+    for (int i = 0; i < longitudeLines.size(); i++){
+        theWays.emplace(longitudeLines[i]->id, longitudeLines[i]);
     }
 
 }
@@ -1315,15 +1333,125 @@ void Game::generateGridLines(){
 inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }
 
 double Game::contourLineInterpolate(vec2 xy){
+    // Get closest contour lines to xy
     vector<double> distances;
-    vector<Way*> closests = findNClosestWays(2, xy, OSMElement::CONTOUR, distances);
+    vector<vec2> directions;
+    vector<std::pair<Node*, Node*>> nodePairs;
+    vector<Way*> closests = findNClosestWays(5, xy, OSMElement::CONTOUR, distances, directions,nodePairs);
 
-    double sum = distances[0] + distances[1];
+//    int lerpedWay = 1;
+    int lerpedWay = getLerpedContourLines(xy, closests, directions, nodePairs);
+    if (lerpedWay != -1) closests[1] = closests[lerpedWay];
+    else{
+        lerpedWay = 1;
+//        return stod(closests[0]->getValue("ele"));
+        unsuccessfulInterpolations++;
+    }
+
+    // prepare for lerping
+    double sum = distances[0] + distances[lerpedWay];
     double t = 1 - distances[0] / sum;
 
+    // get found contour lines elevations
     std::vector<double> heights;
     heights.push_back(stod(closests[0]->getValue("ele")));
-    heights.push_back(stod(closests[1]->getValue("ele")));
+    heights.push_back(stod(closests[lerpedWay]->getValue("ele")));
 
-    return lerp(heights[0], heights[1], distances[0]);
+    return lerp(heights[0], heights[1], distances[0]) / 25000;
+}
+
+
+int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directions, vector<std::pair<Node*, Node*>> nodePairs){
+//    Node* n0;
+//    Node* n1;
+//    bool first = true;
+//    bool inside = true;
+//    int counter = 1;
+//    double initEle = stod(ways[0]->getValue("ele"));
+//    for (auto nodeIt = ways[0]->nodes.begin() ; nodeIt != ways[0]->nodes.end(); ++nodeIt){
+//        if (first){
+//            n0 = *nodeIt;
+//            first = false;
+//            continue;
+//        }
+//        if ((counter % 2) == 0) n0 = n1;
+//        else{
+//            n1 = *nodeIt;
+//            vec3 v0 = vec3(n1->latitude - n0->latitude, n1->longitude - n0 -> longitude,0);
+//            vec3 v1 = vec3(n1->latitude - xy.x, n1->longitude - xy.y,0);
+//            vec3 v2 = cross(v0, v1);
+
+//            if (v2.z > 0){
+//                inside = false;
+//                break;
+//            }
+//        }
+
+//        counter = (counter + 1) % 2;
+//        }
+
+
+//    for (int i = 1; i < ways.size(); i++){
+//        double runningEle = stod(ways[i]->getValue("ele"));
+//        if (inside && (runningEle > initEle)){ return i; }
+//        else if(!inside && (runningEle < initEle)) return i;
+//    }
+
+    //Linesegment between our search point and the closest point on the candidate contour line.
+    LineSegment L0;
+    L0.p0 = xy;
+
+//    PRINTVEC2VECTOR(directions);
+    //Iterate on all candidate contours
+    for (int i = 1; i < ways.size(); i++){
+
+        L0.p1 = xy + directions[i];
+
+        //running linesegment on the absolute known nearest contour
+        LineSegment L1;
+
+        // The running nodes forming segments on the known nearest contour
+        Node* n0;
+        Node* n1;
+
+        // needed to start actually counting at 1
+        int counter = 1;
+
+        int numOfIntersections = 0;
+        bool intersects = false;
+        bool first = true;
+        // Loop on all nodes on the best contour
+        for (auto nodeIt = ways[0]->nodes.begin() ; nodeIt != ways[0]->nodes.end(); ++nodeIt){
+            if (first){
+                n0 = *nodeIt;
+                first = false;
+                continue;
+            }
+
+            if ((counter % 2) == 0) n0 = n1; //start a new linesegment
+            else{
+                n1 = *nodeIt;
+
+
+                //lat long still flipped :(
+                L1.p0 = vec2(n0->longitude, n0->latitude);
+                L1.p1 = vec2(n1->longitude, n1->latitude);
+//                PRINTELEMENT(L0);
+//                PRINTELEMENT(L1);
+                if (L0.intersects(L1)){
+//                    PRINTSTRING("INTERSECTS!");
+                    intersects = true;
+                    numOfIntersections++;
+                    break; // we now know this way isnt viable as it intersected the nearest. we can stop looping around
+                }
+            }
+
+            counter = (counter + 1) % 2;
+        }
+        if (!intersects) return i;
+        // an even number of intersections means we were inside the polygon. maybe?
+//        if ((numOfIntersections % 2) == 0) return i;
+    }
+
+    return -1; // method didnt really work .revert to default.
 }

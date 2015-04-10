@@ -6,7 +6,7 @@ Node::Node(){
 
 }
 
-Node::Node(std::string _id, float _latitude, float _longitude){
+Node::Node(std::string _id, float _longitude, float _latitude){
     this->id = _id;
     this->latitude = _latitude;
     this->longitude = _longitude;

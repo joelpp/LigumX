@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<osm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="0.6" generator="Srtm2Osm" upload="false">
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="Osmosis SNAPSHOT-r26564">
   <bound box="45.47500,-73.65500,45.53500,-73.58500" origin="Osmosis SNAPSHOT-r26564"/>
   <node id="9223372036854775807" timestamp="2015-04-06T16:42:33.9416142Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.475416666666668" lon="-73.589166666666671" version="1" changeset="13341398" />
   <node id="9223372036854775806" timestamp="2015-04-06T16:42:33.9436143Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.47625" lon="-73.58875" version="1" changeset="13341398" />

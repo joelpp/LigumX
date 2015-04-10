@@ -113,14 +113,14 @@ void Camera::updateMVPMatrix()
 //    mvpMat = perspective((float)PI/3.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
 
 
-    static unsigned int count = 0;
-    if(++count % 100 == 0) {
-        count = 0;
-        std::cout << "=================" << std::endl;
-        std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-        std::cout << frontVec.x << " " << frontVec.y << " " << frontVec.z << std::endl;
-        std::cout << upVec.x << " " << upVec.y << " " << upVec.z << std::endl;
-    }
+//    static unsigned int count = 0;
+//    if(++count % 100 == 0) {
+//        count = 0;
+//        std::cout << "=================" << std::endl;
+//        std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+//        std::cout << frontVec.x << " " << frontVec.y << " " << frontVec.z << std::endl;
+//        std::cout << upVec.x << " " << upVec.y << " " << upVec.z << std::endl;
+//    }
 
 }
 
