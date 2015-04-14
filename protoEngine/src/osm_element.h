@@ -18,18 +18,19 @@ public:
                        HIGHWAY_TERTIARY = 1 << 3,
                        HIGHWAY_RESIDENTIAL = 1 << 4,
                        HIGHWAY_SERVICE = 1 << 5,
+                       HIGHWAY_UNCLASSIFIED = 1 << 6,
 
-                       CONTOUR = 1 << 6,
+                       CONTOUR = 1 << 10,
 
-                       BUILDING_UNMARKED = 1 << 7,
-                       BUILDING_SCHOOL = 1 << 8,
-                       BUILDING_ADDRINTERP = 1 << 9,
+                       BUILDING_UNMARKED = 1 << 15,
+                       BUILDING_SCHOOL = 1 << 16,
+                       BUILDING_ADDRINTERP = 1 << 17,
 
-                       LEISURE_PARK = 1 << 10,
-                       NATURAL_WOOD = 1 << 11,
+                       LEISURE_PARK = 1 << 22,
+                       NATURAL_WOOD = 1 << 23,
 
-                       RAILWAY_SUBWAY = 1 << 12,
-                       ADDR_INTERPOLATION = 1 << 13,
+                       RAILWAY_SUBWAY = 1 << 27,
+                       ADDR_INTERPOLATION = 1 << 28,
                        NOT_IMPLEMENTED = 1 << 29,
                        ANY_TYPE = 1 << 30,
                        GRID_LINE = 1 << 31} ;

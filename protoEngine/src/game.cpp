@@ -144,6 +144,7 @@ void Game::init()
 
     myBar = TwNewBar("NameOfMyTweakBar");
     TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &fancyDisplayMode, NULL);
+    TwAddVarRW(myBar, "Draw Building Sides", TW_TYPE_BOOLCPP, &drawBuildingSides, NULL);
 
     TwEnumVal CameraTypeEV[] = { {Camera::CameraType::AIRPLANE, "Airplane"}, {Camera::CameraType::AROUND_TARGET, "Around Target"}, {Camera::CameraType::CYLINDRICAL, "Cynlindrical"}, {Camera::CameraType::TOP_2D, "Top 2D"}, {Camera::CameraType::TOP_3D, "Top 3D"} };
     TwType CameraTwType;
@@ -155,6 +156,10 @@ void Game::init()
     ControlTwType = TwDefineEnum("ControlType", ControlTypeEV, 3);
     TwAddVarRW(myBar, "Control Type", ControlTwType, &(camera->controlType), NULL);
 
+    TwAddVarRW(myBar, "Camera Speed", TW_TYPE_FLOAT, &camera->keyMovementSpeed, NULL);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
 
 
@@ -166,17 +171,25 @@ void Game::init()
     vector<vec3> waysNodesColors;
     vector<vec2> roadsPositions;
     vector<vec2> buildingTrianglePositions;
+    vector<vec2> buildingSides;
+    vector<float> buildingLoopLengths;
+
     interpolateContours = false;
-    TIME(loadXML("../data/srtm.xml"));
-    TIME(loadXML("../data/result.xml"));
+//    TIME(loadXML("../data/srtm.xml"));
+
+
+    TIME(loadXML("../data/rouyn.xml"));
     TIME(extrudeAddrInterps());
 
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 //    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0.1));
     camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + vec3(coordinateInflationFactor / 10.f)*camera->frontVec);
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
+
 //    TIME(generateGridLines());
-    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
+
+    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths));
+
 
     //=============================================================================
     // Screen quad data.
@@ -191,6 +204,7 @@ void Game::init()
 
     nbWaysVertices = waysNodesPositions.size();
     nbBuildingTriangles = buildingTrianglePositions.size();
+    nbBuildingLines = buildingSides.size();
 
     glCreateBuffers(1, &glidWaysPositions);
     glNamedBufferStorage(glidWaysPositions, nbWaysVertices * 3 * 4, // nbWaysNodes * vec2 * float
@@ -237,6 +251,20 @@ void Game::init()
                          GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                          GL_MAP_WRITE_BIT);
     glNamedBufferSubData(glidBufferBuildingTriangleVertices, 0, nbBuildingTriangles * 2 * 4, buildingTrianglePositions.data());
+
+    glCreateBuffers(1, &glidBufferBuildingLines);
+    glNamedBufferStorage(glidBufferBuildingLines, nbBuildingLines * 2 * 4, // nbWaysNodes * vec2 * float
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidBufferBuildingLines, 0, nbBuildingLines * 2 * 4, buildingSides.data());
+
+    glCreateBuffers(1, &glidBufferBuildingLoopLengths);
+    glNamedBufferStorage(glidBufferBuildingLoopLengths, nbBuildingLines * 1 * 4, // nbWaysNodes * vec2 * float
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidBufferBuildingLoopLengths, 0, nbBuildingLines * 1 * 4, buildingLoopLengths.data());
 
     //=============================================================================
     // Textures, framebuffer, renderbuffer
@@ -518,6 +546,7 @@ void Game::init()
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
             vertexShaderSource, true);
 
+
     ProgramPipeline::ShaderProgram* pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
             fragmentShaderSource, true);
@@ -535,6 +564,66 @@ void Game::init()
     }
 
 
+    //--------------------------------------------------------------------------
+    // building sides pipeline
+    //--------------------------------------------------------------------------
+
+    {
+    const char* vertexShaderSource = " \
+        #version 430 core\n \
+        in layout(location=0) vec2 pos;\n \
+        in layout (location=1) float distance;\n \
+        uniform mat4 vpMat;\n \
+        out gl_PerVertex {\n \
+            vec4 gl_Position;\n \
+        };\n \
+        out float vDistance;\n \
+        void main() {\n \
+            gl_Position = vec4(pos, 0, 1);\n \
+            vDistance = distance;\n \
+        }";
+
+    const char* fragmentShaderSource = " \
+        #version 430 core\n \
+        in vec2 gTexCoord;\n \
+//        uniform layout(location=0) sampler2D sampler;\n \
+        out vec3 color;\n \
+        void main() {\n \
+//            vec2 coord = mod(500*texCoord, 1);\n \
+            //color = vec3(coord.x, coord.y,1);\n \
+//            color = texture(sampler, coord).xyz;\n \
+            color = vec3(gTexCoord.x, gTexCoord.y, 0.5);\n \
+        }";
+
+    ProgramPipeline::ShaderProgram* pVertexShader =
+            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+            vertexShaderSource, true);
+
+    ProgramPipeline::ShaderProgram* pGeometryShader =
+            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+            "../src/shaders/buildingSides.gsh", false);
+
+    ProgramPipeline::ShaderProgram* pFragmentShader =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource, true);
+
+
+
+    pPipelineBuildingSides = new ProgramPipeline();
+    pPipelineBuildingSides->useVertexShader(pVertexShader);
+    pPipelineBuildingSides->useGeometryShader(pGeometryShader);
+    pPipelineBuildingSides->useFragmentShader(pFragmentShader);
+
+    // VAO
+    glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 0, glidBufferBuildingLines, 0, 2*4);
+    glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 1);
+    glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 1, glidBufferBuildingLoopLengths, 0, 1*4);
+    glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
+    }
+
+
 
 }
 
@@ -546,7 +635,7 @@ void Game::mainLoop()
 
     if(!fancyDisplayMode) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // draw lines
         pPipelineLines->usePipeline();
         glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
@@ -581,16 +670,23 @@ void Game::mainLoop()
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 //                glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         pPipelineScreenQuad->usePipeline();
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
 //        // draw buildings
-        glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
-        pPipelineBuildings->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
-//        glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
-        glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
+        if(!drawBuildingSides) {
+            glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
+            pPipelineBuildings->usePipeline();
+            glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+//            glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
+            glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
+        } else {
+            pPipelineBuildingSides->usePipeline();
+            glProgramUniformMatrix4fv(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+            glDrawArrays(GL_LINES, 0, nbBuildingLines);
+        }
     }
 
     if(showTweakBar) TwDraw();
@@ -800,7 +896,9 @@ void Game::loadXML(string path){
 void Game::fillBuffers(vector<vec3> *waysNodesPositions,
                        vector<vec3> *waysNodesColors,
                        vector<vec2> *roadsPositions,
-                       vector<vec2> *buildingTrianglePositions){
+                       vector<vec2> *buildingTrianglePositions,
+                       vector<vec2> *buildingLines,
+                       vector<float> *buildingLinesTexCoords){
     bool first;
     bool second;
     vec3 white = vec3(1.0f,1.0f,1.0f);
@@ -897,10 +995,18 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
             bool failedLoop;
             for(int clockwiseness=-1; clockwiseness<=1; clockwiseness += 2) {
 
-                // copy node loop (not repeating the last node)
+                // copy node loop (not repeating the last node) and
+                // add lines to buildingLines
                 vector<Node*> loopNodes;
+                float distance = 0;
                 for(auto n = way->nodes.begin(); n != way->nodes.end()-1; ++n) {
                     loopNodes.push_back(*n);
+                    buildingLines->push_back(vec2((*n)->longitude, (*n)->latitude));
+                    buildingLines->push_back(vec2((*(n+1))->longitude, (*(n+1))->latitude));
+                    buildingLinesTexCoords->push_back(float(distance));
+                    distance += glm::distance(vec2((*n)->longitude, (*n)->latitude),
+                                              vec2((*(n+1))->longitude, (*(n+1))->latitude));
+                    buildingLinesTexCoords->push_back(float(distance));
                 }
 
                 unsigned int nbLoops = 0;
@@ -1197,7 +1303,8 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
         else if (value.compare("secondary") == 0) return OSMElement::HIGHWAY_SECONDARY;
         else if (value.compare("tertiary") == 0) return OSMElement::HIGHWAY_TERTIARY;
         else if (value.compare("residential") == 0) return OSMElement::HIGHWAY_RESIDENTIAL;
-//        if (value.compare("service") == 0) return OSMElement::HIGHWAY_SERVICE;
+        else if (value.compare("service") == 0) return OSMElement::HIGHWAY_SERVICE;
+        else if (value.compare("unclassified") == 0) return OSMElement::HIGHWAY_UNCLASSIFIED;
     }
     else if (key.compare("natural") == 0){
         if (value.compare("wood") == 0) return OSMElement::NATURAL_WOOD;
@@ -1262,10 +1369,12 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
 
 vec3 Game::colorFromTags(Way* way){
     if (way->eType == OSMElement::HIGHWAY_TRUNK) return vec3(1,1,1);
-    else if (way->eType == OSMElement::HIGHWAY_PRIMARY) return vec3(0.8,0.8,0.8);
-    else if (way->eType == OSMElement::HIGHWAY_SECONDARY) return vec3(0.7,0.7,0.7);
-    else if (way->eType == OSMElement::HIGHWAY_TERTIARY) return vec3(0.6,0.6,0.6);
-    else if (way->eType == OSMElement::HIGHWAY_RESIDENTIAL) return vec3(0.5,0.5,0.5);
+    else if (way->eType == OSMElement::HIGHWAY_PRIMARY) return vec3(0.9,0.9,0.9);
+    else if (way->eType == OSMElement::HIGHWAY_SECONDARY) return vec3(0.8,0.8,0.8);
+    else if (way->eType == OSMElement::HIGHWAY_TERTIARY) return vec3(0.7,0.7,0.7);
+    else if (way->eType == OSMElement::HIGHWAY_RESIDENTIAL) return vec3(0.6,0.6,0.6);
+    else if (way->eType == OSMElement::HIGHWAY_UNCLASSIFIED) return vec3(0.5,0.5,0.5);
+    else if (way->eType == OSMElement::HIGHWAY_SERVICE) return vec3(0.4,0.4,0.4);
     else if (way->eType == OSMElement::BUILDING_UNMARKED) return vec3(0,0,1);
     else if (way->eType == OSMElement::BUILDING_SCHOOL) return vec3(0,0,1);
     else if (way->eType == OSMElement::BUILDING_ADDRINTERP) return vec3(1,0,0);
@@ -1477,7 +1586,7 @@ void Game::extrudeAddrInterps(){
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt) nodes.push_back(*nodeIt);
 
         // We only want to look at roads
-        int filter = OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_PRIMARY | OSMElement::HIGHWAY_TRUNK | OSMElement::HIGHWAY_SERVICE;
+        int filter = OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_PRIMARY | OSMElement::HIGHWAY_TRUNK | OSMElement::HIGHWAY_SERVICE | OSMElement::HIGHWAY_UNCLASSIFIED;
 
         // Preparing road query...
         vector<vector<vec2> > directions;
@@ -1532,7 +1641,7 @@ void Game::extrudeAddrInterps(){
         buildingWay->addRef(node3);
         buildingWay->addRef(nodes[0]);
         buildingWay->addRef(nodes[1]);
-        buildingWay->eType = OSMElement::BUILDING_ADDRINTERP;
+        buildingWay->eType = OSMElement::BUILDING_UNMARKED;
         buildingWay->id = string("ADDR_INTERP_BUILDING").append(std::to_string(counter));
 
         // Store the new building

@@ -31,7 +31,15 @@ public:
     void mainLoop();
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
     void loadXML(std::string path);
-    void fillBuffers(std::vector<glm::vec3> *waysNodesPositions, std::vector<glm::vec3> *waysNodesColors, std::vector<glm::vec2> *roadsPositions, std::vector<glm::vec2>* buildingTrianglePositions);
+
+    void fillBuffers(std::vector<glm::vec3> *waysNodesPositions,
+                     std::vector<glm::vec3> *waysNodesColors,
+                     std::vector<glm::vec2> *roadsPositions,
+                     std::vector<glm::vec2> *buildingTrianglePositions,
+                     std::vector<glm::vec2> *buildingLines,
+                     std::vector<float> *buildingLinesTexCoords);
+
+
     GLFWwindow* pWindow;
     Node* findClosestNode(glm::vec2 xy);
     std::vector<Way*> Game::findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances, std::vector<glm::vec2> &directions, std::vector<std::pair<Node*, Node*> > &_nodePairs);
@@ -77,6 +85,7 @@ public:
     ProgramPipeline* pPipelineRoads;
     ProgramPipeline* pPipelineScreenQuad;
     ProgramPipeline* pPipelineBuildings;
+    ProgramPipeline* pPipelineBuildingSides;
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
     ProgramPipeline::ShaderProgram* pGeometryShader2;
@@ -97,6 +106,9 @@ public:
     GLuint glidScreenQuadTexCoords;
     GLuint glidBufferBuildingTriangleVertices;
     unsigned int nbBuildingTriangles;
+    GLuint glidBufferBuildingLines;
+    unsigned int nbBuildingLines;
+    GLuint glidBufferBuildingLoopLengths;
 
     // camera
     Camera* camera;
@@ -119,6 +131,7 @@ public:
 
     bool fancyDisplayMode;
     bool showTweakBar;
+    bool drawBuildingSides;
     TwBar *myBar;
     struct WaySelection{
         Way* way;
