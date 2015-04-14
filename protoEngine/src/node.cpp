@@ -2,7 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 Node::Node(){
-
+    this->elevation = 0;
 
 }
 
@@ -10,6 +10,7 @@ Node::Node(std::string _id, float _longitude, float _latitude){
     this->id = _id;
     this->latitude = _latitude;
     this->longitude = _longitude;
+    this->elevation = 0;
 //    this->tags = unordered_map<std::string, std::string>();
 }
 

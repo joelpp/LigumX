@@ -23,15 +23,16 @@ public:
 
                        BUILDING_UNMARKED = 1 << 7,
                        BUILDING_SCHOOL = 1 << 8,
+                       BUILDING_ADDRINTERP = 1 << 9,
 
-                       LEISURE_PARK = 1 << 9,
-                       NATURAL_WOOD = 1 << 10,
+                       LEISURE_PARK = 1 << 10,
+                       NATURAL_WOOD = 1 << 11,
 
-                       RAILWAY_SUBWAY = 1 << 11,
-
-                       NOT_IMPLEMENTED = 1 << 12,
-                       ANY_TYPE = 1 << 13,
-                       GRID_LINE = 1 << 14} ;
+                       RAILWAY_SUBWAY = 1 << 12,
+                       ADDR_INTERPOLATION = 1 << 13,
+                       NOT_IMPLEMENTED = 1 << 29,
+                       ANY_TYPE = 1 << 30,
+                       GRID_LINE = 1 << 31} ;
 
     std::unordered_map<std::string, std::string> tags;
     std::unordered_map<int, int> itags;

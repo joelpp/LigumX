@@ -169,11 +169,13 @@ void Game::init()
     interpolateContours = false;
     TIME(loadXML("../data/srtm.xml"));
     TIME(loadXML("../data/result.xml"));
+    TIME(extrudeAddrInterps());
+
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 //    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0.1));
     camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + vec3(coordinateInflationFactor / 10.f)*camera->frontVec);
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
-    TIME(generateGridLines());
+//    TIME(generateGridLines());
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions));
 
     //=============================================================================
@@ -822,6 +824,7 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
 
         color = colorFromTags(way);
         if (color == vec3(-1,-1,-1)) continue;
+        if (way->eType == OSMElement::ADDR_INTERPOLATION) continue;
 
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
@@ -882,7 +885,7 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
         // triangulate building loops
         Node first(*(way->nodes.front()));
         Node last(*(way->nodes.back()));
-        if(way->hasTag("building") && way->nodes.size() >= 3 && first == last) {
+        if((way->eType==OSMElement::BUILDING_UNMARKED || way->eType==OSMElement::BUILDING_ADDRINTERP) && way->nodes.size() >= 3 && first == last) {
 
 //            cout << "building loop" << endl;
 
@@ -1207,7 +1210,7 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
     else if (key.compare("leisure") == 0){
         if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
     }
-
+    else if (key.compare("addr:interpolation") == 0){ return OSMElement::ADDR_INTERPOLATION; }
     return OSMElement::NOT_IMPLEMENTED;
 
 }
@@ -1265,9 +1268,11 @@ vec3 Game::colorFromTags(Way* way){
     else if (way->eType == OSMElement::HIGHWAY_RESIDENTIAL) return vec3(0.5,0.5,0.5);
     else if (way->eType == OSMElement::BUILDING_UNMARKED) return vec3(0,0,1);
     else if (way->eType == OSMElement::BUILDING_SCHOOL) return vec3(0,0,1);
+    else if (way->eType == OSMElement::BUILDING_ADDRINTERP) return vec3(1,0,0);
     else if (way->eType == OSMElement::RAILWAY_SUBWAY) return vec3(1,0,1);
     else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
     else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
+    else if (way->eType == OSMElement::ADDR_INTERPOLATION) return vec3(0,0,0);
     else if (way->eType == OSMElement::CONTOUR) return vec3(0,0.5,0.5);
     else if (way->eType == OSMElement::GRID_LINE) return vec3(0.4,0.4,0.4);
 
@@ -1442,16 +1447,106 @@ int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directi
 //                    PRINTSTRING("INTERSECTS!");
                     intersects = true;
                     numOfIntersections++;
-                    break; // we now know this way isnt viable as it intersected the nearest. we can stop looping around
+//                    break; // we now know this way isnt viable as it intersected the nearest. we can stop looping around
                 }
             }
 
             counter = (counter + 1) % 2;
         }
-        if (!intersects) return i;
+//        if (!intersects) return i;
         // an even number of intersections means we were inside the polygon. maybe?
-//        if ((numOfIntersections % 2) == 0) return i;
+        if ((numOfIntersections % 2) == 0) return i;
     }
 
     return -1; // method didnt really work .revert to default.
+}
+
+// Convert the address interpolation ways into building polygons
+void Game::extrudeAddrInterps(){
+    int counter = 0;
+
+    // Iterate on all ways
+    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+        Way* way = it->second;
+
+        // Keep only ADDR_INTERPOLATIONs
+        if (way->eType != OSMElement::ADDR_INTERPOLATION) continue;
+
+        vector<Node*> nodes;
+        // Store this way's 2 nodes
+        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt) nodes.push_back(*nodeIt);
+
+        // We only want to look at roads
+        int filter = OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_PRIMARY | OSMElement::HIGHWAY_TRUNK | OSMElement::HIGHWAY_SERVICE;
+
+        // Preparing road query...
+        vector<vector<vec2> > directions;
+        directions.push_back(vector<vec2>());
+        directions.push_back(vector<vec2>());
+
+        vector<std::pair<Node*, Node*>> nodePairs;
+        vector<vector<double> > distances;
+        distances.push_back(vector<double>());
+        distances.push_back(vector<double>());
+
+        // Find the closest roads to this ADDR_INTERP
+        vector<Way*> firstNodeWays = findNClosestWays(5, vec2(nodes[0]->longitude, nodes[0]->latitude), filter, distances[0], directions[0], nodePairs);
+        vector<Way*> secondNodeWays = findNClosestWays(5, vec2(nodes[1]->longitude, nodes[1]->latitude), filter, distances[1], directions[1], nodePairs);
+
+        // Find the closest way that both nodes share (should generally be the one parallel to the addr_interp)
+        // Maybe better to look at dot products? This works ok for now
+        pair<int, int> commonIndices = findCommonWay(firstNodeWays, secondNodeWays);
+
+        int i = commonIndices.first;
+        int j = commonIndices.second;
+
+        // Multiplicative factor related to the polygon size
+        double factor = 1;
+
+        //If finding the common way didnt work just move on
+        if (i == -1) continue;
+
+        // Move on to the next if the common road is too far from one of the nodes
+        if (distances[0][i] > 0.0002 * factor) continue;
+        if (distances[1][j] > 0.0002 * factor) continue;
+
+        // Move on to next if the nodes are on different sides of the common road
+        if (dot(directions[0][i], directions[1][j]) < 0) continue;
+
+
+        // Create the new nodes by moving from each edge of the ADDR_INTERP, perpendicularly to the road
+        Node* node3 = new Node();
+        node3->id = string("ADDR_INTERP_NODE3_").append(std::to_string(counter));
+        node3->longitude = nodes[0]->longitude - directions[0][i].x * factor;
+        node3->latitude = nodes[0] -> latitude - directions[0][i].y * factor;
+
+        Node* node4 = new Node();
+        node4->id = string("ADDR_INTERP_NODE4_").append(std::to_string(counter));
+        node4->longitude = nodes[1]->longitude - directions[0][i].x * factor;
+        node4->latitude = nodes[1]->latitude - directions[0][i].y * factor;
+
+        // Create the new building
+        Way* buildingWay  = new Way();
+        buildingWay->addRef(nodes[1]);
+        buildingWay->addRef(node4);
+        buildingWay->addRef(node3);
+        buildingWay->addRef(nodes[0]);
+        buildingWay->addRef(nodes[1]);
+        buildingWay->eType = OSMElement::BUILDING_ADDRINTERP;
+        buildingWay->id = string("ADDR_INTERP_BUILDING").append(std::to_string(counter));
+
+        // Store the new building
+        theWays.emplace(buildingWay->id, buildingWay);
+        counter++;
+    }
+}
+
+pair<int, int> Game::findCommonWay(vector<Way*> firstNodeWays, vector<Way*> secondNodeWays){
+    for (int i = 0; i < firstNodeWays.size(); i++){
+        for (int j = 0; j < secondNodeWays.size(); j++){
+            if (firstNodeWays[i]->id.compare(secondNodeWays[j]->id) == 0) return pair<int, int>(i,j);
+        }
+    }
+    PRINTSTRING("Couldnt find suitable similar ways!");
+    return pair<int, int>(-1,-1);
 }

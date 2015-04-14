@@ -42,6 +42,8 @@ public:
     void generateGridLines();
     double contourLineInterpolate(glm::vec2 xy);
     int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, std::vector<std::pair<Node*, Node*>> nodePairs);
+    void extrudeAddrInterps();
+    std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
