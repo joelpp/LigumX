@@ -28,9 +28,10 @@ public:
                        NATURAL_WOOD = 1 << 10,
 
                        RAILWAY_SUBWAY = 1 << 11,
+                       ADDR_INTERP = 1 << 12,
 
-                       NOT_IMPLEMENTED = 1 << 12,
-                       ANY_TYPE = 1 << 13} ;
+                       NOT_IMPLEMENTED = 1 << 30,
+                       ANY_TYPE = 1 << 31} ;
 
     std::unordered_map<std::string, std::string> tags;
     std::unordered_map<int, int> itags;

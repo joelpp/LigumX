@@ -509,12 +509,89 @@ void Game::init()
 
 
 
+    // Entities pipeline
+    {
+    const char* vertexShaderSource = " \
+        #version 430 core\n \
+        in layout(location=0) vec2 pos;\n \
+        in layout(location=1) vec3 color;\n \
+        uniform mat4 vpMat;\n \
+        out gl_PerVertex {\n \
+            vec4 gl_Position;\n \
+        };\n \
+        out vec3 vColor;\n \
+        void main() {\n \
+            gl_Position = vpMat * vec4(pos, 0, 1);\n \
+            vColor = color;\n \
+        }";
+
+    const char* fragmentShaderSource = " \
+        #version 430 core\n \
+        in vec3 vColor;\n \
+        out vec3 color;\n \
+        void main() {\n \
+            color = vColor;\n \
+        }";
+
+    ProgramPipeline::ShaderProgram* pVertexShader =
+            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+            vertexShaderSource, true);
+
+    ProgramPipeline::ShaderProgram* pFragmentShader =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource, true);
+
+    pPipelineEntities = new ProgramPipeline();
+    pPipelineEntities->useVertexShader(pVertexShader);
+    pPipelineEntities->useFragmentShader(pFragmentShader);
+
+
+//    vector<vec2> entitiesPositions;
+    vector<vec3> entitiesColors;
+    angle = 0.f; force = 0.f;
+    turning = false;
+
+    vec2 wPos(-73.6205, 45.5015);
+    vec2 wPos2(-73.6204, 45.5015);
+    entitiesPositions[0] = wPos;
+    entitiesPositions[1] = wPos2;
+    entitiesColors.push_back(vec3(1,0,0));
+    entitiesColors.push_back(vec3(1,0,0));
+
+   nbEntities = 2;//entitiesPositions.size();
+
+    glCreateBuffers(1, &glidEntitiesPositions);
+    glNamedBufferStorage(glidEntitiesPositions, nbEntities * 2 * sizeof(float),
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidEntitiesPositions, 0, nbEntities * 2 * sizeof(float), entitiesPositions);
+
+    glCreateBuffers(1, &glidEntitiesColors);
+    glNamedBufferStorage(glidEntitiesColors, nbEntities * 3 * sizeof(float),
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(glidEntitiesColors, 0, nbEntities * 3 * sizeof(float), entitiesColors.data());
+
+    glEnableVertexArrayAttrib(pPipelineEntities->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineEntities->glidVao, 0, glidEntitiesPositions, 0, 2*sizeof(float));
+    glVertexArrayAttribFormat(pPipelineEntities->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glEnableVertexArrayAttrib(pPipelineEntities->glidVao, 1);
+    glVertexArrayVertexBuffer(pPipelineEntities->glidVao, 1, glidEntitiesColors, 0, 3*sizeof(float));
+    glVertexArrayAttribFormat(pPipelineEntities->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    }
 }
 
 
 void Game::mainLoop()
 {
+    static double dt = 0.0;
+    double curr_time = 0.01;
+
     camera->moveFromUserInput(pWindow);
+    updatePhysics(dt);
+
 
     if(showWhat) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -524,6 +601,12 @@ void Game::mainLoop()
         glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
         glDrawArrays(GL_LINES, 0, nbWaysVertices);
 //        glDrawArrays(GL_POINTS, 0, nbWaysVertices);
+
+        // draw entities
+        pPipelineEntities->usePipeline();
+        glProgramUniformMatrix4fv(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        glDrawArrays(GL_LINES, 0, nbEntities);
+
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -563,12 +646,28 @@ void Game::mainLoop()
         glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
 //        glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
         glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
+
     }
     TwDraw();
-
+    dt = glfwGetTime() - curr_time;
 }
 
 
+void Game::updatePhysics(double dt) {
+    if(turning) {
+        angle += dt * 1.f * turning;
+        vec2 curr_angle(cosf(glm::radians(angle)), sinf(glm::radians(angle)));
+
+        acceleration = curr_angle * force;
+        velocity = acceleration * 1.f;
+        position = entitiesPositions[0];
+        position += velocity / (float)dt;
+        entitiesPositions[0] = position;
+
+        entitiesPositions[1] = entitiesPositions[0] + 0.0001f * curr_angle;
+        glNamedBufferSubData(glidEntitiesPositions, 0, nbEntities * 2 * sizeof(float), entitiesPositions);
+    }
+}
 
 void Game::insertDebugMessage(string message, GLenum severity, GLuint id)
 {
@@ -605,6 +704,22 @@ void Game::glfwKeyCallback(GLFWwindow* /*pGlfwWindow*/, int key, int /*scancode*
 {
     if(action == GLFW_PRESS){
         if (key == GLFW_KEY_SPACE) { game->showWhat = !game->showWhat; }
+        if (key == GLFW_KEY_ESCAPE) { game->running = false; }
+
+        if(key == GLFW_KEY_KP_4) { game->turning = 1; }
+        if(key == GLFW_KEY_KP_6) { game->turning = -1;}
+
+        if(key == GLFW_KEY_KP_8) { game->force = 1;}
+        if(key == GLFW_KEY_KP_5) { game->force = -1;}
+
+    }
+    if(action == GLFW_RELEASE) {
+        if((key == GLFW_KEY_KP_4 && game->turning == 1) || (key == GLFW_KEY_KP_6 && game->turning == -1)) {
+            game->turning = 0;
+        }
+        if((key == GLFW_KEY_KP_8 && game->force == 1) || (key == GLFW_KEY_KP_5 && game->force == -1)) {
+            game->force = 0;
+        }
     }
 }
 
@@ -623,6 +738,7 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
 
         if (closests[0] == NULL) return;
         TIME(game->updateSelectedWay(closests[0]));
+        PRINTVEC2(worldPos)
         PRINTELEMENTVECTOR(closests);
     }
     //Right Click
@@ -1164,6 +1280,9 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
     else if (key.compare("leisure") == 0){
         if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
     }
+    else if(key.compare("addr:interpolation") == 0)  {
+       /*if(key.compare("addr:street") == 0) */return OSMElement::ADDR_INTERP;
+    }
 
     return OSMElement::NOT_IMPLEMENTED;
 
@@ -1226,6 +1345,7 @@ vec3 Game::colorFromTags(Way* way){
     else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
     else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
     else if (way->eType == OSMElement::CONTOUR) return vec3(0.3,0.3,0.3);
+    else if (way->eType == OSMElement::ADDR_INTERP) return vec3(1.f,0.3f,0);
 
     else return vec3(-1,-1,-1);
 }
