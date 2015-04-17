@@ -19,7 +19,7 @@
 #include "relation.h"
 #include "texture.h"
 #include "filter.h"
-#include "LineSegment.h"
+#include "linesegment.h"
 
 
 class Game {
@@ -44,10 +44,10 @@ public:
 
     GLFWwindow* pWindow;
     Node* findClosestNode(glm::vec2 xy);
-    std::vector<Way*> Game::findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances, std::vector<glm::vec2> &directions, std::vector<std::pair<Node*, Node*> > &_nodePairs);
+    std::vector<Way*> findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances, std::vector<glm::vec2> &directions, std::vector<std::pair<Node*, Node*> > &_nodePairs);
     double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2, glm::vec2 &direction);
     void updateSelectedWay(Way* way);
-    OSMElement::ElementType Game::typeFromStrings(std::string key, std::string value);
+    OSMElement::ElementType typeFromStrings(std::string key, std::string value);
     glm::vec3 colorFromTags(Way* way);
 
     void generateGridLines();

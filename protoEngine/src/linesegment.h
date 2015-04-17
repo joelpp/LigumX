@@ -18,8 +18,8 @@ public:
     bool intersects(LineSegment other);
     LineSegment();
     LineSegment(vec2 p0, vec2 p1);
-    LineSegment::LineSegment(Node* n0, Node* n1);
-    LineSegment::LineSegment(Way* way);
+    LineSegment(Node* n0, Node* n1);
+    LineSegment(Way* way);
 
     std::string toString();
 };

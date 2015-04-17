@@ -1,5 +1,5 @@
 
-#include "LineSegment.h"
+#include "linesegment.h"
 
 LineSegment::LineSegment(){
 
