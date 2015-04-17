@@ -64,6 +64,9 @@ void Game::init()
     // Parameters, camera setup.
     //=============================================================================
     running = true;
+    windowWidth = 1600;
+    windowHeight = 1200;
+
     windowWidth = 800;
     windowHeight = 800;
     windowTitle = "LigumX";
@@ -76,6 +79,8 @@ void Game::init()
     selectedWay.way = NULL;
     unsuccessfulInterpolations = 0;
     coordinateInflationFactor = 1;
+    buildingHeight = 0.0001;
+    buildingSideScaleFactor = 1;
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
@@ -98,7 +103,9 @@ void Game::init()
     }
 
     // create GLFW window
+//    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
     pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
+
     glfwSetWindowPos(pWindow, 700, 200);
     glfwMakeContextCurrent(pWindow);
     if( pWindow == NULL )
@@ -157,6 +164,8 @@ void Game::init()
     TwAddVarRW(myBar, "Control Type", ControlTwType, &(camera->controlType), NULL);
 
     TwAddVarRW(myBar, "Camera Speed", TW_TYPE_FLOAT, &camera->keyMovementSpeed, NULL);
+    TwAddVarRW(myBar, "Building Height", TW_TYPE_FLOAT, &buildingHeight, NULL);
+    TwAddVarRW(myBar, "Building Side Scale", TW_TYPE_FLOAT, &buildingSideScaleFactor, NULL);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -168,6 +177,8 @@ void Game::init()
     //=============================================================================
 
     vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
+    vector<vec3> groundTrianglesPositions; // positions of nodes forming ways, possibly contains duplicates.
+
     vector<vec3> waysNodesColors;
     vector<vec2> roadsPositions;
     vector<vec2> buildingTrianglePositions;
@@ -175,103 +186,70 @@ void Game::init()
     vector<float> buildingLoopLengths;
 
     interpolateContours = false;
-//    TIME(loadXML("../data/srtm.xml"));
+//    TIME(loadXML("../data/rouyntopo.xml"));
+//    TIME(loadXML("../data/rouyn.xml"));
+
+    TIME(loadXML("../data/srtm.xml"));
+    TIME(loadXML("../data/result.xml"));
 
 
-    TIME(loadXML("../data/rouyn.xml"));
-    TIME(extrudeAddrInterps());
+//    TIME(extrudeAddrInterps());
+
+    PRINTINT(theWays.size());
 
     //TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions));
 //    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0.1));
-    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + vec3(coordinateInflationFactor / 10.f)*camera->frontVec);
+    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
 
-//    TIME(generateGridLines());
+    TIME(generateGridLines());
 
-    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths));
+    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths,&groundTrianglesPositions));
 
 
     //=============================================================================
     // Screen quad data.
     //=============================================================================
 
-    vec2 screenQuadPos[4] = {vec2(1,-1), vec2(1,1), vec2(-1,-1), vec2(-1,1)};
-    vec2 screenQuadTexCoords[4] = {vec2(1,0), vec2(1,1), vec2(0,0), vec2(0,1)};
+//    vec2 screenQuadPos[4] = {vec2(1,-1), vec2(1,1), vec2(-1,-1), vec2(-1,1)};
+//    vec2 screenQuadTexCoords[4] = {vec2(1,0), vec2(1,1), vec2(0,0), vec2(0,1)};
 
+    vector<vec2> screenQuadPos;
+    screenQuadPos.push_back(vec2(1,-1));
+    screenQuadPos.push_back(vec2(1,1));
+    screenQuadPos.push_back(vec2(-1,-1));
+    screenQuadPos.push_back(vec2(-1,1));
+
+    vector<vec2> screenQuadTexCoords;
+    screenQuadTexCoords.push_back(vec2(1,0));
+    screenQuadTexCoords.push_back(vec2(1,1));
+    screenQuadTexCoords.push_back(vec2(0,0));
+    screenQuadTexCoords.push_back(vec2(0,1));
     //=============================================================================
     // create and fill VBOs.
     //=============================================================================
 
     nbWaysVertices = waysNodesPositions.size();
+    nbGroundVertices = groundTrianglesPositions.size();
     nbBuildingTriangles = buildingTrianglePositions.size();
     nbBuildingLines = buildingSides.size();
 
-    glCreateBuffers(1, &glidWaysPositions);
-    glNamedBufferStorage(glidWaysPositions, nbWaysVertices * 3 * 4, // nbWaysNodes * vec2 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidWaysPositions, 0, nbWaysVertices * 3 * 4, waysNodesPositions.data());
-
-
-    glCreateBuffers(1, &glidWaysColors);
-    glNamedBufferStorage(glidWaysColors, nbWaysVertices * 3 * 4, // nbWaysNodes * vec3 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidWaysColors, 0, nbWaysVertices * 3 * 4, waysNodesColors.data());
-
-
-    glCreateBuffers(1, &glidBufferRoadsPositions);
-    glNamedBufferStorage(glidBufferRoadsPositions, roadsPositions.size() * 2 * 4, // nbWaysNodes * vec2 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidBufferRoadsPositions, 0, roadsPositions.size() * 2 * 4, roadsPositions.data());
-
-
-    glCreateBuffers(1, &glidScreenQuadPositions);
-    glNamedBufferStorage(glidScreenQuadPositions, 4 * 2 * 4, // nbWaysNodes * vec2 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidScreenQuadPositions, 0, 4 * 2 * 4, screenQuadPos);
-
-
-    glCreateBuffers(1, &glidScreenQuadTexCoords);
-    glNamedBufferStorage(glidScreenQuadTexCoords, 4 * 2 * 4, // nbWaysNodes * vec2 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidScreenQuadTexCoords, 0, 4 * 2 * 4, screenQuadTexCoords);
-
-    glCreateBuffers(1, &glidBufferBuildingTriangleVertices);
-    glNamedBufferStorage(glidBufferBuildingTriangleVertices, nbBuildingTriangles * 2 * 4, // nbWaysNodes * vec2 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidBufferBuildingTriangleVertices, 0, nbBuildingTriangles * 2 * 4, buildingTrianglePositions.data());
-
-    glCreateBuffers(1, &glidBufferBuildingLines);
-    glNamedBufferStorage(glidBufferBuildingLines, nbBuildingLines * 2 * 4, // nbWaysNodes * vec2 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidBufferBuildingLines, 0, nbBuildingLines * 2 * 4, buildingSides.data());
-
-    glCreateBuffers(1, &glidBufferBuildingLoopLengths);
-    glNamedBufferStorage(glidBufferBuildingLoopLengths, nbBuildingLines * 1 * 4, // nbWaysNodes * vec2 * float
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                         GL_MAP_WRITE_BIT);
-    glNamedBufferSubData(glidBufferBuildingLoopLengths, 0, nbBuildingLines * 1 * 4, buildingLoopLengths.data());
+    createGLBuffer(glidWaysPositions, waysNodesPositions);
+    createGLBuffer(glidWaysColors, waysNodesColors);
+    createGLBuffer(glidBufferRoadsPositions, roadsPositions);
+    createGLBuffer(glidBufferBuildingTriangleVertices, buildingTrianglePositions);
+    createGLBuffer(glidBufferBuildingLines, buildingSides);
+    createGLBuffer(glidBufferBuildingLoopLengths, buildingLoopLengths);
+    createGLBuffer(glidScreenQuadPositions, screenQuadPos);
+    createGLBuffer(glidScreenQuadTexCoords, screenQuadTexCoords);
+    createGLBuffer(glidGroundTrianglePositions, groundTrianglesPositions);
 
     //=============================================================================
     // Textures, framebuffer, renderbuffer
     //=============================================================================
 
 
-    pBuildingTex = new Texture("../data/face.png");
+    pBuildingTex = new Texture("../data/brickles.png");
 
 ////    pBuildingTex = new Texture("../data/face.png");
 
@@ -357,6 +335,55 @@ void Game::init()
     glEnableVertexArrayAttrib(pPipelineLines->glidVao, 1);
     glVertexArrayVertexBuffer(pPipelineLines->glidVao, 1, glidWaysColors, 0, 3*4);
     glVertexArrayAttribFormat(pPipelineLines->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    }
+
+    //--------------------------------------------------------------------------
+    // ground triangles pipeline
+    //--------------------------------------------------------------------------
+
+    {
+    const char* vertexShaderSource = " \
+        #version 430 core\n \
+        in layout(location=0) vec3 pos;\n \
+        \n \
+        uniform mat4 vpMat;\n \
+        out gl_PerVertex {\n \
+            vec4 gl_Position;\n \
+        };\n \
+        \n \
+        void main() {\n \
+            gl_Position = vpMat * vec4(pos, 1);\n \
+            \n \
+        }";
+
+    const char* fragmentShaderSource = " \
+        #version 430 core\n \
+        in vec3 vColor;\n \
+        out vec4 color;\n \
+        void main() {\n \
+            color = vec4(0.1,0.1,0.1,1.0);\n \
+        }";
+
+    ProgramPipeline::ShaderProgram* pVertexShader =
+            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+            vertexShaderSource, true);
+
+    ProgramPipeline::ShaderProgram* pFragmentShader =
+            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+            fragmentShaderSource, true);
+
+
+
+    pPipelineGround = new ProgramPipeline();
+    //pPipeline->useShaders({pVertexShader, pFragmentShader});
+    pPipelineGround->useVertexShader(pVertexShader);
+    pPipelineGround->useFragmentShader(pFragmentShader);
+
+    // VAO
+    glEnableVertexArrayAttrib(pPipelineGround->glidVao, 0);
+    glVertexArrayVertexBuffer(pPipelineGround->glidVao, 0, glidGroundTrianglePositions, 0, 3*4);
+    glVertexArrayAttribFormat(pPipelineGround->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+
     }
 
     //--------------------------------------------------------------------------
@@ -586,13 +613,13 @@ void Game::init()
     const char* fragmentShaderSource = " \
         #version 430 core\n \
         in vec2 gTexCoord;\n \
-//        uniform layout(location=0) sampler2D sampler;\n \
+        uniform layout(location=0) sampler2D sampler;\n \
         out vec3 color;\n \
         void main() {\n \
 //            vec2 coord = mod(500*texCoord, 1);\n \
             //color = vec3(coord.x, coord.y,1);\n \
-//            color = texture(sampler, coord).xyz;\n \
-            color = vec3(gTexCoord.x, gTexCoord.y, 0.5);\n \
+            color = texture(sampler, gTexCoord).xyz;\n \
+//            color = vec3(gTexCoord.x, gTexCoord.y, 0.5);\n \
         }";
 
     ProgramPipeline::ShaderProgram* pVertexShader =
@@ -636,10 +663,18 @@ void Game::mainLoop()
     if(!fancyDisplayMode) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+        // draw ground
+        pPipelineGround->usePipeline();
+        glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+        glDrawArrays(GL_TRIANGLES, 0, nbGroundVertices);
+
         // draw lines
         pPipelineLines->usePipeline();
         glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
         glDrawArrays(GL_LINES, 0, nbWaysVertices);
+
 //        glDrawArrays(GL_POINTS, 0, nbWaysVertices);
     } else {
         glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
@@ -683,8 +718,14 @@ void Game::mainLoop()
 //            glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
             glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
         } else {
+            glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
+
             pPipelineBuildingSides->usePipeline();
+
             glProgramUniformMatrix4fv(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+            glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uBuildingHeight"), buildingHeight);
+            glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uScaleFactor"), buildingSideScaleFactor);
+
             glDrawArrays(GL_LINES, 0, nbBuildingLines);
         }
     }
@@ -809,10 +850,10 @@ void Game::loadXML(string path){
             std::istringstream ss(box);
             std::string token;
 
-            std::getline(ss, token, ','); viewRectBottom = atof(token.c_str()) * coordinateInflationFactor;
-            std::getline(ss, token, ','); viewRectLeft = atof(token.c_str()) * coordinateInflationFactor;
-            std::getline(ss, token, ','); viewRectTop = atof(token.c_str()) * coordinateInflationFactor;
-            std::getline(ss, token, ','); viewRectRight = atof(token.c_str()) * coordinateInflationFactor;
+            std::getline(ss, token, ','); viewRectBottom = atof(token.c_str()) * coordinateInflationFactor - 45;
+            std::getline(ss, token, ','); viewRectLeft = atof(token.c_str()) * coordinateInflationFactor   + 73;
+            std::getline(ss, token, ','); viewRectTop = atof(token.c_str()) * coordinateInflationFactor    - 45;
+            std::getline(ss, token, ','); viewRectRight = atof(token.c_str()) * coordinateInflationFactor  + 73;
 
             PRINT(viewRectBottom);
             PRINT(viewRectLeft);
@@ -827,14 +868,14 @@ void Game::loadXML(string path){
 //            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
 
             string id = child->ToElement()->FindAttribute("id")->Value();
-            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) * coordinateInflationFactor;
-            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) * coordinateInflationFactor;
+            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) * coordinateInflationFactor  - 45;
+            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) * coordinateInflationFactor + 73;
             //double latitude = strtod(child->ToElement()->FindAttribute("lat")->Value(), NULL);
             //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
 
             Node* node = new Node(id, longitude, latitude);
-            node->elevation = 0;
-//            if (path.compare("../data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude));
+//            node->elevation = 0;
+            if (path.compare("../data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.05;
             for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
                 string key = tag->ToElement()->FindAttribute("k")->Value();
                 string value = tag->ToElement()->FindAttribute("v")->Value();
@@ -898,7 +939,8 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
                        vector<vec2> *roadsPositions,
                        vector<vec2> *buildingTrianglePositions,
                        vector<vec2> *buildingLines,
-                       vector<float> *buildingLinesTexCoords){
+                       vector<float> *buildingLinesTexCoords,
+                       vector<vec3> *groundTrianglesPositions){
     bool first;
     bool second;
     vec3 white = vec3(1.0f,1.0f,1.0f);
@@ -922,18 +964,22 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
 
         color = colorFromTags(way);
         if (color == vec3(-1,-1,-1)) continue;
-        if (way->eType == OSMElement::ADDR_INTERPOLATION) continue;
+//        if (way->eType == OSMElement::ADDR_INTERPOLATION) continue;
 
         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
             Node* node = *nodeIt;
             point = vec2(node->longitude, node->latitude);
             pt = vec3(node->longitude, node->latitude, node->elevation);
             if (!first){
-                waysNodesPositions->push_back(oldpt);
-                waysNodesColors->push_back(color);
-                waysNodesPositions->push_back(pt);
-                waysNodesColors->push_back(color);
 
+                if (way->eType == OSMElement::GRID_LINE){ continue; }
+
+                else{
+                    waysNodesPositions->push_back(oldpt);
+                    waysNodesColors->push_back(color);
+                    waysNodesPositions->push_back(pt);
+                    waysNodesColors->push_back(color);
+                }
                 // create roads subgroup
                 //if (way->hasTagAndValue("highway", "residential")) {
                 if (way->hasTag("highway")) {
@@ -1130,6 +1176,16 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
 
     cout << "succeeded loops: " << nbSuccessLoops << endl;
     cout << "failed loops: " << nbFailedLoops << endl;
+
+     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+        Way* way = it->second;
+        if (way->eType != OSMElement::GRID_LINE) continue;
+
+        groundTrianglesPositions->push_back(way->nodes[0]->getLatLongEle());
+        groundTrianglesPositions->push_back(way->nodes[1]->getLatLongEle());
+        groundTrianglesPositions->push_back(way->nodes[2]->getLatLongEle());
+
+     }
 }
 
 Node* Game::findClosestNode(vec2 xy){
@@ -1308,6 +1364,7 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
     }
     else if (key.compare("natural") == 0){
         if (value.compare("wood") == 0) return OSMElement::NATURAL_WOOD;
+        if (value.compare("water") == 0) return OSMElement::NATURAL_WATER;
     }
     else if (key.compare("building") == 0){
         if (value.compare("yes") == 0) return OSMElement::BUILDING_UNMARKED;
@@ -1377,19 +1434,25 @@ vec3 Game::colorFromTags(Way* way){
     else if (way->eType == OSMElement::HIGHWAY_SERVICE) return vec3(0.4,0.4,0.4);
     else if (way->eType == OSMElement::BUILDING_UNMARKED) return vec3(0,0,1);
     else if (way->eType == OSMElement::BUILDING_SCHOOL) return vec3(0,0,1);
-    else if (way->eType == OSMElement::BUILDING_ADDRINTERP) return vec3(1,0,0);
+    else if (way->eType == OSMElement::BUILDING_ADDRINTERP) return vec3(0.4,1,1);
     else if (way->eType == OSMElement::RAILWAY_SUBWAY) return vec3(1,0,1);
     else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
+    else if (way->eType == OSMElement::NATURAL_WATER) return vec3(0,0,0.5);
     else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
-    else if (way->eType == OSMElement::ADDR_INTERPOLATION) return vec3(0,0,0);
-    else if (way->eType == OSMElement::CONTOUR) return vec3(0,0.5,0.5);
+    else if (way->eType == OSMElement::ADDR_INTERPOLATION) return vec3(1,0,0);
+    else if (way->eType == OSMElement::CONTOUR) return vec3(0);
     else if (way->eType == OSMElement::GRID_LINE) return vec3(0.4,0.4,0.4);
+    else if (way->eType == OSMElement::aDEBUG) return vec3(1.0,0,1.0);
 
     else return vec3(-1,-1,-1);
 }
+
+static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
+
+
 void Game::generateGridLines(){
 
-    double step = 0.0005;
+    double step = 0.001;
 
     int lonCounter = 0;
     int latCounter = 0;
@@ -1434,13 +1497,43 @@ void Game::generateGridLines(){
 
     }
 
-    // Add it all to the way database
-    for (int i = 0; i < latitudeLines.size(); i++){
-        theWays.emplace(latitudeLines[i]->id, latitudeLines[i]);
+//     Add it all to the way database
+//    for (int i = 0; i < latitudeLines.size(); i++){
+//        theWays.emplace(latitudeLines[i]->id, latitudeLines[i]);
+//    }
+//    for (int i = 0; i < longitudeLines.size(); i++){
+//        theWays.emplace(longitudeLines[i]->id, longitudeLines[i]);
+//    }
+
+    for (int i = 0; i < latCounter-1; i++){
+        for (int j = 0; j < lonCounter-1; j++){
+            Way* way = new Way();
+
+            way->addRef(latitudeLines[i]->nodes[j]);
+            way->addRef(latitudeLines[i]->nodes[j+1]);
+            way->addRef(latitudeLines[i+1]->nodes[j]);
+            way->addRef(latitudeLines[i]->nodes[j]);
+
+            way->eType = OSMElement::GRID_LINE;
+
+            way->id = string("TRI1_").append(std::to_string(i)).append(std::to_string(j));
+            theWays.emplace(way->id, way);
+
+            way = new Way();
+
+            way->addRef(latitudeLines[i]->nodes[j+1]);
+            way->addRef(latitudeLines[i+1]->nodes[j+1]);
+            way->addRef(latitudeLines[i+1]->nodes[j]);
+            way->addRef(latitudeLines[i]->nodes[j+1]);
+
+            way->eType = OSMElement::GRID_LINE;
+
+            way->id = string("TRI2_").append(std::to_string(i)).append(std::to_string(j));
+            theWays.emplace(way->id, way);
+        }
     }
-    for (int i = 0; i < longitudeLines.size(); i++){
-        theWays.emplace(longitudeLines[i]->id, longitudeLines[i]);
-    }
+
+//    latitudeLines.remove_if(deleteAll);
 
 }
 
@@ -1458,8 +1551,9 @@ double Game::contourLineInterpolate(vec2 xy){
     if (lerpedWay != -1) closests[1] = closests[lerpedWay];
     else{
         lerpedWay = 1;
-//        return stod(closests[0]->getValue("ele"));
+        return stod(closests[0]->getValue("ele")) / 15000;
         unsuccessfulInterpolations++;
+//        return 0;
     }
 
     // prepare for lerping
@@ -1471,45 +1565,21 @@ double Game::contourLineInterpolate(vec2 xy){
     heights.push_back(stod(closests[0]->getValue("ele")));
     heights.push_back(stod(closests[lerpedWay]->getValue("ele")));
 
-    return lerp(heights[0], heights[1], distances[0]) / 25000;
+    double result = lerp(heights[0], heights[1], t) / 15000;
+//    PRINT(result);
+    return result;
 }
 
-
+/**
+ * @brief Game::getLerpedContourLines
+ * @param xy
+ * @param ways
+ * @param directions
+ * @param nodePairs
+ * @return
+ */
 int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directions, vector<std::pair<Node*, Node*>> nodePairs){
-//    Node* n0;
-//    Node* n1;
-//    bool first = true;
-//    bool inside = true;
-//    int counter = 1;
-//    double initEle = stod(ways[0]->getValue("ele"));
-//    for (auto nodeIt = ways[0]->nodes.begin() ; nodeIt != ways[0]->nodes.end(); ++nodeIt){
-//        if (first){
-//            n0 = *nodeIt;
-//            first = false;
-//            continue;
-//        }
-//        if ((counter % 2) == 0) n0 = n1;
-//        else{
-//            n1 = *nodeIt;
-//            vec3 v0 = vec3(n1->latitude - n0->latitude, n1->longitude - n0 -> longitude,0);
-//            vec3 v1 = vec3(n1->latitude - xy.x, n1->longitude - xy.y,0);
-//            vec3 v2 = cross(v0, v1);
 
-//            if (v2.z > 0){
-//                inside = false;
-//                break;
-//            }
-//        }
-
-//        counter = (counter + 1) % 2;
-//        }
-
-
-//    for (int i = 1; i < ways.size(); i++){
-//        double runningEle = stod(ways[i]->getValue("ele"));
-//        if (inside && (runningEle > initEle)){ return i; }
-//        else if(!inside && (runningEle < initEle)) return i;
-//    }
 
     //Linesegment between our search point and the closest point on the candidate contour line.
     LineSegment L0;
@@ -1517,9 +1587,15 @@ int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directi
 
 //    PRINTVEC2VECTOR(directions);
     //Iterate on all candidate contours
-    for (int i = 1; i < ways.size(); i++){
+    for (int i = 0; i < ways.size(); i++){
 
         L0.p1 = xy + directions[i];
+
+        if (i == 0){
+//            Way* way = new Way(string("DEBUG_").append(glm::to_string(xy)).append(std::to_string(i)), L0, OSMElement::aDEBUG);
+//            theWays.emplace(way->id, way);
+            continue;
+        }
 
         //running linesegment on the absolute known nearest contour
         LineSegment L1;
@@ -1546,8 +1622,6 @@ int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directi
             else{
                 n1 = *nodeIt;
 
-
-                //lat long still flipped :(
                 L1.p0 = vec2(n0->longitude, n0->latitude);
                 L1.p1 = vec2(n1->longitude, n1->latitude);
 //                PRINTELEMENT(L0);
@@ -1564,9 +1638,16 @@ int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directi
         }
 //        if (!intersects) return i;
         // an even number of intersections means we were inside the polygon. maybe?
-        if ((numOfIntersections % 2) == 0) return i;
+//        if ((numOfIntersections % 2) == 0){
+         if (!intersects){
+//            Way* way = new Way(string("DEBUG_").append(glm::to_string(xy)).append(std::to_string(i)), L0, OSMElement::aDEBUG);
+//            theWays.emplace(way->id, way);
+            return i;
+        }
     }
-
+    L0.p1 = xy + directions[1];
+//    Way* way = new Way(string("DEBUG_").append(glm::to_string(xy)).append(std::to_string(1)), L0, OSMElement::aDEBUG);
+//    theWays.emplace(way->id, way);
     return -1; // method didnt really work .revert to default.
 }
 
@@ -1601,6 +1682,24 @@ void Game::extrudeAddrInterps(){
         // Find the closest roads to this ADDR_INTERP
         vector<Way*> firstNodeWays = findNClosestWays(5, vec2(nodes[0]->longitude, nodes[0]->latitude), filter, distances[0], directions[0], nodePairs);
         vector<Way*> secondNodeWays = findNClosestWays(5, vec2(nodes[1]->longitude, nodes[1]->latitude), filter, distances[1], directions[1], nodePairs);
+
+        LineSegment L0(nodes[0], nodes[1]);
+
+        bool intersectOtherRoad = false;
+        //Check if the adress way intersects any of these roads
+        for (int i = 0 ; i < firstNodeWays.size(); i++){
+            LineSegment L1(firstNodeWays[i]);
+
+            if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
+        }
+
+        for (int i = 0 ; i < secondNodeWays.size(); i++){
+            LineSegment L1(secondNodeWays[i]);
+
+            if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
+        }
+
+//        if (intersectOtherRoad) continue;
 
         // Find the closest way that both nodes share (should generally be the one parallel to the addr_interp)
         // Maybe better to look at dot products? This works ok for now
@@ -1641,13 +1740,16 @@ void Game::extrudeAddrInterps(){
         buildingWay->addRef(node3);
         buildingWay->addRef(nodes[0]);
         buildingWay->addRef(nodes[1]);
-        buildingWay->eType = OSMElement::BUILDING_UNMARKED;
+        buildingWay->eType = OSMElement::BUILDING_ADDRINTERP;
         buildingWay->id = string("ADDR_INTERP_BUILDING").append(std::to_string(counter));
 
         // Store the new building
         theWays.emplace(buildingWay->id, buildingWay);
         counter++;
     }
+
+    PRINTSTRING("Extruding address interpolation into polygons");
+    PRINTINT(counter);
 }
 
 pair<int, int> Game::findCommonWay(vector<Way*> firstNodeWays, vector<Way*> secondNodeWays){
@@ -1658,4 +1760,14 @@ pair<int, int> Game::findCommonWay(vector<Way*> firstNodeWays, vector<Way*> seco
     }
     PRINTSTRING("Couldnt find suitable similar ways!");
     return pair<int, int>(-1,-1);
+}
+
+template<typename T> void Game::createGLBuffer(GLuint &bufferName, vector<T> bufferData){
+
+    glCreateBuffers(1, &bufferName);
+    glNamedBufferStorage(bufferName, bufferData.size() * sizeof(T), // nbWaysNodes * vec2 * float
+                         NULL,
+                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                         GL_MAP_WRITE_BIT);
+    glNamedBufferSubData(bufferName, 0, bufferData.size() * sizeof(T), bufferData.data());
 }

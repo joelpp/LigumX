@@ -109,7 +109,7 @@ void Camera::updateMVPMatrix()
 //    mvpMat = translate(position) * mvpMat;
 
     //mvpMat = perspective((float)PI/8.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
-    mvpMat = perspective((float)22.5, 1.0f, 0.0001f, 1.f) * mvpMat;
+    mvpMat = perspective((float)45, 1.0f, 0.0001f, 1.f) * mvpMat;
 //    mvpMat = perspective((float)PI/3.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
 
 

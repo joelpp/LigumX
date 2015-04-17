@@ -9,6 +9,17 @@ LineSegment::LineSegment(vec2 p0, vec2 p1){
     this->p1 = p1;
 }
 
+LineSegment::LineSegment(Node* n0, Node* n1){
+    this->p0 = vec2(n0->longitude, n0->latitude);
+    this->p1 = p1;
+}
+
+LineSegment::LineSegment(Way* way){
+    this->p0 = way->nodes[0]->getLatLong();
+    this->p1 = way->nodes[1]->getLatLong();
+}
+
+
 //bool LineSegment::intersects(LineSegment other){
 
 //    double x00 = this->p0.x; double y00 = this->p0.y;

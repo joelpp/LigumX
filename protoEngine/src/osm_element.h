@@ -28,8 +28,10 @@ public:
 
                        LEISURE_PARK = 1 << 22,
                        NATURAL_WOOD = 1 << 23,
+                       NATURAL_WATER = 1 << 24,
 
-                       RAILWAY_SUBWAY = 1 << 27,
+                       RAILWAY_SUBWAY = 1 << 26,
+                       aDEBUG = 1 << 27,
                        ADDR_INTERPOLATION = 1 << 28,
                        NOT_IMPLEMENTED = 1 << 29,
                        ANY_TYPE = 1 << 30,

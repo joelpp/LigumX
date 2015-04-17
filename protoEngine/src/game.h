@@ -37,7 +37,9 @@ public:
                      std::vector<glm::vec2> *roadsPositions,
                      std::vector<glm::vec2> *buildingTrianglePositions,
                      std::vector<glm::vec2> *buildingLines,
-                     std::vector<float> *buildingLinesTexCoords);
+                     std::vector<float> *buildingLinesTexCoords,
+                     std::vector<vec3> *groundTrianglesPositions);
+
 
 
     GLFWwindow* pWindow;
@@ -47,11 +49,14 @@ public:
     void updateSelectedWay(Way* way);
     OSMElement::ElementType Game::typeFromStrings(std::string key, std::string value);
     glm::vec3 colorFromTags(Way* way);
+
     void generateGridLines();
+
     double contourLineInterpolate(glm::vec2 xy);
     int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, std::vector<std::pair<Node*, Node*>> nodePairs);
     void extrudeAddrInterps();
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
+    template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData);
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
@@ -86,6 +91,7 @@ public:
     ProgramPipeline* pPipelineScreenQuad;
     ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
+    ProgramPipeline* pPipelineGround;
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
     ProgramPipeline::ShaderProgram* pGeometryShader2;
@@ -98,6 +104,7 @@ public:
     GLuint glidWaysPositions;
     GLuint glidWaysColors;
     unsigned int nbWaysVertices;
+    unsigned int nbGroundVertices;
     GLuint glidBufferRoadsPositions;
     unsigned int nbRoads;
     std::vector<GLint> firstVertexForEachRoad;
@@ -109,6 +116,7 @@ public:
     GLuint glidBufferBuildingLines;
     unsigned int nbBuildingLines;
     GLuint glidBufferBuildingLoopLengths;
+    GLuint glidGroundTrianglePositions;
 
     // camera
     Camera* camera;
@@ -141,7 +149,8 @@ public:
     int unsuccessfulInterpolations;
     bool interpolateContours;
     WaySelection selectedWay;
-
+    float buildingHeight;
+    float buildingSideScaleFactor;
     double coordinateInflationFactor;
 };
 

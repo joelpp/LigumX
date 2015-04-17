@@ -6,6 +6,11 @@ Node::Node(){
 
 }
 
+Node::Node(glm::vec2 latLong){
+    this->elevation = 0;
+
+}
+
 Node::Node(std::string _id, float _longitude, float _latitude){
     this->id = _id;
     this->latitude = _latitude;
@@ -25,4 +30,13 @@ std::string Node::toString(){
         toReturn.append(std::string(tagstr));
     }
     return toReturn;
+}
+
+
+glm::vec2 Node::getLatLong(){
+    return glm::vec2(longitude, latitude);
+}
+
+glm::vec3 Node::getLatLongEle(){
+    return glm::vec3(longitude, latitude, elevation);
 }
