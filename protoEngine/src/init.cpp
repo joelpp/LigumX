@@ -31,7 +31,8 @@ void Game::init()
     buildingHeight = 0.0001;
     buildingSideScaleFactor = 1;
 
-    sunDirection = vec3(0,0,1);
+    sunOrientation = 0;
+    sunTime = 0;
     sunSpeed = 1;
     sunMoveAuto = false;
 

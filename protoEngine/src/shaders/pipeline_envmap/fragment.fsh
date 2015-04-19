@@ -3,7 +3,8 @@
 in vec4 gl_FragCoord;
 
 uniform vec2 windowSize;
-uniform vec3 sunDir; // assumed to be normalized
+uniform float sunOrientation; // angle from (1,0,0) around (0,0,1)
+uniform float sunTime;
 uniform vec3 viewDir; // assumed to be normalized
 uniform vec3 viewRight; // assumed to be normalized
 uniform vec3 viewUp; // assumed to be normalized
@@ -13,6 +14,21 @@ uniform float viewNear;
 out vec3 color;
 
 float pi = 3.14159265359;
+vec3 sunDir;
+vec2 sunDirFlat;
+
+// adapted from http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/
+mat3 rotateAroundAxis(vec3 axis, float angle)
+{
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+
+    return mat3(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,
+                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,
+                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c          );
+}
 
 // artificial noise in [0,1]
 float noise(vec3 v)
@@ -21,81 +37,16 @@ float noise(vec3 v)
     return 0.5*(1+sin(a*a + a*93721.547));
 }
 
-//// somewhat structured noise
-//float smoothNoise(vec3 v)
-//{
-//    float a = 0;
-//    for(int i=0; i<15; i++) {
-////        a +=   sin(noise(vec3(1*i,1*i,1*i))*i*i*v.x + noise(vec3(7*i,1*i,4*i)*i*v.y))
-////             + sin(noise(vec3(2*i,1*i,5*i))*i*i*v.y + noise(vec3(8*i,3*i,3*i)*i*v.z))
-////             + sin(noise(vec3(1*i,3*i,2*i))*i*i*v.z + noise(vec3(5*i,4*i,3*i)*i*v.x));
-
-//        a +=   noise(vec3(1*i,1*i,1*i))*sin(noise(vec3(1*i,7*i,1*i))*i*i*v.x + noise(vec3(3*i,2*i,5*i))*i*i*v.y)
-//             + noise(vec3(2*i,1*i,5*i))*sin(noise(vec3(2*i,1*i,5*i))*i*i*v.y + noise(vec3(3*i,1*i,7*i))*i*i*v.z)
-//             + noise(vec3(1*i,3*i,2*i))*sin(noise(vec3(1*i,3*i,2*i))*i*i*v.z + noise(vec3(1*i,7*i,1*i))*i*i*v.x);
-//    }
-//    return 0.5*(1+sin(a));
-//}
-
-
-
-
-
-
-// need an orientation here, because we have a singularity in the direction opposite to the ori.
-float stars(vec3 v, vec3 ori)
+float stars(vec3 v)
 {
-    // choose a vector perpendicular to ori. We take two candidates and keep the
-    // one that is furtest to ori, and then orthogonalize it.
-    float dotA = dot(vec3(1,0,0), ori);
-    float dotB = dot(vec3(0,1,0), ori);
-    vec3 perpY;
-    if(abs(dotA) < abs(dotB)) {
-        perpY = vec3(1,0,0);
-    } else {
-        perpY = vec3(0,1,0);
-    }
-    perpY = cross(perpY, ori);
-    perpY = normalize(cross(ori, perpY));
-    vec3 perpX = normalize(cross(perpY, ori));
-
-    float phi = acos(dot(v, ori));
-    vec3 vecFlat = normalize(v-cos(phi)*ori);
-    float theta = acos(dot(vecFlat, perpX)) * sign(dot(vecFlat, perpY));
-
-//    vec2 planar;
-//    if(abs(phi) < pi/4 || abs(phi-pi) < pi/4) {
-//        planar = sin(phi)*vec2(cos(theta),sin(theta));
-//    } else {
-//        planar = vec2(1,1);
-//    }
-
-//    for(int i=1; i<4; i++) {
-//        phi = sin(phi*2.1234*pi*i);
-//    }
-
-//    return phi;
-
-
-//    return 0.5*(sin(500*(1+0.5*sin(15*planar.x))*planar.x) + sin(500*planar.y));
-
-    //return 0.5*(cos(30*theta) + cos(50*sqrt(1-phi/(pi/2)*phi/(pi/2))));
-    //return 0.5*(cos(30*theta) + cos(50*acos(2*phi/(pi)-1)));
-//    return clamp(0.5*(cos(30*theta) + cos(50*phi)), 0, 1);
-//    return clamp(0.5*(cos(100*theta) + cos(100*acos(2*phi/(pi/2.0)-1))), 0, 1);
-//    return clamp(0.5*(cos(75*theta) + cos(200*phi*sqrt(sin(phi)))), 0, 1);
-//    return clamp(0.5*(cos(50*theta) + cos(100*acos(2*(phi/pi)-1))), 0, 1);
-//    return clamp(0.5*(cos(50*smoothNoise(vec3(theta))) + cos(200*smoothNoise(vec3(phi)))), 0, 1);
-
+    v = rotateAroundAxis(vec3(-sunDirFlat.y, sunDirFlat.x,0), sunTime) * v;
+    v = rotateAroundAxis(vec3(0,0,1), sunOrientation) * v;
 
 
     vec3 temp = v;
     temp = floor(400.0*temp)/400.0 ;
     if(noise(temp) < 0.00001) return 1;
     else return 0;
-
-
-
 }
 
 
@@ -111,6 +62,10 @@ vec3 screenToVec(vec2 pos01)
 
 void main() {
 
+    // compute globals
+    sunDirFlat = vec2(cos(sunOrientation), sin(sunOrientation));
+    sunDir = cos(sunTime)*vec3(0,0,1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);
+
     vec2 pos01 = gl_FragCoord.xy/windowSize;
     vec3 fragDir = screenToVec(pos01);
     float cosAngleToSun = dot(fragDir, sunDir);
@@ -121,7 +76,8 @@ void main() {
 
         float sunsetFact =  smoothstep(-0.2, 0.05, sunDir.z)
                            *smoothstep( 0.3, 0.05, sunDir.z);
-        float overGroundBool = float(sunDir.z > 0);
+//        float overGroundBool = float(sunDir.z > 0);
+        float overGroundBool = smoothstep(-0.05, 0.05, sunDir.z);
         int moonBool = int(cosSun01 < 0.001);
 
         color =
@@ -138,7 +94,7 @@ void main() {
             +
             (1.0-sunsetFact) * (1-overGroundBool) * (
                   moonBool * vec3(0.75)
-                + (1-moonBool) * vec3( pow(stars(fragDir, -sunDir),2) )
+                + (1-moonBool) * vec3( stars(fragDir) )
 //                + (1-moonBool) * vec3( stars(fragDir, -sunDir) )
             )
         ;

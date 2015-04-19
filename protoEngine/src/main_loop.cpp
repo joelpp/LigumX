@@ -10,10 +10,8 @@ void Game::mainLoop()
     camera->handlePresetNewFrame(pWindow);
 
     // move sun
-    static float t;
     if(sunMoveAuto) {
-        t += sunSpeed/1000.0;
-        sunDirection = vec3(0, sin(t), cos(t));
+        sunTime += sunSpeed/1000.0;
     }
 
 
@@ -42,7 +40,8 @@ void Game::mainLoop()
         pPipelineEnvmap->usePipeline();
         GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
         glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth, windowHeight);
-        glProgramUniform3fv(fragProg, glGetUniformLocation(fragProg, "sunDir"), 1, value_ptr(sunDirection));
+        glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), sunOrientation);
+        glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), sunTime);
         glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.
         glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
         glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);

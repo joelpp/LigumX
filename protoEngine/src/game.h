@@ -184,7 +184,8 @@ public:
     float buildingHeight;
     float buildingSideScaleFactor;
     double coordinateInflationFactor;
-    glm::vec3 sunDirection;
+    float sunOrientation;
+    float sunTime;
     float sunSpeed;
     bool sunMoveAuto;
 
