@@ -183,6 +183,7 @@ public:
     float buildingHeight;
     float buildingSideScaleFactor;
     double coordinateInflationFactor;
+    glm::vec3 sunDirection;
 
 
 

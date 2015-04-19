@@ -33,6 +33,9 @@ public:
     glm::vec3 lookAtTargetPos, cylindricalUpVec;
     float viewMovementSpeed, defaultViewMovementSpeed;
     float keyMovementSpeed, defaultKeyMovementSpeed, keyMovementSpeedIncreaseFactor;
+    float totalViewAngleY;
+    float aspectRatio;
+    float near, far;
 
 
 public:

@@ -15,6 +15,10 @@ Camera::Camera()
     mvpMat = mat4(1);
     viewSize = 1;
     angle = 0;
+    totalViewAngleY = 45;
+    aspectRatio = 1; // TODO: change to window's aspect ratio.
+    near = 0.0001f;
+    far = 1.f;
 
     cameraType = CameraType::CYLINDRICAL;
     controlType = ControlType::QWEASDZXC_DRAG;
@@ -109,7 +113,8 @@ void Camera::updateMVPMatrix()
 //    mvpMat = translate(position) * mvpMat;
 
     //mvpMat = perspective((float)PI/8.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
-    mvpMat = perspective((float)45, 1.0f, 0.0001f, 1.f) * mvpMat;
+    //mvpMat = perspective((float)45, 1.0f, 0.0001f, 1.f) * mvpMat;
+    mvpMat = perspective(totalViewAngleY, aspectRatio, near, far) * mvpMat;
 //    mvpMat = perspective((float)PI/3.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
 
 

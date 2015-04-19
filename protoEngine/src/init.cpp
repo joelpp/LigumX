@@ -30,6 +30,9 @@ void Game::init()
     coordinateInflationFactor = 1;
     buildingHeight = 0.0001;
     buildingSideScaleFactor = 1;
+
+    sunDirection = vec3(0,0,1);
+
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
