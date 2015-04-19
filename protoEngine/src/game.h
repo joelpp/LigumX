@@ -20,6 +20,7 @@
 #include "texture.h"
 #include "filter.h"
 #include "linesegment.h"
+#include <chrono>
 
 
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
@@ -184,7 +185,8 @@ public:
     float buildingSideScaleFactor;
     double coordinateInflationFactor;
     glm::vec3 sunDirection;
-
+    float sunSpeed;
+    bool sunMoveAuto;
 
 
     // subfunctions

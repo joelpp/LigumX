@@ -1,4 +1,5 @@
 #include "game.h"
+#include <chrono>
 
 using std::cout;
 using std::endl;
@@ -7,6 +8,14 @@ void Game::mainLoop()
 {
 //    camera->moveFromUserInput(pWindow);
     camera->handlePresetNewFrame(pWindow);
+
+    // move sun
+    static float t;
+    if(sunMoveAuto) {
+        t += sunSpeed/1000.0;
+        sunDirection = vec3(0, sin(t), cos(t));
+    }
+
 
     if(!fancyDisplayMode) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -21,27 +21,6 @@ float noise(vec3 v)
     return 0.5*(1+sin(a*a + a*93721.547));
 }
 
-//// somewhat structured noise
-//float smoothNoise(vec3 v)
-//{
-//    float a = 0;
-//    for(int i=0; i<15; i++) {
-////        a +=   sin(noise(vec3(1*i,1*i,1*i))*i*i*v.x + noise(vec3(7*i,1*i,4*i)*i*v.y))
-////             + sin(noise(vec3(2*i,1*i,5*i))*i*i*v.y + noise(vec3(8*i,3*i,3*i)*i*v.z))
-////             + sin(noise(vec3(1*i,3*i,2*i))*i*i*v.z + noise(vec3(5*i,4*i,3*i)*i*v.x));
-
-//        a +=   noise(vec3(1*i,1*i,1*i))*sin(noise(vec3(1*i,7*i,1*i))*i*i*v.x + noise(vec3(3*i,2*i,5*i))*i*i*v.y)
-//             + noise(vec3(2*i,1*i,5*i))*sin(noise(vec3(2*i,1*i,5*i))*i*i*v.y + noise(vec3(3*i,1*i,7*i))*i*i*v.z)
-//             + noise(vec3(1*i,3*i,2*i))*sin(noise(vec3(1*i,3*i,2*i))*i*i*v.z + noise(vec3(1*i,7*i,1*i))*i*i*v.x);
-//    }
-//    return 0.5*(1+sin(a));
-//}
-
-
-
-
-
-
 // need an orientation here, because we have a singularity in the direction opposite to the ori.
 float stars(vec3 v, vec3 ori)
 {

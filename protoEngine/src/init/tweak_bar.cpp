@@ -23,4 +23,6 @@ void Game::init_tweakBar()
     TwAddVarRW(myBar, "Building Height", TW_TYPE_FLOAT, &buildingHeight, NULL);
     TwAddVarRW(myBar, "Building Side Scale", TW_TYPE_FLOAT, &buildingSideScaleFactor, NULL);
     TwAddVarRW(myBar, "Sun Direction", TW_TYPE_DIR3F, &sunDirection, NULL);
+    TwAddVarRW(myBar, "Sun Speed", TW_TYPE_FLOAT, &sunSpeed, "step=0.001");
+    TwAddVarRW(myBar, "Move Sun Automatically", TW_TYPE_BOOL8, &sunMoveAuto, NULL);
 }

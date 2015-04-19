@@ -32,6 +32,8 @@ void Game::init()
     buildingSideScaleFactor = 1;
 
     sunDirection = vec3(0,0,1);
+    sunSpeed = 1;
+    sunMoveAuto = false;
 
     //=============================================================================
     // create window and GLcontext, register callbacks.
