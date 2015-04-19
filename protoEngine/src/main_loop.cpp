@@ -25,8 +25,17 @@ void Game::mainLoop()
 
 //        glDrawArrays(GL_POINTS, 0, nbWaysVertices);
     } else {
+
         glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // draw sky/ground
+        pPipelineEnvmap->usePipeline();
+        GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+        glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth, windowHeight);
+//        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "sunDir"), 0,0,1);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         // draw roads
         glBindTexture(GL_TEXTURE_2D, glidTextureScreenRoads);
@@ -54,6 +63,7 @@ void Game::mainLoop()
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 //                glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         pPipelineScreenQuad->usePipeline();
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glClear(GL_DEPTH_BUFFER_BIT);

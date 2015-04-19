@@ -48,6 +48,7 @@ void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int actio
             if (key == GLFW_KEY_ESCAPE) {
                 if(game->camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) game->camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
             }
+            if (key == GLFW_KEY_R) { game->init_pipelines(); }
         }
         game->camera->handlePresetKey(pWindow, key, scancode, action, mods);
     }

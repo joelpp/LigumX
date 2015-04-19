@@ -59,7 +59,9 @@ SOURCES += \
     src/init.cpp \
     src/init/pipelines/ground_triangles.cpp \
     src/init/pipelines/general_lines.cpp \
-    src/init/pipelines/building_sides.cpp
+    src/init/pipelines/building_sides.cpp \
+    src/init/pipelines/envmap.cpp \
+    src/init/tweak_bar.cpp
 
 
 HEADERS += \
@@ -80,7 +82,9 @@ OTHER_FILES += \
     src/shaders/roads.gsh \
     src/shaders/roads2.gsh \
     src/shaders/roads3.gsh \
-    src/shaders/buildingSides.gsh
+    src/shaders/buildingSides.gsh \
+    src/shaders/pipeline_envmap/vertex.vsh \
+    src/shaders/pipeline_envmap/fragment.fsh
 
 DISTFILES += \
     libPaths.pri

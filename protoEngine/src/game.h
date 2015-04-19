@@ -77,6 +77,7 @@ public:
     int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, std::vector<std::pair<Node*, Node*>> nodePairs);
     void extrudeAddrInterps();
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
+
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
         glCreateBuffers(1, &bufferName);
         glNamedBufferStorage(bufferName, bufferData.size() * sizeof(T), // nbWaysNodes * vec2 * float
@@ -85,6 +86,7 @@ public:
                              GL_MAP_WRITE_BIT);
         glNamedBufferSubData(bufferName, 0, bufferData.size() * sizeof(T), bufferData.data());
     }
+
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
@@ -120,6 +122,7 @@ public:
     ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
     ProgramPipeline* pPipelineGround;
+    ProgramPipeline* pPipelineEnvmap;
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
     ProgramPipeline::ShaderProgram* pGeometryShader2;
@@ -191,6 +194,8 @@ public:
     void init_pipelines_groundTriangles();
     void init_pipelines_roads();
     void init_pipelines_screenQuad();
+    void init_pipelines_envmap();
+    void init_tweakBar();
 
 
 
