@@ -33,8 +33,10 @@ void Game::init()
 
     sunOrientation = 0;
     sunTime = 0;
-    sunSpeed = 1;
+    sunSpeed = 0.1;
     sunMoveAuto = false;
+
+    saveScreenshot = false;
 
     //=============================================================================
     // create window and GLcontext, register callbacks.

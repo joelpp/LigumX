@@ -2,5 +2,6 @@
 /protoEngine/libPaths.pri
 /protoEngine/protoEngine.pro.user
 /protoEngine/build
+/protoEngine/output
 *.orig
 /Srtm2Osm/

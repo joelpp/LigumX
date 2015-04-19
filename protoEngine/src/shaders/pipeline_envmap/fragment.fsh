@@ -33,7 +33,7 @@ mat3 rotateAroundAxis(vec3 axis, float angle)
 // artificial noise in [0,1]
 float noise(vec3 v)
 {
-    float a = sin(430.123*v.x) + cos(123.65445*v.y*v.z);
+    float a = sin(430.123*v.x*v.y*sin(v.z)) + cos(123.65445*v.y*cos(v.x) + 1.543*v.z);
     return 0.5*(1+sin(a*a + a*93721.547));
 }
 

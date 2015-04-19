@@ -1,8 +1,10 @@
 #include "game.h"
 #include <chrono>
+#include "FreeImage.h"
+#include <sstream>
+#include <iomanip>
 
-using std::cout;
-using std::endl;
+using namespace std;
 
 void Game::mainLoop()
 {
@@ -102,5 +104,27 @@ void Game::mainLoop()
     }
 
     if(showTweakBar) TwDraw();
+
+    // screenshot
+    if(saveScreenshot) {
+        static unsigned int frameCount = 0;
+        ++frameCount;
+        std::stringstream filename;
+        filename.clear();
+        filename << "../output/frame" << setfill('0') << setw(5) << frameCount << ".png";
+
+        BYTE* pixels = new BYTE[4 * windowWidth * windowHeight];
+        glReadPixels(0, 0, windowWidth, windowHeight, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+        FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, windowWidth, windowHeight, 4 * windowWidth, 32, 0x0000FF, 0xFF0000, 0x00FF00, false);
+        if(FreeImage_Save(FIF_BMP, image, filename.str().c_str(), 0)) {
+            std::cout << "screenshot '" << filename.str() << "' taken." << std::endl;
+        } else {
+            std::cout << "screenshot failed. Did you create the 'protoEngine/output' directory?" << std::endl;
+        }
+        FreeImage_Unload(image);
+        delete [] pixels;
+    }
+
+
 
 }

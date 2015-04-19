@@ -188,6 +188,7 @@ public:
     float sunTime;
     float sunSpeed;
     bool sunMoveAuto;
+    bool saveScreenshot;
 
 
     // subfunctions

@@ -26,4 +26,5 @@ void Game::init_tweakBar()
     TwAddVarRW(myBar, "Sun Time", TW_TYPE_FLOAT, &sunTime, "step=0.001");
     TwAddVarRW(myBar, "Sun Speed", TW_TYPE_FLOAT, &sunSpeed, "step=0.001");
     TwAddVarRW(myBar, "Move Sun Automatically", TW_TYPE_BOOL8, &sunMoveAuto, NULL);
+    TwAddVarRW(myBar, "Save Screenshot", TW_TYPE_BOOL8, &saveScreenshot, NULL);
 }
