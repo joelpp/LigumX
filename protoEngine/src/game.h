@@ -22,6 +22,27 @@
 #include "linesegment.h"
 
 
+#define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
+                    x;\
+                    auto end = std::chrono::high_resolution_clock::now();\
+                    std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
+#define PRINTVEC2VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y << "\n";
+#define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
+#define PRINTVEC3(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n";
+#define PRINT(f) std::cout << #f << ": = " << f << "\n";
+#define PRINTSTRING(f) std::cout << f << "\n";
+#define PRINTBOOL(B) string b = B==1?"TRUE":"FALSE"; std::cout << #B << " : " << b << "\n";
+#define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
+#define PRINTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
+                       for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_] << "\n";
+#define PRINTELEMENT(e) std::cout << #e << " " << e.toString() << "\n";
+#define PRINTELEMENTPTR(e) std::cout << #e << " " << e->toString() << "\n";
+#define PRINTELEMENTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
+                              for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_]->toString() << "\n";
+
+#define string_pair std::pair<std::string,std::string>
+
+
 class Game {
 public:
     // general state and functions
@@ -56,7 +77,14 @@ public:
     int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, std::vector<std::pair<Node*, Node*>> nodePairs);
     void extrudeAddrInterps();
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
-    template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData);
+    template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
+        glCreateBuffers(1, &bufferName);
+        glNamedBufferStorage(bufferName, bufferData.size() * sizeof(T), // nbWaysNodes * vec2 * float
+                             NULL,
+                             GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                             GL_MAP_WRITE_BIT);
+        glNamedBufferSubData(bufferName, 0, bufferData.size() * sizeof(T), bufferData.data());
+    }
     // viewing
     float viewRectLeft, viewRectRight, viewRectBottom, viewRectTop; // geo coordinates of the viewing region
     glm::vec2 viewRectBottomLeft;
@@ -68,7 +96,7 @@ public:
     unsigned int windowHeight;
     std::string windowTitle;
 
-    // GLFW callbacks
+    // GLFW callbacks. Implement if needed.
     static void glfwMouseButtonCallback(GLFWwindow* /*pGlfwWindow*/, int /*button*/, int /*action*/, int /*mods*/);
     static void glfwMousePositionCallback(GLFWwindow* /*pGlfwWindow*/, double /*x*/, double /*y*/);
     static void glfwMouseEntersCallback(GLFWwindow* /*pGlfwWindow*/, int /*entered*/) {}
@@ -152,9 +180,28 @@ public:
     float buildingHeight;
     float buildingSideScaleFactor;
     double coordinateInflationFactor;
+
+
+
+    // subfunctions
+    void init_pipelines();
+    void init_pipelines_buildingSides();
+    void init_pipelines_filledBuildings();
+    void init_pipelines_generalLines();
+    void init_pipelines_groundTriangles();
+    void init_pipelines_roads();
+    void init_pipelines_screenQuad();
+
+
+
 };
 
 extern Game* game;
+
+
+
+
+
 
 
 

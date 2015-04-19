@@ -49,7 +49,17 @@ SOURCES += \
     src/osm_element.cpp \
     src/texture.cpp \
     src/filter.cpp \
-    src/linesegment.cpp
+    src/linesegment.cpp \
+    src/callbacks.cpp \
+    src/main_loop.cpp \
+    src/init/pipelines/filled_buildings.cpp \
+    src/init/pipelines/screen_quad.cpp \
+    src/init/pipelines/roads.cpp \
+    src/init/pipelines.cpp \
+    src/init.cpp \
+    src/init/pipelines/ground_triangles.cpp \
+    src/init/pipelines/general_lines.cpp \
+    src/init/pipelines/building_sides.cpp
 
 
 HEADERS += \
