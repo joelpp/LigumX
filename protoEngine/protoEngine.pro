@@ -84,8 +84,9 @@ OTHER_FILES += \
     src/shaders/roads3.gsh \
     src/shaders/buildingSides.gsh \
     src/shaders/pipeline_envmap/vertex.vsh \
-    src/shaders/pipeline_envmap/fragment.fsh
-
+    src/shaders/pipeline_envmap/fragment.fsh\
+    src/shaders/pipeline_ground/vertex.vsh \
+    src/shaders/pipeline_ground/fragment.fsh
 DISTFILES += \
     libPaths.pri
 

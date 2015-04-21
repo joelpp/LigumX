@@ -38,11 +38,11 @@ void Game::init_pipelines_groundTriangles()
 
     ProgramPipeline::ShaderProgram* pVertexShader =
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
-            vertexShaderSource, true);
+             "../src/shaders/pipeline_ground/vertex.vsh", false);
 
     ProgramPipeline::ShaderProgram* pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            fragmentShaderSource, true);
+            "../src/shaders/pipeline_ground/fragment.fsh", false);
 
 
 

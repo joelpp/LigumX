@@ -334,6 +334,9 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
         if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
     }
     else if (key.compare("addr:interpolation") == 0){ return OSMElement::ADDR_INTERPOLATION; }
+    else if (key.compare("landuse") == 0){ return OSMElement::LANDUSE; }
+    else if (key.compare("boundary") == 0){ return OSMElement::BOUNDARY; }
+
     else return OSMElement::NOT_IMPLEMENTED;
 
 }
@@ -357,6 +360,8 @@ string Game::labelFromType(OSMElement::ElementType type){
         case(OSMElement::GRID_LINE): return "Grid line";break;
         case(OSMElement::aDEBUG): return "debug";break;
         case(OSMElement::RAILWAY_SUBWAY): return "Railway (subway)";break;
+        case(OSMElement::LANDUSE): return "Land use";break;
+        case(OSMElement::BOUNDARY): return "Boundary";break;
 
     }
 }
@@ -425,6 +430,9 @@ void Game::populateTypeColorArray(){
 //    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0));
     typeColorMap.emplace(OSMElement::GRID_LINE, vec3(0.4,0.4,0.4));
     typeColorMap.emplace(OSMElement::aDEBUG, vec3(1.0,0,1.0));
+    typeColorMap.emplace(OSMElement::LANDUSE, vec3(1.0,1.0,1.0));
+    typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0,1.0,1.0));
+    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0.1,0.1,0.1));
 
 //    /*
 
@@ -451,6 +459,9 @@ void Game::populateTypeColorArray(){
 //    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0));
     displayElementType.emplace(OSMElement::GRID_LINE, true);
     displayElementType.emplace(OSMElement::aDEBUG, true);
+    displayElementType.emplace(OSMElement::LANDUSE, true);
+    displayElementType.emplace(OSMElement::BOUNDARY, true);
+    displayElementType.emplace(OSMElement::CONTOUR, true);
 }
 
 static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
@@ -480,7 +491,7 @@ void Game::generateGridLines( vector<vec3> *groundTrianglesPositions, vector<vec
             n->longitude = lon;
             n->latitude = lat;
             n->elevation = (contourLineInterpolate(vec2(n->longitude, n->latitude)));
-//            n->elevation = 0;
+//            n->elevation = -0.01;
 
             way->addRef(n);
             latCounter++;

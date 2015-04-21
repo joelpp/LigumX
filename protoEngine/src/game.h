@@ -7,6 +7,7 @@
 #include <cstdarg>
 #include <string>
 #include <unordered_map>
+#include <map>
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
 #include "AntTweakBar.h"
@@ -155,7 +156,7 @@ public:
     std::unordered_map<OSMElement::ElementType, std::vector<vec3> > waysNodesPositionsMap;
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::unordered_map<OSMElement::ElementType, vec3> typeColorMap;
-    std::unordered_map<OSMElement::ElementType, bool> displayElementType;
+    std::map<OSMElement::ElementType, bool> displayElementType;
     // camera
     Camera* camera;
     bool draggingCamera;

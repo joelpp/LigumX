@@ -142,7 +142,7 @@ void Game::init()
     camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
 
-//    TIME(generateGridLines(&groundTrianglesPositions, &groundTrianglesUV));
+    TIME(generateGridLines(&groundTrianglesPositions, &groundTrianglesUV));
 
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths,&groundTrianglesPositions, &groundTrianglesUV));
 
