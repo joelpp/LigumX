@@ -44,6 +44,6 @@ void Game::init_pipelines_filledBuildings()
 
     // VAO
     glEnableVertexArrayAttrib(pPipelineBuildings->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipelineBuildings->glidVao, 0, glidBufferBuildingTriangleVertices, 0, 2*4);
-    glVertexArrayAttribFormat(pPipelineBuildings->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayVertexBuffer(pPipelineBuildings->glidVao, 0, glidBufferBuildingTriangleVertices, 0, 3*4);
+    glVertexArrayAttribFormat(pPipelineBuildings->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
 }

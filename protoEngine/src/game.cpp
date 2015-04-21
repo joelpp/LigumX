@@ -80,8 +80,8 @@ void Game::loadXML(string path){
             //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
 
             Node* node = new Node(id, longitude, latitude);
-//            node->elevation = 0;
-            if (path.compare("../data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.05;
+            node->elevation = 0;
+//            if (path.compare("../data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.0001;
             for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
                 string key = tag->ToElement()->FindAttribute("k")->Value();
                 string value = tag->ToElement()->FindAttribute("v")->Value();
@@ -105,8 +105,9 @@ void Game::loadXML(string path){
                     string value = way_child->ToElement()->FindAttribute("v")->Value();
                     way -> addTag(key, value);
 
-                    OSMElement::ElementType eType = typeFromStrings(key, value);
-                    if (eType != OSMElement::NOT_IMPLEMENTED) way->eType = eType;
+                    OSMElement::ElementType _eType = typeFromStrings(key, value);
+                    if (_eType == OSMElement::NOT_IMPLEMENTED) continue;
+                    else way->eType = _eType;
                 }
             }
 
@@ -121,278 +122,30 @@ void Game::loadXML(string path){
                 if (string(relation_child->Value()).compare("member") == 0){
                     string type = relation_child->ToElement()->FindAttribute("type")->Value();
                     string elementId = relation_child->ToElement()->FindAttribute("ref")->Value();
-
+//                    PRINT(type);
+//                    PRINT(elementId);
                     //Odd. Ucommenting this crashes the program when trying to fill the buffers.
-                    if (type.compare("node") == 0) relation->addMember(theNodes[elementId]);
-//                    else if (type.compare("way") == 0) relation->addMember(theWays[elementId]);
-                    else if (type.compare("relation") == 0) relation->addMember(theRelations[elementId]);
+                    try{
+                        if (type.compare("node") == 0) relation->addMember(theNodes.at(elementId));
+                        else if (type.compare("way") == 0) relation->addMember(theWays.at(elementId));
+                        else if (type.compare("relation") == 0) relation->addMember(theRelations.at(elementId));
+                    }
+                    catch(...){
 
+                    }
                 }
                 else if (string(relation_child->Value()).compare("tag") == 0){
                     string key = relation_child->ToElement()->FindAttribute("k")->Value();
                     string value = relation_child->ToElement()->FindAttribute("v")->Value();
                     relation->addTag(key, value);
                 }
-                theRelations.emplace(id, relation);
             }
-
+            theRelations.emplace(id, relation);
         }
     }
 }
 
-void Game::fillBuffers(vector<vec3> *waysNodesPositions,
-                       vector<vec3> *waysNodesColors,
-                       vector<vec2> *roadsPositions,
-                       vector<vec2> *buildingTrianglePositions,
-                       vector<vec2> *buildingLines,
-                       vector<float> *buildingLinesTexCoords,
-                       vector<vec3> *groundTrianglesPositions){
-    bool first;
-    bool second;
-    vec3 white = vec3(1.0f,1.0f,1.0f);
-    unsigned int nbSuccessLoops = 0;
-    unsigned int nbFailedLoops = 0;
 
-    static unsigned int nbBuildings = 0;
-
-    nbRoads = 0;
-    GLint firstVertexForThisRoad = 0;
-    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
-        first = true;
-        second = false;
-        GLsizei nbVertexForThisRoad = 0;
-        vec3 pt, oldpt, oldoldpt;
-        vec2 point, oldPoint, oldOldPoint;
-        vec3 color = vec3(glm::linearRand(0.5f, 1.0f),
-                          glm::linearRand(0.5f, 1.0f),
-                          glm::linearRand(0.5f, 1.0f));
-        Way* way = it->second;
-
-        color = colorFromTags(way);
-        if (color == vec3(-1,-1,-1)) continue;
-//        if (way->eType == OSMElement::ADDR_INTERPOLATION) continue;
-
-        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
-            Node* node = *nodeIt;
-            point = vec2(node->longitude, node->latitude);
-            pt = vec3(node->longitude, node->latitude, node->elevation);
-            if (!first){
-
-                if (way->eType == OSMElement::GRID_LINE){ continue; }
-
-                else{
-                    waysNodesPositions->push_back(oldpt);
-                    waysNodesColors->push_back(color);
-                    waysNodesPositions->push_back(pt);
-                    waysNodesColors->push_back(color);
-                }
-                // create roads subgroup
-                //if (way->hasTagAndValue("highway", "residential")) {
-                if (way->hasTag("highway")) {
-                    if(second) {
-                        second = false;
-                        // first point for line adjacency, fake straight line
-                        roadsPositions->push_back(oldPoint - (point-oldPoint));
-                        roadsPositions->push_back(oldPoint);
-                        nbVertexForThisRoad += 2;
-                    }
-                    roadsPositions->push_back(point);
-                    ++nbVertexForThisRoad;
-                }
-            }
-            else
-            {
-                first = false;
-                //if (way->hasTagAndValue("highway", "residential")) {
-                if (way->hasTag("highway")) {
-                    second = true;
-//                    roadsPositions->push_back(point); // first point for line adjacency
-//                    ++nbVertexForThisRoad;
-                }
-            }
-
-            oldOldPoint = oldPoint;
-            oldPoint = point;
-
-            oldoldpt = oldpt;
-            oldpt = pt;
-        }
-
-        // push last road node for line adjacency, fake straight line
-        //if (way->hasTagAndValue("highway", "residential")) {
-        if (way->hasTag("highway")) {
-            roadsPositions->push_back(point + (point-oldOldPoint));
-            ++nbVertexForThisRoad;
-            ++nbRoads;
-
-            firstVertexForEachRoad.push_back(firstVertexForThisRoad);
-            nbVerticesForEachRoad.push_back(nbVertexForThisRoad);
-
-            // set first vertex index for next road
-            firstVertexForThisRoad += nbVertexForThisRoad;
-        }
-
-        // triangulate building loops
-        Node first(*(way->nodes.front()));
-        Node last(*(way->nodes.back()));
-        if((way->eType==OSMElement::BUILDING_UNMARKED || way->eType==OSMElement::BUILDING_ADDRINTERP) && way->nodes.size() >= 3 && first == last) {
-
-//            cout << "building loop" << endl;
-
-            // Note: supposed all loops are given in counter-clockwise order.
-            unsigned int nbTriangles = 0;
-
-            // first try clockwise loops, then try counterclockwise if it failed.
-            vector<vec2> tempTriangleVertices;
-            bool failedLoop;
-            for(int clockwiseness=-1; clockwiseness<=1; clockwiseness += 2) {
-
-                // copy node loop (not repeating the last node) and
-                // add lines to buildingLines
-                vector<Node*> loopNodes;
-                float distance = 0;
-                for(auto n = way->nodes.begin(); n != way->nodes.end()-1; ++n) {
-                    loopNodes.push_back(*n);
-                    buildingLines->push_back(vec2((*n)->longitude, (*n)->latitude));
-                    buildingLines->push_back(vec2((*(n+1))->longitude, (*(n+1))->latitude));
-                    buildingLinesTexCoords->push_back(float(distance));
-                    distance += glm::distance(vec2((*n)->longitude, (*n)->latitude),
-                                              vec2((*(n+1))->longitude, (*(n+1))->latitude));
-                    buildingLinesTexCoords->push_back(float(distance));
-                }
-
-                unsigned int nbLoops = 0;
-
-                // recursively transform loop into triangles until fully consumed.
-                auto nodeIt1 = loopNodes.begin();
-                auto nodeIt2 = loopNodes.begin() + 1;
-                auto nodeIt3 = loopNodes.begin() + 2;
-                failedLoop = false;
-                do {
-                    if(nbLoops++ > 2*loopNodes.size()) {
-    //                    cout << "missed triangle." << endl;
-                        failedLoop = true;
-                        break;
-                    }
-                    Node* n1 = *(nodeIt1);
-                    Node* n2 = *(nodeIt2);
-                    Node* n3 = *(nodeIt3);
-//                    vec2 p1 = vec2(n1->latitude, n1->longitude);
-//                    vec2 p2 = vec2(n2->latitude, n2->longitude);
-//                    vec2 p3 = vec2(n3->latitude, n3->longitude);
-                    vec2 p1 = vec2(n1->longitude, n1->latitude);
-                    vec2 p2 = vec2(n2->longitude, n2->latitude);
-                    vec2 p3 = vec2(n3->longitude, n3->latitude);
-                    if(p1==p2 || p1==p3) cout << "bad precision" << endl;
-                    vec2 v12 = p2 - p1;
-                    vec2 v13 = p3 - p1;
-
-                    vec3 v12_3D = vec3(v12.x, v12.y, 0);
-                    vec3 v23_3D = vec3(p3.x - p2.x, p3.y - p2.y, 0);
-                    vec3 v31_3D = vec3(p1.x - p3.x, p1.y - p3.y, 0);
-
-                    bool isGoodTriangle;
-                    // check clockwiseness
-                    isGoodTriangle = clockwiseness * glm::cross(vec3(v12.x, v12.y, 0.f) , vec3(v13.x, v13.y, 0.f)).z > 0.f;
-                    if(isGoodTriangle) {
-                        // make sure it doesn't include another active node
-                        for(Node* node : loopNodes) {
-                            if(node == n1 || node == n2 || node == n3) continue;
-                            //vec3 n_3D = vec3(node->latitude, node->longitude, 0);
-                            vec3 n_3D = vec3(node->longitude, node->latitude, 0);
-                            if(clockwiseness * glm::cross(v12_3D, n_3D - vec3(p1.x, p1.y, 0)).z > 0.f &&
-                               clockwiseness * glm::cross(v23_3D, n_3D - vec3(p2.x, p2.y, 0)).z > 0.f &&
-                               clockwiseness * glm::cross(v31_3D, n_3D - vec3(p3.x, p3.y, 0)).z > 0.f ) {
-                                isGoodTriangle = false;
-                                break;
-                            }
-                        }
-                    }
-                    if(isGoodTriangle) {
-                        // create triangle
-//                        vec2 p1 = vec2(n1->latitude, n1->longitude);
-//                        vec2 p2 = vec2(n2->latitude, n2->longitude);
-//                        vec2 p3 = vec2(n3->latitude, n3->longitude);
-                        vec2 p1 = vec2(n1->longitude, n1->latitude);
-                        vec2 p2 = vec2(n2->longitude, n2->latitude);
-                        vec2 p3 = vec2(n3->longitude, n3->latitude);
-
-                        vec2 point;
-                        //point = (p1 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = p1;
-//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-                        //buildingTrianglePositions->push_back(point);
-                        tempTriangleVertices.push_back(point);
-//                        point = (p2 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = p2;
-//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-//                        buildingTrianglePositions->push_back(point);
-                        tempTriangleVertices.push_back(point);
-//                        point = (p3 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = p3;
-//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-//                        buildingTrianglePositions->push_back(point);
-                        tempTriangleVertices.push_back(point);
-
-    //                    buildingTrianglePositions->push_back(p1);
-    //                    buildingTrianglePositions->push_back(p2);
-    //                    buildingTrianglePositions->push_back(p3);
-
-                        // delete node from loop. std::vector reassigns positions to all elements after the one deleted, so we must reassign the iterators acordingly.
-                        if(nodeIt2 == loopNodes.begin()) {
-                            loopNodes.erase(nodeIt2);
-                            nodeIt3 = loopNodes.begin();
-                            nodeIt2 = loopNodes.end() - 1;
-                            nodeIt1 = nodeIt2 - 1;
-                        } else {
-                            loopNodes.erase(nodeIt2);
-                            nodeIt2 = nodeIt1 + 1;
-                            if(nodeIt2 == loopNodes.end()) nodeIt2 = loopNodes.begin();
-                            nodeIt3 = nodeIt2 + 1;
-                            if(nodeIt3 == loopNodes.end()) nodeIt3 = loopNodes.begin();
-                        }
-                        nbLoops = 0;
-                    } else {
-                        // no triangle, check next
-                        nodeIt1 = nodeIt2;
-                        nodeIt2 = nodeIt3;
-                        ++nodeIt3;
-                        if(nodeIt3 == loopNodes.end()) nodeIt3 = loopNodes.begin();
-                    }
-
-                } while(loopNodes.size() >= 3);
-                if(!failedLoop) {
-                    break; // do not check other clockwiseness, the first guess worked.
-                } else {
-                    tempTriangleVertices.clear();
-                }
-            }
-            if(failedLoop) {
-                nbFailedLoops++;
-            } else {
-                nbSuccessLoops++;
-                // keep and copy the triangles we created
-                for(vec2 v : tempTriangleVertices) {
-                    buildingTrianglePositions->push_back(v);
-                }
-            }
-        }
-
-    }
-
-    cout << "succeeded loops: " << nbSuccessLoops << endl;
-    cout << "failed loops: " << nbFailedLoops << endl;
-
-     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
-        Way* way = it->second;
-        if (way->eType != OSMElement::GRID_LINE) continue;
-
-        groundTrianglesPositions->push_back(way->nodes[0]->getLatLongEle());
-        groundTrianglesPositions->push_back(way->nodes[1]->getLatLongEle());
-        groundTrianglesPositions->push_back(way->nodes[2]->getLatLongEle());
-
-     }
-}
 
 Node* Game::findClosestNode(vec2 xy){
     Node* closest;
@@ -581,17 +334,39 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
         if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
     }
     else if (key.compare("addr:interpolation") == 0){ return OSMElement::ADDR_INTERPOLATION; }
-    return OSMElement::NOT_IMPLEMENTED;
+    else return OSMElement::NOT_IMPLEMENTED;
 
 }
 
+string Game::labelFromType(OSMElement::ElementType type){
+    switch (type){
+        case(OSMElement::HIGHWAY_TRUNK): return "Highway (trunk)"; break;
+        case(OSMElement::HIGHWAY_PRIMARY): return "Highway (primary)";break;
+        case(OSMElement::HIGHWAY_SECONDARY): return "Highway (secondary)";break;
+        case(OSMElement::HIGHWAY_TERTIARY): return "Highway (tertiary)";break;
+        case(OSMElement::HIGHWAY_RESIDENTIAL): return "Highway (residential)";break;
+        case(OSMElement::HIGHWAY_UNCLASSIFIED): return "Highway (unclassified)";break;
+        case(OSMElement::HIGHWAY_SERVICE): return "Highway (service)";break;
+        case(OSMElement::NATURAL_WOOD): return "Natural (wood)";break;
+        case(OSMElement::NATURAL_WATER): return "Natural (water)";break;
+        case(OSMElement::BUILDING_UNMARKED): return "Building (unmarked)";break;
+        case(OSMElement::BUILDING_SCHOOL): return "Building (school)";break;
+        case(OSMElement::LEISURE_PARK): return "Leisure (park)";break;
+        case(OSMElement::ADDR_INTERPOLATION): return "Address interpolation";break;
+        case(OSMElement::CONTOUR): return "Contour line";break;
+        case(OSMElement::GRID_LINE): return "Grid line";break;
+        case(OSMElement::aDEBUG): return "debug";break;
+        case(OSMElement::RAILWAY_SUBWAY): return "Railway (subway)";break;
+
+    }
+}
 
 void Game::updateSelectedWay(Way* myWay){ //or the highway
 
     if (selectedWay.way != NULL){
         vector<vec3> toWrite;
 
-        for (int i = 0; i < (selectedWay.way->nodes.size() * 2) - 2; i++) toWrite.push_back(colorFromTags(selectedWay.way));
+//        for (int i = 0; i < (selectedWay.way->nodes.size() * 2) - 2; i++) toWrite.push_back(colorFromTags(selectedWay.way));
 
         // push it to the buffer
         glNamedBufferSubData(glidWaysColors, selectedWay.numberOfBytesBefore, selectedWay.numberOfBytesToWrite, toWrite.data());
@@ -630,33 +405,58 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
     selectedWay.numberOfBytesToWrite = numberOfBytesToWrite;
 }
 
-vec3 Game::colorFromTags(Way* way){
-    if (way->eType == OSMElement::HIGHWAY_TRUNK) return vec3(1,1,1);
-    else if (way->eType == OSMElement::HIGHWAY_PRIMARY) return vec3(0.9,0.9,0.9);
-    else if (way->eType == OSMElement::HIGHWAY_SECONDARY) return vec3(0.8,0.8,0.8);
-    else if (way->eType == OSMElement::HIGHWAY_TERTIARY) return vec3(0.7,0.7,0.7);
-    else if (way->eType == OSMElement::HIGHWAY_RESIDENTIAL) return vec3(0.6,0.6,0.6);
-    else if (way->eType == OSMElement::HIGHWAY_UNCLASSIFIED) return vec3(0.5,0.5,0.5);
-    else if (way->eType == OSMElement::HIGHWAY_SERVICE) return vec3(0.4,0.4,0.4);
-    else if (way->eType == OSMElement::BUILDING_UNMARKED) return vec3(0,0,1);
-    else if (way->eType == OSMElement::BUILDING_SCHOOL) return vec3(0,0,1);
-    else if (way->eType == OSMElement::BUILDING_ADDRINTERP) return vec3(0.4,1,1);
-    else if (way->eType == OSMElement::RAILWAY_SUBWAY) return vec3(1,0,1);
-    else if (way->eType == OSMElement::NATURAL_WOOD) return vec3(0,0.5,0);
-    else if (way->eType == OSMElement::NATURAL_WATER) return vec3(0,0,0.5);
-    else if (way->eType == OSMElement::LEISURE_PARK) return vec3(0,1,0);
-    else if (way->eType == OSMElement::ADDR_INTERPOLATION) return vec3(1,0,0);
-    else if (way->eType == OSMElement::CONTOUR) return vec3(0);
-    else if (way->eType == OSMElement::GRID_LINE) return vec3(0.4,0.4,0.4);
-    else if (way->eType == OSMElement::aDEBUG) return vec3(1.0,0,1.0);
+void Game::populateTypeColorArray(){
 
-    else return vec3(-1,-1,-1);
+    typeColorMap.emplace(OSMElement::HIGHWAY_TRUNK, vec3(1,1,1));
+    typeColorMap.emplace(OSMElement::HIGHWAY_PRIMARY, vec3(0.9,0.9,0.9));
+    typeColorMap.emplace(OSMElement::HIGHWAY_SECONDARY, vec3(0.8,0.8,0.8));
+    typeColorMap.emplace(OSMElement::HIGHWAY_TERTIARY, vec3(0.7,0.7,0.7));
+    typeColorMap.emplace(OSMElement::HIGHWAY_RESIDENTIAL, vec3(0.6,0.6,0.6));
+    typeColorMap.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, vec3(0.5,0.5,0.5));
+    typeColorMap.emplace(OSMElement::HIGHWAY_SERVICE, vec3(0.4,0.4,0.4));
+    typeColorMap.emplace(OSMElement::BUILDING_UNMARKED, vec3(0,0,1));
+    typeColorMap.emplace(OSMElement::BUILDING_SCHOOL, vec3(0,0,1));
+    typeColorMap.emplace(OSMElement::BUILDING_ADDRINTERP, vec3(0.4,1,1));
+    typeColorMap.emplace(OSMElement::RAILWAY_SUBWAY, vec3(1,0,1));
+    typeColorMap.emplace(OSMElement::NATURAL_WOOD, vec3(0,0.5,0));
+    typeColorMap.emplace(OSMElement::NATURAL_WATER, vec3(0,0,0.5));
+    typeColorMap.emplace(OSMElement::LEISURE_PARK, vec3(0,1,0));
+    typeColorMap.emplace(OSMElement::ADDR_INTERPOLATION, vec3(1,0,0));
+//    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0));
+    typeColorMap.emplace(OSMElement::GRID_LINE, vec3(0.4,0.4,0.4));
+    typeColorMap.emplace(OSMElement::aDEBUG, vec3(1.0,0,1.0));
+
+//    /*
+
+
+    // for (auto it = typeColorMap.begin; it != typeColorMap.end; it++){
+        // displayElementType.emplace(it->first, true);
+    // }
+//*/
+    displayElementType.emplace(OSMElement::HIGHWAY_TRUNK, true);
+    displayElementType.emplace(OSMElement::HIGHWAY_PRIMARY, true);
+    displayElementType.emplace(OSMElement::HIGHWAY_SECONDARY, true);
+    displayElementType.emplace(OSMElement::HIGHWAY_TERTIARY, true);
+    displayElementType.emplace(OSMElement::HIGHWAY_RESIDENTIAL, true);
+    displayElementType.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, true);
+    displayElementType.emplace(OSMElement::HIGHWAY_SERVICE, true);
+    displayElementType.emplace(OSMElement::BUILDING_UNMARKED, true);
+    displayElementType.emplace(OSMElement::BUILDING_SCHOOL, true);
+    displayElementType.emplace(OSMElement::BUILDING_ADDRINTERP, true);
+    displayElementType.emplace(OSMElement::RAILWAY_SUBWAY, true);
+    displayElementType.emplace(OSMElement::NATURAL_WOOD, true);
+    displayElementType.emplace(OSMElement::NATURAL_WATER, true);
+    displayElementType.emplace(OSMElement::LEISURE_PARK, true);
+    displayElementType.emplace(OSMElement::ADDR_INTERPOLATION, true);
+//    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0));
+    displayElementType.emplace(OSMElement::GRID_LINE, true);
+    displayElementType.emplace(OSMElement::aDEBUG, true);
 }
 
 static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
 
 
-void Game::generateGridLines(){
+void Game::generateGridLines( vector<vec3> *groundTrianglesPositions, vector<vec2> *groundTrianglesUV){
 
     double step = 0.001;
 
@@ -725,6 +525,12 @@ void Game::generateGridLines(){
             way->id = string("TRI1_").append(std::to_string(i)).append(std::to_string(j));
             theWays.emplace(way->id, way);
 
+            groundTrianglesPositions->push_back(way->nodes[0]->getLatLongEle());
+            groundTrianglesPositions->push_back(way->nodes[1]->getLatLongEle());
+            groundTrianglesPositions->push_back(way->nodes[2]->getLatLongEle());
+            groundTrianglesUV->push_back(vec2(0,0));
+            groundTrianglesUV->push_back(vec2(1,0));
+            groundTrianglesUV->push_back(vec2(0,1));
             way = new Way();
 
             way->addRef(latitudeLines[i]->nodes[j+1]);
@@ -736,7 +542,16 @@ void Game::generateGridLines(){
 
             way->id = string("TRI2_").append(std::to_string(i)).append(std::to_string(j));
             theWays.emplace(way->id, way);
+
+            groundTrianglesPositions->push_back(way->nodes[0]->getLatLongEle());
+            groundTrianglesPositions->push_back(way->nodes[1]->getLatLongEle());
+            groundTrianglesPositions->push_back(way->nodes[2]->getLatLongEle());
+            groundTrianglesUV->push_back(vec2(1,0));
+            groundTrianglesUV->push_back(vec2(1,1));
+            groundTrianglesUV->push_back(vec2(0,1));
+//            if ( j == 1) break;
         }
+//        if ( i == 1) break;
     }
 
 //    latitudeLines.remove_if(deleteAll);
@@ -772,7 +587,6 @@ double Game::contourLineInterpolate(vec2 xy){
     heights.push_back(stod(closests[lerpedWay]->getValue("ele")));
 
     double result = lerp(heights[0], heights[1], t) / 15000;
-//    PRINT(result);
     return result;
 }
 

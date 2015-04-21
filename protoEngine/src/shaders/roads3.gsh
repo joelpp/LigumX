@@ -38,21 +38,30 @@ void main() {
     rNext = rNext * streetWidth/2.0 / sqrt(1-d*d);
 
     // generate primitives
-    vec2 p;
-    p = gl_in[1].gl_Position.xy + rPrev;
-    gl_Position = vpMat*vec4(p.x, p.y, 0, 1);
+    vec3 p;
+    p.xy = gl_in[1].gl_Position.xy + rPrev;
+    p.z = gl_in[1].gl_Position.z;
+    gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
     gTexCoord = vec2(1,0);
     EmitVertex();
-    p = gl_in[2].gl_Position.xy + rNext;
-    gl_Position = vpMat*vec4(p.x, p.y, 0, 1);
+
+    p.xy = gl_in[2].gl_Position.xy + rNext;
+    p.z = gl_in[2].gl_Position.z;
+    gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
+
     gTexCoord = vec2(1,1);
     EmitVertex();
-    p = gl_in[1].gl_Position.xy - rPrev;
-    gl_Position = vpMat*vec4(p.x, p.y, 0, 1);
+
+    p.xy = gl_in[1].gl_Position.xy - rPrev;
+    p.z = gl_in[1].gl_Position.z;
+    gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
+
     gTexCoord = vec2(0,0);
     EmitVertex();
-    p = gl_in[2].gl_Position.xy - rNext;
-    gl_Position = vpMat*vec4(p.x, p.y, 0, 1);
+    p.xy = gl_in[2].gl_Position.xy - rNext;
+    p.z = gl_in[2].gl_Position.z;
+    gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
+
     gTexCoord = vec2(0,1);
     EmitVertex();
     EndPrimitive();

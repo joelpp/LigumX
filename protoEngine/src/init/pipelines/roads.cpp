@@ -7,14 +7,14 @@ void Game::init_pipelines_roads()
 
     const char* vertexShaderSource = " \
         #version 430 core\n \
-        in layout(location=0) vec2 pos;\n \
+        in layout(location=0) vec3 pos;\n \
         in layout(location=1) float distance;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
         };\n \
     //        out float vDistance;\n \
         void main() {\n \
-            gl_Position = vec4(pos, 0, 1);\n \
+            gl_Position = vec4(pos, 1);\n \
     //            vDistance = distance;\n \
         }";
 
@@ -92,8 +92,8 @@ void Game::init_pipelines_roads()
 
     // VAO
     glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 0, glidBufferRoadsPositions, 0, 2*4);
-    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 0, glidBufferRoadsPositions, 0, 3*4);
+    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
     //    glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 1);
     //    glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 1, glidBufferRoadsPositions, 0, 1*4);
     //    glVertexArrayAttribFormat(pPipelineRoads->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);

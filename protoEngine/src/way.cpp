@@ -21,7 +21,7 @@ void Way::addRef(Node* ref){
 }
 std::string Way::toString(){
     char str[200];
-    sprintf_s(str, "Way ID=%s, %d nodes", this->id.c_str(), nodes.size());
+    sprintf_s(str, "Way ID=%s, %d nodes, eType: %d, ", this->id.c_str(), nodes.size(), this->eType);
     std::string toReturn = std::string(str);
     for ( auto it = this->tags.begin(); it != this->tags.end(); ++it ){
         char tagstr[200];

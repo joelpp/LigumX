@@ -23,21 +23,26 @@ void main() {
 
     // generate primitives
     vec3 p;
-    p = vec3(gl_in[0].gl_Position.x, gl_in[0].gl_Position.y, 0);
+    float totalHeight = gl_in[0].gl_Position.z + buildingHeight;
+    p = vec3(gl_in[0].gl_Position.x, gl_in[0].gl_Position.y, gl_in[0].gl_Position.z);
     gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
     gTexCoord = vec2(vDistance[0]/(buildingHeight)*uScaleFactor,0);
+
     EmitVertex();
-    p = vec3(gl_in[1].gl_Position.x, gl_in[1].gl_Position.y, 0);
+    p = vec3(gl_in[1].gl_Position.x, gl_in[1].gl_Position.y, gl_in[1].gl_Position.z);
     gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
     gTexCoord = vec2(vDistance[1]/(buildingHeight)*uScaleFactor,0);
+
     EmitVertex();
-    p = vec3(gl_in[0].gl_Position.x, gl_in[0].gl_Position.y, buildingHeight);
+    p = vec3(gl_in[0].gl_Position.x, gl_in[0].gl_Position.y, totalHeight);
     gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
     gTexCoord = vec2(vDistance[0]/(buildingHeight)*uScaleFactor,uScaleFactor);
+
     EmitVertex();
-    p = vec3(gl_in[1].gl_Position.x, gl_in[1].gl_Position.y, buildingHeight);
+    p = vec3(gl_in[1].gl_Position.x, gl_in[1].gl_Position.y, totalHeight);
     gl_Position = vpMat*vec4(p.x, p.y, p.z, 1);
     gTexCoord = vec2(vDistance[1]/(buildingHeight)*uScaleFactor,uScaleFactor);
     EmitVertex();
+
     EndPrimitive();
 }

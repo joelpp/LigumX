@@ -27,9 +27,10 @@
                     x;\
                     auto end = std::chrono::high_resolution_clock::now();\
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
-#define PRINTVEC2VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y << "\n";
 #define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
+#define PRINTVEC2VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y << "\n";
 #define PRINTVEC3(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n";
+#define PRINTVEC3VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y  << v[_index_].z << "\n";
 #define PRINT(f) std::cout << #f << ": = " << f << "\n";
 #define PRINTSTRING(f) std::cout << f << "\n";
 #define PRINTBOOL(B) string b = B==1?"TRUE":"FALSE"; std::cout << #B << " : " << b << "\n";
@@ -56,11 +57,12 @@ public:
 
     void fillBuffers(std::vector<glm::vec3> *waysNodesPositions,
                      std::vector<glm::vec3> *waysNodesColors,
-                     std::vector<glm::vec2> *roadsPositions,
-                     std::vector<glm::vec2> *buildingTrianglePositions,
-                     std::vector<glm::vec2> *buildingLines,
+                     std::vector<vec3> *roadsPositions,
+                     std::vector<vec3> *buildingTrianglePositions,
+                     std::vector<vec3> *buildingLines,
                      std::vector<float> *buildingLinesTexCoords,
-                     std::vector<vec3> *groundTrianglesPositions);
+                     std::vector<vec3> *groundTrianglesPositions,
+                     std::vector<vec2> *groundTrianglesUV);
 
 
 
@@ -70,15 +72,15 @@ public:
     double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2, glm::vec2 &direction);
     void updateSelectedWay(Way* way);
     OSMElement::ElementType typeFromStrings(std::string key, std::string value);
-    glm::vec3 colorFromTags(Way* way);
+    void populateTypeColorArray();
 
-    void generateGridLines();
+    void generateGridLines(std::vector<vec3> *groundTrianglesPositions, std::vector<vec2> *groundTrianglesUV);
 
     double contourLineInterpolate(glm::vec2 xy);
     int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, std::vector<std::pair<Node*, Node*>> nodePairs);
     void extrudeAddrInterps();
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
-
+    std::string labelFromType(OSMElement::ElementType type);
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
         glCreateBuffers(1, &bufferName);
         glNamedBufferStorage(bufferName, bufferData.size() * sizeof(T), // nbWaysNodes * vec2 * float
@@ -149,7 +151,11 @@ public:
     unsigned int nbBuildingLines;
     GLuint glidBufferBuildingLoopLengths;
     GLuint glidGroundTrianglePositions;
-
+    GLuint glidGroundTriangleUVs;
+    std::unordered_map<OSMElement::ElementType, std::vector<vec3> > waysNodesPositionsMap;
+    std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
+    std::unordered_map<OSMElement::ElementType, vec3> typeColorMap;
+    std::unordered_map<OSMElement::ElementType, bool> displayElementType;
     // camera
     Camera* camera;
     bool draggingCamera;
@@ -166,7 +172,7 @@ public:
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.
     GLuint glidFramebuffer;
     Texture* pBuildingTex;
-
+    std::unordered_map<std::string, Texture*> textureMap;
     // debug stuff
 
     bool fancyDisplayMode;

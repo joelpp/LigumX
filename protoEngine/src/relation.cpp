@@ -10,7 +10,7 @@ Relation::Relation(std::string id){
 }
 
 void Relation::addMember(OSMElement* element){
-    members.push_back(element);
+    this->members.push_back(element);
 }
 
 std::string Relation::toString(){
