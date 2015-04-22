@@ -491,27 +491,28 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
     cout << "failed loops: " << nbFailedLoops << endl;
     int counter = 0;
 
-//     for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
-//        Way* way = it->second;
-//        if (way->eType != OSMElement::GRID_LINE) continue;
+    vector<Triangle* >& tris = heightfield.triangles;
+    for (int i = 0; i < tris.size()-1; i += 2){
+        Triangle* tri = tris[i];
+        if (tri != NULL){
+            groundTrianglesPositions->push_back(tri->p0);
+            groundTrianglesPositions->push_back(tri->p1);
+            groundTrianglesPositions->push_back(tri->p2);
+            groundTrianglesUV->push_back(vec2(0,0));
+            groundTrianglesUV->push_back(vec2(1,0));
+            groundTrianglesUV->push_back(vec2(0,1));
+        }
 
-//        groundTrianglesPositions->push_back(way->nodes[0]->getLatLongEle());
-//        groundTrianglesPositions->push_back(way->nodes[1]->getLatLongEle());
-//        groundTrianglesPositions->push_back(way->nodes[2]->getLatLongEle());
-//        switch(counter % 2){
-//            case(0):
-//                groundTrianglesUV->push_back(vec2(0,0));
-//                groundTrianglesUV->push_back(vec2(1,0));
-//                groundTrianglesUV->push_back(vec2(0,1));
-//                break;
-//            case(1):
-//                groundTrianglesUV->push_back(vec2(1,0));
-//                groundTrianglesUV->push_back(vec2(1,1));
-//                groundTrianglesUV->push_back(vec2(0,1));
-//                break;
-//        }
-//        counter++;
-//     }
+        tri = tris[i+1];
+        if (tri != NULL){
+            groundTrianglesPositions->push_back(tri->p0);
+            groundTrianglesPositions->push_back(tri->p1);
+            groundTrianglesPositions->push_back(tri->p2);
+            groundTrianglesUV->push_back(vec2(1,0));
+            groundTrianglesUV->push_back(vec2(1,1));
+            groundTrianglesUV->push_back(vec2(0,1));
+        }
+    }
 }
 
 

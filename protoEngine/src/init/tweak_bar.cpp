@@ -1,5 +1,11 @@
 #include "../game.h"
 
+void TW_CALL undisplayAllWays(void *clientData){
+    for( auto it = game->displayElementType.begin(); it != game->displayElementType.end(); ++it){
+        it->second = false;
+    }
+}
+
 void Game::init_tweakBar()
 {
     TwInit(TW_OPENGL_CORE, NULL);
@@ -28,6 +34,7 @@ void Game::init_tweakBar()
     TwAddVarRW(myBar, "Move Sun Automatically", TW_TYPE_BOOL8, &sunMoveAuto, NULL);
     TwAddVarRW(myBar, "Save Screenshot", TW_TYPE_BOOL8, &saveScreenshot, NULL);
 
+    TwAddButton(myBar, "Show none", undisplayAllWays, NULL, NULL);
     for (auto it = displayElementType.begin(); it != displayElementType.end(); ++it){
         PRINT(it->first);
         TwAddVarRW(myBar, labelFromType(it->first).c_str(), TW_TYPE_BOOL8, &(it->second), NULL);

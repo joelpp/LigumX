@@ -24,8 +24,8 @@ public:
     std::string toString();
 
     bool selectable;
-
-
+    bool hasPointInside(glm::vec2 xy);
+    bool loops();
 };
 
 #endif // WAY

@@ -30,3 +30,47 @@ std::string Way::toString(){
     }
     return toReturn;
 }
+bool Way::hasPointInside(glm::vec2 xy){
+
+    //If this way doesn't form a closed loop the concept of "being inside" it is meaningless. MEANINGLESS!!
+//    if(!loops()) return false;
+//    std::cout << "forms loop";
+    bool first = false;
+    int numIntersections = 0;
+    LineSegment L0;
+    L0.p0 = xy;
+    L0.p1 = vec2(2,2); //def not future proof. or is it?
+    LineSegment L1;
+    Node* node1;
+    Node* node2;
+
+    // Loop over all this way's nodes
+    for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it){
+        // On first pass set first node and carry on
+        if (first){
+            node1 = *it;
+            first = false;
+            continue;
+        }
+
+        // Define a linesegment between the two current nodes
+        node2 = *it;
+        L1.p0 = node1->getLatLong();
+        L1.p1 = node2->getLatLong();
+
+        // Add to the counter if L0 crossed the way's perimeter
+        if (L0.intersects(L1)) numIntersections++;
+
+        //Set first node to previous second node
+        node1 = node2;
+    }
+    // Odd number of intersections means the point was inside the perimeter
+    return ((numIntersections % 2) == 1);
+}
+
+bool Way::loops(){
+    auto it = this->nodes.begin();
+    auto it2 = this->nodes.end();
+
+    return (it == it2);
+}

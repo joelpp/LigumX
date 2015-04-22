@@ -52,6 +52,7 @@ SOURCES += \
     src/linesegment.cpp \
     src/callbacks.cpp \
     src/main_loop.cpp \
+    src/heightfield.cpp \
     src/init/pipelines/filled_buildings.cpp \
     src/init/pipelines/screen_quad.cpp \
     src/init/pipelines/roads.cpp \
@@ -61,7 +62,10 @@ SOURCES += \
     src/init/pipelines/general_lines.cpp \
     src/init/pipelines/building_sides.cpp \
     src/init/pipelines/envmap.cpp \
-    src/init/tweak_bar.cpp
+    src/init/tweak_bar.cpp \
+    src/query.cpp \
+    src/load.cpp \
+    src/triangle.cpp
 
 
 HEADERS += \
@@ -76,7 +80,9 @@ HEADERS += \
     src/texture.h \
     src/filter.h \
     src/common.h \
-    src/linesegment.h
+    src/linesegment.h \
+    src/heightfield.h \
+    src/triangle.h
 
 OTHER_FILES += \
     src/shaders/roads.gsh \

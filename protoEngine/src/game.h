@@ -21,6 +21,8 @@
 #include "texture.h"
 #include "filter.h"
 #include "linesegment.h"
+#include "heightfield.h"
+#include "triangle.h"
 #include <chrono>
 
 
@@ -166,9 +168,8 @@ public:
     std::unordered_map<std::string, Node*> theNodes;
     std::unordered_map<std::string, Way*> theWays;
     std::unordered_map<std::string, Relation*> theRelations;
-
     std::unordered_map<std::string, int> tagConversionTable;
-
+    Heightfield heightfield;
     // textures
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.
     GLuint glidFramebuffer;

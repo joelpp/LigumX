@@ -36,7 +36,6 @@ void Game::mainLoop()
         for ( auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it ){
             try{ if (!displayElementType.at(it->first)) continue; }
             catch(...){continue;};
-            PRINTSTRING(labelFromType(it->first));
             glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysNodesPositions[it->first], 0, 3*4);
             vec3 color = typeColorMap[it->first];
             glProgramUniform3f(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "color"), color.x, color.y, color.z);

@@ -7,6 +7,8 @@ using std::endl;
 using std::vector;
 using std::string;
 
+
+
 void Game::insertDebugMessage(string message, GLenum severity, GLuint id)
 {
     // TODO: make glDebug work.
@@ -49,6 +51,12 @@ void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int actio
                 if(game->camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) game->camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
             }
             if (key == GLFW_KEY_R) { game->init_pipelines(); }
+            if (key == GLFW_KEY_M) {
+                for( auto it = game->displayElementType.begin(); it != game->displayElementType.end(); ++it){
+                    it->second = false;
+                }
+            }
+
         }
         game->camera->handlePresetKey(pWindow, key, scancode, action, mods);
     }
