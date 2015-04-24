@@ -19,6 +19,7 @@
 #include "relation.h"
 #include "texture.h"
 #include "filter.h"
+#include "entity.h"
 
 
 class Game {
@@ -72,7 +73,6 @@ public:
     ProgramPipeline* pPipelineRoads;
     ProgramPipeline* pPipelineScreenQuad;
     ProgramPipeline* pPipelineBuildings;
-    ProgramPipeline* pPipelineEntities;
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
     ProgramPipeline::ShaderProgram* pGeometryShader2;
@@ -94,9 +94,6 @@ public:
     GLuint glidBufferBuildingTriangleVertices;
     unsigned int nbBuildingTriangles;
 
-    GLuint glidEntitiesPositions;
-    GLuint glidEntitiesColors;
-    unsigned int nbEntities;
 
     // camera
     Camera* camera;
@@ -127,13 +124,7 @@ public:
 
     WaySelection selectedWay;
 
-    glm::vec2 position;
-    glm::vec2 velocity;
-    glm::vec2 acceleration;
-    glm::vec2 entitiesPositions[2];
-    float angle, force;
-    int turning;
-    void updatePhysics(double dt);
+    EntityManager entityManager;
 };
 
 extern Game* game;
