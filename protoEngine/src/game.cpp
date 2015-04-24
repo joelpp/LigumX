@@ -38,7 +38,6 @@ int main()
 }
 
 OSMElement::ElementType Game::typeFromStrings(string key, string value){
-
     if (key.compare("highway") == 0){
         if (value.compare("trunk") == 0) return OSMElement::HIGHWAY_TRUNK;
         else if (value.compare("primary") == 0) return OSMElement::HIGHWAY_PRIMARY;
@@ -66,6 +65,8 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
 
     else return OSMElement::NOT_IMPLEMENTED;
 
+    // Entities
+    entityManager.Init();
 }
 
 string Game::labelFromType(OSMElement::ElementType type){
@@ -89,7 +90,6 @@ string Game::labelFromType(OSMElement::ElementType type){
         case(OSMElement::RAILWAY_SUBWAY): return "Railway (subway)";break;
         case(OSMElement::LANDUSE): return "Land use";break;
         case(OSMElement::BOUNDARY): return "Boundary";break;
-
     }
 }
 
@@ -150,9 +150,6 @@ void Game::populateTypeColorArray(){
 }
 
 static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
-
-
-
 
 // Convert the address interpolation ways into building polygons
 void Game::extrudeAddrInterps(){
@@ -254,6 +251,3 @@ void Game::extrudeAddrInterps(){
     PRINTSTRING("Extruding address interpolation into polygons");
     PRINTINT(counter);
 }
-
-
-

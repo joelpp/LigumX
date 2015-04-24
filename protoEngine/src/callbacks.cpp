@@ -45,6 +45,9 @@ void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, doub
 void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
     if(!TwEventKeyGLFW(key, action)) {
+        // send event to entity Manager (temporary before a playerInput class)
+        game->entityManager.KeyCallback(key, action);
+
         if(action == GLFW_PRESS){
             if (key == GLFW_KEY_SPACE) { game->showTweakBar = !game->showTweakBar; }
             if (key == GLFW_KEY_ESCAPE) {

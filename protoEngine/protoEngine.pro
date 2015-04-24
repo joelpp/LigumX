@@ -21,7 +21,7 @@ unix {
     # - libglew-dev (>= 1.11 !!)
     # - libfreeimage-dev
     QMAKE_CXXFLAGS += "-std=c++11 $$system(pkg-config --cflags glew) $$system(pkg-config --cflags glfw3)"
-    LIBS += $$system(pkg-config --libs glew)
+    LIBS += -L/usr/local/lib /usr/local/lib/libGLEW.a -lGLU -lGL #$$system(pkg-config --libs glew)
     LIBS += $$system(pkg-config --libs glfw3)
     LIBS += -lX11 -lXrandr -lXi -lXxf86vm -lpthread
     LIBS += -lAntTweakBar
@@ -65,7 +65,8 @@ SOURCES += \
     src/init/tweak_bar.cpp \
     src/query.cpp \
     src/load.cpp \
-    src/triangle.cpp
+    src/triangle.cpp \
+    src/entity.cpp
 
 
 HEADERS += \
@@ -82,7 +83,8 @@ HEADERS += \
     src/common.h \
     src/linesegment.h \
     src/heightfield.h \
-    src/triangle.h
+    src/triangle.h \
+    src/entity.h
 
 OTHER_FILES += \
     src/shaders/roads.gsh \

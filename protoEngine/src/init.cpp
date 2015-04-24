@@ -233,6 +233,8 @@ void Game::init()
 
     init_pipelines();
 
+    entityManager.Init();
+
 }
 
 

@@ -44,6 +44,10 @@ void Game::mainLoop()
             glDrawArrays(GL_LINES, 0, it->second.size());
         }
 
+
+        // draw entities
+        entityManager.Render(camera->vpMat);
+
     } else {
 
         glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);

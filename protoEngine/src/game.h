@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <map>
+#include <chrono>
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
 #include "AntTweakBar.h"
@@ -23,7 +24,7 @@
 #include "linesegment.h"
 #include "heightfield.h"
 #include "triangle.h"
-#include <chrono>
+#include "entity.h"
 
 
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
@@ -159,6 +160,7 @@ public:
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::unordered_map<OSMElement::ElementType, vec3> typeColorMap;
     std::map<OSMElement::ElementType, bool> displayElementType;
+
     // camera
     Camera* camera;
     bool draggingCamera;
@@ -210,8 +212,7 @@ public:
     void init_pipelines_envmap();
     void init_tweakBar();
 
-
-
+    EntityManager entityManager;
 };
 
 extern Game* game;
