@@ -8,16 +8,14 @@
 
 class Way;
 
-using namespace glm;
-
 class LineSegment{
 public:
-    vec2 p0;
-    vec2 p1;
+    glm::vec2 p0;
+    glm::vec2 p1;
 
     bool intersects(LineSegment other);
     LineSegment();
-    LineSegment(vec2 p0, vec2 p1);
+    LineSegment(glm::vec2 p0, glm::vec2 p1);
     LineSegment(Node* n0, Node* n1);
     LineSegment(Way* way);
 

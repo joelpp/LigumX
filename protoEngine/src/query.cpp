@@ -1,6 +1,7 @@
 #include "game.h"
 
 using namespace std;
+using namespace glm;
 
 pair<int, int> Game::findCommonWay(vector<Way*> firstNodeWays, vector<Way*> secondNodeWays){
     for (int i = 0; i < firstNodeWays.size(); i++){

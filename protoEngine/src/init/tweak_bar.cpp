@@ -6,6 +6,10 @@ void TW_CALL undisplayAllWays(void *clientData){
     }
 }
 
+void TW_CALL toggle_entityland(void *clientData) {
+    game->toggleEntityLand();
+}
+
 void Game::init_tweakBar()
 {
     TwInit(TW_OPENGL_CORE, NULL);
@@ -14,6 +18,7 @@ void Game::init_tweakBar()
     myBar = TwNewBar("NameOfMyTweakBar");
     TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &fancyDisplayMode, NULL);
     TwAddVarRW(myBar, "Draw Building Sides", TW_TYPE_BOOLCPP, &drawBuildingSides, NULL);
+    TwAddButton(myBar, "To EntityLand", toggle_entityland, NULL, NULL);
 
     TwEnumVal CameraTypeEV[] = { {Camera::CameraType::AIRPLANE, "Airplane"}, {Camera::CameraType::AROUND_TARGET, "Around Target"}, {Camera::CameraType::CYLINDRICAL, "Cynlindrical"}, {Camera::CameraType::TOP_2D, "Top 2D"}, {Camera::CameraType::TOP_3D, "Top 3D"} };
     TwType CameraTwType;

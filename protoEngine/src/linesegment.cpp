@@ -1,6 +1,8 @@
 
 #include "linesegment.h"
 
+using namespace glm;
+
 LineSegment::LineSegment(){
 
 }

@@ -48,6 +48,14 @@
 
 #define string_pair std::pair<std::string,std::string>
 
+namespace std {
+template<>
+struct hash<OSMElement::ElementType> {
+    size_t operator()(const OSMElement::ElementType &et) const {
+        return std::hash<int>()(et);
+    }
+};
+}
 
 class Game {
 public:
@@ -61,12 +69,12 @@ public:
 
     void fillBuffers(std::vector<glm::vec3> *waysNodesPositions,
                      std::vector<glm::vec3> *waysNodesColors,
-                     std::vector<vec3> *roadsPositions,
-                     std::vector<vec3> *buildingTrianglePositions,
-                     std::vector<vec3> *buildingLines,
+                     std::vector<glm::vec3> *roadsPositions,
+                     std::vector<glm::vec3> *buildingTrianglePositions,
+                     std::vector<glm::vec3> *buildingLines,
                      std::vector<float> *buildingLinesTexCoords,
-                     std::vector<vec3> *groundTrianglesPositions,
-                     std::vector<vec2> *groundTrianglesUV);
+                     std::vector<glm::vec3> *groundTrianglesPositions,
+                     std::vector<glm::vec2> *groundTrianglesUV);
 
 
 
@@ -78,7 +86,7 @@ public:
     OSMElement::ElementType typeFromStrings(std::string key, std::string value);
     void populateTypeColorArray();
 
-    void generateGridLines(std::vector<vec3> *groundTrianglesPositions, std::vector<vec2> *groundTrianglesUV);
+    void generateGridLines(std::vector<glm::vec3> *groundTrianglesPositions, std::vector<glm::vec2> *groundTrianglesUV);
 
     double contourLineInterpolate(glm::vec2 xy);
     int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, std::vector<std::pair<Node*, Node*>> nodePairs);
@@ -156,9 +164,9 @@ public:
     GLuint glidBufferBuildingLoopLengths;
     GLuint glidGroundTrianglePositions;
     GLuint glidGroundTriangleUVs;
-    std::unordered_map<OSMElement::ElementType, std::vector<vec3> > waysNodesPositionsMap;
+    std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
-    std::unordered_map<OSMElement::ElementType, vec3> typeColorMap;
+    std::unordered_map<OSMElement::ElementType, glm::vec3> typeColorMap;
     std::map<OSMElement::ElementType, bool> displayElementType;
 
     // camera
@@ -212,7 +220,12 @@ public:
     void init_pipelines_envmap();
     void init_tweakBar();
 
+    // Entity stuff
     EntityManager entityManager;
+    Camera savedCam;
+    glm::vec3 savedCamPos, savedCamDir;
+    bool inEntityLand;
+    void toggleEntityLand();
 };
 
 extern Game* game;

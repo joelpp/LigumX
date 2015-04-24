@@ -64,9 +64,6 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
     else if (key.compare("boundary") == 0){ return OSMElement::BOUNDARY; }
 
     else return OSMElement::NOT_IMPLEMENTED;
-
-    // Entities
-    entityManager.Init();
 }
 
 string Game::labelFromType(OSMElement::ElementType type){
@@ -90,6 +87,8 @@ string Game::labelFromType(OSMElement::ElementType type){
         case(OSMElement::RAILWAY_SUBWAY): return "Railway (subway)";break;
         case(OSMElement::LANDUSE): return "Land use";break;
         case(OSMElement::BOUNDARY): return "Boundary";break;
+    case(OSMElement::BUILDING_ADDRINTERP): return "Building (Address Interpolation";break;
+
     }
 }
 
@@ -250,4 +249,20 @@ void Game::extrudeAddrInterps(){
 
     PRINTSTRING("Extruding address interpolation into polygons");
     PRINTINT(counter);
+}
+
+void TW_CALL Game::toggleEntityLand() {
+    if(!inEntityLand) {
+        savedCam = *camera; // save current camera setup
+
+        camera->translateTo(vec3(0,0,0.01));
+        camera->lookAtTargetPos = vec3(0,0,0);
+        camera->cameraType = Camera::CameraType::TOP_3D;
+        camera->controlType = Camera::ControlType::QWEASDZXC_ARROWS;
+        inEntityLand = true;
+    } else {
+        // go back to regular game space
+        inEntityLand = false;
+        *camera = savedCam; // reinstall saved camera setup
+    }
 }

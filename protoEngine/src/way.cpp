@@ -39,7 +39,7 @@ bool Way::hasPointInside(glm::vec2 xy){
     int numIntersections = 0;
     LineSegment L0;
     L0.p0 = xy;
-    L0.p1 = vec2(2,2); //def not future proof. or is it?
+    L0.p1 = glm::vec2(2,2); //def not future proof. or is it?
     LineSegment L1;
     Node* node1;
     Node* node2;

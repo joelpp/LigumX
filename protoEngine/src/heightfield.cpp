@@ -2,6 +2,7 @@
 #include "heightfield.h"
 
 using namespace std;
+using namespace glm;
 
 Heightfield::Heightfield(){
 

@@ -9,7 +9,7 @@ class Heightfield{
 public:
     std::vector<Triangle* > triangles;
     double sideLength;
-    vec2 startPoint;
+    glm::vec2 startPoint;
 
     Heightfield();
     Heightfield(double sideLength, glm::vec2 startPoint);

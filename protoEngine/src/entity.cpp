@@ -82,7 +82,7 @@ bool EntityManager::Init() {
     glVertexArrayAttribFormat(pPipelineEntities->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
 
     Entity e;
-    e.position = vec3(0,0,0);
+    e.position = vec3(0,0,1);
     e.color = vec3(1,0.8,0);
     AddEntity(e);
 

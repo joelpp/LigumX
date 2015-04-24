@@ -3,6 +3,7 @@
 #include <chrono>
 
 using namespace std;
+using namespace glm;
 
 void Game::init()
 {
@@ -234,7 +235,7 @@ void Game::init()
     init_pipelines();
 
     entityManager.Init();
-
+    inEntityLand = false;
 }
 
 

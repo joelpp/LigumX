@@ -1,5 +1,7 @@
 #include "triangle.h"
+
 using namespace glm;
+
 Triangle::Triangle(){
 
 }

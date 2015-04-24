@@ -4,6 +4,7 @@
 
 
 using namespace std;
+using namespace glm;
 
 void Game::loadXML(string path){
     tinyxml2::XMLDocument doc;

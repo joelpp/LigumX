@@ -1,15 +1,20 @@
 #include "game.h"
 #include <chrono>
-#include "FreeImage.h"
 #include <sstream>
 #include <iomanip>
+#include "FreeImage.h"
 
 using namespace std;
+using namespace glm;
 
 void Game::mainLoop()
 {
+    static double dt = 0.0;
+    double curr_time = 0.01;
+
 //    camera->moveFromUserInput(pWindow);
     camera->handlePresetNewFrame(pWindow);
+    entityManager.Update(dt);
 
     // move sun
     if(sunMoveAuto) {
@@ -46,7 +51,7 @@ void Game::mainLoop()
 
 
         // draw entities
-        entityManager.Render(camera->vpMat);
+        entityManager.Render(camera->mvpMat);
 
     } else {
 
@@ -159,5 +164,6 @@ void Game::mainLoop()
     }
 
 
+    dt = glfwGetTime() - curr_time;
 
 }

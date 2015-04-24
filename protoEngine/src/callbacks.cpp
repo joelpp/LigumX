@@ -7,7 +7,7 @@ using std::endl;
 using std::vector;
 using std::string;
 
-
+using namespace glm;
 
 void Game::insertDebugMessage(string message, GLenum severity, GLuint id)
 {
@@ -58,6 +58,10 @@ void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int actio
                 for( auto it = game->displayElementType.begin(); it != game->displayElementType.end(); ++it){
                     it->second = false;
                 }
+            }
+
+            if(key == GLFW_KEY_F4) {
+                game->toggleEntityLand();
             }
 
         }
