@@ -87,8 +87,9 @@ void Game::generateGridLines( vector<vec3> *groundTrianglesPositions, vector<vec
 
         }
     }
-    heightfield.triangles[50] = NULL;
-    heightfield.triangles[100] = NULL;
+    // heightfield.triangles[50] = NULL;
+    // heightfield.triangles[100] = NULL;
+    PRINT(heightfield.triangles.size());
 
 }
 

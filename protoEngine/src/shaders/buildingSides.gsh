@@ -1,4 +1,4 @@
-#version 430 core
+#version 410 core
 layout(lines) in;
 in gl_PerVertex {
     vec4 gl_Position;

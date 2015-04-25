@@ -160,8 +160,15 @@ ProgramPipeline::ProgramPipeline()
     pGeometryShader = NULL;
     pFragmentShader = NULL;
     pComputeShader = NULL;
-    glCreateProgramPipelines(1, &glidProgramPipeline);
-    glCreateVertexArrays(1, &glidVao);
+
+    // glCreateProgramPipelines(1, &glidProgramPipeline);
+    // glCreateVertexArrays(1, &glidVao);
+
+    glGenProgramPipelines(1, &glidProgramPipeline);
+    glBindProgramPipeline(glidProgramPipeline);
+    glGenVertexArrays(1, &glidVao);
+    glBindVertexArray(glidVao);
+
 }
 
 //void ProgramPipeline::useShaders(

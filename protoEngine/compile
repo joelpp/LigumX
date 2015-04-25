@@ -1,0 +1,7 @@
+g++ -stdlib=libc++ -I /./libs/glm/ -I./libs/AntTweakBar/include/ -I./libs/FreeImage/OSX/ \
+-L./libs/AntTweakBar/lib -L./libs/FreeImage/OSX/ \
+src/*.cpp src/init/*.cpp src/init/pipelines/*.cpp  \
+-g -o build/OSX/LigumX \
+-std=c++11 \
+-lAntTweakBar -lglew -lglfw -lfreeimage \
+-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo \

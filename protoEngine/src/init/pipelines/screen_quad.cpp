@@ -2,10 +2,11 @@
 
 void Game::init_pipelines_screenQuad()
 {
+    PRINTSTRING("Creating screen quad pipeline");
     const char* vertexShaderSource = " \
-        #version 430 core\n \
-        in layout(location=0) vec2 pos;\n \
-        in layout(location=1) vec2 texCoord;\n \
+        #version 410 core\n \
+        /*in layout(location=0)*/ vec2 pos;\n \
+        /*in layout(location=1)*/ vec2 texCoord;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
         };\n \
@@ -16,7 +17,7 @@ void Game::init_pipelines_screenQuad()
         }";
 
     const char* fragmentShaderSource = " \
-        #version 430 core\n \
+        #version 410 core\n \
         in vec2 vTexCoord;\n \
         uniform sampler2D sampler;\n \
         out vec3 color;\n \
@@ -40,10 +41,20 @@ void Game::init_pipelines_screenQuad()
     pPipelineScreenQuad->useFragmentShader(pFragmentShader);
 
     // VAO
-    glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 0, glidScreenQuadPositions, 0, 2*4);
-    glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-    glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 1);
-    glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 1, glidScreenQuadTexCoords, 0, 2*4);
-    glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 1, 2, GL_FLOAT, GL_FALSE, 0);
+    // glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 0);
+    // glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 0, glidScreenQuadPositions, 0, 2*4);
+    // glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    // glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 1);
+    // glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 1, glidScreenQuadTexCoords, 0, 2*4);
+    // glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 1, 2, GL_FLOAT, GL_FALSE, 0);
+
+    glBindVertexArray(pPipelineScreenQuad->glidVao);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, glidScreenQuadPositions);
+    glVertexAttribPointer (0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    glBindVertexArray(pPipelineScreenQuad->glidVao);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, glidScreenQuadTexCoords);
+    glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);    
 }

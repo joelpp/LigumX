@@ -21,7 +21,7 @@ using namespace std;
 
 Game* game;
 
-int main()
+int main(int argc, char *argv[])
 {
 
     game = new Game();
