@@ -28,8 +28,8 @@ public:
                    *pTessControlShader,
                    *pTessEvalShader,
                    *pGeometryShader,
-                   *pFragmentShader,
                    *pComputeShader;
+    ShaderProgram *pFragmentShader;
     GLuint glidProgramPipeline;
     GLuint glidVao;
 

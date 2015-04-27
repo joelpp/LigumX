@@ -39,7 +39,7 @@ void Game::init()
     sunTime = 0;
     sunSpeed = 0.1;
     sunMoveAuto = false;
-
+    drawGround = false;
     saveScreenshot = false;
     populateTypeColorArray();
     //=============================================================================
@@ -120,13 +120,10 @@ void Game::init()
     glDepthFunc(GL_LESS);
 
 
-
     //=============================================================================
     // Load world data.
     //=============================================================================
     vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
-    vector<vec3> groundTrianglesPositions; // positions of nodes forming ways, possibly contains duplicates.
-    vector<vec2> groundTrianglesUV;
     vector<vec3> waysNodesColors;
     vector<vec3> roadsPositions;
     vector<vec3> buildingTrianglePositions;
@@ -145,7 +142,7 @@ void Game::init()
     TIME(loadXML("../data/result.xml"));
 #endif
 
-//    TIME(extrudeAddrInterps());
+   // TIME(extrudeAddrInterps());
 
     PRINTINT(theWays.size());
 
@@ -200,10 +197,10 @@ void Game::init()
     createGLBuffer(glidScreenQuadTexCoords, screenQuadTexCoords);
     createGLBuffer(glidGroundTrianglePositions, groundTrianglesPositions);
     createGLBuffer(glidGroundTriangleUVs, groundTrianglesUV);
+    // PRINTVEC3VECTOR(groundTrianglesPositions);
 
     for ( auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it ){
         createGLBuffer(glidWaysNodesPositions[it->first], it->second);
-
     }
     //=============================================================================
     // Textures, framebuffer, renderbuffer

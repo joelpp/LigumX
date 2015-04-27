@@ -14,6 +14,7 @@ void Game::init_tweakBar()
     myBar = TwNewBar("NameOfMyTweakBar");
     TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &fancyDisplayMode, NULL);
     TwAddVarRW(myBar, "Draw Building Sides", TW_TYPE_BOOLCPP, &drawBuildingSides, NULL);
+    TwAddVarRW(myBar, "Draw Ground", TW_TYPE_BOOLCPP, &drawGround, NULL);
 
     TwEnumVal CameraTypeEV[] = { {Camera::CameraType::AIRPLANE, "Airplane"}, {Camera::CameraType::AROUND_TARGET, "Around Target"}, {Camera::CameraType::CYLINDRICAL, "Cynlindrical"}, {Camera::CameraType::TOP_2D, "Top 2D"}, {Camera::CameraType::TOP_3D, "Top 3D"} };
     TwType CameraTwType;
@@ -26,6 +27,10 @@ void Game::init_tweakBar()
     TwAddVarRW(myBar, "Control Type", ControlTwType, &(camera->controlType), NULL);
 
     TwAddVarRW(myBar, "Camera Speed", TW_TYPE_FLOAT, &camera->keyMovementSpeed, NULL);
+    TwAddVarRW(myBar, "Camera X", TW_TYPE_FLOAT, &camera->position.x, NULL);
+    TwAddVarRW(myBar, "Camera Y", TW_TYPE_FLOAT, &camera->position.y, NULL);
+    TwAddVarRW(myBar, "Camera Z", TW_TYPE_FLOAT, &camera->position.z, NULL);
+    TwAddVarRW(myBar, "Camera FOV", TW_TYPE_FLOAT, &camera->totalViewAngleY, NULL);
     TwAddVarRW(myBar, "Building Height", TW_TYPE_FLOAT, &buildingHeight, NULL);
     TwAddVarRW(myBar, "Building Side Scale", TW_TYPE_FLOAT, &buildingSideScaleFactor, NULL);
     TwAddVarRW(myBar, "Sun Direction", TW_TYPE_FLOAT, &sunOrientation, "step=0.001");
@@ -36,7 +41,7 @@ void Game::init_tweakBar()
 
     TwAddButton(myBar, "Show none", undisplayAllWays, NULL, NULL);
     for (auto it = displayElementType.begin(); it != displayElementType.end(); ++it){
-        PRINT(it->first);
+        PRINT(labelFromType(it->first));
         TwAddVarRW(myBar, labelFromType(it->first).c_str(), TW_TYPE_BOOL8, &(it->second), NULL);
 
     }

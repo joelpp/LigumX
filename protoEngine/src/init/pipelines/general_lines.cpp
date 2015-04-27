@@ -54,6 +54,12 @@ void Game::init_pipelines_generalLines()
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, glidWaysPositions);
     glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    
+    glBindVertexArray(pPipelineLines->glidVao);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, glidWaysColors);
+    glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
     // glBindAttribLocation (pPipelineLines->glidShaderProgram, 0, "pos");
     // glBindAttribLocation (pPipelineLines->glidShaderProgram, 1, "color");
 }

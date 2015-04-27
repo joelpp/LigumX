@@ -5,8 +5,8 @@ void Game::init_pipelines_screenQuad()
     PRINTSTRING("Creating screen quad pipeline");
     const char* vertexShaderSource = " \
         #version 410 core\n \
-        /*in layout(location=0)*/ vec2 pos;\n \
-        /*in layout(location=1)*/ vec2 texCoord;\n \
+        layout(location=0) in vec2 pos;\n \
+        layout(location=1) in vec2 texCoord;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
         };\n \
@@ -53,7 +53,6 @@ void Game::init_pipelines_screenQuad()
     glBindBuffer(GL_ARRAY_BUFFER, glidScreenQuadPositions);
     glVertexAttribPointer (0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    glBindVertexArray(pPipelineScreenQuad->glidVao);
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, glidScreenQuadTexCoords);
     glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);    

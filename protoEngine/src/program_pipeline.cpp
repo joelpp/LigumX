@@ -148,8 +148,8 @@ ProgramPipeline::ShaderProgram *ProgramPipeline::getShader(GLenum shaderType)
 
 void ProgramPipeline::usePipeline()
 {
-    glBindProgramPipeline(glidProgramPipeline);
-    glBindVertexArray(glidVao);
+    glBindProgramPipeline(this->glidProgramPipeline);
+    glBindVertexArray(this->glidVao);
 }
 
 ProgramPipeline::ProgramPipeline()
@@ -246,8 +246,8 @@ void ProgramPipeline::useVertexShader(
     pVertexShader = shader;
 
     // attach shader shage
-    glUseProgramStages(glidProgramPipeline, shaderBit,
-                       shader->glidShaderProgram);
+    glUseProgramStages(glidProgramPipeline, GL_VERTEX_SHADER_BIT,
+                       pVertexShader->glidShaderProgram);
 
     // check for validation errors.
     GLint result;
@@ -259,9 +259,10 @@ void ProgramPipeline::useVertexShader(
         glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
         glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
-        cerr << "Validation error in program pipeline :" << endl;
+        cerr << "Validation error in useVertexShader:" << endl;
         cerr << info << endl;
     }
+    PRINT(glGetAttribLocation(shader->glidShaderProgram, "pos"));
 
 }
 
@@ -299,6 +300,7 @@ void ProgramPipeline::useGeometryShader(ProgramPipeline::ShaderProgram* shader)
 
 void ProgramPipeline::useFragmentShader(ProgramPipeline::ShaderProgram *shader)
 {
+
     GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);
 
     // make sure we don't mix compute shaders with other shader types.
@@ -311,8 +313,8 @@ void ProgramPipeline::useFragmentShader(ProgramPipeline::ShaderProgram *shader)
     pFragmentShader = shader;
 
     // attach shader shage
-    glUseProgramStages(glidProgramPipeline, shaderBit,
-                       shader->glidShaderProgram);
+    glUseProgramStages(glidProgramPipeline, GL_FRAGMENT_SHADER_BIT,
+                       pFragmentShader->glidShaderProgram);
 
     // check for validation errors.
     GLint result;
@@ -324,7 +326,7 @@ void ProgramPipeline::useFragmentShader(ProgramPipeline::ShaderProgram *shader)
         glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
         glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
-        cerr << "Validation error in program pipeline :" << endl;
+        cerr << "Validation error in useFragmentShader:" << endl;
         cerr << info << endl;
     }
 

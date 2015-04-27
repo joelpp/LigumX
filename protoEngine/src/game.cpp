@@ -47,18 +47,26 @@ OSMElement::ElementType Game::typeFromStrings(string key, string value){
         else if (value.compare("residential") == 0) return OSMElement::HIGHWAY_RESIDENTIAL;
         else if (value.compare("service") == 0) return OSMElement::HIGHWAY_SERVICE;
         else if (value.compare("unclassified") == 0) return OSMElement::HIGHWAY_UNCLASSIFIED;
+        else return OSMElement::NOT_IMPLEMENTED;
+
     }
     else if (key.compare("natural") == 0){
         if (value.compare("wood") == 0) return OSMElement::NATURAL_WOOD;
         if (value.compare("water") == 0) return OSMElement::NATURAL_WATER;
+        else return OSMElement::NOT_IMPLEMENTED;
+
     }
     else if (key.compare("building") == 0){
         if (value.compare("yes") == 0) return OSMElement::BUILDING_UNMARKED;
         else if (value.compare("school") == 0) return OSMElement::BUILDING_SCHOOL;
+        else return OSMElement::NOT_IMPLEMENTED;
+
     }
     else if (key.compare("contour") == 0) return OSMElement::CONTOUR;
     else if (key.compare("leisure") == 0){
         if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
+        else return OSMElement::NOT_IMPLEMENTED;
+
     }
     else if (key.compare("addr:interpolation") == 0){ return OSMElement::ADDR_INTERPOLATION; }
     else if (key.compare("landuse") == 0){ return OSMElement::LANDUSE; }
@@ -81,6 +89,7 @@ string Game::labelFromType(OSMElement::ElementType type){
         case(OSMElement::NATURAL_WATER): return "Natural (water)";break;
         case(OSMElement::BUILDING_UNMARKED): return "Building (unmarked)";break;
         case(OSMElement::BUILDING_SCHOOL): return "Building (school)";break;
+        case(OSMElement::BUILDING_ADDRINTERP): return "Building (address interpolation)";break;
         case(OSMElement::LEISURE_PARK): return "Leisure (park)";break;
         case(OSMElement::ADDR_INTERPOLATION): return "Address interpolation";break;
         case(OSMElement::CONTOUR): return "Contour line";break;
@@ -112,7 +121,6 @@ void Game::populateTypeColorArray(){
     typeColorMap.emplace(OSMElement::NATURAL_WATER, vec3(0,0,0.5));
     typeColorMap.emplace(OSMElement::LEISURE_PARK, vec3(0,1,0));
     typeColorMap.emplace(OSMElement::ADDR_INTERPOLATION, vec3(1,0,0));
-//    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0));
     typeColorMap.emplace(OSMElement::GRID_LINE, vec3(0.4,0.4,0.4));
     typeColorMap.emplace(OSMElement::aDEBUG, vec3(1.0,0,1.0));
     typeColorMap.emplace(OSMElement::LANDUSE, vec3(1.0,1.0,1.0));
@@ -141,7 +149,6 @@ void Game::populateTypeColorArray(){
     displayElementType.emplace(OSMElement::NATURAL_WATER, true);
     displayElementType.emplace(OSMElement::LEISURE_PARK, true);
     displayElementType.emplace(OSMElement::ADDR_INTERPOLATION, true);
-//    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0));
     displayElementType.emplace(OSMElement::GRID_LINE, true);
     displayElementType.emplace(OSMElement::aDEBUG, true);
     displayElementType.emplace(OSMElement::LANDUSE, true);
@@ -230,12 +237,12 @@ void Game::extrudeAddrInterps(){
         node3->id = string("ADDR_INTERP_NODE3_").append(std::to_string(counter));
         node3->longitude = nodes[0]->longitude - directions[0][i].x * factor;
         node3->latitude = nodes[0] -> latitude - directions[0][i].y * factor;
-
+        node3->elevation = contourLineInterpolate(vec2(node3->longitude, node3->latitude)) * 1.0001;
         Node* node4 = new Node();
         node4->id = string("ADDR_INTERP_NODE4_").append(std::to_string(counter));
         node4->longitude = nodes[1]->longitude - directions[0][i].x * factor;
         node4->latitude = nodes[1]->latitude - directions[0][i].y * factor;
-
+        node4->elevation = contourLineInterpolate(vec2(node4->longitude, node4->latitude)) * 1.0001;
         // Create the new building
         Way* buildingWay  = new Way();
         buildingWay->addRef(nodes[1]);

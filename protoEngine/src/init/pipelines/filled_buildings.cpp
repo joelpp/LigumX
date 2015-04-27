@@ -2,9 +2,11 @@
 
 void Game::init_pipelines_filledBuildings()
 {
+    PRINTSTRING("Creating filled buildings pipeline");
+
     const char* vertexShaderSource = " \
         #version 410 core\n \
-        in /*layout(location=0)*/ vec2 pos;\n \
+        layout(location=0) in vec2 pos;\n \
         uniform mat4 vpMat;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
@@ -51,5 +53,5 @@ void Game::init_pipelines_filledBuildings()
     glBindBuffer(GL_ARRAY_BUFFER, glidBufferBuildingTriangleVertices);
     glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    
+
 }

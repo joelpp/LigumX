@@ -5,8 +5,8 @@ void Game::init_pipelines_buildingSides()
     PRINTSTRING("Creating building sides pipeline");
     const char* vertexShaderSource = " \
         #version 410 core\n \
-        in layout(location=0) vec3 pos;\n \
-        in layout(location=1) float distance;\n \
+        layout(location=0) in vec3 pos;\n \
+        layout(location=1) in float distance;\n \
         uniform mat4 vpMat;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
@@ -20,7 +20,7 @@ void Game::init_pipelines_buildingSides()
     const char* fragmentShaderSource = " \
         #version 410 core\n \
         in vec2 gTexCoord;\n \
-        uniform layout(location=0) sampler2D sampler;\n \
+        uniform sampler2D sampler;\n \
         out vec3 color;\n \
         void main() {\n \
     //            vec2 coord = mod(500*texCoord, 1);\n \

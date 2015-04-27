@@ -8,15 +8,15 @@ void Game::init_pipelines_roads()
 
     const char* vertexShaderSource = " \
         #version 410 core\n \
-        in /*layout(location=0)*/ vec3 pos;\n \
-        in /*layout(location=1)*/ float distance;\n \
+        layout(location=0) in vec3 pos;\n \
+        layout(location=1) in float distance;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
         };\n \
-    //        out float vDistance;\n \
+            out float vDistance;\n \
         void main() {\n \
             gl_Position = vec4(pos, 1);\n \
-    //            vDistance = distance;\n \
+                vDistance = distance;\n \
         }";
 
     const char* fragmentShaderSource1 = " \
@@ -38,7 +38,7 @@ void Game::init_pipelines_roads()
     const char* fragmentShaderSource2 = " \
         #version 410 core\n \
     //        in vec2 gTexCoord;\n \
-        in vec2 gl_PointCoord;\n \
+        //in vec2 gl_PointCoord;\n \
         /*layout(location=0)*/ out vec3 fColor;\n \
         void main() {\n \
             if(distance(gl_PointCoord, vec2(0.5,0.5)) < 0.5) {\n \

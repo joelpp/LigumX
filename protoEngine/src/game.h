@@ -101,9 +101,11 @@ public:
 #ifdef __APPLE__
         glGenBuffers(1, &bufferName);
         glBindBuffer(GL_ARRAY_BUFFER, bufferName);
-        glBufferData(GL_ARRAY_BUFFER, bufferData.size() * sizeof(T), 0, GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
-                             GL_MAP_WRITE_BIT);
+        glBufferData(GL_ARRAY_BUFFER, bufferData.size() * sizeof(T), 0, GL_DYNAMIC_DRAW /*GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                             GL_MAP_WRITE_BIT*/);
         glBufferSubData(GL_ARRAY_BUFFER, 0, bufferData.size() * sizeof(T), bufferData.data());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 #else  
         glCreateBuffers(1, &bufferName);
         glNamedBufferStorage(bufferName, bufferData.size() * sizeof(T), // nbWaysNodes * vec2 * float
@@ -218,8 +220,11 @@ public:
     float sunSpeed;
     bool sunMoveAuto;
     bool saveScreenshot;
+    bool drawGround;
 
-
+    std::vector<glm::vec3> groundTrianglesPositions; // positions of nodes forming ways, possibly contains duplicates.
+    std::vector<glm::vec2> groundTrianglesUV;
+    
     // subfunctions
     void init_pipelines();
     void init_pipelines_buildingSides();
