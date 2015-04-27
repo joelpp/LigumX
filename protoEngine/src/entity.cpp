@@ -11,6 +11,8 @@ using namespace glm;
 #define POWER_MAG ENTITY_SIZE * 10.f
 #define FRICTION_COEFF 0.5f
 
+#define ENTITY_LINE_N 5
+
 Entity::Entity() : mass(1.f), angle(0.f), fwd_force(0.f), turning(0) {
 
 }
@@ -124,27 +126,35 @@ void EntityManager::AddEntity(const Entity &entity) {
     }
 
 
-    entity_positions[(2+e.entityIndex)*2] = e.position;
-    entity_positions[(2+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * vec3(1,0,0);
-    entity_positions[(1+e.entityIndex)*2] = e.position;
-    entity_positions[(1+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * vec3(0,-1,0);
-    entity_positions[(0+e.entityIndex)*2] = e.position;
-    entity_positions[(0+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * angle;
+    entity_positions[(0+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.right_vector;
+    entity_positions[(0+e.entityIndex)*2+1] = e.position + 0.5f * ENTITY_SIZE * e.right_vector;
+    entity_positions[(1+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.right_vector;;
+    entity_positions[(1+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * angle;
+    entity_positions[(2+e.entityIndex)*2] = e.position + 0.5f * ENTITY_SIZE * e.right_vector;;
+    entity_positions[(2+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * angle;
+    entity_positions[(3+e.entityIndex)*2] = e.position;
+    entity_positions[(3+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * vec3(0,-1,0);
+    entity_positions[(4+e.entityIndex)*2] = e.position;
+    entity_positions[(4+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * vec3(1,0,0);
 
-    entity_colors[(2+e.entityIndex)*2] = vec3(0,1,0);
-    entity_colors[(2+e.entityIndex)*2+1] = vec3(0,1,0);
-    entity_colors[(1+e.entityIndex)*2] = vec3(1,0,0);
-    entity_colors[(1+e.entityIndex)*2+1] = vec3(1,0,0);
     entity_colors[(0+e.entityIndex)*2] = e.color;
     entity_colors[(0+e.entityIndex)*2+1] = e.color;
+    entity_colors[(1+e.entityIndex)*2] = e.color;
+    entity_colors[(1+e.entityIndex)*2+1] = e.color;
+    entity_colors[(2+e.entityIndex)*2] = e.color;
+    entity_colors[(2+e.entityIndex)*2+1] = e.color;
+    entity_colors[(3+e.entityIndex)*2] = vec3(1,0,0);
+    entity_colors[(3+e.entityIndex)*2+1] = vec3(1,0,0);
+    entity_colors[(4+e.entityIndex)*2] = vec3(0,1,0);
+    entity_colors[(4+e.entityIndex)*2+1] = vec3(0,1,0);
     array_modification = true;
 
     entities.push_back(e);
 }
 
 void EntityManager::makeVBO() {
-    entity_positions.resize(data_size * 2);
-    entity_colors.resize(data_size * 2);
+    entity_positions.resize(data_size * ENTITY_LINE_N);
+    entity_colors.resize(data_size * ENTITY_LINE_N);
 
     glDeleteBuffers(1, &glidEntitiesPositions);
     glCreateBuffers(1, &glidEntitiesPositions);
@@ -194,14 +204,16 @@ void EntityManager::Update(double dt) {
         Entity &e = entities[i];
 
         if(e.Update(dt)) {
-            vec3 entity_dir(cosf(glm::radians(e.angle)), sinf(glm::radians(e.angle)), 0);
-
-            entity_positions[(2+e.entityIndex)*2] = e.position;
-            entity_positions[(2+e.entityIndex)*2+1] = e.position + length(e.velocity) * e.forward_vector;
-            entity_positions[(1+e.entityIndex)*2] = e.position;
-            entity_positions[(1+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * e.right_vector;
-            entity_positions[(0+e.entityIndex)*2] = e.position;
-            entity_positions[(0+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * entity_dir;
+            entity_positions[(0+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.right_vector;
+            entity_positions[(0+e.entityIndex)*2+1] = e.position + 0.5f * ENTITY_SIZE * e.right_vector;
+            entity_positions[(1+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.right_vector;
+            entity_positions[(1+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * e.forward_vector;
+            entity_positions[(2+e.entityIndex)*2] = e.position + 0.5f * ENTITY_SIZE * e.right_vector;
+            entity_positions[(2+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * e.forward_vector;
+            entity_positions[(3+e.entityIndex)*2] = e.position;
+            entity_positions[(3+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * e.right_vector;
+            entity_positions[(4+e.entityIndex)*2] = e.position;
+            entity_positions[(4+e.entityIndex)*2+1] = e.position + length(e.velocity) * e.forward_vector;
             array_modification = true;
         }
     }
@@ -209,11 +221,11 @@ void EntityManager::Update(double dt) {
 
 void EntityManager::Render(const mat4 &viewMatrix) {
     if(array_modification) {
-        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * 3 * 2) * sizeof(vec3), entity_positions.data());
-        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * 3 * 2) * sizeof(vec3), entity_colors.data());
+        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entity_positions.data());
+        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entity_colors.data());
     }
 
     pPipelineEntities->usePipeline();
     glProgramUniformMatrix4fv(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(viewMatrix));
-    glDrawArrays(GL_LINES, 0, entities.size() * 3 * 2);
+    glDrawArrays(GL_LINES, 0, entities.size() * ENTITY_LINE_N * 2);
 }
