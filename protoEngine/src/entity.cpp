@@ -24,15 +24,26 @@ bool Entity::Update(double dt) {
     position += velocity * (float)dt;
     velocity += acceleration * (float)dt;
 
-    vec3 curr_angle(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0);
+    forward_vector = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0));
+    right_vector = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
 
-    vec3 power_force = normalize(curr_angle) * fwd_force * POWER_MAG;
+    vec3 lateral_velocity(0.f);
+    vec3 forward_velocity(0.f);
     vec3 friction_force(0.f);
 
-    if(length(velocity) > 0.f)
-        friction_force = -FRICTION_COEFF * POWER_MAG * normalize(velocity);
+    vec3 thrust_force = forward_vector * fwd_force * POWER_MAG;
 
-    acceleration = (power_force + friction_force) / mass;
+    if(length(velocity) > 0.f) {
+        lateral_velocity = dot(right_vector, velocity) * right_vector;
+        forward_velocity = dot(forward_vector, velocity) * forward_vector;
+        float friction_mag = -2.f * 1000.f* POWER_MAG * length(forward_velocity);
+        friction_force = friction_mag * normalize(forward_velocity);
+
+        // apply lateral impulse to remove lateral movement
+        velocity += -lateral_velocity * mass;
+    }
+
+    acceleration = (thrust_force + friction_force) / mass;
 
     return true;
 }
@@ -113,10 +124,19 @@ void EntityManager::AddEntity(const Entity &entity) {
     }
 
 
-    entity_positions[e.entityIndex*2] = e.position;
-    entity_positions[e.entityIndex*2+1] = e.position + ENTITY_SIZE * angle;
-    entity_colors[e.entityIndex*2] = e.color;
-    entity_colors[e.entityIndex*2+1] = e.color;
+    entity_positions[(2+e.entityIndex)*2] = e.position;
+    entity_positions[(2+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * vec3(1,0,0);
+    entity_positions[(1+e.entityIndex)*2] = e.position;
+    entity_positions[(1+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * vec3(0,-1,0);
+    entity_positions[(0+e.entityIndex)*2] = e.position;
+    entity_positions[(0+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * angle;
+
+    entity_colors[(2+e.entityIndex)*2] = vec3(0,1,0);
+    entity_colors[(2+e.entityIndex)*2+1] = vec3(0,1,0);
+    entity_colors[(1+e.entityIndex)*2] = vec3(1,0,0);
+    entity_colors[(1+e.entityIndex)*2+1] = vec3(1,0,0);
+    entity_colors[(0+e.entityIndex)*2] = e.color;
+    entity_colors[(0+e.entityIndex)*2+1] = e.color;
     array_modification = true;
 
     entities.push_back(e);
@@ -134,7 +154,7 @@ void EntityManager::makeVBO() {
 
     glDeleteBuffers(1, &glidEntitiesColors);
     glCreateBuffers(1, &glidEntitiesColors);
-    glNamedBufferStorage(glidEntitiesColors, entity_positions.size() * sizeof(vec3),
+    glNamedBufferStorage(glidEntitiesColors, entity_colors.size() * sizeof(vec3),
                          NULL,
                          GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 
@@ -176,8 +196,12 @@ void EntityManager::Update(double dt) {
         if(e.Update(dt)) {
             vec3 entity_dir(cosf(glm::radians(e.angle)), sinf(glm::radians(e.angle)), 0);
 
-            entity_positions[e.entityIndex*2] = e.position;
-            entity_positions[e.entityIndex*2+1] = e.position + ENTITY_SIZE * entity_dir;
+            entity_positions[(2+e.entityIndex)*2] = e.position;
+            entity_positions[(2+e.entityIndex)*2+1] = e.position + length(e.velocity) * e.forward_vector;
+            entity_positions[(1+e.entityIndex)*2] = e.position;
+            entity_positions[(1+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * e.right_vector;
+            entity_positions[(0+e.entityIndex)*2] = e.position;
+            entity_positions[(0+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * entity_dir;
             array_modification = true;
         }
     }
@@ -185,11 +209,11 @@ void EntityManager::Update(double dt) {
 
 void EntityManager::Render(const mat4 &viewMatrix) {
     if(array_modification) {
-        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * 2) * sizeof(vec3), entity_positions.data());
-        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * 2) * sizeof(vec3), entity_colors.data());
+        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * 3 * 2) * sizeof(vec3), entity_positions.data());
+        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * 3 * 2) * sizeof(vec3), entity_colors.data());
     }
 
     pPipelineEntities->usePipeline();
     glProgramUniformMatrix4fv(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(viewMatrix));
-    glDrawArrays(GL_LINES, 0, entities.size() * 2);
+    glDrawArrays(GL_LINES, 0, entities.size() * 3 * 2);
 }
