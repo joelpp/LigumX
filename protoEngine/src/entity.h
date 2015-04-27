@@ -6,7 +6,6 @@
 #include "glm/glm.hpp"
 #include "program_pipeline.h"
 
-
 class Entity {
 public:
     Entity();
@@ -21,7 +20,7 @@ public:
     int turning;
     glm::vec3 position;
     glm::vec3 velocity;
-    glm::vec3 acceleration; //float accel_power;
+    glm::vec3 acceleration;
 
     glm::vec3 color;
 };
