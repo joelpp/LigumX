@@ -7,24 +7,34 @@
 
 using namespace glm;
 
-Entity::Entity() : angle(0.f), fwd_force(0.f), turning(0) {
+#define ENTITY_SIZE 0.0001f
+#define POWER_MAG ENTITY_SIZE * 10.f
+#define FRICTION_COEFF 0.5f
+
+Entity::Entity() : mass(1.f), angle(0.f), fwd_force(0.f), turning(0) {
 
 }
 
 bool Entity::Update(double dt) {
     if(turning) {
-        angle += dt * 1.f * turning;
-        vec3 curr_angle(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0);
-        std::cout << angle << std::endl;
-
-        acceleration = curr_angle * fwd_force;
-//        std::cout << to_string(acceleration) << std::endl;
-        velocity = acceleration * fwd_force;
-        position += velocity / (float)dt;
-//        std::cout << to_string(position) << std::endl;
-        return true;
+        angle += dt * 100.f * turning;
     }
-    return false;
+
+    // euler integration
+    position += velocity * (float)dt;
+    velocity += acceleration * (float)dt;
+
+    vec3 curr_angle(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0);
+
+    vec3 power_force = normalize(curr_angle) * fwd_force * POWER_MAG;
+    vec3 friction_force(0.f);
+
+    if(length(velocity) > 0.f)
+        friction_force = -FRICTION_COEFF * POWER_MAG * normalize(velocity);
+
+    acceleration = (power_force + friction_force) / mass;
+
+    return true;
 }
 
 // #############################################
@@ -82,7 +92,7 @@ bool EntityManager::Init() {
     glVertexArrayAttribFormat(pPipelineEntities->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
 
     Entity e;
-    e.position = vec3(0,0,1);
+    e.position = vec3(-5 * ENTITY_SIZE,0,1);
     e.color = vec3(1,0.8,0);
     AddEntity(e);
 
@@ -140,6 +150,13 @@ void EntityManager::KeyCallback(int key, int action) {
 
         if(key == GLFW_KEY_KP_8) { e.fwd_force = 1;}
         if(key == GLFW_KEY_KP_5) { e.fwd_force = -1;}
+
+        if(key == GLFW_KEY_F5) {
+            e.position = vec3(-5 * ENTITY_SIZE,0,1);
+            e.acceleration = e.velocity = vec3(0,0,0);
+            e.angle = e.fwd_force = 0.f;
+            e.turning = 0;
+        }
     }
 
     if(action == GLFW_RELEASE) {

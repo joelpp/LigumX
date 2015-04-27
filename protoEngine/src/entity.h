@@ -6,7 +6,6 @@
 #include "glm/glm.hpp"
 #include "program_pipeline.h"
 
-#define ENTITY_SIZE 0.0001f
 
 class Entity {
 public:
@@ -17,11 +16,12 @@ public:
 
     u_int32_t entityIndex;
 
+    float mass;
     float angle, fwd_force;
     int turning;
     glm::vec3 position;
     glm::vec3 velocity;
-    glm::vec3 acceleration;
+    glm::vec3 acceleration; //float accel_power;
 
     glm::vec3 color;
 };

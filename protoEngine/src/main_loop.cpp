@@ -4,17 +4,32 @@
 #include <iomanip>
 #include "FreeImage.h"
 
-using namespace std;
 using namespace glm;
+using std::cout;
+using std::endl;
+
+const double static_dt = 1.0 / 100.0;
 
 void Game::mainLoop()
 {
     static double dt = 0.0;
-    double curr_time = 0.01;
+    static double curr_time = glfwGetTime();
+    static double physic_accumulator = 0.0;
+
+    double new_time = glfwGetTime();
+    dt = new_time - curr_time;
+    curr_time = new_time;
+
+    physic_accumulator += dt;
 
 //    camera->moveFromUserInput(pWindow);
     camera->handlePresetNewFrame(pWindow);
-    entityManager.Update(dt);
+
+    // Physic update step
+    while ( physic_accumulator >= static_dt ) {
+        entityManager.Update(static_dt);
+        physic_accumulator -= static_dt;
+    }
 
     // move sun
     if(sunMoveAuto) {
@@ -149,7 +164,7 @@ void Game::mainLoop()
         ++frameCount;
         std::stringstream filename;
         filename.clear();
-        filename << "../output/frame" << setfill('0') << setw(5) << frameCount << ".png";
+        filename << "../output/frame" << std::setfill('0') << std::setw(5) << frameCount << ".png";
 
         BYTE* pixels = new BYTE[4 * windowWidth * windowHeight];
         glReadPixels(0, 0, windowWidth, windowHeight, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
@@ -164,6 +179,5 @@ void Game::mainLoop()
     }
 
 
-    dt = glfwGetTime() - curr_time;
 
 }
