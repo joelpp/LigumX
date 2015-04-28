@@ -1,0 +1,3 @@
+- changer dans le makefile MacOSX10.x par 10.10
+rajouter -D__ANSI__ --DDISABLE_PERF_MEASUREMENT
+-rajouter le dylib dans /usr/lib

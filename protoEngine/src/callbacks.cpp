@@ -75,20 +75,20 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
     if(!TwEventMouseButtonGLFW(button, action)) {
         // Left-click
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
-            double x,y;
-            glfwGetCursorPos(pWindow, &x, &y);
-            vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
-            int index = 0;
-            std::vector<Way*> closests;
-            std::vector<double> distances;
-            std::vector<vec2> directions;
-            vector<std::pair<Node*, Node*>> nodePairs;
-            int filter = OSMElement::CONTOUR;
-            TIME(closests = game->findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
+            // double x,y;
+            // glfwGetCursorPos(pWindow, &x, &y);
+            // vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
+            // int index = 0;
+            // std::vector<Way*> closests;
+            // std::vector<double> distances;
+            // std::vector<vec2> directions;
+            // vector<std::pair<Node*, Node*>> nodePairs;
+            // int filter = OSMElement::CONTOUR;
+            // TIME(closests = game->findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
 
-            if (closests[0] == NULL) return;
-            TIME(game->updateSelectedWay(closests[0]));
-            PRINTELEMENTVECTOR(closests);
+            // if (closests[0] == NULL) return;
+            // TIME(game->updateSelectedWay(closests[0]));
+            // PRINTELEMENTVECTOR(closests);
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){

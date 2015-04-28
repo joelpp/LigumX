@@ -1,6 +1,6 @@
-#version 430 core
+#version 410 core
 
-in int gl_VertexID;
+//in int gl_VertexID;
 
 out gl_PerVertex {
     vec4 gl_Position;

@@ -14,7 +14,7 @@ public:
     // @return : true if the entity has been updated
     bool Update(double dt);
 
-    u_int32_t entityIndex;
+    size_t entityIndex;
 
     float mass;
     float angle, fwd_force;

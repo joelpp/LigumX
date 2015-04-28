@@ -15,7 +15,7 @@ Camera::Camera()
     mvpMat = mat4(1);
     viewSize = 1;
     angle = 0;
-    totalViewAngleY = 45;
+    totalViewAngleY = 22.5;
     aspectRatio = 1; // TODO: change to window's aspect ratio.
     near = 0.0001f;
     far = 1.f;

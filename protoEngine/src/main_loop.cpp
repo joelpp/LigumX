@@ -43,23 +43,30 @@ void Game::mainLoop()
 
 
         // draw ground
-        glBindTextureUnit(0, textureMap["grass"]->glidTexture);
-        glBindTextureUnit(1, textureMap["rock"]->glidTexture);
+        if (drawGround){
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
+
         pPipelineGround->usePipeline();
         glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
         glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
         glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
-        glDrawArrays(GL_TRIANGLES, 0, nbGroundVertices);
-
+        glDrawArrays(GL_TRIANGLES, 0, groundTrianglesPositions.size());
+        }
         // draw lines
         pPipelineLines->usePipeline();
         for ( auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it ){
             try{ if (!displayElementType.at(it->first)) continue; }
             catch(...){continue;};
-            glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysNodesPositions[it->first], 0, 3*4);
+             glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysNodesPositions[it->first], 0, 3*4);
+//            glBindBuffer(GL_ARRAY_BUFFER, 0);
+//            glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+//            glBindBuffer(GL_ARRAY_BUFFER, glidWaysNodesPositions[it->first]);
+//            glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
             vec3 color = typeColorMap[it->first];
             glProgramUniform3f(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "color"), color.x, color.y, color.z);
-
             glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
             glDrawArrays(GL_LINES, 0, it->second.size());
         }
@@ -89,18 +96,21 @@ void Game::mainLoop()
 
 
 
-        glBindTextureUnit(0, textureMap["grass"]->glidTexture);
-        glBindTextureUnit(1, textureMap["rock"]->glidTexture);
+        if (drawGround){
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
+            pPipelineGround->usePipeline();
+            glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+            glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
+            glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
+            glDrawArrays(GL_TRIANGLES, 0, nbGroundVertices);
+        }
 
-        pPipelineGround->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
-        glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
-        glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
-        glDrawArrays(GL_TRIANGLES, 0, nbGroundVertices);
 
 
-
-
+        glActiveTexture(GL_TEXTURE0);
 
         // draw roads
         glBindTexture(GL_TEXTURE_2D, glidTextureScreenRoads);
@@ -126,7 +136,7 @@ void Game::mainLoop()
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//                glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
+               // glBindTexture(GL_TEXTURE_2D, pBuildingTex->glidTexture);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         pPipelineScreenQuad->usePipeline();
@@ -143,6 +153,8 @@ void Game::mainLoop()
     //            glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
                 glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
             } else {
+                glActiveTexture(GL_TEXTURE0);
+
                 glBindTexture(GL_TEXTURE_2D, textureMap["bricks"]->glidTexture);
 
                 pPipelineBuildingSides->usePipeline();

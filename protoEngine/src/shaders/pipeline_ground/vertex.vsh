@@ -1,7 +1,6 @@
-#version 430 core
-in layout(location=0) vec3 pos;
-in layout(location=1) vec2 texCoord;
-in int gl_VertexID;
+#version 410 core
+layout(location=0) in vec3 pos;
+layout(location=1) in vec2 texCoord;
 
 uniform mat4 vpMat;
 out vec2 myTexCoord;

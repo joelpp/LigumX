@@ -5,6 +5,10 @@
 using namespace std;
 using namespace glm;
 
+static void test_error_cb (int error, const char *description)
+    {
+        fprintf(stderr, "%d: %s\n", error, description);
+    }
 void Game::init()
 {
 //    glEnable(GL_PROGRAM_POINT_SIZE);
@@ -36,19 +40,16 @@ void Game::init()
     sunTime = 0;
     sunSpeed = 0.1;
     sunMoveAuto = false;
-
+    drawGround = false;
     saveScreenshot = false;
     populateTypeColorArray();
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
 
-    // set window paramaters
-    glfwDefaultWindowHints();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    // glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
+    glfwSetErrorCallback(test_error_cb);
 
 
     // Initialise GLFW
@@ -59,6 +60,19 @@ void Game::init()
     } else {
         clog << "Initialized GLFW." << endl;
     }
+
+
+    // set window paramaters
+    glfwDefaultWindowHints();
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#else
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+#endif
 
     // create GLFW window
 //    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
@@ -101,25 +115,16 @@ void Game::init()
 //    glDebugMessageCallback(Game::debugCallback, NULL);
 //    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
-
-
     init_tweakBar();
-
-
-
-
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-
 
 
     //=============================================================================
     // Load world data.
     //=============================================================================
     vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
-    vector<vec3> groundTrianglesPositions; // positions of nodes forming ways, possibly contains duplicates.
-    vector<vec2> groundTrianglesUV;
     vector<vec3> waysNodesColors;
     vector<vec3> roadsPositions;
     vector<vec3> buildingTrianglePositions;
@@ -130,11 +135,15 @@ void Game::init()
 //    TIME(loadXML("../data/rouyntopo.xml"));
 //    TIME(loadXML("../data/rouyn.xml"));
 
+#ifdef __APPLE__
+    TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/srtm.xml"));
+    TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml"));
+#else
     TIME(loadXML("../data/srtm.xml"));
     TIME(loadXML("../data/result.xml"));
+#endif
 
-
-//    TIME(extrudeAddrInterps());
+   // TIME(extrudeAddrInterps());
 
     PRINTINT(theWays.size());
 
@@ -189,20 +198,24 @@ void Game::init()
     createGLBuffer(glidScreenQuadTexCoords, screenQuadTexCoords);
     createGLBuffer(glidGroundTrianglePositions, groundTrianglesPositions);
     createGLBuffer(glidGroundTriangleUVs, groundTrianglesUV);
+    // PRINTVEC3VECTOR(groundTrianglesPositions);
 
     for ( auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it ){
         createGLBuffer(glidWaysNodesPositions[it->first], it->second);
-
     }
     //=============================================================================
     // Textures, framebuffer, renderbuffer
     //=============================================================================
 
-
+#ifdef __APPLE__
+    textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/brickles.png"));
+    textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/grass.png"));
+    textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/rock.png"));
+#else
     textureMap.emplace("bricks", new Texture("../data/brickles.png"));
     textureMap.emplace("grass", new Texture("../data/grass.png"));
     textureMap.emplace("rock", new Texture("../data/rock.png"));
-
+#endif
 ////    pBuildingTex = new Texture("../data/face.png");
 
 //    glCreateFramebuffers(1, &glidFramebuffer);

@@ -22,11 +22,12 @@ Node::Node(std::string _id, float _longitude, float _latitude){
 
 std::string Node::toString(){
     char str[200];
-    sprintf_s(str, "Node ID=%s lat=%f lon=%f", this->id.c_str(), this->latitude, this->longitude);
+    sprintf(str, "Node ID=%s lat=%f lon=%f", this->id.c_str(), this->latitude, this->longitude);
     std::string toReturn = std::string(str);
     for ( auto it = this->tags.begin(); it != this->tags.end(); ++it ){
         char tagstr[100];
-        sprintf_s(tagstr, " | k: %s v: %s |", it->first.c_str(), it->second.c_str());
+        
+        sprintf(tagstr, " | k: %s v: %s |", it->first.c_str(), it->second.c_str());
         toReturn.append(std::string(tagstr));
     }
     return toReturn;

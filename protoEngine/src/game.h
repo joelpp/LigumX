@@ -1,9 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
 
+// #define GLFW_INCLUDE_GLCOREARB
+
 #include "GL/glew.h"
 #include <GLFW/glfw3.h>
 
+#include <iostream>
 #include <cstdarg>
 #include <string>
 #include <unordered_map>
@@ -35,7 +38,7 @@
 #define PRINTVEC2VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y << "\n";
 #define PRINTVEC3(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n";
 #define PRINTVEC3VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y  << v[_index_].z << "\n";
-#define PRINT(f) std::cout << #f << ": = " << f << "\n";
+#define PRINT(f) std::cout << #f << ": " << f << "\n";
 #define PRINTSTRING(f) std::cout << f << "\n";
 #define PRINTBOOL(B) string b = B==1?"TRUE":"FALSE"; std::cout << #B << " : " << b << "\n";
 #define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
@@ -48,7 +51,8 @@
 
 #define string_pair std::pair<std::string,std::string>
 
-namespace std {
+namespace std
+{
 template<>
 struct hash<OSMElement::ElementType> {
     size_t operator()(const OSMElement::ElementType &et) const {
@@ -56,7 +60,6 @@ struct hash<OSMElement::ElementType> {
     }
 };
 }
-
 class Game {
 public:
     // general state and functions
@@ -94,12 +97,22 @@ public:
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
     std::string labelFromType(OSMElement::ElementType type);
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
+#ifdef __APPLE__
+        glGenBuffers(1, &bufferName);
+        glBindBuffer(GL_ARRAY_BUFFER, bufferName);
+        glBufferData(GL_ARRAY_BUFFER, bufferData.size() * sizeof(T), 0, GL_DYNAMIC_DRAW /*GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                             GL_MAP_WRITE_BIT*/);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, bufferData.size() * sizeof(T), bufferData.data());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+#else  
         glCreateBuffers(1, &bufferName);
         glNamedBufferStorage(bufferName, bufferData.size() * sizeof(T), // nbWaysNodes * vec2 * float
                              NULL,
                              GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                              GL_MAP_WRITE_BIT);
         glNamedBufferSubData(bufferName, 0, bufferData.size() * sizeof(T), bufferData.data());
+#endif
     }
 
     // viewing
@@ -207,8 +220,11 @@ public:
     float sunSpeed;
     bool sunMoveAuto;
     bool saveScreenshot;
+    bool drawGround;
 
-
+    std::vector<glm::vec3> groundTrianglesPositions; // positions of nodes forming ways, possibly contains duplicates.
+    std::vector<glm::vec2> groundTrianglesUV;
+    
     // subfunctions
     void init_pipelines();
     void init_pipelines_buildingSides();
@@ -225,7 +241,7 @@ public:
     Camera savedCam;
     glm::vec3 savedCamPos, savedCamDir;
     bool inEntityLand;
-    void toggleEntityLand();
+    void TW_CALL toggleEntityLand();
 };
 
 extern Game* game;
