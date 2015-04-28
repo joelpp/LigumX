@@ -39,8 +39,8 @@ void Game::generateGridLines( vector<vec3> *groundTrianglesPositions, vector<vec
             n->id = to_string(static_cast<long double>(lon)).append(",").append(to_string(static_cast<long double>(lat)));
             n->longitude = lon;
             n->latitude = lat;
-           n->elevation = (contourLineInterpolate(vec2(n->longitude, n->latitude)));
-            // n->elevation = 0;
+           // n->elevation = (contourLineInterpolate(vec2(n->longitude, n->latitude)));
+            n->elevation = 0;
 //            for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
 //                Way* myway = it->second;
 

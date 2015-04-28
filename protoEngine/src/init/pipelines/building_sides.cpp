@@ -48,12 +48,8 @@ void Game::init_pipelines_buildingSides()
     pPipelineBuildingSides->useFragmentShader(pFragmentShader);
 
     // // VAO
-    // glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 0);
-    // glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 0, glidBufferBuildingLines, 0, 3*4);
-    // glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
-    // glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 1);
-    // glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 1, glidBufferBuildingLoopLengths, 0, 1*4);
-    // glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
+    // 
+#ifdef __APPLE__
     glBindVertexArray(pPipelineBuildingSides->glidVao);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, glidBufferBuildingLines);
@@ -61,4 +57,13 @@ void Game::init_pipelines_buildingSides()
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, glidBufferBuildingLoopLengths);
     glVertexAttribPointer (1, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+#else
+
+    // glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 0);
+    // glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 0, glidBufferBuildingLines, 0, 3*4);
+    // glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    // glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 1);
+    // glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 1, glidBufferBuildingLoopLengths, 0, 1*4);
+    // glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
+#endif
 }

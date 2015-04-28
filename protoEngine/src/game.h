@@ -26,6 +26,7 @@
 #include "linesegment.h"
 #include "heightfield.h"
 #include "triangle.h"
+#include "world.h"
 #include <chrono>
 
 
