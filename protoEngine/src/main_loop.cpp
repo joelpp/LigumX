@@ -80,8 +80,9 @@ void Game::mainLoop()
 //        glDrawArrays(GL_LINES, 0, nbWaysVertices);
 
         // draw entities
+#ifndef __APPLE__
         entityManager.Render(camera->mvpMat);
-
+#endif
     } else {
 
         glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);

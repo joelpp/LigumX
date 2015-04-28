@@ -246,8 +246,9 @@ void Game::init()
 
 
     init_pipelines();
-
+#ifndef __APPLE__
     entityManager.Init();
+#endif  
     inEntityLand = false;
 }
 

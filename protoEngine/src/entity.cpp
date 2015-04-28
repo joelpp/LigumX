@@ -45,9 +45,9 @@ EntityManager::EntityManager() : array_modification(false) {
 
 bool EntityManager::Init() {
     const char* vertexShaderSource = " \
-        #version 430 core\n \
-        in layout(location=0) vec2 pos;\n \
-        in layout(location=1) vec3 color;\n \
+        #version 410 core\n \
+        layout(location=0) in vec2 pos;\n \
+        layout(location=1) in vec3 color;\n \
         uniform mat4 vpMat;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
@@ -59,7 +59,7 @@ bool EntityManager::Init() {
         }";
 
     const char* fragmentShaderSource = " \
-        #version 430 core\n \
+        #version 410 core\n \
         in vec3 vColor;\n \
         out vec3 color;\n \
         void main() {\n \
