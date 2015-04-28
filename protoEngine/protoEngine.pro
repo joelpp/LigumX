@@ -9,10 +9,11 @@ include($$PWD/libPaths.pri)
 INCLUDEPATH += \
     $$GLM_INCLUDEPATH \
     $$FREEIMAGE_INCLUDEPATH \
-    $$ANTTWEAKBAR_INCLUDEPATH
-    $$TINYXML2_INCLUDEPATH
+    $$ANTTWEAKBAR_INCLUDEPATH \
+    $$TINYXML2_INCLUDEPATH \
+    $$FREETYPE_INCLUDEPATH
 
-LIBS += -L$$ANTTWEAKBAR_LIBPATH -L$$ANTTWEAKBAR_DLLPATH
+LIBS += -L$$ANTTWEAKBAR_LIBPATH -L$$ANTTWEAKBAR_DLLPATH -L$$FREETYPE_LIBPATH
 
 
 unix {
@@ -34,7 +35,7 @@ win32 {
     LIBS += -L$$GLEW_LIBPATH -L$$GLEW_DLLPATH
     LIBS += -L$$GLFW_LIBPATH -L$$GLFW_DLLPATH
     LIBS += -L$$OPENGL_LIBPATH -L$$OPENGL_DLLPATH
-    LIBS += -lAntTweakBar -lFreeImage -lglew32 -lglfw3dll -lopengl32
+    LIBS += -lAntTweakBar -lFreeImage -lglew32 -lglfw3dll -lopengl32 -lfreetype
 }
 
 
@@ -62,11 +63,13 @@ SOURCES += \
     src/init/pipelines/general_lines.cpp \
     src/init/pipelines/building_sides.cpp \
     src/init/pipelines/envmap.cpp \
+    src/init/pipelines/text.cpp \
     src/init/tweak_bar.cpp \
     src/query.cpp \
     src/load.cpp \
     src/triangle.cpp \
-    src/entity.cpp
+    src/entity.cpp \
+    src/world.cpp
 
 
 HEADERS += \
@@ -84,7 +87,8 @@ HEADERS += \
     src/linesegment.h \
     src/heightfield.h \
     src/triangle.h \
-    src/entity.h
+    src/entity.h \
+    src/world.h
 
 OTHER_FILES += \
     src/shaders/roads.gsh \
@@ -96,5 +100,7 @@ OTHER_FILES += \
     src/shaders/pipeline_ground/vertex.vsh \
     src/shaders/pipeline_ground/fragment.fsh
 DISTFILES += \
-    libPaths.pri
+    libPaths.pri \
+    src/shaders/text/fragment.fsh \
+    src/shaders/text/vertex.vsh
 

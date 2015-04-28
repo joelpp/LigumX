@@ -15,6 +15,8 @@
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
 #include "AntTweakBar.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include "program_pipeline.h"
 #include "camera.h"
@@ -96,6 +98,7 @@ public:
     void extrudeAddrInterps();
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
     std::string labelFromType(OSMElement::ElementType type);
+    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
 #ifdef __APPLE__
         glGenBuffers(1, &bufferName);
@@ -151,6 +154,7 @@ public:
     ProgramPipeline* pPipelineBuildingSides;
     ProgramPipeline* pPipelineGround;
     ProgramPipeline* pPipelineEnvmap;
+    ProgramPipeline* pPipelineText;
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
     ProgramPipeline::ShaderProgram* pGeometryShader2;
@@ -177,6 +181,7 @@ public:
     GLuint glidBufferBuildingLoopLengths;
     GLuint glidGroundTrianglePositions;
     GLuint glidGroundTriangleUVs;
+    GLuint textVBO;
     std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::unordered_map<OSMElement::ElementType, glm::vec3> typeColorMap;
@@ -234,6 +239,7 @@ public:
     void init_pipelines_roads();
     void init_pipelines_screenQuad();
     void init_pipelines_envmap();
+    void init_pipelines_text();
     void init_tweakBar();
 
     // Entity stuff
@@ -242,6 +248,16 @@ public:
     glm::vec3 savedCamPos, savedCamDir;
     bool inEntityLand;
     void TW_CALL toggleEntityLand();
+
+    //text renderign stuff
+    struct Character {
+        GLuint     TextureID;  // ID handle of the glyph texture
+        glm::ivec2 Size;       // Size of glyph
+        glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
+        GLuint     Advance;    // Offset to advance to next glyph
+    };
+
+    std::map<GLchar, Character> Characters;
 };
 
 extern Game* game;

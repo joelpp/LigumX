@@ -175,6 +175,10 @@ void Game::mainLoop()
             }
 
     }
+    std::stringstream fpsString;
+    fpsString << round(1.f/dt);
+    fpsString << " fps";
+    RenderText(fpsString.str(), 750.0f, 580.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f));
 
     if(showTweakBar) TwDraw();
 
@@ -199,5 +203,59 @@ void Game::mainLoop()
     }
 
 
+
+}
+
+void Game::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
+{
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Activate corresponding render state
+    pPipelineText->usePipeline();
+    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
+    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
+    glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 600.0f)));
+
+    glActiveTexture(GL_TEXTURE0);
+
+    // Iterate through all characters
+    std::string::const_iterator c;
+    for (c = text.begin(); c != text.end(); c++)
+    {
+        Character ch = Characters[*c];
+
+        GLfloat xpos = x + ch.Bearing.x * scale;
+        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+        GLfloat w = ch.Size.x * scale;
+        GLfloat h = ch.Size.y * scale;
+        // Update VBO for each character
+        GLfloat vertices[6][4] = {
+            { xpos,     ypos + h,   0.0, 0.0 },
+            { xpos,     ypos,       0.0, 1.0 },
+            { xpos + w, ypos,       1.0, 1.0 },
+
+            { xpos,     ypos + h,   0.0, 0.0 },
+            { xpos + w, ypos,       1.0, 1.0 },
+            { xpos + w, ypos + h,   1.0, 0.0 }
+        };
+        // Render glyph texture over quad
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        // Update content of VBO memory
+        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // Render quad
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
+    }
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
 
 }
