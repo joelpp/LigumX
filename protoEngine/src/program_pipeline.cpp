@@ -161,13 +161,18 @@ ProgramPipeline::ProgramPipeline()
     pFragmentShader = NULL;
     pComputeShader = NULL;
 
-    // glCreateProgramPipelines(1, &glidProgramPipeline);
-    // glCreateVertexArrays(1, &glidVao);
+#ifdef __APPLE__
 
     glGenProgramPipelines(1, &glidProgramPipeline);
     glBindProgramPipeline(glidProgramPipeline);
     glGenVertexArrays(1, &glidVao);
     glBindVertexArray(glidVao);
+#else
+     glCreateProgramPipelines(1, &glidProgramPipeline);
+     glCreateVertexArrays(1, &glidVao);
+#endif
+
+
 
 }
 

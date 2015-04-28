@@ -7,8 +7,8 @@ void Game::init_pipelines_generalLines()
     const char* vertexShaderSource = " \
         #version 410 core\n \
         layout(location=0) in vec3 pos;\n \
-        layout(location=1) in vec3 color;\n \
-        //uniform vec3 color;\n \
+        //layout(location=1) in vec3 color;\n \
+        uniform vec3 color;\n \
         uniform mat4 vpMat;\n \
         out gl_PerVertex {\n \
             vec4 gl_Position;\n \
