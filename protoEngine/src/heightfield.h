@@ -12,8 +12,8 @@ public:
     glm::vec2 startPoint;
 
     Heightfield();
-    Heightfield(double sideLength, glm::vec2 startPoint);
-
+    Heightfield(glm::vec2 startPoint,double sideLength);
+    void generateTriangles();
     void addTriangle(Triangle *tri);
 };
 

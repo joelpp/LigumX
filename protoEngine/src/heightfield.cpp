@@ -7,90 +7,52 @@ using namespace glm;
 Heightfield::Heightfield(){
 
 }
-Heightfield::Heightfield(double sideLength, vec2 startPoint){
+Heightfield::Heightfield(vec2 startPoint, double sideLength){
     this->sideLength = sideLength;
     this->startPoint = startPoint;
+
+    generateTriangles();
 }
 
 void Heightfield::addTriangle(Triangle* tri){
     triangles.push_back(tri);
 }
 
-
-void Game::generateGridLines( vector<vec3> *groundTrianglesPositions, vector<vec2> *groundTrianglesUV){
-
+void Heightfield::generateTriangles(){
+    PRINT("GENERATIRNG TRINGALES");
     double step = 0.001;
 
-    int lonCounter = 0;
-    int latCounter = 0;
-    std::vector<Way*> latitudeLines;
-    std::vector<Way*> longitudeLines;
+    int numberOfPointsPerSide = sideLength / step;
 
+    std::vector<std::vector<glm::vec3> > points;
+    float lon = startPoint.x;
+    float lat = startPoint.y;
+
+    for (int i = 0; i < numberOfPointsPerSide + 1; i++) points.push_back(std::vector<glm::vec3>());
     // Start by making horizontal lines
-    for( double lon = viewRectLeft; lon <= viewRectRight; lon += step){
-        Way* way = new Way();
-
-        way->eType = OSMElement::GRID_LINE;
-        latCounter = 0;
-
-//        For each line generate a bunch of nodes
-        for (double lat = viewRectBottom; lat <= viewRectTop; lat += step){
-
-            Node* n = new Node();
-            n->id = to_string(static_cast<long double>(lon)).append(",").append(to_string(static_cast<long double>(lat)));
-            n->longitude = lon;
-            n->latitude = lat;
-//           n->elevation = (contourLineInterpolate(vec2(n->longitude, n->latitude)));
-             n->elevation = 0;
-//            for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
-//                Way* myway = it->second;
-
-//                if (myway->eType != OSMElement::LEISURE_PARK) continue;
-//                if (myway->hasPointInside(n->getLatLong())){
-////                    PRINTSTRING("FOUND A POINT");
-//                    n->elevation = 0.001;
-//                    break;
-//                }
-//            }
-            way->addRef(n);
-            latCounter++;
+    for(int i = 0; i <= numberOfPointsPerSide; i++){
+        lat = startPoint.y;
+//        For each line generate a bunch of points
+        for (int j =0; j <= numberOfPointsPerSide; j++){
+            points[j].push_back(vec3(lon, lat, 0));
+            lat += step;
         }
-        way->id = string("LON").append(to_string(static_cast<long double>((way->nodes[0]->longitude))));
-        longitudeLines.push_back(way);
-        lonCounter++;
+        lon += step;
     }
-    PRINTINT(unsuccessfulInterpolations);
-    // Then, create as many vertical lines as there are nodes in the previous horizontal lines
-    for (int i = 0; i < latCounter; i++){
-        Way* way = new Way();
-        way->eType = OSMElement::GRID_LINE;
 
-        // For ith vertical line grab the ith nodes in each horizontal line previously created
-        for (int j = 0; j < lonCounter; j++) way->addRef(longitudeLines[j]->nodes[i]);
+    for (int i = 0; i < numberOfPointsPerSide; i++){
+        for (int j = 0; j < numberOfPointsPerSide; j++){
 
-        way->id = string("LAT").append(to_string(static_cast<long double>((way->nodes[0]->latitude))));
-        latitudeLines.push_back(way);
+            Triangle* tri = new Triangle(points[i][j], points[i+1][j], points[i][j+1]);
+            addTriangle(tri);
 
-    }
-    heightfield = Heightfield(step, viewRectBottomLeft);
-    for (int i = 0; i < latCounter-1; i++){
-        for (int j = 0; j < lonCounter-1; j++){
-
-            Triangle* tri = new Triangle(latitudeLines[i]->nodes[j]->getLatLongEle(),
-                                        latitudeLines[i]->nodes[j+1]->getLatLongEle(),
-                                        latitudeLines[i+1]->nodes[j]->getLatLongEle());
-            heightfield.addTriangle(tri);
-
-            tri = new Triangle(latitudeLines[i]->nodes[j+1]->getLatLongEle(),
-                           latitudeLines[i+1]->nodes[j+1]->getLatLongEle(),
-                           latitudeLines[i+1]->nodes[j]->getLatLongEle());
-            heightfield.addTriangle(tri);
+            tri = new Triangle(points[i+1][j], points[i+1][j+1], points[i][j+1]);
+            addTriangle(tri);
 
         }
     }
-    heightfield.triangles[50] = NULL;
+    triangles[50] = NULL;
     // heightfield.triangles[100] = NULL;
-    PRINT(heightfield.triangles.size());
 
 }
 

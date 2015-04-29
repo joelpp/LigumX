@@ -70,7 +70,8 @@ SOURCES += \
     src/load.cpp \
     src/triangle.cpp \
     src/entity.cpp \
-    src/world.cpp
+    src/world.cpp \
+    src/chunk.cpp
 
 
 HEADERS += \
@@ -89,7 +90,8 @@ HEADERS += \
     src/heightfield.h \
     src/triangle.h \
     src/entity.h \
-    src/world.h
+    src/world.h \
+    src/chunk.h
 
 OTHER_FILES += \
     src/shaders/roads.gsh \

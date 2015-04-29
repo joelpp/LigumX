@@ -67,7 +67,7 @@ void Entity::Update(double dt) {
         velocity += -lateral_velocity * mass;
     }
 
-    std::cout << desiredSpeed << "   " << curr_speed << std::endl;
+//    std::cout << desiredSpeed << "   " << curr_speed << std::endl;
 
     // a = \sum(F)/m
     acceleration = (thrust_force + friction_force) / mass;

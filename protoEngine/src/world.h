@@ -5,25 +5,29 @@
 #include <unordered_map>
 // #include <pair>
 
-#include "heightfield.h"
+#include "chunk.h"
 #include "glm/glm.hpp"
-// namespace std
-// {
-// template<>
-// struct hash<glm::vec2> {
-//     size_t operator()(const glm::vec2 &hf) const {
-//         return std::hash<int>()(hf);
-//     }
-// };
-// }
+
+//Specialize std::hash for vec2s
+namespace std {
+    template <>
+        class hash<glm::vec2>{
+        public :
+            size_t operator()(const glm::vec2 &vec ) const
+            {
+                return hash<int>()(vec.x) ^ hash<int>()(vec.y);
+            }
+    };
+};
 
 class World{
 public:
 
-	double chunkSize;
-	std::unordered_map<int, Heightfield> heightfields;
+    double chunkSize;
+    std::unordered_map<glm::vec2, Chunk*> chunks;
 
 	World();
+    void addChunk(glm::vec2 pos);
 };
 #endif
 

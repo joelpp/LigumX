@@ -124,6 +124,14 @@ void Game::init()
     //=============================================================================
     // Load world data.
     //=============================================================================
+
+    world = new World();
+//    world->addChunk(vec2(45.5, -73.65));
+    world->addChunk(vec2(-0.65000,0.50000));
+    world->addChunk(vec2(-0.60000,0.50000));
+    world->addChunk(vec2(-0.65000,0.55000));
+    world->addChunk(vec2(-0.60000,0.55000));
+
     vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
     vector<vec3> roadsPositions;
@@ -139,8 +147,12 @@ void Game::init()
     TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/srtm.xml"));
     TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml"));
 #else
-    TIME(loadXML("../data/srtm.xml"));
-    TIME(loadXML("../data/result.xml"));
+//    loadXML("../data/srtm.xml");
+//    TIME(loadXML("../data/result.xml"));
+    loadXML("../data/0.xml");
+//    loadXML("../data/1.xml");
+//    loadXML("../data/2.xml");
+//    loadXML("../data/3.xml");
 #endif
 
    // TIME(extrudeAddrInterps());
@@ -152,7 +164,8 @@ void Game::init()
     camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
 
-    TIME(generateGridLines(&groundTrianglesPositions, &groundTrianglesUV));
+//    TIME(generateGridLines(&groundTrianglesPositions, &groundTrianglesUV));
+
 
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths,&groundTrianglesPositions, &groundTrianglesUV));
 
@@ -564,27 +577,29 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
     cout << "succeeded loops: " << nbSuccessLoops << endl;
     cout << "failed loops: " << nbFailedLoops << endl;
     int counter = 0;
+    for (auto it = world->chunks.begin(); it != world->chunks.end(); ++it){
+        Heightfield* heightField = it->second->heightfield;
+        vector<Triangle* >& tris = heightField->triangles;
+        for (int i = 0; i < tris.size()-1; i += 2){
+            Triangle* tri = tris[i];
+            if (tri != NULL){
+                groundTrianglesPositions->push_back(tri->p0);
+                groundTrianglesPositions->push_back(tri->p1);
+                groundTrianglesPositions->push_back(tri->p2);
+                groundTrianglesUV->push_back(vec2(0,0));
+                groundTrianglesUV->push_back(vec2(1,0));
+                groundTrianglesUV->push_back(vec2(0,1));
+            }
 
-    vector<Triangle* >& tris = heightfield.triangles;
-    for (int i = 0; i < tris.size()-1; i += 2){
-        Triangle* tri = tris[i];
-        if (tri != NULL){
-            groundTrianglesPositions->push_back(tri->p0);
-            groundTrianglesPositions->push_back(tri->p1);
-            groundTrianglesPositions->push_back(tri->p2);
-            groundTrianglesUV->push_back(vec2(0,0));
-            groundTrianglesUV->push_back(vec2(1,0));
-            groundTrianglesUV->push_back(vec2(0,1));
-        }
-
-        tri = tris[i+1];
-        if (tri != NULL){
-            groundTrianglesPositions->push_back(tri->p0);
-            groundTrianglesPositions->push_back(tri->p1);
-            groundTrianglesPositions->push_back(tri->p2);
-            groundTrianglesUV->push_back(vec2(1,0));
-            groundTrianglesUV->push_back(vec2(1,1));
-            groundTrianglesUV->push_back(vec2(0,1));
+            tri = tris[i+1];
+            if (tri != NULL){
+                groundTrianglesPositions->push_back(tri->p0);
+                groundTrianglesPositions->push_back(tri->p1);
+                groundTrianglesPositions->push_back(tri->p2);
+                groundTrianglesUV->push_back(vec2(1,0));
+                groundTrianglesUV->push_back(vec2(1,1));
+                groundTrianglesUV->push_back(vec2(0,1));
+            }
         }
     }
 }

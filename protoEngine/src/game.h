@@ -30,6 +30,8 @@
 #include "heightfield.h"
 #include "triangle.h"
 #include "entity.h"
+#include "world.h"
+#include "chunk.h"
 
 
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
@@ -98,7 +100,7 @@ public:
     void extrudeAddrInterps();
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
     std::string labelFromType(OSMElement::ElementType type);
-    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
+    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
 #ifdef __APPLE__
         glGenBuffers(1, &bufferName);
@@ -182,6 +184,7 @@ public:
     GLuint glidGroundTrianglePositions;
     GLuint glidGroundTriangleUVs;
     GLuint textVBO;
+    GLuint textUvsVBO;
     std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::unordered_map<OSMElement::ElementType, glm::vec3> typeColorMap;
@@ -197,7 +200,9 @@ public:
     std::unordered_map<std::string, Way*> theWays;
     std::unordered_map<std::string, Relation*> theRelations;
     std::unordered_map<std::string, int> tagConversionTable;
-    Heightfield heightfield;
+    World* world;
+
+    Heightfield* heightfield;
     // textures
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.
     GLuint glidFramebuffer;

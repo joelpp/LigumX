@@ -8,7 +8,8 @@ using namespace glm;
 
 void Game::loadXML(string path){
     tinyxml2::XMLDocument doc;
-    doc.LoadFile(path.c_str());
+    PRINT(path);
+    PRINT(doc.LoadFile(path.c_str()));
     tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
     cout << docRoot->Value() << "\n";
     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
