@@ -245,7 +245,6 @@ public:
     // Entity stuff
     EntityManager entityManager;
     Camera savedCam;
-    glm::vec3 savedCamPos, savedCamDir;
     bool inEntityLand;
     void TW_CALL toggleEntityLand();
 

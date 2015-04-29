@@ -27,6 +27,7 @@ unix {
     LIBS += -lX11 -lXrandr -lXi -lXxf86vm -lpthread
     LIBS += -lAntTweakBar
     LIBS += -lfreeimage
+    LIBS += -lfreetype
 }
 
 win32 {
