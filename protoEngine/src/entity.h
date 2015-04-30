@@ -6,6 +6,7 @@
 #include "glm/glm.hpp"
 #include "program_pipeline.h"
 
+class EntityManager;
 
 class Entity {
 friend class EntityManager;
@@ -27,6 +28,9 @@ public:
     float GetForwardSpeed() const;
     glm::vec3 GetForwardVelocity() const;
     glm::vec3 GetLateralVelocity() const;
+    glm::vec3 GetForwardVector() const { return forwardVector; }
+    glm::vec3 GetRightVector() const { return rightVector; }
+    glm::vec3 GetPosition() const { return position; }
 
 public:
     // Entity features
@@ -58,19 +62,20 @@ private:
 
 class EntityController {
 public:
-    EntityController(Entity *e) : entity(e) {}
+    EntityController(EntityManager *e, int ei) : entityManager(e), entityIndex(ei) {}
     virtual ~EntityController() {}
 
     virtual void Update() {}
     virtual void OnKey(int key, int action) {}
 
 protected:
-    Entity *entity;
+    EntityManager *entityManager;
+    int entityIndex;                     //!< Index of controlled entity in manager array
 };
 
 class PlayerController : public EntityController {
 public:
-    PlayerController(Entity *e = NULL) : EntityController(e) {}
+    PlayerController(EntityManager *e = NULL, int entityIndex = -1) : EntityController(e, entityIndex) {}
 
     void Update();
     void OnKey(int key, int action);
@@ -78,7 +83,7 @@ public:
 
 class AIController : public EntityController {
 public:
-    AIController(Entity *e = NULL) : EntityController(e) {}
+    AIController(EntityManager *e, int entityIndex = -1) : EntityController(e, entityIndex) {}
 
     void Update();
 };
@@ -95,6 +100,9 @@ public:
     void Render(const glm::mat4 &viewMatrix);
 
     void AddEntity(const Entity &e);
+
+    Entity &GetEntity(size_t index) { assert(index < entities.size()); return entities[index]; }
+    size_t GetEntityCount() const { return entities.size(); }
 
 private:
     std::vector<Entity> entities;

@@ -11,7 +11,75 @@ using namespace glm;
 #define POWER_MAG ENTITY_SIZE * 10.f
 #define FRICTION_COEFF 0.5f
 
-#define ENTITY_LINE_N 5 // 3 lines for vehicle, 2 lines for local space debug representation
+class BasicVehicleDef {
+public:
+    static void FillPositions(vec3 *dataPtr, const Entity &e) {
+        const vec3 right = e.GetRightVector();
+        const vec3 fwd = e.GetForwardVector();
+        const vec3 pos = e.GetPosition();
+
+        dataPtr[0*2] = pos - 0.5f * ENTITY_SIZE * right;
+        dataPtr[0*2+1] = pos + 0.5f * ENTITY_SIZE * right;
+        dataPtr[1*2] = pos - 0.5f * ENTITY_SIZE * right;
+        dataPtr[1*2+1] = pos + 1.5f * ENTITY_SIZE * fwd;
+        dataPtr[2*2] = pos + 0.5f * ENTITY_SIZE * right;;
+        dataPtr[2*2+1] = pos + 1.5f * ENTITY_SIZE * fwd;
+
+        // Create wheels
+        MakeWheelAt(&dataPtr[3*2], pos + 1.5f * ENTITY_SIZE * fwd - 0.5f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+        MakeWheelAt(&dataPtr[7*2], pos + 1.5f * ENTITY_SIZE * fwd + 0.5f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+        MakeWheelAt(&dataPtr[11*2], pos - 0.6f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+        MakeWheelAt(&dataPtr[15*2], pos + 0.6f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+
+        // debug visuals
+        dataPtr[(lineCount-2)*2] = pos;
+        dataPtr[(lineCount-2)*2+1] = pos + ENTITY_SIZE * right;
+        dataPtr[(lineCount-1)*2] = pos;
+        dataPtr[(lineCount-1)*2+1] = pos + e.GetForwardVelocity() / 6.f;
+    }
+
+    static void FillColors(vec3 *dataPtr, const Entity &e) {
+        for(size_t i = 0; i < lineCount-2; ++i) {
+            dataPtr[2*i] = e.color;
+            dataPtr[2*i+1] = e.color;
+        }
+
+        // color of debug visuals
+        dataPtr[(lineCount-2)*2] = vec3(1,0,0);
+        dataPtr[(lineCount-2)*2+1] = vec3(1,0,0);
+        dataPtr[(lineCount-1)*2] = vec3(0,1,0);
+        dataPtr[(lineCount-1)*2+1] = vec3(0,1,0);
+    }
+
+    static size_t LineCount() {
+        return lineCount;
+    }
+
+private:
+    static void MakeWheelAt(vec3 *dataPtr, vec3 pos, vec3 fwd, vec3 right) {
+        dataPtr[0*2] = pos - wheelWidth * right + wheelHeight * fwd;
+        dataPtr[0*2+1] = pos + wheelWidth * right + wheelHeight * fwd;
+        dataPtr[1*2] = pos - wheelWidth * right + wheelHeight * fwd;
+        dataPtr[1*2+1] = pos - wheelWidth * right - wheelHeight * fwd;
+        dataPtr[2*2] = pos - wheelWidth * right - wheelHeight * fwd;
+        dataPtr[2*2+1] = pos + wheelWidth * right - wheelHeight * fwd;
+        dataPtr[3*2] = pos + wheelWidth * right + wheelHeight * fwd;
+        dataPtr[3*2+1] = pos + wheelWidth * right - wheelHeight * fwd;
+    }
+
+    static const size_t lineCount;
+    static const float wheelWidth;
+    static const float wheelHeight;
+};
+
+// Definition of BasicVehicleDef static variables
+const size_t BasicVehicleDef::lineCount = 21;
+const float BasicVehicleDef::wheelWidth = 0.075f;
+const float BasicVehicleDef::wheelHeight = 0.2f;
+
+// ###################################################
+
+
 
 Entity::Entity() :  mass(1.f), maxThrust(50.f), maxForwardSpeed(50.f), maxBackwardSpeed(-10.f),
                        angle(0.f), turning(0), desiredSpeed(0.f) {
@@ -67,7 +135,7 @@ void Entity::Update(double dt) {
         velocity += -lateral_velocity * mass;
     }
 
-    std::cout << desiredSpeed << "   " << curr_speed << std::endl;
+//    std::cout << desiredSpeed << "   " << curr_speed << std::endl;
 
     // a = \sum(F)/m
     acceleration = (thrust_force + friction_force) / mass;
@@ -77,6 +145,10 @@ void Entity::Update(double dt) {
 
 EntityManager::EntityManager() : array_modification(false) {
 
+}
+
+float rand01() {
+    return rand()/(float)RAND_MAX;
 }
 
 bool EntityManager::Init() {
@@ -116,6 +188,7 @@ bool EntityManager::Init() {
 
     // Fixed starting size for data arrays
     dataSize = 100;
+    srand(time(NULL));
 
 
     makeVBO();
@@ -134,6 +207,16 @@ bool EntityManager::Init() {
     e.mass = 1;
     AddEntity(e);
 
+    for(size_t i = 0; i < 20; ++i) {
+        Entity e;
+        e.position = vec3((rand01() * 40 - 20)  * ENTITY_SIZE, (rand01() * 40 - 20)  * ENTITY_SIZE, 1);
+        e.angle = rand01() * 360;
+        e.color = vec3(rand01() * 0.7 + 0.3, rand01() * 0.7 + 0.3, rand01() * 0.7 + 0.3);
+        e.type = Entity::CONTROLLER_AI;
+        e.mass = 1;
+        AddEntity(e);
+    }
+
     return true;
 }
 
@@ -151,43 +234,22 @@ void EntityManager::AddEntity(const Entity &entity) {
     }
 
 
-    entityPositions[(0+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.rightVector;
-    entityPositions[(0+e.entityIndex)*2+1] = e.position + 0.5f * ENTITY_SIZE * e.rightVector;
-    entityPositions[(1+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.rightVector;
-    entityPositions[(1+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * e.forwardVector;
-    entityPositions[(2+e.entityIndex)*2] = e.position + 0.5f * ENTITY_SIZE * e.rightVector;;
-    entityPositions[(2+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * e.forwardVector;
-    entityPositions[(3+e.entityIndex)*2] = e.position;
-    entityPositions[(3+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * e.rightVector;
-    entityPositions[(4+e.entityIndex)*2] = e.position;
-    entityPositions[(4+e.entityIndex)*2+1] = e.position + 0.1f * ENTITY_SIZE * e.forwardVector;
-
-    entityColors[(0+e.entityIndex)*2] = e.color;
-    entityColors[(0+e.entityIndex)*2+1] = e.color;
-    entityColors[(1+e.entityIndex)*2] = e.color;
-    entityColors[(1+e.entityIndex)*2+1] = e.color;
-    entityColors[(2+e.entityIndex)*2] = e.color;
-    entityColors[(2+e.entityIndex)*2+1] = e.color;
-    entityColors[(3+e.entityIndex)*2] = vec3(1,0,0);
-    entityColors[(3+e.entityIndex)*2+1] = vec3(1,0,0);
-    entityColors[(4+e.entityIndex)*2] = vec3(0,1,0);
-    entityColors[(4+e.entityIndex)*2+1] = vec3(0,1,0);
-    array_modification = true;
-
+    BasicVehicleDef::FillPositions(&entityPositions[e.entityIndex*BasicVehicleDef::LineCount()*2], e);
+    BasicVehicleDef::FillColors(&entityColors[e.entityIndex*BasicVehicleDef::LineCount()*2], e);
     entities.push_back(e);
 
 
     // Controller type
     if(e.type == Entity::CONTROLLER_PLAYER) {
-        playerController = PlayerController(&entities[entities.size()-1]);
+        playerController = PlayerController(this, e.entityIndex);
     } else {
-        aiControllers.push_back(AIController(&entities[entities.size()-1]));
+        aiControllers.push_back(AIController(this, e.entityIndex));
     }
 }
 
 void EntityManager::makeVBO() {
-    entityPositions.resize(dataSize * ENTITY_LINE_N);
-    entityColors.resize(dataSize * ENTITY_LINE_N);
+    entityPositions.resize(dataSize * BasicVehicleDef::LineCount());
+    entityColors.resize(dataSize * BasicVehicleDef::LineCount());
 
     glDeleteBuffers(1, &glidEntitiesPositions);
     glCreateBuffers(1, &glidEntitiesPositions);
@@ -216,30 +278,22 @@ void EntityManager::Update(double dt) {
 
         e.Update(dt);
 
+
         // TODO : Find when an entity's rendering data shouldnt be updated
-        entityPositions[(0+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.rightVector;
-        entityPositions[(0+e.entityIndex)*2+1] = e.position + 0.5f * ENTITY_SIZE * e.rightVector;
-        entityPositions[(1+e.entityIndex)*2] = e.position - 0.5f * ENTITY_SIZE * e.rightVector;
-        entityPositions[(1+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * e.forwardVector;
-        entityPositions[(2+e.entityIndex)*2] = e.position + 0.5f * ENTITY_SIZE * e.rightVector;
-        entityPositions[(2+e.entityIndex)*2+1] = e.position + 1.5f * ENTITY_SIZE * e.forwardVector;
-        entityPositions[(3+e.entityIndex)*2] = e.position;
-        entityPositions[(3+e.entityIndex)*2+1] = e.position + ENTITY_SIZE * e.rightVector;
-        entityPositions[(4+e.entityIndex)*2] = e.position;
-        entityPositions[(4+e.entityIndex)*2+1] = e.position + length(e.velocity) * e.forwardVector;
+        BasicVehicleDef::FillPositions(&entityPositions[e.entityIndex*BasicVehicleDef::LineCount()*2], e);
         array_modification = true;
     }
 }
 
 void EntityManager::Render(const mat4 &viewMatrix) {
     if(array_modification) {
-        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entityPositions.data());
-        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entityColors.data());
+        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * BasicVehicleDef::LineCount() * 2) * sizeof(vec3), entityPositions.data());
+        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * BasicVehicleDef::LineCount() * 2) * sizeof(vec3), entityColors.data());
     }
 
     pPipelineEntities->usePipeline();
     glProgramUniformMatrix4fv(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(viewMatrix));
-    glDrawArrays(GL_LINES, 0, entities.size() * ENTITY_LINE_N * 2);
+    glDrawArrays(GL_LINES, 0, entities.size() * BasicVehicleDef::LineCount() * 2);
 }
 
 
@@ -249,30 +303,32 @@ void PlayerController::Update() {
 }
 
 void PlayerController::OnKey(int key, int action) {
-    assert(entity);
-    if(action == GLFW_PRESS){
-        if(key == GLFW_KEY_KP_4) { entity->turning = 1; }
-        if(key == GLFW_KEY_KP_6) { entity->turning = -1;}
+    assert(entityIndex >= 0);
+    Entity &e = entityManager->GetEntity(entityIndex);
 
-        if(key == GLFW_KEY_KP_8) { entity->desiredSpeed = ENTITY_SIZE * entity->maxForwardSpeed;}
-        if(key == GLFW_KEY_KP_5) { entity->desiredSpeed = ENTITY_SIZE * entity->maxBackwardSpeed;}
+    if(action == GLFW_PRESS){
+        if(key == GLFW_KEY_KP_4) { e.turning = 1; }
+        if(key == GLFW_KEY_KP_6) { e.turning = -1;}
+
+        if(key == GLFW_KEY_KP_8) { e.desiredSpeed = ENTITY_SIZE * e.maxForwardSpeed;}
+        if(key == GLFW_KEY_KP_5) { e.desiredSpeed = ENTITY_SIZE * e.maxBackwardSpeed;}
 
         if(key == GLFW_KEY_F5) {
-            entity->position = vec3(-5 * ENTITY_SIZE,0,1);
-            entity->acceleration = entity->velocity = vec3(0,0,0);
-            entity->angle = entity->desiredSpeed = 0.f;
-            entity->turning = 0;
+            e.position = vec3(-5 * ENTITY_SIZE,0,1);
+            e.acceleration = e.velocity = vec3(0,0,0);
+            e.angle = e.desiredSpeed = 0.f;
+            e.turning = 0;
         }
     }
 
     if(action == GLFW_RELEASE) {
-        if((key == GLFW_KEY_KP_4 && entity->turning == 1) ||
-                (key == GLFW_KEY_KP_6 && entity->turning == -1)) {
-            entity->turning = 0;
+        if((key == GLFW_KEY_KP_4 && e.turning == 1) ||
+                (key == GLFW_KEY_KP_6 && e.turning == -1)) {
+            e.turning = 0;
         }
-        if((key == GLFW_KEY_KP_8 && entity->desiredSpeed > 0.f) ||
-                (key == GLFW_KEY_KP_5 && entity->desiredSpeed < 0.f)) {
-            entity->desiredSpeed = 0.f;
+        if((key == GLFW_KEY_KP_8 && e.desiredSpeed > 0.f) ||
+                (key == GLFW_KEY_KP_5 && e.desiredSpeed < 0.f)) {
+            e.desiredSpeed = 0.f;
         }
     }
 }
