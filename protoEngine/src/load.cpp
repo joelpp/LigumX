@@ -44,7 +44,7 @@ void Game::loadXML(string path){
 
             Node* node = new Node(id, longitude, latitude);
             node->elevation = 0;
-           if (path.compare("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.0001;
+           // if (path.compare("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.0001;
             for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
                 string key = tag->ToElement()->FindAttribute("k")->Value();
                 string value = tag->ToElement()->FindAttribute("v")->Value();

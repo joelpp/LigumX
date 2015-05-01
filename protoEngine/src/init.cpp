@@ -145,8 +145,8 @@ void Game::init()
 //    TIME(loadXML("../data/rouyn.xml"));
 
 #ifdef __APPLE__
-    TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/srtm.xml"));
-    TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml"));
+    // TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/srtm.xml"));
+    TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/0.xml"));
 #else
 //    loadXML("../data/rouyn.xml");
 //    loadXML("../data/srtm.xml");
@@ -224,9 +224,11 @@ void Game::init()
     //=============================================================================
 
 #ifdef __APPLE__
-    textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/brickles.png"));
-    textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/grass.png"));
-    textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/rock.png"));
+    textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/brickles.png"));
+    textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/grass.png"));
+    textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/rock.png"));
+    textureMap.emplace("ATLAS", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/Atlas.png"));
+
 #else
     textureMap.emplace("bricks", new Texture("../textures/brickles.png"));
     textureMap.emplace("grass", new Texture("../textures/grass.png"));
@@ -269,7 +271,11 @@ void Game::init()
         std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 
     FT_Face face;
+#ifdef __APPLE__
+    if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/fonts/arial.ttf",0,&face))
+#else
     if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
+#endif
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
     else
         cout << "Loaded Freetype font! yayy" << "\n";
@@ -312,7 +318,11 @@ void Game::init()
             texture,
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+#ifdef __APPLE__
+            static_cast<GLuint>(face->glyph->advance.x)
+#else
             face->glyph->advance.x
+#endif
         };
         Characters.insert(std::pair<GLchar, Character>(c, character));
     }

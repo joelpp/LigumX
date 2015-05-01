@@ -205,9 +205,9 @@ void EntityManager::makeVBO() {
 }
 
 void EntityManager::KeyCallback(int key, int action) {
-    playerController.OnKey(key, action);
-    for(size_t i = 0; i < aiControllers.size(); ++i)
-        aiControllers[i].OnKey(key, action);
+    // playerController.OnKey(key, action);
+    // for(size_t i = 0; i < aiControllers.size(); ++i)
+    //     aiControllers[i].OnKey(key, action);
 }
 
 void EntityManager::Update(double dt) {
