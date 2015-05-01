@@ -7,10 +7,10 @@ out vec4 color;
 void main() {
     //color=vec4(1.0,1.0,1.0,1.0);
     //color = vec4(vec3(height/0.02),1.0);
-    float lowBound = 0.005;
-    float highBound = 0.011;
+    float lowBound = 0.0005;
+    float highBound = /*0.011*/lowBound;
     float interval = highBound- lowBound;
     if (height > highBound) color = vec4(texture(sampler1, myTexCoord).xyz,1.0);
     else if (height < lowBound) color = vec4(texture(sampler, myTexCoord).xyz,1.0);
-    else color = vec4(mix(texture(sampler1, myTexCoord).xyz, texture(sampler, myTexCoord).xyz, (highBound-height) / interval),1.0);
+    //else color = vec4(mix(texture(sampler1, myTexCoord).xyz, texture(sampler, myTexCoord).xyz, (highBound-height) / interval),1.0);
     }

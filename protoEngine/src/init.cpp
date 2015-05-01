@@ -42,6 +42,7 @@ void Game::init()
     sunMoveAuto = false;
     drawGround = false;
     saveScreenshot = false;
+    renderText = false;
     populateTypeColorArray();
     //=============================================================================
     // create window and GLcontext, register callbacks.
@@ -128,9 +129,9 @@ void Game::init()
     world = new World();
 //    world->addChunk(vec2(45.5, -73.65));
     world->addChunk(vec2(-0.65000,0.50000));
-    world->addChunk(vec2(-0.60000,0.50000));
-    world->addChunk(vec2(-0.65000,0.55000));
-    world->addChunk(vec2(-0.60000,0.55000));
+//    world->addChunk(vec2(-0.60000,0.50000));
+//    world->addChunk(vec2(-0.65000,0.55000));
+//    world->addChunk(vec2(-0.60000,0.55000));
 
     vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
@@ -147,6 +148,7 @@ void Game::init()
     TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/srtm.xml"));
     TIME(loadXML("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml"));
 #else
+//    loadXML("../data/rouyn.xml");
 //    loadXML("../data/srtm.xml");
 //    TIME(loadXML("../data/result.xml"));
     loadXML("../data/0.xml");
@@ -165,6 +167,7 @@ void Game::init()
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
 
 //    TIME(generateGridLines(&groundTrianglesPositions, &groundTrianglesUV));
+//    heightfieldTesting();
 
 
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths,&groundTrianglesPositions, &groundTrianglesUV));
@@ -225,9 +228,11 @@ void Game::init()
     textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/grass.png"));
     textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/rock.png"));
 #else
-    textureMap.emplace("bricks", new Texture("../data/brickles.png"));
-    textureMap.emplace("grass", new Texture("../data/grass.png"));
-    textureMap.emplace("rock", new Texture("../data/rock.png"));
+    textureMap.emplace("bricks", new Texture("../textures/brickles.png"));
+    textureMap.emplace("grass", new Texture("../textures/grass.png"));
+    textureMap.emplace("rock", new Texture("../textures/rock.png"));
+    textureMap.emplace("ATLAS", new Texture("../textures/Atlas.png"));
+
 #endif
 ////    pBuildingTex = new Texture("../data/face.png");
 
@@ -259,8 +264,6 @@ void Game::init()
 
 
     init_pipelines();
-
-    //Freetype stuff (shouldnt stay here)
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
         std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
@@ -316,12 +319,76 @@ void Game::init()
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
 
+
 #ifndef __APPLE__
     entityManager.Init();
 #endif  
     inEntityLand = false;
+    int TOTAL = 0;
+
+    // This was experimental to up performance when rendering text. It sucks actually.
+//    int filter = OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_UNCLASSIFIED;
+//    for (auto it = theWays.begin(); it != theWays.end(); ++it){
+//        Way* way = it->second;
+
+//        if ((way->eType & filter) == 0) continue;
+////        if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
+
+//        // Store the info we want
+//        std::string text;
+//        try{text = way->tags.at("name");}
+//        catch(...){continue;}
+
+//        float scale = 0.000001f;
+//        //Get the text position
+//        vec3 xyz = (way->nodes[0]->getLatLongEle() + way->nodes[1]->getLatLongEle()) / vec3(2,2,2);
+
+//        // Store each character's quad vertices
+//        std::vector<characterQuadVertices> quads;
+//        std::string::const_iterator c;
+//        float x = xyz.x;
+//        float y = xyz.y;
+//        for (c = text.begin(); c != text.end(); c++)
+//        {
+//            Character ch = Characters[*c];
+
+//            GLfloat xpos = x + ch.Bearing.x * scale;
+//            GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+//            GLfloat w = ch.Size.x * scale;
+//            GLfloat h = ch.Size.y * scale;
+//            GLfloat vertices[6][3] = {
+//                { xpos,     ypos + h,  0.0001 },
+//                { xpos,     ypos,      0.0001 },
+//                { xpos + w, ypos,      0.0001 },
+
+//                { xpos,     ypos + h,  0.0001 },
+//                { xpos + w, ypos,      0.0001 },
+//                { xpos + w, ypos + h,  0.0001 }
+//            };
+//            characterQuadVertices v(vertices);
+//            quads.push_back(v);
+//            TOTAL++;
+//            // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+//            x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
+//        }
+
+//        // Store the info
+//        Text t = {
+//            text,
+//            xyz,
+//            true,
+//            scale,
+//            quads
+//        };
+//        texts.push_back(t);
+//    }
+//    PRINT(TOTAL);
 }
 
+void Game::init_freetype(){
+
+}
 
 void Game::fillBuffers(vector<vec3> *waysNodesPositions,
                        vector<vec3> *waysNodesColors,
@@ -583,22 +650,28 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
         for (int i = 0; i < tris.size()-1; i += 2){
             Triangle* tri = tris[i];
             if (tri != NULL){
-                groundTrianglesPositions->push_back(tri->p0);
-                groundTrianglesPositions->push_back(tri->p1);
-                groundTrianglesPositions->push_back(tri->p2);
-                groundTrianglesUV->push_back(vec2(0,0));
-                groundTrianglesUV->push_back(vec2(1,0));
-                groundTrianglesUV->push_back(vec2(0,1));
+                groundTrianglesPositions->push_back(*tri->p0);
+                groundTrianglesPositions->push_back(*tri->p1);
+                groundTrianglesPositions->push_back(*tri->p2);
+//                groundTrianglesUV->push_back(vec2(0,0));
+//                groundTrianglesUV->push_back(vec2(1,0));
+//                groundTrianglesUV->push_back(vec2(0,1));
+                groundTrianglesUV->push_back(vec2(0.3, 0.76));
+                groundTrianglesUV->push_back(vec2(0.53, 0.76));
+                groundTrianglesUV->push_back(vec2(0.3,0.99));
             }
 
             tri = tris[i+1];
             if (tri != NULL){
-                groundTrianglesPositions->push_back(tri->p0);
-                groundTrianglesPositions->push_back(tri->p1);
-                groundTrianglesPositions->push_back(tri->p2);
-                groundTrianglesUV->push_back(vec2(1,0));
-                groundTrianglesUV->push_back(vec2(1,1));
-                groundTrianglesUV->push_back(vec2(0,1));
+                groundTrianglesPositions->push_back(*tri->p0);
+                groundTrianglesPositions->push_back(*tri->p1);
+                groundTrianglesPositions->push_back(*tri->p2);
+//                groundTrianglesUV->push_back(vec2(1,0));
+//                groundTrianglesUV->push_back(vec2(1,1));
+//                groundTrianglesUV->push_back(vec2(0,1));
+                groundTrianglesUV->push_back(vec2(0.53,0.76));
+                groundTrianglesUV->push_back(vec2(0.53, 0.99));
+                groundTrianglesUV->push_back(vec2(0.3,0.99));
             }
         }
     }

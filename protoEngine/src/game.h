@@ -101,6 +101,7 @@ public:
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
     std::string labelFromType(OSMElement::ElementType type);
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
+    void heightfieldTesting();
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
 #ifdef __APPLE__
         glGenBuffers(1, &bufferName);
@@ -231,6 +232,7 @@ public:
     bool sunMoveAuto;
     bool saveScreenshot;
     bool drawGround;
+    bool renderText;
 
     std::vector<glm::vec3> groundTrianglesPositions; // positions of nodes forming ways, possibly contains duplicates.
     std::vector<glm::vec2> groundTrianglesUV;
@@ -246,6 +248,7 @@ public:
     void init_pipelines_envmap();
     void init_pipelines_text();
     void init_tweakBar();
+    void init_freetype();
 
     // Entity stuff
     EntityManager entityManager;
@@ -262,6 +265,29 @@ public:
     };
 
     std::map<GLchar, Character> Characters;
+
+    struct characterQuadVertices{
+        GLfloat vertices[6][3];
+        characterQuadVertices( GLfloat qwe[6][3])
+        {
+            for(int i=0; i<6; ++i) {
+                for(int j=0; j<3; ++j) {
+                    vertices[i][j] = qwe[i][j];
+                }
+            }
+        }
+    };
+
+    struct Text {
+        std::string text;
+        glm::vec3 position;
+        bool projected;
+        float scale;
+        std::vector<characterQuadVertices> quads;
+    };
+
+    std::vector<Text> texts;
+    void RenderText(Text t);
 };
 
 extern Game* game;

@@ -1,6 +1,6 @@
 
 #include "linesegment.h"
-
+#include <sstream>
 using namespace glm;
 
 LineSegment::LineSegment(){
@@ -69,5 +69,7 @@ bool LineSegment::intersects(LineSegment other/*, float *i_x, float *i_y*/)
 }
 
 std::string LineSegment::toString(){
-    return std::string("LineSegment - p0: ").append(glm::to_string(p0)).append(" p1: ").append(glm::to_string(p1)).append("\n");
+    std::stringstream s;
+    s << "LineSegment - p0: " << glm::to_string(p0) << " p1: " << glm::to_string(p1) << "\n";
+    return s.str();
 }

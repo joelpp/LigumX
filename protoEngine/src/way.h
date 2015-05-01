@@ -6,6 +6,7 @@
 #include "linesegment.h"
 #include <vector>
 #include <string>
+#include <iostream>
 
 class LineSegment;
 

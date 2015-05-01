@@ -16,9 +16,7 @@ void Game::mainLoop()
     static double curr_time = glfwGetTime();
     static double physic_accumulator = 0.0;
 
-    double new_time = glfwGetTime();
-    dt = new_time - curr_time;
-    curr_time = new_time;
+
 
     physic_accumulator += dt;
 
@@ -106,7 +104,7 @@ void Game::mainLoop()
 
         if (drawGround){
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
+            glBindTexture(GL_TEXTURE_2D, textureMap["ATLAS"]->glidTexture);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
             pPipelineGround->usePipeline();
@@ -179,12 +177,13 @@ void Game::mainLoop()
     fpsString << round(1.f/dt);
     fpsString << " fps";
     RenderText(fpsString.str(), 750.0f, 750.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
-    RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
+//    RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
 
+//    int filter = OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_UNCLASSIFIED;
 //    for (auto it = theWays.begin(); it != theWays.end(); ++it){
 //        Way* way = it->second;
 
-//        if( way->eType != OSMElement::HIGHWAY_RESIDENTIAL) continue;
+//        if ((way->eType & filter) == 0) continue;
 //        std::string name;
 //        try{name = way->tags.at("name");}
 //        catch(...){continue;}
@@ -194,6 +193,12 @@ void Game::mainLoop()
 //        RenderText(name.c_str(), xy.x, xy.y, 0.000001f, glm::vec3(0.5, 0.8f, 0.2f), true);
 
 //    }
+
+    if (renderText)
+        for (int i = 0; i < texts.size(); i++){
+//            RenderText(texts[i].text.c_str(), texts[i].position.x, texts[i].position.y, 0.000001f, glm::vec3(0.5, 0.8f, 0.2f), texts[i].projected);
+            RenderText(texts[i]);
+        }
     if(showTweakBar) TwDraw();
 
     // screenshot
@@ -215,9 +220,61 @@ void Game::mainLoop()
         FreeImage_Unload(image);
         delete [] pixels;
     }
+    double new_time = glfwGetTime();
+    dt = new_time - curr_time;
+    curr_time = new_time;
 
 
+}
 
+void Game::RenderText(Text t){
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Activate corresponding render state
+    pPipelineText->usePipeline();
+    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
+    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
+    if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->mvpMat));
+    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
+
+    std::string text = t.text;
+    std::string::const_iterator c;
+    GLfloat uvs[6][2] = {
+        {0.0, 0.0},
+        {0.0, 1.0},
+        {1.0, 1.0},
+
+        {0.0, 0.0},
+        {1.0, 1.0},
+        {1.0, 0.0}
+
+    };
+    int index = 0;
+    for (c = text.begin(); c != text.end(); c++)
+    {
+        Character ch = Characters[*c];
+
+        // Render glyph texture over quad
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        // Update content of VBO memory
+        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(t.quads[index].vertices), t.quads[index].vertices);
+
+        glBindBuffer(GL_ARRAY_BUFFER, textUvsVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
+
+//        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // Render quad
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        index++;
+    }
+//    glBindVertexArray(0);
+//    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
 }
 
 void Game::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)

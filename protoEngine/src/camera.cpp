@@ -17,7 +17,7 @@ Camera::Camera()
     angle = 0;
     totalViewAngleY = 45;
     aspectRatio = 1; // TODO: change to window's aspect ratio.
-    near = 0.0001f;
+    near = 0.000001f;
     far = 1.f;
 
     cameraType = CameraType::CYLINDRICAL;

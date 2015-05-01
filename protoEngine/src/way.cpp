@@ -35,7 +35,7 @@ bool Way::hasPointInside(glm::vec2 xy){
     //If this way doesn't form a closed loop the concept of "being inside" it is meaningless. MEANINGLESS!!
 //    if(!loops()) return false;
 //    std::cout << "forms loop";
-    bool first = false;
+    bool first = true;
     int numIntersections = 0;
     LineSegment L0;
     L0.p0 = xy;
@@ -59,8 +59,11 @@ bool Way::hasPointInside(glm::vec2 xy){
         L1.p1 = node2->getLatLong();
 
         // Add to the counter if L0 crossed the way's perimeter
-        if (L0.intersects(L1)) numIntersections++;
-
+        if (L0.intersects(L1)){
+//            std::cout << L0.toString() << "\n";
+//            std::cout << L1.toString() << "\n";
+            numIntersections++;
+        }
         //Set first node to previous second node
         node1 = node2;
     }

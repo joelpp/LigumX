@@ -272,3 +272,25 @@ void TW_CALL Game::toggleEntityLand() {
         *camera = savedCam; // reinstall saved camera setup
     }
 }
+
+//Obviously this will move, hopefully after the chunks are more self contained.
+void Game::heightfieldTesting(){
+    Heightfield *h = world->chunks[vec2(-0.65000,0.50000)]->heightfield;
+
+    for (int i = 0 ; i < h->triangles.size() ; i += 2){
+        Triangle* tri = h->triangles[i];
+        if (tri == NULL) continue;
+
+        for (auto it = theWays.begin(); it != theWays.end(); ++it){
+            Way *way = it->second;
+
+            if (way->eType != OSMElement::LEISURE_PARK) continue;
+            if (way->hasPointInside(vec2(tri->p0->x, tri->p0->y))){
+                tri->p0->z = 0.001;
+                break;
+            }
+        }
+    }
+
+
+}
