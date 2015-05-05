@@ -10,6 +10,7 @@
 #include "glm/gtx/string_cast.hpp"
 #include "game.h"
 #include "texture.h"
+#include "entity.h"
 
 
 
@@ -35,6 +36,10 @@ int main(int argc, char *argv[])
 
     glfwTerminate();
     return 0;
+}
+
+Game::~Game() {
+    if(entityManager) delete entityManager;
 }
 
 OSMElement::ElementType Game::typeFromStrings(string key, string value){

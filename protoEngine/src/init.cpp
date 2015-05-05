@@ -1,4 +1,5 @@
 #include "game.h"
+#include "entity.h"
 #include <vector>
 #include <chrono>
 
@@ -304,7 +305,8 @@ void Game::init()
     FT_Done_FreeType(ft);
 
 #ifndef __APPLE__
-    entityManager.Init();
+    entityManager = new EntityManager();
+    entityManager->Init();
 #endif  
     inEntityLand = false;
 }

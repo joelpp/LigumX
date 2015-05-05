@@ -1,4 +1,6 @@
 #include "game.h"
+#include "entity.h"
+
 #include <chrono>
 #include <sstream>
 #include <iomanip>
@@ -27,7 +29,7 @@ void Game::mainLoop()
 
     // Physic update step
     while ( physic_accumulator >= static_dt ) {
-        entityManager.Update(static_dt);
+        entityManager->Update(static_dt);
         physic_accumulator -= static_dt;
     }
 
@@ -81,7 +83,7 @@ void Game::mainLoop()
 
         // draw entities
 #ifndef __APPLE__
-        entityManager.Render(camera->mvpMat);
+        entityManager->Render(camera->mvpMat);
 #endif
     } else {
 

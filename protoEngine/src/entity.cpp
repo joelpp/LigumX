@@ -11,52 +11,130 @@ using namespace glm;
 #define POWER_MAG ENTITY_SIZE * 10.f
 #define FRICTION_COEFF 0.5f
 
-class BasicVehicleDef {
-public:
-    static void FillPositions(vec3 *dataPtr, const Entity &e) {
-        const vec3 right = e.GetRightVector();
-        const vec3 fwd = e.GetForwardVector();
-        const vec3 pos = e.GetPosition();
+namespace Car {
+    struct Car1 {
+        static constexpr float mass = 1.f;
+        static constexpr float maxThrust = 35.f;
+    };
+/*
+    void Helper::BuildBody(std::vector<DynamicBody> &dataPtr, const Entity *e) {
+        // Build Car Hull
+        DynamicBody hull;
+        hull.position = vec3(0);
+        hull.mass = Car1::mass;
+        hull.maxThrust = Car1::maxThrust;
+        hull.angle = 0;
+        hull.forwardVector = normalize(vec3(cosf(glm::radians(hull.angle)), sinf(glm::radians(hull.angle)), 0));
+        hull.rightVector = normalize(vec3(cosf(glm::radians(hull.angle-90.f)), sinf(glm::radians(hull.angle-90.f)), 0));
+        dataPtr.push_back(hull);
 
-        dataPtr[0*2] = pos - 0.5f * ENTITY_SIZE * right;
-        dataPtr[0*2+1] = pos + 0.5f * ENTITY_SIZE * right;
-        dataPtr[1*2] = pos - 0.5f * ENTITY_SIZE * right;
-        dataPtr[1*2+1] = pos + 1.5f * ENTITY_SIZE * fwd;
-        dataPtr[2*2] = pos + 0.5f * ENTITY_SIZE * right;;
-        dataPtr[2*2+1] = pos + 1.5f * ENTITY_SIZE * fwd;
+        // Build 4 wheels
+        DynamicBody wheel;
+        wheel.mass = 1;
+        wheel.maxThrust = Car1::maxThrust;
+        wheel.angle = 0;
+        wheel.forwardVector = hull.forwardVector;
+        wheel.rightVector = hull.rightVector;
 
-        // Create wheels
-        MakeWheelAt(&dataPtr[3*2], pos + 1.5f * ENTITY_SIZE * fwd - 0.5f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
-        MakeWheelAt(&dataPtr[7*2], pos + 1.5f * ENTITY_SIZE * fwd + 0.5f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
-        MakeWheelAt(&dataPtr[11*2], pos - 0.6f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
-        MakeWheelAt(&dataPtr[15*2], pos + 0.6f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+        // FL
+        wheel.position = hull.position + hull.forwardVector * 1.5f * ENTITY_SIZE - hull.rightVector * 0.5f * ENTITY_SIZE;
+        dataPtr.push_back(wheel);
+        // FR
+        wheel.position = hull.position + hull.forwardVector * 1.5f * ENTITY_SIZE + hull.rightVector * 0.5f * ENTITY_SIZE;
+        dataPtr.push_back(wheel);
+        // RL
+        wheel.position = hull.position - hull.rightVector * 0.6f * ENTITY_SIZE;
+        dataPtr.push_back(wheel);
+        // RR
+        wheel.position = hull.position + hull.rightVector * 0.6f * ENTITY_SIZE;
+        dataPtr.push_back(wheel);
+    }
+*/
+    void Helper::SetPosition(const glm::vec3 &pos, Entity *e) {
+       /* DynamicBody &hull = e->GetBody();
+        hull.position = pos;
 
-        // debug visuals
-        dataPtr[(lineCount-2)*2] = pos;
-        dataPtr[(lineCount-2)*2+1] = pos + ENTITY_SIZE * right;
-        dataPtr[(lineCount-1)*2] = pos;
-        dataPtr[(lineCount-1)*2+1] = pos + e.GetForwardVelocity() / 6.f;
+        // set wheel position
+        DynamicBody *wheel = Misc::GetSubpart(&hull, Misc::CAR_WHEEL_FL);
+        wheel->position = hull.position + hull.forwardVector * 1.5f * ENTITY_SIZE - hull.rightVector * 0.5f * ENTITY_SIZE;
+        wheel = Misc::GetSubpart(&hull, Misc::CAR_WHEEL_FR);
+        wheel->position = hull.position + hull.forwardVector * 1.5f * ENTITY_SIZE + hull.rightVector * 0.5f * ENTITY_SIZE;
+        wheel = Misc::GetSubpart(&hull, Misc::CAR_WHEEL_RL);
+        wheel->position = hull.position - hull.rightVector * 0.6f * ENTITY_SIZE;
+        wheel = Misc::GetSubpart(&hull, Misc::CAR_WHEEL_RR);
+        wheel->position = hull.position + hull.rightVector * 0.6f * ENTITY_SIZE;
+        */
     }
 
-    static void FillColors(vec3 *dataPtr, const Entity &e) {
-        for(size_t i = 0; i < lineCount-2; ++i) {
-            dataPtr[2*i] = e.color;
-            dataPtr[2*i+1] = e.color;
+    void Helper::SetAngle(float angle, Entity *e) {
+    /*
+        DynamicBody &hull = e->GetBody();
+        hull.angle = angle;
+        hull.forwardVector = normalize(vec3(cosf(glm::radians(hull.angle)), sinf(glm::radians(hull.angle)), 0));
+        hull.rightVector = normalize(vec3(cosf(glm::radians(hull.angle-90.f)), sinf(glm::radians(hull.angle-90.f)), 0));
+
+        // Recompute position of wheels from new angle
+        SetPosition(hull.position, e);
+        */
+    }
+
+    void Helper::FillPositions(glm::vec3 *dataPtr, const Entity *e) {
+        // Display Hull
+        const b2Body *body = e->GetBody();
+        const float angle = body->GetAngle();
+        const vec3 right = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
+        const vec3 fwd = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0.f));
+        const vec3 pos = b2Vec2Tovec3(body->GetPosition());
+
+        const b2AABB &body_aabb = body->GetFixtureList()->GetAABB(0);
+        const vec3 size = b2Vec2Tovec3(body_aabb.GetExtents());
+
+
+        dataPtr[0*2] = pos - size.y * ENTITY_SIZE * right - size.x * ENTITY_SIZE * fwd;
+        dataPtr[0*2+1] = pos + size.y * ENTITY_SIZE * right - size.x * ENTITY_SIZE * fwd;
+        dataPtr[1*2] = pos + size.y * ENTITY_SIZE * right - size.x * ENTITY_SIZE * fwd;
+        dataPtr[1*2+1] = pos + size.y * ENTITY_SIZE * right + size.x * ENTITY_SIZE * fwd;
+        dataPtr[2*2] = pos + size.y * ENTITY_SIZE * right + size.x * ENTITY_SIZE * fwd;
+        dataPtr[2*2+1] = pos - size.y * ENTITY_SIZE * right + size.x * ENTITY_SIZE * fwd;
+        dataPtr[3*2] = pos - size.y * ENTITY_SIZE * right + size.x * ENTITY_SIZE * fwd;
+        dataPtr[3*2+1] = pos - size.y * ENTITY_SIZE * right - size.x * ENTITY_SIZE * fwd;
+
+        // Display wheels
+//        Misc::MakeWheel(&dataPtr[3*2], &bodies[e->bodyIndex+Misc::CAR_WHEEL_FL]);
+//        Misc::MakeWheel(&dataPtr[7*2], Misc::GetSubpart(&body, Misc::CAR_WHEEL_FR));
+//        Misc::MakeWheel(&dataPtr[11*2], Misc::GetSubpart(&body, Misc::CAR_WHEEL_RL));
+//        Misc::MakeWheel(&dataPtr[15*2], Misc::GetSubpart(&body, Misc::CAR_WHEEL_RR));
+
+        // Display debug visuals
+//        dataPtr[(Misc::lineCount-2)*2] = pos;
+//        dataPtr[(Misc::lineCount-2)*2+1] = pos + ENTITY_SIZE * right;
+//        dataPtr[(Misc::lineCount-1)*2] = pos;
+//        dataPtr[(Misc::lineCount-1)*2+1] = pos + body.GetForwardVelocity() / 6.f;
+    }
+
+    void Helper::FillColors(glm::vec3 *dataPtr, const Entity *e) {
+        for(size_t i = 0; i < Misc::lineCount; ++i) {
+            dataPtr[2*i] = e->color;
+            dataPtr[2*i+1] = e->color;
         }
 
         // color of debug visuals
-        dataPtr[(lineCount-2)*2] = vec3(1,0,0);
-        dataPtr[(lineCount-2)*2+1] = vec3(1,0,0);
-        dataPtr[(lineCount-1)*2] = vec3(0,1,0);
-        dataPtr[(lineCount-1)*2+1] = vec3(0,1,0);
+//        dataPtr[(Misc::lineCount-2)*2] = vec3(1,0,0);
+//        dataPtr[(Misc::lineCount-2)*2+1] = vec3(1,0,0);
+//        dataPtr[(Misc::lineCount-1)*2] = vec3(0,1,0);
+//        dataPtr[(Misc::lineCount-1)*2+1] = vec3(0,1,0);
     }
 
-    static size_t LineCount() {
-        return lineCount;
+    size_t Helper::LineCount() {
+        return Misc::lineCount;
     }
+/*
+    void Misc::MakeWheel(vec3 *dataPtr, const DynamicBody *wheel) {
+//        const DynamicBody *wheelBody = GetSubpart(&car, wheelID);
+        const vec3 fwd = ENTITY_SIZE * wheel->forwardVector;
+        const vec3 right = ENTITY_SIZE * wheel->rightVector;
+        const vec3 pos = wheel->position;
 
-private:
-    static void MakeWheelAt(vec3 *dataPtr, vec3 pos, vec3 fwd, vec3 right) {
         dataPtr[0*2] = pos - wheelWidth * right + wheelHeight * fwd;
         dataPtr[0*2+1] = pos + wheelWidth * right + wheelHeight * fwd;
         dataPtr[1*2] = pos - wheelWidth * right + wheelHeight * fwd;
@@ -66,44 +144,67 @@ private:
         dataPtr[3*2] = pos + wheelWidth * right + wheelHeight * fwd;
         dataPtr[3*2+1] = pos + wheelWidth * right - wheelHeight * fwd;
     }
+*/
+    // Definition of CarEntity static variables
+    const size_t Misc::bodyCount = 5;
+    const size_t Misc::lineCount = 4;
+    const float Misc::wheelWidth = 0.075f;
+    const float Misc::wheelHeight = 0.2f;
 
-    static const size_t lineCount;
-    static const float wheelWidth;
-    static const float wheelHeight;
-};
+    Helper carHelper;
 
-// Definition of BasicVehicleDef static variables
-const size_t BasicVehicleDef::lineCount = 21;
-const float BasicVehicleDef::wheelWidth = 0.075f;
-const float BasicVehicleDef::wheelHeight = 0.2f;
+    /*
+    void WheelDisplay::fillPositions(glm::vec3 *dataPtr, const Entity &e) {
+
+        const vec3 fwd = ENTITY_SIZE * e->forwardVector;
+        const vec3 right = ENTITY_SIZE * e->rightVector;
+        const vec3 pos = e->position;
+
+        float w = CarEntity::wheelWidth;
+        float h = CarEntity::wheelHeight;
+
+        dataPtr[0*2] = pos - w * right + h * fwd;
+        dataPtr[0*2+1] = pos + w * right + h * fwd;
+        dataPtr[1*2] = pos - w * right + h * fwd;
+        dataPtr[1*2+1] = pos - w * right - h * fwd;
+        dataPtr[2*2] = pos - w * right - h * fwd;
+        dataPtr[2*2+1] = pos + w * right - h * fwd;
+        dataPtr[3*2] = pos + w * right + h * fwd;
+        dataPtr[3*2+1] = pos + w * right - h * fwd;
+    }
+    */
+
+    /*
+    void CarEntity::Display_FillPositions(vec3 *dataPtr, const Entity &e) {
+
+        // Create wheels
+    //    Display_MakeWheel(&dataPtr[3*2], body, CAR_WHEEL_FL);
+    //    Display_MakeWheel(&dataPtr[7*2], body, CAR_WHEEL_FR);
+    //    Display_MakeWheel(&dataPtr[11*2], body, CAR_WHEEL_RL);
+    //    Display_MakeWheel(&dataPtr[15*2], body, CAR_WHEEL_RR);
+        //        MakeWheelAt(&dataPtr[3*2], pos + 1.5f * ENTITY_SIZE * fwd - 0.5f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+        //        MakeWheelAt(&dataPtr[7*2], pos + 1.5f * ENTITY_SIZE * fwd + 0.5f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+        //        MakeWheelAt(&dataPtr[11*2], pos - 0.6f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+        //        MakeWheelAt(&dataPtr[15*2], pos + 0.6f * ENTITY_SIZE * right, ENTITY_SIZE * fwd, ENTITY_SIZE * right);
+
+        // debug visuals
+        dataPtr[(lineCount-2)*2] = pos;
+        dataPtr[(lineCount-2)*2+1] = pos + ENTITY_SIZE * right;
+        dataPtr[(lineCount-1)*2] = pos;
+        dataPtr[(lineCount-1)*2+1] = pos + body.GetForwardVelocity() / 6.f;
+    }
+    */
+}
+
 
 // ###################################################
 
 
-
-Entity::Entity() :  mass(1.f), maxThrust(50.f), maxForwardSpeed(50.f), maxBackwardSpeed(-10.f),
-                       angle(0.f), turning(0), desiredSpeed(0.f) {
-
-}
-
-
-float Entity::GetForwardSpeed() const {
-    return dot(forwardVector, velocity);
-}
-
-vec3 Entity::GetForwardVelocity() const {
-    return forwardVector * dot(forwardVector, velocity);
-}
-
-vec3 Entity::GetLateralVelocity() const {
-    return rightVector * dot(rightVector, velocity);
-}
-
-void Entity::Update(double dt) {
+/*
+void DynamicBody::Update(double dt) {
     // euler integration
     position += velocity * (float)dt;
     velocity += acceleration * (float)dt;
-
 
     if(turning) {
         angle += dt * 100.f * turning;
@@ -118,9 +219,7 @@ void Entity::Update(double dt) {
     float curr_speed = GetForwardSpeed();
 
     // Forward thrust power
-    if(desiredSpeed != 0.f) {
-        thrust_force = (desiredSpeed > curr_speed ? 1 : -1) * maxThrust * forwardVector * ENTITY_SIZE;;
-    }
+    thrust_force = desiredThrustDir * maxThrust * forwardVector * ENTITY_SIZE;;
 
     // Ground friction & lateral force cancellation
     // TODO : Different ground characteristics
@@ -141,10 +240,49 @@ void Entity::Update(double dt) {
     acceleration = (thrust_force + friction_force) / mass;
 }
 
+float DynamicBody::GetForwardSpeed() const {
+    return dot(forwardVector, velocity);
+}
+
+vec3 DynamicBody::GetForwardVelocity() const {
+    return forwardVector * dot(forwardVector, velocity);
+}
+
+vec3 DynamicBody::GetLateralVelocity() const {
+    return rightVector * dot(rightVector, velocity);
+}
+*/
+
+// ###################################################
+
+Entity::Entity(EntityManager *em, EntityHelper &helper)  : entityManager(em), helperClass(helper)/*: mass(1.f), maxThrust(50.f), maxForwardSpeed(50.f), maxBackwardSpeed(-10.f),
+                       angle(0.f), turning(0), desiredSpeed(0.f) */{
+
+}
+
+void Entity::Update(double dt) {
+//    body.Update(dt);
+}
+
+//const DynamicBody &Entity::GetBody() const { return entityManager->GetBody(bodyIndex); }
+//DynamicBody &Entity::GetBody()  { return entityManager->GetBody(bodyIndex); }
+
+/*
+void Entity::MakeMesh(vec3 *dataPositionPtr, vec3 *dataColorPtr) {
+    vec3 *pos_ptr = dataPositionPtr + dataPositionIndex;
+    vec3 *col_ptr = dataColorPtr + dataColorIndex;
+    displayFunc.fillPositions(pos_ptr, *this);
+    displayFunc.fillColors(col_ptr, *this);
+}*/
+
 // #############################################
 
-EntityManager::EntityManager() : array_modification(false) {
+EntityManager::EntityManager() : world(NULL), array_modification(false) {
 
+}
+
+EntityManager::~EntityManager() {
+    if(world) delete world;
 }
 
 float rand01() {
@@ -187,7 +325,8 @@ bool EntityManager::Init() {
     pPipelineEntities->useFragmentShader(pFragmentShader);
 
     // Fixed starting size for data arrays
-    dataSize = 100;
+    dataSize = 256;
+    filledSize = 0;
     srand(time(NULL));
 
 
@@ -200,47 +339,77 @@ bool EntityManager::Init() {
     glVertexArrayVertexBuffer(pPipelineEntities->glidVao, 1, glidEntitiesColors, 0, sizeof(vec3));
     glVertexArrayAttribFormat(pPipelineEntities->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
 
-    Entity e;
+    world = new b2World(b2Vec2(0,0));
+
+    EntityDesc e;
     e.position = vec3(-5 * ENTITY_SIZE,0,1);
+    e.angle = 0.f;//35.f;
     e.color = vec3(1,0.8,0);
     e.type = Entity::CONTROLLER_PLAYER;
-    e.mass = 1;
+//    e.mass = 1;
     AddEntity(e);
 
+    /*
     for(size_t i = 0; i < 20; ++i) {
         Entity e;
-        e.position = vec3((rand01() * 40 - 20)  * ENTITY_SIZE, (rand01() * 40 - 20)  * ENTITY_SIZE, 1);
-        e.angle = rand01() * 360;
+        e.body.position = vec3((rand01() * 40 - 20)  * ENTITY_SIZE, (rand01() * 40 - 20)  * ENTITY_SIZE, 1);
+        e.body.angle = rand01() * 360;
         e.color = vec3(rand01() * 0.7 + 0.3, rand01() * 0.7 + 0.3, rand01() * 0.7 + 0.3);
         e.type = Entity::CONTROLLER_AI;
-        e.mass = 1;
+        e.body.mass = 1;
         AddEntity(e);
-    }
+    }*/
 
     return true;
 }
 
-void EntityManager::AddEntity(const Entity &entity) {
-    Entity e(entity);
-
-    e.forwardVector = normalize(vec3(cosf(glm::radians(e.angle)), sinf(glm::radians(e.angle)), 0));
-    e.rightVector = normalize(vec3(cosf(glm::radians(e.angle-90.f)), sinf(glm::radians(e.angle-90.f)), 0));
+void EntityManager::AddEntity(EntityDesc &edesc) {
+    // Create associated Dynamic Body
+    Entity e(this, Car::carHelper);
     e.entityIndex = entities.size();
+//    e.bodyIndex = bodies.size();
+    e.dataPositionIndex = filledSize;//entityPositions.size();
+    e.dataColorIndex = filledSize;//entityColors.size();
+    e.color = edesc.color;
+    e.type = edesc.type;
+
+    b2BodyDef b_def;
+    b_def.type = b2_dynamicBody;
+    b_def.position = vec3Tob2Vec2(edesc.position);
+    b_def.angle = edesc.angle;
+    e.body = world->CreateBody(&b_def);
+
+    b2PolygonShape b_shape;
+    b_shape.SetAsBox(1.25f, 0.5f);
+    b2FixtureDef b_fixture;
+    b_fixture.shape = &b_shape;
+    b_fixture.density = 1.f;
+    b_fixture.friction = 0.3f;
+    e.body->CreateFixture(&b_fixture);
+//    e.helperClass.BuildBody(bodies, &e);
+//    e.helperClass.SetPosition(edesc.position, &e);
+//    e.helperClass.SetAngle(edesc.angle, &e);
+    filledSize += 2 * e.helperClass.LineCount();
+
 
     // resize arrays/vbos if we get too much entities
-    if(entities.size() > dataSize) {
-        dataSize *= 2;
+    if(filledSize > dataSize) {
+        while(filledSize > dataSize)
+            dataSize *= 2;
         makeVBO();
     }
 
 
-    BasicVehicleDef::FillPositions(&entityPositions[e.entityIndex*BasicVehicleDef::LineCount()*2], e);
-    BasicVehicleDef::FillColors(&entityColors[e.entityIndex*BasicVehicleDef::LineCount()*2], e);
+    e.helperClass.FillPositions(&entityPositions[e.dataPositionIndex], &e);
+    e.helperClass.FillColors(&entityColors[e.dataColorIndex], &e);
+//    BasicCarDef::FillPositions(&entityPositions[e.entityIndex*BasicCarDef::LineCount()*2], e);
+//    BasicCarDef::FillColors(&entityColors[e.entityIndex*BasicCarDef::LineCount()*2], e);
     entities.push_back(e);
 
 
     // Controller type
     if(e.type == Entity::CONTROLLER_PLAYER) {
+        std::cout << e.entityIndex << std::endl;
         playerController = PlayerController(this, e.entityIndex);
     } else {
         aiControllers.push_back(AIController(this, e.entityIndex));
@@ -248,8 +417,8 @@ void EntityManager::AddEntity(const Entity &entity) {
 }
 
 void EntityManager::makeVBO() {
-    entityPositions.resize(dataSize * BasicVehicleDef::LineCount());
-    entityColors.resize(dataSize * BasicVehicleDef::LineCount());
+    entityPositions.resize(dataSize);
+    entityColors.resize(dataSize);
 
     glDeleteBuffers(1, &glidEntitiesPositions);
     glCreateBuffers(1, &glidEntitiesPositions);
@@ -273,6 +442,12 @@ void EntityManager::KeyCallback(int key, int action) {
 }
 
 void EntityManager::Update(double dt) {
+    // Update physic
+//    for(size_t i = 0; i < bodies.size(); ++i) {
+//        DynamicBody &b = bodies[i];
+//        b.Update(dt);
+//    }
+
     for(size_t i = 0; i < entities.size(); ++i) {
         Entity &e = entities[i];
 
@@ -280,20 +455,22 @@ void EntityManager::Update(double dt) {
 
 
         // TODO : Find when an entity's rendering data shouldnt be updated
-        BasicVehicleDef::FillPositions(&entityPositions[e.entityIndex*BasicVehicleDef::LineCount()*2], e);
+        e.helperClass.FillPositions(&entityPositions[e.dataPositionIndex], &e);
+//        e.MakeMesh(entityPositions.data(), entityColors.data());
+//        BasicCarDef::FillPositions(&entityPositions[e.entityIndex*BasicCarDef::LineCount()*2], e);
         array_modification = true;
     }
 }
 
 void EntityManager::Render(const mat4 &viewMatrix) {
     if(array_modification) {
-        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * BasicVehicleDef::LineCount() * 2) * sizeof(vec3), entityPositions.data());
-        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * BasicVehicleDef::LineCount() * 2) * sizeof(vec3), entityColors.data());
+        glNamedBufferSubData(glidEntitiesPositions, 0, filledSize * sizeof(vec3), entityPositions.data());
+        glNamedBufferSubData(glidEntitiesColors, 0, filledSize * sizeof(vec3), entityColors.data());
     }
 
     pPipelineEntities->usePipeline();
     glProgramUniformMatrix4fv(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(viewMatrix));
-    glDrawArrays(GL_LINES, 0, entities.size() * BasicVehicleDef::LineCount() * 2);
+    glDrawArrays(GL_LINES, 0, filledSize);
 }
 
 
@@ -304,33 +481,33 @@ void PlayerController::Update() {
 
 void PlayerController::OnKey(int key, int action) {
     assert(entityIndex >= 0);
-    Entity &e = entityManager->GetEntity(entityIndex);
+   /* Entity &e = entityManager->GetEntity(entityIndex);
 
     if(action == GLFW_PRESS){
-        if(key == GLFW_KEY_KP_4) { e.turning = 1; }
-        if(key == GLFW_KEY_KP_6) { e.turning = -1;}
+        if(key == GLFW_KEY_KP_4) { e.body.turning = 1; }
+        if(key == GLFW_KEY_KP_6) { e.body.turning = -1;}
 
-        if(key == GLFW_KEY_KP_8) { e.desiredSpeed = ENTITY_SIZE * e.maxForwardSpeed;}
-        if(key == GLFW_KEY_KP_5) { e.desiredSpeed = ENTITY_SIZE * e.maxBackwardSpeed;}
+        if(key == GLFW_KEY_KP_8) { e.body.desiredThrustDir = 1;}
+        if(key == GLFW_KEY_KP_5) { e.body.desiredThrustDir = -1;}
 
         if(key == GLFW_KEY_F5) {
-            e.position = vec3(-5 * ENTITY_SIZE,0,1);
-            e.acceleration = e.velocity = vec3(0,0,0);
-            e.angle = e.desiredSpeed = 0.f;
-            e.turning = 0;
+            e.body.position = vec3(-5 * ENTITY_SIZE,0,1);
+            e.body.acceleration = e.body.velocity = vec3(0,0,0);
+            e.body.angle = e.body.desiredThrustDir= 0.f;
+            e.body.turning = 0;
         }
     }
 
     if(action == GLFW_RELEASE) {
-        if((key == GLFW_KEY_KP_4 && e.turning == 1) ||
-                (key == GLFW_KEY_KP_6 && e.turning == -1)) {
-            e.turning = 0;
+        if((key == GLFW_KEY_KP_4 && e.body.turning == 1) ||
+                (key == GLFW_KEY_KP_6 && e.body.turning == -1)) {
+            e.body.turning = 0;
         }
-        if((key == GLFW_KEY_KP_8 && e.desiredSpeed > 0.f) ||
-                (key == GLFW_KEY_KP_5 && e.desiredSpeed < 0.f)) {
-            e.desiredSpeed = 0.f;
+        if((key == GLFW_KEY_KP_8 && e.body.desiredThrustDir > 0.f) ||
+                (key == GLFW_KEY_KP_5 && e.body.desiredThrustDir < 0.f)) {
+            e.body.desiredThrustDir = 0.f;
         }
-    }
+    }*/
 }
 
 void AIController::Update() {

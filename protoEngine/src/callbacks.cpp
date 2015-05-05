@@ -1,4 +1,6 @@
 #include "game.h"
+#include "entity.h"
+
 #include <string>
 #include <chrono>
 
@@ -46,7 +48,7 @@ void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int actio
 {
     if(!TwEventKeyGLFW(key, action)) {
         // send event to entity Manager (temporary before a playerInput class)
-        game->entityManager.KeyCallback(key, action);
+        game->entityManager->KeyCallback(key, action);
 
         if(action == GLFW_PRESS){
             if (key == GLFW_KEY_SPACE) { game->showTweakBar = !game->showTweakBar; }

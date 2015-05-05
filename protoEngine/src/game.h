@@ -29,7 +29,6 @@
 #include "linesegment.h"
 #include "heightfield.h"
 #include "triangle.h"
-#include "entity.h"
 
 
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
@@ -62,10 +61,14 @@ struct hash<OSMElement::ElementType> {
     }
 };
 }
+
+class EntityManager;
+
 class Game {
 public:
     // general state and functions
-    Game() {init();}
+    Game() : entityManager(NULL) {init();}
+    ~Game();
     void init();
     bool running;
     void mainLoop();
@@ -243,7 +246,7 @@ public:
     void init_tweakBar();
 
     // Entity stuff
-    EntityManager entityManager;
+    EntityManager *entityManager;
     Camera savedCam;
     bool inEntityLand;
     void TW_CALL toggleEntityLand();

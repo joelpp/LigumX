@@ -21,9 +21,9 @@ unix {
     # - libglfw3-dev
     # - libglew-dev (>= 1.11 !!)
     # - libfreeimage-dev
-    QMAKE_CXXFLAGS += "-std=c++11 $$system(pkg-config --cflags glew) $$system(pkg-config --cflags glfw3)"
+    QMAKE_CXXFLAGS += "-std=c++11 $$system(pkg-config --cflags glew) $$system(pkg-config --cflags glfw3) $$system(pkg-config --cflags box2d)"
     LIBS += -L/usr/local/lib /usr/local/lib/libGLEW.a -lGLU -lGL #$$system(pkg-config --libs glew)
-    LIBS += $$system(pkg-config --libs glfw3)
+    LIBS += $$system(pkg-config --libs glfw3) $$system(pkg-config --libs box2d)
     LIBS += -lX11 -lXrandr -lXi -lXxf86vm -lpthread
     LIBS += -lAntTweakBar
     LIBS += -lfreeimage
