@@ -10,7 +10,7 @@ using namespace glm;
 using std::cout;
 using std::endl;
 
-const double static_dt = 1.0 / 100.0;
+const double static_dt = 1.0 / 60.0;
 
 void Game::mainLoop()
 {

@@ -11,7 +11,7 @@ class EntityManager;
 
 
 inline glm::vec3 b2Vec2Tovec3( const b2Vec2 &v ) {
-    return glm::vec3( v.x, v.y, 1.f );
+    return glm::vec3( v.x, v.y, 0.f );
 }
 
 inline b2Vec2 vec3Tob2Vec2( const glm::vec3 &v ) {
@@ -64,6 +64,8 @@ class Entity;
 
 class EntityHelper {
 public:
+    EntityHelper() : mass(1.f), maxThrust(0.f) {}
+
     // display
     virtual void FillPositions(glm::vec3 *dataPtr, const Entity *e) {assert(0);}
     virtual void FillColors(glm::vec3 *dataPtr, const Entity *e) {assert(0);}
@@ -73,6 +75,9 @@ public:
 //    virtual void BuildBody(std::vector<DynamicBody> &dataPtr, const Entity *e) {assert(0);}
     virtual void SetPosition(const glm::vec3 &pos, Entity *e) {assert(0);}
     virtual void SetAngle(float angle, Entity *e) {assert(0);}
+
+    float mass;
+    float maxThrust;
 };
 
 
@@ -113,6 +118,15 @@ private:
 
     // TODO : array of DynamicBodies in a PhysicManager for cache coherence
     b2Body *body;
+    enum ControlState {
+        CS_FWD = 1 << 1,
+        CS_BWD = 1 << 2,
+        CS_LEFT = 1 << 3,
+        CS_RIGHT = 1 << 4,
+        CS_NONE = 1 << 5
+    };
+    int controlState;
+
 //    DynamicBody body;
 };
 
@@ -150,6 +164,8 @@ namespace Car {
 
     class Helper : public EntityHelper {
     public:
+        Helper();
+
         virtual void FillPositions(glm::vec3 *dataPtr, const Entity *e);
         virtual void FillColors(glm::vec3 *dataPtr, const Entity *e);
         virtual size_t LineCount();
