@@ -48,8 +48,13 @@ namespace Car {
 */
 
     Helper::Helper() {
+        size = vec3(1.25f, 0.5f, 0.f);
         mass = 1.f;
-        maxThrust = 35.f;
+        maxThrust = 100.f;
+        maxTorque = 0.1f;
+        maxLateralImpulse = 3.f;
+        resistanceDrag = 0.4257f;
+        resistanceRolling = 30.f * resistanceDrag;
     }
 
     void Helper::SetPosition(const glm::vec3 &pos, Entity *e) {
@@ -84,13 +89,10 @@ namespace Car {
         // Display Hull
         const b2Body *body = e->GetBody();
         const float angle = body->GetAngle();
-        const vec3 right = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
-        const vec3 fwd = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0.f));
+        const vec3 right = b2Vec2Tovec3(body->GetWorldVector(b2Vec2(0,1)));
+        const b2Vec2 b2fwd = body->GetWorldVector(b2Vec2(1,0));
+        const vec3 fwd = b2Vec2Tovec3(b2fwd);
         const vec3 pos = ENTITY_SIZE * b2Vec2Tovec3(body->GetPosition());
-
-        const b2AABB &body_aabb = body->GetFixtureList()->GetAABB(0);
-        const vec3 size = b2Vec2Tovec3(body_aabb.GetExtents());
-
 
         dataPtr[0*2] = pos - size.y * ENTITY_SIZE * right - size.x * ENTITY_SIZE * fwd;
         dataPtr[0*2+1] = pos + size.y * ENTITY_SIZE * right - size.x * ENTITY_SIZE * fwd;
@@ -109,7 +111,7 @@ namespace Car {
 
         // Display debug visuals
         dataPtr[(Misc::lineCount-1)*2] = pos;
-        dataPtr[(Misc::lineCount-1)*2+1] = pos + ENTITY_SIZE * getForwardVelocity(body) / 6.f;
+        dataPtr[(Misc::lineCount-1)*2+1] = pos + ENTITY_SIZE * fwd * b2Dot(body->GetLinearVelocity(),b2fwd) /5.f;
 //        dataPtr[(Misc::lineCount-1)*2] = pos;
 //        dataPtr[(Misc::lineCount-1)*2+1] = pos + body.GetForwardVelocity() / 6.f;
     }
@@ -203,44 +205,6 @@ namespace Car {
 
 
 /*
-void DynamicBody::Update(double dt) {
-    // euler integration
-    position += velocity * (float)dt;
-    velocity += acceleration * (float)dt;
-
-    if(turning) {
-        angle += dt * 100.f * turning;
-    }
-
-    forwardVector = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0));
-    rightVector = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
-
-    vec3 thrust_force(0.f);
-    vec3 friction_force(0.f);
-
-    float curr_speed = GetForwardSpeed();
-
-    // Forward thrust power
-    thrust_force = desiredThrustDir * maxThrust * forwardVector * ENTITY_SIZE;;
-
-    // Ground friction & lateral force cancellation
-    // TODO : Different ground characteristics
-    if(length(velocity) > 0.f) {
-        // apply friction
-        vec3 lateral_velocity = GetLateralVelocity();
-        vec3 forward_velocity = GetForwardVelocity();
-        float friction_mag = -2.f * 1000.f* POWER_MAG * length(forward_velocity);
-        friction_force = friction_mag * normalize(forward_velocity);
-
-        // apply lateral impulse to remove lateral movement
-        velocity += -lateral_velocity * mass;
-    }
-
-//    std::cout << desiredSpeed << "   " << curr_speed << std::endl;
-
-    // a = \sum(F)/m
-    acceleration = (thrust_force + friction_force) / mass;
-}
 
 float DynamicBody::GetForwardSpeed() const {
     return dot(forwardVector, velocity);
@@ -255,86 +219,51 @@ vec3 DynamicBody::GetLateralVelocity() const {
 }
 */
 
-// ###################################################
-
-Entity::Entity(EntityManager *em, EntityHelper &helper)  : entityManager(em), helperClass(helper), controlState(0)/*: mass(1.f), maxThrust(50.f), maxForwardSpeed(50.f), maxBackwardSpeed(-10.f),
-                       angle(0.f), turning(0), desiredSpeed(0.f) */{
+Entity::Entity(EntityManager *em, EntityHelper &helper)  : entityManager(em), helperClass(helper), controlState(0){
 
 }
 
 void Entity::Update(double dt) {
-//    std::cout << body->GetLinearVelocity().x << std::endl;
-    float thrust_force_mag = 0.f;
-    float friction_force_mag = 0.f;
+    float engine_force = 0.f;
+    float air_resistance = 0.f;
+    float rolling_resistance = 0.f;
 
 
-    if(controlState & CS_FWD)  thrust_force_mag = helperClass.maxThrust;
-    else if(controlState & CS_BWD) thrust_force_mag = -helperClass.maxThrust/5.f;
-
+    // F_traction = fwd_normal * engineForce
+    if(controlState & CS_FWD)  engine_force = helperClass.maxThrust;
+    else if(controlState & CS_BWD) engine_force = -helperClass.maxThrust/5.f;
 
 
 
     b2Vec2 fwd_normal = body->GetWorldVector(b2Vec2(1,0));
-    b2Vec2 vel_normal = vec3Tob2Vec2(getForwardVelocity(body));
-    float speed = vel_normal.Normalize();
+    b2Vec2 velocity_vec = vec3Tob2Vec2(getForwardVelocity(body));
+    float speed = velocity_vec.Length();
 
     if(speed) {
-        friction_force_mag = -2.f * speed;
+        // F_drag = - C_drag * vel * |vel|
+        air_resistance = -helperClass.resistanceDrag * speed;
+        rolling_resistance = -helperClass.resistanceRolling;
     }
 
-    b2Vec2 drive_force = thrust_force_mag * fwd_normal + friction_force_mag * vel_normal;
+    b2Vec2 drive_force = engine_force * fwd_normal + (air_resistance + rolling_resistance) * velocity_vec;
 
     body->ApplyForce(drive_force, body->GetWorldCenter(), 1);
-/*
-    // euler integration
-    position += velocity * (float)dt;
-    velocity += acceleration * (float)dt;
 
-    if(turning) {
-        angle += dt * 100.f * turning;
-    }
+    float torque = 0.f;
+    if(controlState & CS_LEFT) { torque = helperClass.maxTorque; }
+    if(controlState & CS_RIGHT) {torque = -helperClass.maxTorque; }
+    body->ApplyAngularImpulse(torque,1);
 
-    forwardVector = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0));
-    rightVector = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
+    // allow skidding
+    b2Vec2 lateral_correction = body->GetMass() * -vec3Tob2Vec2(getLateralVelocity(body));
+    float impulse_strength = lateral_correction.Length();
+    if (impulse_strength > helperClass.maxLateralImpulse)
+        lateral_correction *= helperClass.maxLateralImpulse / impulse_strength;
+    body->ApplyLinearImpulse(lateral_correction, body->GetWorldCenter(), 1);
 
-    vec3 thrust_force(0.f);
-    vec3 friction_force(0.f);
-
-    float curr_speed = GetForwardSpeed();
-
-    // Forward thrust power
-    thrust_force = desiredThrustDir * maxThrust * forwardVector * ENTITY_SIZE;;
-
-    // Ground friction & lateral force cancellation
-    // TODO : Different ground characteristics
-    if(length(velocity) > 0.f) {
-        // apply friction
-        vec3 lateral_velocity = GetLateralVelocity();
-        vec3 forward_velocity = GetForwardVelocity();
-        float friction_mag = -2.f * 1000.f* POWER_MAG * length(forward_velocity);
-        friction_force = friction_mag * normalize(forward_velocity);
-
-        // apply lateral impulse to remove lateral movement
-        velocity += -lateral_velocity * mass;
-    }
-
-//    std::cout << desiredSpeed << "   " << curr_speed << std::endl;
-
-    // a = \sum(F)/m
-    acceleration = (thrust_force + friction_force) / mass;
-    */
+    // remove angular velocity while allowing skidding
+    body->ApplyAngularImpulse( 0.1f * body->GetInertia() * -body->GetAngularVelocity(), 1 );
 }
-
-//const DynamicBody &Entity::GetBody() const { return entityManager->GetBody(bodyIndex); }
-//DynamicBody &Entity::GetBody()  { return entityManager->GetBody(bodyIndex); }
-
-/*
-void Entity::MakeMesh(vec3 *dataPositionPtr, vec3 *dataColorPtr) {
-    vec3 *pos_ptr = dataPositionPtr + dataPositionIndex;
-    vec3 *col_ptr = dataColorPtr + dataColorIndex;
-    displayFunc.fillPositions(pos_ptr, *this);
-    displayFunc.fillColors(col_ptr, *this);
-}*/
 
 // #############################################
 
@@ -410,6 +339,13 @@ bool EntityManager::Init() {
 //    e.mass = 1;
     AddEntity(e);
 
+    e.position = vec3(5, 0,1);
+    e.angle = 0.f;//35.f;
+    e.color = vec3(1,1,0);
+    e.type = Entity::CONTROLLER_AI;
+//    e.mass = 1;
+    AddEntity(e);
+
     /*
     for(size_t i = 0; i < 20; ++i) {
         Entity e;
@@ -425,15 +361,14 @@ bool EntityManager::Init() {
 }
 
 void EntityManager::AddEntity(EntityDesc &edesc) {
-    // Create associated Dynamic Body
     Entity e(this, Car::carHelper);
     e.entityIndex = entities.size();
-//    e.bodyIndex = bodies.size();
-    e.dataPositionIndex = filledSize;//entityPositions.size();
-    e.dataColorIndex = filledSize;//entityColors.size();
+    e.dataPositionIndex = filledSize;
+    e.dataColorIndex = filledSize;
     e.color = edesc.color;
     e.type = edesc.type;
 
+    // Create associated Dynamic Body
     b2BodyDef b_def;
     b_def.type = b2_dynamicBody;
     b_def.position = vec3Tob2Vec2(edesc.position);
@@ -441,16 +376,13 @@ void EntityManager::AddEntity(EntityDesc &edesc) {
     e.body = world->CreateBody(&b_def);
 
     b2PolygonShape b_shape;
-    b_shape.SetAsBox(1.25f, 0.5f);
+    b_shape.SetAsBox(Car::carHelper.size.x, Car::carHelper.size.y);
     b2FixtureDef b_fixture;
     b_fixture.shape = &b_shape;
     b_fixture.density = 1.f;
     b_fixture.friction = 0.3f;
     e.body->CreateFixture(&b_fixture);
-//    e.helperClass.BuildBody(bodies, &e);
-//    e.helperClass.SetPosition(edesc.position, &e);
-//    e.helperClass.SetAngle(edesc.angle, &e);
-    filledSize += 2 * e.helperClass.LineCount();
+    filledSize += 2 * e.helperClass.LineCount();    // 2 vertices per line
 
 
     // resize arrays/vbos if we get too much entities
@@ -463,8 +395,6 @@ void EntityManager::AddEntity(EntityDesc &edesc) {
 
     e.helperClass.FillPositions(&entityPositions[e.dataPositionIndex], &e);
     e.helperClass.FillColors(&entityColors[e.dataColorIndex], &e);
-//    BasicCarDef::FillPositions(&entityPositions[e.entityIndex*BasicCarDef::LineCount()*2], e);
-//    BasicCarDef::FillColors(&entityColors[e.entityIndex*BasicCarDef::LineCount()*2], e);
     entities.push_back(e);
 
 
@@ -502,23 +432,13 @@ void EntityManager::KeyCallback(int key, int action) {
 }
 
 void EntityManager::Update(double dt) {
-    // Update physic
-//    for(size_t i = 0; i < bodies.size(); ++i) {
-//        DynamicBody &b = bodies[i];
-//        b.Update(dt);
-//    }
-
-
     for(size_t i = 0; i < entities.size(); ++i) {
         Entity &e = entities[i];
 
         e.Update(dt);
 
-
         // TODO : Find when an entity's rendering data shouldnt be updated
         e.helperClass.FillPositions(&entityPositions[e.dataPositionIndex], &e);
-//        e.MakeMesh(entityPositions.data(), entityColors.data());
-//        BasicCarDef::FillPositions(&entityPositions[e.entityIndex*BasicCarDef::LineCount()*2], e);
         array_modification = true;
     }
 

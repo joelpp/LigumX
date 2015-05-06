@@ -24,7 +24,7 @@ inline glm::vec3 getForwardVelocity(const b2Body *body) {
 }
 
 inline glm::vec3 getLateralVelocity(const b2Body *body) {
-      b2Vec2 currentRightNormal = body->GetWorldVector( b2Vec2(1,0) );
+      b2Vec2 currentRightNormal = body->GetWorldVector( b2Vec2(0,1) );
       return b2Vec2Tovec3(b2Dot( currentRightNormal, body->GetLinearVelocity() ) * currentRightNormal);
 }
 
@@ -64,7 +64,7 @@ class Entity;
 
 class EntityHelper {
 public:
-    EntityHelper() : mass(1.f), maxThrust(0.f) {}
+    EntityHelper() : size(0), mass(1.f), maxThrust(0.f), maxTorque(0.f), maxLateralImpulse(1.f) {}
 
     // display
     virtual void FillPositions(glm::vec3 *dataPtr, const Entity *e) {assert(0);}
@@ -76,8 +76,13 @@ public:
     virtual void SetPosition(const glm::vec3 &pos, Entity *e) {assert(0);}
     virtual void SetAngle(float angle, Entity *e) {assert(0);}
 
+    glm::vec3 size;
     float mass;
     float maxThrust;
+    float maxTorque;
+    float maxLateralImpulse;//<! Max lateral correction. Any skidding over that will pass
+    float resistanceDrag,      //<! Air Resistance magic constant (vehicle dependent)
+           resistanceRolling;   //<! Wheel/ground resistance constant (vehicle depend)
 };
 
 
