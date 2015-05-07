@@ -71,7 +71,8 @@ SOURCES += \
     src/triangle.cpp \
     src/entity.cpp \
     src/world.cpp \
-    src/chunk.cpp
+    src/chunk.cpp \
+    src/renderer.cpp
 
 
 HEADERS += \
@@ -91,7 +92,8 @@ HEADERS += \
     src/triangle.h \
     src/entity.h \
     src/world.h \
-    src/chunk.h
+    src/chunk.h \
+    src/renderer.h
 
 OTHER_FILES += \
     src/shaders/roads.gsh \
@@ -105,5 +107,7 @@ OTHER_FILES += \
 DISTFILES += \
     libPaths.pri \
     src/shaders/text/fragment.fsh \
-    src/shaders/text/vertex.vsh
+    src/shaders/text/vertex.vsh \
+    src/shaders/filledBuildings/fragment.fsh \
+    src/shaders/filledBuildings/vertex.vsh
 

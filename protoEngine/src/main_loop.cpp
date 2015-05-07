@@ -105,7 +105,7 @@ void Game::mainLoop()
 
         if (drawGround){
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textureMap["asphalt"]->glidTexture);
+            glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
             pPipelineGround->usePipeline();
@@ -154,7 +154,7 @@ void Game::mainLoop()
 
        // draw buildings
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureMap["roof"]->glidTexture);
+        glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
 
@@ -169,7 +169,7 @@ void Game::mainLoop()
         // draw building sides
         glActiveTexture(GL_TEXTURE0);
 
-        glBindTexture(GL_TEXTURE_2D, textureMap["building_side1"]->glidTexture);
+        glBindTexture(GL_TEXTURE_2D, textureMap["bricks"]->glidTexture);
 
         pPipelineBuildingSides->usePipeline();
 

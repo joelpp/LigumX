@@ -226,8 +226,11 @@ void Game::init()
     textureMap.emplace("grass", new Texture("../textures/grass.png"));
     textureMap.emplace("rock", new Texture("../textures/rock.png"));
     textureMap.emplace("ATLAS", new Texture("../textures/Atlas.png"));
-
+//    textureMap.emplace("asphalt", new Texture("../textures/asphalt.jpg"));
+//    textureMap.emplace("roof", new Texture("../textures/roof_rgba.png"));
+//    textureMap.emplace("building_side1", new Texture("../textures/building_side1_rgba.png"));
 #endif
+    PRINT("passed this");
 ////    pBuildingTex = new Texture("../data/face.png");
 
 //    glCreateFramebuffers(1, &glidFramebuffer);
@@ -503,7 +506,7 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
             // triangulate building loops
             Node first(*(way->nodes.front()));
             Node last(*(way->nodes.back()));
-            if((way->eType==OSMElement::BUILDING_UNMARKED || way->eType == OSMElement::LEISURE_PARK) && way->nodes.size() >= 3 && first == last) {
+            if((way->eType==OSMElement::BUILDING_UNMARKED||way->eType == OSMElement::LEISURE_PARK)&&way->nodes.size() >= 3 && first == last) {
 
                 float height = 0;
                 if (way->eType == OSMElement::BUILDING_UNMARKED) height = buildingHeight /* + (rand() / RAND_MAX) * 4.f*/;

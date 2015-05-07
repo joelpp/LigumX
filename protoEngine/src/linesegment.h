@@ -13,7 +13,7 @@ public:
     glm::vec2 p0;
     glm::vec2 p1;
 
-    bool intersects(LineSegment other);
+    bool intersects(LineSegment other, float *i_x, float *i_y);
     LineSegment();
     LineSegment(glm::vec2 p0, glm::vec2 p1);
     LineSegment(Node* n0, Node* n1);

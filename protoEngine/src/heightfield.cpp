@@ -130,7 +130,7 @@ int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directi
 
                 L1.p0 = vec2(n0->longitude, n0->latitude);
                 L1.p1 = vec2(n1->longitude, n1->latitude);
-                if (L0.intersects(L1)){
+                if (L0.intersects(L1, NULL, NULL)){
                     intersects = true;
                     break; // we now know this way isnt viable as it intersected the nearest. we can stop looping around
                 }

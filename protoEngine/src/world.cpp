@@ -11,12 +11,17 @@ Chunk* World::createChunk(glm::vec2 pos){
 	Chunk* c = new Chunk(pos);
     chunks.emplace(pos, c);
     std::stringstream ss;
+#ifdef __APPLE__
     ss << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/Data_";
-    ss << pos.x * 1000 << "x" << pos.y*1000 << ".xml";
+#else
+    ss << "../data/Data_";
+#endif
+    ss<<pos.x * 1000<<"x"<<pos.y*1000<<".xml";
     std::cout << ss.str() << "\n";
 	loadChunkData(ss.str());
     // c->heightfieldTesting();
     extrudeAddrInterps();
+    std::cout << theWays.size();
 
     return c;
 }
@@ -165,13 +170,13 @@ void World::extrudeAddrInterps(){
         for (int i = 0 ; i < firstNodeWays.size(); i++){
             LineSegment L1(firstNodeWays[i]);
 
-            if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
+            if (!intersectOtherRoad && L0.intersects(L1,NULL,NULL)) intersectOtherRoad = true;
         }
 
         for (int i = 0 ; i < secondNodeWays.size(); i++){
             LineSegment L1(secondNodeWays[i]);
 
-            if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
+            if (!intersectOtherRoad && L0.intersects(L1, NULL, NULL)) intersectOtherRoad = true;
         }
 
 //        if (intersectOtherRoad) continue;

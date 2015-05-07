@@ -15,8 +15,8 @@ void Chunk::heightfieldTesting(){
 	int percent = total / 100;
 	int filter = OSMElement::LEISURE_PARK;
     for (int i = 0 ; i < heightfield->triangles.size() ; i++){
-    	// std::cout << i << " " << percent << i % percent << "\n";
-    	if ((i % percent) == 0) std::cout << "\rBuilding heightfield vertex types: " << ((float)i/(float)total * 100) <<" percent complete";
+    	// std::cout << i << " " << percent << i % percent << "\n";
+        if ((i%percent)==0) std::cout << "\rBuilding heightfield vertex types: " << ((float)i/(float)total * 100) <<" percent complete";
         Triangle* tri = heightfield->triangles[i];
         if (tri == NULL) continue;
 
@@ -35,6 +35,6 @@ void Chunk::heightfieldTesting(){
 	        }
     	}
     }
-    std::cout << "\n";
+    std::cout << "\n";
 }
 

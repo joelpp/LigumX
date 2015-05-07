@@ -23,6 +23,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "renderer.h"
 #include "world.h"
 #include "program_pipeline.h"
 #include "camera.h"

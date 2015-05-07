@@ -59,7 +59,7 @@ bool Way::hasPointInside(glm::vec2 xy){
         L1.p1 = node2->getLatLong();
 
         // Add to the counter if L0 crossed the way's perimeter
-        if (L0.intersects(L1)){
+        if (L0.intersects(L1, NULL, NULL)){
 //            std::cout << L0.toString() << "\n";
 //            std::cout << L1.toString() << "\n";
             numIntersections++;

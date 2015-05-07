@@ -37,7 +37,7 @@ LineSegment::LineSegment(Way* way){
 //    return ((s >= 0) && (s <= 1) && (t >= 0) && (t <= 1));
 //}
 
-bool LineSegment::intersects(LineSegment other/*, float *i_x, float *i_y*/)
+bool LineSegment::intersects(LineSegment other, float *i_x, float *i_y)
 {
     float p0_x = this->p0.x;
     float p0_y = this->p0.y;
@@ -58,10 +58,10 @@ bool LineSegment::intersects(LineSegment other/*, float *i_x, float *i_y*/)
     if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
     {
 //        // Collision detected
-//        if (i_x != NULL)
-//            *i_x = p0_x + (t * s1_x);
-//        if (i_y != NULL)
-//            *i_y = p0_y + (t * s1_y);
+        if (i_x != NULL)
+            *i_x = p0_x + (t * s1_x);
+        if (i_y != NULL)
+            *i_y = p0_y + (t * s1_y);
         return true;
     }
 
