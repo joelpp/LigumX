@@ -28,7 +28,7 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
 
     // Figure out how many bytes into the buffer we have to start writing
     int numberOfBytesBefore = 0;
-    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+    for ( auto it = world->theWays.begin(); it != world->theWays.end(); ++it ){
         Way* way = it->second;
 
 //        if (!way->selectable) continue;
@@ -60,7 +60,7 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
 Node* Game::findClosestNode(vec2 xy){
     Node* closest;
     double bestDist = 99999;
-    for ( auto it = theNodes.begin(); it != theNodes.end(); ++it ){
+    for ( auto it = world->theNodes.begin(); it != world->theNodes.end(); ++it ){
         Node* n = it->second;
 
         vec2 point = vec2(n->longitude, n->latitude);
@@ -91,7 +91,7 @@ std::vector<Way*> Game::findNClosestWays(int n, vec2 xy, int filter, vector<doub
     }
 
     //Look at all the ways
-    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+    for ( auto it = world->theWays.begin(); it != world->theWays.end(); ++it ){
         Way* way = it->second;
 //        if (!way->selectable) continue;
 

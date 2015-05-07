@@ -20,21 +20,22 @@ void Heightfield::addTriangle(Triangle* tri){
 
 void Heightfield::generateTriangles(){
     PRINT("GENERATIRNG TRINGALES");
-    double step = 0.0001;
+    double step = 0.001;
 
     int numberOfPointsPerSide = sideLength / step;
 
-    std::vector<std::vector<glm::vec3*> > points;
-    float lon = startPoint.x;
-    float lat = startPoint.y;
+    
+    float lon = startPoint.x + 73;
+    float lat = startPoint.y - 45;
 
-    for (int i = 0; i < numberOfPointsPerSide + 1; i++) points.push_back(std::vector<glm::vec3*>());
+    for (int i = 0; i < numberOfPointsPerSide + 1; i++) points.push_back(std::vector<glm::vec3>());
     // Start by making horizontal lines
     for(int i = 0; i <= numberOfPointsPerSide; i++){
-        lat = startPoint.y;
+        lat = startPoint.y - 45;
 //        For each line generate a bunch of points
         for (int j =0; j <= numberOfPointsPerSide; j++){
-            points[j].push_back(new vec3(lon, lat, 0));
+
+            points[j].push_back(vec3(lon, lat, 0));
             lat += step;
         }
         lon += step;
@@ -52,7 +53,7 @@ void Heightfield::generateTriangles(){
         }
     }
     // triangles[100] = NULL;
-
+    PRINT(triangles.size());
 }
 
 inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }

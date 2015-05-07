@@ -3,21 +3,27 @@
 
 // #define GLFW_INCLUDE_GLCOREARB
 
+
+
+
 #include "GL/glew.h"
 #include <GLFW/glfw3.h>
 
+
+#include <stdlib.h>
 #include <iostream>
 #include <cstdarg>
 #include <string>
 #include <unordered_map>
 #include <map>
+#include <sstream>
 #include <chrono>
 #include "glm/glm.hpp"
-#include "tinyxml2.h"
 #include "AntTweakBar.h"
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "world.h"
 #include "program_pipeline.h"
 #include "camera.h"
 #include "osm_element.h"
@@ -30,7 +36,6 @@
 #include "heightfield.h"
 #include "triangle.h"
 #include "entity.h"
-#include "world.h"
 #include "chunk.h"
 
 
@@ -55,15 +60,7 @@
 
 #define string_pair std::pair<std::string,std::string>
 
-namespace std
-{
-template<>
-struct hash<OSMElement::ElementType> {
-    size_t operator()(const OSMElement::ElementType &et) const {
-        return std::hash<int>()(et);
-    }
-};
-}
+
 class Game {
 public:
     // general state and functions
@@ -72,7 +69,6 @@ public:
     bool running;
     void mainLoop();
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
-    void loadXML(std::string path);
 
     void fillBuffers(std::vector<glm::vec3> *waysNodesPositions,
                      std::vector<glm::vec3> *waysNodesColors,
@@ -81,8 +77,9 @@ public:
                      std::vector<glm::vec3> *buildingLines,
                      std::vector<float> *buildingLinesTexCoords,
                      std::vector<glm::vec3> *groundTrianglesPositions,
-                     std::vector<glm::vec2> *groundTrianglesUV);
-
+                     std::vector<glm::vec2> *groundTrianglesUV,
+                     std::vector<float> *groundTriangleTextureIDs);
+    // void triangulateLoops();
 
 
     GLFWwindow* pWindow;
@@ -90,7 +87,6 @@ public:
     std::vector<Way*> findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances, std::vector<glm::vec2> &directions, std::vector<std::pair<Node*, Node*> > &_nodePairs);
     double pointLineSegmentDistance(glm::vec2 p, glm::vec2 p1, glm::vec2 p2, glm::vec2 &direction);
     void updateSelectedWay(Way* way);
-    OSMElement::ElementType typeFromStrings(std::string key, std::string value);
     void populateTypeColorArray();
 
     void generateGridLines(std::vector<glm::vec3> *groundTrianglesPositions, std::vector<glm::vec2> *groundTrianglesUV);
@@ -101,7 +97,6 @@ public:
     std::pair<int, int> findCommonWay(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays);
     std::string labelFromType(OSMElement::ElementType type);
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
-    void heightfieldTesting();
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
 #ifdef __APPLE__
         glGenBuffers(1, &bufferName);
@@ -184,6 +179,7 @@ public:
     GLuint glidBufferBuildingLoopLengths;
     GLuint glidGroundTrianglePositions;
     GLuint glidGroundTriangleUVs;
+    GLuint glidGroundTriangleTextureIDs;
     GLuint textVBO;
     GLuint textUvsVBO;
     std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;
@@ -197,9 +193,7 @@ public:
     glm::vec2 oldMousePosition;
     glm::vec2 windowPosToWorldPos(glm::vec2 ij);
     // data
-    std::unordered_map<std::string, Node*> theNodes;
-    std::unordered_map<std::string, Way*> theWays;
-    std::unordered_map<std::string, Relation*> theRelations;
+
     std::unordered_map<std::string, int> tagConversionTable;
     World* world;
 
@@ -225,7 +219,6 @@ public:
     WaySelection selectedWay;
     float buildingHeight;
     float buildingSideScaleFactor;
-    double coordinateInflationFactor;
     float sunOrientation;
     float sunTime;
     float sunSpeed;

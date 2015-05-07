@@ -15,6 +15,7 @@ public:
     Heightfield(glm::vec2 startPoint,double sideLength);
     void generateTriangles();
     void addTriangle(Triangle *tri);
+    std::vector<std::vector<glm::vec3> > points;
 };
 
 #endif // HEIGHTFIELD

@@ -12,5 +12,15 @@ void main() {
     float interval = highBound- lowBound;
     if (height > highBound) color = vec4(texture(sampler1, myTexCoord).xyz,1.0);
     else if (height < lowBound) color = vec4(texture(sampler, myTexCoord).xyz,1.0);
-    //else color = vec4(mix(texture(sampler1, myTexCoord).xyz, texture(sampler, myTexCoord).xyz, (highBound-height) / interval),1.0);
+    else color = vec4(mix(texture(sampler1, myTexCoord).xyz, texture(sampler, myTexCoord).xyz, (highBound-height) / interval),1.0);
+
+    //if (ID == 0.0)
+    //	color = vec4(texture(sampler1, myTexCoord).xyz,1.0);
+//
+    //if (ID == 1.0) 
+    //	color = vec4(texture(sampler, myTexCoord).xyz,1.0);
+//
+    //float c = ID+0.2;
+    //color = vec4(vec3(c),1.0);
+
     }

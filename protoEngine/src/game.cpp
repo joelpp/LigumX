@@ -37,42 +37,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-OSMElement::ElementType Game::typeFromStrings(string key, string value){
-    if (key.compare("highway") == 0){
-        if (value.compare("trunk") == 0) return OSMElement::HIGHWAY_TRUNK;
-        else if (value.compare("primary") == 0) return OSMElement::HIGHWAY_PRIMARY;
-        else if (value.compare("secondary") == 0) return OSMElement::HIGHWAY_SECONDARY;
-        else if (value.compare("tertiary") == 0) return OSMElement::HIGHWAY_TERTIARY;
-        else if (value.compare("residential") == 0) return OSMElement::HIGHWAY_RESIDENTIAL;
-        else if (value.compare("service") == 0) return OSMElement::HIGHWAY_SERVICE;
-        else if (value.compare("unclassified") == 0) return OSMElement::HIGHWAY_UNCLASSIFIED;
-        else return OSMElement::NOT_IMPLEMENTED;
 
-    }
-    else if (key.compare("natural") == 0){
-        if (value.compare("wood") == 0) return OSMElement::NATURAL_WOOD;
-        if (value.compare("water") == 0) return OSMElement::NATURAL_WATER;
-        else return OSMElement::NOT_IMPLEMENTED;
-
-    }
-    else if (key.compare("building") == 0){
-        if (value.compare("yes") == 0) return OSMElement::BUILDING_UNMARKED;
-        else if (value.compare("school") == 0) return OSMElement::BUILDING_SCHOOL;
-        else return OSMElement::NOT_IMPLEMENTED;
-
-    }
-    else if (key.compare("contour") == 0) return OSMElement::CONTOUR;
-    else if (key.compare("leisure") == 0){
-        if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
-        else return OSMElement::NOT_IMPLEMENTED;
-
-    }
-    else if (key.compare("addr:interpolation") == 0){ return OSMElement::ADDR_INTERPOLATION; }
-    else if (key.compare("landuse") == 0){ return OSMElement::LANDUSE; }
-    else if (key.compare("boundary") == 0){ return OSMElement::BOUNDARY; }
-
-    else return OSMElement::NOT_IMPLEMENTED;
-}
 
 string Game::labelFromType(OSMElement::ElementType type){
     switch (type){
@@ -156,106 +121,106 @@ void Game::populateTypeColorArray(){
 
 static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
 
-// Convert the address interpolation ways into building polygons
-void Game::extrudeAddrInterps(){
-    int counter = 0;
+// // Convert the address interpolation ways into building polygons
+// void Game::extrudeAddrInterps(){
+//     int counter = 0;
 
-    // Iterate on all ways
-    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
-        Way* way = it->second;
+//     // Iterate on all ways
+//     for ( auto it = world->theWays.begin(); it != world->theWays.end(); ++it ){
+//         Way* way = it->second;
 
-        // Keep only ADDR_INTERPOLATIONs
-        if (way->eType != OSMElement::ADDR_INTERPOLATION) continue;
+//         // Keep only ADDR_INTERPOLATIONs
+//         if (way->eType != OSMElement::ADDR_INTERPOLATION) continue;
 
-        vector<Node*> nodes;
-        // Store this way's 2 nodes
-        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt) nodes.push_back(*nodeIt);
+//         vector<Node*> nodes;
+//         // Store this way's 2 nodes
+//         for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt) nodes.push_back(*nodeIt);
 
-        // We only want to look at roads
-        int filter = OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_PRIMARY | OSMElement::HIGHWAY_TRUNK | OSMElement::HIGHWAY_SERVICE | OSMElement::HIGHWAY_UNCLASSIFIED;
+//         // We only want to look at roads
+//         int filter = OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_PRIMARY | OSMElement::HIGHWAY_TRUNK | OSMElement::HIGHWAY_SERVICE | OSMElement::HIGHWAY_UNCLASSIFIED;
 
-        // Preparing road query...
-        vector<vector<vec2> > directions;
-        directions.push_back(vector<vec2>());
-        directions.push_back(vector<vec2>());
+//         // Preparing road query...
+//         vector<vector<vec2> > directions;
+//         directions.push_back(vector<vec2>());
+//         directions.push_back(vector<vec2>());
 
-        vector<std::pair<Node*, Node*>> nodePairs;
-        vector<vector<double> > distances;
-        distances.push_back(vector<double>());
-        distances.push_back(vector<double>());
+//         vector<std::pair<Node*, Node*>> nodePairs;
+//         vector<vector<double> > distances;
+//         distances.push_back(vector<double>());
+//         distances.push_back(vector<double>());
 
-        // Find the closest roads to this ADDR_INTERP
-        vector<Way*> firstNodeWays = findNClosestWays(5, vec2(nodes[0]->longitude, nodes[0]->latitude), filter, distances[0], directions[0], nodePairs);
-        vector<Way*> secondNodeWays = findNClosestWays(5, vec2(nodes[1]->longitude, nodes[1]->latitude), filter, distances[1], directions[1], nodePairs);
+//         // Find the closest roads to this ADDR_INTERP
+//         vector<Way*> firstNodeWays = findNClosestWays(5, vec2(nodes[0]->longitude, nodes[0]->latitude), filter, distances[0], directions[0], nodePairs);
+//         vector<Way*> secondNodeWays = findNClosestWays(5, vec2(nodes[1]->longitude, nodes[1]->latitude), filter, distances[1], directions[1], nodePairs);
 
-        LineSegment L0(nodes[0], nodes[1]);
+//         LineSegment L0(nodes[0], nodes[1]);
 
-        bool intersectOtherRoad = false;
-        //Check if the adress way intersects any of these roads
-        for (int i = 0 ; i < firstNodeWays.size(); i++){
-            LineSegment L1(firstNodeWays[i]);
+//         bool intersectOtherRoad = false;
+//         //Check if the adress way intersects any of these roads
+//         for (int i = 0 ; i < firstNodeWays.size(); i++){
+//             LineSegment L1(firstNodeWays[i]);
 
-            if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
-        }
+//             if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
+//         }
 
-        for (int i = 0 ; i < secondNodeWays.size(); i++){
-            LineSegment L1(secondNodeWays[i]);
+//         for (int i = 0 ; i < secondNodeWays.size(); i++){
+//             LineSegment L1(secondNodeWays[i]);
 
-            if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
-        }
+//             if (!intersectOtherRoad && L0.intersects(L1)) intersectOtherRoad = true;
+//         }
 
-//        if (intersectOtherRoad) continue;
+// //        if (intersectOtherRoad) continue;
 
-        // Find the closest way that both nodes share (should generally be the one parallel to the addr_interp)
-        // Maybe better to look at dot products? This works ok for now
-        pair<int, int> commonIndices = findCommonWay(firstNodeWays, secondNodeWays);
+//         // Find the closest way that both nodes share (should generally be the one parallel to the addr_interp)
+//         // Maybe better to look at dot products? This works ok for now
+//         pair<int, int> commonIndices = findCommonWay(firstNodeWays, secondNodeWays);
 
-        int i = commonIndices.first;
-        int j = commonIndices.second;
+//         int i = commonIndices.first;
+//         int j = commonIndices.second;
 
-        // Multiplicative factor related to the polygon size
-        double factor = 1;
+//         // Multiplicative factor related to the polygon size
+//         double factor = 1;
 
-        //If finding the common way didnt work just move on
-        if (i == -1) continue;
+//         //If finding the common way didnt work just move on
+//         if (i == -1) continue;
 
-        // Move on to the next if the common road is too far from one of the nodes
-        if (distances[0][i] > 0.0002 * factor) continue;
-        if (distances[1][j] > 0.0002 * factor) continue;
+//         // Move on to the next if the common road is too far from one of the nodes
+//         if (distances[0][i] > 0.0002 * factor) continue;
+//         if (distances[1][j] > 0.0002 * factor) continue;
 
-        // Move on to next if the nodes are on different sides of the common road
-        if (dot(directions[0][i], directions[1][j]) < 0) continue;
+//         // Move on to next if the nodes are on different sides of the common road
+//         if (dot(directions[0][i], directions[1][j]) < 0) continue;
 
 
-        // Create the new nodes by moving from each edge of the ADDR_INTERP, perpendicularly to the road
-        Node* node3 = new Node();
-        node3->id = string("ADDR_INTERP_NODE3_").append(std::to_string(counter));
-        node3->longitude = nodes[0]->longitude - directions[0][i].x * factor;
-        node3->latitude = nodes[0] -> latitude - directions[0][i].y * factor;
-        node3->elevation = contourLineInterpolate(vec2(node3->longitude, node3->latitude)) * 1.0001;
-        Node* node4 = new Node();
-        node4->id = string("ADDR_INTERP_NODE4_").append(std::to_string(counter));
-        node4->longitude = nodes[1]->longitude - directions[0][i].x * factor;
-        node4->latitude = nodes[1]->latitude - directions[0][i].y * factor;
-        node4->elevation = contourLineInterpolate(vec2(node4->longitude, node4->latitude)) * 1.0001;
-        // Create the new building
-        Way* buildingWay  = new Way();
-        buildingWay->addRef(nodes[1]);
-        buildingWay->addRef(node4);
-        buildingWay->addRef(node3);
-        buildingWay->addRef(nodes[0]);
-        buildingWay->addRef(nodes[1]);
-        buildingWay->eType = OSMElement::BUILDING_ADDRINTERP;
-        buildingWay->id = string("ADDR_INTERP_BUILDING").append(std::to_string(counter));
+//         // Create the new nodes by moving from each edge of the ADDR_INTERP, perpendicularly to the road
+//         Node* node3 = new Node();
+//         node3->id = string("ADDR_INTERP_NODE3_").append(std::to_string(counter));
+//         node3->longitude = nodes[0]->longitude - directions[0][i].x * factor;
+//         node3->latitude = nodes[0] -> latitude - directions[0][i].y * factor;
+//         node3->elevation = contourLineInterpolate(vec2(node3->longitude, node3->latitude)) * 1.0001;
+//         Node* node4 = new Node();
+//         node4->id = string("ADDR_INTERP_NODE4_").append(std::to_string(counter));
+//         node4->longitude = nodes[1]->longitude - directions[0][i].x * factor;
+//         node4->latitude = nodes[1]->latitude - directions[0][i].y * factor;
+//         node4->elevation = contourLineInterpolate(vec2(node4->longitude, node4->latitude)) * 1.0001;
+//         // Create the new building
+//         Way* buildingWay  = new Way();
+//         buildingWay->addRef(nodes[1]);
+//         buildingWay->addRef(node4);
+//         buildingWay->addRef(node3);
+//         buildingWay->addRef(nodes[0]);
+//         buildingWay->addRef(nodes[1]);
+//         buildingWay->eType = OSMElement::BUILDING_ADDRINTERP;
+//         buildingWay->id = string("ADDR_INTERP_BUILDING").append(std::to_string(counter));
 
-        // Store the new building
-        theWays.emplace(buildingWay->id, buildingWay);
-        counter++;
-    }
+//         // Store the new building
+//         theWays.emplace(buildingWay->id, buildingWay);
+//         counter++;
+//     }
 
-    PRINTSTRING("Extruding address interpolation into polygons");
-    PRINTINT(counter);
-}
+//     PRINTSTRING("Extruding address interpolation into polygons");
+//     PRINTINT(counter);
+// }
 
 void TW_CALL Game::toggleEntityLand() {
     if(!inEntityLand) {
@@ -273,24 +238,4 @@ void TW_CALL Game::toggleEntityLand() {
     }
 }
 
-//Obviously this will move, hopefully after the chunks are more self contained.
-void Game::heightfieldTesting(){
-    Heightfield *h = world->chunks[vec2(-0.65000,0.50000)]->heightfield;
 
-    for (int i = 0 ; i < h->triangles.size() ; i += 2){
-        Triangle* tri = h->triangles[i];
-        if (tri == NULL) continue;
-
-        for (auto it = theWays.begin(); it != theWays.end(); ++it){
-            Way *way = it->second;
-
-            if (way->eType != OSMElement::LEISURE_PARK) continue;
-            if (way->hasPointInside(vec2(tri->p0->x, tri->p0->y))){
-                tri->p0->z = 0.001;
-                break;
-            }
-        }
-    }
-
-
-}

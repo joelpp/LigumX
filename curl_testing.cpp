@@ -2,6 +2,8 @@
 #include <iostream>
 #include <curl/curl.h>
 #include <string>
+#include <sstream>
+#include <fstream>
 #include "lib/tinyxml2.h"
 
 using namespace std;
@@ -42,14 +44,42 @@ string queryBoundingBox(float left, float bottom, float right, float top){
 
 int main()
 {
-	// string s = queryBoundingBox(-73.1,45,-73.0,45.1);
+	float step = 0.01;
+	float minLon = -73.65;
+	float maxLon = -73.64;
+	float minLat = 45.5;
+	float maxLat = 45.51; 
 
-	tinyxml2::XMLDocument doc;
+	int index = 0;
+	for (int i = 0; i < 3; i++){
+		minLat = 45.5;
+		maxLat = 45.51; 
 
-	doc.LoadFile("sampleQuery.xml");
-	XMLElement* docRoot = doc.RootElement();
+		for (int j = 0; j < 3; j++){
+			string s = queryBoundingBox(minLon, minLat, maxLon, maxLat);
+			std::stringstream ss;
+			ss << "./protoEngine/data/Data_";
+			ss << minLon * 1000 << "x" << minLat * 1000;
+			ss << ".xml";
+			std::ofstream out(ss.str());
+		    out << s;
+		    out.close();
+		    minLat += step;
+			maxLat += step;
+			std::cout << minLon << " " << maxLon << " " << minLat << " " << maxLat << "\n";
+			index++;
+		}
+		minLon = maxLon;
+		maxLon += step;
+	}
+
+	// tinyxml2::XMLDocument doc;
+
+	// doc.LoadFile("sampleQuery.xml");
+	// XMLElement* docRoot = doc.RootElement();
 	// doc.Parse(s.c_str());
 	
 	// cout << s;
 	cout << "Hello World!\n";
 }
+

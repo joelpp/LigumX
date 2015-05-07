@@ -63,7 +63,15 @@ public:
 
     std::vector<OSMElement*> parents;
 };
-
+namespace std
+{
+template<>
+struct hash<OSMElement::ElementType> {
+    size_t operator()(const OSMElement::ElementType &et) const {
+        return std::hash<int>()(et);
+    }
+};
+}
 
 #endif // OSMELEMENT
 
