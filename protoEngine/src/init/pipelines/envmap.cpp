@@ -1,8 +1,7 @@
-#include "../../game.h"
+#include "../../renderer.h"
 
-void Game::init_pipelines_envmap()
+void Renderer::init_pipelines_envmap()
 {
-    PRINTSTRING("Creating envmap pipeline");
 #ifdef __APPLE__
 
     ProgramPipeline::ShaderProgram* pVertexShader =

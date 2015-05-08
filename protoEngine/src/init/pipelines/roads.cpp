@@ -1,8 +1,7 @@
-#include "../../game.h"
+#include "../../renderer.h"
 
-void Game::init_pipelines_roads()
+void Renderer::init_pipelines_roads()
 {
-    PRINTSTRING("Creating roads pipeline");
     glEnable(GL_PROGRAM_POINT_SIZE);
     glEnable(GL_POINT_SPRITE);
 

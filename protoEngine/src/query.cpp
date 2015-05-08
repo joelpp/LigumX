@@ -22,7 +22,8 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
 //        for (int i = 0; i < (selectedWay.way->nodes.size() * 2) - 2; i++) toWrite.push_back(colorFromTags(selectedWay.way));
 
         // push it to the buffer
-        glNamedBufferSubData(glidWaysColors, selectedWay.numberOfBytesBefore, selectedWay.numberOfBytesToWrite, toWrite.data());
+//        TODO: fix this as it broke after i moved every gl calls to the renderer class
+//        glNamedBufferSubData(glidWaysColors, selectedWay.numberOfBytesBefore, selectedWay.numberOfBytesToWrite, toWrite.data());
 
     }
 
@@ -50,8 +51,9 @@ void Game::updateSelectedWay(Way* myWay){ //or the highway
     vector<vec3> toWrite;
     for (int i = 0; i < (myWay->nodes.size() * 2) - 2; i++) toWrite.push_back(vec3(1.f,1.f,1.f));
 
+    //        TODO: fix this as it broke after i moved every gl calls to the renderer class
     // push it to the buffer
-    glNamedBufferSubData(glidWaysColors, numberOfBytesBefore, numberOfBytesToWrite, toWrite.data());
+//    glNamedBufferSubData(glidWaysColors, numberOfBytesBefore, numberOfBytesToWrite, toWrite.data());
 
     selectedWay.way = myWay;
     selectedWay.numberOfBytesBefore = numberOfBytesBefore;
@@ -180,8 +182,8 @@ vec2 Game::windowPosToWorldPos(vec2 ij){
     //if viewsize == x, you see between -x and x
     //Find position according to the window, between -1 and 1
     vec2 relativeToWindow;
-    relativeToWindow.x = 2*(ij.x / windowWidth)-1;
-    relativeToWindow.y = 2*(ij.y / windowHeight)-1;
+    relativeToWindow.x = 2*(ij.x / renderer.windowWidth)-1;
+    relativeToWindow.y = 2*(ij.y / renderer.windowHeight)-1;
 
     //Required because maps have y going up while the screen has y going down
     relativeToWindow.y *= -1;

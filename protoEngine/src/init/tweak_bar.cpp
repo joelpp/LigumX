@@ -1,7 +1,7 @@
 #include "../game.h"
 
 void TW_CALL undisplayAllWays(void *clientData){
-    for( auto it = game->displayElementType.begin(); it != game->displayElementType.end(); ++it){
+    for( auto it = game->renderer.displayElementType.begin(); it != game->renderer.displayElementType.end(); ++it){
         it->second = false;
     }
 }
@@ -13,13 +13,13 @@ void TW_CALL toggle_entityland(void *clientData) {
 void Game::init_tweakBar()
 {
     TwInit(TW_OPENGL_CORE, NULL);
-    TwWindowSize(windowWidth, windowHeight);
+    TwWindowSize(renderer.windowWidth, renderer.windowHeight);
 
     myBar = TwNewBar("NameOfMyTweakBar");
-    TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &fancyDisplayMode, NULL);
+    TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &(renderer.fancyDisplayMode), NULL);
     TwAddVarRW(myBar, "Draw Building Sides", TW_TYPE_BOOLCPP, &drawBuildingSides, NULL);
     TwAddButton(myBar, "To EntityLand", toggle_entityland, NULL, NULL);
-    TwAddVarRW(myBar, "Draw Ground", TW_TYPE_BOOLCPP, &drawGround, NULL);
+    TwAddVarRW(myBar, "Draw Ground", TW_TYPE_BOOLCPP, &renderer.drawGround, NULL);
 
     TwEnumVal CameraTypeEV[] = { {Camera::CameraType::AIRPLANE, "Airplane"}, {Camera::CameraType::AROUND_TARGET, "Around Target"}, {Camera::CameraType::CYLINDRICAL, "Cynlindrical"}, {Camera::CameraType::TOP_2D, "Top 2D"}, {Camera::CameraType::TOP_3D, "Top 3D"} };
     TwType CameraTwType;
@@ -46,7 +46,7 @@ void Game::init_tweakBar()
     TwAddVarRW(myBar, "Show Text", TW_TYPE_BOOL8, &renderText, NULL);
 
     TwAddButton(myBar, "Show none", undisplayAllWays, NULL, NULL);
-    for (auto it = displayElementType.begin(); it != displayElementType.end(); ++it){
+    for (auto it = renderer.displayElementType.begin(); it != renderer.displayElementType.end(); ++it){
         PRINT(labelFromType(it->first));
         TwAddVarRW(myBar, labelFromType(it->first).c_str(), TW_TYPE_BOOL8, &(it->second), NULL);
 

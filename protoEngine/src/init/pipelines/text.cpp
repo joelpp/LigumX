@@ -1,8 +1,7 @@
-#include "../../game.h"
+#include "../../renderer.h"
 
-void Game::init_pipelines_text()
+void Renderer::init_pipelines_text()
 {
-    PRINTSTRING("Creating text pipeline");
 
 
 #ifdef __APPLE__

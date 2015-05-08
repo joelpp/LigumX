@@ -1,8 +1,7 @@
-#include "../../game.h"
+#include "../../renderer.h"
 
-void Game::init_pipelines_generalLines()
+void Renderer::init_pipelines_generalLines()
 {
-    PRINTSTRING("Creating general lines pipeline");
 
     const char* vertexShaderSource = " \
         #version 410 core\n \

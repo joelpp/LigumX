@@ -1,8 +1,7 @@
-#include "../../game.h"
+#include "../../renderer.h"
 
-void Game::init_pipelines_screenQuad()
+void Renderer::init_pipelines_screenQuad()
 {
-    PRINTSTRING("Creating screen quad pipeline");
     const char* vertexShaderSource = " \
         #version 410 core\n \
         layout(location=0) in vec2 pos;\n \

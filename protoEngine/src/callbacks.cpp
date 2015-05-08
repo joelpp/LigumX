@@ -53,9 +53,9 @@ void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int actio
             if (key == GLFW_KEY_ESCAPE) {
                 if(game->camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) game->camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
             }
-            if (key == GLFW_KEY_R) { game->init_pipelines(); }
+            if (key == GLFW_KEY_R) { game->renderer.init_pipelines(); }
             if (key == GLFW_KEY_M) {
-                for( auto it = game->displayElementType.begin(); it != game->displayElementType.end(); ++it){
+                for( auto it = game->renderer.displayElementType.begin(); it != game->renderer.displayElementType.end(); ++it){
                     it->second = false;
                 }
             }
@@ -104,6 +104,8 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         }
 
         game->camera->handlePresetMouseButton(pWindow, button, action, mods);
+//        TODO
+        //        game->renderer->updateMVPMatrix();
     }
 }
 

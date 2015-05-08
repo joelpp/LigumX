@@ -1,6 +1,6 @@
-#include "../game.h"
+#include "../renderer.h"
 
-void Game::init_pipelines()
+void Renderer::init_pipelines()
 {
 //	std::cout << "GL Version: " <<glGetString(GL_VERSION) << "\n";
 //	std::cout << "GLSL Version: "<< glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";

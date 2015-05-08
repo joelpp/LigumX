@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
         game->mainLoop();
 
-        glfwSwapBuffers(game->pWindow);
+        glfwSwapBuffers(game->renderer.pWindow);
     }
 
     glfwTerminate();
@@ -69,26 +69,26 @@ string Game::labelFromType(OSMElement::ElementType type){
 
 void Game::populateTypeColorArray(){
 
-    typeColorMap.emplace(OSMElement::HIGHWAY_TRUNK, vec3(1,1,1));
-    typeColorMap.emplace(OSMElement::HIGHWAY_PRIMARY, vec3(0.9,0.9,0.9));
-    typeColorMap.emplace(OSMElement::HIGHWAY_SECONDARY, vec3(0.8,0.8,0.8));
-    typeColorMap.emplace(OSMElement::HIGHWAY_TERTIARY, vec3(0.7,0.7,0.7));
-    typeColorMap.emplace(OSMElement::HIGHWAY_RESIDENTIAL, vec3(0.6,0.6,0.6));
-    typeColorMap.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, vec3(0.5,0.5,0.5));
-    typeColorMap.emplace(OSMElement::HIGHWAY_SERVICE, vec3(0.4,0.4,0.4));
-    typeColorMap.emplace(OSMElement::BUILDING_UNMARKED, vec3(0,0,1));
-    typeColorMap.emplace(OSMElement::BUILDING_SCHOOL, vec3(0,0,1));
-    typeColorMap.emplace(OSMElement::BUILDING_ADDRINTERP, vec3(0.4,1,1));
-    typeColorMap.emplace(OSMElement::RAILWAY_SUBWAY, vec3(1,0,1));
-    typeColorMap.emplace(OSMElement::NATURAL_WOOD, vec3(0,0.5,0));
-    typeColorMap.emplace(OSMElement::NATURAL_WATER, vec3(0,0,0.5));
-    typeColorMap.emplace(OSMElement::LEISURE_PARK, vec3(0,1,0));
-    typeColorMap.emplace(OSMElement::ADDR_INTERPOLATION, vec3(1,0,0));
-    typeColorMap.emplace(OSMElement::GRID_LINE, vec3(0.4,0.4,0.4));
-    typeColorMap.emplace(OSMElement::aDEBUG, vec3(1.0,0,1.0));
-    typeColorMap.emplace(OSMElement::LANDUSE, vec3(1.0,1.0,1.0));
-    typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0,1.0,1.0));
-    typeColorMap.emplace(OSMElement::CONTOUR, vec3(0.1,0.1,0.1));
+    renderer.typeColorMap.emplace(OSMElement::HIGHWAY_TRUNK, vec3(1,1,1));
+    renderer.typeColorMap.emplace(OSMElement::HIGHWAY_PRIMARY, vec3(0.9,0.9,0.9));
+    renderer.typeColorMap.emplace(OSMElement::HIGHWAY_SECONDARY, vec3(0.8,0.8,0.8));
+    renderer.typeColorMap.emplace(OSMElement::HIGHWAY_TERTIARY, vec3(0.7,0.7,0.7));
+    renderer.typeColorMap.emplace(OSMElement::HIGHWAY_RESIDENTIAL, vec3(0.6,0.6,0.6));
+    renderer.typeColorMap.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, vec3(0.5,0.5,0.5));
+    renderer.typeColorMap.emplace(OSMElement::HIGHWAY_SERVICE, vec3(0.4,0.4,0.4));
+    renderer.typeColorMap.emplace(OSMElement::BUILDING_UNMARKED, vec3(0,0,1));
+    renderer.typeColorMap.emplace(OSMElement::BUILDING_SCHOOL, vec3(0,0,1));
+    renderer.typeColorMap.emplace(OSMElement::BUILDING_ADDRINTERP, vec3(0.4,1,1));
+    renderer.typeColorMap.emplace(OSMElement::RAILWAY_SUBWAY, vec3(1,0,1));
+    renderer.typeColorMap.emplace(OSMElement::NATURAL_WOOD, vec3(0,0.5,0));
+    renderer.typeColorMap.emplace(OSMElement::NATURAL_WATER, vec3(0,0,0.5));
+    renderer.typeColorMap.emplace(OSMElement::LEISURE_PARK, vec3(0,1,0));
+    renderer.typeColorMap.emplace(OSMElement::ADDR_INTERPOLATION, vec3(1,0,0));
+    renderer.typeColorMap.emplace(OSMElement::GRID_LINE, vec3(0.4,0.4,0.4));
+    renderer.typeColorMap.emplace(OSMElement::aDEBUG, vec3(1.0,0,1.0));
+    renderer.typeColorMap.emplace(OSMElement::LANDUSE, vec3(1.0,1.0,1.0));
+    renderer.typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0,1.0,1.0));
+    renderer.typeColorMap.emplace(OSMElement::CONTOUR, vec3(0.1,0.1,0.1));
 
 //    /*
 
@@ -97,26 +97,27 @@ void Game::populateTypeColorArray(){
         // displayElementType.emplace(it->first, true);
     // }
 //*/
-    displayElementType.emplace(OSMElement::HIGHWAY_TRUNK, true);
-    displayElementType.emplace(OSMElement::HIGHWAY_PRIMARY, true);
-    displayElementType.emplace(OSMElement::HIGHWAY_SECONDARY, true);
-    displayElementType.emplace(OSMElement::HIGHWAY_TERTIARY, true);
-    displayElementType.emplace(OSMElement::HIGHWAY_RESIDENTIAL, true);
-    displayElementType.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, true);
-    displayElementType.emplace(OSMElement::HIGHWAY_SERVICE, true);
-    displayElementType.emplace(OSMElement::BUILDING_UNMARKED, true);
-    displayElementType.emplace(OSMElement::BUILDING_SCHOOL, true);
-    displayElementType.emplace(OSMElement::BUILDING_ADDRINTERP, true);
-    displayElementType.emplace(OSMElement::RAILWAY_SUBWAY, true);
-    displayElementType.emplace(OSMElement::NATURAL_WOOD, true);
-    displayElementType.emplace(OSMElement::NATURAL_WATER, true);
-    displayElementType.emplace(OSMElement::LEISURE_PARK, true);
-    displayElementType.emplace(OSMElement::ADDR_INTERPOLATION, true);
-    displayElementType.emplace(OSMElement::GRID_LINE, true);
-    displayElementType.emplace(OSMElement::aDEBUG, true);
-    displayElementType.emplace(OSMElement::LANDUSE, true);
-    displayElementType.emplace(OSMElement::BOUNDARY, true);
-    displayElementType.emplace(OSMElement::CONTOUR, true);
+    renderer.displayElementType.emplace(OSMElement::HIGHWAY_TRUNK, true);
+    renderer.displayElementType.emplace(OSMElement::HIGHWAY_PRIMARY, true);
+    renderer.displayElementType.emplace(OSMElement::HIGHWAY_SECONDARY, true);
+    renderer.displayElementType.emplace(OSMElement::HIGHWAY_TERTIARY, true);
+    renderer.displayElementType.emplace(OSMElement::HIGHWAY_RESIDENTIAL, true);
+    renderer.displayElementType.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, true);
+    renderer.displayElementType.emplace(OSMElement::HIGHWAY_SERVICE, true);
+    renderer.displayElementType.emplace(OSMElement::BUILDING_UNMARKED, true);
+    renderer.displayElementType.emplace(OSMElement::BUILDING_SCHOOL, true);
+    renderer.displayElementType.emplace(OSMElement::BUILDING_ADDRINTERP, true);
+    renderer.displayElementType.emplace(OSMElement::RAILWAY_SUBWAY, true);
+    renderer.displayElementType.emplace(OSMElement::NATURAL_WOOD, true);
+    renderer.displayElementType.emplace(OSMElement::NATURAL_WATER, true);
+    renderer.displayElementType.emplace(OSMElement::LEISURE_PARK, true);
+    renderer.displayElementType.emplace(OSMElement::ADDR_INTERPOLATION, true);
+    renderer.displayElementType.emplace(OSMElement::GRID_LINE, true);
+    renderer.displayElementType.emplace(OSMElement::aDEBUG, true);
+    renderer.displayElementType.emplace(OSMElement::LANDUSE, true);
+    renderer.displayElementType.emplace(OSMElement::BOUNDARY, true);
+    renderer.displayElementType.emplace(OSMElement::CONTOUR, true);
+
 }
 
 static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }

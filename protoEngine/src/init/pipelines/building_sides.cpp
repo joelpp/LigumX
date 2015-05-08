@@ -1,8 +1,7 @@
-#include "../../game.h"
+#include "../../renderer.h"
 
-void Game::init_pipelines_buildingSides()
+void Renderer::init_pipelines_buildingSides()
 {
-    PRINTSTRING("Creating building sides pipeline");
     const char* vertexShaderSource = " \
         #version 410 core\n \
         layout(location=0) in vec3 pos;\n \

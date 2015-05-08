@@ -11,24 +11,14 @@ static void test_error_cb (int error, const char *description)
     }
 void Game::init()
 {
-//    glEnable(GL_PROGRAM_POINT_SIZE);
-//    glEnable(GL_POINT_SPRITE);
-
     //=============================================================================
     // Parameters, camera setup.
     //=============================================================================
     running = true;
-//    windowWidth = 1600;
-//    windowHeight = 1200;
-
-    windowWidth = 800;
-    windowHeight = 800;
-    windowTitle = "LigumX";
 
     camera = new Camera();
     camera->setViewSize(0.03);
     draggingCamera = false;
-    fancyDisplayMode = false;
 
     selectedWay.way = NULL;
     unsuccessfulInterpolations = 0;
@@ -42,86 +32,32 @@ void Game::init()
     drawGround = false;
     saveScreenshot = false;
     renderText = false;
+
     populateTypeColorArray();
 
+    showTweakBar = false;
+
     srand(987654321);
-    //=============================================================================
-    // create window and GLcontext, register callbacks.
-    //=============================================================================
-
-    // glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-
-    glfwSetErrorCallback(test_error_cb);
-
-
-    // Initialise GLFW
-    if( !glfwInit() )
-    {
-        cerr << "Failed to initialize GLFW.\n";
-        return;
-    } else {
-        clog << "Initialized GLFW." << endl;
-    }
-
-
-    // set window paramaters
-    glfwDefaultWindowHints();
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#else
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-#endif
-
-    // create GLFW window
-//    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
-    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
-
-    glfwSetWindowPos(pWindow, 700, 200);
-    glfwMakeContextCurrent(pWindow);
-    if( pWindow == NULL )
-    {
-        cerr << "Failed to open GLFW window.\n";
-        glfwTerminate();
-        return;
-    }
-
-    // Initialize GLEW
-    glewExperimental = GL_TRUE; // Needed for core profile
-    GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        cerr << "Failed to initialize GLEW\n"
-             << glewGetErrorString(err) << endl;
-        return;
-    } else {
-        clog << "Initialized GLEW." << endl;
-    }
-
-    // register GLFW and GLdebug callbacks
-    glfwSetMouseButtonCallback( pWindow, glfwMouseButtonCallback );
-    glfwSetKeyCallback( pWindow, glfwKeyCallback );
-    glfwSetCharCallback( pWindow, glfwCharCallback );
-    glfwSetCursorPosCallback( pWindow, glfwMousePositionCallback );
-    glfwSetCursorEnterCallback( pWindow, glfwMouseEntersCallback );
-    glfwSetScrollCallback( pWindow, glfwMouseScrollCallback );
-    glfwSetWindowPosCallback( pWindow, glfwWindowPositionCallback );
-    glfwSetWindowSizeCallback( pWindow, glfwWindowSizeCallback );
-    glfwSetWindowCloseCallback( pWindow, glfwWindowClosedCallback );
-    glfwSetWindowRefreshCallback( pWindow, glfwWindowRefreshCallback );
-    glfwSetWindowFocusCallback( pWindow, glfwWindowFocusCallback );
-    glfwSetWindowIconifyCallback( pWindow, glfwWindowIconifyCallback );
-    glfwSetFramebufferSizeCallback( pWindow, glfwWindowFramebufferSizeCallback );
-//    glDebugMessageCallback(Game::debugCallback, NULL);
-//    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
     init_tweakBar();
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    // register GLFW and GLdebug callbacks
+    glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
+    glfwSetKeyCallback( renderer.pWindow, glfwKeyCallback );
+    glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
+    glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
+    glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );
+    glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );
+    glfwSetWindowPosCallback( renderer.pWindow, glfwWindowPositionCallback );
+    glfwSetWindowSizeCallback( renderer.pWindow, glfwWindowSizeCallback );
+    glfwSetWindowCloseCallback( renderer.pWindow, glfwWindowClosedCallback );
+    glfwSetWindowRefreshCallback( renderer.pWindow, glfwWindowRefreshCallback );
+    glfwSetWindowFocusCallback( renderer.pWindow, glfwWindowFocusCallback );
+    glfwSetWindowIconifyCallback( renderer.pWindow, glfwWindowIconifyCallback );
+    glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
 
+//    glDebugMessageCallback(Game::debugCallback, NULL);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
     //=============================================================================
     // Load world data.
@@ -135,6 +71,8 @@ void Game::init()
     viewRectTopRight = vec2(viewRectRight,viewRectTop);
     viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
 
+    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
+    camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
 
     world = new World();
     world->createChunk(vec2(-73.650, 45.500));
@@ -147,7 +85,6 @@ void Game::init()
     // world->createChunk(vec2(-73.63, 45.510));
     // world->createChunk(vec2(-73.63, 45.520));
 
-
     vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
     vector<vec3> roadsPositions;
@@ -156,20 +93,12 @@ void Game::init()
     vector<float> buildingLoopLengths;
     vector<float> groundTriangleTextureIDs;
 
-    interpolateContours = false;
-
-    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
-    camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
-
     TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths,&groundTrianglesPositions, &groundTrianglesUV, &groundTriangleTextureIDs));
 
 
     //=============================================================================
     // Screen quad data.
     //=============================================================================
-
-//    vec2 screenQuadPos[4] = {vec2(1,-1), vec2(1,1), vec2(-1,-1), vec2(-1,1)};
-//    vec2 screenQuadTexCoords[4] = {vec2(1,0), vec2(1,1), vec2(0,0), vec2(0,1)};
 
     vector<vec2> screenQuadPos;
     screenQuadPos.push_back(vec2(1,-1));
@@ -182,154 +111,110 @@ void Game::init()
     screenQuadTexCoords.push_back(vec2(1,1));
     screenQuadTexCoords.push_back(vec2(0,0));
     screenQuadTexCoords.push_back(vec2(0,1));
+
     //=============================================================================
     // create and fill VBOs.
     //=============================================================================
 
-    nbWaysVertices = waysNodesPositions.size();
-    nbGroundVertices = groundTrianglesPositions.size();
-    nbBuildingTriangles = buildingTrianglePositions.size();
-    nbBuildingLines = buildingSides.size();
+    renderer.nbWaysVertices = waysNodesPositions.size();
+    renderer.nbGroundVertices = groundTrianglesPositions.size();
+    renderer.nbBuildingTriangles = buildingTrianglePositions.size();
+    renderer.nbBuildingLines = buildingSides.size();
 
 
-    createGLBuffer(glidWaysPositions, waysNodesPositions);
-    createGLBuffer(glidWaysColors, waysNodesColors);
-    createGLBuffer(glidBufferRoadsPositions, roadsPositions);
-    createGLBuffer(glidBufferBuildingTriangleVertices, buildingTrianglePositions);
-    createGLBuffer(glidBufferBuildingLines, buildingSides);
-    createGLBuffer(glidBufferBuildingLoopLengths, buildingLoopLengths);
-    createGLBuffer(glidScreenQuadPositions, screenQuadPos);
-    createGLBuffer(glidScreenQuadTexCoords, screenQuadTexCoords);
-    createGLBuffer(glidGroundTrianglePositions, groundTrianglesPositions);
-    createGLBuffer(glidGroundTriangleUVs, groundTrianglesUV);
-    createGLBuffer(glidGroundTriangleTextureIDs, groundTriangleTextureIDs);
-    // PRINTVEC3VECTOR(groundTrianglesPositions);
+    renderer.createGLBuffer(renderer.glidWaysPositions, waysNodesPositions);
+    renderer.createGLBuffer(renderer.glidWaysColors, waysNodesColors);
+    renderer.createGLBuffer(renderer.glidBufferRoadsPositions, roadsPositions);
+    renderer.createGLBuffer(renderer.glidBufferBuildingTriangleVertices, buildingTrianglePositions);
+    renderer.createGLBuffer(renderer.glidBufferBuildingLines, buildingSides);
+    renderer.createGLBuffer(renderer.glidBufferBuildingLoopLengths, buildingLoopLengths);
+    renderer.createGLBuffer(renderer.glidScreenQuadPositions, screenQuadPos);
+    renderer.createGLBuffer(renderer.glidScreenQuadTexCoords, screenQuadTexCoords);
+    renderer.createGLBuffer(renderer.glidGroundTrianglePositions, groundTrianglesPositions);
+    renderer.createGLBuffer(renderer.glidGroundTriangleUVs, groundTrianglesUV);
+    renderer.createGLBuffer(renderer.glidGroundTriangleTextureIDs, groundTriangleTextureIDs);
+//     PRINTVEC3VECTOR(groundTrianglesPositions);
 
     for ( auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it ){
-        createGLBuffer(glidWaysNodesPositions[it->first], it->second);
+        renderer.createGLBuffer(renderer.glidWaysNodesPositions[it->first], it->second);
+        renderer.numberOfVerticesToDrawPerElement[it->first] = it->second.size();
     }
+
+
     //=============================================================================
     // Textures, framebuffer, renderbuffer
     //=============================================================================
+    renderer.init_pipelines();
 
-#ifdef __APPLE__
-    textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/brickles.png"));
-    textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/grass.png"));
-    textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/rock.png"));
-    textureMap.emplace("ATLAS", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/Atlas.png"));
-    textureMap.emplace("asphalt", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/asphalt.jpg"));
-    textureMap.emplace("roof", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/roof_rgba.png"));
-    textureMap.emplace("building_side1", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/building_side1_rgba.png"));
+//    FT_Library ft;
+//    if (FT_Init_FreeType(&ft))
+//        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
 
-#else
-    textureMap.emplace("bricks", new Texture("../textures/brickles.png"));
-    textureMap.emplace("grass", new Texture("../textures/grass.png"));
-    textureMap.emplace("rock", new Texture("../textures/rock.png"));
-    textureMap.emplace("ATLAS", new Texture("../textures/Atlas.png"));
-//    textureMap.emplace("asphalt", new Texture("../textures/asphalt.jpg"));
-//    textureMap.emplace("roof", new Texture("../textures/roof_rgba.png"));
-//    textureMap.emplace("building_side1", new Texture("../textures/building_side1_rgba.png"));
-#endif
-    PRINT("passed this");
-////    pBuildingTex = new Texture("../data/face.png");
+//    FT_Face face;
+//#ifdef __APPLE__
+//    if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/fonts/arial.ttf",0,&face))
+//#else
+//    if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
+//#endif
+//        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+//    else
+//        cout << "Loaded Freetype font! yayy" << "\n";
+//    FT_Set_Pixel_Sizes(face, 0, 48);
+//    if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
+//        std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
 
-//    glCreateFramebuffers(1, &glidFramebuffer);
-    glGenFramebuffers(1, &glidFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
+//    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 
-//    glCreateTextures(GL_TEXTURE_2D, 1, &glidTextureScreenRoads);
-    glGenTextures(1, &glidTextureScreenRoads);
-    glBindTexture(GL_TEXTURE_2D, glidTextureScreenRoads);
-//    glTextureStorage2D(glidTextureScreenRoads, 1, GL_RED, windowWidth, windowHeight);
-//    glClearTexImage(glidTextureScreenRoads, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
-//    glGenerateTextureMipmap(glidTextureScreenRoads);
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, windowWidth, windowHeight, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, glidTextureScreenRoads, 0);
-    GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-    glDrawBuffers(1, drawBuffers);
-//    glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
-//    glNamedFramebufferDrawBuffers(glidFramebuffer, 1, drawBuffers);
-//    glNamedFramebufferTexture(glidFramebuffer, GL_COLOR_ATTACHMENT0, glidTextureScreenRoads, 0);
-//    glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
-
-//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//    glBindTexture(GL_TEXTURE_2D, 0);
-
-
-
-    init_pipelines();
-    FT_Library ft;
-    if (FT_Init_FreeType(&ft))
-        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-
-    FT_Face face;
-#ifdef __APPLE__
-    if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/fonts/arial.ttf",0,&face))
-#else
-    if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
-#endif
-        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-    else
-        cout << "Loaded Freetype font! yayy" << "\n";
-    FT_Set_Pixel_Sizes(face, 0, 48);
-    if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-        std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
-
-    for (GLubyte c = 0; c < 128; c++)
-    {
-        // Load character glyph
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-        {
-            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-            continue;
-        }
-        // Generate texture
-        GLuint texture;
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RED,
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
-            0,
-            GL_RED,
-            GL_UNSIGNED_BYTE,
-            face->glyph->bitmap.buffer
-        );
-        // Set texture options
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        // Now store character for later use
-        Character character = {
-            texture,
-            glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-            glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-#ifdef __APPLE__
-            static_cast<GLuint>(face->glyph->advance.x)
-#else
-            face->glyph->advance.x
-#endif
-        };
-        Characters.insert(std::pair<GLchar, Character>(c, character));
-    }
-    FT_Done_Face(face);
-    FT_Done_FreeType(ft);
+//    for (GLubyte c = 0; c < 128; c++)
+//    {
+//        // Load character glyph
+//        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+//        {
+//            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+//            continue;
+//        }
+//        // Generate texture
+//        GLuint texture;
+//        glGenTextures(1, &texture);
+//        glBindTexture(GL_TEXTURE_2D, texture);
+//        glTexImage2D(
+//            GL_TEXTURE_2D,
+//            0,
+//            GL_RED,
+//            face->glyph->bitmap.width,
+//            face->glyph->bitmap.rows,
+//            0,
+//            GL_RED,
+//            GL_UNSIGNED_BYTE,
+//            face->glyph->bitmap.buffer
+//        );
+//        // Set texture options
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//        // Now store character for later use
+//        Character character = {
+//            texture,
+//            glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+//            glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+//#ifdef __APPLE__
+//            static_cast<GLuint>(face->glyph->advance.x)
+//#else
+//            face->glyph->advance.x
+//#endif
+//        };
+//        Characters.insert(std::pair<GLchar, Character>(c, character));
+//    }
+//    FT_Done_Face(face);
+//    FT_Done_FreeType(ft);
 
 
-#ifndef __APPLE__
-    entityManager.Init();
-#endif  
-    inEntityLand = false;
-    int TOTAL = 0;
+//#ifndef __APPLE__
+//    entityManager.Init();
+//#endif
+//    inEntityLand = false;
+//    int TOTAL = 0;
 
     // This was experimental to up performance when rendering text. It sucks actually.
 //    int filter = OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_UNCLASSIFIED;
@@ -404,6 +289,7 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
                        vector<vec3> *groundTrianglesPositions,
                        vector<vec2> *groundTrianglesUV,
                        vector<float> *groundTriangleTextureIDs){
+    unsigned int nbRoads;
     bool first;
     bool second;
     vec3 white = vec3(1.0f,1.0f,1.0f);
@@ -434,7 +320,7 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
                               glm::linearRand(0.5f, 1.0f));
             Way* way = it->second;
             try{
-                color = typeColorMap[way->eType];
+                color = renderer.typeColorMap[way->eType];
             }
             catch(...){
                 continue;
@@ -496,8 +382,8 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
                 ++nbVertexForThisRoad;
                 ++nbRoads;
 
-                firstVertexForEachRoad.push_back(firstVertexForThisRoad);
-                nbVerticesForEachRoad.push_back(nbVertexForThisRoad);
+                renderer.firstVertexForEachRoad.push_back(firstVertexForThisRoad);
+                renderer.nbVerticesForEachRoad.push_back(nbVertexForThisRoad);
 
                 // set first vertex index for next road
                 firstVertexForThisRoad += nbVertexForThisRoad;
@@ -708,6 +594,7 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
             }
         }
     }
+    renderer.nbRoads = nbRoads;
 }
 
 
