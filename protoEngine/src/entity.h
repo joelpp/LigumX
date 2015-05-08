@@ -8,6 +8,34 @@
 
 class EntityManager;
 
+struct Body {
+    Body();
+
+    void Update(double dt);
+
+    void ResetLocalSpace();
+    glm::vec3 ToLocal(glm::vec3 global_vector) const;
+    glm::vec3 ToGlobal(glm::vec3 local_vector) const;
+
+    float GetForwardSpeed() const;
+    glm::vec3 GetForwardVelocity() const;
+    glm::vec3 GetLateralVelocity() const;
+
+    glm::vec3 position;        //!< Body position in space
+    glm::vec3 forward;        //!< Forward body vector
+    glm::vec3 right;            //!< Right body vector, orthogonal to forward
+
+    glm::vec3 velocity;
+    glm::vec3 acceleration;
+
+    float mass;
+    float angle;
+    int turning;
+    float desiredSpeed;
+
+    bool awake;
+};
+
 class Entity {
 friend class EntityManager;
 friend class PlayerController;
@@ -24,17 +52,12 @@ public:
     // @return : true if the entity has been updated
     void Update(double dt);
 
+    Body &GetBody() { return body; }
+    const Body &GetBody() const { return body; }
 
-    float GetForwardSpeed() const;
-    glm::vec3 GetForwardVelocity() const;
-    glm::vec3 GetLateralVelocity() const;
-    glm::vec3 GetForwardVector() const { return forwardVector; }
-    glm::vec3 GetRightVector() const { return rightVector; }
-    glm::vec3 GetPosition() const { return position; }
 
 public:
     // Entity features
-    float mass;                        //!< Entity Mass
     float maxThrust;                 //!< Maximum thrust acceleration
     float maxForwardSpeed;      //!< Maximum atteignable forward speed
     float maxBackwardSpeed;    //!< Maximum atteignable backward speed
@@ -46,15 +69,7 @@ public:
 private:
     size_t entityIndex;
 
-    // Entity physics
-    float angle;
-    int turning;
-    float desiredSpeed;
-    glm::vec3 position;
-    glm::vec3 velocity;
-    glm::vec3 acceleration;
-    glm::vec3 forwardVector;
-    glm::vec3 rightVector;
+    Body body;
 
 };
 

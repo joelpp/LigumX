@@ -14,9 +14,10 @@ using namespace glm;
 class BasicVehicleDef {
 public:
     static void FillPositions(vec3 *dataPtr, const Entity &e) {
-        const vec3 right = e.GetRightVector();
-        const vec3 fwd = e.GetForwardVector();
-        const vec3 pos = e.GetPosition();
+        const Body &b = e.GetBody();
+        const vec3 right = b.right;
+        const vec3 fwd = b.forward;
+        const vec3 pos = b.position;
 
         dataPtr[0*2] = pos - 0.5f * ENTITY_SIZE * right;
         dataPtr[0*2+1] = pos + 0.5f * ENTITY_SIZE * right;
@@ -35,7 +36,7 @@ public:
         dataPtr[(lineCount-2)*2] = pos;
         dataPtr[(lineCount-2)*2+1] = pos + ENTITY_SIZE * right;
         dataPtr[(lineCount-1)*2] = pos;
-        dataPtr[(lineCount-1)*2+1] = pos + e.GetForwardVelocity() / 6.f;
+        dataPtr[(lineCount-1)*2+1] = pos + b.GetForwardVelocity() / 6.f;
     }
 
     static void FillColors(vec3 *dataPtr, const Entity &e) {
@@ -70,47 +71,40 @@ private:
     static const size_t lineCount;
     static const float wheelWidth;
     static const float wheelHeight;
+    // Entity features
+    static const float maxThrust;                 //!< Maximum thrust acceleration
+    static const float maxForwardSpeed;      //!< Maximum atteignable forward speed
+    static const float maxBackwardSpeed;    //!< Maximum atteignable backward speed
 };
 
 // Definition of BasicVehicleDef static variables
 const size_t BasicVehicleDef::lineCount = 21;
 const float BasicVehicleDef::wheelWidth = 0.075f;
 const float BasicVehicleDef::wheelHeight = 0.2f;
+const float BasicVehicleDef::maxThrust = 50.f;                 //!< Maximum thrust acceleration
+const float BasicVehicleDef::maxForwardSpeed = 50.f;      //!< Maximum atteignable forward speed
+const float BasicVehicleDef::maxBackwardSpeed = -10.f;
+
 
 // ###################################################
 
-
-
-Entity::Entity() :  mass(1.f), maxThrust(50.f), maxForwardSpeed(50.f), maxBackwardSpeed(-10.f),
-                       angle(0.f), turning(0), desiredSpeed(0.f) {
-
+Body::Body() : position(0.f), mass(1), awake(true) {
+    ResetLocalSpace();
 }
 
-
-float Entity::GetForwardSpeed() const {
-    return dot(forwardVector, velocity);
-}
-
-vec3 Entity::GetForwardVelocity() const {
-    return forwardVector * dot(forwardVector, velocity);
-}
-
-vec3 Entity::GetLateralVelocity() const {
-    return rightVector * dot(rightVector, velocity);
-}
-
-void Entity::Update(double dt) {
+void Body::Update(double dt) {
     // euler integration
     position += velocity * (float)dt;
     velocity += acceleration * (float)dt;
 
 
-    if(turning) {
-        angle += dt * 100.f * turning;
-    }
+//    float d_angle = dt * 100.f * turning;
+//    if(turning) {
+//        angle += d_angle;
+//    }
 
-    forwardVector = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0));
-    rightVector = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
+//    forward = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0));
+//    right = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
 
     vec3 thrust_force(0.f);
     vec3 friction_force(0.f);
@@ -119,7 +113,7 @@ void Entity::Update(double dt) {
 
     // Forward thrust power
     if(desiredSpeed != 0.f) {
-        thrust_force = (desiredSpeed > curr_speed ? 1 : -1) * maxThrust * forwardVector * ENTITY_SIZE;;
+        thrust_force = (desiredSpeed > curr_speed ? 1 : -1) * maxThrust * forward * ENTITY_SIZE;
     }
 
     // Ground friction & lateral force cancellation
@@ -139,6 +133,45 @@ void Entity::Update(double dt) {
 
     // a = \sum(F)/m
     acceleration = (thrust_force + friction_force) / mass;
+}
+
+void Body::ResetLocalSpace() {
+    angle = 0.f;
+    forward = glm::vec3(0, 1, 0);
+    right = glm::vec3(1, 0, 0);
+}
+
+vec3 Body::ToLocal(vec3 global_vector) const {
+    return vec3(dot(global_vector, right), dot(global_vector, forward), 0.f);
+}
+
+glm::vec3 Body::ToGlobal(glm::vec3 local_vector) const {
+    return right * local_vector.x + forward * local_vector.y;
+}
+
+float Body::GetForwardSpeed() const {
+    return dot(forward, velocity);
+}
+
+vec3 Body::GetForwardVelocity() const {
+    return forward * dot(forward, velocity);
+}
+
+vec3 Body::GetLateralVelocity() const {
+    return right * dot(right, velocity);
+}
+
+// ###################################################
+
+Entity::Entity() :
+                       angle(0.f), turning(0), desiredSpeed(0.f) {
+
+}
+
+
+
+void Entity::Update(double dt) {
+
 }
 
 // #############################################
