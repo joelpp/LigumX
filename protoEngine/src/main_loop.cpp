@@ -22,7 +22,14 @@ void Game::mainLoop()
 
 //    camera->moveFromUserInput(renderer.pWindow);
     camera->handlePresetNewFrame(renderer.pWindow);
-
+ //    TIME(std::vector<SpatialIndex::IData*>* a = world->getNearest(world->waysIndex, -0.65, 0.45, 1));
+	// std::vector<Way*> closests;
+	// std::vector<double> distances;
+	// std::vector<vec2> directions;
+	// std::vector<std::pair<Node*, Node*>> nodePairs;
+	// int filter = OSMElement::ANY_TYPE;
+	// TIME(world->findNClosestWays(1, vec2(-0.65, 0.45), filter, distances, directions, nodePairs));
+    // delete a;
     // Physic update step
 //    while ( physic_accumulator >= static_dt ) {
 //        entityManager.Update(static_dt);

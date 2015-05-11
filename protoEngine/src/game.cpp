@@ -16,7 +16,7 @@
 
 using namespace glm;
 using namespace std;
-
+using namespace SpatialIndex;
 
 
 Game* game;

@@ -4,7 +4,8 @@ using namespace glm;
 World::World(){
 	chunkSize = 0.05;
     coordinateInflationFactor = 1;
-
+    spatialIndex = createIndex();
+    waysIndex = createIndex();
 }
 
 Chunk* World::createChunk(glm::vec2 pos){
@@ -12,16 +13,40 @@ Chunk* World::createChunk(glm::vec2 pos){
     chunks.emplace(pos, c);
     std::stringstream ss;
 #ifdef __APPLE__
-    ss << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/Data_";
+    ss << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/";
 #else
     ss << "../data/Data_";
 #endif
-    ss<<pos.x * 1000<<"x"<<pos.y*1000<<".xml";
+    // ss<<pos.x * 1000<<"x"<<pos.y*1000<<".xml";
+    ss<< 0<<".xml";
     std::cout << ss.str() << "\n";
 	loadChunkData(ss.str());
     // c->heightfieldTesting();
-    extrudeAddrInterps();
+    // extrudeAddrInterps();
     std::cout << theWays.size();
+    for (auto waysIt = theWays.begin(); waysIt != theWays.end(); ++waysIt){
+        Way* way = waysIt->second;
+        bool first = true;
+        Node *n0, *n1;
+        int counter = 1;
+        for (auto it = way->nodes.begin(); it != way->nodes.end(); ++it){
+            if (first){
+                first = false;
+                n0 = *it;
+                continue;
+            }
+
+            if (counter % 2 == 0) n0 = *it;
+            else{
+                n1 = *it;
+                std::cout << n0->toString() << "\n";
+                std::cout << n1->toString() << "\n";
+                addLineSegment(waysIndex, n0->getLatLong(), n1->getLatLong(), atoi(way->id.c_str()));
+            }
+
+            counter++;
+        } 
+    }
 
     return c;
 }
@@ -33,6 +58,7 @@ void World::loadChunkData(string path){
     tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
     Chunk* chunk = chunks[glm::vec2(-73.65, 45.5)];
     cout << docRoot->Value() << "\n";
+    int i = 0;
     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         if (string(child->Value()).compare("bound") == 0){
@@ -73,6 +99,8 @@ void World::loadChunkData(string path){
             }
             chunk->nodes.emplace(id, node);
             theNodes.emplace(id, node);
+            // addPoint(spatialIndex, longitude, latitude, atoi(id.c_str()));
+            // i++;
         }
 
         else if (string(child->Value()).compare("way") == 0){
@@ -410,6 +438,145 @@ double World::pointLineSegmentDistance(vec2 p, vec2 v, vec2 w, vec2 &direction) 
   return glm::distance(p, projection);
 }
 
+Index* World::createIndex()
+{
+    // create a property set with default values.
+    // see utility.cc for all defaults  http://libspatialindex.github.io/doxygen/Utility_8cc_source.html#l00031
+    Tools::PropertySet* ps = GetDefaults();
+    Tools::Variant var;
+
+    // set index type to R*-Tree
+    var.m_varType = Tools::VT_ULONG;
+    var.m_val.ulVal = RT_RTree;
+    ps->setProperty("IndexType", var);
+
+    // Set index to store in memory (default is disk)
+    var.m_varType = Tools::VT_ULONG;
+    var.m_val.ulVal = RT_Memory;
+    ps->setProperty("IndexStorageType", var);
+
+    // initalise index
+    Index* idx = new Index(*ps);
+    delete ps;
+
+    // check index is ok
+    if (!idx->index().isIndexValid())
+        throw "Failed to create valid index";
+    else
+        cout << "created index" << endl;
+
+    return idx;
+}
+
+// add a Point to index.
+void World::addPoint(Index* idx,double lat,double lon, int64_t id)
+{
+    // create array with lat/lon points
+    double coords[] = {lat, lon};
+
+    // shapes can also have anobject associated with them but we'll leave that for the moment.
+    uint8_t* pData = 0;
+    uint32_t nDataLength = 0;
+
+    // create shape
+    SpatialIndex::IShape* shape = 0;
+    shape = new SpatialIndex::Point(coords, 2);
+
+    // insert into index along with the an object and an ID
+    idx->index().insertData(nDataLength,pData,*shape,id);
+
+    cout << "Point " << id << " inserted into index." << endl;
+
+    delete shape;
+
+}
+
+void World::addLineSegment(Index* idx, vec2 _p0,vec2 _p1, int64_t id)
+{
+    // create array with lat/lon points
+
+    // shapes can also have anobject associated with them but we'll leave that for the moment.
+    uint8_t* pData = 0;
+    uint32_t nDataLength = 0;
+
+    // create shape
+    SpatialIndex::IShape* shape = 0;
+    double coords[] = {_p0.x, _p0.y};
+    const SpatialIndex::Point* p0 = new SpatialIndex::Point(coords, 2);
+    coords[0] = _p1.x; coords[1] = _p1.y;
+    const SpatialIndex::Point* p1 = new SpatialIndex::Point(coords, 2);
+    shape = new SpatialIndex::LineSegment(*p0, *p1);
+    // insert into index along with the an object and an ID
+    idx->index().insertData(nDataLength,pData,*shape,id);
+
+    cout << "LineSegment " << id << " inserted into index." << endl;
+
+    delete shape;
+
+}
+
+
+std::vector<SpatialIndex::IData*>* World::getNearest(Index* idx,double lat,double lon,double maxResults)
+{
+    double coords[] = {lat,lon};
+
+    // get a visitor object and a point from which to search
+    ObjVisitor* visitor = new ObjVisitor;
+    // make point from lat/lon with two dimentions
+    // SpatialIndex::Point* r = new SpatialIndex::Point(coords, 2);
+    coords[0] = -0.6; coords[1] = 0.5;
+    const SpatialIndex::Point *a = new SpatialIndex::Point(coords,2);
+    coords[0] = -0.58; coords[1] = 0.52;
+    const SpatialIndex::Point *b = new SpatialIndex::Point(coords,2);
+    SpatialIndex::Region* r = new SpatialIndex::Region(*a,*b);
+
+    // get nearesr maxResults shapes form index
+    // idx->index().nearestNeighborQuery(maxResults,*r,*visitor);
+    idx->index().containsWhatQuery(*r,*visitor);
+
+    // get count of results
+    int64_t nResultCount;
+    nResultCount = visitor->GetResultCount();
+
+    // get actual results
+    std::vector<SpatialIndex::IData*>& results = visitor->GetResults();
+    // an empty vector that wewill copt the results to
+    vector<SpatialIndex::IData*>* resultsCopy = new vector<SpatialIndex::IData*>();
+
+    // copy the Items into the newly allocated vector array
+    // we need to make sure to clone the actual Item instead
+    // of just the pointers, as the visitor will nuke them
+    // upon destroy
+    for (int64_t i = 0; i < nResultCount; ++i)
+    {
+        resultsCopy->push_back(dynamic_cast<SpatialIndex::IData*>(results[i]->clone()));
+    }
+
+    delete r;
+    delete visitor;
+    delete a;
+    delete b;
+    cout << "found " << nResultCount << " results." << endl;
+
+    return resultsCopy;
+}
+Node* World::findClosestNode(vec2 xy){
+    Node* closest;
+    double bestDist = 99999;
+    for ( auto it = theNodes.begin(); it != theNodes.end(); ++it ){
+        Node* n = it->second;
+
+        vec2 point = vec2(n->longitude, n->latitude);
+
+        double dist = glm::distance(point, xy);
+
+        if (dist < bestDist){
+            closest = n;
+            bestDist = dist;
+        }
+    }
+    return closest;
+}
 
 OSMElement::ElementType World::typeFromStrings(string key, string value){
     if (key.compare("highway") == 0){

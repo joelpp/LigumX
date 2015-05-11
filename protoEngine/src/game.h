@@ -14,8 +14,7 @@
 #include <chrono>
 #include "glm/glm.hpp"
 #include "AntTweakBar.h"
-#include <ft2build.h>
-#include FT_FREETYPE_H
+
 
 #include "renderer.h"
 #include "world.h"
@@ -54,7 +53,7 @@
                               for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_]->toString() << "\n";
 
 #define string_pair std::pair<std::string,std::string>
-
+using namespace SpatialIndex;
 
 class Game {
 public:
@@ -66,7 +65,8 @@ public:
 
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
 
-    void fillBuffers(std::vector<glm::vec3> *waysNodesPositions,
+    void fillBuffers(std::vector<glm::vec3> *nodesPositions,
+                     std::vector<glm::vec3> *waysNodesPositions,
                      std::vector<glm::vec3> *waysNodesColors,
                      std::vector<glm::vec3> *roadsPositions,
                      std::vector<glm::vec3> *buildingTrianglePositions,
@@ -159,15 +159,7 @@ public:
     bool inEntityLand;
     void TW_CALL toggleEntityLand();
 
-    //text renderign stuff
-    struct Character {
-        GLuint     TextureID;  // ID handle of the glyph texture
-        glm::ivec2 Size;       // Size of glyph
-        glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
-        GLuint     Advance;    // Offset to advance to next glyph
-    };
 
-    std::map<GLchar, Character> Characters;
 
     struct characterQuadVertices{
         GLfloat vertices[6][3];

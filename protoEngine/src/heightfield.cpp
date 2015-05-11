@@ -94,51 +94,51 @@ double Game::contourLineInterpolate(vec2 xy){
 int Game::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> directions, vector<std::pair<Node*, Node*>> nodePairs){
 
 
-    //Linesegment between our search point and the closest point on the candidate contour line.
-    LineSegment L0;
-    L0.p0 = xy;
+    // //Linesegment between our search point and the closest point on the candidate contour line.
+    // LineSegment L0;
+    // L0.p0 = xy;
 
-    //Iterate on all candidate contours
-    for (int i = 1; i < ways.size(); i++){
+    // //Iterate on all candidate contours
+    // for (int i = 1; i < ways.size(); i++){
 
-        L0.p1 = xy + directions[i];
+    //     L0.p1 = xy + directions[i];
 
-        //running linesegment on the absolute known nearest contour
-        LineSegment L1;
+    //     //running linesegment on the absolute known nearest contour
+    //     LineSegment L1;
 
-        // The running nodes forming segments on the known nearest contour
-        Node* n0;
-        Node* n1;
+    //     // The running nodes forming segments on the known nearest contour
+    //     Node* n0;
+    //     Node* n1;
 
-        // needed to start actually counting at 1
-        int counter = 1;
+    //     // needed to start actually counting at 1
+    //     int counter = 1;
 
-        int numOfIntersections = 0;
-        bool intersects = false;
-        bool first = true;
-        // Loop on all nodes on the best contour
-        for (auto nodeIt = ways[0]->nodes.begin() ; nodeIt != ways[0]->nodes.end(); ++nodeIt){
-            if (first){
-                n0 = *nodeIt;
-                first = false;
-                continue;
-            }
+    //     int numOfIntersections = 0;
+    //     bool intersects = false;
+    //     bool first = true;
+    //     // Loop on all nodes on the best contour
+    //     for (auto nodeIt = ways[0]->nodes.begin() ; nodeIt != ways[0]->nodes.end(); ++nodeIt){
+    //         if (first){
+    //             n0 = *nodeIt;
+    //             first = false;
+    //             continue;
+    //         }
 
-            if ((counter % 2) == 0) n0 = n1; //start a new linesegment
-            else{
-                n1 = *nodeIt;
+    //         if ((counter % 2) == 0) n0 = n1; //start a new linesegment
+    //         else{
+    //             n1 = *nodeIt;
 
-                L1.p0 = vec2(n0->longitude, n0->latitude);
-                L1.p1 = vec2(n1->longitude, n1->latitude);
-                if (L0.intersects(L1, NULL, NULL)){
-                    intersects = true;
-                    break; // we now know this way isnt viable as it intersected the nearest. we can stop looping around
-                }
-            }
-            counter = (counter + 1) % 2;
-        }
-        if (!intersects){ return i; }
-    }
-    L0.p1 = xy + directions[1];
-    return -1; // method didnt really work .revert to default.
+    //             L1.p0 = vec2(n0->longitude, n0->latitude);
+    //             L1.p1 = vec2(n1->longitude, n1->latitude);
+    //             if (L0.intersects(L1, NULL, NULL)){
+    //                 intersects = true;
+    //                 break; // we now know this way isnt viable as it intersected the nearest. we can stop looping around
+    //             }
+    //         }
+    //         counter = (counter + 1) % 2;
+    //     }
+    //     if (!intersects){ return i; }
+    // }
+    // L0.p1 = xy + directions[1];
+    // return -1; // method didnt really work .revert to default.
 }

@@ -9,8 +9,11 @@
 #include "chunk.h"
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
-#include "linesegment.h"
+#include <libspatialindex/capi/sidx_api.h>
+#include <libspatialindex/capi/sidx_impl.h>
+#include <libspatialindex/capi/sidx_config.h>
 
+// #include "linesegment.h"
 
 //Specialize std::hash for vec2s
 namespace std {
@@ -33,6 +36,8 @@ public:
     std::unordered_map<std::string, Node*>theNodes;
     std::unordered_map<std::string, Way*> theWays;
     std::unordered_map<std::string, Relation*> theRelations;
+    Index* spatialIndex;
+    Index* waysIndex;
 	World();
     Chunk* createChunk(glm::vec2 pos);
     void loadChunkData(std::string path);
@@ -41,6 +46,11 @@ public:
     std::vector<Way*> findNClosestWays(int n, glm::vec2 xy, int filter, std::vector<double> &distances, std::vector<glm::vec2> &_directions, std::vector<std::pair<Node*, Node*>> &_nodePairs);
     static double pointLineSegmentDistance(glm::vec2 p, glm::vec2 v, glm::vec2 w, glm::vec2 &direction);
     void extrudeAddrInterps();
+    Index* createIndex();
+    void addPoint(Index* idx, double lat, double lon, int64_t id);
+    void addLineSegment(Index* idx, glm::vec2 p0, glm::vec2 p1, int64_t id);
+    std::vector<SpatialIndex::IData*>* getNearest(Index* idx,double lat,double lon,double maxResults);
+    Node* findClosestNode(glm::vec2 xy);
 };
 #endif
 

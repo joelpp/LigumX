@@ -10,5 +10,5 @@ void main()
     vec3 myColor = vec3(1.0,1.0,1.0);
     vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);
     color = vec4(myColor, 1.0) * sampled;
-//    color = vec4(1.0);
+    color = vec4(1.0);
 }

@@ -14,4 +14,5 @@ void Renderer::init_pipelines()
     init_pipelines_roads();
     init_pipelines_screenQuad();
     init_pipelines_envmap();
+    init_pipelines_nodes();
 }

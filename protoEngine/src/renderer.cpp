@@ -114,9 +114,87 @@ Renderer::Renderer(){
 //    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 //    glBindTexture(GL_TEXTURE_2D, 0);
 
+
+
+   FT_Library ft;
+   if (FT_Init_FreeType(&ft))
+       std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+
+   FT_Face face;
+#ifdef __APPLE__
+   if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/fonts/arial.ttf",0,&face))
+#else
+   if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
+#endif
+       std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+   else
+       cout << "Loaded Freetype font! yayy" << "\n";
+   FT_Set_Pixel_Sizes(face, 0, 48);
+   if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
+       std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+
+   glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
+
+   for (GLubyte c = 0; c < 128; c++)
+   {
+       // Load character glyph
+       if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+       {
+           std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+           continue;
+       }
+       // Generate texture
+       GLuint texture;
+       glGenTextures(1, &texture);
+       glBindTexture(GL_TEXTURE_2D, texture);
+       glTexImage2D(
+           GL_TEXTURE_2D,
+           0,
+           GL_RED,
+           face->glyph->bitmap.width,
+           face->glyph->bitmap.rows,
+           0,
+           GL_RED,
+           GL_UNSIGNED_BYTE,
+           face->glyph->bitmap.buffer
+       );
+       // Set texture options
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+       // Now store character for later use
+       Character character = {
+           texture,
+           glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+           glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+#ifdef __APPLE__
+           static_cast<GLuint>(face->glyph->advance.x)
+#else
+           face->glyph->advance.x
+#endif
+       };
+       Characters.insert(std::pair<GLchar, Character>(c, character));
+   }
+   FT_Done_Face(face);
+   FT_Done_FreeType(ft);
+
+
+
+
 }
 
+
+/**
+ * [Renderer::render description]
+ * @param camera [description]
+ */
 void Renderer::render(Camera* camera){
+
+   RenderText("test", 0.0f, 0.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false, camera);
+   RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true, camera);
+
+
     if(!fancyDisplayMode) {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -155,9 +233,15 @@ void Renderer::render(Camera* camera){
             glDrawArrays(GL_LINES, 0, numberOfVerticesToDrawPerElement[it->first]);
         }
 
-        pPipelineLines->usePipeline();
+        // pPipelineLines->usePipeline();
+        // glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+        // glDrawArrays(GL_LINES, 0, nbWaysVertices);
+
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        pPipelineNodes->usePipeline();
         glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
-        glDrawArrays(GL_LINES, 0, nbWaysVertices);
+        glDrawArrays(GL_POINTS, 0, nbNodes);
+
 
         // draw entities
 #ifndef __APPLE__
@@ -254,6 +338,8 @@ void Renderer::render(Camera* camera){
         glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uScaleFactor"), 1);
         glDrawArrays(GL_LINES, 0, nbBuildingLines);
     }
+
+
 }
 
 //void Renderer::RenderText(Text t){
@@ -306,72 +392,72 @@ void Renderer::render(Camera* camera){
 //    glDisable(GL_CULL_FACE);
 //}
 
-void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)
+void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected, Camera *camera)
 {
-//    glEnable(GL_CULL_FACE);
-//    glEnable(GL_BLEND);
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    // Activate corresponding render state
-//    pPipelineText->usePipeline();
-//    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
-//    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
-//    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-//    if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->mvpMat));
-//    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
+   glEnable(GL_CULL_FACE);
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   // Activate corresponding render state
+   pPipelineText->usePipeline();
+   GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+   glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
+   glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
+   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->mvpMat));
+   else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
-//    glActiveTexture(GL_TEXTURE0);
+   glActiveTexture(GL_TEXTURE0);
 
-//    // Iterate through all characters
-//    std::string::const_iterator c;
-//    for (c = text.begin(); c != text.end(); c++)
-//    {
-//        Character ch = Characters[*c];
+   // Iterate through all characters
+   std::string::const_iterator c;
+   for (c = text.begin(); c != text.end(); c++)
+   {
+       Character ch = Characters[*c];
 
-//        GLfloat xpos = x + ch.Bearing.x * scale;
-//        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+       GLfloat xpos = x + ch.Bearing.x * scale;
+       GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
-//        GLfloat w = ch.Size.x * scale;
-//        GLfloat h = ch.Size.y * scale;
-//        // Update VBO for each character
-//        GLfloat vertices[6][3] = {
-//            { xpos,     ypos + h,  0.0001 },
-//            { xpos,     ypos,      0.0001 },
-//            { xpos + w, ypos,      0.0001 },
+       GLfloat w = ch.Size.x * scale;
+       GLfloat h = ch.Size.y * scale;
+       // Update VBO for each character
+       GLfloat vertices[6][3] = {
+           { xpos,     ypos + h,  0.0001 },
+           { xpos,     ypos,      0.0001 },
+           { xpos + w, ypos,      0.0001 },
 
-//            { xpos,     ypos + h,  0.0001 },
-//            { xpos + w, ypos,      0.0001 },
-//            { xpos + w, ypos + h,  0.0001 }
-//        };
-//        GLfloat uvs[6][2] = {
-//            {0.0, 0.0},
-//            {0.0, 1.0},
-//            {1.0, 1.0},
+           { xpos,     ypos + h,  0.0001 },
+           { xpos + w, ypos,      0.0001 },
+           { xpos + w, ypos + h,  0.0001 }
+       };
+       GLfloat uvs[6][2] = {
+           {0.0, 0.0},
+           {0.0, 1.0},
+           {1.0, 1.0},
 
-//            {0.0, 0.0},
-//            {1.0, 1.0},
-//            {1.0, 0.0}
+           {0.0, 0.0},
+           {1.0, 1.0},
+           {1.0, 0.0}
 
-//        };
-//        // Render glyph texture over quad
-//        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-//        // Update content of VBO memory
-//        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-//        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+       };
+       // Render glyph texture over quad
+       glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+       // Update content of VBO memory
+       glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+       glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
-//        glBindBuffer(GL_ARRAY_BUFFER, textUvsVBO);
-//        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
+       glBindBuffer(GL_ARRAY_BUFFER, textUvsVBO);
+       glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
 
-//        glBindBuffer(GL_ARRAY_BUFFER, 0);
-//        // Render quad
-//        glDrawArrays(GL_TRIANGLES, 0, 6);
-//        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-//        x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
-//    }
-//    glBindVertexArray(0);
-//    glBindTexture(GL_TEXTURE_2D, 0);
+       glBindBuffer(GL_ARRAY_BUFFER, 0);
+       // Render quad
+       glDrawArrays(GL_TRIANGLES, 0, 6);
+       // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+       x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
+   }
+   glBindVertexArray(0);
+   glBindTexture(GL_TEXTURE_2D, 0);
 
-//    glDisable(GL_BLEND);
-//    glDisable(GL_CULL_FACE);
+   glDisable(GL_BLEND);
+   glDisable(GL_CULL_FACE);
 
 }
 

@@ -7,6 +7,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include <vector>
 #include <unordered_map>
@@ -49,6 +51,7 @@ public:
     ProgramPipeline* pPipelineGround;
     ProgramPipeline* pPipelineEnvmap;
     ProgramPipeline* pPipelineText;
+    ProgramPipeline* pPipelineNodes;
 
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
@@ -60,6 +63,7 @@ public:
 
 
     // VBOs
+    GLuint glidNodesPositions;
     GLuint glidWaysPositions;
     GLuint glidWaysColors;
     GLuint glidBufferRoadsPositions;
@@ -83,6 +87,7 @@ public:
     unsigned int nbRoads;
     unsigned int nbWaysVertices;
     unsigned int nbGroundVertices;
+    unsigned int nbNodes;
     std::vector<GLint> firstVertexForEachRoad;
     std::vector<GLsizei> nbVerticesForEachRoad;
 
@@ -97,10 +102,22 @@ public:
     void init_pipelines_screenQuad();
     void init_pipelines_envmap();
     void init_pipelines_text();
+    void init_pipelines_nodes();
 
     void render(Camera *camera);
 //    void RenderText(Text t);
-    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
+    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected, Camera *camera);
+    //text renderign stuff
+    struct Character {
+        GLuint     TextureID;  // ID handle of the glyph texture
+        glm::ivec2 Size;       // Size of glyph
+        glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
+        GLuint     Advance;    // Offset to advance to next glyph
+    };
+
+    std::map<GLchar, Character> Characters;
+
+
 
     template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
 #ifdef __APPLE__

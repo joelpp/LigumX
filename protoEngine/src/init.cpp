@@ -4,6 +4,7 @@
 
 using namespace std;
 using namespace glm;
+using namespace SpatialIndex;
 
 static void test_error_cb (int error, const char *description)
     {
@@ -57,7 +58,7 @@ void Game::init()
     glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
 
 //    glDebugMessageCallback(Game::debugCallback, NULL);
-    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+    // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
 
     //=============================================================================
     // Load world data.
@@ -85,16 +86,6 @@ void Game::init()
     // world->createChunk(vec2(-73.63, 45.510));
     // world->createChunk(vec2(-73.63, 45.520));
 
-    vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
-    vector<vec3> waysNodesColors;
-    vector<vec3> roadsPositions;
-    vector<vec3> buildingTrianglePositions;
-    vector<vec3> buildingSides;
-    vector<float> buildingLoopLengths;
-    vector<float> groundTriangleTextureIDs;
-
-    TIME(fillBuffers(&waysNodesPositions, &waysNodesColors, &roadsPositions, &buildingTrianglePositions, &buildingSides, &buildingLoopLengths,&groundTrianglesPositions, &groundTrianglesUV, &groundTriangleTextureIDs));
-
 
     //=============================================================================
     // Screen quad data.
@@ -116,12 +107,33 @@ void Game::init()
     // create and fill VBOs.
     //=============================================================================
 
+
+    vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
+    vector<vec3> waysNodesColors;
+    vector<vec3> roadsPositions;
+    vector<vec3> buildingTrianglePositions;
+    vector<vec3> buildingSides;
+    vector<vec3> nodesPositions;
+    vector<float> buildingLoopLengths;
+    vector<float> groundTriangleTextureIDs;
+
+    TIME(fillBuffers(&nodesPositions, 
+                     &waysNodesPositions, &waysNodesColors, 
+                     &roadsPositions, 
+                     &buildingTrianglePositions, &buildingSides, 
+                     &buildingLoopLengths,
+                     &groundTrianglesPositions, &groundTrianglesUV, 
+                     &groundTriangleTextureIDs));
+
+
     renderer.nbWaysVertices = waysNodesPositions.size();
     renderer.nbGroundVertices = groundTrianglesPositions.size();
     renderer.nbBuildingTriangles = buildingTrianglePositions.size();
     renderer.nbBuildingLines = buildingSides.size();
+    renderer.nbBuildingLines = nodesPositions.size();
+    PRINTVEC3VECTOR(nodesPositions);
 
-
+    renderer.createGLBuffer(renderer.glidNodesPositions, nodesPositions);
     renderer.createGLBuffer(renderer.glidWaysPositions, waysNodesPositions);
     renderer.createGLBuffer(renderer.glidWaysColors, waysNodesColors);
     renderer.createGLBuffer(renderer.glidBufferRoadsPositions, roadsPositions);
@@ -145,69 +157,6 @@ void Game::init()
     // Textures, framebuffer, renderbuffer
     //=============================================================================
     renderer.init_pipelines();
-
-//    FT_Library ft;
-//    if (FT_Init_FreeType(&ft))
-//        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-
-//    FT_Face face;
-//#ifdef __APPLE__
-//    if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/fonts/arial.ttf",0,&face))
-//#else
-//    if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
-//#endif
-//        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-//    else
-//        cout << "Loaded Freetype font! yayy" << "\n";
-//    FT_Set_Pixel_Sizes(face, 0, 48);
-//    if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-//        std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-
-//    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
-
-//    for (GLubyte c = 0; c < 128; c++)
-//    {
-//        // Load character glyph
-//        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-//        {
-//            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-//            continue;
-//        }
-//        // Generate texture
-//        GLuint texture;
-//        glGenTextures(1, &texture);
-//        glBindTexture(GL_TEXTURE_2D, texture);
-//        glTexImage2D(
-//            GL_TEXTURE_2D,
-//            0,
-//            GL_RED,
-//            face->glyph->bitmap.width,
-//            face->glyph->bitmap.rows,
-//            0,
-//            GL_RED,
-//            GL_UNSIGNED_BYTE,
-//            face->glyph->bitmap.buffer
-//        );
-//        // Set texture options
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//        // Now store character for later use
-//        Character character = {
-//            texture,
-//            glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-//            glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-//#ifdef __APPLE__
-//            static_cast<GLuint>(face->glyph->advance.x)
-//#else
-//            face->glyph->advance.x
-//#endif
-//        };
-//        Characters.insert(std::pair<GLchar, Character>(c, character));
-//    }
-//    FT_Done_Face(face);
-//    FT_Done_FreeType(ft);
 
 
 //#ifndef __APPLE__
@@ -280,7 +229,8 @@ void Game::init_freetype(){
 
 }
 
-void Game::fillBuffers(vector<vec3> *waysNodesPositions,
+void Game::fillBuffers(vector<vec3> *nodesPositions,
+                       vector<vec3> *waysNodesPositions,
                        vector<vec3> *waysNodesColors,
                        vector<vec3> *roadsPositions,
                        vector<vec3> *buildingTrianglePositions,
@@ -327,9 +277,11 @@ void Game::fillBuffers(vector<vec3> *waysNodesPositions,
             }
 
             for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
+                
                 Node* node = *nodeIt;
                 point = vec3(node->longitude, node->latitude, node->elevation);
                 pt = vec3(node->longitude, node->latitude, node->elevation);
+                nodesPositions->push_back(pt);
                 if (!first){
 
                     if (way->eType == OSMElement::GRID_LINE){ continue; }
