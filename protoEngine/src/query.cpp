@@ -197,6 +197,19 @@ vec2 Game::windowPosToWorldPos(vec2 ij){
 
 }
 
+std::pair<vec2, vec2> Game::windowBoundingBox(){
+    vec2 bottomLeft;
+    vec2 topRight;
+
+    vec2 center = vec2(camera->position.x, camera->position.y);
+    float offset = atan(camera->totalViewAngleY/2.f) * camera->position.z;
+
+    bottomLeft = center - vec2(offset,offset);
+    topRight = center + vec2(offset,offset);
+
+    return std::pair<vec2, vec2>(bottomLeft, topRight);
+}
+
 double Game::pointLineSegmentDistance(vec2 p, vec2 v, vec2 w, vec2 &direction) {
   // Return minimum distance between line segment vw and point p
   const double l2 = glm::length(w-v) * glm::length(w-v);  // i.e. |w-v|^2 -  avoid a sqrt

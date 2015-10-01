@@ -1,6 +1,3 @@
-#include <iostream>
-#include "FreeImage.h"
-#include "glm/glm.hpp"
 #include "texture.h"
 
 using namespace std;

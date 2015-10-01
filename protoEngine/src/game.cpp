@@ -1,15 +1,9 @@
-#include <sstream>
-#include <fstream>
-#include <unordered_map>
-#include <iostream>
-#include <typeinfo>
-#include <chrono>
+
 
 #include "glm/gtc/random.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 #include "game.h"
-#include "texture.h"
 
 
 
@@ -41,26 +35,26 @@ int main(int argc, char *argv[])
 
 string Game::labelFromType(OSMElement::ElementType type){
     switch (type){
-        case(OSMElement::HIGHWAY_TRUNK): return "Highway (trunk)"; break;
-        case(OSMElement::HIGHWAY_PRIMARY): return "Highway (primary)";break;
-        case(OSMElement::HIGHWAY_SECONDARY): return "Highway (secondary)";break;
-        case(OSMElement::HIGHWAY_TERTIARY): return "Highway (tertiary)";break;
-        case(OSMElement::HIGHWAY_RESIDENTIAL): return "Highway (residential)";break;
+        case(OSMElement::HIGHWAY_TRUNK):        return "Highway (trunk)"; break;
+        case(OSMElement::HIGHWAY_PRIMARY):      return "Highway (primary)";break;
+        case(OSMElement::HIGHWAY_SECONDARY):    return "Highway (secondary)";break;
+        case(OSMElement::HIGHWAY_TERTIARY):     return "Highway (tertiary)";break;
+        case(OSMElement::HIGHWAY_RESIDENTIAL):  return "Highway (residential)";break;
         case(OSMElement::HIGHWAY_UNCLASSIFIED): return "Highway (unclassified)";break;
-        case(OSMElement::HIGHWAY_SERVICE): return "Highway (service)";break;
-        case(OSMElement::NATURAL_WOOD): return "Natural (wood)";break;
-        case(OSMElement::NATURAL_WATER): return "Natural (water)";break;
-        case(OSMElement::BUILDING_UNMARKED): return "Building (unmarked)";break;
-        case(OSMElement::BUILDING_SCHOOL): return "Building (school)";break;
-        case(OSMElement::BUILDING_ADDRINTERP): return "Building (address interpolation)";break;
-        case(OSMElement::LEISURE_PARK): return "Leisure (park)";break;
-        case(OSMElement::ADDR_INTERPOLATION): return "Address interpolation";break;
-        case(OSMElement::CONTOUR): return "Contour line";break;
-        case(OSMElement::GRID_LINE): return "Grid line";break;
-        case(OSMElement::aDEBUG): return "debug";break;
-        case(OSMElement::RAILWAY_SUBWAY): return "Railway (subway)";break;
-        case(OSMElement::LANDUSE): return "Land use";break;
-        case(OSMElement::BOUNDARY): return "Boundary";break;
+        case(OSMElement::HIGHWAY_SERVICE):      return "Highway (service)";break;
+        case(OSMElement::NATURAL_WOOD):         return "Natural (wood)";break;
+        case(OSMElement::NATURAL_WATER):        return "Natural (water)";break;
+        case(OSMElement::BUILDING_UNMARKED):    return "Building (unmarked)";break;
+        case(OSMElement::BUILDING_SCHOOL):      return "Building (school)";break;
+        case(OSMElement::BUILDING_ADDRINTERP):  return "Building (address interpolation)";break;
+        case(OSMElement::LEISURE_PARK):         return "Leisure (park)";break;
+        case(OSMElement::ADDR_INTERPOLATION):   return "Address interpolation";break;
+        case(OSMElement::CONTOUR):              return "Contour line";break;
+        case(OSMElement::GRID_LINE):            return "Grid line";break;
+        case(OSMElement::aDEBUG):               return "debug";break;
+        case(OSMElement::RAILWAY_SUBWAY):       return "Railway (subway)";break;
+        case(OSMElement::LANDUSE):              return "Land use";break;
+        case(OSMElement::BOUNDARY):             return "Boundary";break;
 
     }
 }

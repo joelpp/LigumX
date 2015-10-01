@@ -4,9 +4,12 @@
 #include "GL/glew.h"
 //#include <initializer_list>
 #include <string>
+#include "Logging.h"
 
 class ProgramPipeline
 {
+private:
+  REGISTERCLASS(ProgramPipeline);
 public:
     class ShaderProgram
     {

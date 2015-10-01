@@ -71,7 +71,7 @@ SOURCES += \
     src/triangle.cpp \
     src/entity.cpp \
     src/world.cpp \
-    src/chunk.cpp \
+    src/sector.cpp \
     src/renderer.cpp
 
 
@@ -92,7 +92,7 @@ HEADERS += \
     src/triangle.h \
     src/entity.h \
     src/world.h \
-    src/chunk.h \
+    src/sector.h \
     src/renderer.h
 
 OTHER_FILES += \

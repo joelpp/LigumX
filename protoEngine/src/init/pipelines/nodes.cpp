@@ -37,11 +37,6 @@ void Renderer::init_pipelines_nodes()
     glBindBuffer(GL_ARRAY_BUFFER, glidNodesPositions);
     glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    // glEnableVertexAttribArray(1);
-    // glBindBuffer(GL_ARRAY_BUFFER, glidGroundTriangleUVs);
-    // glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
-
 #else
      glEnableVertexArrayAttrib(pPipelineGround->glidVao, 0);
      glVertexArrayVertexBuffer(pPipelineGround->glidVao, 0, glidGroundTrianglePositions, 0, 3*4);

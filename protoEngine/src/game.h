@@ -3,60 +3,46 @@
 
 // #define GLFW_INCLUDE_GLCOREARB
 
-
-#include <stdlib.h>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 #include <cstdarg>
 #include <string>
 #include <unordered_map>
-#include <map>
-#include <sstream>
 #include <chrono>
+#include <typeinfo>
+#include <stdlib.h>
+#include <map>
 #include "glm/glm.hpp"
 #include "AntTweakBar.h"
 
 
 #include "renderer.h"
 #include "world.h"
-#include "program_pipeline.h"
-#include "camera.h"
-#include "osm_element.h"
 #include "node.h"
 #include "way.h"
 #include "relation.h"
-#include "texture.h"
-#include "filter.h"
 #include "linesegment.h"
 #include "heightfield.h"
 #include "triangle.h"
 #include "entity.h"
-#include "chunk.h"
+#include "Logging.h"
 
 
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
                     x;\
                     auto end = std::chrono::high_resolution_clock::now();\
                     std::cout << "Time to run \"" << #x << "\" : " << std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count() << "ms" << std::endl;}
-#define PRINTVEC2(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << "\n";
-#define PRINTVEC2VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y << "\n";
-#define PRINTVEC3(v) std::cout << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n";
-#define PRINTVEC3VECTOR(v) for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y  << v[_index_].z << "\n";
-#define PRINT(f) std::cout << #f << ": " << f << "\n";
-#define PRINTSTRING(f) std::cout << f << "\n";
-#define PRINTBOOL(B) string b = B==1?"TRUE":"FALSE"; std::cout << #B << " : " << b << "\n";
-#define PRINTINT(i) std::cout << #i << ": x=" << i << "\n";
-#define PRINTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
-                       for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_] << "\n";
-#define PRINTELEMENT(e) std::cout << #e << " " << e.toString() << "\n";
-#define PRINTELEMENTPTR(e) std::cout << #e << " " << e->toString() << "\n";
-#define PRINTELEMENTVECTOR(e) std::cout << "Element Vector: " << #e << "\n"; \
-                              for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_]->toString() << "\n";
+
 
 #define string_pair std::pair<std::string,std::string>
 using namespace SpatialIndex;
 
 class Game {
+private:
+    REGISTERCLASS(Game);
 public:
+
     // general state and functions
     Game() {init();}
     void init();
@@ -64,7 +50,7 @@ public:
     void mainLoop();
 
     void insertDebugMessage(std::string message, GLenum severity, GLuint id = 0);
-
+    std::pair<glm::vec2, glm::vec2> windowBoundingBox();
     void fillBuffers(std::vector<glm::vec3> *nodesPositions,
                      std::vector<glm::vec3> *waysNodesPositions,
                      std::vector<glm::vec3> *waysNodesColors,
@@ -89,6 +75,7 @@ public:
     std::string labelFromType(OSMElement::ElementType type);
 
     // GLFW callbacks. Implement if needed.
+    void SetCallbacks();
     static void glfwMouseButtonCallback(GLFWwindow* /*pGlfwWindow*/, int /*button*/, int /*action*/, int /*mods*/);
     static void glfwMousePositionCallback(GLFWwindow* /*pGlfwWindow*/, double /*x*/, double /*y*/);
     static void glfwMouseEntersCallback(GLFWwindow* /*pGlfwWindow*/, int /*entered*/) {}
@@ -173,15 +160,7 @@ public:
         }
     };
 
-    struct Text {
-        std::string text;
-        glm::vec3 position;
-        bool projected;
-        float scale;
-        std::vector<characterQuadVertices> quads;
-    };
 
-    std::vector<Text> texts;
 //    void RenderText(Text t);
 };
 

@@ -1,11 +1,15 @@
 #ifndef HEIGHTFIELD
 #define HEIGHTFIELD
 
-#include "triangle.h"
 #include <vector>
 
+#include "Logging.h"
+#include "triangle.h"
 
 class Heightfield{
+private:
+  	REGISTERCLASS(Heightfield);
+
 public:
     std::vector<Triangle* > triangles;
     double sideLength;

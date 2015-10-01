@@ -1,132 +1,153 @@
 #include "world.h"
 using namespace std;
 using namespace glm;
+using namespace SpatialIndex;
 World::World(){
-	chunkSize = 0.05;
+	sectorSize = 0.05;
     coordinateInflationFactor = 1;
-    spatialIndex = createIndex();
-    waysIndex = createIndex();
+    // spatialIndex = createIndex();
+    // waysIndex = createIndex();
+    createSpatialIndexes();
 }
 
-Chunk* World::createChunk(glm::vec2 pos){
-	Chunk* c = new Chunk(pos);
-    chunks.emplace(pos, c);
-    std::stringstream ss;
-#ifdef __APPLE__
-    ss << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/";
-#else
-    ss << "../data/Data_";
-#endif
-    // ss<<pos.x * 1000<<"x"<<pos.y*1000<<".xml";
-    ss<< 0<<".xml";
-    std::cout << ss.str() << "\n";
-	loadChunkData(ss.str());
+void World::createSpatialIndexes(){
+    waysIndex[OSMElement::HIGHWAY_TRUNK] = createIndex();
+    waysIndex[OSMElement::HIGHWAY_PRIMARY] = createIndex();
+    waysIndex[OSMElement::HIGHWAY_SECONDARY] = createIndex();
+    waysIndex[OSMElement::HIGHWAY_TERTIARY] = createIndex();
+    waysIndex[OSMElement::HIGHWAY_RESIDENTIAL] = createIndex();
+    waysIndex[OSMElement::HIGHWAY_SERVICE] = createIndex();
+    waysIndex[OSMElement::HIGHWAY_UNCLASSIFIED] = createIndex();
+    waysIndex[OSMElement::CONTOUR] = createIndex();
+    waysIndex[OSMElement::BUILDING_UNMARKED] = createIndex();
+    waysIndex[OSMElement::BUILDING_SCHOOL] = createIndex();
+    waysIndex[OSMElement::BUILDING_ADDRINTERP] = createIndex();
+    waysIndex[OSMElement::BOUNDARY] = createIndex();
+    waysIndex[OSMElement::LEISURE_PARK] = createIndex();
+    waysIndex[OSMElement::NATURAL_WOOD] = createIndex();
+    waysIndex[OSMElement::NATURAL_WATER] = createIndex();
+    waysIndex[OSMElement::LANDUSE] = createIndex();
+    waysIndex[OSMElement::RAILWAY_SUBWAY] = createIndex();
+    waysIndex[OSMElement::aDEBUG] = createIndex();
+    waysIndex[OSMElement::ADDR_INTERPOLATION] = createIndex();
+    waysIndex[OSMElement::NOT_IMPLEMENTED] = createIndex();
+    waysIndex[OSMElement::ANY_TYPE] = createIndex();
+    waysIndex[OSMElement::GRID_LINE] = createIndex();
+}
+
+Sector* World::createSector(glm::vec2 pos){
+	Sector* c = new Sector(pos);
+    sectors.emplace(pos, c);
+
     // c->heightfieldTesting();
     // extrudeAddrInterps();
-    std::cout << theWays.size();
-    for (auto waysIt = theWays.begin(); waysIt != theWays.end(); ++waysIt){
-        Way* way = waysIt->second;
-        bool first = true;
-        Node *n0, *n1;
-        int counter = 1;
-        for (auto it = way->nodes.begin(); it != way->nodes.end(); ++it){
-            if (first){
-                first = false;
-                n0 = *it;
-                continue;
-            }
+    PRINT(theWays.size());
+    // for (auto waysIt = theWays.begin(); waysIt != theWays.end(); ++waysIt){
+    //     Way* way = waysIt->second;
+    //     bool first = true;
+    //     Node *n0, *n1;
+    //     int counter = 1;
+    //     OSMElement::ElementType type = way->eType;
+    //     if (type == OSMElement::NOT_IMPLEMENTED) continue;
+    //     for (auto it = way->nodes.begin(); it != way->nodes.end(); ++it){
+    //         if (first){
+    //             first = false;
+    //             n0 = *it;
+    //             continue;
+    //         }
 
-            if (counter % 2 == 0) n0 = *it;
-            else{
-                n1 = *it;
-                std::cout << n0->toString() << "\n";
-                std::cout << n1->toString() << "\n";
-                addLineSegment(waysIndex, n0->getLatLong(), n1->getLatLong(), atoi(way->id.c_str()));
-            }
+    //         if (counter % 2 == 0) n0 = *it;
+    //         else{
+    //             n1 = *it;
+    //             std::cout << n0->toString() << "\n";
+    //             std::cout << n1->toString() << "\n";
+    //             addLineSegment(waysIndex[type], n0->getLatLong(), n1->getLatLong(), atoi(way->id.c_str()));
+    //         }
 
-            counter++;
-        } 
-    }
+    //         counter++;
+    //     } 
+    // }
 
     return c;
 }
 
-void World::loadChunkData(string path){
-    tinyxml2::XMLDocument doc;
-    // PRINT(path);
-    doc.LoadFile(path.c_str());
-    tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
-    Chunk* chunk = chunks[glm::vec2(-73.65, 45.5)];
-    cout << docRoot->Value() << "\n";
-    int i = 0;
-    for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
-    {
-        if (string(child->Value()).compare("bound") == 0){
-            // string box = child->ToElement()->FindAttribute("box")->Value();
-            // std::istringstream ss(box);
-            // std::string token;
+void World::loadSectorData(string path){
+//     tinyxml2::XMLDocument doc;
+//     // PRINT(path);
+//     doc.LoadFile(path.c_str());
+//     tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
+//     Sector* sector = sectors[glm::vec2(-73.65, 45.5)];
+//     cout << docRoot->Value() << "\n";
+//     int i = 0;
+//     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+//     {
+//         if (string(child->Value()).compare("bound") == 0){
+//             // string box = child->ToElement()->FindAttribute("box")->Value();
+//             // std::istringstream ss(box);
+//             // std::string token;
 
-            // std::getline(ss, token, ','); viewRectBottom = atof(token.c_str()) * coordinateInflationFactor - 45;
-            // std::getline(ss, token, ','); viewRectLeft = atof(token.c_str()) * coordinateInflationFactor   + 73;
-            // std::getline(ss, token, ','); viewRectTop = atof(token.c_str()) * coordinateInflationFactor    - 45;
-            // std::getline(ss, token, ','); viewRectRight = atof(token.c_str()) * coordinateInflationFactor  + 73;
+//             // std::getline(ss, token, ','); viewRectBottom = atof(token.c_str()) * coordinateInflationFactor - 45;
+//             // std::getline(ss, token, ','); viewRectLeft = atof(token.c_str()) * coordinateInflationFactor   + 73;
+//             // std::getline(ss, token, ','); viewRectTop = atof(token.c_str()) * coordinateInflationFactor    - 45;
+//             // std::getline(ss, token, ','); viewRectRight = atof(token.c_str()) * coordinateInflationFactor  + 73;
 
-            // PRINT(viewRectBottom);
-            // PRINT(viewRectLeft);
-            // PRINT(viewRectTop);
-            // PRINT(viewRectRight);
+//             // PRINT(viewRectBottom);
+//             // PRINT(viewRectLeft);
+//             // PRINT(viewRectTop);
+//             // PRINT(viewRectRight);
 
 
-            // chunk = world->getOrCreateChunk(viewRectBottomLeft);
-        }
-        if (string(child->Value()).compare("node") == 0){
-//            cout << "Looking at a node \n";
-//            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
+//             // sector = world->getOrCreateSector(viewRectBottomLeft);
+//         }
+//         if (string(child->Value()).compare("node") == 0){
+// //            cout << "Looking at a node \n";
+// //            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
 
-            string id = child->ToElement()->FindAttribute("id")->Value();
-            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) * coordinateInflationFactor  - 45;
-            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) * coordinateInflationFactor + 73;
-            //double latitude = strtod(child->ToElement()->FindAttribute("lat")->Value(), NULL);
-            //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
+//             string id = child->ToElement()->FindAttribute("id")->Value();
+//             float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) * coordinateInflationFactor  - 45;
+//             float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) * coordinateInflationFactor + 73;
+//             //double latitude = strtod(child->ToElement()->FindAttribute("lat")->Value(), NULL);
+//             //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
 
-            Node* node = new Node(id, longitude, latitude);
-            node->elevation = 0;
-           // if (path.compare("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.0001;
-            for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
-                string key = tag->ToElement()->FindAttribute("k")->Value();
-                string value = tag->ToElement()->FindAttribute("v")->Value();
-                node -> addTag(key, value);
-            }
-            chunk->nodes.emplace(id, node);
-            theNodes.emplace(id, node);
-            // addPoint(spatialIndex, longitude, latitude, atoi(id.c_str()));
-            // i++;
-        }
+//             Node* node = new Node(id, longitude, latitude);
+//             node->elevation = 0;
+//            // if (path.compare("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.0001;
+//             for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
+//                 string key = tag->ToElement()->FindAttribute("k")->Value();
+//                 string value = tag->ToElement()->FindAttribute("v")->Value();
+//                 node -> addTag(key, value);
+//             }
+//             sector->nodes.emplace(id, node);
+//             theNodes.emplace(id, node);
+//             addPoint(spatialIndex, longitude, latitude, atoi(id.c_str()));
+//             // i++;
+//         }
 
-        else if (string(child->Value()).compare("way") == 0){
-//            cout << "Looking at a way \n";
-            string id = child->ToElement()->FindAttribute("id")->Value();
-            Way* way = new Way(id);
-            way->eType = OSMElement::NOT_IMPLEMENTED;
-            for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
-                if (string(way_child->Value()).compare("nd") == 0){
-                    string ref = way_child->ToElement()->FindAttribute("ref")->Value();
-                    way -> addRef(chunk->nodes[ref]);
-                }
-                else if (string(way_child->Value()).compare("tag") == 0){
-                    string key = way_child->ToElement()->FindAttribute("k")->Value();
-                    string value = way_child->ToElement()->FindAttribute("v")->Value();
-                    way -> addTag(key, value);
+//         else if (string(child->Value()).compare("way") == 0){
+// //            cout << "Looking at a way \n";
+//             string id = child->ToElement()->FindAttribute("id")->Value();
+//             Way* way = new Way(id);
+//             way->eType = OSMElement::NOT_IMPLEMENTED;
+//             for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
+//                 if (string(way_child->Value()).compare("nd") == 0){
+//                     string ref = way_child->ToElement()->FindAttribute("ref")->Value();
+//                     way -> addRef(sector->nodes[ref]);
+//                 }
+//                 else if (string(way_child->Value()).compare("tag") == 0){
+//                     string key = way_child->ToElement()->FindAttribute("k")->Value();
+//                     string value = way_child->ToElement()->FindAttribute("v")->Value();
+//                     way -> addTag(key, value);
 
-                    OSMElement::ElementType _eType = typeFromStrings(key, value);
-                    if (_eType == OSMElement::NOT_IMPLEMENTED) continue;
-                    else way->eType = _eType;
-                }
-            }
+//                     OSMElement::ElementType _eType = typeFromStrings(key, value);
+//                     if (_eType == OSMElement::NOT_IMPLEMENTED) continue;
+//                     else way->eType = _eType;
+//                 }
+//             }
 
-            chunk->ways.emplace(id, way);
-            theWays.emplace(id, way);
-        }
+//             sector->ways.emplace(id, way);
+//             theWays.emplace(id, way);
+//             waysTypeMap[way->eType].emplace(id,way);
+//         }
 //         else if (string(child->Value()).compare("relation") == 0){
 //             string id = child->ToElement()->FindAttribute("id")->Value();
 //             Relation *relation = new Relation(id);
@@ -156,151 +177,179 @@ void World::loadChunkData(string path){
 //             theRelations.emplace(id, relation);
 //         }
 
-    }
+    // }
 
 }
 
-void World::extrudeAddrInterps(){
-    int counter = 0;
-
-    // Iterate on all ways
-    for ( auto it = theWays.begin(); it != theWays.end(); ++it ){
+void World::addSidewalks(){
+    for (auto it = waysTypeMap[OSMElement::HIGHWAY_RESIDENTIAL].begin(); it != waysTypeMap[OSMElement::HIGHWAY_RESIDENTIAL].end(); ++it){
         Way* way = it->second;
+        int first = true;
+        int counter = 0;
+        Node *node0, *node1;
+        for (auto nodeIt = way->nodes.begin(); nodeIt != way->nodes.end();++it){
+            if (first){
+                node0 = *nodeIt;
+                first = false;
+            }
 
-        // Keep only ADDR_INTERPOLATIONs
-        if (way->eType != OSMElement::ADDR_INTERPOLATION) continue;
+            if ((counter % 2) == 0) node0 = node1;
+            else{
+                node1 = *nodeIt;
 
-        vector<Node*> nodes;
-        // Store this way's 2 nodes
-        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt) nodes.push_back(*nodeIt);
+                vec2 coords0 = node0->getLatLong();
+                double coords[2];
+                coords[0] = coords0.x; coords[1] = coords0.y;
+                const Point p0 = Point(coords, 2);
+                vec2 coords1 = node1->getLatLong();
+                coords[0] = coords1.x; coords[1] = coords1.y;
+                const Point p1 = Point(coords, 2);
+                SpatialIndex::LineSegment ls = SpatialIndex::LineSegment(p0, p1);
 
-        // We only want to look at roads
-        int filter = OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_PRIMARY | OSMElement::HIGHWAY_TRUNK | OSMElement::HIGHWAY_SERVICE | OSMElement::HIGHWAY_UNCLASSIFIED;
+                
+            }
 
-        // Preparing road query...
-        vector<vector<vec2> > directions;
-        directions.push_back(vector<vec2>());
-        directions.push_back(vector<vec2>());
 
-        vector<std::pair<Node*, Node*>> nodePairs;
-        vector<vector<double> > distances;
-        distances.push_back(vector<double>());
-        distances.push_back(vector<double>());
+            counter++;
+        }
+
+    }
+}
+
+void World::extrudeAddrInterps(){
+    // int counter = 0;
+
+    // // Iterate on all ways
+    // for ( auto it = waysTypeMap[OSMElement::ADDR_INTERPOLATION].begin(); it != waysTypeMap[OSMElement::ADDR_INTERPOLATION].end(); ++it ){
+    //     Way* way = it->second;
+
+    //     vector<Node*> nodes;
+    //     // Store this way's 2 nodes
+    //     for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt) nodes.push_back(*nodeIt);
+    //     vec2 center = (nodes[0]->getLatLong() + nodes[1]->getLatLong) / vec2(2,2);
+    //     // We only want to look at roads
+        // int filter = OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_PRIMARY | OSMElement::HIGHWAY_TRUNK | OSMElement::HIGHWAY_SERVICE | OSMElement::HIGHWAY_UNCLASSIFIED;
+
+
 
         // Find the closest roads to this ADDR_INTERP
-        vector<Way*> firstNodeWays = findNClosestWays(5, vec2(nodes[0]->longitude, nodes[0]->latitude), filter, distances[0], directions[0], nodePairs);
-        vector<Way*> secondNodeWays = findNClosestWays(5, vec2(nodes[1]->longitude, nodes[1]->latitude), filter, distances[1], directions[1], nodePairs);
 
-        LineSegment L0(nodes[0], nodes[1]);
 
-        bool intersectOtherRoad = false;
-        //Check if the adress way intersects any of these roads
-        for (int i = 0 ; i < firstNodeWays.size(); i++){
-            LineSegment L1(firstNodeWays[i]);
+        // LineSegment L0(nodes[0], nodes[1]);
 
-            if (!intersectOtherRoad && L0.intersects(L1,NULL,NULL)) intersectOtherRoad = true;
-        }
+        // bool intersectOtherRoad = false;
+        // //Check if the adress way intersects any of these roads
+        // for (int i = 0 ; i < firstNodeWays.size(); i++){
+        //     LineSegment L1(firstNodeWays[i]);
 
-        for (int i = 0 ; i < secondNodeWays.size(); i++){
-            LineSegment L1(secondNodeWays[i]);
+        //     if (!intersectOtherRoad && L0.intersects(L1,NULL,NULL)) intersectOtherRoad = true;
+        // }
 
-            if (!intersectOtherRoad && L0.intersects(L1, NULL, NULL)) intersectOtherRoad = true;
-        }
+        // for (int i = 0 ; i < secondNodeWays.size(); i++){
+        //     LineSegment L1(secondNodeWays[i]);
+
+        //     if (!intersectOtherRoad && L0.intersects(L1, NULL, NULL)) intersectOtherRoad = true;
+        // }
 
 //        if (intersectOtherRoad) continue;
 
         // Find the closest way that both nodes share (should generally be the one parallel to the addr_interp)
         // Maybe better to look at dot products? This works ok for now
-        pair<int, int> commonIndices = findCommonWay(firstNodeWays, secondNodeWays);
+        // pair<int, int> commonIndices = findCommonWay(firstNodeWays, secondNodeWays);
 
-        int i = commonIndices.first;
-        int j = commonIndices.second;
+        // int i = commonIndices.first;
+        // int j = commonIndices.second;
+        // 
+        // Way* way = getNearestWays(OSMElement::HIGHWAY_RESIDENTIAL, center.x, center.y, 1);
+        // // vec2 direction = 
 
-        // Multiplicative factor related to the polygon size
-        double factor = 1.3;
+        // // Multiplicative factor related to the polygon size
+        // double factor = 1.3;
 
-        //If finding the common way didnt work just move on
-        if (i == -1) continue;
+        // //If finding the common way didnt work just move on
+        // if (i == -1) continue;
 
-        // Move on to the next if the common road is too far from one of the nodes
-        if (distances[0][i] > 0.0002 * factor) continue;
-        if (distances[1][j] > 0.0002 * factor) continue;
+        // // Move on to the next if the common road is too far from one of the nodes
+        // if (distances[0][i] > 0.0002 * factor) continue;
+        // if (distances[1][j] > 0.0002 * factor) continue;
 
-        if (distances[0][i] < 1e-6) continue;
-        if (distances[1][j] < 1e-6) continue;
+        // if (distances[0][i] < 1e-6) continue;
+        // if (distances[1][j] < 1e-6) continue;
 
-        // Move on to next if the nodes are on different sides of the common road
-        if (dot(directions[0][i], directions[1][j]) < 0) continue;
+        // // Move on to next if the nodes are on different sides of the common road
+        // if (dot(directions[0][i], directions[1][j]) < 0) continue;
 
 
-        int totalUnits = 20;
-        vec2 wayOrientation = nodes[1]->getLatLong() - nodes[0]->getLatLong();
-        vec2 wayOrientationUnit =  wayOrientation / vec2(totalUnits,totalUnits);
-        int remaining = totalUnits;
-        float unit = length(wayOrientation) / (float)totalUnits;
-        int buildingMaxUnits = 10;
-        int buildingMinUnits = 5;
-        Node *node0, *node1;
-        vec2 pos0, pos1;
-        pos0 = nodes[0]->getLatLong();
-        while (remaining > 0){
-            float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            // std::cout << r;
-            if (r < 0.55){
-                remaining--;
-                pos0 += wayOrientationUnit;
-                continue;
-            }
-            int numberOfUnits = buildingMinUnits + buildingMaxUnits * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-            if (remaining - numberOfUnits < 0) numberOfUnits = remaining;
-            node0 = new Node();
-            node0->id = string("ADDR_INTERP_NODE0_").append(std::to_string(counter));
-            node0->longitude = pos0.x;
-            node0->latitude = pos0.y;
+        // int totalUnits = 20;
+        // vec2 wayOrientation = nodes[1]->getLatLong() - nodes[0]->getLatLong();
+        // vec2 wayOrientationUnit =  wayOrientation / vec2(totalUnits,totalUnits);
+        // int remaining = totalUnits;
+        // float unit = length(wayOrientation) / (float)totalUnits;
+        // int buildingMaxUnits = 10;
+        // int buildingMinUnits = 5;
+        // Node *node0, *node1;
+        // vec2 pos0, pos1;
+        // pos0 = nodes[0]->getLatLong();
+        // while (remaining > 0){
+        //     float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        //     // std::cout << r;
+        //     if (r < 0.55){
+        //         remaining--;
+        //         pos0 += wayOrientationUnit;
+        //         continue;
+        //     }
+        //     int numberOfUnits = buildingMinUnits + buildingMaxUnits * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        //     if (remaining - numberOfUnits < 0) numberOfUnits = remaining;
+        //     node0 = new Node();
+        //     node0->id = string("ADDR_INTERP_NODE0_").append(std::to_string(counter));
+        //     node0->longitude = pos0.x;
+        //     node0->latitude = pos0.y;
 
-            pos1 = pos0 + wayOrientationUnit * vec2(numberOfUnits, numberOfUnits);
-            node1 = new Node();
-            node1->id = string("ADDR_INTERP_NODE1_").append(std::to_string(counter));
-            node1->longitude = pos1.x;
-            node1->latitude = pos1.y;
+        //     pos1 = pos0 + wayOrientationUnit * vec2(numberOfUnits, numberOfUnits);
+        //     node1 = new Node();
+        //     node1->id = string("ADDR_INTERP_NODE1_").append(std::to_string(counter));
+        //     node1->longitude = pos1.x;
+        //     node1->latitude = pos1.y;
 
-            // Create the new nodes by moving from each edge of the ADDR_INTERP, perpendicularly to the road
-            Node* node3 = new Node();
-            node3->id = string("ADDR_INTERP_NODE3_").append(std::to_string(counter));
-            node3->longitude = node0->longitude - directions[0][i].x * factor;
-            node3->latitude = node0 -> latitude - directions[0][i].y * factor;
-            // node3->elevation = contourLineInterpolate(vec2(node3->longitude, node3->latitude)) * 1.0001;
-            node3->elevation = 0;
+        //     // Create the new nodes by moving from each edge of the ADDR_INTERP, perpendicularly to the road
+        //     Node* node3 = new Node();
+        //     node3->id = string("ADDR_INTERP_NODE3_").append(std::to_string(counter));
+        //     node3->longitude = node0->longitude - directions[0][i].x * factor;
+        //     node3->latitude = node0 -> latitude - directions[0][i].y * factor;
+        //     // node3->elevation = contourLineInterpolate(vec2(node3->longitude, node3->latitude)) * 1.0001;
+        //     node3->elevation = 0;
             
-            Node* node4 = new Node();
-            node4->id = string("ADDR_INTERP_NODE4_").append(std::to_string(counter));
-            node4->longitude = node1->longitude - directions[0][i].x * factor;
-            node4->latitude = node1->latitude - directions[0][i].y * factor;
-            // node4->elevation = contourLineInterpolate(vec2(node4->longitude, node4->latitude)) * 1.0001;
-            node4->elevation = 0;
+        //     Node* node4 = new Node();
+        //     node4->id = string("ADDR_INTERP_NODE4_").append(std::to_string(counter));
+        //     node4->longitude = node1->longitude - directions[0][i].x * factor;
+        //     node4->latitude = node1->latitude - directions[0][i].y * factor;
+        //     // node4->elevation = contourLineInterpolate(vec2(node4->longitude, node4->latitude)) * 1.0001;
+        //     node4->elevation = 0;
             
-            // Create the new building
-            Way* buildingWay  = new Way();
-            buildingWay->addRef(node0);
-            buildingWay->addRef(node3);
-            buildingWay->addRef(node4);
-            buildingWay->addRef(node1);
-            buildingWay->addRef(node0);
-            buildingWay->eType = OSMElement::BUILDING_UNMARKED;
-            buildingWay->id = string("ADDR_INTERP_BUILDING").append(std::to_string(counter));
+        //     // Create the new building
+        //     Way* buildingWay  = new Way();
+        //     buildingWay->addRef(node0);
+        //     buildingWay->addRef(node3);
+        //     buildingWay->addRef(node4);
+        //     buildingWay->addRef(node1);
+        //     buildingWay->addRef(node0);
+        //     buildingWay->eType = OSMElement::BUILDING_UNMARKED;
+        //     buildingWay->id = string("ADDR_INTERP_BUILDING").append(std::to_string(counter));
 
-            // Store the new building
-            chunks[vec2(-73.65, 45.5)]->ways.emplace(buildingWay->id, buildingWay); 
-            theWays.emplace(buildingWay->id, buildingWay);
-            counter++;
-            pos0 = pos1;
-            remaining -= numberOfUnits;
-        }
-    }
+        //     // Store the new building
+        //     sectors[vec2(-73.65, 45.5)]->ways.emplace(buildingWay->id, buildingWay); 
+        //     theWays.emplace(buildingWay->id, buildingWay);
+        //     counter++;
+        //     pos0 = pos1;
+        //     remaining -= numberOfUnits;
+        // }
+    // }
 
     // PRINTSTRING("Extruding address interpolation into polygons");
     // PRINTINT(counter);
 }
+
+// std::
 
 
 
@@ -469,10 +518,10 @@ Index* World::createIndex()
 }
 
 // add a Point to index.
-void World::addPoint(Index* idx,double lat,double lon, int64_t id)
+void World::addPoint(Index* idx,double lon,double lat, int64_t id)
 {
     // create array with lat/lon points
-    double coords[] = {lat, lon};
+    double coords[] = {lon, lat};
 
     // shapes can also have anobject associated with them but we'll leave that for the moment.
     uint8_t* pData = 0;
@@ -485,7 +534,7 @@ void World::addPoint(Index* idx,double lat,double lon, int64_t id)
     // insert into index along with the an object and an ID
     idx->index().insertData(nDataLength,pData,*shape,id);
 
-    cout << "Point " << id << " inserted into index." << endl;
+    // cout << "Point " << id << " inserted into index." << endl;
 
     delete shape;
 
@@ -509,29 +558,92 @@ void World::addLineSegment(Index* idx, vec2 _p0,vec2 _p1, int64_t id)
     // insert into index along with the an object and an ID
     idx->index().insertData(nDataLength,pData,*shape,id);
 
-    cout << "LineSegment " << id << " inserted into index." << endl;
+    // cout << "LineSegment " << id << " inserted into index." << endl;
 
     delete shape;
 
 }
 
+std::vector<Way*> World::getNearestWays(OSMElement::ElementType type,double lon,double lat,double maxResults){
+    std::vector<Way*> toReturn;
 
-std::vector<SpatialIndex::IData*>* World::getNearest(Index* idx,double lat,double lon,double maxResults)
+    std::vector<SpatialIndex::IData*>* data = getNearest(waysIndex[type], lon, lat, maxResults);
+
+    for (SpatialIndex::IData* &item : (*data))
+        {
+            // get the generic shape object which we can cast to other types
+            SpatialIndex::IShape* shape;
+            item->getShape(&shape);
+
+            // cast the shape to a Point
+            SpatialIndex::Point center;
+            shape->getCenter(center);
+
+            //get ID of shape
+            id_type id = item->getIdentifier();
+            std::stringstream ssid;
+            ssid << id;
+            Way* way = waysTypeMap[type][ssid.str()];
+
+            toReturn.push_back(way);
+        }
+        return toReturn;
+}
+
+
+std::vector<SpatialIndex::IData*>* World::getNearest(Index* idx,double lon,double lat,double maxResults)
 {
-    double coords[] = {lat,lon};
+    double coords[] = {lon,lat};
 
     // get a visitor object and a point from which to search
     ObjVisitor* visitor = new ObjVisitor;
     // make point from lat/lon with two dimentions
-    // SpatialIndex::Point* r = new SpatialIndex::Point(coords, 2);
-    coords[0] = -0.6; coords[1] = 0.5;
+    SpatialIndex::Point* r = new SpatialIndex::Point(coords, 2);
+
+    // get nearesr maxResults shapes form index
+    idx->index().nearestNeighborQuery(maxResults,*r,*visitor);
+
+    // get count of results
+    int64_t nResultCount;
+    nResultCount = visitor->GetResultCount();
+
+    // get actual results
+    std::vector<SpatialIndex::IData*>& results = visitor->GetResults();
+    // an empty vector that wewill copt the results to
+    vector<SpatialIndex::IData*>* resultsCopy = new vector<SpatialIndex::IData*>();
+
+    // copy the Items into the newly allocated vector array
+    // we need to make sure to clone the actual Item instead
+    // of just the pointers, as the visitor will nuke them
+    // upon destroy
+    for (int64_t i = 0; i < nResultCount; ++i)
+    {
+        resultsCopy->push_back(dynamic_cast<SpatialIndex::IData*>(results[i]->clone()));
+    }
+
+    delete r;
+    delete visitor;
+
+    cout << "found " << nResultCount << " results." << endl;
+
+    return resultsCopy;
+}
+
+std::vector<SpatialIndex::IData*>* World::boxQuery(Index* idx, glm::vec2 bottomLeft,glm::vec2 topRight, double maxResults)
+{
+    double coords[2];
+
+    // get a visitor object and a point from which to search
+    ObjVisitor* visitor = new ObjVisitor;
+
+    // make point from lat/lon with two dimentions
+    coords[0] = bottomLeft.x; coords[1] = bottomLeft.y;
     const SpatialIndex::Point *a = new SpatialIndex::Point(coords,2);
-    coords[0] = -0.58; coords[1] = 0.52;
+    coords[0] = topRight.x; coords[1] = topRight.y;
     const SpatialIndex::Point *b = new SpatialIndex::Point(coords,2);
     SpatialIndex::Region* r = new SpatialIndex::Region(*a,*b);
 
     // get nearesr maxResults shapes form index
-    // idx->index().nearestNeighborQuery(maxResults,*r,*visitor);
     idx->index().containsWhatQuery(*r,*visitor);
 
     // get count of results
@@ -556,10 +668,11 @@ std::vector<SpatialIndex::IData*>* World::getNearest(Index* idx,double lat,doubl
     delete visitor;
     delete a;
     delete b;
-    cout << "found " << nResultCount << " results." << endl;
+    // cout << "found " << nResultCount << " results." << endl;
 
     return resultsCopy;
 }
+
 Node* World::findClosestNode(vec2 xy){
     Node* closest;
     double bestDist = 99999;

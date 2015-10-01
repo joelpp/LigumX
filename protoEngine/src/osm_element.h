@@ -19,7 +19,7 @@ public:
                        HIGHWAY_RESIDENTIAL = 1 << 4,
                        HIGHWAY_SERVICE = 1 << 5,
                        HIGHWAY_UNCLASSIFIED = 1 << 6,
-
+                       SIDEWALK = 1 << 7, 
                        CONTOUR = 1 << 10,
 
                        BUILDING_UNMARKED = 1 << 15,

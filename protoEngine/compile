@@ -1,7 +1,7 @@
-ccache g++ -stdlib=libc++ -I /./libs/glm/ -I./libs/AntTweakBar/include/ -I./libs/FreeImage/OSX/ -I./libs/Freetype -I./libs/ \
--L./libs/AntTweakBar/lib -L./libs/FreeImage/OSX/ -L./libs/Freetype \
+ccache g++ -stdlib=libc++ -I./libs/GLFW/include/ -I /./libs/glm/ -I./libs/AntTweakBar/include/ -I./libs/FreeImage/OSX/ -I./libs/Freetype -I./libs/ \
+-L./libs/AntTweakBar/lib -L./libs/FreeImage/OSX/ -L./libs/Freetype -L.libs/glfw/ \
 src/*.cpp src/init/*.cpp src/init/pipelines/*.cpp  \
 -g -o build/OSX/LigumX \
 -std=c++11 \
 -lAntTweakBar -lglew -lglfw -lfreeimage -lfreetype -lspatialindex -lspatialindex_c \
--framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo \
+-framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo

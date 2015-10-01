@@ -1,9 +1,6 @@
 #include "entity.h"
 
-#include <iostream>
-#include <GLFW/glfw3.h>
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/string_cast.hpp"
+
 
 using namespace glm;
 
@@ -120,12 +117,12 @@ bool EntityManager::Init() {
 
     makeVBO();
 
-    glEnableVertexArrayAttrib(pPipelineEntities->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipelineEntities->glidVao, 0, glidEntitiesPositions, 0, sizeof(vec3));
-    glVertexArrayAttribFormat(pPipelineEntities->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
-    glEnableVertexArrayAttrib(pPipelineEntities->glidVao, 1);
-    glVertexArrayVertexBuffer(pPipelineEntities->glidVao, 1, glidEntitiesColors, 0, sizeof(vec3));
-    glVertexArrayAttribFormat(pPipelineEntities->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
+    // glEnableVertexArrayAttrib(pPipelineEntities->glidVao, 0);
+    // glVertexArrayVertexBuffer(pPipelineEntities->glidVao, 0, glidEntitiesPositions, 0, sizeof(vec3));
+    // glVertexArrayAttribFormat(pPipelineEntities->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+    // glEnableVertexArrayAttrib(pPipelineEntities->glidVao, 1);
+    // glVertexArrayVertexBuffer(pPipelineEntities->glidVao, 1, glidEntitiesColors, 0, sizeof(vec3));
+    // glVertexArrayAttribFormat(pPipelineEntities->glidVao, 1, 3, GL_FLOAT, GL_FALSE, 0);
 
     Entity e;
     e.position = vec3(-5 * ENTITY_SIZE,0,1);
@@ -186,22 +183,22 @@ void EntityManager::AddEntity(const Entity &entity) {
 }
 
 void EntityManager::makeVBO() {
-    entityPositions.resize(dataSize * ENTITY_LINE_N);
-    entityColors.resize(dataSize * ENTITY_LINE_N);
+    // entityPositions.resize(dataSize * ENTITY_LINE_N);
+    // entityColors.resize(dataSize * ENTITY_LINE_N);
 
-    glDeleteBuffers(1, &glidEntitiesPositions);
-    glCreateBuffers(1, &glidEntitiesPositions);
-    glNamedBufferStorage(glidEntitiesPositions, entityPositions.size() * sizeof(vec3),
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
+    // glDeleteBuffers(1, &glidEntitiesPositions);
+    // glCreateBuffers(1, &glidEntitiesPositions);
+    // glNamedBufferStorage(glidEntitiesPositions, entityPositions.size() * sizeof(vec3),
+    //                      NULL,
+    //                      GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 
-    glDeleteBuffers(1, &glidEntitiesColors);
-    glCreateBuffers(1, &glidEntitiesColors);
-    glNamedBufferStorage(glidEntitiesColors, entityColors.size() * sizeof(vec3),
-                         NULL,
-                         GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
+    // glDeleteBuffers(1, &glidEntitiesColors);
+    // glCreateBuffers(1, &glidEntitiesColors);
+    // glNamedBufferStorage(glidEntitiesColors, entityColors.size() * sizeof(vec3),
+    //                      NULL,
+    //                      GL_DYNAMIC_STORAGE_BIT | GL_MAP_WRITE_BIT);
 
-    array_modification = true;
+    // array_modification = true;
 }
 
 void EntityManager::KeyCallback(int key, int action) {
@@ -232,14 +229,14 @@ void EntityManager::Update(double dt) {
 }
 
 void EntityManager::Render(const mat4 &viewMatrix) {
-    if(array_modification) {
-        glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entityPositions.data());
-        glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entityColors.data());
-    }
+    // if(array_modification) {
+    //     glNamedBufferSubData(glidEntitiesPositions, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entityPositions.data());
+    //     glNamedBufferSubData(glidEntitiesColors, 0, (entities.size() * ENTITY_LINE_N * 2) * sizeof(vec3), entityColors.data());
+    // }
 
-    pPipelineEntities->usePipeline();
-    glProgramUniformMatrix4fv(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(viewMatrix));
-    glDrawArrays(GL_LINES, 0, entities.size() * ENTITY_LINE_N * 2);
+    // pPipelineEntities->usePipeline();
+    // glProgramUniformMatrix4fv(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineEntities->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(viewMatrix));
+    // glDrawArrays(GL_LINES, 0, entities.size() * ENTITY_LINE_N * 2);
 }
 
 

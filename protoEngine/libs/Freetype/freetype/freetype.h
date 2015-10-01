@@ -1883,7 +1883,7 @@ FT_BEGIN_HEADER
   /* <Input>                                                               */
   /*    file_base  :: A pointer to the beginning of the font data.         */
   /*                                                                       */
-  /*    file_size  :: The size of the memory chunk used by the font data.  */
+  /*    file_size  :: The size of the memory sector used by the font data.  */
   /*                                                                       */
   /*    face_index :: The index of the face within the font.  The first    */
   /*                  face has index~0.                                    */

@@ -99,7 +99,7 @@ FT_BEGIN_HEADER
   /*    cursor    :: The current top of the grow heap within its block.    */
   /*                                                                       */
   /*    capacity  :: The current size of the heap block.  Increments by    */
-  /*                 1kByte chunks.                                        */
+  /*                 1kByte sectors.                                        */
   /*                                                                       */
   /*    max_elems :: The maximum number of elements in table.              */
   /*                                                                       */

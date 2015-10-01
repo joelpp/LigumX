@@ -16,14 +16,15 @@ void Game::mainLoop()
 //    static double curr_time = glfwGetTime();
     static double physic_accumulator = 0.0;
 
-    renderer.render(camera);
 
     physic_accumulator += dt;
 
 //    camera->moveFromUserInput(renderer.pWindow);
     camera->handlePresetNewFrame(renderer.pWindow);
- //    TIME(std::vector<SpatialIndex::IData*>* a = world->getNearest(world->waysIndex, -0.65, 0.45, 1));
-	// std::vector<Way*> closests;
+
+    renderer.render();
+
+    // std::vector<Way*> closests;
 	// std::vector<double> distances;
 	// std::vector<vec2> directions;
 	// std::vector<std::pair<Node*, Node*>> nodePairs;
@@ -64,11 +65,7 @@ void Game::mainLoop()
 
 //    }
 
-//    if (renderText)
-//        for (int i = 0; i < texts.size(); i++){
-////            RenderText(texts[i].text.c_str(), texts[i].position.x, texts[i].position.y, 0.000001f, glm::vec3(0.5, 0.8f, 0.2f), texts[i].projected);
-//            RenderText(texts[i]);
-//        }
+
     if(showTweakBar) TwDraw();
 
     // screenshot

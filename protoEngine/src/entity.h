@@ -5,7 +5,10 @@
 
 #include "glm/glm.hpp"
 #include "program_pipeline.h"
-
+#include <iostream>
+#include <GLFW/glfw3.h>
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 class Entity {
 friend class EntityManager;

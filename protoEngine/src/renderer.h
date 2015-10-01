@@ -20,15 +20,22 @@
 #include "camera.h"
 #include "osm_element.h"
 
+struct Text {
+    std::string text;
+    glm::vec3 position;
+    bool projected;
+    float scale;
+    // std::vector<characterQuadVertices> quads;
+};
 
 class Renderer{
 public:
     Renderer();
-
+    Camera *camera;
     bool fancyDisplayMode;
     bool drawBuildingSides;
     bool drawGround;
-
+    bool showText;
     // window params
     unsigned int windowWidth;
     unsigned int windowHeight;
@@ -52,6 +59,7 @@ public:
     ProgramPipeline* pPipelineEnvmap;
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
+    std::unordered_map<std::string, ProgramPipeline*> programPipelinesMap;
 
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
@@ -104,9 +112,9 @@ public:
     void init_pipelines_text();
     void init_pipelines_nodes();
 
-    void render(Camera *camera);
-//    void RenderText(Text t);
-    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected, Camera *camera);
+    void render();
+   void RenderText(Text t);
+    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
     //text renderign stuff
     struct Character {
         GLuint     TextureID;  // ID handle of the glyph texture
@@ -116,6 +124,7 @@ public:
     };
 
     std::map<GLchar, Character> Characters;
+    std::vector<Text> texts;
 
 
 

@@ -10,6 +10,23 @@ static void test_error_cb (int error, const char *description)
     {
         fprintf(stderr, "%d: %s\n", error, description);
     }
+
+void Game::SetCallbacks(){
+    glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
+    glfwSetKeyCallback( renderer.pWindow, glfwKeyCallback );
+    glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
+    glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
+    glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );
+    glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );
+    glfwSetWindowPosCallback( renderer.pWindow, glfwWindowPositionCallback );
+    glfwSetWindowSizeCallback( renderer.pWindow, glfwWindowSizeCallback );
+    glfwSetWindowCloseCallback( renderer.pWindow, glfwWindowClosedCallback );
+    glfwSetWindowRefreshCallback( renderer.pWindow, glfwWindowRefreshCallback );
+    glfwSetWindowFocusCallback( renderer.pWindow, glfwWindowFocusCallback );
+    glfwSetWindowIconifyCallback( renderer.pWindow, glfwWindowIconifyCallback );
+    glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
+}
+
 void Game::init()
 {
     //=============================================================================
@@ -19,6 +36,7 @@ void Game::init()
 
     camera = new Camera();
     camera->setViewSize(0.03);
+    renderer.camera = camera;
     draggingCamera = false;
 
     selectedWay.way = NULL;
@@ -43,19 +61,7 @@ void Game::init()
     init_tweakBar();
 
     // register GLFW and GLdebug callbacks
-    glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
-    glfwSetKeyCallback( renderer.pWindow, glfwKeyCallback );
-    glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
-    glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
-    glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );
-    glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );
-    glfwSetWindowPosCallback( renderer.pWindow, glfwWindowPositionCallback );
-    glfwSetWindowSizeCallback( renderer.pWindow, glfwWindowSizeCallback );
-    glfwSetWindowCloseCallback( renderer.pWindow, glfwWindowClosedCallback );
-    glfwSetWindowRefreshCallback( renderer.pWindow, glfwWindowRefreshCallback );
-    glfwSetWindowFocusCallback( renderer.pWindow, glfwWindowFocusCallback );
-    glfwSetWindowIconifyCallback( renderer.pWindow, glfwWindowIconifyCallback );
-    glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
+    SetCallbacks();
 
 //    glDebugMessageCallback(Game::debugCallback, NULL);
     // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
@@ -76,15 +82,15 @@ void Game::init()
     camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
 
     world = new World();
-    world->createChunk(vec2(-73.650, 45.500));
-    // world->createChunk(vec2(-73.650, 45.510));
-    // world->createChunk(vec2(-73.650, 45.520));
-    // world->createChunk(vec2(-73.64, 45.500));
-    // world->createChunk(vec2(-73.64, 45.510));
-    // world->createChunk(vec2(-73.64, 45.520));
-    // world->createChunk(vec2(-73.63, 45.500));
-    // world->createChunk(vec2(-73.63, 45.510));
-    // world->createChunk(vec2(-73.63, 45.520));
+    world->createSector(vec2(-73.650, 45.500));
+    // world->createSector(vec2(-73.650, 45.510));
+    // world->createSector(vec2(-73.650, 45.520));
+    // world->createSector(vec2(-73.64, 45.500));
+    // world->createSector(vec2(-73.64, 45.510));
+    // world->createSector(vec2(-73.64, 45.520));
+    // world->createSector(vec2(-73.63, 45.500));
+    // world->createSector(vec2(-73.63, 45.510));
+    // world->createSector(vec2(-73.63, 45.520));
 
 
     //=============================================================================
@@ -130,8 +136,8 @@ void Game::init()
     renderer.nbGroundVertices = groundTrianglesPositions.size();
     renderer.nbBuildingTriangles = buildingTrianglePositions.size();
     renderer.nbBuildingLines = buildingSides.size();
-    renderer.nbBuildingLines = nodesPositions.size();
-    PRINTVEC3VECTOR(nodesPositions);
+    renderer.nbNodes = nodesPositions.size();
+    // PRINTVEC3VECTOR(nodesPositions);
 
     renderer.createGLBuffer(renderer.glidNodesPositions, nodesPositions);
     renderer.createGLBuffer(renderer.glidWaysPositions, waysNodesPositions);
@@ -157,8 +163,9 @@ void Game::init()
     // Textures, framebuffer, renderbuffer
     //=============================================================================
     renderer.init_pipelines();
-
-
+    
+    // std::ve
+    // exit(0);
 //#ifndef __APPLE__
 //    entityManager.Init();
 //#endif
@@ -253,13 +260,13 @@ void Game::fillBuffers(vector<vec3> *nodesPositions,
     nbRoads = 0;
     GLint firstVertexForThisRoad = 0;
 
-    for (auto chunkIterator = world->chunks.begin();
-         chunkIterator != world->chunks.end();
-         ++chunkIterator){
+    for (auto sectorIterator = world->sectors.begin();
+         sectorIterator != world->sectors.end();
+         ++sectorIterator){
 
-        Chunk *chunk = chunkIterator->second;
+        Sector *sector = sectorIterator->second;
 
-        for ( auto it = chunk->ways.begin(); it != chunk->ways.end(); ++it ){
+        for ( auto it = sector->m_data.ways.begin(); it != sector->m_data.ways.end(); ++it ){
             first = true;
             second = false;
             GLsizei nbVertexForThisRoad = 0;
@@ -342,6 +349,7 @@ void Game::fillBuffers(vector<vec3> *nodesPositions,
             }
 
             // triangulate building loops
+            // PRINTELEMENTPTR(way);
             Node first(*(way->nodes.front()));
             Node last(*(way->nodes.back()));
             if((way->eType==OSMElement::BUILDING_UNMARKED||way->eType == OSMElement::LEISURE_PARK)&&way->nodes.size() >= 3 && first == last) {
@@ -513,8 +521,8 @@ void Game::fillBuffers(vector<vec3> *nodesPositions,
         cout << "failed loops: " << nbFailedLoops << endl;
         int counter = 0;
 
-        for (auto it = world->chunks.begin(); it != world->chunks.end(); ++it){
-            Heightfield* heightField = it->second->heightfield;
+        for (auto it = world->sectors.begin(); it != world->sectors.end(); ++it){
+            Heightfield* heightField = it->second->m_heightfield;
             vector<Triangle* >& tris = heightField->triangles;
             for (int i = 0; i < tris.size()-1; i += 2){
                 Triangle* tri = tris[i];
