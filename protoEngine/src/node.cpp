@@ -1,6 +1,5 @@
 #include "node.h"
-#include <iostream>
-#include <stdio.h>
+
 Node::Node(){
     this->elevation = 0;
 

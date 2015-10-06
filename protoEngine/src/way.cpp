@@ -1,4 +1,7 @@
 #include "way.h"
+#include "node.h"
+#include "osm_element.h"
+#include "linesegment.h"
 
 Way::Way(){
 
@@ -76,4 +79,15 @@ bool Way::loops(){
     auto it2 = this->nodes.end();
 
     return (it == it2);
+}
+
+
+
+WayPair Way::findCommon(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays){
+    for (int i = 0; i < firstNodeWays.size(); i++){
+        for (int j = 0; j < secondNodeWays.size(); j++){
+            if (firstNodeWays[i]->id.compare(secondNodeWays[j]->id) == 0) return std::pair<int, int>(i,j);
+        }
+    }
+    return WayPair(-1,-1);
 }

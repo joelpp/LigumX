@@ -1,17 +1,26 @@
-#include "game.h"
+#include "LigumX.h"
 #include <vector>
 #include <chrono>
 
+#include "world.h"
+#include "Settings.h"
+#include "Sector.h"
+#include "SectorData.h"
+#include "heightfield.h"
+#include "triangle.h"
+#include "node.h"
+#include "way.h"
+#include "relation.h"
+
 using namespace std;
 using namespace glm;
-using namespace SpatialIndex;
 
 static void test_error_cb (int error, const char *description)
     {
         fprintf(stderr, "%d: %s\n", error, description);
     }
 
-void Game::SetCallbacks(){
+void LigumX::SetCallbacks(){
     glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
     glfwSetKeyCallback( renderer.pWindow, glfwKeyCallback );
     glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
@@ -27,72 +36,33 @@ void Game::SetCallbacks(){
     glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
 }
 
-void Game::init()
+void LigumX::init()
 {
     //=============================================================================
     // Parameters, camera setup.
     //=============================================================================
     running = true;
+    loadSettings();
 
-    camera = new Camera();
-    camera->setViewSize(0.03);
-    renderer.camera = camera;
-    draggingCamera = false;
-
-    selectedWay.way = NULL;
-    unsuccessfulInterpolations = 0;
-    buildingHeight = 3;
-    buildingSideScaleFactor = 1;
-
-    sunOrientation = 0;
-    sunTime = 0;
-    sunSpeed = 0.1;
-    sunMoveAuto = false;
-    drawGround = false;
-    saveScreenshot = false;
-    renderText = false;
+    initCamera();
+    init_tweakBar();
 
     populateTypeColorArray();
 
-    showTweakBar = false;
-
-    srand(987654321);
-
-    init_tweakBar();
 
     // register GLFW and GLdebug callbacks
     SetCallbacks();
 
-//    glDebugMessageCallback(Game::debugCallback, NULL);
-    // glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-
     //=============================================================================
     // Load world data.
     //=============================================================================
-    viewRectBottom =  0.5;
-    viewRectLeft =  -0.65;
-    viewRectTop = 0.55;
-    viewRectRight = -0.6;
-
-    viewRectBottomLeft = vec2(viewRectLeft,viewRectBottom);
-    viewRectTopRight = vec2(viewRectRight,viewRectTop);
-    viewRectVecDiago = viewRectBottomLeft - viewRectTopRight;
-
-    camera->translateTo(vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0) + 0.1f*camera->frontVec);
-    camera->lookAtTargetPos = vec3(viewRectBottomLeft + (viewRectTopRight - viewRectBottomLeft)/2.f,0);
-
-    world = new World();
-    world->createSector(vec2(-73.650, 45.500));
-    // world->createSector(vec2(-73.650, 45.510));
-    // world->createSector(vec2(-73.650, 45.520));
-    // world->createSector(vec2(-73.64, 45.500));
-    // world->createSector(vec2(-73.64, 45.510));
-    // world->createSector(vec2(-73.64, 45.520));
-    // world->createSector(vec2(-73.63, 45.500));
-    // world->createSector(vec2(-73.63, 45.510));
-    // world->createSector(vec2(-73.63, 45.520));
 
 
+    world = new World(m_settings.f("sectorSize"));
+    // world->createSector(vec2(-73.650, 45.500));
+    vec2 tp = m_settings.f2("testPoint");
+    // world->SectorFromXY(tp);
+    world->SectorFromXY(vec2(camera->position));
     //=============================================================================
     // Screen quad data.
     //=============================================================================
@@ -112,8 +82,6 @@ void Game::init()
     //=============================================================================
     // create and fill VBOs.
     //=============================================================================
-
-
     vector<vec3> waysNodesPositions; // positions of nodes forming ways, possibly contains duplicates.
     vector<vec3> waysNodesColors;
     vector<vec3> roadsPositions;
@@ -123,14 +91,13 @@ void Game::init()
     vector<float> buildingLoopLengths;
     vector<float> groundTriangleTextureIDs;
 
-    TIME(fillBuffers(&nodesPositions, 
-                     &waysNodesPositions, &waysNodesColors, 
-                     &roadsPositions, 
-                     &buildingTrianglePositions, &buildingSides, 
-                     &buildingLoopLengths,
-                     &groundTrianglesPositions, &groundTrianglesUV, 
-                     &groundTriangleTextureIDs));
-
+    fillBuffers(&nodesPositions, 
+                 &waysNodesPositions, &waysNodesColors, 
+                 &roadsPositions, 
+                 &buildingTrianglePositions, &buildingSides, 
+                 &buildingLoopLengths,
+                 &groundTrianglesPositions, &groundTrianglesUV, 
+                 &groundTriangleTextureIDs);
 
     renderer.nbWaysVertices = waysNodesPositions.size();
     renderer.nbGroundVertices = groundTrianglesPositions.size();
@@ -164,79 +131,14 @@ void Game::init()
     //=============================================================================
     renderer.init_pipelines();
     
-    // std::ve
-    // exit(0);
-//#ifndef __APPLE__
-//    entityManager.Init();
-//#endif
-//    inEntityLand = false;
-//    int TOTAL = 0;
-
-    // This was experimental to up performance when rendering text. It sucks actually.
-//    int filter = OSMElement::HIGHWAY_SECONDARY | OSMElement::HIGHWAY_TERTIARY | OSMElement::HIGHWAY_RESIDENTIAL | OSMElement::HIGHWAY_UNCLASSIFIED;
-//    for (auto it = theWays.begin(); it != theWays.end(); ++it){
-//        Way* way = it->second;
-
-//        if ((way->eType & filter) == 0) continue;
-////        if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
-
-//        // Store the info we want
-//        std::string text;
-//        try{text = way->tags.at("name");}
-//        catch(...){continue;}
-
-//        float scale = 0.000001f;
-//        //Get the text position
-//        vec3 xyz = (way->nodes[0]->getLatLongEle() + way->nodes[1]->getLatLongEle()) / vec3(2,2,2);
-
-//        // Store each character's quad vertices
-//        std::vector<characterQuadVertices> quads;
-//        std::string::const_iterator c;
-//        float x = xyz.x;
-//        float y = xyz.y;
-//        for (c = text.begin(); c != text.end(); c++)
-//        {
-//            Character ch = Characters[*c];
-
-//            GLfloat xpos = x + ch.Bearing.x * scale;
-//            GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-
-//            GLfloat w = ch.Size.x * scale;
-//            GLfloat h = ch.Size.y * scale;
-//            GLfloat vertices[6][3] = {
-//                { xpos,     ypos + h,  0.0001 },
-//                { xpos,     ypos,      0.0001 },
-//                { xpos + w, ypos,      0.0001 },
-
-//                { xpos,     ypos + h,  0.0001 },
-//                { xpos + w, ypos,      0.0001 },
-//                { xpos + w, ypos + h,  0.0001 }
-//            };
-//            characterQuadVertices v(vertices);
-//            quads.push_back(v);
-//            TOTAL++;
-//            // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-//            x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
-//        }
-
-//        // Store the info
-//        Text t = {
-//            text,
-//            xyz,
-//            true,
-//            scale,
-//            quads
-//        };
-//        texts.push_back(t);
-//    }
-//    PRINT(TOTAL);
 }
 
-void Game::init_freetype(){
+void LigumX::init_freetype(){
 
 }
 
-void Game::fillBuffers(vector<vec3> *nodesPositions,
+
+void LigumX::fillBuffers(vector<vec3> *nodesPositions,
                        vector<vec3> *waysNodesPositions,
                        vector<vec3> *waysNodesColors,
                        vector<vec3> *roadsPositions,
@@ -260,13 +162,13 @@ void Game::fillBuffers(vector<vec3> *nodesPositions,
     nbRoads = 0;
     GLint firstVertexForThisRoad = 0;
 
-    for (auto sectorIterator = world->sectors.begin();
-         sectorIterator != world->sectors.end();
+    for (auto sectorIterator = world->m_sectors.begin();
+         sectorIterator != world->m_sectors.end();
          ++sectorIterator){
 
         Sector *sector = sectorIterator->second;
 
-        for ( auto it = sector->m_data.ways.begin(); it != sector->m_data.ways.end(); ++it ){
+        for ( auto it = sector->m_data->ways.begin(); it != sector->m_data->ways.end(); ++it ){
             first = true;
             second = false;
             GLsizei nbVertexForThisRoad = 0;
@@ -517,11 +419,12 @@ void Game::fillBuffers(vector<vec3> *nodesPositions,
 
         }
 
-        cout << "succeeded loops: " << nbSuccessLoops << endl;
-        cout << "failed loops: " << nbFailedLoops << endl;
+        // TODO: this should be part of like a debug define or an assert
+        // cout << "succeeded loops: " << nbSuccessLoops << endl;
+        // cout << "failed loops: " << nbFailedLoops << endl;
         int counter = 0;
 
-        for (auto it = world->sectors.begin(); it != world->sectors.end(); ++it){
+        for (auto it = world->m_sectors.begin(); it != world->m_sectors.end(); ++it){
             Heightfield* heightField = it->second->m_heightfield;
             vector<Triangle* >& tris = heightField->triangles;
             for (int i = 0; i < tris.size()-1; i += 2){

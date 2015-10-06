@@ -1,1 +1,1 @@
-./compile && ./build/OSX/LigumX
+./compile && ./run

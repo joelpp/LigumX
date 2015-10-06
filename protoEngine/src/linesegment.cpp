@@ -1,6 +1,8 @@
-
-#include "linesegment.h"
 #include <sstream>
+#include "linesegment.h"
+#include "node.h"
+#include "way.h"
+
 using namespace glm;
 
 LineSegment::LineSegment(){

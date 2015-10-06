@@ -1,7 +1,4 @@
 #include "program_pipeline.h"
-#include "game.h"
-#include <fstream>
-#include <iostream>
 
 using namespace std;
 
@@ -137,10 +134,7 @@ ProgramPipeline::ShaderProgram *ProgramPipeline::getShader(GLenum shaderType)
         return pComputeShader;
         break;
     default:
-        game->insertDebugMessage(
-                "ProgramPipeline::ShaderProgram::getShader(...) : Unknown shader type.",
-                GL_DEBUG_SEVERITY_LOW
-        );
+        PRINT("ProgramPipeline::ShaderProgram::getShader(...) : Unknown shader type.");
         return NULL;
         break;
     }
@@ -264,10 +258,9 @@ void ProgramPipeline::useVertexShader(
         glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
         glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
-        cerr << "Validation error in useVertexShader:" << endl;
-        cerr << info << endl;
+        PRINTSTRING("Validation error in useVertexShader:");
+        PRINT(info);
     }
-    PRINT(glGetAttribLocation(shader->glidShaderProgram, "pos"));
 
 }
 

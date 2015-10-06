@@ -1,4 +1,4 @@
-#include "game.h"
+#include "LigumX.h"
 #include <string>
 #include <chrono>
 
@@ -9,67 +9,52 @@ using std::string;
 
 using namespace glm;
 
-void Game::insertDebugMessage(string message, GLenum severity, GLuint id)
+
+void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 {
-    // TODO: make glDebug work.
-//    glDebugMessageInsert(GL_DEBUG_SOURCE_APPLICATION, GL_DEBUG_TYPE_ERROR,
-//                         id, severity, GLsizei(message.length()), message.c_str());
-    cout << message << endl;
+    Game->running = false;
 }
 
-//void Game::debugCallback(GLenum, GLenum, GLuint, GLenum, GLsizei length, const GLchar* message, const void *)
-//{
-//    cout << "message :"  << endl;
-//    for(int i=0; i<length; ++i) {
-//        cout << message[i] << endl;
-//    }
-//}
-
-void Game::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
-{
-    game->running = false;
-}
-
-void Game::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
+void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
 {
     if(!TwEventMouseWheelGLFW(yOffset)) {
         static const float factor = 1.1;
         if(yOffset < 0) {
-            game->camera->multViewSizeBy(factor);
+            Game->camera->multViewSizeBy(factor);
         } else {
-            game->camera->multViewSizeBy(1.f/factor);
+            Game->camera->multViewSizeBy(1.f/factor);
         }
     }
 }
 
-void Game::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
+void LigumX::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
     if(!TwEventKeyGLFW(key, action)) {
         // send event to entity Manager (temporary before a playerInput class)
-        game->entityManager.KeyCallback(key, action);
+        Game->entityManager.KeyCallback(key, action);
 
         if(action == GLFW_PRESS){
-            if (key == GLFW_KEY_SPACE) { game->showTweakBar = !game->showTweakBar; }
+            if (key == GLFW_KEY_SPACE) { Game->showTweakBar = !Game->showTweakBar; }
             if (key == GLFW_KEY_ESCAPE) {
-                if(game->camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) game->camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+                if(Game->camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) Game->camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
             }
-            if (key == GLFW_KEY_R) { game->renderer.init_pipelines(); }
+            if (key == GLFW_KEY_R) { Game->renderer.init_pipelines(); }
             if (key == GLFW_KEY_M) {
-                for( auto it = game->renderer.displayElementType.begin(); it != game->renderer.displayElementType.end(); ++it){
+                for( auto it = Game->renderer.displayElementType.begin(); it != Game->renderer.displayElementType.end(); ++it){
                     it->second = false;
                 }
             }
 
             if(key == GLFW_KEY_F4) {
-                game->toggleEntityLand();
+                Game->toggleEntityLand();
             }
 
         }
-        game->camera->handlePresetKey(pWindow, key, scancode, action, mods);
+        Game->camera->handlePresetKey(pWindow, key, scancode, action, mods);
     }
 }
 
-void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
+void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
 
     if(!TwEventMouseButtonGLFW(button, action)) {
@@ -77,52 +62,52 @@ void Game::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, 
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
             // double x,y;
             // glfwGetCursorPos(pWindow, &x, &y);
-            // vec2 worldPos = game->windowPosToWorldPos(vec2(x,y));
+            // vec2 worldPos = Game->windowPosToWorldPos(vec2(x,y));
             // int index = 0;
             // std::vector<Way*> closests;
             // std::vector<double> distances;
             // std::vector<vec2> directions;
             // vector<std::pair<Node*, Node*>> nodePairs;
             // int filter = OSMElement::CONTOUR;
-            // TIME(closests = game->findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
+            // TIME(closests = Game->findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
 
             // if (closests[0] == NULL) return;
-            // TIME(game->updateSelectedWay(closests[0]));
+            // TIME(Game->updateSelectedWay(closests[0]));
             // PRINTELEMENTVECTOR(closests);
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){
 //            if (action == GLFW_PRESS){
-//                game->draggingCamera = true;
+//                Game->draggingCamera = true;
 //                double x; double y;
 //                glfwGetCursorPos(pWindow, &x, &y);
-//                game->oldMousePosition = vec2(x,y);
+//                Game->oldMousePosition = vec2(x,y);
 //            }
 //            else if (action == GLFW_RELEASE){
-//                game->draggingCamera = false;
+//                Game->draggingCamera = false;
 //            }
         }
 
-        game->camera->handlePresetMouseButton(pWindow, button, action, mods);
+        Game->camera->handlePresetMouseButton(pWindow, button, action, mods);
 //        TODO
-        //        game->renderer->updateMVPMatrix();
+        //        Game->renderer->updateMVPMatrix();
     }
 }
 
-void Game::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
+void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 {
     if(!TwEventMousePosGLFW(x, y)) {
-        if (game->draggingCamera){
+        if (Game->draggingCamera){
             double x; double y;
             glfwGetCursorPos(pWindow, &x, &y);
-            vec2 offset = vec2(x,y) - game->oldMousePosition;
+            vec2 offset = vec2(x,y) - Game->oldMousePosition;
             offset.y *= -1; // reversed controls? this should be an option
 
-            game->camera->translateBy(vec3(offset/1000.f,0));
+            Game->camera->translateBy(vec3(offset/1000.f,0));
 
-            game->oldMousePosition = vec2(x,y);
+            Game->oldMousePosition = vec2(x,y);
 
         }
-        game->camera->handlePresetCursorPos(pWindow, x, y);
+        Game->camera->handlePresetCursorPos(pWindow, x, y);
     }
 }

@@ -1,0 +1,12 @@
+; for comment
+
+cameraPosition -0.625 0.4254289 0.0707107
+cameraLookAt -0.525 0.475 0
+viewSize 0.03
+
+sectorSize 0.05
+coordinateShifting -45 73
+
+testPoint -73.67 45.5454289
+
+buildingHeight 3

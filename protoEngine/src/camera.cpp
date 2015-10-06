@@ -11,7 +11,6 @@ using namespace glm;
 
 Camera::Camera()
 {
-    position = vec3(0,0,0);
     mvpMat = mat4(1);
     viewSize = 1;
     angle = 0;
@@ -40,6 +39,7 @@ Camera::Camera()
     keyMovementSpeedIncreaseFactor = 1.5f;
     mouseIsDragging = false;
 }
+
 
 void Camera::translateBy(vec3 delta)
 {

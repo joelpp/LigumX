@@ -1,4 +1,6 @@
 #include "renderer.h"
+#include "program_pipeline.h"
+
 using namespace glm;
 using namespace std;
 Renderer::Renderer(){
@@ -21,10 +23,10 @@ Renderer::Renderer(){
     // Initialise GLFW
     if( !glfwInit() )
     {
-        cerr << "Failed to initialize GLFW.\n";
+        PRINT("Failed to initialize GLFW.\n");
         return;
     } else {
-        clog << "Initialized GLFW." << endl;
+        PRINT("Initialized GLFW.");
     }
 
 
@@ -42,9 +44,7 @@ Renderer::Renderer(){
 
     // create GLFW window
 //    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
-    std::cout << "before";
     pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
-    std::cout << "after";
 
     glfwSetWindowPos(pWindow, 700, 200);
     glfwMakeContextCurrent(pWindow);
@@ -63,20 +63,20 @@ Renderer::Renderer(){
              << glewGetErrorString(err) << endl;
         return;
     } else {
-        clog << "Initialized GLEW." << endl;
+        PRINT("Initialized GLEW.");
     }
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-
+    std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
 #ifdef __APPLE__
-    textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/brickles.png"));
-    textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/grass.png"));
-    textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/rock.png"));
-    textureMap.emplace("ATLAS", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/Atlas.png"));
-    textureMap.emplace("asphalt", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/asphalt.jpg"));
-    textureMap.emplace("roof", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/roof_rgba.png"));
-    textureMap.emplace("building_side1", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/textures/building_side1_rgba.png"));
+    textureMap.emplace("bricks", new Texture("brickles.png"));
+    textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/grass.png"));
+    textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/rock.png"));
+    textureMap.emplace("ATLAS", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/Atlas.png"));
+    textureMap.emplace("asphalt", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/asphalt.jpg"));
+    textureMap.emplace("roof", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/roof_rgba.png"));
+    textureMap.emplace("building_side1", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/building_side1_rgba.png"));
 
 #else
     textureMap.emplace("bricks", new Texture("../textures/brickles.png"));
@@ -123,13 +123,13 @@ Renderer::Renderer(){
 
    FT_Face face;
 #ifdef __APPLE__
-   if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/fonts/arial.ttf",0,&face))
+   if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/fonts/arial.ttf",0,&face))
 #else
    if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
 #endif
        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
    else
-       cout << "Loaded Freetype font! yayy" << "\n";
+       PRINT("Loaded Freetype font! yayy");
    FT_Set_Pixel_Sizes(face, 0, 48);
    if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
        std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
@@ -251,23 +251,6 @@ void Renderer::render(){
         glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
         glClear(GL_COLOR_BUFFER_BIT);
 
-//        TODO: Remove this? Keep it as legacy in memory of the 3d days of ligumx? It shall stand the test of time for now.
-        // draw sky/ground
-//        pPipelineEnvmap->usePipeline();
-//        GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
-//        glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth, windowHeight);
-//        glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), sunOrientation);
-//        glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), sunTime);
-//        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.
-//        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
-//        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);
-//        glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "viewAngles"), camera->totalViewAngleY*glm::pi<float>()/180.0, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()/180.0);
-//        glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->near);
-//        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-//        glClear(GL_DEPTH_BUFFER_BIT);
-
-
-
         if (drawGround){
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
@@ -344,6 +327,25 @@ void Renderer::render(){
            RenderText(texts[i]);
        }
 
+    // screenshot
+//    if(saveScreenshot) {
+//        static unsigned int frameCount = 0;
+//        ++frameCount;
+//        std::stringstream filename;
+//        filename.clear();
+//        filename << "../output/frame" << std::setfill('0') << std::setw(5) << frameCount << ".png";
+
+//        BYTE* pixels = new BYTE[4 * windowWidth * windowHeight];
+//        glReadPixels(0, 0, windowWidth, windowHeight, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+//        FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, windowWidth, windowHeight, 4 * windowWidth, 32, 0x0000FF, 0xFF0000, 0x00FF00, false);
+//        if(FreeImage_Save(FIF_BMP, image, filename.str().c_str(), 0)) {
+//            std::cout << "screenshot '" << filename.str() << "' taken." << std::endl;
+//        } else {
+//            std::cout << "screenshot failed. Did you create the 'protoEngine/output' directory?" << std::endl;
+//        }
+//        FreeImage_Unload(image);
+//        delete [] pixels;
+//    }
 
 }
 
