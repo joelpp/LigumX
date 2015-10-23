@@ -1,5 +1,6 @@
 #include "heightfield.h"
 #include "triangle.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace glm;
@@ -19,19 +20,18 @@ void Heightfield::addTriangle(Triangle* tri){
 }
 
 void Heightfield::generateTriangles(){
-    PRINT("GENERATIRNG TRINGALES");
-    double step = 0.001;
+    double step = Settings::GetInstance().f("HeightfieldResolution");
 
-    int numberOfPointsPerSide = sideLength / step;
+    int numberOfPointsPerSide = sideLength / step + 1;
 
     
-    float lon = startPoint.x + 73;
-    float lat = startPoint.y - 45;
+    float lon = startPoint.x;
+    float lat = startPoint.y;
 
     for (int i = 0; i < numberOfPointsPerSide + 1; i++) points.push_back(std::vector<glm::vec3>());
     // Start by making horizontal lines
     for(int i = 0; i <= numberOfPointsPerSide; i++){
-        lat = startPoint.y - 45;
+        lat = startPoint.y;
 //        For each line generate a bunch of points
         for (int j =0; j <= numberOfPointsPerSide; j++){
 
@@ -53,7 +53,6 @@ void Heightfield::generateTriangles(){
         }
     }
     // triangles[100] = NULL;
-    PRINT(triangles.size());
 }
 
 inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }

@@ -3,7 +3,7 @@
 
 #include "glm/glm.hpp"
 #include "GLFW/glfw3.h"
-
+#include "Logging.h"
 
 // 2D orthographic camera, look in the -Z direction.
 class Camera
@@ -67,7 +67,8 @@ public:
             GLFWwindow *pWindow, int key, int scancode, int action, int mods);
     void qweasdzxcKeyHoldPreset(GLFWwindow* pWindow);
     void viewArrowsPreset(GLFWwindow* pWindow);
-
+private:
+    REGISTERCLASS(Camera);
 };
 
 #endif // CAMERA_H

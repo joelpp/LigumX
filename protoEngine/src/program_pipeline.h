@@ -1,20 +1,21 @@
-#ifndef PROGRAMPIPELINE_H
-#define PROGRAMPIPELINE_H
+#ifndef ProgramPipeline_H
+#define ProgramPipeline_H
 
 #include "GL/glew.h"
 #include "Logging.h"
+#include <string>
+#include <sstream>
 
 class ProgramPipeline
 {
-private:
-  REGISTERCLASS(ProgramPipeline);
+
 public:
     class ShaderProgram
     {
     public:
         GLenum shaderType;
         GLuint glidShaderProgram;
-    public:
+
         ShaderProgram();
         ShaderProgram(GLenum shaderType,
                       //std::initializer_list<std::string> srcFilenames,
@@ -23,8 +24,8 @@ public:
         ~ShaderProgram() {}
     };
 
-public:
-//private:
+    static std::string ShadersPath;
+
     ShaderProgram  *pVertexShader,
                    *pTessControlShader,
                    *pTessEvalShader,
@@ -33,11 +34,9 @@ public:
     ShaderProgram *pFragmentShader;
     GLuint glidProgramPipeline;
     GLuint glidVao;
-    
 
-public:
     ProgramPipeline();
-//    void useShaders(std::initializer_list<ShaderProgram*> shaders);
+    ProgramPipeline(std::string name);
     void useVertexShader(ShaderProgram* shader);
     void useGeometryShader(ShaderProgram* shader);
     void useFragmentShader(ShaderProgram* shader);
@@ -47,6 +46,8 @@ public:
 
     void usePipeline();
 
+private:
+    REGISTERCLASS(ProgramPipeline);
 };
 
-#endif // PROGRAMPIPELINE_H
+#endif // ProgramPipeline_H

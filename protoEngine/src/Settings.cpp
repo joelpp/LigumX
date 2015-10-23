@@ -2,6 +2,7 @@
 
 typedef std::vector<std::string> StringVector;
 
+
 const std::vector<std::string> explode(const std::string& s, const char& c) //thanks to cplusplus.com
 {
 	std::string buff{""};
@@ -17,6 +18,18 @@ const std::vector<std::string> explode(const std::string& s, const char& c) //th
 	return v;
 }
 
+void Settings::add(std::string key, glm::vec2 vec){
+	vec = glm::trunc(vec);
+
+	std::stringstream ss;
+	ss << vec.x;
+	ss << " ";
+	ss << vec.y;
+
+	m_settings.emplace(key, ss.str());
+}
+
+
 bool Settings::load()
 {
 	std::string key, value, line;
@@ -25,13 +38,10 @@ bool Settings::load()
 
 	while (std::getline(file, line))
 	{
-		PRINT(line);
-
-		if ( (line.size() == 0) || (line.at(0) == ';') )
+		if ( (line.size() == 0) || (line.at(0) == ';') )
 		{
 			continue;
 		}
-		PRINTSTRING("passed!");
 		
 		StringVector v{explode(line, ' ')};
 
@@ -40,22 +50,22 @@ bool Settings::load()
 		std::stringstream ss;
 		for(int i = 1; i < v.size(); ++i)
 		{
-			ss << v[i] << " ";
+			ss << v[i] << " ";
 		}
 		value = ss.str();
-		std::cout << key;
+		std::cout << key;
 		std::cout << value;
 		m_settings.emplace(key, value);
 	}
-
+	return true;
 }
 
 std::string Settings::getFormatted(std::string key)
 {
 		std::stringstream ss;
-		ss << key;
+		ss << key;
 		ss << " : ";
-		ss << m_settings[key];
+		ss << m_settings[key];
 		return ss.str();
 }
 
@@ -81,10 +91,43 @@ glm::vec2 Settings::f2(std::string key)
 
 	return vValue;
 }
+
+// glm::vec2 Settings::i2(std::string key)
+// {
+// 	StringVector v{ explode(m_settings[key], ' ') };
+
+// 	glm::vec2 vValue;
+// 	vValue.x = std::atoi(v[0].c_str());
+// 	vValue.y = std::atoi(v[1].c_str());
+
+// 	return vValue;
+// }
+std::string Settings::s(std::string key){
+	std::string shallowcopy = m_settings[key];
+	shallowcopy.pop_back();
+	return shallowcopy; // Apparently the pop_back is needed or we get a space....?
+}
+
 float Settings::f(std::string key){
 	return std::atof(m_settings[key].c_str());
 }
 
 int Settings::i(std::string key){
 	return std::atoi(m_settings[key].c_str());
+}
+
+glm::vec2 Settings::i2(std::string key){
+	StringVector v{ explode(m_settings[key], ' ') };
+
+	glm::vec2 vValue;
+	vValue.x = std::atoi(v[0].c_str());
+	vValue.y = std::atoi(v[1].c_str());
+
+	return vValue;
+}
+
+
+bool Settings::b(std::string key){
+	std::string val = m_settings[key];
+	return (val.compare("true") == 0) ? true : false;
 }

@@ -20,15 +20,15 @@ static std::string GetTimeString(){
 
 #define REGISTERCLASS(c) static constexpr const char* _ClassName = #c;
 
-#define PRINTCLASSNAME std::cout << "[" << _ClassName << "] "
-#define PRINTCLASSTIME std::cout << GetTimeString() << " : [" << _ClassName << "] "
+#define PRINTCLASSNAME std::cout << "[" << _ClassName << "::" << __func__ << "] "
+#define PRINTCLASSTIME std::cout << GetTimeString() << " : [" <<_ClassName<< "::" << __func__ << " (" << __LINE__ << ") ] "
 
 
 
 #define PRINTVEC2(v) { PRINTCLASSTIME << #v << ": x=" << v.x << " y=" << v.y << "\n"; }
 #define PRINTVEC2VECTOR(v) { for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y << "\n"; }
 #define PRINTVEC3(v) { PRINTCLASSTIME << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << "\n"; }
-#define PRINTVEC3VECTOR(v) { for (int _index_ = 0; _index_ < v.size(); _index_++) std::cout << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y  << v[_index_].z << "\n"; }
+#define PRINTVEC3VECTOR(v) { for (int _index_ = 0; _index_ < v.size(); _index_++) PRINTCLASSTIME << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y  << v[_index_].z << "\n"; }
 #define PRINT(f) { PRINTCLASSTIME << #f << ": " << f << "\n"; }
 #define PRINTSTRING(f) { PRINTCLASSTIME << f << "\n"; }
 #define PRINTBOOL(B) { string b = B==1?"TRUE":"FALSE"; std::cout << #B << " : " << b << "\n"; }

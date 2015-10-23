@@ -375,10 +375,10 @@ public:
             _blockPtrs.Push( block );
 
             for( int i=0; i<COUNT-1; ++i ) {
-                block->chunk[i].next = &block->chunk[i+1];
+                block->sector[i].next = &block->sector[i+1];
             }
-            block->chunk[COUNT-1].next = 0;
-            _root = block->chunk;
+            block->sector[COUNT-1].next = 0;
+            _root = block->sector;
         }
         void* result = _root;
         _root = _root->next;
@@ -397,12 +397,12 @@ public:
             return;
         }
         --_currentAllocs;
-        Chunk* chunk = static_cast<Chunk*>( mem );
+        Sector* sector = static_cast<Sector*>( mem );
 #ifdef DEBUG
-        memset( chunk, 0xfe, sizeof(Chunk) );
+        memset( sector, 0xfe, sizeof(Sector) );
 #endif
-        chunk->next = _root;
-        _root = chunk;
+        sector->next = _root;
+        _root = sector;
     }
     void Trace( const char* name ) {
         printf( "Mempool %s watermark=%d [%dk] current=%d size=%d nAlloc=%d blocks=%d\n",
@@ -432,15 +432,15 @@ private:
     MemPoolT( const MemPoolT& ); // not supported
     void operator=( const MemPoolT& ); // not supported
 
-    union Chunk {
-        Chunk*  next;
+    union Sector {
+        Sector*  next;
         char    mem[SIZE];
     };
     struct Block {
-        Chunk chunk[COUNT];
+        Sector sector[COUNT];
     };
     DynArray< Block*, 10 > _blockPtrs;
-    Chunk* _root;
+    Sector* _root;
 
     int _currentAllocs;
     int _nAllocs;

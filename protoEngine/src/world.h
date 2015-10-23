@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <sstream>
+#include <vector>
 
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
@@ -12,6 +13,7 @@
 class Sector;
 
 typedef glm::vec2 Coord2;
+typedef std::vector<Sector*> SectorList;
 
 struct Sun{
     float orientation = 0;
@@ -42,6 +44,7 @@ public:
     World(float sectorSize);
     Sun sun;
     Sector* createSector(Coord2 pos);
+    
     /**
      * [Normalized Takes in a World-Space point and returns the coordinates (on a normalized grid) of the sector holding it]
      * @param  UnNormalized [The WS position to check against]
@@ -61,7 +64,10 @@ public:
      * @param  longLat [The position of a point in the sector.]
      * @return     [A pointer to the sector.]
      */
-    Sector* SectorFromXY(Coord2 longLat);
+    Sector* GetOrCreateSectorContainingXY(Coord2 longLat);
+    Sector* GetOrCreateSectorAtXY(Coord2 longLat, SectorList* newSectors);
+
+    SectorList* loadSectorsAroundPoint(Coord2 point, int ringSize);
 
     float m_sectorSize;
     float m_invSectorSize;

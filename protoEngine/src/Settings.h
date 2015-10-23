@@ -10,13 +10,7 @@
 #include "Logging.h"
 
 class Settings{
-private:
-	REGISTERCLASS(Settings);
-	std::unordered_map<std::string, std::string> m_settings;
-
-
 public:
-	Settings(){};
 
 	std::string get(std::string key)
 	{
@@ -27,6 +21,8 @@ public:
 	{
 		m_settings.emplace(key, value);
 	}
+
+	void add(std::string key, glm::vec2 vec);
 
 	std::string getFormatted(std::string key);
 
@@ -44,4 +40,26 @@ public:
 	glm::vec2 f2(std::string key);
 	float f(std::string key);
 	int i(std::string key);
+	glm::vec2 i2(std::string key);
+	std::string s(std::string key);
+	bool b(std::string key);
+
+   static Settings& GetInstance()
+    {
+        static Settings instance; // Guaranteed to be destroyed.
+                              	  // Instantiated on first use.
+        return instance;
+    }
+private:
+	REGISTERCLASS(Settings);
+	std::unordered_map<std::string, std::string> m_settings;
+
+    Settings() {};                   // Constructor? (the {} brackets) are needed here.
+
+    // C++ 11
+    // =======
+    // We can use the better technique of deleting the methods
+    // we don't want.
+    Settings(Settings const&)               = delete;
+    void operator=(Settings const&)  = delete;
 };

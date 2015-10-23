@@ -37,7 +37,8 @@ string curl_request(char* path){
 
 string queryBoundingBox(float left, float bottom, float right, float top){
 	char path[100];
-	sprintf(path, "http://open.mapquestapi.com/xapi/api/0.6/map?bbox=%f,%f,%f,%f", left, bottom, right, top);
+	// sprintf(path, "http://api.openstreetmap.fr/xapi?*[bbox=%f,%f,%f,%f]", left, bottom, right, top);
+	sprintf(path, "http://api.openstreetmap.fr/xapi?*[bbox=%f,%f,%f,%f]", left, bottom, right, top);
 	cout << path;
 	return curl_request(path);
 }
@@ -68,7 +69,9 @@ int main()
 			maxLat += step;
 			std::cout << minLon << " " << maxLon << " " << minLat << " " << maxLat << "\n";
 			index++;
+			break;
 		}
+		break;
 		minLon = maxLon;
 		maxLon += step;
 	}

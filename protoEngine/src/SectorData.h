@@ -86,7 +86,7 @@ public:
     
     Node* findClosestNode(glm::vec2 xy);
 
-    
+    void downloadData();
     //TODO: Implement this (in the right place)
     // std::vector<Way*> getNearestWays(OSMElement::ElementType type,double lon,double lat,double maxResults);
 

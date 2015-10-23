@@ -11,13 +11,14 @@
 #include <stdlib.h>
 #include <map>
 
+#include "renderer.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "AntTweakBar.h"
 #include "Logging.h"
-#include "renderer.h"
 #include "entity.h"
 #include "settings.h"
+
 
 // class Renderer;
 class OSMElement;
@@ -27,7 +28,9 @@ class Way;
 class LineSegment;
 class Triangle;
 class World;
+class RenderDataManager;
 // class Settings;
+// 
 
 #define TIME(x)    {auto begin = std::chrono::high_resolution_clock::now();\
                     x;\
@@ -38,30 +41,18 @@ class World;
 #define string_pair std::pair<std::string,std::string>
 
 class LigumX {
-private:
-    REGISTERCLASS(LigumX);
+
 public:
 
     // general state and functions
-    LigumX() {init();}
     void init();
     bool running;
     void mainLoop();
 
     World* getWorld();
-    Settings m_settings;
 
     std::pair<glm::vec2, glm::vec2> windowBoundingBox();
-    void fillBuffers(std::vector<glm::vec3> *nodesPositions,
-                     std::vector<glm::vec3> *waysNodesPositions,
-                     std::vector<glm::vec3> *waysNodesColors,
-                     std::vector<glm::vec3> *roadsPositions,
-                     std::vector<glm::vec3> *buildingTrianglePositions,
-                     std::vector<glm::vec3> *buildingLines,
-                     std::vector<float> *buildingLinesTexCoords,
-                     std::vector<glm::vec3> *groundTrianglesPositions,
-                     std::vector<glm::vec2> *groundTrianglesUV,
-                     std::vector<float> *groundTriangleTextureIDs);
+    void updateRenderData();
 
     // TODO: move this to data
     void populateTypeColorArray();
@@ -87,6 +78,7 @@ public:
 //                       GLsizei /*length*/, const GLchar* /*message*/, const void* /*pVoidWindow*/);
 
 
+
     //TODO: maybe some kind of viewport struct or class could hold a camera, renderer (or renderer holds viewport), mouse positions, etc.
     // camera
     Camera* camera;
@@ -94,15 +86,11 @@ public:
     glm::vec2 oldMousePosition;
     glm::vec2 windowPosToWorldPos(glm::vec2 ij);
 
-    // viewing
-    Renderer renderer;
 
-    // data
-    std::vector<glm::vec3> groundTrianglesPositions; // positions of nodes forming ways, possibly contains duplicates.
-    std::vector<glm::vec2> groundTrianglesUV;
     std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;
     std::unordered_map<std::string, int> tagConversionTable;
     World* world;
+    RenderDataManager* renderData;
 
     // debug stuff
 
@@ -146,8 +134,25 @@ public:
 
 
 //    void RenderText(Text t);
-};
+//    
+//    
+static LigumX& GetInstance()
+{
+    static LigumX instance; // Guaranteed to be destroyed.
+                              // Instantiated on first use.
+    return instance;
+}
+private:
+    REGISTERCLASS(LigumX);
 
-extern LigumX* Game;
+    LigumX() {};                   // Constructor? (the {} brackets) are needed here.
+
+    // C++ 11
+    // =======
+    // We can use the better technique of deleting the methods
+    // we don't want.
+    LigumX(LigumX const&)               = delete;
+    void operator=(LigumX const&)  = delete;
+};
 
 #endif // GAME_H

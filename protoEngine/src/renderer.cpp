@@ -1,9 +1,9 @@
 #include "renderer.h"
 #include "program_pipeline.h"
-
+#include "Mesh.h"
 using namespace glm;
 using namespace std;
-Renderer::Renderer(){
+void Renderer::Initialize(){
 
     fancyDisplayMode = false;
     showText = false;
@@ -70,7 +70,7 @@ Renderer::Renderer(){
     glDepthFunc(GL_LESS);
     std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
 #ifdef __APPLE__
-    textureMap.emplace("bricks", new Texture("brickles.png"));
+    textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/brickles.png"));
     textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/grass.png"));
     textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/rock.png"));
     textureMap.emplace("ATLAS", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/Atlas.png"));
@@ -119,7 +119,7 @@ Renderer::Renderer(){
 
    FT_Library ft;
    if (FT_Init_FreeType(&ft))
-       std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+       std::cout << "ERROR::FREETYPE: Could nolololt init FreeType Library" << std::endl;
 
    FT_Face face;
 #ifdef __APPLE__
@@ -198,6 +198,14 @@ void Renderer::render(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+        glBindProgramPipeline(pPipelineBasic->glidProgramPipeline);
+        glBindVertexArray(mesh->m_VAO);
+        glProgramUniformMatrix4fv(pPipelineBasic->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+            
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
         // draw ground
         if (drawGround){
             glActiveTexture(GL_TEXTURE0);
@@ -247,7 +255,7 @@ void Renderer::render(){
 //        entityManager.Render(camera->mvpMat);
 #endif
     } else {
-
+      
         glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -304,12 +312,12 @@ void Renderer::render(){
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
 
-        pPipelineBuildings->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
-//            glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
-        glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
-        glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
-        glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
+//         pPipelineBuildings->usePipeline();
+//         glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+// // /           glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
+//         glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
+//         glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
+//         glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
 
         // draw building sides
         glActiveTexture(GL_TEXTURE0);
@@ -320,12 +328,12 @@ void Renderer::render(){
         glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uScaleFactor"), 1);
         glDrawArrays(GL_LINES, 0, nbBuildingLines);
     }
-   RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
-   RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
-   if (showText)
-       for (int i = 0; i < texts.size(); i++){
-           RenderText(texts[i]);
-       }
+   // RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
+   // RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
+   // if (showText)
+   //     for (int i = 0; i < texts.size(); i++){
+   //         RenderText(texts[i]);
+   //     }
 
     // screenshot
 //    if(saveScreenshot) {
@@ -346,10 +354,33 @@ void Renderer::render(){
 //        FreeImage_Unload(image);
 //        delete [] pixels;
 //    }
+//    
 
+
+
+      GLenum err;
+      while ((err = glGetError()) != GL_NO_ERROR) 
+      {
+        string error;
+
+        switch(err) 
+        {
+          case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
+          case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
+          case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
+          case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
+          case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
+        }
+
+        PRINT(error.c_str());
+        err=glGetError();    
+      }
 }
 
-void Renderer::RenderText(Text t){
+
+
+void Renderer::RenderText(Text t)
+{
    glEnable(GL_CULL_FACE);
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -501,4 +532,5 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
    glDisable(GL_CULL_FACE);
 
 }
+
 

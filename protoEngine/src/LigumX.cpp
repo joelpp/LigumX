@@ -7,36 +7,73 @@
 #include "LigumX.h"
 #include "SectorData.h"
 #include "Settings.h"
-
-
+#include "RenderDataManager.h"
+#include "World.h"
 using namespace glm;
 using namespace std;
 
+std::string ProgramPipeline::ShadersPath;
+const double static_dt = 1.0 / 100.0;
 
-LigumX* Game;
 
 int main(int argc, char *argv[])
 {
     srand(987654321);
 
-    Game = new LigumX();
-    while(Game->running) {
+    LigumX& game = LigumX::GetInstance();
+    game.running = true;
+    game.init();
+    while(game.running) {
         glfwPollEvents();
 
-        Game->mainLoop();
+        game.mainLoop();
 
-        glfwSwapBuffers(Game->renderer.pWindow);
+        glfwSwapBuffers(Renderer::GetInstance().pWindow);
     }
 
     glfwTerminate();
     return 0;
 }
 
-World* LigumX::getWorld(){
+void LigumX::mainLoop()
+{
+    static double dt = 0.0;
+//    static double curr_time = glfwGetTime();
+    static double physic_accumulator = 0.0;
+
+    physic_accumulator += dt;
+
+    camera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
+
+    Renderer& renderer = Renderer::GetInstance();
+    updateRenderData();
+    renderer.render();
+
+    if(showTweakBar) TwDraw();
+}
+
+void LigumX::updateRenderData()
+{
+    Renderer& renderer = Renderer::GetInstance();
+    std::vector<Sector*>* newSectors = world->loadSectorsAroundPoint(glm::vec2(camera->position), Settings::GetInstance().i("loadingRingSize"));
+
+    for(int i = 0; i < newSectors->size(); ++i)
+    {
+
+        renderData->addToTerrainBuffer(newSectors->at(i));
+        renderData->fillBuffers(newSectors->at(i));
+        renderer.init_pipelines();
+    }
+
+    delete(newSectors);
+}
+World* LigumX::getWorld()
+{
     return world;
 }
 
-string LigumX::labelFromType(OSMElement::ElementType type){
+string LigumX::labelFromType(OSMElement::ElementType type)
+{
     switch (type){
         case(OSMElement::HIGHWAY_TRUNK):        return "Highway (trunk)"; break;
         case(OSMElement::HIGHWAY_PRIMARY):      return "Highway (primary)";break;
@@ -58,36 +95,41 @@ string LigumX::labelFromType(OSMElement::ElementType type){
         case(OSMElement::RAILWAY_SUBWAY):       return "Railway (subway)";break;
         case(OSMElement::LANDUSE):              return "Land use";break;
         case(OSMElement::BOUNDARY):             return "Boundary";break;
+        case(OSMElement::SIDEWALK):             return "Sidewalk";break;
+        case(OSMElement::NOT_IMPLEMENTED):      return "NOT_IMPLEMENTED";break;
+        case(OSMElement::ANY_TYPE):             return "ANY_TYPE";break;
 
     }
+    return "!!! WRONG TYPE !!!";
 }
 
 void LigumX::initCamera(){
     camera = new Camera();
-    camera->setViewSize(m_settings.f("viewSize"));
-    renderer.camera = camera;
+    camera->setViewSize(Settings::GetInstance().f("viewSize"));
+    Renderer::GetInstance().camera = camera;
     draggingCamera = false;
 
-    camera->translateTo(m_settings.f3("cameraPosition"));
-    camera->lookAtTargetPos = m_settings.f3("cameraLookAt");
-
-    PRINTVEC3(camera->position)
-    PRINTVEC3(camera->lookAtTargetPos);
+    camera->translateTo(Settings::GetInstance().f3("cameraPosition"));
+    camera->lookAtTargetPos = Settings::GetInstance().f3("cameraLookAt");
 }
 
 void LigumX::loadSettings(){
-    m_settings.load();
+    Settings& s = Settings::GetInstance();
+    s.load();
 
-    buildingHeight = m_settings.i("buildingheight");
+    glm::vec2 coordinateShift = trunc(Settings::GetInstance().f2("cameraPosition"));
+    s.add("coordinateShifting", -coordinateShift);
+    buildingHeight = s.i("buildingHeight");
     buildingSideScaleFactor = 1;
-    renderer.drawGround = false;
-    renderer.showText = false;
+    Renderer::GetInstance().drawGround = false;
+    Renderer::GetInstance().showText = false;
     showTweakBar = false;
+    ProgramPipeline::ShadersPath = s.s("ShadersPath");
 
 }
 
 void LigumX::populateTypeColorArray(){
-
+    Renderer& renderer = Renderer::GetInstance();
     renderer.typeColorMap.emplace(OSMElement::HIGHWAY_TRUNK, vec3(1,1,1));
     renderer.typeColorMap.emplace(OSMElement::HIGHWAY_PRIMARY, vec3(0.9,0.9,0.9));
     renderer.typeColorMap.emplace(OSMElement::HIGHWAY_SECONDARY, vec3(0.8,0.8,0.8));
@@ -109,13 +151,6 @@ void LigumX::populateTypeColorArray(){
     renderer.typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0,1.0,1.0));
     renderer.typeColorMap.emplace(OSMElement::CONTOUR, vec3(0.1,0.1,0.1));
 
-//    /*
-
-
-    // for (auto it = typeColorMap.begin; it != typeColorMap.end; it++){
-        // displayElementType.emplace(it->first, true);
-    // }
-//*/
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_TRUNK, true);
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_PRIMARY, true);
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_SECONDARY, true);

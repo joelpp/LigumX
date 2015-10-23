@@ -350,7 +350,7 @@ typedef enum {
      will not be considered for pipelining */
   CINIT(CONTENT_LENGTH_PENALTY_SIZE, OFF_T, 9),
 
-  /* a connection with a chunk length longer than this
+  /* a connection with a sector length longer than this
      will not be considered for pipelining */
   CINIT(CHUNK_LENGTH_PENALTY_SIZE, OFF_T, 10),
 

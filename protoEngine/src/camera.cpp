@@ -4,6 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtx/transform.hpp>
 #include <iostream>
+#include "Settings.h"
 
 #define PI (3.14159265359)
 
@@ -49,7 +50,16 @@ void Camera::translateBy(vec3 delta)
 
 void Camera::translateTo(vec3 inPosition)
 {
+    //TODO: handle this better
+    glm::vec2 coordinateShifting = Settings::GetInstance().f2("coordinateShifting");
+
+
     position = inPosition;
+
+    position.x += coordinateShifting.x;
+    position.y += coordinateShifting.y;
+
+    PRINTVEC2(position);
     updateMVPMatrix();
 }
 

@@ -146,6 +146,42 @@ void ProgramPipeline::usePipeline()
     glBindVertexArray(this->glidVao);
 }
 
+ProgramPipeline::ProgramPipeline(std::string name)
+{
+    pVertexShader = NULL;
+    pTessControlShader = NULL;
+    pTessEvalShader = NULL;
+    pGeometryShader = NULL;
+    pFragmentShader = NULL;
+    pComputeShader = NULL;
+
+
+    std::stringstream path;
+    path << ShadersPath;
+    path << name << "/";
+    // ProgramPipeline::ShaderProgram* pVertexShader = new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false);
+    // ProgramPipeline::ShaderProgram* pFragmentShader = new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false);
+
+#ifdef __APPLE__
+    glGenProgramPipelines(1, &glidProgramPipeline);
+    glBindProgramPipeline(glidProgramPipeline);
+    glGenVertexArrays(1, &glidVao);
+    glBindVertexArray(glidVao);
+#else
+     glCreateProgramPipelines(1, &glidProgramPipeline);
+     glCreateVertexArrays(1, &glidVao);
+#endif
+
+
+    // useVertexShader(pVertexShader);
+    // useFragmentShader(pFragmentShader);
+
+    useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
+    useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
+
+
+}
+
 ProgramPipeline::ProgramPipeline()
 {
     pVertexShader = NULL;

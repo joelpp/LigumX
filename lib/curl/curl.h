@@ -257,12 +257,12 @@ struct curl_fileinfo {
 /* return codes for CURLOPT_CHUNK_BGN_FUNCTION */
 #define CURL_CHUNK_BGN_FUNC_OK      0
 #define CURL_CHUNK_BGN_FUNC_FAIL    1 /* tell the lib to end the task */
-#define CURL_CHUNK_BGN_FUNC_SKIP    2 /* skip this chunk over */
+#define CURL_CHUNK_BGN_FUNC_SKIP    2 /* skip this sector over */
 
 /* if splitting of data transfer is enabled, this callback is called before
-   download of an individual chunk started. Note that parameter "remains" works
+   download of an individual sector started. Note that parameter "remains" works
    only for FTP wildcard downloading (for now), otherwise is not used */
-typedef long (*curl_chunk_bgn_callback)(const void *transfer_info,
+typedef long (*curl_sector_bgn_callback)(const void *transfer_info,
                                         void *ptr,
                                         int remains);
 
@@ -271,12 +271,12 @@ typedef long (*curl_chunk_bgn_callback)(const void *transfer_info,
 #define CURL_CHUNK_END_FUNC_FAIL    1 /* tell the lib to end the task */
 
 /* If splitting of data transfer is enabled this callback is called after
-   download of an individual chunk finished.
-   Note! After this callback was set then it have to be called FOR ALL chunks.
-   Even if downloading of this chunk was skipped in CHUNK_BGN_FUNC.
+   download of an individual sector finished.
+   Note! After this callback was set then it have to be called FOR ALL sectors.
+   Even if downloading of this sector was skipped in CHUNK_BGN_FUNC.
    This is the reason why we don't need "transfer_info" parameter in this
    callback and we are not interested in "remains" parameter too. */
-typedef long (*curl_chunk_end_callback)(void *ptr);
+typedef long (*curl_sector_end_callback)(void *ptr);
 
 /* return codes for FNMATCHFUNCTION */
 #define CURL_FNMATCHFUNC_MATCH    0 /* string corresponds to the pattern */
@@ -518,7 +518,7 @@ typedef enum {
   CURLE_RTSP_CSEQ_ERROR,         /* 85 - mismatch of RTSP CSeq numbers */
   CURLE_RTSP_SESSION_ERROR,      /* 86 - mismatch of RTSP Session Ids */
   CURLE_FTP_BAD_FILE_LIST,       /* 87 - unable to parse FTP file list */
-  CURLE_CHUNK_FAILED,            /* 88 - chunk callback reported error */
+  CURLE_CHUNK_FAILED,            /* 88 - sector callback reported error */
   CURLE_NO_CONNECTION_AVAILABLE, /* 89 - No connection available, the
                                     session will be queued */
   CURLE_SSL_PINNEDPUBKEYNOTMATCH, /* 90 - specified pinned public key did not
@@ -1504,17 +1504,17 @@ typedef enum {
   CINIT(WILDCARDMATCH, LONG, 197),
 
   /* Directory matching callback called before downloading of an
-     individual file (chunk) started */
+     individual file (sector) started */
   CINIT(CHUNK_BGN_FUNCTION, FUNCTIONPOINT, 198),
 
-  /* Directory matching callback called after the file (chunk)
+  /* Directory matching callback called after the file (sector)
      was downloaded, or skipped */
   CINIT(CHUNK_END_FUNCTION, FUNCTIONPOINT, 199),
 
   /* Change match (fnmatch-like) callback for wildcard matching */
   CINIT(FNMATCH_FUNCTION, FUNCTIONPOINT, 200),
 
-  /* Let the application define custom chunk data pointer */
+  /* Let the application define custom sector data pointer */
   CINIT(CHUNK_DATA, OBJECTPOINT, 201),
 
   /* FNMATCH_FUNCTION user pointer */

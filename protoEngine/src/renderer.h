@@ -20,6 +20,7 @@
 #include "camera.h"
 #include "osm_element.h"
 
+class Mesh;
 struct Text {
     std::string text;
     glm::vec3 position;
@@ -30,10 +31,9 @@ struct Text {
 };
 
 class Renderer{
-private:
-    REGISTERCLASS(Renderer);
+
 public:
-    Renderer();
+    void Initialize();
     Camera *camera;
     bool fancyDisplayMode;
     bool drawBuildingSides;
@@ -45,7 +45,6 @@ public:
     std::string windowTitle;
     GLFWwindow* pWindow;
     bool saveScreenshot;
-
 
     // textures
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.
@@ -63,7 +62,8 @@ public:
     ProgramPipeline* pPipelineEnvmap;
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
-    std::unordered_map<std::string, ProgramPipeline*> programPipelinesMap;
+    ProgramPipeline* pPipelineBasic;
+    std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
@@ -73,6 +73,7 @@ public:
     ProgramPipeline::ShaderProgram* pFragmentShader2;
     ProgramPipeline::ShaderProgram* pFragmentShader3;
 
+    Mesh* mesh;
 
     // VBOs
     GLuint glidNodesPositions;
@@ -120,7 +121,8 @@ public:
    void RenderText(Text t);
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
     //text renderign stuff
-    struct Character {
+    struct Character 
+    {
         GLuint     TextureID;  // ID handle of the glyph texture
         glm::ivec2 Size;       // Size of glyph
         glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
@@ -132,7 +134,8 @@ public:
 
 
 
-    template<typename T> void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) {
+    template<typename T> static void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) 
+    {
 #ifdef __APPLE__
         glGenBuffers(1, &bufferName);
         glBindBuffer(GL_ARRAY_BUFFER, bufferName);
@@ -150,6 +153,41 @@ public:
         glNamedBufferSubData(bufferName, 0, bufferData.size() * sizeof(T), bufferData.data());
 #endif
     }
+
+    template<typename T> 
+    void updateGLBuffer(GLuint &bufferName, std::vector<T> bufferData) 
+    {
+#ifdef __APPLE__
+        glBindBuffer(GL_ARRAY_BUFFER, bufferName);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, bufferData.size() * sizeof(T), bufferData.data());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+#else
+        // glNamedBufferStorage(bufferName, bufferData.size() * sizeof(T), // nbWaysNodes * vec2 * float
+        //                      NULL,
+        //                      GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+        //                      GL_MAP_WRITE_BIT);
+        glNamedBufferSubData(bufferName, 0, bufferData.size() * sizeof(T), bufferData.data());
+#endif
+    }
+
+    static Renderer& GetInstance()
+     {
+         static Renderer instance; // Guaranteed to be destroyed.
+                                   // Instantiated on first use.
+         return instance;
+     }
+private:
+    REGISTERCLASS(Renderer);
+
+    Renderer() {};                   // Constructor? (the {} brackets) are needed here.
+
+    // C++ 11
+    // =======
+    // We can use the better technique of deleting the methods
+    // we don't want.
+    Renderer(Renderer const&)               = delete;
+    void operator=(Renderer const&)  = delete;
+
 };
 
 #endif // RENDERER

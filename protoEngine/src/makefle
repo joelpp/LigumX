@@ -1,2 +1,0 @@
-LigumXmake: src/*.cpp src/*.h
-	gcc -o build/osx/ligumx_frommake src/*.cpp src/*.h -I.

@@ -12,7 +12,7 @@ using namespace glm;
 
 void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 {
-    Game->running = false;
+    LigumX::GetInstance().running = false;
 }
 
 void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
@@ -20,9 +20,9 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, do
     if(!TwEventMouseWheelGLFW(yOffset)) {
         static const float factor = 1.1;
         if(yOffset < 0) {
-            Game->camera->multViewSizeBy(factor);
+            LigumX::GetInstance().camera->multViewSizeBy(factor);
         } else {
-            Game->camera->multViewSizeBy(1.f/factor);
+            LigumX::GetInstance().camera->multViewSizeBy(1.f/factor);
         }
     }
 }
@@ -31,26 +31,26 @@ void LigumX::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int act
 {
     if(!TwEventKeyGLFW(key, action)) {
         // send event to entity Manager (temporary before a playerInput class)
-        Game->entityManager.KeyCallback(key, action);
+        LigumX::GetInstance().entityManager.KeyCallback(key, action);
 
         if(action == GLFW_PRESS){
-            if (key == GLFW_KEY_SPACE) { Game->showTweakBar = !Game->showTweakBar; }
+            if (key == GLFW_KEY_SPACE) { LigumX::GetInstance().showTweakBar = !LigumX::GetInstance().showTweakBar; }
             if (key == GLFW_KEY_ESCAPE) {
-                if(Game->camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) Game->camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+                if(LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) LigumX::GetInstance().camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
             }
-            if (key == GLFW_KEY_R) { Game->renderer.init_pipelines(); }
+            if (key == GLFW_KEY_R) { Renderer::GetInstance().init_pipelines(); }
             if (key == GLFW_KEY_M) {
-                for( auto it = Game->renderer.displayElementType.begin(); it != Game->renderer.displayElementType.end(); ++it){
+                for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it){
                     it->second = false;
                 }
             }
 
             if(key == GLFW_KEY_F4) {
-                Game->toggleEntityLand();
+                LigumX::GetInstance().toggleEntityLand();
             }
 
         }
-        Game->camera->handlePresetKey(pWindow, key, scancode, action, mods);
+        LigumX::GetInstance().camera->handlePresetKey(pWindow, key, scancode, action, mods);
     }
 }
 
@@ -62,52 +62,52 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
             // double x,y;
             // glfwGetCursorPos(pWindow, &x, &y);
-            // vec2 worldPos = Game->windowPosToWorldPos(vec2(x,y));
+            // vec2 worldPos = LigumX::GetInstance().windowPosToWorldPos(vec2(x,y));
             // int index = 0;
             // std::vector<Way*> closests;
             // std::vector<double> distances;
             // std::vector<vec2> directions;
             // vector<std::pair<Node*, Node*>> nodePairs;
             // int filter = OSMElement::CONTOUR;
-            // TIME(closests = Game->findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
+            // TIME(closests = LigumX::GetInstance().findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
 
             // if (closests[0] == NULL) return;
-            // TIME(Game->updateSelectedWay(closests[0]));
+            // TIME(LigumX::GetInstance().updateSelectedWay(closests[0]));
             // PRINTELEMENTVECTOR(closests);
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){
 //            if (action == GLFW_PRESS){
-//                Game->draggingCamera = true;
+//                LigumX::GetInstance().draggingCamera = true;
 //                double x; double y;
 //                glfwGetCursorPos(pWindow, &x, &y);
-//                Game->oldMousePosition = vec2(x,y);
+//                LigumX::GetInstance().oldMousePosition = vec2(x,y);
 //            }
 //            else if (action == GLFW_RELEASE){
-//                Game->draggingCamera = false;
+//                LigumX::GetInstance().draggingCamera = false;
 //            }
         }
 
-        Game->camera->handlePresetMouseButton(pWindow, button, action, mods);
+        LigumX::GetInstance().camera->handlePresetMouseButton(pWindow, button, action, mods);
 //        TODO
-        //        Game->renderer->updateMVPMatrix();
+        //        LigumX::GetInstance().renderer->updateMVPMatrix();
     }
 }
 
 void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 {
     if(!TwEventMousePosGLFW(x, y)) {
-        if (Game->draggingCamera){
+        if (LigumX::GetInstance().draggingCamera){
             double x; double y;
             glfwGetCursorPos(pWindow, &x, &y);
-            vec2 offset = vec2(x,y) - Game->oldMousePosition;
+            vec2 offset = vec2(x,y) - LigumX::GetInstance().oldMousePosition;
             offset.y *= -1; // reversed controls? this should be an option
 
-            Game->camera->translateBy(vec3(offset/1000.f,0));
+            LigumX::GetInstance().camera->translateBy(vec3(offset/1000.f,0));
 
-            Game->oldMousePosition = vec2(x,y);
+            LigumX::GetInstance().oldMousePosition = vec2(x,y);
 
         }
-        Game->camera->handlePresetCursorPos(pWindow, x, y);
+        LigumX::GetInstance().camera->handlePresetCursorPos(pWindow, x, y);
     }
 }

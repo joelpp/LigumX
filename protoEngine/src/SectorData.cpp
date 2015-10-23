@@ -3,11 +3,17 @@
 #include "way.h"
 #include "relation.h"
 #include "osm_element.h"
+#include "Settings.h"
+#include "CurlRequest.h"
+#include <sstream>
+#include <fstream>
 
 using namespace std;
 using namespace glm;
 
 OSMElement::ElementType typeFromStrings(string key, string value);
+
+
 
 SectorData::SectorData(){
 
@@ -19,10 +25,24 @@ SectorData::SectorData(glm::vec2 pos){
     loadData();
 }
 
+void SectorData::downloadData(){
+    string s = downloadSectorData(m_pos);
+    std::stringstream ss;
+    ss << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/OSMData/";
+    ss << m_pos.x * 1000 << "x" << m_pos.y * 1000;
+    ss << ".xml";
+    std::ofstream out(ss.str());
+    out << s;
+    out.close();
+}
+
 void SectorData::loadData(){
+    glm::vec2 coordinateShifting = Settings::GetInstance().f2("coordinateShifting");
     tinyxml2::XMLDocument doc;
 
     std::string path = BuildXMLPath(m_pos);
+
+    if (!file_exists(path)) downloadData();
 
     doc.LoadFile(path.c_str());
 
@@ -57,8 +77,8 @@ void SectorData::loadData(){
 //            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
 
             string id = child->ToElement()->FindAttribute("id")->Value();
-            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) - 45;
-            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) + 73;
+            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) + coordinateShifting.x;
+            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) + coordinateShifting.y;
             //double latitude = strtod(child->ToElement()->FindAttribute("lat")->Value(), NULL);
             //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
 
@@ -142,7 +162,7 @@ std::string SectorData::BuildXMLPath(glm::vec2 pos){
     ss << "../data/Data_";
 #endif
     // ss<<pos.x * 1000<<"x"<<pos.y*1000<<".xml";
-    ss<< 0<<".xml";
+    ss << m_pos.x * 1000 << "x" << m_pos.y * 1000 << ".xml";
     // std::cout << ss.str() << "\n";
 
     return ss.str();
