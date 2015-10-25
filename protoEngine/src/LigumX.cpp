@@ -46,20 +46,24 @@ void LigumX::mainLoop()
     camera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
 
     Renderer& renderer = Renderer::GetInstance();
-    updateRenderData();
+    
+    if (Settings::GetInstance().i("loadNewSectors"))
+    {
+        updateRenderData();
+    }
     renderer.render();
-
     if(showTweakBar) TwDraw();
 }
 
 void LigumX::updateRenderData()
 {
     Renderer& renderer = Renderer::GetInstance();
+
+
     std::vector<Sector*>* newSectors = world->loadSectorsAroundPoint(glm::vec2(camera->position), Settings::GetInstance().i("loadingRingSize"));
 
     for(int i = 0; i < newSectors->size(); ++i)
     {
-
         renderData->addToTerrainBuffer(newSectors->at(i));
         renderData->fillBuffers(newSectors->at(i));
         renderer.init_pipelines();

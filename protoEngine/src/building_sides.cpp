@@ -30,15 +30,15 @@ void Renderer::init_pipelines_buildingSides()
 #ifdef __APPLE__
     ProgramPipeline::ShaderProgram* pVertexShader =
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/src/shaders/pipeline_buildingSides/vertex.vsh", false);
+            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/pipeline_buildingSides/vertex.vsh", false);
 
     ProgramPipeline::ShaderProgram* pGeometryShader =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/src/shaders/buildingSides.gsh", false);
+            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/buildingSides.gsh", false);
 
     ProgramPipeline::ShaderProgram* pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/src/shaders/pipeline_buildingSides/fragment.fsh", false);
+            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/pipeline_buildingSides/fragment.fsh", false);
 #else
     ProgramPipeline::ShaderProgram* pVertexShader =
             new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
@@ -46,7 +46,7 @@ void Renderer::init_pipelines_buildingSides()
 
     ProgramPipeline::ShaderProgram* pGeometryShader =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../src/shaders/buildingSides.gsh", false);
+            "../data/shaders/buildingSides.gsh", false);
 
     ProgramPipeline::ShaderProgram* pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,

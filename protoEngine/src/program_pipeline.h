@@ -2,6 +2,7 @@
 #define ProgramPipeline_H
 
 #include "GL/glew.h"
+#include "glm/glm.hpp"
 #include "Logging.h"
 #include <string>
 #include <sstream>
@@ -41,12 +42,14 @@ public:
     void useGeometryShader(ShaderProgram* shader);
     void useFragmentShader(ShaderProgram* shader);
     void removeShader(GLenum shaderStage);
+    void setUniform(std::string name, glm::vec3 color);
     static GLbitfield sShaderTypeEnumToBitField(GLenum shaderType);
     ShaderProgram* getShader(GLenum shaderType);
 
     void usePipeline();
 
 private:
+    std::string m_name;
     REGISTERCLASS(ProgramPipeline);
 };
 

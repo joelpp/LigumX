@@ -12,7 +12,7 @@ using namespace glm;
 
 Camera::Camera()
 {
-    mvpMat = mat4(1);
+    vpMat = mat4(1);
     viewSize = 1;
     angle = 0;
     totalViewAngleY = 45;
@@ -45,7 +45,7 @@ Camera::Camera()
 void Camera::translateBy(vec3 delta)
 {
     position += delta;
-    updateMVPMatrix();
+    updateVPMatrix();
 }
 
 void Camera::translateTo(vec3 inPosition)
@@ -59,25 +59,24 @@ void Camera::translateTo(vec3 inPosition)
     position.x += coordinateShifting.x;
     position.y += coordinateShifting.y;
 
-    PRINTVEC2(position);
-    updateMVPMatrix();
+    updateVPMatrix();
 }
 
 void Camera::setViewSize(float inViewSize)
 {
     viewSize = inViewSize;
-    updateMVPMatrix();
+    updateVPMatrix();
 }
 
 void Camera::multViewSizeBy(float factor)
 {
     viewSize *= factor;
-    updateMVPMatrix();
+    updateVPMatrix();
 }
 
 void Camera::rotate(float _angle){
     angle += _angle;
-    updateMVPMatrix();
+    updateVPMatrix();
 }
 
 void Camera::moveFromUserInput(GLFWwindow *pWindow)
@@ -108,34 +107,17 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
     }
 }
 
-void Camera::updateMVPMatrix()
+void Camera::updateVPMatrix()
 {
-//    vpMat = ortho(-viewSize, viewSize, -viewSize, viewSize) *
-//            glm::rotate(mat4(1), angle, vec3(0,0,1)) *
-//            translate(mat4(1), -vec3(position.x, position.y, 0));
 
-    mvpMat = column(mat4(1), 0, vec4(rightVec, 0));
-    mvpMat = column(mvpMat, 1, vec4(upVec, 0));
-    mvpMat = column(mvpMat, 2, vec4(frontVec, 0));
-    mvpMat = column(mvpMat, 3, vec4(0, 0, 0, 1));
-    mvpMat = translate(position) * mvpMat;
-    mvpMat = inverse(mvpMat);
-//    mvpMat = translate(position) * mvpMat;
+    vpMat = column(mat4(1), 0, vec4(rightVec, 0));
+    vpMat = column(vpMat, 1, vec4(upVec, 0));
+    vpMat = column(vpMat, 2, vec4(frontVec, 0));
+    vpMat = column(vpMat, 3, vec4(0, 0, 0, 1));
+    vpMat = translate(position) * vpMat;
+    vpMat = inverse(vpMat);
 
-    //mvpMat = perspective((float)PI/8.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
-    //mvpMat = perspective((float)45, 1.0f, 0.0001f, 1.f) * mvpMat;
-    mvpMat = perspective(totalViewAngleY, aspectRatio, near, far) * mvpMat;
-//    mvpMat = perspective((float)PI/3.0f, 1.0f, 0.01f, 1000.0f) * mvpMat;
-
-
-//    static unsigned int count = 0;
-//    if(++count % 100 == 0) {
-//        count = 0;
-//        std::cout << "=================" << std::endl;
-//        std::cout << position.x << " " << position.y << " " << position.z << std::endl;
-//        std::cout << frontVec.x << " " << frontVec.y << " " << frontVec.z << std::endl;
-//        std::cout << upVec.x << " " << upVec.y << " " << upVec.z << std::endl;
-//    }
+    vpMat = perspective(totalViewAngleY, aspectRatio, near, far) * vpMat;
 
 }
 
@@ -175,7 +157,7 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
             upVecReference = upVec;
             rightVecReference = rightVec;
 //            mbRotationMatrixIsDirty = true;
-            updateMVPMatrix();
+            updateVPMatrix();
         } else if(action == GLFW_RELEASE) {
            mouseIsDragging = false;
             if(cameraType == CameraType::TOP_3D) {
@@ -197,7 +179,7 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
 //                mbTranslationMatrixIsDirty = true;
 //                mbRotationMatrixIsDirty = true;
             }
-            updateMVPMatrix();
+            updateVPMatrix();
         }
     }
 }
@@ -489,5 +471,5 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
             }
         }
     }
-    updateMVPMatrix();
+    updateVPMatrix();
 }

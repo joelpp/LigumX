@@ -8,6 +8,8 @@
 
 class Way;
 class Node;
+
+
 class OSMElement{
 private:
   REGISTERCLASS(OSMElement);
@@ -41,6 +43,8 @@ public:
                        NOT_IMPLEMENTED = 1 << 29,
                        ANY_TYPE = 1 << 30,
                        GRID_LINE = 1 << 31} ;
+
+
 
     std::unordered_map<std::string, std::string> tags;
     std::unordered_map<int, int> itags;

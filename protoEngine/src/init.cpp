@@ -53,7 +53,6 @@ void LigumX::init()
 
     populateTypeColorArray();
 
-
     // register GLFW and GLdebug callbacks
     SetCallbacks();
 
@@ -73,13 +72,16 @@ void LigumX::init()
     // create and fill VBOs.
     //============================================================================
     Renderer &renderer = Renderer::GetInstance();
+
+    renderer.init_pipelines();
+
+    
     renderData = new RenderDataManager();
     updateRenderData();
 
     //=============================================================================
     // Textures, framebuffer, renderbuffer
     //=============================================================================
-    renderer.init_pipelines();
     
 }
 

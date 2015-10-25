@@ -20,6 +20,8 @@
 #include "camera.h"
 #include "osm_element.h"
 
+struct Material;
+class Model;
 class Mesh;
 struct Text {
     std::string text;
@@ -63,6 +65,8 @@ public:
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
     ProgramPipeline* pPipelineBasic;
+    ProgramPipeline* pPipelineBasicUV;
+    ProgramPipeline* activePipeline;
     std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 
     // need to keep those for swapping
@@ -73,7 +77,8 @@ public:
     ProgramPipeline::ShaderProgram* pFragmentShader2;
     ProgramPipeline::ShaderProgram* pFragmentShader3;
 
-    Mesh* mesh;
+    std::vector<Mesh*> m_debugMeshes;
+    std::vector<Model*> m_debugModels;
 
     // VBOs
     GLuint glidNodesPositions;
@@ -118,8 +123,10 @@ public:
     void init_pipelines_nodes();
 
     void render();
-   void RenderText(Text t);
+    void RenderText(Text t);
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
+    void DrawMesh(Mesh* mesh, Material material);
+    void DrawModel(Model* model);
     //text renderign stuff
     struct Character 
     {
@@ -139,9 +146,9 @@ public:
 #ifdef __APPLE__
         glGenBuffers(1, &bufferName);
         glBindBuffer(GL_ARRAY_BUFFER, bufferName);
-        glBufferData(GL_ARRAY_BUFFER, bufferData.size() * sizeof(T), 0, GL_DYNAMIC_DRAW /*GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+        glBufferData(GL_ARRAY_BUFFER, bufferData.size() * sizeof(T), bufferData.data(), GL_DYNAMIC_DRAW /*GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                              GL_MAP_WRITE_BIT*/);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, bufferData.size() * sizeof(T), bufferData.data());
+        // glBufferSubData(GL_ARRAY_BUFFER, 0, bufferData.size() * sizeof(T), bufferData.data());
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 #else
@@ -153,6 +160,18 @@ public:
         glNamedBufferSubData(bufferName, 0, bufferData.size() * sizeof(T), bufferData.data());
 #endif
     }
+
+
+    template<typename T> static void createGLBuffer(GLenum target, GLuint &bufferName, std::vector<T> bufferData) 
+    {
+        glGenBuffers(1, &bufferName);
+        glBindBuffer(target, bufferName);
+        glBufferData(target, bufferData.size() * sizeof(T), 0, GL_DYNAMIC_DRAW /*GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+                             GL_MAP_WRITE_BIT*/);
+        glBufferSubData(target, 0, bufferData.size() * sizeof(T), bufferData.data());
+        glBindBuffer(target, 0);
+}
+
 
     template<typename T> 
     void updateGLBuffer(GLuint &bufferName, std::vector<T> bufferData) 

@@ -6,7 +6,7 @@
 #include "Logging.h"
 
 class Triangle;
-
+class Mesh;
 class Heightfield{
 private:
   	REGISTERCLASS(Heightfield);
@@ -19,8 +19,9 @@ public:
     Heightfield();
     Heightfield(glm::vec2 startPoint,double sideLength);
     void generateTriangles();
-    void addTriangle(Triangle *tri);
-    std::vector<std::vector<glm::vec3> > points;
+
+
+    Mesh* m_mesh;
 };
 
 #endif // HEIGHTFIELD

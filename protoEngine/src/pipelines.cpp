@@ -19,6 +19,7 @@ void Renderer::init_pipelines()
 
 
     pPipelineBasic = new ProgramPipeline("Basic");
+    pPipelineBasicUV = new ProgramPipeline("BasicUV");
 
 }
 

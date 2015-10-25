@@ -154,13 +154,12 @@ ProgramPipeline::ProgramPipeline(std::string name)
     pGeometryShader = NULL;
     pFragmentShader = NULL;
     pComputeShader = NULL;
+    m_name = name;
 
 
     std::stringstream path;
     path << ShadersPath;
     path << name << "/";
-    // ProgramPipeline::ShaderProgram* pVertexShader = new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false);
-    // ProgramPipeline::ShaderProgram* pFragmentShader = new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false);
 
 #ifdef __APPLE__
     glGenProgramPipelines(1, &glidProgramPipeline);
@@ -294,8 +293,11 @@ void ProgramPipeline::useVertexShader(
         glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
         glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
-        PRINTSTRING("Validation error in useVertexShader:");
-        PRINT(info);
+        if (std::string(info).find("fragment") == string::npos)
+        {
+            PRINT(m_name);
+            PRINT(info);
+        }
     }
 
 }
@@ -327,8 +329,11 @@ void ProgramPipeline::useGeometryShader(ProgramPipeline::ShaderProgram* shader)
         glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
         glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
-        cerr << "Validation error in program pipeline :" << endl;
-        cerr << info << endl;
+        if (std::string(info).find("fragment") == string::npos)
+        {
+            PRINT(m_name);
+            PRINT(info);
+        }
     }
 }
 
@@ -394,3 +399,9 @@ void ProgramPipeline::removeShader(GLenum shaderStage)
     }
 }
 
+//             
+void ProgramPipeline::setUniform(std::string name, glm::vec3 color)
+{
+    glProgramUniform3f(this->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(this->getShader(GL_VERTEX_SHADER)->glidShaderProgram, name.c_str()), color.x, color.y, color.z);
+
+}

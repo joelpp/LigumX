@@ -61,15 +61,15 @@ void Renderer::init_pipelines_roads()
 
     pGeometryShader1 =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/src/shaders/roads.gsh", false);
+            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/roads.gsh", false);
 
     pGeometryShader2 =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/src/shaders/roads2.gsh", false);
+            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/roads2.gsh", false);
 
     pGeometryShader3 =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/src/shaders/roads3.gsh", false);
+            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/roads3.gsh", false);
 
     pFragmentShader1 =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
@@ -89,15 +89,15 @@ void Renderer::init_pipelines_roads()
 
     pGeometryShader1 =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../src/shaders/roads.gsh", false);
+            "../data/shaders/roads.gsh", false);
 
     pGeometryShader2 =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../src/shaders/roads2.gsh", false);
+            "../data/shaders/roads2.gsh", false);
 
     pGeometryShader3 =
             new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../src/shaders/roads3.gsh", false);
+            "../data/shaders/roads3.gsh", false);
 
     pFragmentShader1 =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,

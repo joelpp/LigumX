@@ -15,7 +15,7 @@ public:
     enum ControlType {QWEASDZXC_DRAG, QWEASDZXC_CONTINUOUS, QWEASDZXC_ARROWS};
 public:
     glm::vec3 position;
-    glm::mat4 mvpMat;
+    glm::mat4 vpMat;
 
     // TOP2D ad TOP3D parameters
     float viewSize;
@@ -45,7 +45,7 @@ public:
     void translateBy(glm::vec3 delta);
     void translateTo(glm::vec3 position);
     void moveFromUserInput(GLFWwindow* pWindow);
-    void updateMVPMatrix();
+    void updateVPMatrix();
     void setViewSize(float inViewSize);
     void multViewSizeBy(float factor);
     void rotate(float _angle);

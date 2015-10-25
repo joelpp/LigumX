@@ -10,9 +10,29 @@
 #include "Heightfield.h"
 #include "Logging.h"
 #include "Mesh.h"
+#include "Model.h"
+#include "glm/gtx/transform.hpp"
 
 using namespace std;
 using namespace glm;
+
+int findSetBit(int number){
+    unsigned i = 1, pos = 1;
+ 
+    // Iterate through bits of n till we find a set bit
+    // i&n will be non-zero only when 'i' and 'n' have a set bit
+    // at same position
+    while (!(i & number))
+    {
+        // Unset current bit and set the next bit in 'i'
+        i = i << 1;
+ 
+        // increment position
+        ++pos;
+    }
+ 
+    return pos;
+}   
 
 RenderDataManager::RenderDataManager(){
     nbRoads = 0;
@@ -31,90 +51,38 @@ RenderDataManager::RenderDataManager(){
     Renderer::createGLBuffer(renderer.glidScreenQuadPositions, screenQuadPos);
     Renderer::createGLBuffer(renderer.glidScreenQuadTexCoords, screenQuadTexCoords);
 
-    testMesh = new Mesh();
-    testMesh->m_buffers.m_vertexPositions.push_back(    glm::vec3(-0.6f, 0.4f, 0)); //0
-    // testMesh->m_buffers.m_vertexNormals.push_back(      glm::vec3(0,    0,    1));
-    testMesh->m_buffers.m_vertexUVs.push_back(          glm::vec2(0,    0));
 
-    testMesh->m_buffers.m_vertexPositions.push_back(    glm::vec3(-0.6f, 0.6f, 0)); // 1
-    // testMesh->m_buffers.m_vertexNormals.push_back(      glm::vec3(0,    0,    1));
-    testMesh->m_buffers.m_vertexUVs.push_back(          glm::vec2(1,    0));
+    Model* model = new Model("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/Models/Sphere/sphere.obj");
+    testMesh = model->m_meshes[0];
 
-    testMesh->m_buffers.m_vertexPositions.push_back(    glm::vec3(-0.4f, 0.4f, 0)); // 2
-    // testMesh->m_buffers.m_vertexNormals.push_back(      glm::vec3(0,    0,    1));
-    testMesh->m_buffers.m_vertexUVs.push_back(          glm::vec2(0,    1));
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-0.6, 0.55, 0));
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0),  0.f, glm::vec3(0, 0, 1));
+    glm::mat4 scaleMatrix = glm::scale(0.01f, 0.01f, 0.01f);
+    model->m_modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 
-    testMesh->m_buffers.m_vertexPositions.push_back(    glm::vec3(-0.6f, 0.6f, 0)); // 1
-    // testMesh->m_buffers.m_vertexNormals.push_back(      glm::vec3(0,    0,    1));
-    testMesh->m_buffers.m_vertexUVs.push_back(          glm::vec2(1,    0));
-
-    testMesh->m_buffers.m_vertexPositions.push_back(    glm::vec3(-0.4f, 0.4f, 0)); // 2
-    // testMesh->m_buffers.m_vertexNormals.push_back(      glm::vec3(0,    0,    1));
-    testMesh->m_buffers.m_vertexUVs.push_back(          glm::vec2(0,    1));
-        testMesh->m_buffers.m_vertexPositions.push_back(    glm::vec3(-0.4f, 0.6f, 0)); // 3
-    // testMesh->m_buffers.m_vertexNormals.push_back(      glm::vec3(0,    0,    1));
-    testMesh->m_buffers.m_vertexUVs.push_back(          glm::vec2(0,    1));
     testMesh->createBuffers();
-    renderer.mesh = testMesh;
+    testMesh->m_usesIndexBuffer = false;
+    testMesh->m_renderingMode = GL_TRIANGLES;
+    Material material;
+    material.albedo = glm::vec3(1,1,1);
+    material.shader = renderer.pPipelineBasic;
+    model->m_materialList.push_back( material ) ;
+    renderer.m_debugModels.push_back( model );
 }
 
 void RenderDataManager::addToTerrainBuffer(Sector* newSector)
 {
-
-    // TODO: this should be part of like a debug define or an assert
-    // cout << "succeeded loops: " << nbSuccessLoops << endl;
-    // cout << "failed loops: " << nbFailedLoops << endl;
     LigumX& game = LigumX::GetInstance();
     Renderer& renderer = Renderer::GetInstance();
     int counter = 0;
 
     Heightfield* heightField = newSector->m_heightfield;
-    std::vector<Triangle* >& tris = heightField->triangles;
-    // testMesh = new Mesh();
+    testMesh = heightField->m_mesh;
 
-    for (int i = 0; i < tris.size()-1; i += 2)
-    {
-        Triangle* tri = tris[i];
-        if (tri != NULL)
-        {
-            groundTrianglesPositions.push_back(tri->vertices[0]);
-            // testMesh->m_buffers.m_vertexPositions.push_back(tri->vertices[0]);
-            groundTrianglesPositions.push_back(tri->vertices[1]);
-            // testMesh->m_buffers.m_vertexPositions.push_back(tri->vertices[1]);
-            groundTrianglesPositions.push_back(tri->vertices[2]);
-            // testMesh->m_buffers.m_vertexPositions.push_back(tri->vertices[2]);
-            groundTrianglesUV.push_back(vec2(0,0));
-            // testMesh->m_buffers.m_vertexUVs.push_back(vec2(0,0));
-            groundTrianglesUV.push_back(vec2(1,0));
-            // testMesh->m_buffers.m_vertexUVs.push_back(vec2(1,0));
-            groundTrianglesUV.push_back(vec2(0,1));
-            // testMesh->m_buffers.m_vertexUVs.push_back(vec2(0,1));
-
-        }
-        tri = tris[i+1];
-        if (tri != NULL)
-        {
-            groundTrianglesPositions.push_back(tri->vertices[0]);
-            // testMesh->m_buffers.m_vertexPositions.push_back(tri->vertices[0]);
-            groundTrianglesPositions.push_back(tri->vertices[1]);
-            // testMesh->m_buffers.m_vertexPositions.push_back(tri->vertices[1]);
-            groundTrianglesPositions.push_back(tri->vertices[2]);
-            // testMesh->m_buffers.m_vertexPositions.push_back(tri->vertices[2]);
-            groundTrianglesUV.push_back(vec2(0,0));
-            // testMesh->m_buffers.m_vertexUVs.push_back(vec2(0,0));
-            groundTrianglesUV.push_back(vec2(1,0));
-            // testMesh->m_buffers.m_vertexUVs.push_back(vec2(1,0));
-            groundTrianglesUV.push_back(vec2(0,1));
-            // testMesh->m_buffers.m_vertexUVs.push_back(vec2(0,1));
-        }
-    }
-    renderer.nbGroundVertices = groundTrianglesPositions.size();
-
-    Renderer::createGLBuffer(renderer.glidGroundTrianglePositions, groundTrianglesPositions);
-    Renderer::createGLBuffer(renderer.glidGroundTriangleUVs, groundTrianglesUV);
-    Renderer::createGLBuffer(renderer.glidGroundTriangleTextureIDs, groundTriangleTextureIDs);
-    // testMesh->createBuffers();
-    // renderer.mesh = testMesh;
+    testMesh->createBuffers();
+    testMesh->m_usesIndexBuffer = true;
+    testMesh->m_renderingMode = GL_TRIANGLES;
+    // renderer.m_debugMeshes.push_back( testMesh );
 
 }
 
@@ -134,6 +102,9 @@ void RenderDataManager::fillBuffers(Sector* sector)
     GLint firstVertexForThisRoad = 0;
 
 
+    Mesh* waysMesh = new Mesh();
+    waysMesh->m_renderingMode = GL_LINES;
+    std::vector<glm::vec3>& vertexPositions = waysMesh->m_buffers.vertexPositions;
 
     for ( auto it = sector->m_data->ways.begin(); it != sector->m_data->ways.end(); ++it )
     {
@@ -179,6 +150,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
 
                     waysNodesPositionsMap[way->eType].push_back(oldpt);
                     waysNodesPositionsMap[way->eType].push_back(pt);
+
                 }
 
                 // create roads subgroup
@@ -432,15 +404,29 @@ void RenderDataManager::fillBuffers(Sector* sector)
     Renderer::createGLBuffer(renderer.glidBufferBuildingLines, buildingSides);
     Renderer::createGLBuffer(renderer.glidBufferBuildingLoopLengths, buildingLoopLengths);
 
+    Model* waysModel = new Model();
 
-//     PRINTVEC3VECTOR(groundTrianglesPositions);
+    for (auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it)
+    {
+        Mesh* mesh = new Mesh();
 
-    for ( auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it ){
-        Renderer::createGLBuffer(renderer.glidWaysNodesPositions[it->first], it->second);
-        renderer.numberOfVerticesToDrawPerElement[it->first] = it->second.size();
+        OSMElement::ElementType index = it->first;
+
+        mesh->m_buffers.vertexPositions = it->second;
+
+        mesh->padBuffer(VERTEX_UVS);
+        mesh->createBuffers();
+        mesh->m_renderingMode = GL_LINES;
+
+        Material material;
+        material.shader = renderer.pPipelineLines;
+        material.albedo = renderer.typeColorMap[index];
+        waysModel->m_materialList.push_back( material ) ;
+
+        waysModel->m_meshes.push_back(mesh);
     }
 
-
+    renderer.m_debugModels.push_back(waysModel);
 }
 
 

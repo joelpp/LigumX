@@ -1,6 +1,8 @@
 #include "renderer.h"
 #include "program_pipeline.h"
 #include "Mesh.h"
+#include "Model.h"
+
 using namespace glm;
 using namespace std;
 void Renderer::Initialize(){
@@ -185,74 +187,85 @@ void Renderer::Initialize(){
 
 }
 
+void Renderer::DrawModel(Model* model)
+{
+
+
+  for (int i = 0; i < model->m_meshes.size(); ++i)
+  {
+    activePipeline = model->m_materialList[i].shader;
+    glBindProgramPipeline(activePipeline->glidProgramPipeline);
+    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "modelMatrix"), 1, false, value_ptr(model->m_modelMatrix));
+
+    DrawMesh(model->m_meshes[i], model->m_materialList[i]);
+  }
+}
+
+void Renderer::DrawMesh(Mesh* mesh, Material material)
+{
+  glBindVertexArray(mesh->m_VAO);
+  activePipeline->setUniform("lineColor", material.albedo);
+  
+  if (mesh->m_wireframeRendering)
+  {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  }
+  if (mesh->m_usesIndexBuffer){ 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
+    glDrawElements(mesh->m_renderingMode, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+  }
+  else
+  {
+    glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
+  }
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 
 /**
  * [Renderer::render description]
  * @param camera [description]
  */
-void Renderer::render(){
+void Renderer::render()
+{
 
-
-    if(!fancyDisplayMode) {
+    if(!fancyDisplayMode)
+    {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-        glBindProgramPipeline(pPipelineBasic->glidProgramPipeline);
-        glBindVertexArray(mesh->m_VAO);
-        glProgramUniformMatrix4fv(pPipelineBasic->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
-            
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
+        for (Model* model: m_debugModels)
+        {
+          DrawModel(model);
+        }
         // draw ground
-        if (drawGround){
+        if (drawGround)
+        {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
 
             pPipelineGround->usePipeline();
-            glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+            glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
             glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
             glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
             glDrawArrays(GL_TRIANGLES, 0, nbGroundVertices);
         }
 
-//        // draw lines
-        pPipelineLines->usePipeline();
-        for ( auto it = glidWaysNodesPositions.begin(); it != glidWaysNodesPositions.end(); ++it ){
-            try{ if (!displayElementType.at(it->first)) continue; }
-            catch(...){continue;};
-#ifdef __APPLE__
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-        glBindBuffer(GL_ARRAY_BUFFER, glidWaysNodesPositions[it->first]);
-        glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-#else
-        glVertexArrayVertexBuffer(pPipelineLines->glidVao, 0, glidWaysNodesPositions[it->first], 0, 3*4);
-#endif
-            vec3 color = typeColorMap[it->first];
-            glProgramUniform3f(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "color"), color.x, color.y, color.z);
-            glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
-            glDrawArrays(GL_LINES, 0, numberOfVerticesToDrawPerElement[it->first]);
-        }
-
-        // pPipelineLines->usePipeline();
-        // glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
-        // glDrawArrays(GL_LINES, 0, nbWaysVertices);
 
         glEnable(GL_PROGRAM_POINT_SIZE);
         glPointSize(25.0f);
         pPipelineNodes->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+        glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
         glDrawArrays(GL_POINTS, 0, nbNodes);
 
 
         // draw entities
 #ifndef __APPLE__
-//        entityManager.Render(camera->mvpMat);
+//        entityManager.Render(camera->vpMat);
 #endif
     } else {
       
@@ -265,7 +278,7 @@ void Renderer::render(){
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
             pPipelineGround->usePipeline();
-            glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+            glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
             glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
             glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
             glDrawArrays(GL_TRIANGLES, 0, nbGroundVertices);
@@ -280,21 +293,21 @@ void Renderer::render(){
         pPipelineRoads->usePipeline();
         pPipelineRoads->useGeometryShader(pGeometryShader1);
         pPipelineRoads->useFragmentShader(pFragmentShader1);
-        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
         // draw circles on road nodes
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cout << "qweqwe" << endl;
         pPipelineRoads->usePipeline();
         pPipelineRoads->useGeometryShader(pGeometryShader2);
         pPipelineRoads->useFragmentShader(pFragmentShader2);
-        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
         // draw road lines
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) cout << "qweqwe" << endl;
         pPipelineRoads->usePipeline();
         pPipelineRoads->useGeometryShader(pGeometryShader3);
         pPipelineRoads->useFragmentShader(pFragmentShader3);
-        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+        glProgramUniformMatrix4fv(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineRoads->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
         glMultiDrawArrays(GL_LINE_STRIP_ADJACENCY, firstVertexForEachRoad.data(), nbVerticesForEachRoad.data(), nbRoads);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -313,7 +326,7 @@ void Renderer::render(){
         glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
 
 //         pPipelineBuildings->usePipeline();
-//         glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+//         glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
 // // /           glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
 //         glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
 //         glProgramUniform1i(pPipelineBuildings->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
@@ -323,13 +336,13 @@ void Renderer::render(){
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureMap["bricks"]->glidTexture);
         pPipelineBuildingSides->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->mvpMat));
+        glProgramUniformMatrix4fv(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
         glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uBuildingHeight"), 3);
         glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uScaleFactor"), 1);
         glDrawArrays(GL_LINES, 0, nbBuildingLines);
     }
-   // RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
-   // RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
+   RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
+   RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
    // if (showText)
    //     for (int i = 0; i < texts.size(); i++){
    //         RenderText(texts[i]);
@@ -389,7 +402,7 @@ void Renderer::RenderText(Text t)
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->mvpMat));
+   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->vpMat));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
    std::string text = t.text;
@@ -468,7 +481,7 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->mvpMat));
+   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->vpMat));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
    glActiveTexture(GL_TEXTURE0);
@@ -516,12 +529,7 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
        glBindBuffer(GL_ARRAY_BUFFER, 0);
        // Render quad
        glDrawArrays(GL_TRIANGLES, 0, 6);
-       // std::cout << "\n";
-       // std::cout << xpos << "\n";
-       // std::cout << ypos << "\n";
-       // std::cout << h << "\n";
-       // std::cout << w << "\n";
-       // std::cout << "\n";
+
        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
        x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
    }

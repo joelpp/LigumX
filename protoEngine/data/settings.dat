@@ -17,7 +17,7 @@ viewSize 0.03
 
 sectorSize 0.02
 loadingRingSize 0
-
+loadNewSectors 1
 useCameraPositionAsTestPoint 1
 
 ; testPoint -73.62 45.5454289
@@ -27,6 +27,6 @@ testPoint -0.625 0.5254289
 
 buildingHeight 3
 
-HeightfieldResolution 0.01
+HeightfieldResolution 0.005
 
-ShadersPath /Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/src/shaders/
+ShadersPath /Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/

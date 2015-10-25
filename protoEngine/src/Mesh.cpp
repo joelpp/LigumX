@@ -6,7 +6,7 @@ Mesh::Mesh()
 {
 	
     glGenVertexArrays(1, &m_VAO);
-	glBindVertexArray(m_VAO);
+	  glBindVertexArray(m_VAO);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions);
     glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -18,6 +18,8 @@ Mesh::Mesh()
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs);
     glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    m_wireframeRendering = false;
+    m_usesIndexBuffer = false;
 }
 
 // Mesh::Mesh(vector<Vertex> vertices)
@@ -25,20 +27,30 @@ Mesh::Mesh()
 // 	m_vertexArray = vertices;
 // 	createBuffers();
 // }
+// 
+void Mesh::padBuffer(EBufferType bufferType)
+{
+  int numToFill;
+  if (bufferType == VERTEX_UVS)
+  {
+    numToFill = m_buffers.vertexPositions.size() - m_buffers.m_vertexUVs.size();
+    for (int i = 0; i < numToFill; ++i)
+    {
+      m_buffers.m_vertexUVs.push_back(glm::vec2(0,0));
+    }
+  }
+}
 
 void Mesh::createBuffers()
 {
 
-	PRINTVEC3VECTOR(m_buffers.m_vertexPositions);
 	// TODO: I'm not quite convinced this belongs here. or does it?
-    
-    Renderer::GetInstance().createGLBuffer(m_VBOs.glidPositions, m_buffers.m_vertexPositions);
+    Renderer::GetInstance().createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.vertexPositions);
     // Renderer::createGLBuffer(m_VBOs.glidNormals,   m_buffers.m_vertexNormals);
-    
-    Renderer::GetInstance().createGLBuffer(m_VBOs.glidUVs, 	   m_buffers.m_vertexUVs);
+    Renderer::GetInstance().createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs, 	   m_buffers.m_vertexUVs);
 	
     glGenVertexArrays(1, &m_VAO);
-	glBindVertexArray(m_VAO);
+	  glBindVertexArray(m_VAO);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions);
     glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -50,6 +62,12 @@ void Mesh::createBuffers()
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs);
     glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    glGenBuffers(1, &m_VBOs.glidIndexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs.glidIndexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_buffers.indexBuffer.size() * sizeof(int), m_buffers.indexBuffer.data(), GL_DYNAMIC_DRAW); 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     GLenum err;
       while ((err = glGetError()) != GL_NO_ERROR) 
       {
