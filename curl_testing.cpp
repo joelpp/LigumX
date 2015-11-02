@@ -39,6 +39,7 @@ string queryBoundingBox(float left, float bottom, float right, float top){
 	char path[100];
 	// sprintf(path, "http://api.openstreetmap.fr/xapi?*[bbox=%f,%f,%f,%f]", left, bottom, right, top);
 	sprintf(path, "http://api.openstreetmap.fr/xapi?*[bbox=%f,%f,%f,%f]", left, bottom, right, top);
+	
 	cout << path;
 	return curl_request(path);
 }

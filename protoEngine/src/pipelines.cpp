@@ -9,17 +9,17 @@ void Renderer::init_pipelines()
     init_pipelines_text();
     init_pipelines_buildingSides();
     init_pipelines_filledBuildings();
-    init_pipelines_generalLines();
-    init_pipelines_groundTriangles();
     init_pipelines_roads();
     init_pipelines_screenQuad();
-    init_pipelines_envmap();
-    init_pipelines_nodes();
 
 
 
     pPipelineBasic = new ProgramPipeline("Basic");
     pPipelineBasicUV = new ProgramPipeline("BasicUV");
+    pPipelineLines = new ProgramPipeline("general_lines");
+    pPipelineGround = new ProgramPipeline("Terrain");
+    pPipelineEnvmap = new ProgramPipeline("Envmap");
+    pPipelineNodes = new ProgramPipeline("nodes");
 
 }
 

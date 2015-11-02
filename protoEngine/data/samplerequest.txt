@@ -1,4 +1,0 @@
-curl http://open.mapquestapi.com/xapi/api/0.6/map?bbox=-73.6,45.55,-73.55,45.6 > 3.xml
-curl http://open.mapquestapi.com/xapi/api/0.6/map?bbox=-73.65,45.55,-73.6,45.6 > 2.xml
-curl http://open.mapquestapi.com/xapi/api/0.6/map?bbox=-73.6,45.5,-73.55,45.55 > 1.xml
-curl http://open.mapquestapi.com/xapi/api/0.6/map?bbox=-73.65,45.5,-73.6,45.55 > 0.xml

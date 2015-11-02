@@ -11,6 +11,7 @@
 #include "Logging.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "Material.h"
 #include "glm/gtx/transform.hpp"
 
 using namespace std;
@@ -63,10 +64,10 @@ RenderDataManager::RenderDataManager(){
     testMesh->createBuffers();
     testMesh->m_usesIndexBuffer = false;
     testMesh->m_renderingMode = GL_TRIANGLES;
-    Material material;
-    material.albedo = glm::vec3(1,1,1);
-    material.shader = renderer.pPipelineBasic;
-    model->m_materialList.push_back( material ) ;
+
+    model->m_materialList.push_back(  new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1))  ) ;
+
+    model->name = "Sphere 1";
     renderer.m_debugModels.push_back( model );
 }
 
@@ -76,14 +77,17 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
     Renderer& renderer = Renderer::GetInstance();
     int counter = 0;
 
+
     Heightfield* heightField = newSector->m_heightfield;
-    testMesh = heightField->m_mesh;
+    if (heightField->m_mesh)
+    {
+        Model* hfModel = new Model();
+        
+        hfModel->addMesh( heightField->m_mesh, new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1)) );
+        hfModel->name = "heightfield";
 
-    testMesh->createBuffers();
-    testMesh->m_usesIndexBuffer = true;
-    testMesh->m_renderingMode = GL_TRIANGLES;
-    // renderer.m_debugMeshes.push_back( testMesh );
-
+        renderer.m_debugModels.push_back( hfModel );
+    }
 }
 
 void RenderDataManager::fillBuffers(Sector* sector)
@@ -101,13 +105,9 @@ void RenderDataManager::fillBuffers(Sector* sector)
 
     GLint firstVertexForThisRoad = 0;
 
-
-    Mesh* waysMesh = new Mesh();
-    waysMesh->m_renderingMode = GL_LINES;
-    std::vector<glm::vec3>& vertexPositions = waysMesh->m_buffers.vertexPositions;
-
     for ( auto it = sector->m_data->ways.begin(); it != sector->m_data->ways.end(); ++it )
     {
+
         first = true;
         second = false;
         GLsizei nbVertexForThisRoad = 0;
@@ -381,52 +381,66 @@ void RenderDataManager::fillBuffers(Sector* sector)
                     buildingTrianglePositions.push_back(v);
                     groundTriangleTextureIDs.push_back(ID);
                 }
-
-
-
             }
         }
-
-    
-
     }
+
     renderer.nbWaysVertices = waysNodesPositions.size();
     renderer.nbBuildingTriangles = buildingTrianglePositions.size();
     renderer.nbBuildingLines = buildingSides.size();
-    renderer.nbNodes = nodesPositions.size();
     renderer.nbRoads = nbRoads;
 
     Renderer::createGLBuffer(renderer.glidNodesPositions, nodesPositions);
-    Renderer::createGLBuffer(renderer.glidWaysPositions, waysNodesPositions);
-    Renderer::createGLBuffer(renderer.glidWaysColors, waysNodesColors);
     Renderer::createGLBuffer(renderer.glidBufferRoadsPositions, roadsPositions);
     Renderer::createGLBuffer(renderer.glidBufferBuildingTriangleVertices, buildingTrianglePositions);
     Renderer::createGLBuffer(renderer.glidBufferBuildingLines, buildingSides);
     Renderer::createGLBuffer(renderer.glidBufferBuildingLoopLengths, buildingLoopLengths);
 
+    //TODO: Material should still haeve a nice constructor.
     Model* waysModel = new Model();
-
     for (auto it = waysNodesPositionsMap.begin(); it != waysNodesPositionsMap.end(); ++it)
     {
-        Mesh* mesh = new Mesh();
-
         OSMElement::ElementType index = it->first;
 
-        mesh->m_buffers.vertexPositions = it->second;
+        Mesh* mesh = new Mesh(it->second, GL_LINES);
 
-        mesh->padBuffer(VERTEX_UVS);
-        mesh->createBuffers();
-        mesh->m_renderingMode = GL_LINES;
-
-        Material material;
-        material.shader = renderer.pPipelineLines;
-        material.albedo = renderer.typeColorMap[index];
-        waysModel->m_materialList.push_back( material ) ;
-
-        waysModel->m_meshes.push_back(mesh);
+        waysModel->addMesh( mesh, new Material(renderer.pPipelineLines, renderer.typeColorMap[index]) );
     }
 
+    waysModel->name = "Ways";
     renderer.m_debugModels.push_back(waysModel);
+    
+    Model* nodesModel = new Model();
+
+    Mesh* nodesMesh = new Mesh(nodesPositions, GL_POINTS, true);
+
+    nodesModel->name = "Nodes";
+    nodesModel->addMesh( nodesMesh, new Material(renderer.pPipelineNodes, glm::vec3(0,0,0)) );
+    renderer.m_debugModels.push_back(nodesModel);
 }
 
+void RenderDataManager::initializeSector(Sector* sector)
+{
 
+    Renderer& renderer = Renderer::GetInstance();
+    Model* linesModel = new Model();
+
+    std::vector<glm::vec3> points;
+
+    glm::vec3 base = glm::vec3(sector->m_pos, 0);
+    float offset = sector->m_size.x;
+
+    points.push_back( base );
+    points.push_back( base + glm::vec3(offset, 0, 0));
+    points.push_back( base + glm::vec3(offset, 0, 0));
+    points.push_back( base + glm::vec3(offset, offset, 0));
+    points.push_back( base + glm::vec3(offset, offset, 0));
+    points.push_back( base + glm::vec3(0, offset, 0));
+    points.push_back( base + glm::vec3(0, offset, 0));
+    points.push_back( base );
+
+    Mesh* linesMesh = new Mesh(points, GL_LINES);
+
+    linesModel->addMesh( linesMesh, new Material(renderer.pPipelineLines, glm::vec3(1,0,0)) );
+    renderer.m_debugModels.push_back(linesModel);
+}

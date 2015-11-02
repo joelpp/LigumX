@@ -36,6 +36,9 @@ public:
 	// Mesh(std::vector<Vertex> vertexArray);
 	// void addVertex(Vertex v);
 	Mesh();
+	Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode);
+	Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode, bool usePointRendering);
+	
 	void padBuffer(EBufferType bufferType);
 	void createBuffers();
 	std::vector<int> m_indexArray;
@@ -46,9 +49,9 @@ public:
 
 	GLuint m_VAO;
 
-    glm::mat4 m_modelMatrix;
 	bool m_usesIndexBuffer;
 	bool m_wireframeRendering;
+	bool m_pointRendering;
 	GLenum m_renderingMode;
 private:
 	REGISTERCLASS(Mesh);

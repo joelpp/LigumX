@@ -7,7 +7,7 @@
 #include "glm/glm.hpp"
 #include "tinyxml2.h"
 
-#include "Math.hpp"
+#include "Math.h"
 #include "Logging.h"
 #include <string>
 #include "OSM_Element.h"
@@ -15,7 +15,7 @@
 class Way;
 class Node;
 class Relation;
-
+class Heightfield;
 
 typedef std::unordered_map<OSMElement::ElementType, std::unordered_map<std::string, Way*> > WayTypeMap;
 
@@ -46,10 +46,14 @@ typedef std::unordered_map<OSMElement::ElementType, std::unordered_map<std::stri
 // 
 // 
 class SectorData{
-private:
-	REGISTERCLASS(SectorData);
-
 public:
+
+    enum EOSMDataType
+    {
+      CONTOUR,
+      MAP
+    };
+
 	  glm::vec2 m_pos;
 
     std::unordered_map<std::string, Way*> ways;
@@ -63,14 +67,14 @@ public:
   	SectorData();
   	SectorData(glm::vec2 pos);
 
-  	void loadData();
+  	void loadData(EOSMDataType dataType);
 
   	/**
   	 * [BuildXMLPath Build the OSM data path.]
   	 * @param  pos [The position of the sector (lon-lat)]
   	 * @return     [The string representing the path to the xml file]
   	 */
-  	std::string BuildXMLPath(glm::vec2 pos);
+  	std::string BuildXMLPath(EOSMDataType dataType, glm::vec2 pos);
 
   	/**
   	 * [BuildXMLPath Build the OSM data path.]
@@ -85,10 +89,14 @@ public:
   											  std::vector<std::pair<Node*, Node*>> &_nodePairs);
     
     Node* findClosestNode(glm::vec2 xy);
+    void elevateNodes(Heightfield* heightfield);
 
-    void downloadData();
+    void downloadData(std::string path);
     //TODO: Implement this (in the right place)
     // std::vector<Way*> getNearestWays(OSMElement::ElementType type,double lon,double lat,double maxResults);
+private:
+
+  REGISTERCLASS(SectorData);
 
 };
 

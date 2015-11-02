@@ -20,14 +20,29 @@ Mesh::Mesh()
     glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
     m_wireframeRendering = false;
     m_usesIndexBuffer = false;
+    m_pointRendering = false;
 }
 
-// Mesh::Mesh(vector<Vertex> vertices)
-// {
-// 	m_vertexArray = vertices;
-// 	createBuffers();
-// }
-// 
+Mesh::Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode)
+{
+  m_buffers.vertexPositions = vertices;
+  m_renderingMode = renderingMode;
+
+  padBuffer(VERTEX_UVS);
+  createBuffers();
+}
+
+Mesh::Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode, bool usePointRendering)
+{
+  m_buffers.vertexPositions = vertices;
+  m_renderingMode = renderingMode;
+  m_pointRendering = usePointRendering;
+  padBuffer(VERTEX_UVS);
+  createBuffers();
+}
+
+
+
 void Mesh::padBuffer(EBufferType bufferType)
 {
   int numToFill;

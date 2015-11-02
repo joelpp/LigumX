@@ -11,13 +11,15 @@
 #include "Logging.h"
 
 class Sector;
+class Way;
+class Node;
+class vec2i;
 
 typedef glm::vec2 Coord2;
 typedef std::vector<Sector*> SectorList;
 
 struct Sun{
     float orientation = 0;
-    float time = 0;
     float speed = 0.1;
     bool moveAuto = false;
 };
@@ -67,13 +69,23 @@ public:
     Sector* GetOrCreateSectorContainingXY(Coord2 longLat);
     Sector* GetOrCreateSectorAtXY(Coord2 longLat, SectorList* newSectors);
 
-    SectorList* loadSectorsAroundPoint(Coord2 point, int ringSize);
+    SectorList* sectorsAroundPoint(Coord2 point, int ringSize);
+    SectorList* newSectorsAroundPoint(Coord2 point, int ringSize);
 
+    static std::vector<Way*> findNClosestWays(int n, glm::vec2 xy, 
+                                       std::vector<Way*> querySet, int filter, 
+                                       std::vector<double> &distances, 
+                                       std::vector<glm::vec2> &_directions, 
+                                       std::vector<std::pair<Node*, Node*>> &_nodePairs);
+    
+    static std::vector<Way*> getAllContourLines(SectorList* sectors);
+    
     float m_sectorSize;
     float m_invSectorSize;
     std::unordered_map<Coord2, Sector*> m_sectors;
+    std::vector<Sector*> sectors;
 
-
+    float m_globalTime;
 };
 #endif
 

@@ -1,10 +1,16 @@
 #include "renderer.h"
 #include "program_pipeline.h"
 #include "Mesh.h"
+#include "Material.h"
 #include "Model.h"
 
 using namespace glm;
 using namespace std;
+
+#define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
+
+
+
 void Renderer::Initialize(){
 
     fancyDisplayMode = false;
@@ -12,7 +18,8 @@ void Renderer::Initialize(){
     windowWidth = 800;
     windowHeight = 800;
     windowTitle = "LigumX";
-
+    fps = 300;
+    dt = 0.1;
     //=============================================================================
     // create window and GLcontext, register callbacks.
     //=============================================================================
@@ -67,7 +74,7 @@ void Renderer::Initialize(){
     } else {
         PRINT("Initialized GLEW.");
     }
-
+    glfwSwapInterval(0);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
@@ -193,24 +200,31 @@ void Renderer::DrawModel(Model* model)
 
   for (int i = 0; i < model->m_meshes.size(); ++i)
   {
-    activePipeline = model->m_materialList[i].shader;
+    activePipeline = model->m_materialList[i]->m_programPipeline;
     glBindProgramPipeline(activePipeline->glidProgramPipeline);
     glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
     glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "modelMatrix"), 1, false, value_ptr(model->m_modelMatrix));
 
     DrawMesh(model->m_meshes[i], model->m_materialList[i]);
+    outputGLError(model->name, __LINE__);
   }
 }
 
-void Renderer::DrawMesh(Mesh* mesh, Material material)
+void Renderer::DrawMesh(Mesh* mesh, Material* material)
 {
   glBindVertexArray(mesh->m_VAO);
-  activePipeline->setUniform("lineColor", material.albedo);
+  activePipeline->setUniform("lineColor", material->m_albedo);
   
   if (mesh->m_wireframeRendering)
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   }
+
+  if (mesh->m_pointRendering)
+  {
+    glEnable(GL_PROGRAM_POINT_SIZE);
+  }
+
   if (mesh->m_usesIndexBuffer){ 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
     glDrawElements(mesh->m_renderingMode, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
@@ -220,7 +234,16 @@ void Renderer::DrawMesh(Mesh* mesh, Material material)
     glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
   }
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  if (mesh->m_pointRendering)
+  {
+    glDisable(GL_PROGRAM_POINT_SIZE);
+  }
+
+  if (mesh->m_wireframeRendering)
+  {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  }
+
 }
 
 
@@ -236,31 +259,14 @@ void Renderer::render()
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+        RenderSky();
+
         for (Model* model: m_debugModels)
         {
           DrawModel(model);
         }
-        // draw ground
-        if (drawGround)
-        {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
 
-            pPipelineGround->usePipeline();
-            glProgramUniformMatrix4fv(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
-            glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler"), 0);
-            glProgramUniform1i(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineGround->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "sampler1"), 1);
-            glDrawArrays(GL_TRIANGLES, 0, nbGroundVertices);
-        }
-
-
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glPointSize(25.0f);
-        pPipelineNodes->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineLines->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
-        glDrawArrays(GL_POINTS, 0, nbNodes);
 
 
         // draw entities
@@ -324,6 +330,7 @@ void Renderer::render()
         glBindTexture(GL_TEXTURE_2D, textureMap["rock"]->glidTexture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
+        outputGLError(__func__, __LINE__);
 
 //         pPipelineBuildings->usePipeline();
 //         glProgramUniformMatrix4fv(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildings->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
@@ -333,16 +340,19 @@ void Renderer::render()
 //         glDrawArrays(GL_TRIANGLES, 0, nbBuildingTriangles);
 
         // draw building sides
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureMap["bricks"]->glidTexture);
-        pPipelineBuildingSides->usePipeline();
-        glProgramUniformMatrix4fv(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
-        glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uBuildingHeight"), 3);
-        glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uScaleFactor"), 1);
-        glDrawArrays(GL_LINES, 0, nbBuildingLines);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, textureMap["bricks"]->glidTexture);
+        // pPipelineBuildingSides->usePipeline();
+        // glProgramUniformMatrix4fv(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+        // glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uBuildingHeight"), 3);
+        // glProgramUniform1f(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, glGetUniformLocation(pPipelineBuildingSides->getShader(GL_GEOMETRY_SHADER)->glidShaderProgram, "uScaleFactor"), 1);
+        // glDrawArrays(GL_LINES, 0, nbBuildingLines);
     }
-   RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
-   RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
+  RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
+  RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
+
+  RenderFPS();
+
    // if (showText)
    //     for (int i = 0; i < texts.size(); i++){
    //         RenderText(texts[i]);
@@ -369,27 +379,40 @@ void Renderer::render()
 //    }
 //    
 
+    FLUSH_ERRORS();
 
 
-      GLenum err;
-      while ((err = glGetError()) != GL_NO_ERROR) 
-      {
-        string error;
-
-        switch(err) 
-        {
-          case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
-          case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
-          case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
-          case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
-          case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
-        }
-
-        PRINT(error.c_str());
-        err=glGetError();    
-      }
 }
 
+void Renderer::RenderFPS()
+{
+  std::stringstream fpsString;
+  float smoothing = 0.99; // larger=more smoothing
+  fps = (fps * smoothing) + (1.f/dt * (1.0-smoothing));
+  fpsString << round(fps);
+  fpsString << " fps";
+  RenderText(fpsString.str(), 750.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
+
+  double new_time = glfwGetTime();
+  dt = new_time - curr_time;
+  curr_time = new_time;
+}
+
+void Renderer::RenderSky()
+{
+       pPipelineEnvmap->usePipeline();
+       GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+       glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth, windowHeight);
+       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), 0);
+       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), 0);
+       glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.
+       glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
+       glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);
+       glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "viewAngles"), camera->totalViewAngleY*glm::pi<float>()/180.0, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()/180.0);
+       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->near);
+       glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+       glClear(GL_DEPTH_BUFFER_BIT);
+}
 
 
 void Renderer::RenderText(Text t)
@@ -542,3 +565,27 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
 }
 
 
+
+void Renderer::outputGLError(std::string func, int line)
+{
+  GLenum err;
+  while ((err = glGetError()) != GL_NO_ERROR) 
+  {
+    string error;
+
+    switch(err) 
+    {
+      case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
+      case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
+      case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
+      case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
+      case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
+    }
+    std::stringstream ss;
+
+    ss << func << " : " << line;
+    PRINTSTRING(ss.str());
+    PRINTSTRING(error.c_str());
+    err=glGetError();    
+  }
+}

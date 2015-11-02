@@ -8,6 +8,7 @@
 #include "Logging.h"
 
 class LigumX;
+class Renderer;
 class Sector;
 class Mesh;
 class RenderDataManager{
@@ -36,6 +37,7 @@ public:
     RenderDataManager();
 
     void fillBuffers(Sector* newSector);
+    void initializeSector(Sector* sector);
 
 	void addToTerrainBuffer(Sector* newSector);
 

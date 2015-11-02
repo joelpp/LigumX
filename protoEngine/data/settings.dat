@@ -12,11 +12,15 @@ cameraPosition -73.602972 45.53288 0.0707107
 ; st georges
 ; cameraPosition -70.687857 46.116747
 
+; sherbrooke
+; cameraPosition -71.882429 45.400993  0.07107
+
+
 cameraLookAt -0.525 0.475 0
 viewSize 0.03
 
 sectorSize 0.02
-loadingRingSize 0
+loadingRingSize 2
 loadNewSectors 1
 useCameraPositionAsTestPoint 1
 
@@ -27,6 +31,6 @@ testPoint -0.625 0.5254289
 
 buildingHeight 3
 
-HeightfieldResolution 0.005
+HeightfieldResolution 0.0001
 
 ShadersPath /Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/

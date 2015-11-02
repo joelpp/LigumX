@@ -1,5 +1,6 @@
 #include "LigumX.h"
 #include "Renderer.h"
+#include "World.h"
 void TW_CALL undisplayAllWays(void *clientData){
     for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it){
         it->second = false;
@@ -32,17 +33,17 @@ void LigumX::init_tweakBar()
     ControlTwType = TwDefineEnum("ControlType", ControlTypeEV, 3);
     TwAddVarRW(myBar, "Control Type", ControlTwType, &(camera->controlType), NULL);
 
-    // TwAddVarRW(myBar, "Camera Speed", TW_TYPE_FLOAT, &camera->keyMovementSpeed, NULL);
-    // TwAddVarRW(myBar, "Camera X", TW_TYPE_FLOAT, &camera->position.x, NULL);
-    // TwAddVarRW(myBar, "Camera Y", TW_TYPE_FLOAT, &camera->position.y, NULL);
-    // TwAddVarRW(myBar, "Camera Z", TW_TYPE_FLOAT, &camera->position.z, NULL);
-    // TwAddVarRW(myBar, "Camera FOV", TW_TYPE_FLOAT, &camera->totalViewAngleY, NULL);
+    TwAddVarRW(myBar, "Camera Speed", TW_TYPE_FLOAT, &camera->keyMovementSpeed, NULL);
+    TwAddVarRW(myBar, "Camera X", TW_TYPE_FLOAT, &camera->position.x, NULL);
+    TwAddVarRW(myBar, "Camera Y", TW_TYPE_FLOAT, &camera->position.y, NULL);
+    TwAddVarRW(myBar, "Camera Z", TW_TYPE_FLOAT, &camera->position.z, NULL);
+    TwAddVarRW(myBar, "Camera FOV", TW_TYPE_FLOAT, &camera->totalViewAngleY, NULL);
     // TwAddVarRW(myBar, "Building Height", TW_TYPE_FLOAT, &buildingHeight, NULL);
     // TwAddVarRW(myBar, "Building Side Scale", TW_TYPE_FLOAT, &buildingSideScaleFactor, NULL);
-    // TwAddVarRW(myBar, "Sun Direction", TW_TYPE_FLOAT, &world->sun.orientation, "step=0.001");
-    // TwAddVarRW(myBar, "Sun Time", TW_TYPE_FLOAT, &world->sun.time, "step=0.001");
-    // TwAddVarRW(myBar, "Sun Speed", TW_TYPE_FLOAT, &world->sun.speed, "step=0.001");
-    // TwAddVarRW(myBar, "Move Sun Automatically", TW_TYPE_BOOL8, &world->sun.moveAuto, NULL);
+    TwAddVarRW(myBar, "Sun Direction", TW_TYPE_FLOAT, &world->sun.orientation, "step=0.001");
+    TwAddVarRW(myBar, "Sun Time", TW_TYPE_FLOAT, &world->m_globalTime, "step=0.001");
+    TwAddVarRW(myBar, "Sun Speed", TW_TYPE_FLOAT, &world->sun.speed, "step=0.001");
+    TwAddVarRW(myBar, "Move Sun Automatically", TW_TYPE_BOOL8, &world->sun.moveAuto, NULL);
     // // TwAddVarRW(myBar, "Save Screenshot", TW_TYPE_BOOL8, &Renderer::saveScreenshot, NULL);
     // TwAddVarRW(myBar, "Show Text", TW_TYPE_BOOL8, &(renderer.showText), NULL);
 

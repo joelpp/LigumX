@@ -33,7 +33,7 @@ static std::string GetTimeString(){
 #define PRINT(f) { PRINTCLASSTIME << #f << ": " << f << "\n"; }
 #define PRINTSTRING(f) { PRINTCLASSTIME << f << "\n"; }
 #define PRINTBOOL(B) { string b = B==1?"TRUE":"FALSE"; std::cout << #B << " : " << b << "\n"; }
-#define PRINTINT(i) { std::cout << #i << ": x=" << i << "\n"; }
+#define PRINTINT(i) { PRINTCLASSTIME << #i << ": x=" << i << "\n"; }
 #define PRINTVECTOR(e) { std::cout << "Element Vector: " << #e << "\n"; \
                        for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_] << "\n"; }
 #define PRINTELEMENT(e) { std::cout << #e << " " << e.toString() << "\n"; []

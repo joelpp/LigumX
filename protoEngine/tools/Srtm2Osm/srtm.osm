@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<osm xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="0.6" generator="Srtm2Osm" upload="false">
+  <node id="9223372036854775807" timestamp="2015-10-27T00:53:22.2389120Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52625" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775806" timestamp="2015-10-27T00:53:22.2397590Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52625" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775805" timestamp="2015-10-27T00:53:22.2397600Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52625" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775804" timestamp="2015-10-27T00:53:22.2397610Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.525416666666665" lon="-73.61666666666666" version="1" changeset="13341398" />
+  <node id="9223372036854775803" timestamp="2015-10-27T00:53:22.2397610Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.524583333333332" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775802" timestamp="2015-10-27T00:53:22.2397630Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52375" lon="-73.6175" version="1" changeset="13341398" />
+  <node id="9223372036854775801" timestamp="2015-10-27T00:53:22.2397630Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.523333333333333" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775800" timestamp="2015-10-27T00:53:22.2397630Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.523194444444449" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775799" timestamp="2015-10-27T00:53:22.2397680Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52708333333333" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775798" timestamp="2015-10-27T00:53:22.2397680Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.5275" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775797" timestamp="2015-10-27T00:53:22.2397690Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52791666666667" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775796" timestamp="2015-10-27T00:53:22.2399410Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52708333333333" lon="-73.61666666666666" version="1" changeset="13341398" />
+  <node id="9223372036854775795" timestamp="2015-10-27T00:53:22.2399410Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52625" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775794" timestamp="2015-10-27T00:53:22.2399420Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52625" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775793" timestamp="2015-10-27T00:53:22.2399470Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532083333333333" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775792" timestamp="2015-10-27T00:53:22.2399470Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53125" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775791" timestamp="2015-10-27T00:53:22.2399470Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53125" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775790" timestamp="2015-10-27T00:53:22.2399480Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.530416666666667" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775789" timestamp="2015-10-27T00:53:22.2399480Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775788" timestamp="2015-10-27T00:53:22.2399480Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.529583333333335" lon="-73.6175" version="1" changeset="13341398" />
+  <node id="9223372036854775787" timestamp="2015-10-27T00:53:22.2399490Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.529305555555553" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775786" timestamp="2015-10-27T00:53:22.2399490Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52875" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775785" timestamp="2015-10-27T00:53:22.2399490Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52791666666667" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775784" timestamp="2015-10-27T00:53:22.2399500Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.528194444444445" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775783" timestamp="2015-10-27T00:53:22.2399500Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52791666666667" lon="-73.618333333333339" version="1" changeset="13341398" />
+  <node id="9223372036854775782" timestamp="2015-10-27T00:53:22.2399500Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52708333333333" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775781" timestamp="2015-10-27T00:53:22.2399520Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.536416666666668" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775780" timestamp="2015-10-27T00:53:22.2399520Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53625" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775779" timestamp="2015-10-27T00:53:22.2399520Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537083333333335" lon="-73.618083333333331" version="1" changeset="13341398" />
+  <node id="9223372036854775778" timestamp="2015-10-27T00:53:22.2399520Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537916666666668" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775777" timestamp="2015-10-27T00:53:22.2399530Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.538333333333334" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775776" timestamp="2015-10-27T00:53:22.2399530Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537916666666668" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775775" timestamp="2015-10-27T00:53:22.2399540Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537638888888885" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775774" timestamp="2015-10-27T00:53:22.2399540Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.5375" lon="-73.615416666666661" version="1" changeset="13341398" />
+  <node id="9223372036854775773" timestamp="2015-10-27T00:53:22.2399560Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537083333333335" lon="-73.614583333333329" version="1" changeset="13341398" />
+  <node id="9223372036854775772" timestamp="2015-10-27T00:53:22.2399560Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53625" lon="-73.614583333333329" version="1" changeset="13341398" />
+  <node id="9223372036854775771" timestamp="2015-10-27T00:53:22.2399560Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53625" lon="-73.61375" version="1" changeset="13341398" />
+  <node id="9223372036854775770" timestamp="2015-10-27T00:53:22.2399560Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53541666666667" lon="-73.612916666666663" version="1" changeset="13341398" />
+  <node id="9223372036854775769" timestamp="2015-10-27T00:53:22.2399570Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53458333333333" lon="-73.61375" version="1" changeset="13341398" />
+  <node id="9223372036854775768" timestamp="2015-10-27T00:53:22.2399570Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53375" lon="-73.614583333333329" version="1" changeset="13341398" />
+  <node id="9223372036854775767" timestamp="2015-10-27T00:53:22.2399570Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532916666666665" lon="-73.615416666666661" version="1" changeset="13341398" />
+  <node id="9223372036854775766" timestamp="2015-10-27T00:53:22.2399580Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532916666666665" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775765" timestamp="2015-10-27T00:53:22.2399580Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53375" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775764" timestamp="2015-10-27T00:53:22.2399620Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53375" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775763" timestamp="2015-10-27T00:53:22.2399630Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532916666666665" lon="-73.61875" version="1" changeset="13341398" />
+  <node id="9223372036854775762" timestamp="2015-10-27T00:53:22.2399640Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532916666666665" lon="-73.617916666666673" version="1" changeset="13341398" />
+  <node id="9223372036854775761" timestamp="2015-10-27T00:53:22.2399640Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53375" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775760" timestamp="2015-10-27T00:53:22.2399640Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532916666666665" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775759" timestamp="2015-10-27T00:53:22.2399640Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532083333333333" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775758" timestamp="2015-10-27T00:53:22.2399660Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.540416666666665" lon="-73.614583333333329" version="1" changeset="13341398" />
+  <node id="9223372036854775757" timestamp="2015-10-27T00:53:22.2399660Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.539583333333333" lon="-73.615416666666661" version="1" changeset="13341398" />
+  <node id="9223372036854775756" timestamp="2015-10-27T00:53:22.2399660Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.539583333333333" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775755" timestamp="2015-10-27T00:53:22.2399660Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.539583333333333" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775754" timestamp="2015-10-27T00:53:22.2399670Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.540416666666665" lon="-73.6175" version="1" changeset="13341398" />
+  <node id="9223372036854775753" timestamp="2015-10-27T00:53:22.2399690Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52791666666667" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775752" timestamp="2015-10-27T00:53:22.2399690Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52875" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775751" timestamp="2015-10-27T00:53:22.2399690Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.52791666666667" lon="-73.615833333333327" version="1" changeset="13341398" />
+  <node id="9223372036854775750" timestamp="2015-10-27T00:53:22.2399690Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.5275" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775749" timestamp="2015-10-27T00:53:22.2399710Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53125" lon="-73.617083333333326" version="1" changeset="13341398" />
+  <node id="9223372036854775748" timestamp="2015-10-27T00:53:22.2399710Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.532083333333333" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775747" timestamp="2015-10-27T00:53:22.2399710Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53125" lon="-73.615416666666661" version="1" changeset="13341398" />
+  <node id="9223372036854775746" timestamp="2015-10-27T00:53:22.2399720Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.530416666666667" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775745" timestamp="2015-10-27T00:53:22.2399720Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.529583333333335" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775744" timestamp="2015-10-27T00:53:22.2399730Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.530416666666667" lon="-73.61625" version="1" changeset="13341398" />
+  <node id="9223372036854775743" timestamp="2015-10-27T00:53:22.2399730Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53125" lon="-73.615416666666661" version="1" changeset="13341398" />
+  <node id="9223372036854775742" timestamp="2015-10-27T00:53:22.2399740Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.530416666666667" lon="-73.614583333333329" version="1" changeset="13341398" />
+  <node id="9223372036854775741" timestamp="2015-10-27T00:53:22.2399740Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.529583333333335" lon="-73.6151388888889" version="1" changeset="13341398" />
+  <node id="9223372036854775740" timestamp="2015-10-27T00:53:22.2399740Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.529305555555553" lon="-73.615416666666661" version="1" changeset="13341398" />
+  <node id="9223372036854775739" timestamp="2015-10-27T00:53:22.2399760Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.539583333333333" lon="-73.615416666666661" version="1" changeset="13341398" />
+  <node id="9223372036854775738" timestamp="2015-10-27T00:53:22.2399760Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.540416666666665" lon="-73.614583333333329" version="1" changeset="13341398" />
+  <node id="9223372036854775737" timestamp="2015-10-27T00:53:22.2399760Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.540416666666665" lon="-73.61375" version="1" changeset="13341398" />
+  <node id="9223372036854775736" timestamp="2015-10-27T00:53:22.2399760Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.539583333333333" lon="-73.612916666666663" version="1" changeset="13341398" />
+  <node id="9223372036854775735" timestamp="2015-10-27T00:53:22.2399760Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.539416666666668" lon="-73.61375" version="1" changeset="13341398" />
+  <node id="9223372036854775734" timestamp="2015-10-27T00:53:22.2399770Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53875" lon="-73.614583333333329" version="1" changeset="13341398" />
+  <node id="9223372036854775733" timestamp="2015-10-27T00:53:22.2401380Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53125" lon="-73.614166666666662" version="1" changeset="13341398" />
+  <node id="9223372036854775732" timestamp="2015-10-27T00:53:22.2401390Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.531666666666666" lon="-73.61375" version="1" changeset="13341398" />
+  <node id="9223372036854775731" timestamp="2015-10-27T00:53:22.2401390Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53125" lon="-73.613472222222228" version="1" changeset="13341398" />
+  <node id="9223372036854775730" timestamp="2015-10-27T00:53:22.2401400Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.530833333333334" lon="-73.61375" version="1" changeset="13341398" />
+  <node id="9223372036854775729" timestamp="2015-10-27T00:53:22.2401420Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537083333333335" lon="-73.61125" version="1" changeset="13341398" />
+  <node id="9223372036854775728" timestamp="2015-10-27T00:53:22.2401420Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.5375" lon="-73.610416666666666" version="1" changeset="13341398" />
+  <node id="9223372036854775727" timestamp="2015-10-27T00:53:22.2401430Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537083333333335" lon="-73.609583333333333" version="1" changeset="13341398" />
+  <node id="9223372036854775726" timestamp="2015-10-27T00:53:22.2401430Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53625" lon="-73.610416666666666" version="1" changeset="13341398" />
+  <node id="9223372036854775725" timestamp="2015-10-27T00:53:22.2401440Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537083333333335" lon="-73.609583333333333" version="1" changeset="13341398" />
+  <node id="9223372036854775724" timestamp="2015-10-27T00:53:22.2401440Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537916666666668" lon="-73.60875" version="1" changeset="13341398" />
+  <node id="9223372036854775723" timestamp="2015-10-27T00:53:22.2401450Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537083333333335" lon="-73.607916666666668" version="1" changeset="13341398" />
+  <node id="9223372036854775722" timestamp="2015-10-27T00:53:22.2401450Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53625" lon="-73.60875" version="1" changeset="13341398" />
+  <node id="9223372036854775721" timestamp="2015-10-27T00:53:22.2401460Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53625" lon="-73.60875" version="1" changeset="13341398" />
+  <node id="9223372036854775720" timestamp="2015-10-27T00:53:22.2401460Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.537083333333335" lon="-73.607916666666668" version="1" changeset="13341398" />
+  <node id="9223372036854775719" timestamp="2015-10-27T00:53:22.2401470Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.536666666666669" lon="-73.607083333333335" version="1" changeset="13341398" />
+  <node id="9223372036854775718" timestamp="2015-10-27T00:53:22.2401470Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.53625" lon="-73.60625" version="1" changeset="13341398" />
+  <node id="9223372036854775717" timestamp="2015-10-27T00:53:22.2401470Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.535833333333336" lon="-73.607083333333335" version="1" changeset="13341398" />
+  <node id="9223372036854775716" timestamp="2015-10-27T00:53:22.2401470Z" user="Srtm2Osm" uid="941874" visible="true" lat="45.535833333333336" lon="-73.607916666666668" version="1" changeset="13341398" />
+  <way id="9223372036854775807" timestamp="2015-10-27T00:53:22.2378180Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775807" />
+    <nd ref="9223372036854775806" />
+    <nd ref="9223372036854775805" />
+    <nd ref="9223372036854775804" />
+    <nd ref="9223372036854775803" />
+    <nd ref="9223372036854775802" />
+    <nd ref="9223372036854775801" />
+    <nd ref="9223372036854775800" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775806" timestamp="2015-10-27T00:53:22.2397640Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775799" />
+    <nd ref="9223372036854775798" />
+    <nd ref="9223372036854775797" />
+    <nd ref="9223372036854775796" />
+    <nd ref="9223372036854775795" />
+    <nd ref="9223372036854775794" />
+    <nd ref="9223372036854775799" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775805" timestamp="2015-10-27T00:53:22.2399440Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775793" />
+    <nd ref="9223372036854775792" />
+    <nd ref="9223372036854775791" />
+    <nd ref="9223372036854775790" />
+    <nd ref="9223372036854775789" />
+    <nd ref="9223372036854775788" />
+    <nd ref="9223372036854775787" />
+    <nd ref="9223372036854775786" />
+    <nd ref="9223372036854775785" />
+    <nd ref="9223372036854775784" />
+    <nd ref="9223372036854775783" />
+    <nd ref="9223372036854775782" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775804" timestamp="2015-10-27T00:53:22.2399510Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775781" />
+    <nd ref="9223372036854775780" />
+    <nd ref="9223372036854775779" />
+    <nd ref="9223372036854775778" />
+    <nd ref="9223372036854775777" />
+    <nd ref="9223372036854775776" />
+    <nd ref="9223372036854775775" />
+    <nd ref="9223372036854775774" />
+    <nd ref="9223372036854775773" />
+    <nd ref="9223372036854775772" />
+    <nd ref="9223372036854775771" />
+    <nd ref="9223372036854775770" />
+    <nd ref="9223372036854775769" />
+    <nd ref="9223372036854775768" />
+    <nd ref="9223372036854775767" />
+    <nd ref="9223372036854775766" />
+    <nd ref="9223372036854775765" />
+    <nd ref="9223372036854775764" />
+    <nd ref="9223372036854775763" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775803" timestamp="2015-10-27T00:53:22.2399630Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775762" />
+    <nd ref="9223372036854775761" />
+    <nd ref="9223372036854775760" />
+    <nd ref="9223372036854775759" />
+    <nd ref="9223372036854775762" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775802" timestamp="2015-10-27T00:53:22.2399650Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775758" />
+    <nd ref="9223372036854775757" />
+    <nd ref="9223372036854775756" />
+    <nd ref="9223372036854775755" />
+    <nd ref="9223372036854775754" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775801" timestamp="2015-10-27T00:53:22.2399680Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775753" />
+    <nd ref="9223372036854775752" />
+    <nd ref="9223372036854775751" />
+    <nd ref="9223372036854775750" />
+    <nd ref="9223372036854775753" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775800" timestamp="2015-10-27T00:53:22.2399700Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775749" />
+    <nd ref="9223372036854775748" />
+    <nd ref="9223372036854775747" />
+    <nd ref="9223372036854775746" />
+    <nd ref="9223372036854775749" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775799" timestamp="2015-10-27T00:53:22.2399720Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775745" />
+    <nd ref="9223372036854775744" />
+    <nd ref="9223372036854775743" />
+    <nd ref="9223372036854775742" />
+    <nd ref="9223372036854775741" />
+    <nd ref="9223372036854775740" />
+    <nd ref="9223372036854775745" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775798" timestamp="2015-10-27T00:53:22.2399750Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775739" />
+    <nd ref="9223372036854775738" />
+    <nd ref="9223372036854775737" />
+    <nd ref="9223372036854775736" />
+    <nd ref="9223372036854775735" />
+    <nd ref="9223372036854775734" />
+    <nd ref="9223372036854775739" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775797" timestamp="2015-10-27T00:53:22.2399780Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775733" />
+    <nd ref="9223372036854775732" />
+    <nd ref="9223372036854775731" />
+    <nd ref="9223372036854775730" />
+    <nd ref="9223372036854775733" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775796" timestamp="2015-10-27T00:53:22.2401410Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775729" />
+    <nd ref="9223372036854775728" />
+    <nd ref="9223372036854775727" />
+    <nd ref="9223372036854775726" />
+    <nd ref="9223372036854775729" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775795" timestamp="2015-10-27T00:53:22.2401440Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775725" />
+    <nd ref="9223372036854775724" />
+    <nd ref="9223372036854775723" />
+    <nd ref="9223372036854775722" />
+    <nd ref="9223372036854775725" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+  <way id="9223372036854775794" timestamp="2015-10-27T00:53:22.2401450Z" user="Srtm2Osm" uid="941874" visible="true" version="1" changeset="13341398">
+    <nd ref="9223372036854775721" />
+    <nd ref="9223372036854775720" />
+    <nd ref="9223372036854775719" />
+    <nd ref="9223372036854775718" />
+    <nd ref="9223372036854775717" />
+    <nd ref="9223372036854775716" />
+    <nd ref="9223372036854775721" />
+    <tag k="ele" v="60" />
+    <tag k="contour" v="elevation" />
+  </way>
+</osm>

@@ -1,5 +1,6 @@
 #include "Model.h"	
 #include "Mesh.h"
+#include "Material.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 Model::Model()
@@ -25,7 +26,6 @@ void Model::loadModel(std::string path)
         PRINT(ss.str());
         return;
     }
-    this->directory = path.substr(0, path.find_last_of('/'));
 
     this->processNode(scene->mRootNode, scene);
 }  
@@ -77,4 +77,14 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
 
     return newMesh;
 }  
+
+void Model::addMesh(Mesh* mesh, Material* material)
+{
+
+	m_materialList.push_back( material ) ;
+
+	m_meshes.push_back(mesh);
+}
+
+
 

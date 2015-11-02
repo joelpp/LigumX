@@ -20,7 +20,7 @@
 #include "camera.h"
 #include "osm_element.h"
 
-struct Material;
+class Material;
 class Model;
 class Mesh;
 struct Text {
@@ -32,22 +32,50 @@ struct Text {
     // std::vector<characterQuadVertices> quads;
 };
 
+
+
 class Renderer{
 
 public:
     void Initialize();
+
+
+    // subfunctions
+    void init_pipelines();
+    void init_pipelines_buildingSides();
+    void init_pipelines_filledBuildings();
+    void init_pipelines_roads();
+    void init_pipelines_screenQuad();
+    void init_pipelines_text();
+
+    void render();
+    void RenderText(Text t);
+    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
+    void DrawMesh(Mesh* mesh, Material* material);
+    void DrawModel(Model* model);
+    void outputGLError(std::string func, int line);
+    void RenderSky();
+    void RenderFPS();
+
+
+
     Camera *camera;
     bool fancyDisplayMode;
     bool drawBuildingSides;
     bool drawGround;
     bool showText;
+    bool saveScreenshot;
+
+    float dt, curr_time, fps;
+
     // window params
     unsigned int windowWidth;
     unsigned int windowHeight;
     std::string windowTitle;
     GLFWwindow* pWindow;
-    bool saveScreenshot;
 
+    float sunTime;
+    float sunOrientation;
     // textures
     GLuint glidTextureScreenRoads; // for implicit definition of the roads.
     GLuint glidFramebuffer;
@@ -95,6 +123,7 @@ public:
     GLuint glidGroundTriangleTextureIDs;
     GLuint textVBO;
     GLuint textUvsVBO;
+
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::map<OSMElement::ElementType, bool> displayElementType;
     std::unordered_map<OSMElement::ElementType, glm::vec3> typeColorMap;
@@ -106,27 +135,11 @@ public:
     unsigned int nbWaysVertices;
     unsigned int nbGroundVertices;
     unsigned int nbNodes;
+
     std::vector<GLint> firstVertexForEachRoad;
     std::vector<GLsizei> nbVerticesForEachRoad;
 
 
-    // subfunctions
-    void init_pipelines();
-    void init_pipelines_buildingSides();
-    void init_pipelines_filledBuildings();
-    void init_pipelines_generalLines();
-    void init_pipelines_groundTriangles();
-    void init_pipelines_roads();
-    void init_pipelines_screenQuad();
-    void init_pipelines_envmap();
-    void init_pipelines_text();
-    void init_pipelines_nodes();
-
-    void render();
-    void RenderText(Text t);
-    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
-    void DrawMesh(Mesh* mesh, Material material);
-    void DrawModel(Model* model);
     //text renderign stuff
     struct Character 
     {

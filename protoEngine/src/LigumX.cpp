@@ -9,6 +9,9 @@
 #include "Settings.h"
 #include "RenderDataManager.h"
 #include "World.h"
+#include "Sector.h"
+#include "Heightfield.h"
+
 using namespace glm;
 using namespace std;
 
@@ -49,28 +52,142 @@ void LigumX::mainLoop()
     
     if (Settings::GetInstance().i("loadNewSectors"))
     {
-        updateRenderData();
+        updateRenderData(0);
     }
+
     renderer.render();
     if(showTweakBar) TwDraw();
 }
 
-void LigumX::updateRenderData()
+void LigumX::init()
+{
+    //=============================================================================
+    // Parameters, camera setup.
+    //=============================================================================
+    
+    Renderer::GetInstance().Initialize();
+    running = true;
+    loadSettings();
+
+    initCamera();
+
+    populateTypeColorArray();
+
+    // register GLFW and GLdebug callbacks
+    SetCallbacks();
+
+    //=============================================================================
+    // Load world data.
+    //=============================================================================
+
+    Settings& settings = Settings::GetInstance();
+    world = new World(settings.f("sectorSize"));
+    // world->createSector(vec2(-73.650, 45.500));
+    vec2 tp;
+    if (settings.i("useCameraPositionAsTestPoint")) tp = glm::vec2(camera->position);
+    else tp = settings.f2("testPoint");
+    
+
+    //=============================================================================
+    // create and fill VBOs.
+    //============================================================================
+    Renderer &renderer = Renderer::GetInstance();
+
+    renderer.init_pipelines();
+
+    renderData = new RenderDataManager();
+
+    Sector* sector = world->GetOrCreateSectorContainingXY(glm::vec2(camera->position));
+    updateRenderData(4);
+    sector->createHeightfield();
+    sector->loadData(SectorData::MAP);
+    renderData->addToTerrainBuffer(sector);
+    renderData->fillBuffers(sector);
+
+    //=============================================================================
+    // Textures, framebuffer, renderbuffer
+    //=============================================================================
+    init_tweakBar();
+    
+}
+void LigumX::updateRenderData(int loadingRingSize)
 {
     Renderer& renderer = Renderer::GetInstance();
 
 
-    std::vector<Sector*>* newSectors = world->loadSectorsAroundPoint(glm::vec2(camera->position), Settings::GetInstance().i("loadingRingSize"));
+    // std::vector<Sector*>* newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), Settings::GetInstance().i("loadingRingSize"));
+    std::vector<Sector*>* newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), loadingRingSize);
 
     for(int i = 0; i < newSectors->size(); ++i)
     {
-        renderData->addToTerrainBuffer(newSectors->at(i));
-        renderData->fillBuffers(newSectors->at(i));
-        renderer.init_pipelines();
+        Sector* sector = newSectors->at(i);
+
+
+        if (!sector->m_initialized)
+        {
+            renderData->initializeSector(sector);
+            sector->loadData(SectorData::CONTOUR);
+
+            sector->m_initialized = true;
+            continue;
+        }
+
+        if (sector->m_heightfield == 0)
+        {
+            sector->createHeightfield();
+            renderData->addToTerrainBuffer(sector);
+            sector->loadData(SectorData::MAP);
+            // sector->m_data->elevateNodes(sector->m_heightfield);
+            renderData->fillBuffers(sector);
+            // continue;
+        }
+
+        // if (sector->m_data == 0)
+        // {
+
+        // }
+
     }
 
     delete(newSectors);
+
+    newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), 0);
+
+    Sector* sector = newSectors->at(0);
+    if (sector->m_heightfield)
+    {
+        double height = sector->m_heightfield->getHeight(glm::vec2(camera->position));
+        PRINT(height * 15000);
+    }
 }
+
+
+void LigumX::initCamera(){
+    camera = new Camera();
+    camera->setViewSize(Settings::GetInstance().f("viewSize"));
+    Renderer::GetInstance().camera = camera;
+    draggingCamera = false;
+
+    camera->translateTo(Settings::GetInstance().f3("cameraPosition"));
+    camera->lookAtTargetPos = Settings::GetInstance().f3("cameraLookAt");
+}
+
+void LigumX::loadSettings(){
+    Settings& s = Settings::GetInstance();
+    s.load();
+
+    glm::vec2 coordinateShift = trunc(Settings::GetInstance().f2("cameraPosition"));
+    s.add("coordinateShifting", -coordinateShift);
+    buildingHeight = s.i("buildingHeight");
+    buildingSideScaleFactor = 1;
+    Renderer::GetInstance().drawGround = false;
+    Renderer::GetInstance().showText = false;
+    showTweakBar = false;
+    ProgramPipeline::ShadersPath = s.s("ShadersPath");
+
+}
+
+
 World* LigumX::getWorld()
 {
     return world;
@@ -107,30 +224,6 @@ string LigumX::labelFromType(OSMElement::ElementType type)
     return "!!! WRONG TYPE !!!";
 }
 
-void LigumX::initCamera(){
-    camera = new Camera();
-    camera->setViewSize(Settings::GetInstance().f("viewSize"));
-    Renderer::GetInstance().camera = camera;
-    draggingCamera = false;
-
-    camera->translateTo(Settings::GetInstance().f3("cameraPosition"));
-    camera->lookAtTargetPos = Settings::GetInstance().f3("cameraLookAt");
-}
-
-void LigumX::loadSettings(){
-    Settings& s = Settings::GetInstance();
-    s.load();
-
-    glm::vec2 coordinateShift = trunc(Settings::GetInstance().f2("cameraPosition"));
-    s.add("coordinateShifting", -coordinateShift);
-    buildingHeight = s.i("buildingHeight");
-    buildingSideScaleFactor = 1;
-    Renderer::GetInstance().drawGround = false;
-    Renderer::GetInstance().showText = false;
-    showTweakBar = false;
-    ProgramPipeline::ShadersPath = s.s("ShadersPath");
-
-}
 
 void LigumX::populateTypeColorArray(){
     Renderer& renderer = Renderer::GetInstance();
@@ -153,7 +246,7 @@ void LigumX::populateTypeColorArray(){
     renderer.typeColorMap.emplace(OSMElement::aDEBUG, vec3(1.0,0,1.0));
     renderer.typeColorMap.emplace(OSMElement::LANDUSE, vec3(1.0,1.0,1.0));
     renderer.typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0,1.0,1.0));
-    renderer.typeColorMap.emplace(OSMElement::CONTOUR, vec3(0.1,0.1,0.1));
+    renderer.typeColorMap.emplace(OSMElement::CONTOUR, vec3(1.0,0.1,0.1));
 
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_TRUNK, true);
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_PRIMARY, true);
@@ -197,4 +290,26 @@ void TW_CALL LigumX::toggleEntityLand() {
     }
 }
 
+
+static void test_error_cb (int error, const char *description)
+{
+    fprintf(stderr, "%d: %s\n", error, description);
+}
+
+void LigumX::SetCallbacks(){
+    Renderer& renderer = Renderer::GetInstance();
+    glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
+    glfwSetKeyCallback( renderer.pWindow, glfwKeyCallback );
+    glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
+    glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
+    glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );
+    glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );
+    glfwSetWindowPosCallback( renderer.pWindow, glfwWindowPositionCallback );
+    glfwSetWindowSizeCallback( renderer.pWindow, glfwWindowSizeCallback );
+    glfwSetWindowCloseCallback( renderer.pWindow, glfwWindowClosedCallback );
+    glfwSetWindowRefreshCallback( renderer.pWindow, glfwWindowRefreshCallback );
+    glfwSetWindowFocusCallback( renderer.pWindow, glfwWindowFocusCallback );
+    glfwSetWindowIconifyCallback( renderer.pWindow, glfwWindowIconifyCallback );
+    glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
+}
 

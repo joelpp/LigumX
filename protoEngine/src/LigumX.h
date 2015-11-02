@@ -52,7 +52,7 @@ public:
     World* getWorld();
 
     std::pair<glm::vec2, glm::vec2> windowBoundingBox();
-    void updateRenderData();
+    void updateRenderData(int loadingRingSize);
 
     // TODO: move this to data
     void populateTypeColorArray();
@@ -86,8 +86,6 @@ public:
     glm::vec2 oldMousePosition;
     glm::vec2 windowPosToWorldPos(glm::vec2 ij);
 
-
-    std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;
     std::unordered_map<std::string, int> tagConversionTable;
     World* world;
     RenderDataManager* renderData;
@@ -109,28 +107,15 @@ public:
     float buildingSideScaleFactor;   
 
     void init_tweakBar();
-    void init_freetype();
+
     void initCamera();
     void loadSettings();
+    
     // Entity stuff
     EntityManager entityManager;
     Camera savedCam;
     bool inEntityLand;
     void TW_CALL toggleEntityLand();
-
-
-
-    struct characterQuadVertices{
-        GLfloat vertices[6][3];
-        characterQuadVertices( GLfloat qwe[6][3])
-        {
-            for(int i=0; i<6; ++i) {
-                for(int j=0; j<3; ++j) {
-                    vertices[i][j] = qwe[i][j];
-                }
-            }
-        }
-    };
 
 
 //    void RenderText(Text t);

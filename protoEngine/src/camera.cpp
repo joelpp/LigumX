@@ -23,7 +23,7 @@ Camera::Camera()
     cameraType = CameraType::CYLINDRICAL;
     controlType = ControlType::QWEASDZXC_DRAG;
     upVec = normalize(vec3(0,1,1));
-    frontVec = normalize(vec3(0,-1,1));
+    frontVec = normalize(vec3(0,-1,5));
     rightVec = vec3(1,0,0);
     cylindricalUpVec = vec3(0,0,1);
     upVecReference = upVec;

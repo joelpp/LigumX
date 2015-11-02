@@ -1,10 +1,15 @@
 #include "SectorData.h"
 #include "node.h"
 #include "way.h"
+#include "World.h"
 #include "relation.h"
 #include "osm_element.h"
+#include "Sector.h"
+#include "RenderDataManager.h"
 #include "Settings.h"
 #include "CurlRequest.h"
+#include "Heightfield.h"
+#include "LigumX.h"
 #include <sstream>
 #include <fstream>
 
@@ -15,34 +20,46 @@ OSMElement::ElementType typeFromStrings(string key, string value);
 
 
 
-SectorData::SectorData(){
+SectorData::SectorData()
+{
 
 }
 
-SectorData::SectorData(glm::vec2 pos){
+SectorData::SectorData(glm::vec2 pos)
+{
  
     m_pos = pos;
-    loadData();
 }
 
-void SectorData::downloadData(){
+void SectorData::downloadData(std::string path)
+{
     string s = downloadSectorData(m_pos);
-    std::stringstream ss;
-    ss << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/OSMData/";
-    ss << m_pos.x * 1000 << "x" << m_pos.y * 1000;
-    ss << ".xml";
-    std::ofstream out(ss.str());
+
+    std::ofstream out(path);
+
     out << s;
     out.close();
 }
 
-void SectorData::loadData(){
+void SectorData::loadData(EOSMDataType dataType)
+{
+    World *world = LigumX::GetInstance().world;
     glm::vec2 coordinateShifting = Settings::GetInstance().f2("coordinateShifting");
     tinyxml2::XMLDocument doc;
 
-    std::string path = BuildXMLPath(m_pos);
+    std::string path = BuildXMLPath(dataType, m_pos);
 
-    if (!file_exists(path)) downloadData();
+    if (!file_exists(path)) 
+    {
+        if (dataType == MAP)
+        {
+            downloadData(path);
+        }
+        else if (dataType == CONTOUR)
+        {
+            downloadContourData(m_pos, path);
+        }
+    }
 
     doc.LoadFile(path.c_str());
 
@@ -90,7 +107,25 @@ void SectorData::loadData(){
                 string value = tag->ToElement()->FindAttribute("v")->Value();
                 node -> addTag(key, value);
             }
-            nodes.emplace(id, node);
+            
+            // /** UGLY 8*/
+            // Sector* sector = world->GetOrCreateSectorContainingXY(glm::vec2(longitude, latitude));
+            // if (!sector->m_initialized)
+            // {
+            //     LigumX::GetInstance().renderData->initializeSector(sector);
+            //     sector->m_data = new SectorData(sector->m_pos);
+            //     // sector->loadData(SectorData::CONTOUR);
+    
+            //     sector->m_initialized = true;
+
+            //     // sector->createHeightfield();
+            //     // renderData->addToTerrainBuffer(sector);
+            //     // sector->loadData(SectorData::MAP);
+            //     // sector->m_data->elevateNodes(sector->m_heightfield);
+            //     // LigumX::GetInstance().renderData->fillBuffers(sector);
+            // }
+
+            /*sector->m_data->*/nodes.emplace(id, node);
             // theNodes.emplace(id, node);
             // addPoint(spatialIndex, longitude, latitude, atoi(id.c_str()));
             // i++;
@@ -117,6 +152,15 @@ void SectorData::loadData(){
                 }
             }
 
+            if (dataType == CONTOUR)
+            {
+                float elevation = atof(way->tags["ele"].c_str()) / 15000 + 0.000001;
+                for (auto it = way->nodes.begin(); it != way->nodes.end(); ++it)
+                {
+                    Node* node = *it;
+                    node->elevation = elevation;
+                }
+            }
             ways.emplace(id, way);
             // theWays.emplace(id, way);
             // waysTypeMap[way->eType].emplace(id,way);
@@ -153,19 +197,38 @@ void SectorData::loadData(){
     }
 }
 
+void SectorData::elevateNodes(Heightfield* heightfield)
+{
+    for (auto it = ways.begin(); it != ways.end(); ++it)
+    {
+        Way* way = it->second;
 
-std::string SectorData::BuildXMLPath(glm::vec2 pos){
-    std::stringstream ss;
-#ifdef __APPLE__
-    ss << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/OSMData/";
-#else
-    ss << "../data/Data_";
-#endif
-    // ss<<pos.x * 1000<<"x"<<pos.y*1000<<".xml";
-    ss << m_pos.x * 1000 << "x" << m_pos.y * 1000 << ".xml";
-    // std::cout << ss.str() << "\n";
+        for (auto nodeIt = way->nodes.begin(); nodeIt != way->nodes.end(); ++nodeIt)
+        {
+            Node* node = *nodeIt;
+            double elevation = heightfield->getHeight(node->getLatLong());
+            elevation = std::max(0., std::min(elevation, 0.01));
+            node->elevation = elevation + 0.0001;
+        }
+    }
+}
 
-    return ss.str();
+
+std::string SectorData::BuildXMLPath(EOSMDataType dataType, glm::vec2 pos){
+    std::stringstream savePath;
+    savePath << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/";
+    switch(dataType)
+    {
+        case CONTOUR:   savePath << "SRTMData/";
+                        break;
+        case MAP:       savePath << "OSMData/";
+    }
+
+
+    savePath << m_pos.x * 1000 << "x" << m_pos.y * 1000;
+    savePath << ".xml";
+
+    return savePath.str();
 }
 
 
@@ -325,7 +388,6 @@ Node* SectorData::findClosestNode(vec2 xy){
     }
     return closest;
 }
-
 
 
 
