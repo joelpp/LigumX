@@ -57,6 +57,7 @@ public:
 	  glm::vec2 m_pos;
 
     std::unordered_map<std::string, Way*> ways;
+    std::unordered_map<std::string, Way*> contourWays;
   	std::unordered_map<std::string, Node*> nodes;
   	std::unordered_map<int, std::unordered_map<std::string, Way*> > waysMap;
 	  WayTypeMap m_wayTypeMap;

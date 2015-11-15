@@ -39,6 +39,7 @@ Camera::Camera()
     keyMovementSpeed = defaultKeyMovementSpeed;
     keyMovementSpeedIncreaseFactor = 1.5f;
     mouseIsDragging = false;
+    updateVPMatrix();
 }
 
 

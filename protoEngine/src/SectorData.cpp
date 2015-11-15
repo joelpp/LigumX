@@ -1,15 +1,17 @@
-#include "SectorData.h"
 #include "node.h"
-#include "way.h"
-#include "World.h"
-#include "relation.h"
-#include "osm_element.h"
-#include "Sector.h"
-#include "RenderDataManager.h"
-#include "Settings.h"
+
 #include "CurlRequest.h"
 #include "Heightfield.h"
 #include "LigumX.h"
+#include "osm_element.h"
+#include "Sector.h"
+#include "Settings.h"
+#include "SectorData.h"
+#include "SectorManager.h"
+#include "RenderDataManager.h"
+#include "way.h"
+#include "World.h"
+
 #include <sstream>
 #include <fstream>
 
@@ -64,6 +66,15 @@ void SectorData::loadData(EOSMDataType dataType)
     doc.LoadFile(path.c_str());
 
     tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
+    // std::unordered_map<std::string id, Way*>* wayVector = 0;
+    // if (dataType == CONTOUR)
+    // {
+    //      wayVector = &contourWays;
+    // }
+    // else
+    // {
+    //      wayVector = &ways;
+    // }
 
     // TODO: This could be part of a test?
     // cout << docRoot->Value() << "\n";
@@ -72,22 +83,7 @@ void SectorData::loadData(EOSMDataType dataType)
     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
         if (string(child->Value()).compare("bound") == 0){
-            // string box = child->ToElement()->FindAttribute("box")->Value();
-            // std::istringstream ss(box);
-            // std::string token;
 
-            // std::getline(ss, token, ','); viewRectBottom = atof(token.c_str()) * coordinateInflationFactor - 45;
-            // std::getline(ss, token, ','); viewRectLeft = atof(token.c_str()) * coordinateInflationFactor   + 73;
-            // std::getline(ss, token, ','); viewRectTop = atof(token.c_str()) * coordinateInflationFactor    - 45;
-            // std::getline(ss, token, ','); viewRectRight = atof(token.c_str()) * coordinateInflationFactor  + 73;
-
-            // PRINT(viewRectBottom);
-            // PRINT(viewRectLeft);
-            // PRINT(viewRectTop);
-            // PRINT(viewRectRight);
-
-
-            // sector = world->getOrCreateSector(viewRectBottomLeft);
         }
         if (string(child->Value()).compare("node") == 0){
 //            cout << "Looking at a node \n";
@@ -109,23 +105,11 @@ void SectorData::loadData(EOSMDataType dataType)
             }
             
             // /** UGLY 8*/
-            // Sector* sector = world->GetOrCreateSectorContainingXY(glm::vec2(longitude, latitude));
-            // if (!sector->m_initialized)
-            // {
-            //     LigumX::GetInstance().renderData->initializeSector(sector);
-            //     sector->m_data = new SectorData(sector->m_pos);
-            //     // sector->loadData(SectorData::CONTOUR);
-    
-            //     sector->m_initialized = true;
-
-            //     // sector->createHeightfield();
-            //     // renderData->addToTerrainBuffer(sector);
-            //     // sector->loadData(SectorData::MAP);
-            //     // sector->m_data->elevateNodes(sector->m_heightfield);
-            //     // LigumX::GetInstance().renderData->fillBuffers(sector);
-            // }
-
-            /*sector->m_data->*/nodes.emplace(id, node);
+            // Sector* sl = world->sectorsAroundPoint((glm::vec2(longitude, latitude)), 0)->at(0);
+            // PRINTINT(sl);
+            // PRINTINT(sl->m_data);
+            // sl->m_data->
+            nodes.emplace(id, node);
             // theNodes.emplace(id, node);
             // addPoint(spatialIndex, longitude, latitude, atoi(id.c_str()));
             // i++;
@@ -195,6 +179,8 @@ void SectorData::loadData(EOSMDataType dataType)
 //         }
 
     }
+
+
 }
 
 void SectorData::elevateNodes(Heightfield* heightfield)
@@ -224,8 +210,9 @@ std::string SectorData::BuildXMLPath(EOSMDataType dataType, glm::vec2 pos){
         case MAP:       savePath << "OSMData/";
     }
 
-
-    savePath << m_pos.x * 1000 << "x" << m_pos.y * 1000;
+    int index = SectorManager::IDFromPos(pos);
+    // savePath << m_pos.x * 1000 << "x" << m_pos.y * 1000;
+    savePath << index;
     savePath << ".xml";
 
     return savePath.str();

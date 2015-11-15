@@ -11,7 +11,6 @@
 #include "World.h"
 #include "Sector.h"
 #include "Heightfield.h"
-
 using namespace glm;
 using namespace std;
 
@@ -21,11 +20,13 @@ const double static_dt = 1.0 / 100.0;
 
 int main(int argc, char *argv[])
 {
+    std::string _ClassName = "Main";
     srand(987654321);
 
     LigumX& game = LigumX::GetInstance();
     game.running = true;
     game.init();
+
     while(game.running) {
         glfwPollEvents();
 
@@ -52,7 +53,7 @@ void LigumX::mainLoop()
     
     if (Settings::GetInstance().i("loadNewSectors"))
     {
-        updateRenderData(0);
+        updateWorld(0);
     }
 
     renderer.render();
@@ -97,68 +98,58 @@ void LigumX::init()
 
     renderData = new RenderDataManager();
 
-    Sector* sector = world->GetOrCreateSectorContainingXY(glm::vec2(camera->position));
-    updateRenderData(4);
-    sector->createHeightfield();
-    sector->loadData(SectorData::MAP);
-    renderData->addToTerrainBuffer(sector);
-    renderData->fillBuffers(sector);
-
     //=============================================================================
     // Textures, framebuffer, renderbuffer
     //=============================================================================
     init_tweakBar();
+
+    // updateWorld(3);
+
     
 }
-void LigumX::updateRenderData(int loadingRingSize)
+
+void LigumX::updateWorld(int loadingRingSize)
 {
     Renderer& renderer = Renderer::GetInstance();
 
-
-    // std::vector<Sector*>* newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), Settings::GetInstance().i("loadingRingSize"));
-    std::vector<Sector*>* newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), loadingRingSize);
+    std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(glm::vec2(camera->position), loadingRingSize);
 
     for(int i = 0; i < newSectors->size(); ++i)
     {
+    
         Sector* sector = newSectors->at(i);
-
-
-        if (!sector->m_initialized)
+        if (sector->m_initializationLevel < Sector::FullyInitialized)
         {
-            renderData->initializeSector(sector);
-            sector->loadData(SectorData::CONTOUR);
+            if (sector->m_initializationLevel == Sector::ContourLoaded)
+            {
+                renderData->initializeSector(sector);
+            }
 
-            sector->m_initialized = true;
-            continue;
+            if (sector->m_initializationLevel == Sector::DataLoaded)
+            {
+                renderData->fillBuffers(sector);
+            }
+
+            if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
+            {
+                PRINT("heightfield geenerated, adding to terrain buffer")
+                // renderData->addToTerrainBuffer(sector);
+            }
         }
 
-        if (sector->m_heightfield == 0)
-        {
-            sector->createHeightfield();
-            renderData->addToTerrainBuffer(sector);
-            sector->loadData(SectorData::MAP);
-            // sector->m_data->elevateNodes(sector->m_heightfield);
-            renderData->fillBuffers(sector);
-            // continue;
-        }
-
-        // if (sector->m_data == 0)
-        // {
-
-        // }
 
     }
 
     delete(newSectors);
 
-    newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), 0);
+    // newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), 0);
 
-    Sector* sector = newSectors->at(0);
-    if (sector->m_heightfield)
-    {
-        double height = sector->m_heightfield->getHeight(glm::vec2(camera->position));
-        PRINT(height * 15000);
-    }
+    // Sector* sector = newSectors->at(0);
+    // if (sector->m_heightfield)
+    // {
+    //     double height = sector->m_heightfield->getHeight(glm::vec2(camera->position));
+    //     PRINT(height * 15000);
+    // }
 }
 
 
@@ -181,7 +172,7 @@ void LigumX::loadSettings(){
     buildingHeight = s.i("buildingHeight");
     buildingSideScaleFactor = 1;
     Renderer::GetInstance().drawGround = false;
-    Renderer::GetInstance().showText = false;
+    Renderer::GetInstance().showText = true;
     showTweakBar = false;
     ProgramPipeline::ShadersPath = s.s("ShadersPath");
 

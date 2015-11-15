@@ -53,6 +53,7 @@ public:
 	bool m_wireframeRendering;
 	bool m_pointRendering;
 	GLenum m_renderingMode;
+	
 private:
 	REGISTERCLASS(Mesh);
 };

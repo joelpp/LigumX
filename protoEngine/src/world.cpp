@@ -5,6 +5,7 @@
 #include "Math.h"
 #include "SectorData.h"
 #include "vec2i.h"
+#include "SectorManager.h"
 
 using namespace std;
 using namespace glm;
@@ -16,133 +17,47 @@ World::World()
 
 World::World(float sectorSize)
 {
+	m_sectorManager = new SectorManager(sectorSize);
 	m_sectorSize = sectorSize;
 	m_invSectorSize = 1.f / sectorSize;
+
 }
 
-Sector* World::createSector(Coord2 pos){
-	Sector* c = new Sector(pos, m_sectorSize);
 
-    m_sectors.emplace(pos, c);
 
-    return c;
-}
-
-Coord2 World::Normalized(Coord2 UnNormalized){
+Coord2 World::Normalized(Coord2 UnNormalized)
+{
 	return UnNormalized * m_invSectorSize;
 }
 
-Coord2 World::sectorPosFromXY(Coord2 longLat){
+Coord2 World::sectorPosFromXY(Coord2 longLat)
+{
 	Coord2 normalized = Normalized(longLat);
 	normalized = glm::floor(normalized);
 
 	return normalized * m_sectorSize;
 }
 
-Sector* World::GetOrCreateSectorAtXY(Coord2 longLat, SectorList* newSectors){
-	Sector* sector;
-	longLat.x = roundf(longLat.x * 100) / 100;  /* Result: 37.78 */
-	longLat.y = roundf(longLat.y * 100) / 100;  /* Result: 37.78 */
-	try{
-		sector = m_sectors.at(longLat);
-	}
-	catch(...){
-		PRINT("Creating sector at ");
-		PRINTVEC2(longLat);
-		sector = new Sector(longLat, m_sectorSize);
 
-    	m_sectors.emplace(longLat, sector);
 
-    	if (newSectors)
-    	{
-			newSectors->push_back(sector);
-		}
-	}
+Sector* World::GetOrCreateSectorContainingXY(Coord2 longLat)
+{
+
+	Sector* sector = m_sectorManager->sectorContaining(longLat);
 
 	return sector;
 }
 
-Sector* World::GetOrCreateSectorContainingXY(Coord2 longLat){
-	Coord2 sp = sectorPosFromXY(longLat); 
-	sp.x = roundf(sp.x * 100) / 100;  /* Result: 37.78 */
-	sp.y = roundf(sp.y * 100) / 100;  /* Result: 37.78 */
-	Sector* sector;
-	try{
-		sector = m_sectors.at(sp);
-	}
-	catch(...){
-		sector = new Sector(sp, m_sectorSize);
 
-    	m_sectors.emplace(sp, sector);
-	}
-
-	return sector;
+SectorList* World::sectorsAroundPoint(Coord2 point, int ringSize)
+{
+	return m_sectorManager->sectorsAround(point, ringSize, false);
 }
 
-SectorList* World::newSectorsAroundPoint(Coord2 point, int ringSize){
-	SectorList* newSectors = new SectorList();
-	Coord2 startingCoord = sectorPosFromXY(point - glm::vec2(ringSize * m_sectorSize));
-	Coord2 runningCoord = startingCoord;;
-	for (int i = 0; i < 2 * ringSize + 1; ++i )
-	{
-
-		runningCoord.x = startingCoord.x;
-
-		for (int j = 0; j < 2 * ringSize + 1; ++j )
-		{
-
-			GetOrCreateSectorAtXY(runningCoord, newSectors);
-			runningCoord.x += m_sectorSize;
-		}
-		runningCoord.y += m_sectorSize;
-	}
-	return newSectors;
+SectorList* World::updateSectorsAroundPoint(Coord2 point, int ringSize)
+{
+	return m_sectorManager->sectorsAround(point, ringSize, true);
 }
-
-SectorList* World::sectorsAroundPoint(Coord2 point, int ringSize){
-	SectorList* newSectors = new SectorList();
-	Coord2 startingCoord = sectorPosFromXY(point - glm::vec2(ringSize * m_sectorSize));
-	Coord2 runningCoord = startingCoord;;
-	runningCoord.x = roundf(runningCoord.x * 100) / 100;  /* Result: 37.78 */
-	runningCoord.y = roundf(runningCoord.y * 100) / 100;  /* Result: 37.78 */
-	for (int i = 0; i < 2 * ringSize + 1; ++i )
-	{
-
-		runningCoord.x = startingCoord.x;
-
-		for (int j = 0; j < 2 * ringSize + 1; ++j )
-		{
-			// PRINTVEC2(runningCoord);
-
-			newSectors->push_back(GetOrCreateSectorAtXY(runningCoord, 0));
-			runningCoord.x += m_sectorSize;
-		}
-		runningCoord.y += m_sectorSize;
-	}
-	return newSectors;
-}
-
-// SectorList* World::sectorsAroundPoint(Coord2 point, int ringSize){
-// 	SectorList* newSectors = new SectorList();
-// 	Coord2 startingCoord = sectorPosFromXY(point - glm::vec2(ringSize * m_sectorSize));
-
-// 	vec2i sectorPosition = round100();
-// 	Coord2 runningCoord = startingCoord;;
-// 	for (int i = 0; i < 2 * ringSize + 1; ++i )
-// 	{
-
-// 		runningCoord.x = startingCoord.x;
-
-// 		for (int j = 0; j < 2 * ringSize + 1; ++j )
-// 		{
-
-// 			newSectors->push_back(GetOrCreateSectorAtXY(runningCoord, 0));
-// 			runningCoord.x += m_sectorSize;
-// 		}
-// 		runningCoord.y += m_sectorSize;
-// 	}
-// 	return newSectors;
-// }
 
 std::vector<Way*> World::findNClosestWays(int n, glm::vec2 xy, 
 									  std::vector<Way*> querySet, int filter, 

@@ -7,6 +7,7 @@
 #include "World.h"
 #include "LigumX.h"
 #include "LineSegment.h"
+#include "Sector.h"
 #include <sstream>
 using namespace std;
 using namespace glm;
@@ -20,21 +21,29 @@ Heightfield::Heightfield(vec2 startPoint, double sideLength){
     this->sideLength = sideLength;
     this->startPoint = startPoint;
     this->step = Settings::GetInstance().f("HeightfieldResolution");
-    this->m_numberOfPointsPerSide = 2 + (sideLength) / step;
+    this->m_numberOfPointsPerSide = 2 + (sideLength + 0.0000001) / step;
     m_mesh = 0;
 }
 
-void Heightfield::generateTriangles(){
+bool Heightfield::generateTriangles(){
     m_mesh = new Mesh();
 
     World* world = LigumX::GetInstance().world;
     std::stringstream ss;
 
     std::vector<Sector*>* relevantSectors = world->sectorsAroundPoint(startPoint,2);
+
+    for (Sector* sector : *relevantSectors)
+    {
+        if (sector->m_initializationLevel < Sector::ContourLoaded)
+        {
+            return false;
+        }
+    }
     std::vector<Way*> contoursToQuery = World::getAllContourLines(relevantSectors);
 
-    // delete(relevantSectors);
-
+    delete(relevantSectors);
+    
     float lon = startPoint.x;
     float lat = startPoint.y;
 
@@ -86,6 +95,8 @@ void Heightfield::generateTriangles(){
     m_mesh->createBuffers();
     m_mesh->m_usesIndexBuffer = true;
     m_mesh->m_renderingMode = GL_TRIANGLES;
+
+    return true;
 }
 
 double bilerp(glm::vec2 xy, glm::vec3 corners[4])

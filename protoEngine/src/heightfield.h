@@ -21,7 +21,7 @@ public:
     Heightfield();
     Heightfield(glm::vec2 startPoint,double sideLength);
 
-    void generateTriangles();
+    bool generateTriangles();
 	static double contourLineInterpolate(glm::vec2 xy, std::vector<Way*>& contourLines);
 	static int getLerpedContourLines(glm::vec2 xy, std::vector<Way*> ways, std::vector<glm::vec2> directions, 
                                        			  std::vector<std::pair<Node*, Node*>> nodePairs);

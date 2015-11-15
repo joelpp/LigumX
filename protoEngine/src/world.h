@@ -13,6 +13,7 @@
 class Sector;
 class Way;
 class Node;
+class SectorManager;
 class vec2i;
 
 typedef glm::vec2 Coord2;
@@ -31,7 +32,7 @@ namespace std {
         public :
             size_t operator()(const glm::vec2 &vec ) const
             {
-                return hash<int>()(vec.x) ^ hash<int>()(vec.y);
+                return hash<int>()(roundf(vec.x)) ^ hash<int>()(roundf(vec.y));
             }
     };
 };
@@ -69,6 +70,7 @@ public:
     Sector* GetOrCreateSectorContainingXY(Coord2 longLat);
     Sector* GetOrCreateSectorAtXY(Coord2 longLat, SectorList* newSectors);
 
+    SectorList* updateSectorsAroundPoint(Coord2 point, int ringSize);
     SectorList* sectorsAroundPoint(Coord2 point, int ringSize);
     SectorList* newSectorsAroundPoint(Coord2 point, int ringSize);
 
@@ -84,7 +86,7 @@ public:
     float m_invSectorSize;
     std::unordered_map<Coord2, Sector*> m_sectors;
     std::vector<Sector*> sectors;
-
+    SectorManager* m_sectorManager;
     float m_globalTime;
 };
 #endif

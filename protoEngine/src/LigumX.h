@@ -52,7 +52,7 @@ public:
     World* getWorld();
 
     std::pair<glm::vec2, glm::vec2> windowBoundingBox();
-    void updateRenderData(int loadingRingSize);
+    void updateWorld(int loadingRingSize);
 
     // TODO: move this to data
     void populateTypeColorArray();

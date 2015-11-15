@@ -12,6 +12,7 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Material.h"
+#include "Building.h"
 #include "glm/gtx/transform.hpp"
 
 using namespace std;
@@ -37,6 +38,7 @@ int findSetBit(int number){
 
 RenderDataManager::RenderDataManager(){
     nbRoads = 0;
+    m_renderingScale = Settings::GetInstance().f("RenderingScale");
     Renderer& renderer = Renderer::GetInstance();
 
     screenQuadPos.push_back(vec2(1,-1));
@@ -69,6 +71,7 @@ RenderDataManager::RenderDataManager(){
 
     model->name = "Sphere 1";
     renderer.m_debugModels.push_back( model );
+    PRINTSTRING("GERREREEGRG");
 }
 
 void RenderDataManager::addToTerrainBuffer(Sector* newSector)
@@ -208,180 +211,8 @@ void RenderDataManager::fillBuffers(Sector* sector)
         Node last(*(way->nodes.back()));
         if((way->eType==OSMElement::BUILDING_UNMARKED||way->eType == OSMElement::LEISURE_PARK)&&way->nodes.size() >= 3 && first == last) 
         {
-
-            float height = 0;
-            if (way->eType == OSMElement::BUILDING_UNMARKED) height = game.buildingHeight /* + (rand() / RAND_MAX) * 4.f*/;
-//            cout << "building loop" << endl;
-
-            // Note: supposed all loops are given in counter-clockwise order.
-            unsigned int nbTriangles = 0;
-
-            // first try clockwise loops, then try counterclockwise if it failed.
-            std::vector<vec3> tempTriangleVertices;
-            bool failedLoop;
-            for(int clockwiseness=-1; clockwiseness<=1; clockwiseness += 2) 
-            {
-
-                // copy node loop (not repeating the last node) and
-                // add lines to buildingLines
-                std::vector<Node*> loopNodes;
-                float distance = 0;
-                
-                for(auto n = way->nodes.begin(); n != way->nodes.end()-1; ++n) 
-                {
-                    loopNodes.push_back(*n);
-                    
-                    if (way->eType == LiftableWalls)
-                    {
-                        buildingLines.push_back(vec3((*n)->longitude, (*n)->latitude, (*n)->elevation));
-                        buildingLines.push_back(vec3((*(n+1))->longitude, (*(n+1))->latitude, (*(n+1))->elevation));
-                    }
-
-                    if (way->eType == LiftableWalls)
-                    {
-                        buildingLinesTexCoords.push_back(float(distance));    
-                    } 
-
-                    distance += glm::distance(vec2((*n)->longitude, (*n)->latitude),
-                                              vec2((*(n+1))->longitude, (*(n+1))->latitude));
-
-                    if (way->eType == LiftableWalls) buildingLinesTexCoords.push_back(float(distance));
-                }
-
-                unsigned int nbLoops = 0;
-
-                // recursively transform loop into triangles until fully consumed.
-                auto nodeIt1 = loopNodes.begin();
-                auto nodeIt2 = loopNodes.begin() + 1;
-                auto nodeIt3 = loopNodes.begin() + 2;
-                failedLoop = false;
-                do 
-                {
-                    if(nbLoops++ > 2*loopNodes.size()) 
-                    {
-    //                    cout << "missed triangle." << endl;
-                        failedLoop = true;
-                        break;
-                    }
-                    Node* n1 = *(nodeIt1);
-                    Node* n2 = *(nodeIt2);
-                    Node* n3 = *(nodeIt3);
-//                    vec2 p1 = vec2(n1->latitude, n1->longitude);
-//                    vec2 p2 = vec2(n2->latitude, n2->longitude);
-//                    vec2 p3 = vec2(n3->latitude, n3->longitude);
-                    vec2 p1 = vec2(n1->longitude, n1->latitude);
-                    vec2 p2 = vec2(n2->longitude, n2->latitude);
-                    vec2 p3 = vec2(n3->longitude, n3->latitude);
-                    if(p1==p2 || p1==p3) cout << "bad precision" << endl;
-                    vec2 v12 = p2 - p1;
-                    vec2 v13 = p3 - p1;
-
-                    vec3 v12_3D = vec3(v12.x, v12.y, 0);
-                    vec3 v23_3D = vec3(p3.x - p2.x, p3.y - p2.y, 0);
-                    vec3 v31_3D = vec3(p1.x - p3.x, p1.y - p3.y, 0);
-
-                    bool isGoodTriangle;
-                    // check clockwiseness
-                    isGoodTriangle = clockwiseness * glm::cross(vec3(v12.x, v12.y, 0.f) , vec3(v13.x, v13.y, 0.f)).z > 0.f;
-                    if(isGoodTriangle) 
-                    {
-                        // make sure it doesn't include another active node
-                        for(Node* node : loopNodes) {
-                            if(node == n1 || node == n2 || node == n3) continue;
-                            //vec3 n_3D = vec3(node->latitude, node->longitude, 0);
-                            vec3 n_3D = vec3(node->longitude, node->latitude, 0);
-                            if(clockwiseness * glm::cross(v12_3D, n_3D - vec3(p1.x, p1.y, 0)).z > 0.f &&
-                               clockwiseness * glm::cross(v23_3D, n_3D - vec3(p2.x, p2.y, 0)).z > 0.f &&
-                               clockwiseness * glm::cross(v31_3D, n_3D - vec3(p3.x, p3.y, 0)).z > 0.f ) {
-                                isGoodTriangle = false;
-                                break;
-                            }
-                        }
-                    }
-                    if(isGoodTriangle) 
-                    {
-                        // create triangle
-//                        vec2 p1 = vec2(n1->latitude, n1->longitude);
-//                        vec2 p2 = vec2(n2->latitude, n2->longitude);
-//                        vec2 p3 = vec2(n3->latitude, n3->longitude);
-                        vec3 p1 = vec3(n1->longitude, n1->latitude,0);
-                        vec3 p2 = vec3(n2->longitude, n2->latitude,0);
-                        vec3 p3 = vec3(n3->longitude, n3->latitude,0);
-
-                        vec3 point;
-                        //point = (p1 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = p1;
-//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-                        //buildingTrianglePositions->push_back(point);
-                        tempTriangleVertices.push_back(point);
-//                        point = (p2 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = p2;
-//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-//                        buildingTrianglePositions->push_back(point);
-                        tempTriangleVertices.push_back(point);
-//                        point = (p3 - viewRectBottomLeft)/viewRectVecDiago;
-                        point = p3;
-//                        point = -2.0f*vec2(point.y, point.x) - vec2(1,1);
-//                        buildingTrianglePositions->push_back(point);
-                        tempTriangleVertices.push_back(point);
-
-    //                    buildingTrianglePositions->push_back(p1);
-    //                    buildingTrianglePositions->push_back(p2);
-    //                    buildingTrianglePositions->push_back(p3);
-
-                        // delete node from loop. std::vector reassigns positions to all elements after the one deleted, so we must reassign the iterators acordingly.
-                        if(nodeIt2 == loopNodes.begin()) 
-                        {
-                            loopNodes.erase(nodeIt2);
-                            nodeIt3 = loopNodes.begin();
-                            nodeIt2 = loopNodes.end() - 1;
-                            nodeIt1 = nodeIt2 - 1;
-                        } else 
-                        {
-                            loopNodes.erase(nodeIt2);
-                            nodeIt2 = nodeIt1 + 1;
-                            if(nodeIt2 == loopNodes.end()) nodeIt2 = loopNodes.begin();
-                            nodeIt3 = nodeIt2 + 1;
-                            if(nodeIt3 == loopNodes.end()) nodeIt3 = loopNodes.begin();
-                        }
-                        nbLoops = 0;
-                    } else 
-                    {
-                        // no triangle, check next
-                        nodeIt1 = nodeIt2;
-                        nodeIt2 = nodeIt3;
-                        ++nodeIt3;
-                        if(nodeIt3 == loopNodes.end()) nodeIt3 = loopNodes.begin();
-                    }
-
-                } while(loopNodes.size() >= 3);
-                if(!failedLoop) 
-                {
-                    break; // do not check other clockwiseness, the first guess worked.
-                } else 
-                {
-                    tempTriangleVertices.clear();
-                }
-            }
-            if(failedLoop) 
-            {
-                nbFailedLoops++;
-            } 
-            else 
-            {
-                nbSuccessLoops++;
-                int ID = 0;
-
-                if (way->eType == OSMElement::LEISURE_PARK){ ID = 1.f; }
-                else if (way->eType == OSMElement::BUILDING_UNMARKED || 
-                    way->eType == OSMElement::BUILDING_SCHOOL ){ ID = 2.f; }
-                // keep and copy the triangles we created
-                for(vec3 v : tempTriangleVertices) {
-                    v.z = height;
-                    buildingTrianglePositions.push_back(v);
-                    groundTriangleTextureIDs.push_back(ID);
-                }
-            }
+            Building* building = new Building(way);
+            // building->GenerateModel();
         }
     }
 
@@ -390,11 +221,11 @@ void RenderDataManager::fillBuffers(Sector* sector)
     renderer.nbBuildingLines = buildingSides.size();
     renderer.nbRoads = nbRoads;
 
-    Renderer::createGLBuffer(renderer.glidNodesPositions, nodesPositions);
-    Renderer::createGLBuffer(renderer.glidBufferRoadsPositions, roadsPositions);
-    Renderer::createGLBuffer(renderer.glidBufferBuildingTriangleVertices, buildingTrianglePositions);
-    Renderer::createGLBuffer(renderer.glidBufferBuildingLines, buildingSides);
-    Renderer::createGLBuffer(renderer.glidBufferBuildingLoopLengths, buildingLoopLengths);
+    // Renderer::createGLBuffer(renderer.glidNodesPositions, nodesPositions);
+    // Renderer::createGLBuffer(renderer.glidBufferRoadsPositions, roadsPositions);
+    // Renderer::createGLBuffer(renderer.glidBufferBuildingTriangleVertices, buildingTrianglePositions);
+    // Renderer::createGLBuffer(renderer.glidBufferBuildingLines, buildingSides);
+    // Renderer::createGLBuffer(renderer.glidBufferBuildingLoopLengths, buildingLoopLengths);
 
     //TODO: Material should still haeve a nice constructor.
     Model* waysModel = new Model();
@@ -410,13 +241,13 @@ void RenderDataManager::fillBuffers(Sector* sector)
     waysModel->name = "Ways";
     renderer.m_debugModels.push_back(waysModel);
     
-    Model* nodesModel = new Model();
+    // Model* nodesModel = new Model();
 
-    Mesh* nodesMesh = new Mesh(nodesPositions, GL_POINTS, true);
+    // Mesh* nodesMesh = new Mesh(nodesPositions, GL_POINTS, true);
 
-    nodesModel->name = "Nodes";
-    nodesModel->addMesh( nodesMesh, new Material(renderer.pPipelineNodes, glm::vec3(0,0,0)) );
-    renderer.m_debugModels.push_back(nodesModel);
+    // nodesModel->name = "Nodes";
+    // nodesModel->addMesh( nodesMesh, new Material(renderer.pPipelineNodes, glm::vec3(0,0,0)) );
+    // renderer.m_debugModels.push_back(nodesModel);
 }
 
 void RenderDataManager::initializeSector(Sector* sector)
@@ -442,5 +273,13 @@ void RenderDataManager::initializeSector(Sector* sector)
     Mesh* linesMesh = new Mesh(points, GL_LINES);
 
     linesModel->addMesh( linesMesh, new Material(renderer.pPipelineLines, glm::vec3(1,0,0)) );
+    linesModel->name = "Sector_lines_";
     renderer.m_debugModels.push_back(linesModel);
+
+    Text t;
+    t.text = std::to_string(sector->m_ID);
+    t.position = glm::vec3(sector->m_pos + sector->m_size / 2.f, 0.001f);
+    t.projected = true;
+    t.scale = 0.00001f;
+    renderer.texts.push_back(t);
 }

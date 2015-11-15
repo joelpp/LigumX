@@ -33,6 +33,7 @@ public:
     std::vector<float> buildingLinesTexCoords;
     Mesh* testMesh;
 
+    float m_renderingScale;
     int nbRoads;
     RenderDataManager();
 
