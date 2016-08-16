@@ -1,0 +1,115 @@
+#include "stdafx.h"
+
+#include "LigumX.h"
+#include <string>
+#include <chrono>
+
+using std::cout;
+using std::endl;
+using std::vector;
+using std::string;
+
+using namespace glm;
+
+
+void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
+{
+    LigumX::GetInstance().running = false;
+}
+
+void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
+{
+    if(!TwEventMouseWheelGLFW(yOffset)) {
+        static const float factor = 1.1;
+        if(yOffset < 0) {
+            LigumX::GetInstance().camera->multViewSizeBy(factor);
+        } else {
+            LigumX::GetInstance().camera->multViewSizeBy(1.f/factor);
+        }
+    }
+}
+
+void LigumX::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
+{
+    if(!TwEventKeyGLFW(key, action)) {
+        // send event to entity Manager (temporary before a playerInput class)
+        LigumX::GetInstance().entityManager.KeyCallback(key, action);
+
+        if(action == GLFW_PRESS){
+            if (key == GLFW_KEY_SPACE) { LigumX::GetInstance().showTweakBar = !LigumX::GetInstance().showTweakBar; }
+            if (key == GLFW_KEY_ESCAPE) {
+                if(LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) LigumX::GetInstance().camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+            }
+            if (key == GLFW_KEY_R) { Renderer::GetInstance().init_pipelines(); }
+            if (key == GLFW_KEY_M) {
+                for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it){
+                    it->second = false;
+                }
+            }
+
+            if(key == GLFW_KEY_F4) {
+                LigumX::GetInstance().toggleEntityLand();
+            }
+
+        }
+        LigumX::GetInstance().camera->handlePresetKey(pWindow, key, scancode, action, mods);
+    }
+}
+
+void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
+{
+
+    if(!TwEventMouseButtonGLFW(button, action)) {
+        // Left-click
+        if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
+            // double x,y;
+            // glfwGetCursorPos(pWindow, &x, &y);
+            // vec2 worldPos = LigumX::GetInstance().windowPosToWorldPos(vec2(x,y));
+            // int index = 0;
+            // std::vector<Way*> closests;
+            // std::vector<double> distances;
+            // std::vector<vec2> directions;
+            // vector<std::pair<Node*, Node*>> nodePairs;
+            // int filter = OSMElement::CONTOUR;
+            // TIME(closests = LigumX::GetInstance().findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
+
+            // if (closests[0] == NULL) return;
+            // TIME(LigumX::GetInstance().updateSelectedWay(closests[0]));
+            // PRINTELEMENTVECTOR(closests);
+        }
+        //Right Click
+        else if (button == GLFW_MOUSE_BUTTON_2){
+//            if (action == GLFW_PRESS){
+//                LigumX::GetInstance().draggingCamera = true;
+//                double x; double y;
+//                glfwGetCursorPos(pWindow, &x, &y);
+//                LigumX::GetInstance().oldMousePosition = vec2(x,y);
+//            }
+//            else if (action == GLFW_RELEASE){
+//                LigumX::GetInstance().draggingCamera = false;
+//            }
+        }
+
+        LigumX::GetInstance().camera->handlePresetMouseButton(pWindow, button, action, mods);
+//        TODO
+        //        LigumX::GetInstance().renderer->updateMVPMatrix();
+    }
+}
+
+void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
+{
+    if(!TwEventMousePosGLFW(x, y)) {
+        if (LigumX::GetInstance().draggingCamera){
+            double x; double y;
+            glfwGetCursorPos(pWindow, &x, &y);
+            vec2 offset = vec2(x,y) - LigumX::GetInstance().oldMousePosition;
+            offset.y *= -1; // reversed controls? this should be an option
+
+            LigumX::GetInstance().camera->translateBy(vec3(offset/1000.f,0));
+
+            LigumX::GetInstance().oldMousePosition = vec2(x,y);
+
+        }
+        LigumX::GetInstance().camera->handlePresetCursorPos(pWindow, x, y);
+    }
+}

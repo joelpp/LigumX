@@ -1,7 +1,13 @@
 /gta2net/
-/protoEngine/libPaths.pri
-/protoEngine/protoEngine.pro.user
-/protoEngine/build
-/protoEngine/output
+/LigumX/libPaths.pri
+/LigumX/protoEngine.pro.user
+/LigumX/build
+/LigumX/output
+/LigumX/x64
+/LigumX/data/SRTMdata/
+/LigumX/data/OSMdata/
 *.orig
 /Srtm2Osm/
+LigumX.sdf
+LigumX/data/textures/asphalt.jpg
+LigumX/libs/FreeImage/OSX/libfreeimage*
