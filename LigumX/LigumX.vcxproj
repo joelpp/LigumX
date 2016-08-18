@@ -101,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\libs;$(ProjectDir)\libs\Freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)\libs;$(ProjectDir)\libs\Freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,11 +181,43 @@
     <ClCompile Include="src\tinyxml2.cpp" />
     <ClCompile Include="src\triangle.cpp" />
     <ClCompile Include="src\tweak_bar.cpp" />
-    <ClCompile Include="src\V3SectorTracker.cpp" />
     <ClCompile Include="src\way.cpp" />
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Building.h" />
+    <ClInclude Include="include\camera.h" />
+    <ClInclude Include="include\common.h" />
+    <ClInclude Include="include\CurlRequest.h" />
+    <ClInclude Include="include\entity.h" />
+    <ClInclude Include="include\heightfield.h" />
+    <ClInclude Include="include\LigumX.h" />
+    <ClInclude Include="include\linesegment.h" />
+    <ClInclude Include="include\Logging.h" />
+    <ClInclude Include="include\Material.h" />
+    <ClInclude Include="include\Math.h" />
+    <ClInclude Include="include\Mesh.h" />
+    <ClInclude Include="include\Model.h" />
+    <ClInclude Include="include\node.h" />
+    <ClInclude Include="include\osm_element.h" />
+    <ClInclude Include="include\program_pipeline.h" />
+    <ClInclude Include="include\relation.h" />
+    <ClInclude Include="include\RenderDataManager.h" />
+    <ClInclude Include="include\renderer.h" />
+    <ClInclude Include="include\sector.h" />
+    <ClInclude Include="include\SectorData.h" />
+    <ClInclude Include="include\SectorManager.h" />
+    <ClInclude Include="include\SectorMath.h" />
+    <ClInclude Include="include\Settings.h" />
+    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\targetver.h" />
+    <ClInclude Include="include\texture.h" />
+    <ClInclude Include="include\tinyxml2.h" />
+    <ClInclude Include="include\triangle.h" />
+    <ClInclude Include="include\V3SectorTracker.h" />
+    <ClInclude Include="include\vec2i.h" />
+    <ClInclude Include="include\way.h" />
+    <ClInclude Include="include\world.h" />
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\common.h" />
@@ -215,7 +247,6 @@
     <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\tinyxml2.h" />
     <ClInclude Include="src\triangle.h" />
-    <ClInclude Include="src\V3SectorTracker.h" />
     <ClInclude Include="src\vec2i.h" />
     <ClInclude Include="src\way.h" />
     <ClInclude Include="src\world.h" />

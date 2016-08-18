@@ -20,8 +20,8 @@ public:
 	SectorManager();
 	SectorManager(float m_sectorSize);
 
-	static int IDFromPos(glm::vec2 pos);
-	static long int getSectorIndex(int x, int y);
+	int IDFromPos(glm::vec2 pos);
+	int getSectorIndex(float x, float y);
 
 	glm::vec2 posFromID(int ID);
 	glm::vec2 posFromVec2(glm::vec2 pos);
@@ -63,7 +63,10 @@ public:
 
 	float m_sectorSize;
 
+	void setLoadNewSectors(bool state) { bLoadNewSectors = state; }
+	bool getLoadNewSectors() { return bLoadNewSectors; }
 
 private:
 	REGISTERCLASS(SectorManager);
+	bool bLoadNewSectors;
 };

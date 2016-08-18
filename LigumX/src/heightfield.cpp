@@ -23,7 +23,7 @@ Heightfield::Heightfield(vec2 startPoint, double sideLength){
     this->sideLength = sideLength;
     this->startPoint = startPoint;
     this->step = Settings::GetInstance().f("HeightfieldResolution");
-    this->m_numberOfPointsPerSide = 2 + (sideLength + 0.0000001) / step;
+    this->m_numberOfPointsPerSide = 1+ (sideLength + 0.0000001) / step;
     m_mesh = 0;
 }
 
@@ -33,18 +33,18 @@ bool Heightfield::generateTriangles(){
     World* world = LigumX::GetInstance().world;
     std::stringstream ss;
 
-    std::vector<Sector*>* relevantSectors = world->sectorsAroundPoint(startPoint,2);
+    //std::vector<Sector*>* relevantSectors = world->sectorsAroundPoint(startPoint,2);
 
-    for (Sector* sector : *relevantSectors)
-    {
-        if (sector->m_initializationLevel < Sector::ContourLoaded)
-        {
-            return false;
-        }
-    }
-    std::vector<Way*> contoursToQuery = World::getAllContourLines(relevantSectors);
+    //for (Sector* sector : *relevantSectors)
+    //{
+    //    if (sector->m_initializationLevel < Sector::ContourLoaded)
+    //    {
+    //        return false;
+    //    }
+    //}
+    //std::vector<Way*> contoursToQuery = World::getAllContourLines(relevantSectors);
 
-    delete(relevantSectors);
+    //delete(relevantSectors);
     
     float lon = startPoint.x;
     float lat = startPoint.y;
@@ -64,8 +64,8 @@ bool Heightfield::generateTriangles(){
 //        For each line generate a bunch of points
         for (int j = 0; j < m_numberOfPointsPerSide; j++)
         {
-            float z = contourLineInterpolate(glm::vec2(lon, lat), contoursToQuery);
-            // float z = 0;
+            //float z = contourLineInterpolate(glm::vec2(lon, lat), contoursToQuery);
+             float z = -0.0001f;
             vec3 point = vec3(lon, lat, z);
             points.push_back(point);
             UVs.push_back(glm::vec2(u, v));

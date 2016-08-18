@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "LigumX.h"
+#include "World.h"
+#include "SectorManager.h"
 #include <string>
 #include <chrono>
 
@@ -29,27 +31,49 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, do
     }
 }
 
+void flipBool(bool& value)
+{
+	value = !value;
+}
+
 void LigumX::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
     if(!TwEventKeyGLFW(key, action)) {
         // send event to entity Manager (temporary before a playerInput class)
-        LigumX::GetInstance().entityManager.KeyCallback(key, action);
+		LigumX& game = LigumX::GetInstance();
+        game.entityManager.KeyCallback(key, action);
 
         if(action == GLFW_PRESS){
-            if (key == GLFW_KEY_SPACE) { LigumX::GetInstance().showTweakBar = !LigumX::GetInstance().showTweakBar; }
-            if (key == GLFW_KEY_ESCAPE) {
-                if(LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS) LigumX::GetInstance().camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+            if (key == GLFW_KEY_SPACE) 
+			{ 
+				game.showTweakBar = !LigumX::GetInstance().showTweakBar;
+			}
+            else if (key == GLFW_KEY_ESCAPE) 
+			{
+				if (LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
+				{
+					game.camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+				}
             }
-            if (key == GLFW_KEY_R) { Renderer::GetInstance().init_pipelines(); }
-            if (key == GLFW_KEY_M) {
-                for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it){
+			else if (key == GLFW_KEY_R)
+			{ 
+				Renderer::GetInstance().init_pipelines(); 
+			}
+			else if (key == GLFW_KEY_M)
+			{
+                for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it)
+				{
                     it->second = false;
                 }
             }
-
-            if(key == GLFW_KEY_F4) {
-                LigumX::GetInstance().toggleEntityLand();
+			else if(key == GLFW_KEY_F4)
+			{
+				game.toggleEntityLand();
             }
+			else if (key == GLFW_KEY_L)
+			{
+				game.world->m_sectorManager->setLoadNewSectors(game.world->m_sectorManager->getLoadNewSectors());
+			}
 
         }
         LigumX::GetInstance().camera->handlePresetKey(pWindow, key, scancode, action, mods);

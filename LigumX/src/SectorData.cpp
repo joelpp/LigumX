@@ -212,7 +212,9 @@ std::string SectorData::BuildXMLPath(EOSMDataType dataType, glm::vec2 pos){
         case MAP:       savePath << "OSMData/";
     }
 
-    int index = SectorManager::IDFromPos(pos);
+	// todo: call instance of sector manager or something
+    //int index = SectorManager::IDFromPos(pos);
+	int index = -1;
     // savePath << m_pos.x * 1000 << "x" << m_pos.y * 1000;
     savePath << index;
     savePath << ".xml";

@@ -10,29 +10,58 @@ SectorManager::SectorManager()
 SectorManager::SectorManager(float sectorSize)
 {
 	m_sectorSize = sectorSize;
+	bLoadNewSectors = true;
 }
 
-long int SectorManager::getSectorIndex(int x, int y)
+int SectorManager::getSectorIndex(float x, float y)
 {
-	//lol i broke everything
-	return y * (int)(1.f / 0.01) * 360 + x;
+	int startX = -180;
+	int startY = -90;
+	/*int startX = 0;
+	int startY = 0;*/
+
+	int xSize = 360;
+	int ySize = 180;
+
+	float a = x / m_sectorSize;
+	float b = y / m_sectorSize;
+
+	int sectorX = floor(a);
+	int sectorY = floor(b);
+
+	int numSectorsX = xSize / m_sectorSize;
+	int numSectorsY = ySize / m_sectorSize;
+
+	sectorX -= startX;
+	sectorY -= startY;
+
+	return sectorX * numSectorsY + sectorY;
 }
 
 int SectorManager::IDFromPos(glm::vec2 pos)
 {	
-	IntPair coords = intPairFromVec2(pos);
-	return getSectorIndex(coords.first, coords.second);
+	//IntPair coords = intPairFromVec2(pos);
+	return getSectorIndex(pos.x, pos.y);
 }
 
 glm::vec2 SectorManager::posFromID(int ID)
 {	
-	int width = (int)((1.f / m_sectorSize) * 360);
-	int xPos = (ID % width); 
-	int yPos = (ID - xPos) / width;
-	// xPos = -60;
-	// yPos = 52;
+	int startX = -180;
+	int startY = -90;
+	//int startX = 0;
+	//int startY = 0;
 
-	return glm::vec2((xPos / 100.f) - 180.f, (yPos / 100.f) - 45.f);
+	int xSize = 360;
+	int ySize = 180;
+
+	int numSectorsY = ySize / m_sectorSize;
+
+	int sectorY = ID % numSectorsY;
+
+	// integer division on purpose
+	int sectorX = (ID - sectorY) / numSectorsY;
+
+	return m_sectorSize * glm::vec2(startX + sectorX, startY + sectorY);
 }
 
 IntPair SectorManager::intPairFromVec2(glm::vec2 pos)
@@ -84,7 +113,7 @@ Sector* SectorManager::createSector(int ID)
 
 Sector* SectorManager::sectorContaining(Coord2 longLat){
 	Sector* sector;
-	long int ID = IDFromPos(longLat);
+	int ID = IDFromPos(longLat);
 	auto found = m_sectors.find(ID);
 
 	if (found != m_sectors.end())
@@ -111,24 +140,24 @@ void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 	switch(sector->m_initializationLevel)
 	{
 		case Sector::Uninitialized:			
-											sector->loadData(SectorData::CONTOUR);
+											//sector->loadData(SectorData::CONTOUR);
 											sector->m_initializationLevel = Sector::ContourLoaded;
 											break;
 
 		case Sector::ContourLoaded:			
-											sector->loadData(SectorData::MAP);
+											//sector->loadData(SectorData::MAP);
 											sector->m_initializationLevel = Sector::DataLoaded;
 											break;
 
 		case Sector::DataLoaded:			
-											 if ( (manhattanDistance <= minHeightfieldDistance) && (sector->createHeightfield()) )
+											 if ( (manhattanDistance <= 0) && (sector->createHeightfield()) )
 											{
 												sector->m_initializationLevel = Sector::HeightfieldGenerated;
 			  								}
-			  							// 	else
-			  							// 	{
-												// sector->m_initializationLevel = Sector::HeightfieldGenerating;
-			  							// 	}
+			  							 	else
+			  							 	{
+												 sector->m_initializationLevel = Sector::HeightfieldGenerating;
+			  							 	}
 			  								break;
 
 		case Sector::HeightfieldGenerating:	
@@ -164,7 +193,7 @@ SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initia
 			Sector* sector = sectorContaining(runningCoord);
 			newSectors->push_back(sector);
 
-			if (initialization && (sector->m_initializationLevel < Sector::FullyInitialized))
+			if (bLoadNewSectors && initialization && (sector->m_initializationLevel < Sector::FullyInitialized))
 			{
 				keepInitializing(sector, manhattanDistance);
 			}

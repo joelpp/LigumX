@@ -56,7 +56,7 @@ void LigumX::mainLoop()
     {
         updateWorld(0);
     }
-
+	
     renderer.render();
     if(showTweakBar) TwDraw();
 }
@@ -154,7 +154,8 @@ void LigumX::updateWorld(int loadingRingSize)
 }
 
 
-void LigumX::initCamera(){
+void LigumX::initCamera()
+{
     camera = new Camera();
     camera->setViewSize(Settings::GetInstance().f("viewSize"));
     Renderer::GetInstance().camera = camera;

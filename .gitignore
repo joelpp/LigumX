@@ -11,3 +11,5 @@
 LigumX.sdf
 LigumX/data/textures/asphalt.jpg
 LigumX/libs/FreeImage/OSX/libfreeimage*
+*.ipch
+*.opensdf
