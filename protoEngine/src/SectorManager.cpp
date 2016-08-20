@@ -109,17 +109,17 @@ void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 	switch(sector->m_initializationLevel)
 	{
 		case Sector::Uninitialized:			
-											sector->loadData(SectorData::CONTOUR);
+											// sector->loadData(SectorData::CONTOUR);
 											sector->m_initializationLevel = Sector::ContourLoaded;
 											break;
 
 		case Sector::ContourLoaded:			
-											sector->loadData(SectorData::MAP);
+											// sector->loadData(SectorData::MAP);
 											sector->m_initializationLevel = Sector::DataLoaded;
 											break;
 
 		case Sector::DataLoaded:			
-											// if ( (manhattanDistance <= minHeightfieldDistance) && (sector->createHeightfield()) )
+											// if ( (manhattanDistance <= 0) && (sector->createHeightfield()) )
 											{
 												sector->m_initializationLevel = Sector::HeightfieldGenerated;
 			  								}
@@ -130,7 +130,7 @@ void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 			  								break;
 
 		case Sector::HeightfieldGenerating:	
-											// if ( (manhattanDistance <= minHeightfieldDistance) && (sector->createHeightfield()) )
+											// if ( (manhattanDistance <= 0) && (sector->createHeightfield()) )
 											{
 												sector->m_initializationLevel = Sector::HeightfieldGenerated;
 			  								}
@@ -161,7 +161,7 @@ SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initia
 			int manhattanDistance = abs(i - ringSize) + abs(j - ringSize);
 			Sector* sector = sectorContaining(runningCoord);
 			newSectors->push_back(sector);
-
+			PRINTVEC2(runningCoord);
 			if (initialization && (sector->m_initializationLevel < Sector::FullyInitialized))
 			{
 				keepInitializing(sector, manhattanDistance);

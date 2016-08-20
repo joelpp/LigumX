@@ -275,6 +275,7 @@ void RenderDataManager::initializeSector(Sector* sector)
     linesModel->addMesh( linesMesh, new Material(renderer.pPipelineLines, glm::vec3(1,0,0)) );
     linesModel->name = "Sector_lines_";
     renderer.m_debugModels.push_back(linesModel);
+    PRINTSTRING("Passed here");
 
     Text t;
     t.text = std::to_string(sector->m_ID);

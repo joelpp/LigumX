@@ -1,7 +1,8 @@
 ; for comment
+cameraPosition 0.1 0.1 0.1
 
 ; montreal
-cameraPosition -73.602972 45.53288 0.0707107
+;cameraPosition -73.602972 45.53288 0.0707107
 
 ; rouyn
 ; cameraPosition -79.01 48.2342 0.0707107
@@ -18,10 +19,10 @@ cameraPosition -73.602972 45.53288 0.0707107
 ; hollywood hills
 ; cameraPosition -118.352039 34.117661 0.1007
 
-cameraLookAt -0.525 0.475 0
+cameraLookAt 1 0 0
 viewSize 0.03
 
-sectorSize 0.01
+sectorSize 1
 loadingRingSize 2
 loadNewSectors 1
 useCameraPositionAsTestPoint 1
@@ -33,8 +34,8 @@ testPoint -0.625 0.5254289
 
 buildingHeight 3
 
-HeightfieldResolution 0.001
+HeightfieldResolution 0.1
 
 ShadersPath /Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/
 
-RenderingScale 2
+RenderingScale 1

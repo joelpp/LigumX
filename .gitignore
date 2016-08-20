@@ -3,5 +3,12 @@
 /protoEngine/protoEngine.pro.user
 /protoEngine/build
 /protoEngine/output
+/protoEngine/libs/
+/protoEngine/data/
+/protoEngine/tools/
+
 *.orig
 /Srtm2Osm/
+/protoEngine/compile
+/libspatialindextest
+protoEngine/CMakelists.txt

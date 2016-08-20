@@ -53,7 +53,7 @@ void LigumX::mainLoop()
     
     if (Settings::GetInstance().i("loadNewSectors"))
     {
-        updateWorld(0);
+        updateWorld(2);
     }
 
     renderer.render();
@@ -127,12 +127,12 @@ void LigumX::updateWorld(int loadingRingSize)
 
             if (sector->m_initializationLevel == Sector::DataLoaded)
             {
-                renderData->fillBuffers(sector);
+                // renderData->fillBuffers(sector);
             }
 
             if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
             {
-                PRINT("heightfield geenerated, adding to terrain buffer")
+                // PRINT("heightfield geenerated, adding to terrain buffer")
                 // renderData->addToTerrainBuffer(sector);
             }
         }
@@ -167,7 +167,8 @@ void LigumX::loadSettings(){
     Settings& s = Settings::GetInstance();
     s.load();
 
-    glm::vec2 coordinateShift = trunc(Settings::GetInstance().f2("cameraPosition"));
+    // glm::vec2 coordinateShift = trunc(Settings::GetInstance().f2("cameraPosition"));
+    glm::vec2 coordinateShift = glm::vec2(0,0);
     s.add("coordinateShifting", -coordinateShift);
     buildingHeight = s.i("buildingHeight");
     buildingSideScaleFactor = 1;

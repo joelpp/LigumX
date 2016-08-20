@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>32CFB8A1-A7D4-405A-9FE7-3B995E9A3955</string>
+	<key>IDESourceControlProjectName</key>
+	<string>LigumX</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>590F0AB8B836724A8CFFF77068D12C04DC27A017</key>
+		<string>https://github.com/joelpp/LigumX.git</string>
+		<key>E8A93F559EB1ED196026A7F7FD4E7E2FE55DF638</key>
+		<string>https://github.com/joelpp/TheIrradianceVolume.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>protoEngine/LigumX.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>590F0AB8B836724A8CFFF77068D12C04DC27A017</key>
+		<string>../../..</string>
+		<key>E8A93F559EB1ED196026A7F7FD4E7E2FE55DF638</key>
+		<string>../../../../Code</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/joelpp/LigumX.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>590F0AB8B836724A8CFFF77068D12C04DC27A017</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E8A93F559EB1ED196026A7F7FD4E7E2FE55DF638</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Code</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>590F0AB8B836724A8CFFF77068D12C04DC27A017</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LigumX</string>
+		</dict>
+	</array>
+</dict>
+</plist>

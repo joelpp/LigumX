@@ -210,6 +210,8 @@ bool Building::GenerateModel()
 	m_Model->addMesh( mesh, new Material(renderer.pPipelineBasic, glm::vec3(1,1,1) ) );
 
 	renderer.m_debugModels.push_back(m_Model);
+    
+    return true;
 }
 
 

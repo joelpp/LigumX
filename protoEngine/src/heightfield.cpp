@@ -7,6 +7,7 @@
 #include "World.h"
 #include "LigumX.h"
 #include "LineSegment.h"
+#include "FreeImage.h"
 #include "Sector.h"
 #include <sstream>
 using namespace std;
@@ -55,6 +56,8 @@ bool Heightfield::generateTriangles(){
     float u = 0;
     float v = 0;
     float uvStep = step / sideLength;
+    FreeImage_Initialise();
+    FIBITMAP *bitmap = FreeImage_Allocate(m_numberOfPointsPerSide, m_numberOfPointsPerSide, 24);
     for(int i = 0; i < m_numberOfPointsPerSide; i++)
     {
         lon = startPoint.x;
@@ -69,6 +72,13 @@ bool Heightfield::generateTriangles(){
             UVs.push_back(glm::vec2(u, v));
             lon += step;
             u += uvStep;
+            RGBQUAD color;
+            float val = z * 10000;
+            color.rgbRed = val;
+            color.rgbBlue = val;
+            color.rgbGreen = val;
+            // std:: cout << val << std::endl;
+            FreeImage_SetPixelColor(bitmap, i, j, &color);
         }
         lat += step;
         v += uvStep;
@@ -91,11 +101,13 @@ bool Heightfield::generateTriangles(){
 
     }
 
+    FreeImage_Save(FIF_PNG, bitmap, "test_heightfield.png", 0);
+    FreeImage_DeInitialise();
 
     m_mesh->createBuffers();
     m_mesh->m_usesIndexBuffer = true;
     m_mesh->m_renderingMode = GL_TRIANGLES;
-
+    // m_mesh->m_wireframeRendering = true;
     return true;
 }
 
