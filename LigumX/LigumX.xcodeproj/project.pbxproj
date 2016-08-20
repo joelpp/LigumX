@@ -17,7 +17,6 @@
 		B305DE331D66B18900232452 /* building_sides.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE321D66B18900232452 /* building_sides.cpp */; };
 		B305DE361D66B19300232452 /* Building.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE341D66B19300232452 /* Building.cpp */; };
 		B305DE371D66B19300232452 /* callbacks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE351D66B19300232452 /* callbacks.cpp */; };
-		B305DE551D66B1C700232452 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE381D66B1C700232452 /* camera.cpp */; };
 		B305DE561D66B1C700232452 /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE391D66B1C700232452 /* entity.cpp */; };
 		B305DE571D66B1C700232452 /* filled_buildings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE3A1D66B1C700232452 /* filled_buildings.cpp */; };
 		B305DE581D66B1C700232452 /* heightfield.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE3B1D66B1C700232452 /* heightfield.cpp */; };
@@ -52,6 +51,7 @@
 		B3C7C1CC1D68D72F0062A1AD /* libassimp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C7C1CB1D68D72F0062A1AD /* libassimp.dylib */; };
 		B3C7C1CE1D68D73B0062A1AD /* libfreeimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C7C1CD1D68D73B0062A1AD /* libfreeimage.a */; };
 		B3C7C1D01D68D7480062A1AD /* libcurl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C7C1CF1D68D7480062A1AD /* libcurl.a */; };
+		B3C7C1D21D68DF2B0062A1AD /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3C7C1D11D68DF2A0062A1AD /* camera.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,10 +71,6 @@
 		B305DE1A1D66AE9900232452 /* LigumX */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LigumX; sourceTree = BUILT_PRODUCTS_DIR; };
 		B305DE1B1D66AEA500232452 /* LigumX.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LigumX.cpp; path = src/LigumX.cpp; sourceTree = "<group>"; };
 		B305DE1D1D66AECB00232452 /* libs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libs; sourceTree = "<group>"; };
-		B305DE1E1D66AFEF00232452 /* libAntTweakBar.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAntTweakBar.dylib; path = libs/AntTweakBar/lib/libAntTweakBar.dylib; sourceTree = "<group>"; };
-		B305DE201D66AFFE00232452 /* libassimp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.dylib; path = libs/assimp/libassimp.dylib; sourceTree = "<group>"; };
-		B305DE221D66B00400232452 /* libfreeimage-3.17.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libfreeimage-3.17.0.dylib"; path = "libs/FreeImage/OSX/libfreeimage-3.17.0.dylib"; sourceTree = "<group>"; };
-		B305DE241D66B02D00232452 /* glfw3.lib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = glfw3.lib; path = libs/glfw/glfw3.lib; sourceTree = "<group>"; };
 		B305DE261D66B13100232452 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = "../../../../../Downloads/glfw-3.1.1/src/libglfw3.a"; sourceTree = "<group>"; };
 		B305DE281D66B15100232452 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B305DE2A1D66B15400232452 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -84,7 +80,6 @@
 		B305DE321D66B18900232452 /* building_sides.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = building_sides.cpp; path = src/building_sides.cpp; sourceTree = "<group>"; };
 		B305DE341D66B19300232452 /* Building.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Building.cpp; path = src/Building.cpp; sourceTree = "<group>"; };
 		B305DE351D66B19300232452 /* callbacks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = callbacks.cpp; path = src/callbacks.cpp; sourceTree = "<group>"; };
-		B305DE381D66B1C700232452 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = camera.cpp; path = src/camera.cpp; sourceTree = "<group>"; };
 		B305DE391D66B1C700232452 /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = entity.cpp; path = src/entity.cpp; sourceTree = "<group>"; };
 		B305DE3A1D66B1C700232452 /* filled_buildings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = filled_buildings.cpp; path = src/filled_buildings.cpp; sourceTree = "<group>"; };
 		B305DE3B1D66B1C700232452 /* heightfield.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = heightfield.cpp; path = src/heightfield.cpp; sourceTree = "<group>"; };
@@ -113,13 +108,7 @@
 		B305DE521D66B1C700232452 /* tweak_bar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tweak_bar.cpp; path = src/tweak_bar.cpp; sourceTree = "<group>"; };
 		B305DE531D66B1C700232452 /* V3SectorTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = V3SectorTracker.cpp; path = src/V3SectorTracker.cpp; sourceTree = "<group>"; };
 		B305DE541D66B1C700232452 /* way.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = way.cpp; path = src/way.cpp; sourceTree = "<group>"; };
-		B305DE721D66B23B00232452 /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = libs/Freetype/libfreetype.a; sourceTree = "<group>"; };
 		B305DE741D66B25200232452 /* libglew.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglew.a; path = ../../../Code/newestg3d/build/lib/libglew.a; sourceTree = "<group>"; };
-		B305DE761D66B26900232452 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = ../lib/libcurl.a; sourceTree = "<group>"; };
-		B305DE781D66B28C00232452 /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = libs/FreeImage/OSX/libfreeimage.a; sourceTree = "<group>"; };
-		B3C7C1BC1D68D09B0062A1AD /* libfreetype.dll.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.dll.a; path = libs/Freetype/libfreetype.dll.a; sourceTree = "<group>"; };
-		B3C7C1BF1D68D0DD0062A1AD /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = libs/curl/libcurl.a; sourceTree = "<group>"; };
-		B3C7C1C11D68D0E80062A1AD /* libglad.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglad.a; path = libs/glad/libglad.a; sourceTree = "<group>"; };
 		B3C7C1C31D68D2680062A1AD /* settings.dat */ = {isa = PBXFileReference; lastKnownFileType = text; name = settings.dat; path = data/settings.dat; sourceTree = "<group>"; };
 		B3C7C1C41D68D50A0062A1AD /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = data/shaders; sourceTree = "<group>"; };
 		B3C7C1C51D68D7120062A1AD /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = libs/OSX/Freetype/libfreetype.a; sourceTree = "<group>"; };
@@ -128,6 +117,7 @@
 		B3C7C1CB1D68D72F0062A1AD /* libassimp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.dylib; path = libs/OSX/assimp/libassimp.dylib; sourceTree = "<group>"; };
 		B3C7C1CD1D68D73B0062A1AD /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = libs/OSX/FreeImage/OSX/libfreeimage.a; sourceTree = "<group>"; };
 		B3C7C1CF1D68D7480062A1AD /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = libs/OSX/curl/libcurl.a; sourceTree = "<group>"; };
+		B3C7C1D11D68DF2A0062A1AD /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = camera.cpp; path = src/camera.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,22 +145,17 @@
 		B3C0F0771D66ADA500ACADC0 = {
 			isa = PBXGroup;
 			children = (
+				B305DE181D66ADFE00232452 /* src */,
+				B3C7C1C41D68D50A0062A1AD /* shaders */,
 				B3C7C1CF1D68D7480062A1AD /* libcurl.a */,
+				B3C7C1D11D68DF2A0062A1AD /* camera.cpp */,
 				B3C7C1CD1D68D73B0062A1AD /* libfreeimage.a */,
 				B3C7C1CB1D68D72F0062A1AD /* libassimp.dylib */,
 				B3C7C1C91D68D7280062A1AD /* libglad.a */,
 				B3C7C1C71D68D71F0062A1AD /* libAntTweakBar.dylib */,
 				B3C7C1C51D68D7120062A1AD /* libfreetype.a */,
-				B3C7C1C41D68D50A0062A1AD /* shaders */,
 				B3C7C1C31D68D2680062A1AD /* settings.dat */,
-				B3C7C1C11D68D0E80062A1AD /* libglad.a */,
-				B3C7C1BF1D68D0DD0062A1AD /* libcurl.a */,
-				B3C7C1BC1D68D09B0062A1AD /* libfreetype.dll.a */,
-				B305DE781D66B28C00232452 /* libfreeimage.a */,
-				B305DE761D66B26900232452 /* libcurl.a */,
 				B305DE741D66B25200232452 /* libglew.a */,
-				B305DE721D66B23B00232452 /* libfreetype.a */,
-				B305DE381D66B1C700232452 /* camera.cpp */,
 				B305DE391D66B1C700232452 /* entity.cpp */,
 				B305DE3A1D66B1C700232452 /* filled_buildings.cpp */,
 				B305DE3B1D66B1C700232452 /* heightfield.cpp */,
@@ -209,12 +194,7 @@
 				B305DE2A1D66B15400232452 /* OpenGL.framework */,
 				B305DE281D66B15100232452 /* Cocoa.framework */,
 				B305DE261D66B13100232452 /* libglfw3.a */,
-				B305DE241D66B02D00232452 /* glfw3.lib */,
-				B305DE221D66B00400232452 /* libfreeimage-3.17.0.dylib */,
-				B305DE201D66AFFE00232452 /* libassimp.dylib */,
-				B305DE1E1D66AFEF00232452 /* libAntTweakBar.dylib */,
 				B305DE1D1D66AECB00232452 /* libs */,
-				B305DE181D66ADFE00232452 /* src */,
 				B305DE1A1D66AE9900232452 /* LigumX */,
 			);
 			sourceTree = "<group>";
@@ -285,6 +265,7 @@
 				B305DE661D66B1C700232452 /* sector.cpp in Sources */,
 				B305DE1C1D66AEA500232452 /* LigumX.cpp in Sources */,
 				B305DE621D66B1C700232452 /* RenderDataManager.cpp in Sources */,
+				B3C7C1D21D68DF2B0062A1AD /* camera.cpp in Sources */,
 				B305DE311D66B17B00232452 /* world.cpp in Sources */,
 				B305DE591D66B1C700232452 /* linesegment.cpp in Sources */,
 				B305DE5A1D66B1C700232452 /* Material.cpp in Sources */,
@@ -305,7 +286,6 @@
 				B305DE571D66B1C700232452 /* filled_buildings.cpp in Sources */,
 				B305DE6D1D66B1C700232452 /* tinyxml2.cpp in Sources */,
 				B305DE5D1D66B1C700232452 /* node.cpp in Sources */,
-				B305DE551D66B1C700232452 /* camera.cpp in Sources */,
 				B305DE691D66B1C700232452 /* SectorMath.cpp in Sources */,
 				B305DE361D66B19300232452 /* Building.cpp in Sources */,
 				B305DE611D66B1C700232452 /* relation.cpp in Sources */,
