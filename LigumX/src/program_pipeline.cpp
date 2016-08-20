@@ -167,6 +167,8 @@ ProgramPipeline::ProgramPipeline(std::string name)
     glBindProgramPipeline(glidProgramPipeline);
     glGenVertexArrays(1, &glidVao);
     glBindVertexArray(glidVao);
+    Renderer::outputGLError(__func__, __LINE__);
+
 //#ifdef __APPLE__
 //	glCreateProgramPipelines(1, &glidProgramPipeline);
 //     glCreateVertexArrays(1, &glidVao);
@@ -177,6 +179,8 @@ ProgramPipeline::ProgramPipeline(std::string name)
     // useFragmentShader(pFragmentShader);
 
     useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
+    Renderer::outputGLError(__func__, __LINE__);
+
     useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
 
 

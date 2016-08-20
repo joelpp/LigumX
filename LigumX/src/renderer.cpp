@@ -9,7 +9,7 @@
 using namespace glm;
 using namespace std;
 
-
+#define FT_SUCCESS 0
 
 
 void Renderer::Initialize(){
@@ -133,66 +133,69 @@ void Renderer::Initialize(){
        std::cout << "ERROR::FREETYPE: Could nolololt init FreeType Library" << std::endl;
 
    FT_Face face;
-//#ifdef __APPLE__
-   if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/LigumX/data/fonts/arial.ttf",0,&face))
-//#else
-//   if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
-//#endif
-       std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-   else
+   int success = FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/LigumX/data/fonts/arial.ttf",0,&face);
+   if (success == FT_SUCCESS)
+   {
        PRINT("Loaded Freetype font! yayy");
-   //FT_Set_Pixel_Sizes(face, 0, 48);
-   //if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-   //    std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+   }
+   else
+   {
+       PRINT("Failed to load freetype font.");
+
+   }
+    
+   FT_Set_Pixel_Sizes(face, 0, 48);
+//   if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
+//       std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
 
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
    FLUSH_ERRORS();
-//   for (GLubyte c = 0; c < 128; c++)
-//   {
-//       // Load character glyph
-//       if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-//       {
-//           std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-//           continue;
-//       }
-//       // Generate texture
-//       GLuint texture;
-//       glGenTextures(1, &texture);
-//       glBindTexture(GL_TEXTURE_2D, texture);
-//       glTexImage2D(
-//           GL_TEXTURE_2D,
-//           0,
-//           GL_RED,
-//           face->glyph->bitmap.width,
-//           face->glyph->bitmap.rows,
-//           0,
-//           GL_RED,
-//           GL_UNSIGNED_BYTE,
-//           face->glyph->bitmap.buffer
-//       );
-//       // Set texture options
-//       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//       // Now store character for later use
-//       Character character = {
-//           texture,
-//           glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-//           glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-//#ifdef __APPLE__
-//           static_cast<GLuint>(face->glyph->advance.x)
-//#else
-//           face->glyph->advance.x
-//#endif
-//       };
-//       Characters.insert(std::pair<GLchar, Character>(c, character));
-//   }
-//   FT_Done_Face(face);
-//   FT_Done_FreeType(ft);
-//
-//
-//
+   for (GLubyte c = 0; c < 128; c++)
+   {
+       // Load character glyph
+       if (FT_Load_Char(face, c, FT_LOAD_RENDER) != FT_SUCCESS)
+       {
+           std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+           continue;
+       }
+       // Generate texture
+       GLuint texture;
+       glGenTextures(1, &texture);
+       glBindTexture(GL_TEXTURE_2D, texture);
+       glTexImage2D(
+           GL_TEXTURE_2D,
+           0,
+           GL_RED,
+           face->glyph->bitmap.width,
+           face->glyph->bitmap.rows,
+           0,
+           GL_RED,
+           GL_UNSIGNED_BYTE,
+           face->glyph->bitmap.buffer
+       );
+       // Set texture options
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+       // Now store character for later use
+       Character character = {
+           texture,
+           glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+           glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+#ifdef __APPLE__
+           static_cast<GLuint>(face->glyph->advance.x)
+#else
+           face->glyph->advance.x
+#endif
+       };
+       Characters.insert(std::pair<GLchar, Character>(c, character));
+   }
+   FT_Done_Face(face);
+   FT_Done_FreeType(ft);
+
+
+
 
 }
 

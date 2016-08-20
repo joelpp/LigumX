@@ -6,6 +6,7 @@
 /LigumX/x64
 /LigumX/data/SRTMdata/
 /LigumX/data/OSMdata/
+LigumX/LigumX.xcodeproj/
 *.orig
 /Srtm2Osm/
 LigumX.sdf
