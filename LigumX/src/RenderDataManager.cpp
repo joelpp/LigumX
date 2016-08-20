@@ -53,7 +53,6 @@ RenderDataManager::RenderDataManager(){
     screenQuadTexCoords.push_back(vec2(0,0));
     screenQuadTexCoords.push_back(vec2(0,1));
 
-	Renderer::outputGLError(__func__, __LINE__);
 	Renderer::createGLBuffer(renderer.glidScreenQuadPositions, screenQuadPos);
     Renderer::createGLBuffer(renderer.glidScreenQuadTexCoords, screenQuadTexCoords);
 

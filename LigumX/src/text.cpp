@@ -4,13 +4,9 @@
 
 void Renderer::init_pipelines_text()
 {
-    Renderer::outputGLError(__func__, __LINE__);
-
     pPipelineText = new ProgramPipeline("text");
-	Renderer::outputGLError(__func__, __LINE__);
 
     glBindVertexArray(pPipelineText->glidVao);
-	Renderer::outputGLError(__func__, __LINE__);
 
     glGenBuffers(1, &textVBO);
     glBindBuffer(GL_ARRAY_BUFFER, textVBO);
@@ -27,7 +23,4 @@ void Renderer::init_pipelines_text()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
-	Renderer::outputGLError(__func__, __LINE__);
-
 }

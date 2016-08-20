@@ -145,8 +145,6 @@ void Renderer::Initialize(){
    }
     
    FT_Set_Pixel_Sizes(face, 0, 48);
-//   if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
-//       std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
 
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
    FLUSH_ERRORS();

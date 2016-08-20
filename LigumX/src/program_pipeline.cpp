@@ -57,11 +57,12 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
     int infoLength;
     char* info;
 
-
     const GLuint shader = glCreateShader(shaderType);
+
     glShaderSource(shader, nbSources, sourceCodes, NULL);
     glCompileShader(shader);
     glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+
     if(!result) {
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
@@ -77,7 +78,8 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
         glDeleteShader(shader);
 
         glGetProgramiv(glidShaderProgram, GL_LINK_STATUS, &result);
-        if(!result) {
+
+        if(result != GL_TRUE) {
             glGetProgramiv(glidShaderProgram, GL_INFO_LOG_LENGTH, &infoLength);
             info = new char[infoLength];
             glGetProgramInfoLog(glidShaderProgram, infoLength, NULL, info);
@@ -85,6 +87,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
             cerr << info << endl;
         }
     }
+
 }
 
 GLbitfield ProgramPipeline::sShaderTypeEnumToBitField(
@@ -158,32 +161,17 @@ ProgramPipeline::ProgramPipeline(std::string name)
     pComputeShader = NULL;
     m_name = name;
 
-
-    std::stringstream path;
-    path << ShadersPath;
-    path << name << "/";
-
     glGenProgramPipelines(1, &glidProgramPipeline);
     glBindProgramPipeline(glidProgramPipeline);
     glGenVertexArrays(1, &glidVao);
     glBindVertexArray(glidVao);
-    Renderer::outputGLError(__func__, __LINE__);
 
-//#ifdef __APPLE__
-//	glCreateProgramPipelines(1, &glidProgramPipeline);
-//     glCreateVertexArrays(1, &glidVao);
-//#endif
-
-
-    // useVertexShader(pVertexShader);
-    // useFragmentShader(pFragmentShader);
-
+    std::stringstream path;
+    path << ShadersPath;
+    path << name << "/";
+    
     useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
-    Renderer::outputGLError(__func__, __LINE__);
-
     useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
-
-
 }
 
 ProgramPipeline::ProgramPipeline()
@@ -195,22 +183,10 @@ ProgramPipeline::ProgramPipeline()
     pFragmentShader = NULL;
     pComputeShader = NULL;
 
-//#ifdef __APPLE__
-    Renderer::outputGLError(__func__, __LINE__);
-
     glGenProgramPipelines(1, &glidProgramPipeline);
     glBindProgramPipeline(glidProgramPipeline);
     glGenVertexArrays(1, &glidVao);
     glBindVertexArray(glidVao);
-    Renderer::outputGLError(__func__, __LINE__);
-
-//#else
-//     glCreateProgramPipelines(1, &glidProgramPipeline);
-//     glCreateVertexArrays(1, &glidVao);
-//#endif
-//
-
-
 }
 
 //void ProgramPipeline::useShaders(
@@ -278,13 +254,6 @@ void ProgramPipeline::useVertexShader(
 {
     GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);
 
-    // make sure we don't mix compute shaders with other shader types.
-    if(shader->shaderType == GL_COMPUTE_SHADER) {
-        glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
-    } else {
-        glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
-    }
-
     pVertexShader = shader;
 
     // attach shader shage
@@ -307,7 +276,7 @@ void ProgramPipeline::useVertexShader(
             PRINT(info);
         }
     }
-
+    
 }
 
 void ProgramPipeline::useGeometryShader(ProgramPipeline::ShaderProgram* shader)
@@ -351,11 +320,11 @@ void ProgramPipeline::useFragmentShader(ProgramPipeline::ShaderProgram *shader)
     GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);
 
     // make sure we don't mix compute shaders with other shader types.
-    if(shader->shaderType == GL_COMPUTE_SHADER) {
-        glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
-    } else {
-        glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
-    }
+//    if(shader->shaderType == GL_COMPUTE_SHADER) {
+//        glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
+//    } else {
+//        glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
+//    }
 
     pFragmentShader = shader;
 
