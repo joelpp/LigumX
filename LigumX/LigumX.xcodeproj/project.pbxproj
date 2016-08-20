@@ -118,6 +118,7 @@
 		B3C7C1CD1D68D73B0062A1AD /* libfreeimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreeimage.a; path = libs/OSX/FreeImage/OSX/libfreeimage.a; sourceTree = "<group>"; };
 		B3C7C1CF1D68D7480062A1AD /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = libs/OSX/curl/libcurl.a; sourceTree = "<group>"; };
 		B3C7C1D11D68DF2A0062A1AD /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = camera.cpp; path = src/camera.cpp; sourceTree = "<group>"; };
+		B3C7C1D31D68EFB60062A1AD /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +146,7 @@
 		B3C0F0771D66ADA500ACADC0 = {
 			isa = PBXGroup;
 			children = (
+				B3C7C1D31D68EFB60062A1AD /* .gitignore */,
 				B305DE181D66ADFE00232452 /* src */,
 				B3C7C1C41D68D50A0062A1AD /* shaders */,
 				B3C7C1CF1D68D7480062A1AD /* libcurl.a */,
