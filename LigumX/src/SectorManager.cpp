@@ -11,17 +11,22 @@ SectorManager::SectorManager(float sectorSize)
 {
 	m_sectorSize = sectorSize;
 	bLoadNewSectors = true;
+    
+    iStartX = -180;
+    iStartY = -90;
+    /*int startX = 0;
+     int startY = 0;*/
+    
+    iSizeX = 360;
+    iSizeY = 180;
+    
+    iNumSectorsX = iSizeX / m_sectorSize;
+    iNumSectorsY = iSizeY / m_sectorSize;
 }
 
 int SectorManager::getSectorIndex(float x, float y)
 {
-	int startX = -180;
-	int startY = -90;
-	/*int startX = 0;
-	int startY = 0;*/
 
-	int xSize = 360;
-	int ySize = 180;
 
 	float a = x / m_sectorSize;
 	float b = y / m_sectorSize;
@@ -29,13 +34,10 @@ int SectorManager::getSectorIndex(float x, float y)
 	int sectorX = floor(a);
 	int sectorY = floor(b);
 
-	int numSectorsX = xSize / m_sectorSize;
-	int numSectorsY = ySize / m_sectorSize;
+	sectorX -= iStartX;
+	sectorY -= iStartY;
 
-	sectorX -= startX;
-	sectorY -= startY;
-
-	return sectorX * numSectorsY + sectorY;
+	return sectorX * iNumSectorsY + sectorY;
 }
 
 int SectorManager::IDFromPos(glm::vec2 pos)
@@ -46,22 +48,13 @@ int SectorManager::IDFromPos(glm::vec2 pos)
 
 glm::vec2 SectorManager::posFromID(int ID)
 {	
-	int startX = -180;
-	int startY = -90;
-	//int startX = 0;
-	//int startY = 0;
 
-	int xSize = 360;
-	int ySize = 180;
-
-	int numSectorsY = ySize / m_sectorSize;
-
-	int sectorY = ID % numSectorsY;
+	int sectorY = ID % iNumSectorsY;
 
 	// integer division on purpose
-	int sectorX = (ID - sectorY) / numSectorsY;
+	int sectorX = (ID - sectorY) / iNumSectorsY;
 
-	return m_sectorSize * glm::vec2(startX + sectorX, startY + sectorY);
+	return m_sectorSize * glm::vec2(iStartX + sectorX, iStartY + sectorY);
 }
 
 IntPair SectorManager::intPairFromVec2(glm::vec2 pos)
@@ -134,6 +127,29 @@ Sector* SectorManager::sectorContaining(Coord2 longLat){
 	return sector;
 }
 
+Sector* SectorManager::getSector(int ID)
+{
+    Sector* sector;
+    auto found = m_sectors.find(ID);
+    
+    if (found != m_sectors.end())
+    {
+        sector = m_sectors.at(ID);
+    }
+    else
+    {
+        // PRINT("Creating sector at ");
+        // PRINTVEC2(longLat);
+        sector = createSector(ID);
+        m_sectors.emplace(ID, sector);
+        PRINTINT(m_sectors.size());
+        
+    }
+    
+    
+    return sector;
+}
+
 int minHeightfieldDistance = 1;
 void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 {
@@ -177,30 +193,25 @@ void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 	}
 }
 
-
 SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initialization){
-	SectorList* newSectors = new SectorList();
-	Coord2 startingCoord = (point - glm::vec2(ringSize * m_sectorSize));
-	Coord2 runningCoord = startingCoord;
-	for (int i = 0; i < 2 * ringSize + 1; ++i )
+	SectorList* sectors = new SectorList();
+    int ringCenterIndex = IDFromPos(point);
+    
+	for (int i = -ringSize; i <= ringSize; ++i )
 	{
-		runningCoord.x = startingCoord.x;
-
-		for (int j = 0; j < 2 * ringSize + 1; ++j )
+		for (int j = -ringSize; j <= ringSize; ++j )
 		{
-
-			int manhattanDistance = abs(i - ringSize) + abs(j - ringSize);
-			Sector* sector = sectorContaining(runningCoord);
-			newSectors->push_back(sector);
+			int manhattanDistance = abs(i) + abs(j);
+            int sectorIndex = ringCenterIndex + i + (iNumSectorsY * j);
+            
+            Sector* sector = getSector(sectorIndex);
+			sectors->push_back(sector);
 
 			if (bLoadNewSectors && initialization && (sector->m_initializationLevel < Sector::FullyInitialized))
 			{
 				keepInitializing(sector, manhattanDistance);
 			}
-
-			runningCoord.x += m_sectorSize;
-		}	
-		runningCoord.y += m_sectorSize;
+		}
 	}
-	return newSectors;
+	return sectors;
 }

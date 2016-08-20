@@ -51,6 +51,10 @@ public:
      * @return     [A pointer to the sector.]
      */
     Sector* sectorContaining(Coord2 longLat);
+    
+    Sector* getSector(int ID);
+    
+    
     Sector* GetOrCreateSectorAtXY(Coord2 longLat, SectorList* newSectors);
 
     SectorList* sectorsAround(Coord2 point, int ringSize, bool initialization);
@@ -69,4 +73,8 @@ public:
 private:
 	REGISTERCLASS(SectorManager);
 	bool bLoadNewSectors;
+    
+    int iStartX, iStartY;
+    int iNumSectorsX, iNumSectorsY;
+    int iSizeX, iSizeY;
 };

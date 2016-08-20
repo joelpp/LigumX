@@ -23,11 +23,11 @@ Heightfield::Heightfield(vec2 startPoint, double sideLength){
     this->sideLength = sideLength;
     this->startPoint = startPoint;
     this->step = Settings::GetInstance().f("HeightfieldResolution");
-    this->m_numberOfPointsPerSide = 1+ (sideLength + 0.0000001) / step;
+    this->iWidth = 1 + (sideLength + 0.0000001) / step;
     m_mesh = 0;
 }
 
-bool Heightfield::generateTriangles(){
+bool Heightfield::generate(){
     m_mesh = new Mesh();
 
     World* world = LigumX::GetInstance().world;
@@ -57,17 +57,19 @@ bool Heightfield::generateTriangles(){
     float u = 0;
     float v = 0;
     float uvStep = step / sideLength;
-    for(int i = 0; i < m_numberOfPointsPerSide; i++)
+    
+    // for a lon, fill all the lat
+    for(int i = 0; i < iWidth; i++)
     {
         lon = startPoint.x;
         u = 0;
-//        For each line generate a bunch of points
-        for (int j = 0; j < m_numberOfPointsPerSide; j++)
+        for (int j = 0; j < iWidth; j++)
         {
             //float z = contourLineInterpolate(glm::vec2(lon, lat), contoursToQuery);
              float z = -0.0001f;
             vec3 point = vec3(lon, lat, z);
             points.push_back(point);
+            data.push_back(z);
             UVs.push_back(glm::vec2(u, v));
             lon += step;
             u += uvStep;
@@ -77,18 +79,18 @@ bool Heightfield::generateTriangles(){
     }
 
     // vertically
-    for (int i = 0; i < m_numberOfPointsPerSide - 1; ++i)
+    for (int i = 0; i < iWidth - 1; ++i)
     {
         //horizontally
-        for (int j = 0; j < m_numberOfPointsPerSide - 1; ++j)
+        for (int j = 0; j < iWidth - 1; ++j)
         {
-            indexBuffer.push_back( (i * m_numberOfPointsPerSide) + j );
-            indexBuffer.push_back( ((i + 1) * m_numberOfPointsPerSide) + (j) );
-            indexBuffer.push_back( (i * m_numberOfPointsPerSide) + (j + 1)) ;
+            indexBuffer.push_back( (i * iWidth) + j );
+            indexBuffer.push_back( ((i + 1) * iWidth) + (j) );
+            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
 
-            indexBuffer.push_back( ((i + 1) * m_numberOfPointsPerSide) + (j)  );
-            indexBuffer.push_back( (i * m_numberOfPointsPerSide) + (j + 1)) ;
-            indexBuffer.push_back( ((i + 1) * m_numberOfPointsPerSide) + (j + 1) );
+            indexBuffer.push_back( ((i + 1) * iWidth) + (j)  );
+            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
+            indexBuffer.push_back( ((i + 1) * iWidth) + (j + 1) );
         }
 
     }
@@ -116,28 +118,36 @@ double Heightfield::getHeight(glm::vec2 xy)
 {
     glm::vec2 normalized = (xy - startPoint) / glm::vec2(sideLength);
     // PRINTVEC2(normalized);
-    glm::vec2 unNormalized = normalized * glm::vec2(m_numberOfPointsPerSide, m_numberOfPointsPerSide);
+    glm::vec2 unNormalized = normalized * glm::vec2(iWidth, iWidth);
     // PRINTVEC2(unNormalized);
 
     int xIndex = trunc(unNormalized.x);
     int yIndex = trunc(unNormalized.y);
-    // PRINTINT(xIndex);
-    // PRINTINT(yIndex);
 
-    // PRINT(m_numberOfPointsPerSide);
-    glm::vec3 corner[4];
-    std::vector<glm::vec3>& points = m_mesh->m_buffers.vertexPositions;
-
-    corner[0] = points[ yIndex * m_numberOfPointsPerSide + xIndex ];
-    corner[1] = points[ yIndex * m_numberOfPointsPerSide + xIndex + 1 ];
-    corner[2] = points[ (yIndex + 1) * m_numberOfPointsPerSide + xIndex ];
-    corner[3] = points[ (yIndex + 1) * m_numberOfPointsPerSide + xIndex + 1];
+    glm::vec3 corners[4];
+    
+    corners[0].x = startPoint.x + unNormalized.x;
+    corners[0].y = startPoint.y + unNormalized.y;
+    
+    corners[1].x = startPoint.x + unNormalized.x + step;
+    corners[1].y = startPoint.y + unNormalized.y;
+    
+    corners[2].x = startPoint.x + unNormalized.x;
+    corners[2].y = startPoint.y + unNormalized.y + step;
+    
+    corners[3].x = startPoint.x + unNormalized.x + step;
+    corners[3].y = startPoint.y + unNormalized.y + step;
+    
+    corners[0].z = data[ yIndex * iWidth + xIndex ];
+    corners[1].z = data[ yIndex * iWidth + xIndex + 1 ];
+    corners[2].z = data[ (yIndex + 1) * iWidth + xIndex ];
+    corners[3].z = data[ (yIndex + 1) * iWidth + xIndex + 1];
 
     // PRINTVEC3(corner[0]);
     // PRINTVEC3(corner[1]);
     // PRINTVEC3(corner[2]);
     // PRINTVEC3(corner[3]);
-    return bilerp(unNormalized - glm::vec2(xIndex, yIndex), corner);
+    return bilerp(unNormalized - glm::vec2(xIndex, yIndex), corners);
 }
 
 double Heightfield::contourLineInterpolate(vec2 xy, std::vector<Way*>& contourSet) 

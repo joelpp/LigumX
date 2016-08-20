@@ -48,5 +48,5 @@ bool Sector::createHeightfield()
         m_heightfield = new Heightfield(m_pos, m_size.x);
     }
 
-    return m_heightfield->generateTriangles();
+    return m_heightfield->generate();
 }
