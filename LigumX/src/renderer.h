@@ -2,12 +2,12 @@
 #define RENDERER
 
 
-#include "glad\glad.h"
-#include <glfw\include\GLFW\glfw3.h>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#include <Freetype\ft2build.h>
+#include "Freetype/ft2build.h"
 #include FT_FREETYPE_H
 
 #include <vector>

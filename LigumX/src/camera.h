@@ -2,7 +2,7 @@
 #define CAMERA_H
 
 #include "glm/glm.hpp"
-#include "glfw\include\GLFW\glfw3.h"
+#include "GLFW/glfw3.h"
 #include "Logging.h"
 
 // 2D orthographic camera, look in the -Z direction.

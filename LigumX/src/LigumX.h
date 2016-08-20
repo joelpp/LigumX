@@ -14,7 +14,7 @@
 #include "renderer.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
-#include "AntTweakBar\include\AntTweakBar.h"
+#include "AntTweakBar/include/AntTweakBar.h"
 #include "Logging.h"
 #include "entity.h"
 #include "settings.h"

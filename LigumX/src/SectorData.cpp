@@ -194,7 +194,7 @@ void SectorData::elevateNodes(Heightfield* heightfield)
         {
             Node* node = *nodeIt;
             double elevation = heightfield->getHeight(node->getLatLong());
-            elevation = max(0., min(elevation, 0.01));
+//            elevation = max(0., min(elevation, 0.01));
             node->elevation = elevation + 0.0001;
         }
     }

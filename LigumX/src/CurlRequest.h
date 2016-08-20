@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "glm/glm.hpp"
-#include "curl\curl.h"
+#include "curl/curl.h"
 
 #include "Settings.h"
 #include "Logging.h"

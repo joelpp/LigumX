@@ -40,20 +40,20 @@ void Renderer::init_pipelines_buildingSides()
     ProgramPipeline::ShaderProgram* pFragmentShader =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
             "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/pipeline_buildingSides/fragment.fsh", false);
-#ifdef __APPLE__
-
-    ProgramPipeline::ShaderProgram* pVertexShader =
-            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
-            vertexShaderSource, true);
-
-    ProgramPipeline::ShaderProgram* pGeometryShader =
-            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../data/shaders/buildingSides.gsh", false);
-
-    ProgramPipeline::ShaderProgram* pFragmentShader =
-            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            fragmentShaderSource, true);
-#endif
+//#ifdef __APPLE__
+//
+//    ProgramPipeline::ShaderProgram* pVertexShader =
+//            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+//            vertexShaderSource, true);
+//
+//    ProgramPipeline::ShaderProgram* pGeometryShader =
+//            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+//            "../data/shaders/buildingSides.gsh", false);
+//
+//    ProgramPipeline::ShaderProgram* pFragmentShader =
+//            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+//            fragmentShaderSource, true);
+//#endif
 
 
     pPipelineBuildingSides = new ProgramPipeline();
@@ -70,14 +70,14 @@ void Renderer::init_pipelines_buildingSides()
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, glidBufferBuildingLoopLengths);
     glVertexAttribPointer (1, 1, GL_FLOAT, GL_FALSE, 0, NULL);
-#ifdef __APPLE__
-
-    glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 0);
-    glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 0, glidBufferBuildingLines, 0, 3*4);
-    glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
-    glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 1);
-    glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 1, glidBufferBuildingLoopLengths, 0, 1*4);
-    glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
-#endif
+//#ifdef __APPLE__
+//
+//    glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 0);
+//    glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 0, glidBufferBuildingLines, 0, 3*4);
+//    glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+//    glEnableVertexArrayAttrib(pPipelineBuildingSides->glidVao, 1);
+//    glVertexArrayVertexBuffer(pPipelineBuildingSides->glidVao, 1, glidBufferBuildingLoopLengths, 0, 1*4);
+//    glVertexArrayAttribFormat(pPipelineBuildingSides->glidVao, 1, 1, GL_FLOAT, GL_FALSE, 0);
+//#endif
 
 }

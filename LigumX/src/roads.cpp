@@ -83,36 +83,36 @@ void Renderer::init_pipelines_roads()
     pFragmentShader3 =
             new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
             fragmentShaderSource3, true);
-#ifdef __APPLE__
-
-    ProgramPipeline::ShaderProgram* pVertexShader =
-            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
-            vertexShaderSource, true);
-
-    pGeometryShader1 =
-            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../data/shaders/roads.gsh", false);
-
-    pGeometryShader2 =
-            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../data/shaders/roads2.gsh", false);
-
-    pGeometryShader3 =
-            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "../data/shaders/roads3.gsh", false);
-
-    pFragmentShader1 =
-            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            fragmentShaderSource1, true);
-
-    pFragmentShader2 =
-            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            fragmentShaderSource2, true);
-
-    pFragmentShader3 =
-            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            fragmentShaderSource3, true);
-#endif
+//#ifdef __APPLE__
+//
+//    ProgramPipeline::ShaderProgram* pVertexShader =
+//            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
+//            vertexShaderSource, true);
+//
+//    pGeometryShader1 =
+//            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+//            "../data/shaders/roads.gsh", false);
+//
+//    pGeometryShader2 =
+//            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+//            "../data/shaders/roads2.gsh", false);
+//
+//    pGeometryShader3 =
+//            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
+//            "../data/shaders/roads3.gsh", false);
+//
+//    pFragmentShader1 =
+//            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+//            fragmentShaderSource1, true);
+//
+//    pFragmentShader2 =
+//            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+//            fragmentShaderSource2, true);
+//
+//    pFragmentShader3 =
+//            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
+//            fragmentShaderSource3, true);
+//#endif
 
 
     pPipelineRoads = new ProgramPipeline();
@@ -126,12 +126,12 @@ void Renderer::init_pipelines_roads()
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, glidBufferRoadsPositions);
     glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-#ifdef __APPLE__
-
-     glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 0);
-     glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 0, glidBufferRoadsPositions, 0, 3*4);
-     glVertexArrayAttribFormat(pPipelineRoads->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
-#endif
+//#ifdef __APPLE__
+//
+//     glEnableVertexArrayAttrib(pPipelineRoads->glidVao, 0);
+//     glVertexArrayVertexBuffer(pPipelineRoads->glidVao, 0, glidBufferRoadsPositions, 0, 3*4);
+//     glVertexArrayAttribFormat(pPipelineRoads->glidVao, 0, 3, GL_FLOAT, GL_FALSE, 0);
+//#endif
 
     // VAO
 

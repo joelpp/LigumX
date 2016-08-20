@@ -5,7 +5,7 @@
 #include <sstream>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "glad\glad.h"
+#include "glad/glad.h"
 #include "Logging.h"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"

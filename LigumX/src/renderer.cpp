@@ -44,13 +44,13 @@ void Renderer::Initialize(){
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
+//#ifdef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#else
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-#endif
+//#else
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+//#endif
 
     // create GLFW window
 //    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
@@ -92,7 +92,7 @@ void Renderer::Initialize(){
 
     glDepthFunc(GL_LESS);
     std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
-#ifdef __APPLE__
+//#ifdef __APPLE__
     textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/brickles.png"));
     // textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/grass.png"));
     // textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/rock.png"));
@@ -101,13 +101,13 @@ void Renderer::Initialize(){
     // textureMap.emplace("roof", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/roof_rgba.png"));
     // textureMap.emplace("building_side1", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/building_side1_rgba.png"));
 
-#else
-    textureMap.emplace("bricks", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-    textureMap.emplace("grass", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-    textureMap.emplace("rock", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-    textureMap.emplace("ATLAS", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-
-#endif
+//#else
+//    textureMap.emplace("bricks", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
+//    textureMap.emplace("grass", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
+//    textureMap.emplace("rock", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
+//    textureMap.emplace("ATLAS", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
+//
+//#endif
 
     glGenFramebuffers(1, &glidFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
@@ -133,11 +133,11 @@ void Renderer::Initialize(){
        std::cout << "ERROR::FREETYPE: Could nolololt init FreeType Library" << std::endl;
 
    FT_Face face;
-#ifdef __APPLE__
-   if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/fonts/arial.ttf",0,&face))
-#else
-   if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
-#endif
+//#ifdef __APPLE__
+   if (FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/LigumX/data/fonts/arial.ttf",0,&face))
+//#else
+//   if (FT_New_Face(ft, "../fonts/arial.ttf", 0, &face))
+//#endif
        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
    else
        PRINT("Loaded Freetype font! yayy");
@@ -345,7 +345,7 @@ void Renderer::RenderSky()
 	   FLUSH_ERRORS();
 
        GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
-       glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth, windowHeight);
+       glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth * 2, windowHeight * 2);
        glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), 0);
        glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), 0);
        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.

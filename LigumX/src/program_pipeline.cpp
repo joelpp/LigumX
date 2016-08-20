@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "program_pipeline.h"
-
+#include "renderer.h"
 using namespace std;
 
 ProgramPipeline::ShaderProgram::ShaderProgram(
@@ -167,10 +167,10 @@ ProgramPipeline::ProgramPipeline(std::string name)
     glBindProgramPipeline(glidProgramPipeline);
     glGenVertexArrays(1, &glidVao);
     glBindVertexArray(glidVao);
-#ifdef __APPLE__
-	glCreateProgramPipelines(1, &glidProgramPipeline);
-     glCreateVertexArrays(1, &glidVao);
-#endif
+//#ifdef __APPLE__
+//	glCreateProgramPipelines(1, &glidProgramPipeline);
+//     glCreateVertexArrays(1, &glidVao);
+//#endif
 
 
     // useVertexShader(pVertexShader);
@@ -191,17 +191,20 @@ ProgramPipeline::ProgramPipeline()
     pFragmentShader = NULL;
     pComputeShader = NULL;
 
-#ifdef __APPLE__
+//#ifdef __APPLE__
+    Renderer::outputGLError(__func__, __LINE__);
 
     glGenProgramPipelines(1, &glidProgramPipeline);
     glBindProgramPipeline(glidProgramPipeline);
     glGenVertexArrays(1, &glidVao);
     glBindVertexArray(glidVao);
-#else
-     glCreateProgramPipelines(1, &glidProgramPipeline);
-     glCreateVertexArrays(1, &glidVao);
-#endif
+    Renderer::outputGLError(__func__, __LINE__);
 
+//#else
+//     glCreateProgramPipelines(1, &glidProgramPipeline);
+//     glCreateVertexArrays(1, &glidVao);
+//#endif
+//
 
 
 }

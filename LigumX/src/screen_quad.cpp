@@ -50,15 +50,15 @@ void Renderer::init_pipelines_screenQuad()
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, glidScreenQuadTexCoords);
     glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-#ifdef __APPLE__
-
-     glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 0);
-     glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 0, glidScreenQuadPositions, 0, 2*4);
-     glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
-     glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 1);
-     glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 1, glidScreenQuadTexCoords, 0, 2*4);
-     glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 1, 2, GL_FLOAT, GL_FALSE, 0);
-#endif
+//#ifdef __APPLE__
+//
+//     glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 0);
+//     glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 0, glidScreenQuadPositions, 0, 2*4);
+//     glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 0, 2, GL_FLOAT, GL_FALSE, 0);
+//     glEnableVertexArrayAttrib(pPipelineScreenQuad->glidVao, 1);
+//     glVertexArrayVertexBuffer(pPipelineScreenQuad->glidVao, 1, glidScreenQuadTexCoords, 0, 2*4);
+//     glVertexArrayAttribFormat(pPipelineScreenQuad->glidVao, 1, 2, GL_FLOAT, GL_FALSE, 0);
+//#endif
 
 
 }

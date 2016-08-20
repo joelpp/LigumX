@@ -4,6 +4,7 @@
 
 void Renderer::init_pipelines_text()
 {
+    Renderer::outputGLError(__func__, __LINE__);
 
     pPipelineText = new ProgramPipeline("text");
 	Renderer::outputGLError(__func__, __LINE__);
