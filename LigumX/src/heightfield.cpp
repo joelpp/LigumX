@@ -89,88 +89,27 @@ void Heightfield::generateBaseMesh()
 }
 
 bool Heightfield::generate(){
-    m_mesh = new Mesh();
-
-    World* world = LigumX::GetInstance().world;
-    std::stringstream ss;
-
-    //std::vector<Sector*>* relevantSectors = world->sectorsAroundPoint(startPoint,2);
-
-    //for (Sector* sector : *relevantSectors)
-    //{
-    //    if (sector->m_initializationLevel < Sector::ContourLoaded)
-    //    {
-    //        return false;
-    //    }
-    //}
-    //std::vector<Way*> contoursToQuery = World::getAllContourLines(relevantSectors);
-
-    //delete(relevantSectors);
-    
-    float lon = startPoint.x;
-    float lat = startPoint.y;
-
-    std::vector<glm::vec3>& points = m_mesh->m_buffers.vertexPositions;
-    std::vector<glm::vec2>& UVs = m_mesh->m_buffers.m_vertexUVs;
-    std::vector<int>& indexBuffer = m_mesh->m_buffers.indexBuffer;
-
-    // Start by making horizontal lines
-    float u = 0;
-    float v = 0;
-    float uvStep = step / sideLength;
-    
-    
     // for a lon, fill all the lat
-    int c = 0;
+    float lon;
+    float lat = startPoint.y;
     for(int i = 0; i < iWidth; i++)
     {
         lon = startPoint.x;
-        u = 0;
         for (int j = 0; j < iWidth; j++)
         {
-            //float z = contourLineInterpolate(glm::vec2(lon, lat), contoursToQuery);
-             float z = -0.0001f;
-//            float z = 0.2 * (rand() / (float)RAND_MAX);
-            z = pNoise->GetHeight(lon, lat);
-//            z = j;
-//            z = 0;
-            vec3 point = vec3(lon, lat, z);
-//            points.push_back(point);
-            std::cout << c++ << " " << lon << " " << lat << " " << z << std::endl;
+             float z = pNoise->GetHeight(lon, lat);
 
             data.push_back(z);
-            UVs.push_back(glm::vec2(u, v));
             lon += step;
-            u += uvStep;
         }
         lat += step;
-        v += uvStep;
     }
 
-//    // vertically
-    for (int i = 0; i < data.size(); ++i)
-    {
-        std::cout << data[i] << std::endl;
 
-//        //horizontally
-//        for (int j = 0; j < iWidth - 1; ++j)
-//        {
-//            indexBuffer.push_back( (i * iWidth) + j );
-//            indexBuffer.push_back( ((i + 1) * iWidth) + (j) );
-//            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
-//
-//            indexBuffer.push_back( ((i + 1) * iWidth) + (j)  );
-//            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
-//            indexBuffer.push_back( ((i + 1) * iWidth) + (j + 1) );
-//        }
-//
-    }
 
     glGenTextures(1, &buffer);
-    Renderer::outputGLError(__func__, __LINE__);
 
     glBindTexture(GL_TEXTURE_2D, buffer);
-    Renderer::outputGLError(__func__, __LINE__);
     // Set our texture parametersgl
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// Set texture wrapping to GL_REPEAT
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -178,13 +117,8 @@ bool Heightfield::generate(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, iWidth, iWidth, 0, GL_RED, GL_FLOAT, data.data());
-    Renderer::outputGLError(__func__, __LINE__);
     glBindTexture(GL_TEXTURE_2D, 0);
-    Renderer::outputGLError(__func__, __LINE__);
-    
-    m_mesh->createBuffers();
-    m_mesh->m_usesIndexBuffer = true;
-    m_mesh->m_renderingMode = GL_TRIANGLES;
+
 
     return true;
 }
