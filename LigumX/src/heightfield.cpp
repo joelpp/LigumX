@@ -16,6 +16,8 @@ using namespace glm;
 
 inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }
 
+Mesh* Heightfield::hfBaseMesh;
+
 Heightfield::Heightfield(){
 
 }
@@ -23,8 +25,53 @@ Heightfield::Heightfield(vec2 startPoint, double sideLength){
     this->sideLength = sideLength;
     this->startPoint = startPoint;
     this->step = Settings::GetInstance().f("HeightfieldResolution");
-    this->iWidth = 1 + (sideLength + 0.0000001) / step;
+    this->iWidth = 1 + (sideLength / step);
     m_mesh = 0;
+    
+    if (!hfBaseMesh)
+    {
+        generateBaseMesh();
+    }
+}
+
+void Heightfield::generateBaseMesh()
+{
+    hfBaseMesh = new Mesh();
+    std::vector<glm::vec3>& points = hfBaseMesh->m_buffers.vertexPositions;
+    std::vector<glm::vec2>& UVs = hfBaseMesh->m_buffers.m_vertexUVs;
+    std::vector<int>& indexBuffer = hfBaseMesh->m_buffers.indexBuffer;
+
+    for(int i = 0; i < iWidth; i++)
+    {
+        for (int j = 0; j < iWidth; j++)
+        {
+            float x = (float)i / (float)iWidth;
+            float y = (float)j / (float)iWidth;
+            vec3 point = vec3(x, y, 0);
+            points.push_back(point);
+            UVs.push_back(glm::vec2(x, y));
+        }
+    }
+
+    // vertically
+    for (int i = 0; i < iWidth - 1; ++i)
+    {
+        //horizontally
+        for (int j = 0; j < iWidth - 1; ++j)
+        {
+            indexBuffer.push_back( (i * iWidth) + j );
+            indexBuffer.push_back( ((i + 1) * iWidth) + (j) );
+            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
+            
+            indexBuffer.push_back( ((i + 1) * iWidth) + (j)  );
+            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
+            indexBuffer.push_back( ((i + 1) * iWidth) + (j + 1) );
+        }
+    }
+    
+    hfBaseMesh->createBuffers();
+    hfBaseMesh->m_usesIndexBuffer = true;
+    hfBaseMesh->m_renderingMode = GL_TRIANGLES;
 }
 
 bool Heightfield::generate(){
@@ -66,7 +113,8 @@ bool Heightfield::generate(){
         for (int j = 0; j < iWidth; j++)
         {
             //float z = contourLineInterpolate(glm::vec2(lon, lat), contoursToQuery);
-             float z = -0.0001f;
+//             float z = -0.0001f;
+            float z = 0.2 * (rand() / (float)RAND_MAX);
             vec3 point = vec3(lon, lat, z);
             points.push_back(point);
             data.push_back(z);
@@ -95,7 +143,22 @@ bool Heightfield::generate(){
 
     }
 
+    glGenTextures(1, &buffer);
+    Renderer::outputGLError(__func__, __LINE__);
 
+    glBindTexture(GL_TEXTURE_2D, buffer);
+    Renderer::outputGLError(__func__, __LINE__);
+    // Set our texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set texture filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, iWidth, iWidth, 0, GL_RED, GL_FLOAT, data.data());
+    Renderer::outputGLError(__func__, __LINE__);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    Renderer::outputGLError(__func__, __LINE__);
+    
     m_mesh->createBuffers();
     m_mesh->m_usesIndexBuffer = true;
     m_mesh->m_renderingMode = GL_TRIANGLES;

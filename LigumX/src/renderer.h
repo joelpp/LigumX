@@ -19,11 +19,13 @@
 #include "texture.h"
 #include "camera.h"
 #include "osm_element.h"
+
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
 
 class Material;
 class Model;
 class Mesh;
+class RenderDataManager;
 struct Text {
     std::string text;
     glm::vec3 position;
@@ -57,6 +59,7 @@ public:
     static void outputGLError(std::string func, int line);
     void RenderSky();
     void RenderFPS();
+    void drawTerrain();
 
 
 
@@ -214,6 +217,11 @@ public:
                                    // Instantiated on first use.
          return instance;
      }
+    
+    void setDataSource(RenderDataManager* manager)
+    {
+        renderData = manager;
+    }
 private:
     REGISTERCLASS(Renderer);
 
@@ -226,6 +234,7 @@ private:
     Renderer(Renderer const&)               = delete;
     void operator=(Renderer const&)  = delete;
 
+    RenderDataManager* renderData;
 };
 
 #endif // RENDERER

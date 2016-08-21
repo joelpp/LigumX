@@ -4,14 +4,19 @@ layout(location=1) in vec2 texCoord;
 
 uniform mat4 vpMat;
 uniform mat4 modelMatrix;
+uniform vec2 offset;
+uniform sampler2D heightmap;
 out vec2 myTexCoord;
 out float height;
 out gl_PerVertex {
     vec4 gl_Position;
 };
 
+
 void main() {
-    gl_Position = vpMat * modelMatrix * vec4(pos, 1);
+    float sampledHeight = texture(heightmap, texCoord).r;
+    vec3 vertexPosition = vec3(pos.x + offset.x, pos.y + offset.y, sampledHeight);
+    gl_Position = vpMat * modelMatrix * vec4(vertexPosition, 1);
     myTexCoord = texCoord;
     height = pos.z;
 }

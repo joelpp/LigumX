@@ -1,5 +1,5 @@
 ; for comment
-cameraPosition 0.1 20 0.1
+cameraPosition 0.05 20 0.05
 ; montreal
 ; cameraPosition -73.602972 45.53288 0.0707107
 
@@ -21,7 +21,7 @@ cameraPosition 0.1 20 0.1
 cameraLookAt -0.525 0.475 0
 viewSize 0.03
 
-sectorSize 0.1
+sectorSize 1
 loadingRingSize 2
 loadNewSectors 1
 useCameraPositionAsTestPoint 1
@@ -33,7 +33,7 @@ testPoint -0.625 0.5254289
 
 buildingHeight 3
 
-HeightfieldResolution 0.1
+HeightfieldResolution 0.01
 
 ; ShadersPath C:/Users/Joel/Documents/LigumX/LigumX/data/shaders/
 ShadersPath /Users/joelpp/Documents/Maitrise/LigumX/LigumX/LigumX/data/shaders/

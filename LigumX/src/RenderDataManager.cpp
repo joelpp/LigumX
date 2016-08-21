@@ -83,15 +83,29 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
 
 
     Heightfield* heightField = newSector->m_heightfield;
-    if (heightField->m_mesh)
-    {
-        Model* hfModel = new Model();
-        
-        hfModel->addMesh( heightField->m_mesh, new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1)) );
-        hfModel->name = "heightfield";
+//
+//    if (heightField->m_mesh)
+//    {
+//        Model* hfModel = new Model();
+//        
+//        //  hfModel->addMesh( Heightfield::hfBaseMesh, new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1)) );
+//        hfModel->addMesh( heightField->m_mesh, new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1)) );
+//        hfModel->name = "heightfield";
+//        
+//        renderer.m_debugModels.push_back( hfModel );
+//    }
 
-        renderer.m_debugModels.push_back( hfModel );
-    }
+    
+    TerrainRenderingJob job;
+    job.start = heightField->startPoint;
+    job.scale = heightField->sideLength;
+    job.buffer = heightField->buffer;
+    terrainRenderingJobs.push_back(job);
+}
+
+Mesh* RenderDataManager::terrainMesh()
+{
+    return Heightfield::hfBaseMesh;
 }
 
 void RenderDataManager::fillBuffers(Sector* sector)

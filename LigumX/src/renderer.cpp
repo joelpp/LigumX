@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
+#include "RenderDataManager.h"
 
 using namespace glm;
 using namespace std;
@@ -249,6 +250,34 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
 
 }
 
+void Renderer::drawTerrain()
+{
+    std::vector<TerrainRenderingJob>& renderList = renderData->terrainRenderingJobs;
+    
+    if (!renderList.size())
+    {
+        return;
+    }
+    pPipelineBasicUV->usePipeline();
+    ProgramPipeline* activePipeline = pPipelineBasicUV;
+    
+    Mesh* terrainMesh = renderData->terrainMesh();
+    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "modelMatrix"), 1, false, value_ptr(glm::mat4(1.0)));
+    
+    glBindVertexArray(terrainMesh->m_VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainMesh->m_VBOs.glidIndexBuffer);
+    
+    for (TerrainRenderingJob& job : renderList)
+    {
+        glProgramUniform2f(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "offset"), job.start[0], job.start[1]);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, job.buffer);
+//        glProgramUniform1i(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram,glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "heightmap"), 0);
+        glDrawElements(terrainMesh->m_renderingMode, terrainMesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+    }
+}
+
 
 /**
  * [Renderer::render description]
@@ -273,6 +302,9 @@ void Renderer::render()
         {
           DrawModel(model);
         }
+        
+        drawTerrain();
+        FLUSH_ERRORS();
 
 
 

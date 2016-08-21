@@ -7,10 +7,21 @@
 
 #include "Logging.h"
 
+//include only for gluint.
+#include "Renderer.h"
+
 class LigumX;
 class Renderer;
 class Sector;
 class Mesh;
+
+struct TerrainRenderingJob
+{
+    glm::vec2 start;
+    float scale;
+    GLuint buffer;
+};
+
 class RenderDataManager{
 
 public:
@@ -32,7 +43,7 @@ public:
     std::vector<glm::vec3> buildingLines;
     std::vector<float> buildingLinesTexCoords;
     Mesh* testMesh;
-
+    
     float m_renderingScale;
     int nbRoads;
     RenderDataManager();
@@ -41,8 +52,11 @@ public:
     void initializeSector(Sector* sector);
 
 	void addToTerrainBuffer(Sector* newSector);
+    Mesh* terrainMesh();
 
+    std::vector<TerrainRenderingJob> terrainRenderingJobs;
 private:
 	REGISTERCLASS(RenderDataManager);
+    
 
 };

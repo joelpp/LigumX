@@ -98,7 +98,7 @@ void LigumX::init()
     renderer.init_pipelines();
 
     renderData = new RenderDataManager();
-
+    renderer.setDataSource(renderData);
     //=============================================================================
     // Textures, framebuffer, renderbuffer
     //=============================================================================

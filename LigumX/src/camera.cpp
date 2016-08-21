@@ -37,7 +37,7 @@ Camera::Camera()
     lookAtTargetPos = vec3(0,0,0);
     defaultViewMovementSpeed = 0.1f;
     viewMovementSpeed = defaultViewMovementSpeed;
-    defaultKeyMovementSpeed = 0.0001f;
+    defaultKeyMovementSpeed = 0.1f;
     keyMovementSpeed = defaultKeyMovementSpeed;
     keyMovementSpeedIncreaseFactor = 1.5f;
     mouseIsDragging = false;
