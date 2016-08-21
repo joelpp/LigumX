@@ -45,6 +45,7 @@
 		B305DE6F1D66B1C700232452 /* tweak_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE521D66B1C700232452 /* tweak_bar.cpp */; };
 		B305DE701D66B1C700232452 /* V3SectorTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE531D66B1C700232452 /* V3SectorTracker.cpp */; };
 		B305DE711D66B1C700232452 /* way.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B305DE541D66B1C700232452 /* way.cpp */; };
+		B3B4F2061D693B1D00C3E57F /* PerlinNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3B4F2051D693B1D00C3E57F /* PerlinNoise.cpp */; };
 		B3C7C1C61D68D7120062A1AD /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C7C1C51D68D7120062A1AD /* libfreetype.a */; };
 		B3C7C1C81D68D71F0062A1AD /* libAntTweakBar.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C7C1C71D68D71F0062A1AD /* libAntTweakBar.dylib */; };
 		B3C7C1CA1D68D7280062A1AD /* libglad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C7C1C91D68D7280062A1AD /* libglad.a */; };
@@ -109,6 +110,7 @@
 		B305DE531D66B1C700232452 /* V3SectorTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = V3SectorTracker.cpp; path = src/V3SectorTracker.cpp; sourceTree = "<group>"; };
 		B305DE541D66B1C700232452 /* way.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = way.cpp; path = src/way.cpp; sourceTree = "<group>"; };
 		B305DE741D66B25200232452 /* libglew.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglew.a; path = ../../../Code/newestg3d/build/lib/libglew.a; sourceTree = "<group>"; };
+		B3B4F2051D693B1D00C3E57F /* PerlinNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PerlinNoise.cpp; path = src/PerlinNoise.cpp; sourceTree = "<group>"; };
 		B3C7C1C31D68D2680062A1AD /* settings.dat */ = {isa = PBXFileReference; lastKnownFileType = text; name = settings.dat; path = data/settings.dat; sourceTree = "<group>"; };
 		B3C7C1C41D68D50A0062A1AD /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = data/shaders; sourceTree = "<group>"; };
 		B3C7C1C51D68D7120062A1AD /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = libs/OSX/Freetype/libfreetype.a; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 		B3C0F0771D66ADA500ACADC0 = {
 			isa = PBXGroup;
 			children = (
+				B3B4F2051D693B1D00C3E57F /* PerlinNoise.cpp */,
 				B3C7C1D31D68EFB60062A1AD /* .gitignore */,
 				B305DE181D66ADFE00232452 /* src */,
 				B3C7C1C41D68D50A0062A1AD /* shaders */,
@@ -260,6 +263,7 @@
 				B305DE561D66B1C700232452 /* entity.cpp in Sources */,
 				B305DE6C1D66B1C700232452 /* texture.cpp in Sources */,
 				B305DE671D66B1C700232452 /* SectorData.cpp in Sources */,
+				B3B4F2061D693B1D00C3E57F /* PerlinNoise.cpp in Sources */,
 				B305DE6A1D66B1C700232452 /* Settings.cpp in Sources */,
 				B305DE5C1D66B1C700232452 /* Model.cpp in Sources */,
 				B305DE601D66B1C700232452 /* program_pipeline.cpp in Sources */,

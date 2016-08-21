@@ -83,7 +83,7 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
 
 
     Heightfield* heightField = newSector->m_heightfield;
-//
+
 //    if (heightField->m_mesh)
 //    {
 //        Model* hfModel = new Model();

@@ -14,9 +14,9 @@ out gl_PerVertex {
 
 
 void main() {
-    float sampledHeight = texture(heightmap, texCoord).r;
+    float sampledHeight = texture(heightmap, vec2(pos.x, pos.y)).r;
     vec3 vertexPosition = vec3(pos.x + offset.x, pos.y + offset.y, sampledHeight);
     gl_Position = vpMat * modelMatrix * vec4(vertexPosition, 1);
     myTexCoord = texCoord;
-    height = pos.z;
+    height = sampledHeight;
 }

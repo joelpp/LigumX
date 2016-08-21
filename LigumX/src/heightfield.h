@@ -10,6 +10,7 @@ class Triangle;
 class Mesh;
 class Way;
 class Node;
+class PerlinNoise;
 
 
 class Heightfield{
@@ -38,6 +39,7 @@ public:
     glm::vec2 startPoint;
     
     static Mesh* hfBaseMesh;
+    static PerlinNoise* pNoise;
 };
 
 #endif // HEIGHTFIELD

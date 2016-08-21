@@ -10,6 +10,7 @@
 #include "LigumX.h"
 #include "LineSegment.h"
 #include "Sector.h"
+#include "PerlinNoise.h"
 #include <sstream>
 using namespace std;
 using namespace glm;
@@ -17,6 +18,7 @@ using namespace glm;
 inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }
 
 Mesh* Heightfield::hfBaseMesh;
+PerlinNoise* Heightfield::pNoise;
 
 Heightfield::Heightfield(){
 
@@ -31,6 +33,8 @@ Heightfield::Heightfield(vec2 startPoint, double sideLength){
     if (!hfBaseMesh)
     {
         generateBaseMesh();
+        pNoise = new PerlinNoise(1, 1, 0.5, 2, 5847);
+
     }
 }
 
@@ -40,16 +44,21 @@ void Heightfield::generateBaseMesh()
     std::vector<glm::vec3>& points = hfBaseMesh->m_buffers.vertexPositions;
     std::vector<glm::vec2>& UVs = hfBaseMesh->m_buffers.m_vertexUVs;
     std::vector<int>& indexBuffer = hfBaseMesh->m_buffers.indexBuffer;
+    
+    int c = 0;
 
     for(int i = 0; i < iWidth; i++)
     {
         for (int j = 0; j < iWidth; j++)
         {
-            float x = (float)i / (float)iWidth;
-            float y = (float)j / (float)iWidth;
+            float last = iWidth - 1;
+            float x = (float)i / (float)last;
+            float y = (float)j / (float)last;
             vec3 point = vec3(x, y, 0);
             points.push_back(point);
             UVs.push_back(glm::vec2(x, y));
+            std::cout << c++ << " " << x << " " << y << " " << std::endl;
+
         }
     }
 
@@ -59,15 +68,20 @@ void Heightfield::generateBaseMesh()
         //horizontally
         for (int j = 0; j < iWidth - 1; ++j)
         {
-            indexBuffer.push_back( (i * iWidth) + j );
-            indexBuffer.push_back( ((i + 1) * iWidth) + (j) );
-            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
+            int width = iWidth;
+            indexBuffer.push_back( (i * width) + j );
+            indexBuffer.push_back( ((i + 1) * width) + (j) );
+            indexBuffer.push_back( (i * width) + (j + 1)) ;
             
-            indexBuffer.push_back( ((i + 1) * iWidth) + (j)  );
-            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
-            indexBuffer.push_back( ((i + 1) * iWidth) + (j + 1) );
+            indexBuffer.push_back( ((i + 1) * width) + (j)  );
+            indexBuffer.push_back( (i * width) + (j + 1)) ;
+            indexBuffer.push_back( ((i + 1) * width) + (j + 1) );
+            
+//            for (int )
+            
         }
     }
+
     
     hfBaseMesh->createBuffers();
     hfBaseMesh->m_usesIndexBuffer = true;
@@ -105,7 +119,9 @@ bool Heightfield::generate(){
     float v = 0;
     float uvStep = step / sideLength;
     
+    
     // for a lon, fill all the lat
+    int c = 0;
     for(int i = 0; i < iWidth; i++)
     {
         lon = startPoint.x;
@@ -113,10 +129,15 @@ bool Heightfield::generate(){
         for (int j = 0; j < iWidth; j++)
         {
             //float z = contourLineInterpolate(glm::vec2(lon, lat), contoursToQuery);
-//             float z = -0.0001f;
-            float z = 0.2 * (rand() / (float)RAND_MAX);
+             float z = -0.0001f;
+//            float z = 0.2 * (rand() / (float)RAND_MAX);
+            z = pNoise->GetHeight(lon, lat);
+//            z = j;
+//            z = 0;
             vec3 point = vec3(lon, lat, z);
-            points.push_back(point);
+//            points.push_back(point);
+            std::cout << c++ << " " << lon << " " << lat << " " << z << std::endl;
+
             data.push_back(z);
             UVs.push_back(glm::vec2(u, v));
             lon += step;
@@ -126,21 +147,23 @@ bool Heightfield::generate(){
         v += uvStep;
     }
 
-    // vertically
-    for (int i = 0; i < iWidth - 1; ++i)
+//    // vertically
+    for (int i = 0; i < data.size(); ++i)
     {
-        //horizontally
-        for (int j = 0; j < iWidth - 1; ++j)
-        {
-            indexBuffer.push_back( (i * iWidth) + j );
-            indexBuffer.push_back( ((i + 1) * iWidth) + (j) );
-            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
+        std::cout << data[i] << std::endl;
 
-            indexBuffer.push_back( ((i + 1) * iWidth) + (j)  );
-            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
-            indexBuffer.push_back( ((i + 1) * iWidth) + (j + 1) );
-        }
-
+//        //horizontally
+//        for (int j = 0; j < iWidth - 1; ++j)
+//        {
+//            indexBuffer.push_back( (i * iWidth) + j );
+//            indexBuffer.push_back( ((i + 1) * iWidth) + (j) );
+//            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
+//
+//            indexBuffer.push_back( ((i + 1) * iWidth) + (j)  );
+//            indexBuffer.push_back( (i * iWidth) + (j + 1)) ;
+//            indexBuffer.push_back( ((i + 1) * iWidth) + (j + 1) );
+//        }
+//
     }
 
     glGenTextures(1, &buffer);
@@ -148,12 +171,12 @@ bool Heightfield::generate(){
 
     glBindTexture(GL_TEXTURE_2D, buffer);
     Renderer::outputGLError(__func__, __LINE__);
-    // Set our texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Set our texture parametersgl
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	// Set texture wrapping to GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // Set texture filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, iWidth, iWidth, 0, GL_RED, GL_FLOAT, data.data());
     Renderer::outputGLError(__func__, __LINE__);
     glBindTexture(GL_TEXTURE_2D, 0);

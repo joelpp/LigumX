@@ -33,7 +33,7 @@ testPoint -0.625 0.5254289
 
 buildingHeight 3
 
-HeightfieldResolution 0.01
+HeightfieldResolution 0.25
 
 ; ShadersPath C:/Users/Joel/Documents/LigumX/LigumX/data/shaders/
 ShadersPath /Users/joelpp/Documents/Maitrise/LigumX/LigumX/LigumX/data/shaders/

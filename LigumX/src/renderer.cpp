@@ -267,7 +267,6 @@ void Renderer::drawTerrain()
     
     glBindVertexArray(terrainMesh->m_VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainMesh->m_VBOs.glidIndexBuffer);
-    
     for (TerrainRenderingJob& job : renderList)
     {
         glProgramUniform2f(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "offset"), job.start[0], job.start[1]);
@@ -295,14 +294,14 @@ void Renderer::render()
 
 		FLUSH_ERRORS();
 
-        RenderSky();  
+//        RenderSky();  
 		FLUSH_ERRORS();
 
-        for (Model* model: m_debugModels)
-        {
-          DrawModel(model);
-        }
-        
+//        for (Model* model: m_debugModels)
+//        {
+//          DrawModel(model);
+//        }
+//        
         drawTerrain();
         FLUSH_ERRORS();
 
