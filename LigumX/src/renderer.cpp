@@ -134,7 +134,7 @@ void Renderer::Initialize(){
        std::cout << "ERROR::FREETYPE: Could nolololt init FreeType Library" << std::endl;
 
    FT_Face face;
-   int success = FT_New_Face(ft, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/LigumX/data/fonts/arial.ttf",0,&face);
+   int success = FT_New_Face(ft, "data/fonts/arial.ttf", 0, &face);
    if (success == FT_SUCCESS)
    {
        PRINT("Loaded Freetype font! yayy");

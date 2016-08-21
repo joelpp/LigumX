@@ -101,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)\libs;$(ProjectDir)\libs\Freetype;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,6 +161,7 @@
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\node.cpp" />
     <ClCompile Include="src\osm_element.cpp" />
+    <ClCompile Include="src\PerlinNoise.cpp" />
     <ClCompile Include="src\pipelines.cpp" />
     <ClCompile Include="src\program_pipeline.cpp" />
     <ClCompile Include="src\relation.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\node.h" />
     <ClInclude Include="src\osm_element.h" />
+    <ClInclude Include="src\PerlinNoise.h" />
     <ClInclude Include="src\program_pipeline.h" />
     <ClInclude Include="src\relation.h" />
     <ClInclude Include="src\RenderDataManager.h" />

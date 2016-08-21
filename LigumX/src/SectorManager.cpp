@@ -166,15 +166,15 @@ void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 											break;
 
 		case Sector::DataLoaded:			
-											 if ( (manhattanDistance <= 0) && (sector->createHeightfield()) )
+											 if ( /*(manhattanDistance <= 0) &&*/ (sector->createHeightfield()) )
 											{
 												sector->m_initializationLevel = Sector::HeightfieldGenerated;
 			  								}
-			  							 	else
-			  							 	{
-												 sector->m_initializationLevel = Sector::HeightfieldGenerating;
-			  							 	}
-			  								break;
+			  							 //	else
+			  							 //	{
+												 //sector->m_initializationLevel = Sector::HeightfieldGenerating;
+			  							 //	}
+			  								//break;
 
 		case Sector::HeightfieldGenerating:	
 											// if ( (manhattanDistance <= minHeightfieldDistance) && (sector->createHeightfield()) )

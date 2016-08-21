@@ -57,7 +57,7 @@ void Heightfield::generateBaseMesh()
             vec3 point = vec3(x, y, 0);
             points.push_back(point);
             UVs.push_back(glm::vec2(x, y));
-            std::cout << c++ << " " << x << " " << y << " " << std::endl;
+            std::cout << c++ << " " << x << " " << y << " " << std::endl;
 
         }
     }
