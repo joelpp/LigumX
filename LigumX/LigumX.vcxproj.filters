@@ -324,4 +324,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\shaders\BasicUV\control.tcs" />
+    <None Include="data\shaders\BasicUV\evaluation.tes" />
+  </ItemGroup>
 </Project>

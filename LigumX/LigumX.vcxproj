@@ -253,6 +253,10 @@
     <ClInclude Include="src\way.h" />
     <ClInclude Include="src\world.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\shaders\BasicUV\control.tcs" />
+    <None Include="data\shaders\BasicUV\evaluation.tes" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

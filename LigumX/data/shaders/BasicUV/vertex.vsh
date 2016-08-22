@@ -1,4 +1,5 @@
 #version 410 core
+
 layout(location=0) in vec3 pos;
 layout(location=1) in vec2 texCoord;
 
@@ -10,6 +11,8 @@ out vec2 myTexCoord;
 out float height;
 out gl_PerVertex {
     vec4 gl_Position;
+	float gl_PointSize;
+	float gl_ClipDistance[];
 };
 
 

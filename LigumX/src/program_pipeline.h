@@ -41,6 +41,7 @@ public:
     void useVertexShader(ShaderProgram* shader);
     void useGeometryShader(ShaderProgram* shader);
     void useFragmentShader(ShaderProgram* shader);
+	void useTessellationShader(ProgramPipeline::ShaderProgram *evaluationShader, ProgramPipeline::ShaderProgram *controlShader);
     void removeShader(GLenum shaderStage);
     void setUniform(std::string name, glm::vec3 color);
     static GLbitfield sShaderTypeEnumToBitField(GLenum shaderType);

@@ -46,6 +46,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
             } else {
                 //cout << "Error loading shader : " << *iSrc << endl;
                 cout << "Error loading shader : " << srcFilenames << endl;
+				return;
             }
             sourceCodes[count] = sourceCodeStrings[count].c_str();
             count++;
@@ -172,6 +173,9 @@ ProgramPipeline::ProgramPipeline(std::string name)
     
     useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
     useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
+	
+	useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
+
 }
 
 ProgramPipeline::ProgramPipeline()
@@ -345,6 +349,57 @@ void ProgramPipeline::useFragmentShader(ProgramPipeline::ShaderProgram *shader)
         cerr << "Validation error in useFragmentShader:" << endl;
         cerr << info << endl;
     }
+
+}
+
+void ProgramPipeline::useTessellationShader(ProgramPipeline::ShaderProgram *evaluationShader, ProgramPipeline::ShaderProgram *controlShader)
+{
+
+	GLbitfield evaluationShaderBit = sShaderTypeEnumToBitField(evaluationShader->shaderType);
+	GLbitfield controlShaderBit = sShaderTypeEnumToBitField(controlShader->shaderType);
+
+	// make sure we don't mix compute shaders with other shader types.
+	//    if(shader->shaderType == GL_COMPUTE_SHADER) {
+	//        glUseProgramStages(glidProgramPipeline, GL_ALL_SHADER_BITS, 0);
+	//    } else {
+	//        glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT, 0);
+	//    }
+
+	pTessControlShader = controlShader;
+	pTessEvalShader = evaluationShader;
+
+	// attach shader shage
+	glUseProgramStages(glidProgramPipeline, evaluationShaderBit,
+		pTessEvalShader->glidShaderProgram);
+
+	// check for validation errors.
+	GLint result;
+	int infoLength;
+	char* info;
+	glValidateProgramPipeline(glidProgramPipeline);
+	glGetProgramPipelineiv(glidProgramPipeline, GL_VALIDATE_STATUS, &result);
+	if (!result) {
+		glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
+		info = new char[infoLength];
+		glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
+		cerr << "Validation error in useFragmentShader:" << endl;
+		cerr << info << endl;
+	}
+
+	// attach shader shage
+	glUseProgramStages(glidProgramPipeline, controlShaderBit,
+		pTessControlShader->glidShaderProgram);
+
+	// check for validation errors.
+	glValidateProgramPipeline(glidProgramPipeline);
+	glGetProgramPipelineiv(glidProgramPipeline, GL_VALIDATE_STATUS, &result);
+	if (!result) {
+		glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
+		info = new char[infoLength];
+		glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
+		cerr << "Validation error in useFragmentShader:" << endl;
+		cerr << info << endl;
+	}
 
 }
 
