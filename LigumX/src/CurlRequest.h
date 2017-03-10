@@ -3,7 +3,12 @@
 #include <fstream>
 
 #include "glm/glm.hpp"
+
+#define NOCURL
+
+#ifndef NOCURL
 #include "curl/curl.h"
+#endif
 
 #include "Settings.h"
 #include "Logging.h"
@@ -17,6 +22,7 @@ size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
 std::string curl_request(char* path)
 {
+#ifndef NOCURL
 	CURL *curl_handle;
   CURLcode res;
 
@@ -35,6 +41,10 @@ std::string curl_request(char* path)
 		  curl_easy_cleanup(curl_handle);
     }
   return result;
+#else
+	return "";
+#endif
+
 }
 
 std::string queryBoundingBox(float left, float bottom, float right, float top)

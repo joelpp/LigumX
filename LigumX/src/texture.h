@@ -3,7 +3,7 @@
 
 #include <iostream>
 //#include "FreeImage\Dist\x64\FreeImage.h"
-#include "FreeImage.h"
+#include "FreeImage/Dist/x64/FreeImage.h"
 #include "glm/glm.hpp"
 #include "glad/glad.h"
 

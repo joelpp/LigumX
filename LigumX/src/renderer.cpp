@@ -362,9 +362,9 @@ void Renderer::RenderFPS()
   std::stringstream fpsString;
   float smoothing = 0.99; // larger=more smoothing
   fps = (fps * smoothing) + (1.f/dt * (1.0-smoothing));
-  fpsString << round(fps);
-  fpsString << " fps";
-  RenderText(fpsString.str(), 750.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
+  fpsString << 1.f / (fps / 1000.f);
+  fpsString << " ms/frame";
+  RenderText(fpsString.str(), 725.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
 
   double new_time = glfwGetTime();
   dt = new_time - curr_time;

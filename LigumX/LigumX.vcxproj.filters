@@ -327,5 +327,6 @@
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
     <None Include="data\shaders\BasicUV\evaluation.tes" />
+    <None Include="data\settings.dat" />
   </ItemGroup>
 </Project>
