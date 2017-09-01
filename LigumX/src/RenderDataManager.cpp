@@ -81,7 +81,6 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
     Renderer& renderer = Renderer::GetInstance();
     int counter = 0;
 
-
     Heightfield* heightField = newSector->m_heightfield;
 
 //    if (heightField->m_mesh)
@@ -94,7 +93,6 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
 //        
 //        renderer.m_debugModels.push_back( hfModel );
 //    }
-
     
     TerrainRenderingJob job;
     job.start = heightField->startPoint;

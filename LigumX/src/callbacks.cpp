@@ -36,7 +36,7 @@ void flipBool(bool& value)
 	value = !value;
 }
 
-void LigumX::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
+void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
     if(!TwEventKeyGLFW(key, action)) {
         // send event to entity Manager (temporary before a playerInput class)
@@ -46,7 +46,7 @@ void LigumX::glfwKeyCallback(GLFWwindow* pWindow, int key, int scancode, int act
         if(action == GLFW_PRESS){
             if (key == GLFW_KEY_SPACE) 
 			{ 
-				game.showTweakBar = !LigumX::GetInstance().showTweakBar;
+				Renderer::GetInstance().m_ShowGUI = !Renderer::GetInstance().m_ShowGUI;
 			}
             else if (key == GLFW_KEY_ESCAPE) 
 			{
@@ -103,15 +103,20 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){
-//            if (action == GLFW_PRESS){
+            if (action == GLFW_PRESS)
+			{
+				glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
 //                LigumX::GetInstance().draggingCamera = true;
 //                double x; double y;
 //                glfwGetCursorPos(pWindow, &x, &y);
 //                LigumX::GetInstance().oldMousePosition = vec2(x,y);
-//            }
-//            else if (action == GLFW_RELEASE){
+            }
+            else if (action == GLFW_RELEASE)
+			{
+				glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 //                LigumX::GetInstance().draggingCamera = false;
-//            }
+            }
         }
 
         LigumX::GetInstance().camera->handlePresetMouseButton(pWindow, button, action, mods);

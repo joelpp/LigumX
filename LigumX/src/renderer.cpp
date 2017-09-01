@@ -6,16 +6,16 @@
 #include "Material.h"
 #include "Model.h"
 #include "RenderDataManager.h"
-
 using namespace glm;
 using namespace std;
 
-#define FT_SUCCESS 0
+#define CHAR_BUFFER_SIZE 64
 
+#define FT_SUCCESS 0
 
 void Renderer::Initialize(){
 
-    fancyDisplayMode = false;
+	m_DrawTerrain = true;
     showText = true;
     windowWidth = 800;
     windowHeight = 800;
@@ -194,6 +194,8 @@ void Renderer::Initialize(){
    FT_Done_FreeType(ft);
 
 
+   ImGui_ImplGlfwGL3_Init(pWindow, true);
+   glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 
 }
@@ -250,8 +252,13 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
 
 }
 
-void Renderer::drawTerrain()
+void Renderer::DrawTerrain()
 {
+	if (!m_DrawTerrain)
+	{
+		return;
+	}
+
     std::vector<TerrainRenderingJob>& renderList = renderData->terrainRenderingJobs;
     
     if (!renderList.size())
@@ -277,6 +284,73 @@ void Renderer::drawTerrain()
     }
 }
 
+void Renderer::BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name)
+{
+	ImGui::SetNextWindowSize(ImVec2(xSize, ySize), ImGuiSetCond_FirstUseEver);
+
+	if (!ImGui::Begin(name, &open, flags))
+	{
+		// Early out if the window is collapsed, as an optimization.
+		ImGui::End();
+		return;
+	}
+}
+void Renderer::EndImGUIWindow()
+{
+	ImGui::End();
+}
+
+//const char* toCharPtr(glm::vec3 value, const char* variableName)
+//{
+//	char textBuffer[CHAR_BUFFER_SIZE];
+//	sprintf(textBuffer, );
+//	return textBuffer;
+//}
+
+void Renderer::ShowVariableAsText(glm::vec3 variable, const char* variableName)
+{
+	ImGui::Text("%s : %f, %f, %f", variableName, variable.x, variable.y, variable.z);
+}
+
+void Renderer::ShowVariableAsText(float variable, const char* variableName)
+{
+	ImGui::Text("%s : %f", variableName, variable);
+}
+
+void Renderer::RenderGUI()
+{
+	ImGui_ImplGlfwGL3_NewFrame();
+
+	if (m_ShowTestGUI)
+	{
+		ImGui::ShowTestWindow();
+	}
+
+	if (m_ShowGUI)
+	{
+		BeginImGUIWindow(1000, 700, 0, 0, "Settings");
+		ImGui::Checkbox("Draw terrain", &m_DrawTerrain);
+		ImGui::Checkbox("Draw sky", &m_DrawSky);
+		ImGui::Checkbox("Test GUI", &m_ShowTestGUI);
+
+		if (ImGui::CollapsingHeader("Camera"))
+		{
+			ShowVariableAsText(camera->position, "Camera Position");
+			ShowVariableAsText(camera->frontVec, "Look at");
+			ShowVariableAsText(camera->rightVec, "Right");
+			ShowVariableAsText(camera->upVec, "Up");
+			ShowVariableAsText(camera->aspectRatio, "Aspect ratio");
+			ImGui::SliderFloat("Speed", &camera->keyMovementSpeed, camera->minimumSpeed, camera->maximumSpeed, "%.3f");
+			//Imgui::
+		}
+
+
+		EndImGUIWindow();
+	}
+
+	ImGui::Render();
+}
+
 
 /**
  * [Renderer::render description]
@@ -284,77 +358,62 @@ void Renderer::drawTerrain()
  */
 void Renderer::render()
 {
+	FLUSH_ERRORS();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	FLUSH_ERRORS();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if(!fancyDisplayMode)
-    {
-		FLUSH_ERRORS();
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		FLUSH_ERRORS();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	FLUSH_ERRORS();
+	RenderSky();
 
-		FLUSH_ERRORS();
+	FLUSH_ERRORS();
 
-//        RenderSky();  
-		FLUSH_ERRORS();
+	DrawTerrain();
 
-//        for (Model* model: m_debugModels)
-//        {
-//          DrawModel(model);
-//        }
-//        
-        drawTerrain();
-        FLUSH_ERRORS();
+	if (showText)
+	{
+		// RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
 
+		// RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
+		// RenderText("o", 400.f, 400.f, 0.1f, glm::vec3(0.5, 0.8f, 0.2f), false);
 
-
-        // draw entities
-#ifndef __APPLE__
-//        entityManager.Render(camera->vpMat);
-#endif
-    } else {
-      
-
-    }
-  // RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
-  // RenderText("o", 400.f, 400.f, 0.1f, glm::vec3(0.5, 0.8f, 0.2f), false);
-
-
-
-   if (showText)
-    {
-      // RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
-      RenderFPS();
-
-      // for (int i = 0; i < texts.size(); i++)
-      {
-        // RenderText(texts[i]);
-      }
-    }
-    
-    // screenshot
-//    if(saveScreenshot) {
-//        static unsigned int frameCount = 0;
-//        ++frameCount;
-//        std::stringstream filename;
-//        filename.clear();
-//        filename << "../output/frame" << std::setfill('0') << std::setw(5) << frameCount << ".png";
-
-//        BYTE* pixels = new BYTE[4 * windowWidth * windowHeight];
-//        glReadPixels(0, 0, windowWidth, windowHeight, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-//        FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, windowWidth, windowHeight, 4 * windowWidth, 32, 0x0000FF, 0xFF0000, 0x00FF00, false);
-//        if(FreeImage_Save(FIF_BMP, image, filename.str().c_str(), 0)) {
-//            std::cout << "screenshot '" << filename.str() << "' taken." << std::endl;
-//        } else {
-//            std::cout << "screenshot failed. Did you create the 'protoEngine/output' directory?" << std::endl;
-//        }
-//        FreeImage_Unload(image);
-//        delete [] pixels;
-//    }
-//    
+		// for (int i = 0; i < texts.size(); i++)
+		{
+		// RenderText(texts[i]);
+		}
+	}
 
     FLUSH_ERRORS();
 
+	RenderGUI();
 
+	HandleScreenshot();
+
+	RenderFPS();
+}
+
+void Renderer::HandleScreenshot()
+{
+	// screenshot
+	//    if(saveScreenshot) {
+	//        static unsigned int frameCount = 0;
+	//        ++frameCount;
+	//        std::stringstream filename;
+	//        filename.clear();
+	//        filename << "../output/frame" << std::setfill('0') << std::setw(5) << frameCount << ".png";
+
+	//        BYTE* pixels = new BYTE[4 * windowWidth * windowHeight];
+	//        glReadPixels(0, 0, windowWidth, windowHeight, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+	//        FIBITMAP* image = FreeImage_ConvertFromRawBits(pixels, windowWidth, windowHeight, 4 * windowWidth, 32, 0x0000FF, 0xFF0000, 0x00FF00, false);
+	//        if(FreeImage_Save(FIF_BMP, image, filename.str().c_str(), 0)) {
+	//            std::cout << "screenshot '" << filename.str() << "' taken." << std::endl;
+	//        } else {
+	//            std::cout << "screenshot failed. Did you create the 'protoEngine/output' directory?" << std::endl;
+	//        }
+	//        FreeImage_Unload(image);
+	//        delete [] pixels;
+	//    }
+	//    
 }
 
 void Renderer::RenderFPS()
@@ -364,7 +423,7 @@ void Renderer::RenderFPS()
   fps = (fps * smoothing) + (1.f/dt * (1.0-smoothing));
   fpsString << 1.f / (fps / 1000.f);
   fpsString << " ms/frame";
-  RenderText(fpsString.str(), 725.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
+  RenderText(fpsString.str(), 695.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
 
   double new_time = glfwGetTime();
   dt = new_time - curr_time;
@@ -373,13 +432,17 @@ void Renderer::RenderFPS()
 
 void Renderer::RenderSky()
 {
+	if (!m_DrawSky)
+	{
+		return;
+	}
        pPipelineEnvmap->usePipeline();
 	   FLUSH_ERRORS();
 
        GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
        glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth * 2, windowHeight * 2);
-       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), 0);
-       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), 0);
+       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), 25);
+       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), 100);
        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.
        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);

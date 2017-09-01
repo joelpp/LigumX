@@ -19,6 +19,7 @@
 #include "texture.h"
 #include "camera.h"
 #include "osm_element.h"
+#include "imgui_impl_glfw_gl3.h"
 
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
 
@@ -34,7 +35,6 @@ struct Text {
 
     // std::vector<characterQuadVertices> quads;
 };
-
 
 
 class Renderer{
@@ -59,12 +59,13 @@ public:
     static void outputGLError(std::string func, int line);
     void RenderSky();
     void RenderFPS();
-    void drawTerrain();
+    void DrawTerrain();
 
 
 
     Camera *camera;
-    bool fancyDisplayMode;
+	bool m_DrawTerrain;
+	bool m_DrawSky;
     bool drawBuildingSides;
     bool drawGround;
     bool showText;
@@ -222,10 +223,23 @@ public:
     {
         renderData = manager;
     }
+
+	bool m_ShowTestGUI = false;
+	bool m_ShowGUI = true;
+
+
+
 private:
     REGISTERCLASS(Renderer);
 
     Renderer() {};                   // Constructor? (the {} brackets) are needed here.
+	void RenderGUI();
+	void HandleScreenshot();
+	void BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name);
+	void EndImGUIWindow();
+
+	void ShowVariableAsText(glm::vec3 variable, const char* variableName);
+	void ShowVariableAsText(float variable, const char* variableName);
 
     // C++ 11
     // =======

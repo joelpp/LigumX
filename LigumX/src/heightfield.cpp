@@ -97,7 +97,8 @@ bool Heightfield::generate(){
         lon = startPoint.x;
         for (int j = 0; j < iWidth; j++)
         {
-             float z = pNoise->GetHeight(lon, lat);
+			//float z = pNoise->GetHeight(lon, lat);
+			float z = 0.1 * (sin(lon) + sin(lat));
 
             data.push_back(z);
             lon += step;

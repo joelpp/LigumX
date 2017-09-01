@@ -12,6 +12,10 @@
 #include "World.h"
 #include "Sector.h"
 #include "Heightfield.h"
+
+
+#include "imgui_impl_glfw_gl3.h"
+#include "imgui.h"
 using namespace glm;
 using namespace std;
 
@@ -25,13 +29,43 @@ int main(int argc, char *argv[])
     srand(987654321);
 
     LigumX& game = LigumX::GetInstance();
-    game.running = true;
+
+
+
+	// Restore state
+	//glBindTexture(GL_TEXTURE_2D, last_texture);
+	
+	
+	game.running = true;
     game.init();
 
-    while(game.running) {
+	//io.IniFilename = "imgui.ini";
+	//io.RenderDrawListsFn = my_render_function;  // Setup a render function, or set to NULL and call GetDrawData() after Render() to access the render data.
+
+	// TODO: Fill others settings of the io structure
+
+	// Load texture atlas
+	// There is a default font so you don't need to care about choosing a font yet
+	//unsigned char* pixels;
+	//int width, height;
+	//io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
+	//// Upload texture to graphics system
+	//GLint last_texture;
+	//glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
+
+    while(game.running) 
+	{
         glfwPollEvents();
 
+		//ImGuiIO& io = ImGui::GetIO();
+		//io.DeltaTime = 1.0f / 60.0f;
+		//io.MousePos = mouse_pos;
+		//io.MouseDown[0] = mouse_button_0;
+		//io.MouseDown[1] = mouse_button_1;
+		//io.KeysDown[i] = ...
+
         game.mainLoop();
+		Renderer::GetInstance().render();
 
         glfwSwapBuffers(Renderer::GetInstance().pWindow);
     }
@@ -50,15 +84,13 @@ void LigumX::mainLoop()
 
     camera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
 
-    Renderer& renderer = Renderer::GetInstance();
+
+
     
     if (Settings::GetInstance().i("loadNewSectors"))
     {
-        updateWorld(0);
+        updateWorld(10);
     }
-	
-    renderer.render();
-    if(showTweakBar) TwDraw();
 }
 
 void LigumX::init()
@@ -133,7 +165,7 @@ void LigumX::updateWorld(int loadingRingSize)
 
             if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
             {
-                PRINT("heightfield geenerated, adding to terrain buffer")
+                //PRINT("heightfield geenerated, adding to terrain buffer")
                  renderData->addToTerrainBuffer(sector);
             }
         }
@@ -173,9 +205,12 @@ void LigumX::loadSettings(){
     s.add("coordinateShifting", -coordinateShift);
     buildingHeight = s.i("buildingHeight");
     buildingSideScaleFactor = 1;
-    Renderer::GetInstance().drawGround = false;
-    Renderer::GetInstance().showText = true;
-    showTweakBar = false;
+
+	Renderer& renderer = Renderer::GetInstance();
+	renderer.drawGround = false;
+	renderer.showText = true;
+	renderer.m_ShowGUI = true;
+
     ProgramPipeline::ShadersPath = s.s("ShadersPath");
 
 }
@@ -292,7 +327,7 @@ static void test_error_cb (int error, const char *description)
 void LigumX::SetCallbacks(){
     Renderer& renderer = Renderer::GetInstance();
     glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
-    glfwSetKeyCallback( renderer.pWindow, glfwKeyCallback );
+    glfwSetKeyCallback( renderer.pWindow, HandleKeyboardInput);
     glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
     glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
     glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );

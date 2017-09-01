@@ -96,7 +96,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -155,6 +155,10 @@
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\filled_buildings.cpp" />
     <ClCompile Include="src\heightfield.cpp" />
+    <ClCompile Include="src\imgui.cpp" />
+    <ClCompile Include="src\imgui_demo.cpp" />
+    <ClCompile Include="src\imgui_draw.cpp" />
+    <ClCompile Include="src\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="src\LigumX.cpp" />
     <ClCompile Include="src\linesegment.cpp" />
     <ClCompile Include="src\Material.cpp" />
@@ -226,6 +230,10 @@
     <ClInclude Include="src\CurlRequest.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\heightfield.h" />
+    <ClInclude Include="src\imconfig.h" />
+    <ClInclude Include="src\imgui.h" />
+    <ClInclude Include="src\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="src\imgui_internal.h" />
     <ClInclude Include="src\LigumX.h" />
     <ClInclude Include="src\linesegment.h" />
     <ClInclude Include="src\Logging.h" />
@@ -245,6 +253,9 @@
     <ClInclude Include="src\SectorManager.h" />
     <ClInclude Include="src\SectorMath.h" />
     <ClInclude Include="src\Settings.h" />
+    <ClInclude Include="src\stb_rect_pack.h" />
+    <ClInclude Include="src\stb_textedit.h" />
+    <ClInclude Include="src\stb_truetype.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\texture.h" />

@@ -20,7 +20,6 @@ void LigumX::init_tweakBar()
     TwWindowSize(renderer.windowWidth, renderer.windowHeight);
 
     myBar = TwNewBar("NameOfMyTweakBar");
-    TwAddVarRW(myBar, "Fancy Display Mode", TW_TYPE_BOOLCPP, &(renderer.fancyDisplayMode), NULL);
     TwAddVarRW(myBar, "Draw Building Sides", TW_TYPE_BOOLCPP, &drawBuildingSides, NULL);
     TwAddButton(myBar, "To EntityLand", toggle_entityland, NULL, NULL);
     TwAddVarRW(myBar, "Draw Ground", TW_TYPE_BOOLCPP, &(renderer.drawGround), NULL);

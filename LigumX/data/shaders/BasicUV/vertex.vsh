@@ -9,14 +9,16 @@ uniform vec2 offset;
 uniform sampler2D heightmap;
 out vec2 myTexCoord;
 out float height;
-out gl_PerVertex {
+out gl_PerVertex 
+{
     vec4 gl_Position;
 	float gl_PointSize;
 	float gl_ClipDistance[];
 };
 
 
-void main() {
+void main() 
+{
     float sampledHeight = texture(heightmap, vec2(pos.x, pos.y)).r;
     vec3 vertexPosition = vec3(pos.x + offset.x, pos.y + offset.y, sampledHeight);
     gl_Position = vpMat * modelMatrix * vec4(vertexPosition, 1);

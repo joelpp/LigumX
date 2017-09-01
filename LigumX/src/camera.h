@@ -39,6 +39,8 @@ public:
 	float nearPlane;
 	float farPlane;
 
+	float minimumSpeed;
+	float maximumSpeed;
 
 public:
     Camera();

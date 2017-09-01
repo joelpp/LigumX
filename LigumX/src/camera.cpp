@@ -24,8 +24,8 @@ Camera::Camera()
 
     cameraType = CameraType::CYLINDRICAL;
     controlType = ControlType::QWEASDZXC_DRAG;
-    upVec = normalize(vec3(0,1,1));
-    frontVec = normalize(vec3(0,-1,5));
+    upVec = normalize(vec3(0,0,1));
+    frontVec = normalize(vec3(0,-1,0));
     rightVec = vec3(1,0,0);
     cylindricalUpVec = vec3(0,0,1);
     upVecReference = upVec;
@@ -34,10 +34,13 @@ Camera::Camera()
 //    translateTo(vec3(45.47500,-73.65500,10000));
 //    scaleTo(vec3(1,1,1));
 //    lookAtTargetPos = vec3(45.47500,-73.65500,0);
-    lookAtTargetPos = vec3(0,0,0);
+    lookAtTargetPos = position + frontVec;
     defaultViewMovementSpeed = 0.1f;
     viewMovementSpeed = defaultViewMovementSpeed;
-    defaultKeyMovementSpeed = 0.1f;
+    defaultKeyMovementSpeed = 0.005f;
+	minimumSpeed = 0.001f;
+	maximumSpeed = 0.01f;
+
     keyMovementSpeed = defaultKeyMovementSpeed;
     keyMovementSpeedIncreaseFactor = 1.5f;
     mouseIsDragging = false;
@@ -278,19 +281,35 @@ void Camera::qweasdzxcKeyPreset(
     (void)mods;
     (void)pWindow;
 
-    if(action == GLFW_PRESS || action == GLFW_REPEAT) {
-        switch(key) {
-        case GLFW_KEY_Z:
+    if (action == GLFW_PRESS) 
+	{
+        switch(key) 
+		{
+        case GLFW_KEY_LEFT_SHIFT:
             keyMovementSpeed /= keyMovementSpeedIncreaseFactor;
             break;
         case GLFW_KEY_X:
             keyMovementSpeed = defaultKeyMovementSpeed;
             break;
-        case GLFW_KEY_C:
+        case GLFW_KEY_LEFT_CONTROL:
             keyMovementSpeed *= keyMovementSpeedIncreaseFactor;
             break;
         }
     }
+
+	if (action == GLFW_RELEASE)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_LEFT_SHIFT:
+			keyMovementSpeed *= keyMovementSpeedIncreaseFactor;
+			break;
+
+		case GLFW_KEY_LEFT_CONTROL:
+			keyMovementSpeed /= keyMovementSpeedIncreaseFactor;
+			break;
+		}
+	}
 }
 
 

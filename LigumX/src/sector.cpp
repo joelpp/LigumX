@@ -13,8 +13,8 @@ Sector::Sector()
 
 Sector::Sector(vec2 pos, float size, int ID)
 {
-	PRINT("CONSTRUCTING NEW SECTOR AT")
-	PRINTVEC2(pos);
+	//PRINT("CONSTRUCTING NEW SECTOR AT")
+	//PRINTVEC2(pos);
     this->m_pos = pos;
     this->m_size = glm::vec2(size);
     m_data = 0;

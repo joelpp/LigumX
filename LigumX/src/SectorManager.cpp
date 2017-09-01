@@ -142,7 +142,7 @@ Sector* SectorManager::getSector(int ID)
         // PRINTVEC2(longLat);
         sector = createSector(ID);
         m_sectors.emplace(ID, sector);
-        PRINTINT(m_sectors.size());
+        //PRINTINT(m_sectors.size());
         
     }
     
