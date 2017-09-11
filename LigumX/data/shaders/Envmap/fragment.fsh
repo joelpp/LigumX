@@ -68,9 +68,11 @@ void main() {
 
     vec2 pos01 = gl_FragCoord.xy/windowSize;
     vec3 fragDir = screenToVec(pos01);
+
     float cosAngleToSun = dot(fragDir, sunDir);
     float cosAngleToWorldUp = dot(fragDir, vec3(0,0,1));
-
+		color = vec3(cosAngleToWorldUp, 0, 0);
+	return;
     if(cosAngleToWorldUp > 0) {
         float cosSun01 = 0.5*(cosAngleToSun+1);
 

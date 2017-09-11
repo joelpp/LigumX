@@ -7,7 +7,11 @@
 #include "Math.h"
 #include "SectorData.h"
 #include "vec2i.h"
+#include "Entity.h"
 #include "SectorManager.h"
+#include "Material.h"
+#include "Model.h"
+#include "Mesh.h"
 
 using namespace std;
 using namespace glm;
@@ -22,6 +26,21 @@ World::World(float sectorSize)
 	m_sectorManager = new SectorManager(sectorSize);
 	m_sectorSize = sectorSize;
 	m_invSectorSize = 1.f / sectorSize;
+
+	Model* testModel = new Model("Sphere", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/nanosuit2.obj");
+
+	//Material* testMaterial = new Material(new ProgramPipeline("Basic"), glm::vec3(1,0,0));
+	//testModel->m_materialList.push_back(testMaterial);
+
+	Entity* testEntity = new Entity();
+	testEntity->setPosition(glm::vec3(0, 0, 1));
+	testEntity->setModel(testModel);
+
+	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(0, 20, 0));
+	toWorld = glm::rotate(toWorld, 90.f, glm::vec3(1, 0, 0));
+	testEntity->m_Model->m_ModelToWorldMatrix = toWorld;
+	m_Entities.push_back(testEntity);
+	
 
 }
 
@@ -59,6 +78,11 @@ SectorList* World::sectorsAroundPoint(Coord2 point, int ringSize)
 SectorList* World::updateSectorsAroundPoint(Coord2 point, int ringSize)
 {
 	return m_sectorManager->sectorsAround(point, ringSize, true);
+}
+
+SectorList* World::GetAllSectors()
+{
+	return 0;// m_sectorManager->GetAllSectors();
 }
 
 std::vector<Way*> World::findNClosestWays(int n, glm::vec2 xy, 

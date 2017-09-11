@@ -22,11 +22,24 @@
 #include "imgui_impl_glfw_gl3.h"
 
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
+//#define FLUSH_ERRORS()
 
 class Material;
 class Model;
 class Mesh;
 class RenderDataManager;
+class World;
+class Entity;
+
+struct Light
+{
+	glm::vec3 m_Position;
+	glm::vec3 m_DiffuseColor;
+	glm::vec3 m_AmbientColor;
+	glm::vec3 m_SpecularColor;
+};
+
+
 struct Text {
     std::string text;
     glm::vec3 position;
@@ -51,7 +64,7 @@ public:
     void init_pipelines_screenQuad();
     void init_pipelines_text();
 
-    void render();
+    void render(World* world);
     void RenderText(Text t);
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
     void DrawMesh(Mesh* mesh, Material* material);
@@ -60,12 +73,42 @@ public:
     void RenderSky();
     void RenderFPS();
     void DrawTerrain();
+	void RenderEntities(std::vector<Entity*> entities);
 
+	void Bind2DTexture(int slot, GLuint HWObject);
+	void FreeBoundTexture();
 
+	void SetUniform(int value, const char* name, GLuint location);
+	void SetUniform(glm::vec3& value, const char* name, GLuint location);
+	void SetUniform(glm::mat4x4& value, const char* name, GLuint location);
+	void SetUniform(float value, const char* name, GLuint location);
+	void SetFragmentUniform(int value, const char* name);
+
+	//void SetVertexUniform(glm::vec3& value, const char* name);
+	template<typename T>
+	void SetVertexUniform(T& value, const char* name);
+	template<typename T>
+	void SetFragmentUniform(T& value, const char* name);
+
+	//template<typename T>
+	//void SetFragmentUniform(T value, const char* name);
+
+	//void SetVertexUniform(glm::mat4x4& value, const char* name);
+	void SetPipeline(ProgramPipeline* pipeline);
+	void SetLightingUniforms();
+	void SetViewUniforms();
+	void SetDebugUniforms();
+	void SetMaterialUniforms(Material* material);
 
     Camera *camera;
 	bool m_DrawTerrain;
 	bool m_DrawSky;
+	bool m_WireframeRendering;
+	bool m_UseLighting;
+	bool m_ShowSpecular;
+	bool m_ShowDiffuse;
+	bool m_ShowAmbient;
+
     bool drawBuildingSides;
     bool drawGround;
     bool showText;
@@ -157,7 +200,7 @@ public:
     std::map<GLchar, Character> Characters;
     std::vector<Text> texts;
 
-
+	Light m_TestLight;
 
     template<typename T> static void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) 
     {

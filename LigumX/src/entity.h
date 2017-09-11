@@ -11,6 +11,18 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 
+class Entity;
+class Model;
+
+class Component
+{
+	Entity* GetParentEntity();
+
+	Entity* m_ParentEntity;
+
+
+};
+
 class Entity {
 friend class EntityManager;
 friend class PlayerController;
@@ -32,6 +44,13 @@ public:
     glm::vec3 GetForwardVelocity() const;
     glm::vec3 GetLateralVelocity() const;
 
+	std::vector<Component*> m_Components;
+
+	void setPosition(glm::vec3 position) { this->position = position; }
+
+	void setModel(Model* model) { m_Model = model; }
+	Model* getModel() { return m_Model; }
+
 public:
     // Entity features
     float mass;                        //!< Entity Mass
@@ -41,6 +60,9 @@ public:
 
     glm::vec3 color;
     ControllerType type;
+
+	Model* m_Model;
+
 
 
 private:
@@ -55,6 +77,7 @@ private:
     glm::vec3 acceleration;
     glm::vec3 forwardVector;
     glm::vec3 rightVector;
+	glm::mat4x4 m_ModelToWorldMatrix;
 
 };
 

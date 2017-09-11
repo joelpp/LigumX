@@ -65,7 +65,6 @@ int main(int argc, char *argv[])
 		//io.KeysDown[i] = ...
 
         game.mainLoop();
-		Renderer::GetInstance().render();
 
         glfwSwapBuffers(Renderer::GetInstance().pWindow);
     }
@@ -91,6 +90,9 @@ void LigumX::mainLoop()
     {
         updateWorld(10);
     }
+
+	Renderer::GetInstance().render(world);
+
 }
 
 void LigumX::init()
@@ -131,6 +133,7 @@ void LigumX::init()
 
     renderData = new RenderDataManager();
     renderer.setDataSource(renderData);
+
     //=============================================================================
     // Textures, framebuffer, renderbuffer
     //=============================================================================
@@ -302,7 +305,7 @@ void LigumX::populateTypeColorArray(){
 static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
 
 
-void TW_CALL LigumX::toggleEntityLand() {
+void LigumX::toggleEntityLand() {
     if(!inEntityLand) {
         savedCam = *camera; // save current camera setup
 

@@ -13,6 +13,8 @@ class Texture
 {
 public:
     GLuint glidTexture;
+
+	GLuint GetHWObject() { return glidTexture; };
 public:
     Texture(std::string filename);
 };

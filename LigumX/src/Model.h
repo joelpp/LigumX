@@ -21,9 +21,11 @@ public:
 
 	Model();
 	Model(std::string path);
+	Model(std::string name, std::string path);
 
 	void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);
+	Material* processMaterial(aiMesh* assimpMesh, const aiScene* scene);
     Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
                                              std::string typeName);
@@ -36,6 +38,10 @@ public:
     std::string name;
 	glm::vec3 position;
     glm::mat4 m_modelMatrix;
+	glm::mat4x4 m_ModelToWorldMatrix;
+
+	void CreateHWBuffers();
+
 
 private:
 	REGISTERCLASS(Model);

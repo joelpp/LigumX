@@ -7,10 +7,10 @@
     uniform float lod_factor;
 
 	in gl_PerVertex {
-    vec4 gl_Position;
-	float gl_PointSize;
-	float gl_ClipDistance[];
-} gl_in[4];
+		vec4 gl_Position;
+		float gl_PointSize;
+		float gl_ClipDistance[];
+	} gl_in[gl_MaxPatchVertices];
     
     bool offscreen(vec4 vertex){
         if(vertex.z < -0.5){

@@ -37,9 +37,9 @@ Camera::Camera()
     lookAtTargetPos = position + frontVec;
     defaultViewMovementSpeed = 0.1f;
     viewMovementSpeed = defaultViewMovementSpeed;
-    defaultKeyMovementSpeed = 0.005f;
-	minimumSpeed = 0.001f;
-	maximumSpeed = 0.01f;
+    defaultKeyMovementSpeed = 0.05f;
+	minimumSpeed = 0.01f;
+	maximumSpeed = 0.15f;
 
     keyMovementSpeed = defaultKeyMovementSpeed;
     keyMovementSpeedIncreaseFactor = 1.5f;
@@ -87,7 +87,7 @@ void Camera::rotate(float _angle){
 
 void Camera::moveFromUserInput(GLFWwindow *pWindow)
 {
-    static const float deltaFactor = 0.05;
+    static const float deltaFactor = 0.05f;
 
     if( glfwGetKey(pWindow, GLFW_KEY_S)==GLFW_PRESS ||
         glfwGetKey(pWindow, GLFW_KEY_DOWN)==GLFW_PRESS ) {
@@ -123,8 +123,9 @@ void Camera::updateVPMatrix()
     vpMat = translate(position) * vpMat;
     vpMat = inverse(vpMat);
 
+	m_ViewMatrix = vpMat;
     vpMat = perspective(totalViewAngleY, aspectRatio, nearPlane, farPlane) * vpMat;
-
+	m_ProjectionMatrix = perspective(totalViewAngleY, aspectRatio, nearPlane, farPlane);
 }
 
 

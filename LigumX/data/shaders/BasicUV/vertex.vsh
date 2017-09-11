@@ -7,6 +7,8 @@ uniform mat4 vpMat;
 uniform mat4 modelMatrix;
 uniform vec2 offset;
 uniform sampler2D heightmap;
+//uniform sampler2D g_DiffuseTexture;
+
 out vec2 myTexCoord;
 out float height;
 out gl_PerVertex 
@@ -19,8 +21,8 @@ out gl_PerVertex
 
 void main() 
 {
-    float sampledHeight = texture(heightmap, vec2(pos.x, pos.y)).r;
-    vec3 vertexPosition = vec3(pos.x + offset.x, pos.y + offset.y, sampledHeight);
+    float sampledHeight = texture(heightmap, vec2(pos.x, pos.y)).r / 5;
+    vec3 vertexPosition = vec3(pos.x * 10.f + 10.f + 10.f * offset.x , pos.y * 10.f + 10.f + 10.f * offset.y, 5.f  * sampledHeight);
     gl_Position = vpMat * modelMatrix * vec4(vertexPosition, 1);
     myTexCoord = texCoord;
     height = sampledHeight;

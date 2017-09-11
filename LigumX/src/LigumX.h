@@ -14,7 +14,6 @@
 #include "renderer.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
-#include "AntTweakBar/include/AntTweakBar.h"
 #include "Logging.h"
 #include "entity.h"
 #include "settings.h"
@@ -94,7 +93,6 @@ public:
 
     bool showTweakBar;
     bool drawBuildingSides;
-    TwBar *myBar;
     struct WaySelection{
         Way* way;
         int numberOfBytesBefore;
@@ -115,7 +113,7 @@ public:
     EntityManager entityManager;
     Camera savedCam;
     bool inEntityLand;
-    void TW_CALL toggleEntityLand();
+    void toggleEntityLand();
 
 
 //    void RenderText(Text t);

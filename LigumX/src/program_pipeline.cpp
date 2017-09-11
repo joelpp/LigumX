@@ -86,6 +86,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
             glGetProgramInfoLog(glidShaderProgram, infoLength, NULL, info);
             cerr << "Linker error in shader :" << endl;
             cerr << info << endl;
+			assert(false);
         }
     }
 
@@ -174,7 +175,7 @@ ProgramPipeline::ProgramPipeline(std::string name)
     useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
     useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
 	
-	useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
+	//useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
 
 }
 

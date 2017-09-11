@@ -25,15 +25,15 @@ Texture::Texture(string filename)
     //if still unkown, return failure
     if(fif == FIF_UNKNOWN) {
         cout << "error opening texture : " << filename << endl;
-        return;
-    }
+		throw std::exception();
+	}
 
     if(FreeImage_FIFSupportsReading(fif))
         dib = FreeImage_Load(fif, filename.c_str());
     //if the image failed to load, return failure
     if(!dib) {
         cout << "error opening texture : " << filename << endl;
-        return;
+		throw std::exception();
     }
 
     bits = FreeImage_GetBits(dib);
@@ -67,13 +67,13 @@ Texture::Texture(string filename)
 //    glTexSubImage2D(glidTexture, 0, 0, 0, width, height,
 //                        GL_BGR, GL_UNSIGNED_BYTE, bits);
 //    glGenerateMipmap(GL_TEXTURE_2D);
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
-    glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glBindTexture(GL_TEXTURE_2D, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
-
+	glBindTexture(GL_TEXTURE_2D, 0);
+	FreeImage_Unload(dib);
 }

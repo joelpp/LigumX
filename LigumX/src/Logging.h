@@ -1,5 +1,6 @@
 #ifndef LOGGING_H
 #define LOGGING_H
+#pragma warning(disable : 4996)
 
 #include <chrono>
 #include <ctime>
@@ -14,6 +15,8 @@ static std::string GetTimeString(){
     std::time_t now_time = std::chrono::system_clock::to_time_t(now);
  	
     std::string toReturn = std::ctime(&now_time);
+
+	//std::put_time(std::localtime(&now_c), "%F %T")
     toReturn.pop_back();
     return toReturn;
 }

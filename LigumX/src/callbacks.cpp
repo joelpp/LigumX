@@ -21,14 +21,12 @@ void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 
 void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
 {
-    if(!TwEventMouseWheelGLFW(yOffset)) {
         static const float factor = 1.1;
         if(yOffset < 0) {
             LigumX::GetInstance().camera->multViewSizeBy(factor);
         } else {
             LigumX::GetInstance().camera->multViewSizeBy(1.f/factor);
         }
-    }
 }
 
 void flipBool(bool& value)
@@ -38,52 +36,49 @@ void flipBool(bool& value)
 
 void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
-    if(!TwEventKeyGLFW(key, action)) {
-        // send event to entity Manager (temporary before a playerInput class)
-		LigumX& game = LigumX::GetInstance();
-        game.entityManager.KeyCallback(key, action);
+    // send event to entity Manager (temporary before a playerInput class)
+	LigumX& game = LigumX::GetInstance();
+    game.entityManager.KeyCallback(key, action);
 
-        if(action == GLFW_PRESS){
-            if (key == GLFW_KEY_SPACE) 
-			{ 
-				Renderer::GetInstance().m_ShowGUI = !Renderer::GetInstance().m_ShowGUI;
+    if(action == GLFW_PRESS){
+        if (key == GLFW_KEY_SPACE) 
+		{ 
+			Renderer::GetInstance().m_ShowGUI = !Renderer::GetInstance().m_ShowGUI;
+		}
+        else if (key == GLFW_KEY_ESCAPE) 
+		{
+			if (LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
+			{
+				game.camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
 			}
-            else if (key == GLFW_KEY_ESCAPE) 
-			{
-				if (LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
-				{
-					game.camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
-				}
-            }
-			else if (key == GLFW_KEY_R)
-			{ 
-				Renderer::GetInstance().init_pipelines(); 
-			}
-			else if (key == GLFW_KEY_M)
-			{
-                for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it)
-				{
-                    it->second = false;
-                }
-            }
-			else if(key == GLFW_KEY_F4)
-			{
-				game.toggleEntityLand();
-            }
-			else if (key == GLFW_KEY_L)
-			{
-				game.world->m_sectorManager->setLoadNewSectors(game.world->m_sectorManager->getLoadNewSectors());
-			}
-
         }
-        LigumX::GetInstance().camera->handlePresetKey(pWindow, key, scancode, action, mods);
+		else if (key == GLFW_KEY_R)
+		{ 
+			Renderer::GetInstance().init_pipelines(); 
+		}
+		else if (key == GLFW_KEY_M)
+		{
+            for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it)
+			{
+                it->second = false;
+            }
+        }
+		else if(key == GLFW_KEY_F4)
+		{
+			game.toggleEntityLand();
+        }
+		else if (key == GLFW_KEY_L)
+		{
+			game.world->m_sectorManager->setLoadNewSectors(game.world->m_sectorManager->getLoadNewSectors());
+		}
+
     }
+    LigumX::GetInstance().camera->handlePresetKey(pWindow, key, scancode, action, mods);
 }
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
 
-    if(!TwEventMouseButtonGLFW(button, action)) {
         // Left-click
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
             // double x,y;
@@ -122,12 +117,10 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
         LigumX::GetInstance().camera->handlePresetMouseButton(pWindow, button, action, mods);
 //        TODO
         //        LigumX::GetInstance().renderer->updateMVPMatrix();
-    }
 }
 
 void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 {
-    if(!TwEventMousePosGLFW(x, y)) {
         if (LigumX::GetInstance().draggingCamera){
             double x; double y;
             glfwGetCursorPos(pWindow, &x, &y);
@@ -140,5 +133,4 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 
         }
         LigumX::GetInstance().camera->handlePresetCursorPos(pWindow, x, y);
-    }
 }

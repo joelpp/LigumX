@@ -1,5 +1,5 @@
 ; for comment
-cameraPosition 0.05 0.05 0.5
+cameraPosition -2.5 0.05 10.0
 ; montreal
 ; cameraPosition -73.602972 45.53288 0.0707107
 

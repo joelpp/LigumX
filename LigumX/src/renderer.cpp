@@ -5,6 +5,8 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
+#include "World.h"
+#include "Entity.h"
 #include "RenderDataManager.h"
 using namespace glm;
 using namespace std;
@@ -17,6 +19,7 @@ void Renderer::Initialize(){
 
 	m_DrawTerrain = true;
     showText = true;
+	m_WireframeRendering = false;
     windowWidth = 800;
     windowHeight = 800;
     windowTitle = "LigumX";
@@ -94,8 +97,9 @@ void Renderer::Initialize(){
     glDepthFunc(GL_LESS);
     std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
 //#ifdef __APPLE__
-    textureMap.emplace("bricks", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/brickles.png"));
-    // textureMap.emplace("grass", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/grass.png"));
+    textureMap.emplace("bricks", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
+	textureMap.emplace("grass", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png"));
+	//textureMap.emplace("gray", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/gray.png"));
     // textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/rock.png"));
     // textureMap.emplace("ATLAS", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/Atlas.png"));
     // textureMap.emplace("asphalt", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/asphalt.jpg"));
@@ -196,31 +200,167 @@ void Renderer::Initialize(){
 
    ImGui_ImplGlfwGL3_Init(pWindow, true);
    glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+   
+   m_TestLight.m_DiffuseColor = glm::vec3(0.88, 0.56, 0.76);
+   m_TestLight.m_SpecularColor = glm::vec3(0.56, 0.88, 0.76);
+   m_TestLight.m_AmbientColor = glm::vec3(0.1, 0.1, 0.1);
+   m_TestLight.m_Position = glm::vec3(-0.25, 7, 13);
+
+   m_ShowDiffuse = true;
+   m_ShowSpecular = true;
+   m_ShowAmbient = true;
+}
+
+void Renderer::SetUniform(float value, const char* name, GLuint location)
+{
+	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
+	glProgramUniform1f(prog, glGetUniformLocation(prog, name), value);
+}
+
+void Renderer::SetUniform(int value, const char* name, GLuint location)
+{
+	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
+	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
+}
+
+void Renderer::SetUniform(glm::vec3& value, const char* name, GLuint location)
+{
+	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
+	glProgramUniform3f(prog, glGetUniformLocation(prog, name), value.x, value.y, value.z);
+}
+
+void Renderer::SetUniform(glm::mat4x4& value, const char* name, GLuint location)
+{
+	glProgramUniformMatrix4fv(activePipeline->getShader(location)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(location)->glidShaderProgram, name), 1, false, value_ptr(value));
+}
+
+template<typename T>
+void Renderer::SetVertexUniform(T& value, const char* name)
+{
+	SetUniform(value, name, GL_VERTEX_SHADER);
+}
+
+template<typename T>
+void Renderer::SetFragmentUniform(T& value, const char* name)
+{
+	SetUniform(value, name, GL_FRAGMENT_SHADER);
+}
+
+void Renderer::SetFragmentUniform(int value, const char* name)
+{
+	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
+}
+
+//template<typename T>
+//void Renderer::SetFragmentUniform(T value, const char* name)
+//{
+//	SetUniform(value, name, GL_FRAGMENT_SHADER);
+//}
+//
+//void Renderer::SetVertexUniform(glm::mat4x4& value, const char* name)
+//{
+//	SetUniform(value, name, GL_VERTEX_SHADER);
+//}
+//
+//void Renderer::SetVertexUniform(glm::vec3& value, const char* name)
+//{
+//	SetUniform(value, name, GL_VERTEX_SHADER);
+//}
 
 
+void Renderer::SetPipeline(ProgramPipeline* pipeline)
+{
+	activePipeline = pipeline;
+	activePipeline->usePipeline();
+}
+
+void Renderer::SetLightingUniforms()
+{
+	SetFragmentUniform(m_TestLight.m_Position,		"g_Light.m_Position");
+	SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_Light.m_DiffuseColor");
+	SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_Light.m_AmbientColor");
+	SetFragmentUniform(m_TestLight.m_SpecularColor, "g_Light.m_SpecularColor");
+}
+
+void Renderer::SetMaterialUniforms(Material* material)
+{
+	SetFragmentUniform(material->m_AmbientColor,	"g_Material.ambient");
+	SetFragmentUniform(material->m_DiffuseColor,	"g_Material.diffuse");
+	SetFragmentUniform(material->m_SpecularColor,	"g_Material.specular");
+	SetFragmentUniform(material->m_Shininess,		"g_Material.shininess");
+
+	SetFragmentUniform(0, "g_Material.m_DiffuseTexture");
+	Bind2DTexture(0, material->m_DiffuseTexture->GetHWObject());
+
+	if (material->m_SpecularTexture)
+	{
+		SetFragmentUniform(1, "g_Material.m_SpecularTexture");
+		Bind2DTexture(1, material->m_SpecularTexture->GetHWObject());
+	}
+	
+}
+
+void Renderer::SetViewUniforms()
+{
+	SetVertexUniform(camera->vpMat, "vpMat");
+	SetVertexUniform(camera->m_ViewMatrix, "g_WorldToViewMatrix");
+	SetVertexUniform(camera->m_ProjectionMatrix, "g_ProjectionMatrix");
+
+	SetFragmentUniform(camera->position, "g_CameraPosition");
+}
+
+void Renderer::SetDebugUniforms()
+{
+	int useLighting = m_UseLighting ? 1 : 0;
+	int diffuseEnabled = m_ShowDiffuse ? 1 : 0;
+	int specularEnabled = m_ShowSpecular ? 1 : 0;
+	int ambientEnabled = m_ShowAmbient ? 1 : 0;
+	SetFragmentUniform(useLighting, "g_UseLighting");
+	SetFragmentUniform(diffuseEnabled, "g_DebugDiffuseEnabled");
+	SetFragmentUniform(ambientEnabled, "g_DebugAmbientEnabled");
+	SetFragmentUniform(specularEnabled, "g_DebugSpecularEnabled");
 }
 
 void Renderer::DrawModel(Model* model)
 {
-
-
   for (int i = 0; i < model->m_meshes.size(); ++i)
   {
-    activePipeline = model->m_materialList[i]->m_programPipeline;
-    glBindProgramPipeline(activePipeline->glidProgramPipeline);
-    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
-    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "modelMatrix"), 1, false, value_ptr(model->m_modelMatrix));
+	SetPipeline(model->m_materialList[0]->m_programPipeline);
 
-    DrawMesh(model->m_meshes[i], model->m_materialList[i]);
-    outputGLError(model->name, __LINE__);
+	SetLightingUniforms();
+	SetViewUniforms();
+	SetDebugUniforms();
+
+	
+
+	SetVertexUniform(model->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+
+	DrawMesh(model->m_meshes[i], model->m_materialList[i]);
   }
 }
+
+void Renderer::Bind2DTexture(int slot, GLuint HWObject)
+{
+	GLuint theSlot = slot == 0 ? GL_TEXTURE0 : GL_TEXTURE1;
+	glActiveTexture(theSlot);
+	glBindTexture(GL_TEXTURE_2D, HWObject);
+}
+
+void Renderer::FreeBoundTexture()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 
 void Renderer::DrawMesh(Mesh* mesh, Material* material)
 {
   glBindVertexArray(mesh->m_VAO);
-  activePipeline->setUniform("lineColor", material->m_albedo);
-  
+
+  FLUSH_ERRORS();
+
+  SetMaterialUniforms(material);
+
   if (mesh->m_wireframeRendering)
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -231,13 +371,15 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
     glEnable(GL_PROGRAM_POINT_SIZE);
   }
 
-  if (mesh->m_usesIndexBuffer){ 
+  if (mesh->m_usesIndexBuffer)
+  { 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
-    glDrawElements(mesh->m_renderingMode, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
   }
   else
   {
-    glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
+	glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
+	FLUSH_ERRORS();
   }
 
   if (mesh->m_pointRendering)
@@ -250,6 +392,7 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
+  FreeBoundTexture();
 }
 
 void Renderer::DrawTerrain()
@@ -274,14 +417,30 @@ void Renderer::DrawTerrain()
     
     glBindVertexArray(terrainMesh->m_VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainMesh->m_VBOs.glidIndexBuffer);
+
+	if (m_WireframeRendering)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
     for (TerrainRenderingJob& job : renderList)
     {
         glProgramUniform2f(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "offset"), job.start[0], job.start[1]);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, job.buffer);
-//        glProgramUniform1i(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram,glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "heightmap"), 0);
-        glDrawElements(terrainMesh->m_renderingMode, terrainMesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
+
+        //glProgramUniform1i(activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram,glGetUniformLocation(activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "g_DiffuseTexture"), textureMap["grass"]->glidTexture);
+
+		glDrawElements(terrainMesh->m_renderingMode, terrainMesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
     }
+
+	if (m_WireframeRendering)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
 }
 
 void Renderer::BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name)
@@ -332,6 +491,15 @@ void Renderer::RenderGUI()
 		ImGui::Checkbox("Draw terrain", &m_DrawTerrain);
 		ImGui::Checkbox("Draw sky", &m_DrawSky);
 		ImGui::Checkbox("Test GUI", &m_ShowTestGUI);
+		ImGui::Checkbox("Use Lighting", &m_UseLighting);
+
+		if (ImGui::CollapsingHeader("Debug"))
+		{
+			ImGui::Checkbox("Wireframe mode", &m_WireframeRendering);
+			ImGui::Checkbox("Show Diffuse", &m_ShowDiffuse);
+			ImGui::Checkbox("Show Specular", &m_ShowSpecular);
+			ImGui::Checkbox("Show Ambient", &m_ShowAmbient);
+		}
 
 		if (ImGui::CollapsingHeader("Camera"))
 		{
@@ -341,7 +509,17 @@ void Renderer::RenderGUI()
 			ShowVariableAsText(camera->upVec, "Up");
 			ShowVariableAsText(camera->aspectRatio, "Aspect ratio");
 			ImGui::SliderFloat("Speed", &camera->keyMovementSpeed, camera->minimumSpeed, camera->maximumSpeed, "%.3f");
+			ImGui::SliderFloat("Min speed", &camera->minimumSpeed, 0, 1, "%.3f");
+			ImGui::SliderFloat("Max speed", &camera->maximumSpeed, 0, 1, "%.3f");
 			//Imgui::
+		}
+
+		if (ImGui::CollapsingHeader("Light"))
+		{
+			ImGui::ColorEdit3("Diffuse", &(m_TestLight.m_DiffuseColor[0]));
+			ImGui::ColorEdit3("Specular", &(m_TestLight.m_SpecularColor[0]));
+			ImGui::ColorEdit3("Ambient", &(m_TestLight.m_AmbientColor[0]));
+			ImGui::SliderFloat3("Position", &(m_TestLight.m_Position[0]), -30.f, 30.f);
 		}
 
 
@@ -356,7 +534,7 @@ void Renderer::RenderGUI()
  * [Renderer::render description]
  * @param camera [description]
  */
-void Renderer::render()
+void Renderer::render(World* world)
 {
 	FLUSH_ERRORS();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -366,6 +544,8 @@ void Renderer::render()
 	FLUSH_ERRORS();
 	RenderSky();
 
+	FLUSH_ERRORS();
+	RenderEntities(world->m_Entities);
 	FLUSH_ERRORS();
 
 	DrawTerrain();
@@ -390,7 +570,17 @@ void Renderer::render()
 	HandleScreenshot();
 
 	RenderFPS();
+
 }
+
+void Renderer::RenderEntities(std::vector<Entity*> entities)
+{
+	for (Entity* entity : entities)
+	{
+		DrawModel(entity->m_Model);
+	}
+}
+
 
 void Renderer::HandleScreenshot()
 {

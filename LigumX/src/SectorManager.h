@@ -30,7 +30,8 @@ public:
 
 	Sector* createSector(int ID);
     Sector* createSector(Coord2 pos);
-    
+	SectorList GetAllSectors();
+
     /**
      * [Normalized Takes in a World-Space point and returns the coordinates (on a normalized grid) of the sector holding it]
      * @param  UnNormalized [The WS position to check against]

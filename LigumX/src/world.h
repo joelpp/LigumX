@@ -15,6 +15,7 @@ class Way;
 class Node;
 class SectorManager;
 class vec2i;
+class Entity;
 
 typedef glm::vec2 Coord2;
 typedef std::vector<Sector*> SectorList;
@@ -47,7 +48,8 @@ public:
     World(float sectorSize);
     Sun sun;
     Sector* createSector(Coord2 pos);
-    
+	SectorList* GetAllSectors();
+
     /**
      * [Normalized Takes in a World-Space point and returns the coordinates (on a normalized grid) of the sector holding it]
      * @param  UnNormalized [The WS position to check against]
@@ -88,6 +90,8 @@ public:
     std::vector<Sector*> sectors;
     SectorManager* m_sectorManager;
     float m_globalTime;
+
+	std::vector<Entity*> m_Entities;
 };
 #endif
 
