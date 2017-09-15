@@ -356,10 +356,15 @@
     <ClInclude Include="src\imgui_impl_glfw_gl3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\property.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
     <None Include="data\shaders\BasicUV\evaluation.tes" />
     <None Include="data\settings.dat" />
+    <None Include="src\Material.gen" />
+    <None Include="src\Camera.gen" />
   </ItemGroup>
 </Project>

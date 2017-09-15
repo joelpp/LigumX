@@ -8,6 +8,7 @@
 #include "World.h"
 #include "Entity.h"
 #include "RenderDataManager.h"
+
 using namespace glm;
 using namespace std;
 
@@ -208,6 +209,7 @@ void Renderer::Initialize(){
 
    m_ShowDiffuse = true;
    m_ShowSpecular = true;
+   m_ShowNormals = false;
    m_ShowAmbient = true;
 }
 
@@ -229,7 +231,18 @@ void Renderer::SetUniform(glm::vec3& value, const char* name, GLuint location)
 	glProgramUniform3f(prog, glGetUniformLocation(prog, name), value.x, value.y, value.z);
 }
 
+void Renderer::SetUniform(const glm::vec3& value, const char* name, GLuint location)
+{
+	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
+	glProgramUniform3f(prog, glGetUniformLocation(prog, name), value.x, value.y, value.z);
+}
+
+
 void Renderer::SetUniform(glm::mat4x4& value, const char* name, GLuint location)
+{
+	glProgramUniformMatrix4fv(activePipeline->getShader(location)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(location)->glidShaderProgram, name), 1, false, value_ptr(value));
+}
+void Renderer::SetUniform(const glm::mat4x4& value, const char* name, GLuint location)
 {
 	glProgramUniformMatrix4fv(activePipeline->getShader(location)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(location)->glidShaderProgram, name), 1, false, value_ptr(value));
 }
@@ -285,29 +298,33 @@ void Renderer::SetLightingUniforms()
 
 void Renderer::SetMaterialUniforms(Material* material)
 {
-	SetFragmentUniform(material->m_AmbientColor,	"g_Material.ambient");
-	SetFragmentUniform(material->m_DiffuseColor,	"g_Material.diffuse");
-	SetFragmentUniform(material->m_SpecularColor,	"g_Material.specular");
-	SetFragmentUniform(material->m_Shininess,		"g_Material.shininess");
+	SetFragmentUniform(material->GetAmbientColor(),	"g_Material.ambient");
+	SetFragmentUniform(material->GetDiffuseColor(),	"g_Material.diffuse");
+	SetFragmentUniform(material->GetSpecularColor(),	"g_Material.specular");
+	SetFragmentUniform(material->GetShininess(),	"g_Material.shininess");
 
-	SetFragmentUniform(0, "g_Material.m_DiffuseTexture");
-	Bind2DTexture(0, material->m_DiffuseTexture->GetHWObject());
 
-	if (material->m_SpecularTexture)
+	if (material->GetDiffuseTexture())
+	{
+		SetFragmentUniform(0, "g_Material.m_DiffuseTexture");
+		Bind2DTexture(0, material->GetDiffuseTexture()->GetHWObject());
+	}
+
+	if (material->GetSpecularTexture())
 	{
 		SetFragmentUniform(1, "g_Material.m_SpecularTexture");
-		Bind2DTexture(1, material->m_SpecularTexture->GetHWObject());
+		Bind2DTexture(1, material->GetSpecularTexture()->GetHWObject());
 	}
 	
 }
 
 void Renderer::SetViewUniforms()
 {
-	SetVertexUniform(camera->vpMat, "vpMat");
-	SetVertexUniform(camera->m_ViewMatrix, "g_WorldToViewMatrix");
-	SetVertexUniform(camera->m_ProjectionMatrix, "g_ProjectionMatrix");
+	SetVertexUniform(camera->GetViewProjectionMatrix(), "vpMat");
+	SetVertexUniform(camera->GetViewMatrix(), "g_WorldToViewMatrix");
+	SetVertexUniform(camera->GetProjectionMatrix(), "g_ProjectionMatrix");
 
-	SetFragmentUniform(camera->position, "g_CameraPosition");
+	SetFragmentUniform(camera->GetPosition(), "g_CameraPosition");
 }
 
 void Renderer::SetDebugUniforms()
@@ -316,25 +333,25 @@ void Renderer::SetDebugUniforms()
 	int diffuseEnabled = m_ShowDiffuse ? 1 : 0;
 	int specularEnabled = m_ShowSpecular ? 1 : 0;
 	int ambientEnabled = m_ShowAmbient ? 1 : 0;
+	int normalsEnabled = m_ShowNormals ? 1 : 0;
 	SetFragmentUniform(useLighting, "g_UseLighting");
 	SetFragmentUniform(diffuseEnabled, "g_DebugDiffuseEnabled");
 	SetFragmentUniform(ambientEnabled, "g_DebugAmbientEnabled");
 	SetFragmentUniform(specularEnabled, "g_DebugSpecularEnabled");
+	SetFragmentUniform(normalsEnabled, "g_DebugNormalsEnabled");
 }
 
-void Renderer::DrawModel(Model* model)
+void Renderer::DrawModel(Entity* entity, Model* model)
 {
   for (int i = 0; i < model->m_meshes.size(); ++i)
   {
-	SetPipeline(model->m_materialList[0]->m_programPipeline);
+	SetPipeline(model->m_materialList[0]->GetProgramPipeline());
 
 	SetLightingUniforms();
 	SetViewUniforms();
 	SetDebugUniforms();
 
-	
-
-	SetVertexUniform(model->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+	SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
 	DrawMesh(model->m_meshes[i], model->m_materialList[i]);
   }
@@ -412,7 +429,7 @@ void Renderer::DrawTerrain()
     ProgramPipeline* activePipeline = pPipelineBasicUV;
     
     Mesh* terrainMesh = renderData->terrainMesh();
-    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->vpMat));
+    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->GetViewProjectionMatrix()));
     glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "modelMatrix"), 1, false, value_ptr(glm::mat4(1.0)));
     
     glBindVertexArray(terrainMesh->m_VAO);
@@ -499,11 +516,12 @@ void Renderer::RenderGUI()
 			ImGui::Checkbox("Show Diffuse", &m_ShowDiffuse);
 			ImGui::Checkbox("Show Specular", &m_ShowSpecular);
 			ImGui::Checkbox("Show Ambient", &m_ShowAmbient);
+			ImGui::Checkbox("Show Normals", &m_ShowNormals);
 		}
 
 		if (ImGui::CollapsingHeader("Camera"))
 		{
-			ShowVariableAsText(camera->position, "Camera Position");
+			ShowVariableAsText(camera->GetPosition(), "Camera Position");
 			ShowVariableAsText(camera->frontVec, "Look at");
 			ShowVariableAsText(camera->rightVec, "Right");
 			ShowVariableAsText(camera->upVec, "Up");
@@ -520,6 +538,18 @@ void Renderer::RenderGUI()
 			ImGui::ColorEdit3("Specular", &(m_TestLight.m_SpecularColor[0]));
 			ImGui::ColorEdit3("Ambient", &(m_TestLight.m_AmbientColor[0]));
 			ImGui::SliderFloat3("Position", &(m_TestLight.m_Position[0]), -30.f, 30.f);
+		}
+
+		if (ImGui::CollapsingHeader("MatProperties"))
+		{
+			void* addr = &camera;
+			for (const ClassPropertyData& data : Camera::g_CameraProperties)
+			{
+				if (data.debug == 1)
+				{
+					ShowVariableAsText(*(glm::vec3*)((&(*camera))+data.m_Offset),data.m_Name);
+				}
+			}
 		}
 
 
@@ -577,7 +607,7 @@ void Renderer::RenderEntities(std::vector<Entity*> entities)
 {
 	for (Entity* entity : entities)
 	{
-		DrawModel(entity->m_Model);
+		DrawModel(entity, entity->m_Model);
 	}
 }
 
@@ -657,7 +687,7 @@ void Renderer::RenderText(Text t)
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->vpMat));
+   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->GetViewProjectionMatrix()));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
    glActiveTexture(GL_TEXTURE0);
@@ -802,7 +832,7 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->vpMat));
+   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->GetViewProjectionMatrix()));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
    glActiveTexture(GL_TEXTURE0);

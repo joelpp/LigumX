@@ -9,6 +9,20 @@
 class Texture;
 class Material;
 class Vertex;
+class Mesh;
+
+class DefaultMeshes
+{
+public:
+	DefaultMeshes();
+	Mesh* DefaultQuadMesh;
+	Mesh* DefaultSphereMesh;
+	
+	void InitializeDefaultSphere();
+	void InitializeDefaultQuad();
+};
+
+extern DefaultMeshes* g_DefaultMeshes;
 
 enum EBufferType
 {

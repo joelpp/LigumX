@@ -46,7 +46,10 @@ public:
 
 	std::vector<Component*> m_Components;
 
-	void setPosition(glm::vec3 position) { this->position = position; }
+	void setPosition(glm::vec3 position) 
+	{ 
+		this->position = position; 
+	}
 
 	void setModel(Model* model) { m_Model = model; }
 	Model* getModel() { return m_Model; }
@@ -63,6 +66,7 @@ public:
 
 	Model* m_Model;
 
+	glm::mat4x4 m_ModelToWorldMatrix;
 
 
 private:
@@ -77,7 +81,6 @@ private:
     glm::vec3 acceleration;
     glm::vec3 forwardVector;
     glm::vec3 rightVector;
-	glm::mat4x4 m_ModelToWorldMatrix;
 
 };
 

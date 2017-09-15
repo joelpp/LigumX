@@ -27,7 +27,7 @@ World::World(float sectorSize)
 	m_sectorSize = sectorSize;
 	m_invSectorSize = 1.f / sectorSize;
 
-	Model* testModel = new Model("Sphere", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/nanosuit2.obj");
+	Model* testModel = new Model("Nanosuit", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/nanosuit2.obj");
 
 	//Material* testMaterial = new Material(new ProgramPipeline("Basic"), glm::vec3(1,0,0));
 	//testModel->m_materialList.push_back(testMaterial);
@@ -38,10 +38,22 @@ World::World(float sectorSize)
 
 	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(0, 20, 0));
 	toWorld = glm::rotate(toWorld, 90.f, glm::vec3(1, 0, 0));
-	testEntity->m_Model->m_ModelToWorldMatrix = toWorld;
+	testEntity->m_ModelToWorldMatrix = toWorld;
 	m_Entities.push_back(testEntity);
 	
+	Entity* testEntity2 = new Entity();
 
+	// todo : properly handle setposition with modelmatrix
+	testEntity2->setPosition(glm::vec3(0, 2, 3));
+
+	glm::mat4x4 toWorld2 = glm::translate(glm::mat4(1.0), glm::vec3(15, 20, 10));
+	toWorld2 = glm::rotate(toWorld2, 90.f, glm::vec3(1, 0, 0));
+
+	//testModel = new Model(g_DefaultMeshes->DefaultSphereMesh, testEntity->m_Model->m_materialList[2]);
+	//testModel = new Model("Nanosuit", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere/sphere.obj");
+	testEntity2->setModel(testModel);
+	testEntity2->m_ModelToWorldMatrix = toWorld2;
+	m_Entities.push_back(testEntity2);
 }
 
 

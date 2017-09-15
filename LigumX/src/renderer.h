@@ -68,7 +68,7 @@ public:
     void RenderText(Text t);
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
     void DrawMesh(Mesh* mesh, Material* material);
-    void DrawModel(Model* model);
+    void DrawModel(Entity* entity, Model* model);
     static void outputGLError(std::string func, int line);
     void RenderSky();
     void RenderFPS();
@@ -80,7 +80,9 @@ public:
 
 	void SetUniform(int value, const char* name, GLuint location);
 	void SetUniform(glm::vec3& value, const char* name, GLuint location);
+	void SetUniform(const glm::vec3& value, const char* name, GLuint location);
 	void SetUniform(glm::mat4x4& value, const char* name, GLuint location);
+	void SetUniform(const glm::mat4x4& value, const char* name, GLuint location);
 	void SetUniform(float value, const char* name, GLuint location);
 	void SetFragmentUniform(int value, const char* name);
 
@@ -89,6 +91,9 @@ public:
 	void SetVertexUniform(T& value, const char* name);
 	template<typename T>
 	void SetFragmentUniform(T& value, const char* name);
+
+	void  SetFragmentUniform(glm::vec3& value, const char* name, GLuint location);
+
 
 	//template<typename T>
 	//void SetFragmentUniform(T value, const char* name);
@@ -105,6 +110,7 @@ public:
 	bool m_DrawSky;
 	bool m_WireframeRendering;
 	bool m_UseLighting;
+	bool m_ShowNormals;
 	bool m_ShowSpecular;
 	bool m_ShowDiffuse;
 	bool m_ShowAmbient;

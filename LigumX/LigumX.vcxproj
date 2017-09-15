@@ -246,6 +246,7 @@
     <ClInclude Include="src\osm_element.h" />
     <ClInclude Include="src\PerlinNoise.h" />
     <ClInclude Include="src\program_pipeline.h" />
+    <ClInclude Include="src\property.h" />
     <ClInclude Include="src\relation.h" />
     <ClInclude Include="src\RenderDataManager.h" />
     <ClInclude Include="src\renderer.h" />
@@ -270,6 +271,8 @@
     <None Include="data\settings.dat" />
     <None Include="data\shaders\BasicUV\control.tcs" />
     <None Include="data\shaders\BasicUV\evaluation.tes" />
+    <None Include="src\Camera.gen" />
+    <None Include="src\Material.gen" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "camera.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/matrix_access.hpp"
@@ -7,14 +6,26 @@
 #include <glm/gtx/transform.hpp>
 #include <iostream>
 #include "Settings.h"
+#include "property.h"
 
+#pragma region  CLASS_SOURCE Camera
+const ClassPropertyData Camera::g_CameraProperties[] = 
+{
+{ "Position", offsetof(Camera, m_Position), 1 },
+{ "someBullshitVec3", offsetof(Camera, m_someBullshitVec3), 1 },
+{ "ViewMatrix", offsetof(Camera, m_ViewMatrix), 0 },
+{ "ProjectionMatrix", offsetof(Camera, m_ProjectionMatrix), 0 },
+{ "ViewProjectionMatrix", offsetof(Camera, m_ViewProjectionMatrix), 0 },
+};
+
+#pragma endregion  CLASS_SOURCE Camera
 #define PI (3.14159265359)
 
 using namespace glm;
 
 Camera::Camera()
 {
-    vpMat = mat4(1);
+    m_ViewProjectionMatrix = mat4(1);
     viewSize = 1;
     angle = 0;
     totalViewAngleY = 45;
@@ -34,7 +45,7 @@ Camera::Camera()
 //    translateTo(vec3(45.47500,-73.65500,10000));
 //    scaleTo(vec3(1,1,1));
 //    lookAtTargetPos = vec3(45.47500,-73.65500,0);
-    lookAtTargetPos = position + frontVec;
+    lookAtTargetPos = m_Position + frontVec;
     defaultViewMovementSpeed = 0.1f;
     viewMovementSpeed = defaultViewMovementSpeed;
     defaultKeyMovementSpeed = 0.05f;
@@ -50,7 +61,7 @@ Camera::Camera()
 
 void Camera::translateBy(vec3 delta)
 {
-    position += delta;
+    m_Position += delta;
     updateVPMatrix();
 }
 
@@ -60,10 +71,10 @@ void Camera::translateTo(vec3 inPosition)
     glm::vec2 coordinateShifting = Settings::GetInstance().f2("coordinateShifting");
 
 
-    position = inPosition;
+	m_Position = inPosition;
 
-    position.x += coordinateShifting.x;
-    position.y += coordinateShifting.y;
+	m_Position.x += coordinateShifting.x;
+	m_Position.y += coordinateShifting.y;
 
     updateVPMatrix();
 }
@@ -116,15 +127,15 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
 void Camera::updateVPMatrix()
 {
 
-    vpMat = column(mat4(1), 0, vec4(rightVec, 0));
-    vpMat = column(vpMat, 1, vec4(upVec, 0));
-    vpMat = column(vpMat, 2, vec4(frontVec, 0));
-    vpMat = column(vpMat, 3, vec4(0, 0, 0, 1));
-    vpMat = translate(position) * vpMat;
-    vpMat = inverse(vpMat);
+    m_ViewProjectionMatrix = column(mat4(1), 0, vec4(rightVec, 0));
+    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 1, vec4(upVec, 0));
+    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 2, vec4(frontVec, 0));
+    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 3, vec4(0, 0, 0, 1));
+    m_ViewProjectionMatrix = translate(m_Position) * m_ViewProjectionMatrix;
+    m_ViewProjectionMatrix = inverse(m_ViewProjectionMatrix);
 
-	m_ViewMatrix = vpMat;
-    vpMat = perspective(totalViewAngleY, aspectRatio, nearPlane, farPlane) * vpMat;
+	m_ViewMatrix = m_ViewProjectionMatrix;
+	m_ViewProjectionMatrix = perspective(totalViewAngleY, aspectRatio, nearPlane, farPlane) * m_ViewProjectionMatrix;
 	m_ProjectionMatrix = perspective(totalViewAngleY, aspectRatio, nearPlane, farPlane);
 }
 
@@ -154,12 +165,12 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
     (void)mods;
     if(button == GLFW_MOUSE_BUTTON_RIGHT) {
         if(action == GLFW_PRESS) {
-            positionReference = position;
+            positionReference = m_Position;
             mouseIsDragging = true;
             double xx, yy;
             glfwGetCursorPos(pWindow, &xx, &yy);
             mouseDragReferencePosition = vec2(xx, yy);
-            distanceReference = distance(position, lookAtTargetPos);
+            distanceReference = distance(m_Position, lookAtTargetPos);
             frontVecReference = frontVec;
             upVecReference = upVec;
             rightVecReference = rightVec;
@@ -181,7 +192,7 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
                     rightVec = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
                 }
                 if(cameraType == CameraType::AROUND_TARGET) {
-                    position = lookAtTargetPos + distanceReference*frontVec;
+					m_Position = lookAtTargetPos + distanceReference*frontVec;
                 }
 //                mbTranslationMatrixIsDirty = true;
 //                mbRotationMatrixIsDirty = true;
@@ -225,7 +236,7 @@ void Camera::dragMousePresetCursorPos(GLFWwindow* /*pWindow*/, double x, double 
             frontVec = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
             upVec = vec3(tempExtraRotationMat * vec4(upVecReference,1));
             rightVec = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
-            position = lookAtTargetPos + distanceReference*frontVec;
+			m_Position = lookAtTargetPos + distanceReference*frontVec;
 //            mbRotationMatrixIsDirty = true;
 //            mbTranslationMatrixIsDirty = true;
         } else if(cameraType == CameraType::CYLINDRICAL) {
@@ -252,7 +263,7 @@ void Camera::dragMousePresetCursorPos(GLFWwindow* /*pWindow*/, double x, double 
             frontVec = vec3(0,0,1);
             upVec = vec3(0,1,0);
             rightVec = vec3(1,0,0);
-            position = positionReference - viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
+			m_Position = positionReference - viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
         }
     }
 }
@@ -358,7 +369,7 @@ void Camera::viewArrowsPreset(GLFWwindow* pWindow)
         frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
         upVec = vec3(tempExtraRotationMat * vec4(upVec,1));
         rightVec = vec3(tempExtraRotationMat * vec4(rightVec,1));
-        position = lookAtTargetPos + (distance(lookAtTargetPos,position))*frontVec;
+		m_Position = lookAtTargetPos + (distance(lookAtTargetPos, m_Position))*frontVec;
 //        mbRotationMatrixIsDirty = true;
 //        mbTranslationMatrixIsDirty = true;
     } else if(cameraType == CameraType::CYLINDRICAL) {
@@ -385,7 +396,7 @@ void Camera::viewArrowsPreset(GLFWwindow* pWindow)
         frontVec = vec3(0,0,1);
         upVec = vec3(0,1,0);
         rightVec = vec3(1,0,0);
-        position += viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
+		m_Position += viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
     }
 }
 
@@ -406,7 +417,7 @@ void Camera::continuousMousePresetCursorPos(
         frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
         upVec = vec3(tempExtraRotationMat * vec4(upVec,1));
         rightVec = vec3(tempExtraRotationMat * vec4(rightVec,1));
-        position = lookAtTargetPos + (distance(lookAtTargetPos,position))*frontVec;
+		m_Position = lookAtTargetPos + (distance(lookAtTargetPos, m_Position))*frontVec;
 //        mbRotationMatrixIsDirty = true;
 //        mbTranslationMatrixIsDirty = true;
     } else if(cameraType == CameraType::CYLINDRICAL) {
@@ -433,7 +444,7 @@ void Camera::continuousMousePresetCursorPos(
         frontVec = vec3(0,0,1);
         upVec = vec3(0,1,0);
         rightVec = vec3(1,0,0);
-        position += viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
+		m_Position += viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
     }
 //    vec2 centerPos = vec2(pWindow->getCenter());
     glfwSetCursorPos(pWindow, float(windowWidth)/2.f, float(windowHeight)/2.f);
@@ -443,11 +454,11 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
 {
     if(cameraType == CameraType::AROUND_TARGET) {
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
-            position -= keyMovementSpeed * frontVec;
+			m_Position -= keyMovementSpeed * frontVec;
             distanceReference = max(distanceReference - keyMovementSpeed, 0.0f);
         }
         if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
-            position += keyMovementSpeed * frontVec;
+			m_Position += keyMovementSpeed * frontVec;
             distanceReference = max(distanceReference + keyMovementSpeed, 0.0f);
         }
     } else if(cameraType == CameraType::TOP_3D) {
@@ -455,42 +466,42 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
         upVec = vec3(0,1,0);
         rightVec = vec3(1,0,0);
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
-            position += keyMovementSpeed * upVec;
+			m_Position += keyMovementSpeed * upVec;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
-            position -= keyMovementSpeed * upVec;
+			m_Position -= keyMovementSpeed * upVec;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) {
-            position -= keyMovementSpeed * rightVec;
+			m_Position -= keyMovementSpeed * rightVec;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) {
-            position += keyMovementSpeed * rightVec;
+			m_Position += keyMovementSpeed * rightVec;
         }
     } else {
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
-            position -= keyMovementSpeed * frontVec;
+			m_Position -= keyMovementSpeed * frontVec;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
-            position += keyMovementSpeed * frontVec;
+			m_Position += keyMovementSpeed * frontVec;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) {
-            position -= keyMovementSpeed * rightVec;
+			m_Position -= keyMovementSpeed * rightVec;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) {
-            position += keyMovementSpeed * rightVec;
+			m_Position += keyMovementSpeed * rightVec;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_Q) == GLFW_PRESS) {
             if(cameraType == CameraType::CYLINDRICAL) {
-                position -= keyMovementSpeed * cylindricalUpVec;
+				m_Position -= keyMovementSpeed * cylindricalUpVec;
             } else {
-                position -= keyMovementSpeed * upVec;
+				m_Position -= keyMovementSpeed * upVec;
             }
         }
         if(glfwGetKey(pWindow, GLFW_KEY_E) == GLFW_PRESS) {
             if(cameraType == CameraType::CYLINDRICAL) {
-                position += keyMovementSpeed * cylindricalUpVec;
+				m_Position += keyMovementSpeed * cylindricalUpVec;
             } else {
-                position += keyMovementSpeed * upVec;
+				m_Position += keyMovementSpeed * upVec;
             }
         }
     }

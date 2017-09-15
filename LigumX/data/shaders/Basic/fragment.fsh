@@ -34,6 +34,7 @@ uniform vec3 g_CameraPosition;
 uniform int g_DebugDiffuseEnabled;
 uniform int g_DebugSpecularEnabled;
 uniform int g_DebugAmbientEnabled;
+uniform int g_DebugNormalsEnabled;
 
 out vec4 FinalColor;
 void main() 
@@ -58,6 +59,7 @@ void main()
 		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord);
 		float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
 		vec3 diffuseContribution = diffuseFactor * diffuseColor.rgb;
+		//diffuseContribution = normalize( /*g_Light.m_Position - */vWorldPosition.xyz);;
 		diffuseContribution *= g_DebugDiffuseEnabled;
 
 		// Specular
@@ -69,7 +71,6 @@ void main()
 
 		// final 
 		FinalColor.rgb = ambientContribution + diffuseContribution + specularContribution;
-		FinalColor.a = 1.0f;
 	}
 	else
 	{
@@ -77,4 +78,9 @@ void main()
 		FinalColor = diffuseColor;
 	}
 
+	if (g_DebugNormalsEnabled > 0)
+	{
+		FinalColor.rgb = 0.5f * (fNormalWS + vec3(1,1,1));
+	}
+		FinalColor.a = 1.0f;
 }

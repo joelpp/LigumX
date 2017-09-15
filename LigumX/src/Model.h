@@ -22,6 +22,9 @@ public:
 	Model();
 	Model(std::string path);
 	Model(std::string name, std::string path);
+	Model(Mesh* mesh, Material* material);
+
+	Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList);
 
 	void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene);

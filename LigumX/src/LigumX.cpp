@@ -12,6 +12,7 @@
 #include "World.h"
 #include "Sector.h"
 #include "Heightfield.h"
+#include "Mesh.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -112,6 +113,12 @@ void LigumX::init()
     // register GLFW and GLdebug callbacks
     SetCallbacks();
 
+	//=============================================================================
+	// Load Default data.
+	//=============================================================================
+	g_DefaultMeshes = new DefaultMeshes();
+
+
     //=============================================================================
     // Load world data.
     //=============================================================================
@@ -120,7 +127,7 @@ void LigumX::init()
     world = new World(settings.f("sectorSize"));
     // world->createSector(vec2(-73.650, 45.500));
     vec2 tp;
-    if (settings.i("useCameraPositionAsTestPoint")) tp = glm::vec2(camera->position);
+    if (settings.i("useCameraPositionAsTestPoint")) tp = glm::vec2(camera->GetPosition());
     else tp = settings.f2("testPoint");
     
 
@@ -141,14 +148,13 @@ void LigumX::init()
 
     // updateWorld(3);
 
-    
 }
 
 void LigumX::updateWorld(int loadingRingSize)
 {
     Renderer& renderer = Renderer::GetInstance();
 
-    std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(glm::vec2(camera->position), loadingRingSize);
+    std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(glm::vec2(camera->GetPosition()), loadingRingSize);
 
     for(int i = 0; i < newSectors->size(); ++i)
     {

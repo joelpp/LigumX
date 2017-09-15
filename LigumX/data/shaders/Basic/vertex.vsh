@@ -19,6 +19,7 @@ out gl_PerVertex {
 
 void main() {
 	vWorldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
+	//vWorldPosition = vec4(pos, 1);
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * vWorldPosition;
     myTexCoord = texCoord;
 	height = pos.z;

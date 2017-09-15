@@ -72,3 +72,54 @@ void Mesh::createBuffers()
 
 
 }
+
+DefaultMeshes* g_DefaultMeshes;
+
+void DefaultMeshes::InitializeDefaultQuad()
+{
+	DefaultQuadMesh = new Mesh();
+
+	std::vector<glm::vec3>& points = DefaultQuadMesh->m_buffers.vertexPositions;
+	std::vector<glm::vec2>& UVs = DefaultQuadMesh->m_buffers.m_vertexUVs;
+	std::vector<glm::vec3>& normals = DefaultQuadMesh->m_buffers.m_vertexNormals;
+	std::vector<int>& indexBuffer = DefaultQuadMesh->m_buffers.indexBuffer;
+
+	points.push_back(glm::vec3(0, 0, 0));
+	points.push_back(glm::vec3(0, 1, 0));
+	points.push_back(glm::vec3(1, 0, 0));
+	points.push_back(glm::vec3(1, 1, 0));
+
+	UVs.push_back(glm::vec2(0, 0));
+	UVs.push_back(glm::vec2(0, 1));
+	UVs.push_back(glm::vec2(1, 0));
+	UVs.push_back(glm::vec2(1, 1));
+
+	normals.push_back(glm::vec3(0, 0, 1));
+	normals.push_back(glm::vec3(0, 0, 1));
+	normals.push_back(glm::vec3(0, 0, 1));
+	normals.push_back(glm::vec3(0, 0, 1));
+
+	indexBuffer.push_back(0);
+	indexBuffer.push_back(1);
+	indexBuffer.push_back(2);
+	indexBuffer.push_back(2);
+	indexBuffer.push_back(1);
+	indexBuffer.push_back(3);
+
+	DefaultQuadMesh->createBuffers();
+	DefaultQuadMesh->m_usesIndexBuffer = true;
+	DefaultQuadMesh->m_renderingMode = GL_TRIANGLES;
+}
+
+void DefaultMeshes::InitializeDefaultSphere()
+{
+	DefaultSphereMesh = new Mesh();
+
+}
+
+DefaultMeshes::DefaultMeshes()
+{
+	InitializeDefaultQuad();
+	InitializeDefaultSphere();
+
+}

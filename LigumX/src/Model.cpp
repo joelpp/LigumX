@@ -25,6 +25,20 @@ Model::Model(std::string name, std::string path)
 	this->name = name;
 }
 
+Model::Model(Mesh* mesh, Material* material)
+{
+	m_meshes.push_back(mesh);
+	m_materialList.push_back(material);
+}
+
+Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
+{
+	m_meshes = meshList;
+	m_materialList = materialList;
+}
+
+
+
 void Model::CreateHWBuffers()
 {
 	for (Mesh* mesh : m_meshes)
@@ -65,9 +79,10 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 		Material* material = processMaterial(assimpMesh, scene);
 
 		//todo : more graceful handling of program pipeline
-		material->m_programPipeline = new ProgramPipeline("Basic");
+		material->SetProgramPipeline(new ProgramPipeline("Basic"));
 
 		addMesh(mesh, material);
+		//addMesh(g_DefaultMeshes->DefaultQuadMesh, material);
     }
     // Then do the same for each of its children
     for(GLuint i = 0; i < node->mNumChildren; i++)
@@ -84,6 +99,21 @@ std::string concatenate(std::string string, aiString aistring)
 glm::vec3 toVec3(aiColor3D color)
 {
 	return glm::vec3(color.r, color.g, color.b);
+}
+
+Texture* tryLoadTexture(std::string path)
+{
+	Texture* texture;
+	try
+	{
+		texture = new Texture(path);
+	}
+	catch (std::exception e)
+	{
+		texture = nullptr;
+	}
+
+	return texture;
 }
 
 Material* Model::processMaterial(aiMesh* assimpMesh, const aiScene* scene)
@@ -114,24 +144,16 @@ Material* Model::processMaterial(aiMesh* assimpMesh, const aiScene* scene)
 		aiColor3D ambientColor(0.f, 0.f, 0.f);
 		mat->Get(AI_MATKEY_COLOR_AMBIENT, ambientColor);
 
-		Texture* diffuseTexture = new Texture(concatenate(texturePath, fileDiffuse));
+		Texture* diffuseTexture = tryLoadTexture(concatenate(texturePath, fileDiffuse));
 
-		Texture* specularTexture;
-		try
-		{
-			specularTexture = new Texture(concatenate(texturePath, fileSpecular));
-		}
-		catch (std::exception e)
-		{
-			specularTexture = nullptr;
-		}
+		Texture* specularTexture = tryLoadTexture(concatenate(texturePath, fileSpecular));
 
-		material->m_DiffuseTexture = diffuseTexture;
-		material->m_SpecularTexture = specularTexture;
-		material->m_AmbientColor =	toVec3(ambientColor);
-		material->m_DiffuseColor =	toVec3(diffuseColor);
-		material->m_SpecularColor = toVec3(specularColor);
-		material->m_Shininess =		shininess;
+		material->SetDiffuseTexture(diffuseTexture);
+		material->SetSpecularTexture(specularTexture);
+		material->SetAmbientColor(toVec3(ambientColor));
+		material->SetDiffuseColor(toVec3(diffuseColor));
+		material->SetSpecularColor(toVec3(specularColor));
+		material->SetShininess(shininess);
 	}
 
 	return material;
