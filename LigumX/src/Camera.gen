@@ -5,4 +5,8 @@ class Camera
 	glm::mat4 ViewMatrix
 	glm::mat4 ProjectionMatrix
 	glm::mat4 ViewProjectionMatrix
+	float NearPlane
+	float FarPlane
+	ProjectionType ProjectionType
+	float OrthoBorders
 }

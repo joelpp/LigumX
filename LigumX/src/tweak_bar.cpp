@@ -22,7 +22,6 @@ void LigumX::init_tweakBar()
     //myBar = TwNewBar("NameOfMyTweakBar");
     //TwAddVarRW(myBar, "Draw Building Sides", TW_TYPE_BOOLCPP, &drawBuildingSides, NULL);
     //TwAddButton(myBar, "To EntityLand", toggle_entityland, NULL, NULL);
-    //TwAddVarRW(myBar, "Draw Ground", TW_TYPE_BOOLCPP, &(renderer.drawGround), NULL);
 
     //TwEnumVal CameraTypeEV[] = { {Camera::CameraType::AIRPLANE, "Airplane"}, {Camera::CameraType::AROUND_TARGET, "Around Target"}, {Camera::CameraType::CYLINDRICAL, "Cynlindrical"}, {Camera::CameraType::TOP_2D, "Top 2D"}, {Camera::CameraType::TOP_3D, "Top 3D"} };
     //TwType CameraTwType;

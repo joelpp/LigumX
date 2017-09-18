@@ -21,6 +21,12 @@
 #include "osm_element.h"
 #include "imgui_impl_glfw_gl3.h"
 
+#pragma region  FORWARD_DECLARATIONS Renderer
+#include "property.h"
+class 	DisplayOptions;
+class 	PostEffects;
+
+#pragma endregion  FORWARD_DECLARATIONS Renderer
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
 //#define FLUSH_ERRORS()
 
@@ -30,6 +36,7 @@ class Mesh;
 class RenderDataManager;
 class World;
 class Entity;
+class DisplayOptions;
 
 struct Light
 {
@@ -52,9 +59,35 @@ struct Text {
 
 class Renderer{
 
+#pragma region  HEADER Renderer
+static const int ClassID = 1498036510;
 public:
-    void Initialize();
+	DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
+void SetDisplayOptions(	DisplayOptions* value) { m_DisplayOptions = value; };
+	PostEffects* GetPostEffects() { return m_PostEffects; }; 
+void SetPostEffects(	PostEffects* value) { m_PostEffects = value; };
+private:
+	DisplayOptions* m_DisplayOptions;
+	PostEffects* m_PostEffects;
+public:
+static const int g_RendererPropertyCount = 2;
+static const ClassPropertyData g_RendererProperties[g_RendererPropertyCount];
 
+
+#pragma endregion  HEADER Renderer
+public:
+	const unsigned int SHADOW_WIDTH = 800, SHADOW_HEIGHT = 800;
+
+	World* m_World;
+
+    void Initialize();
+	void InitGL();
+	void InitFreetype();
+	GLFWwindow*	CreateGLWindow();
+	GLuint CreateFrameBuffer();
+	GLuint CreateTexture();
+	void RenderShadowMap();
+	void RenderOpaque();
 
     // subfunctions
     void init_pipelines();
@@ -76,6 +109,7 @@ public:
 	void RenderEntities(std::vector<Entity*> entities);
 
 	void Bind2DTexture(int slot, GLuint HWObject);
+	void BindTexture(GLuint& hwTexture);
 	void FreeBoundTexture();
 
 	void SetUniform(int value, const char* name, GLuint location);
@@ -101,23 +135,15 @@ public:
 	//void SetVertexUniform(glm::mat4x4& value, const char* name);
 	void SetPipeline(ProgramPipeline* pipeline);
 	void SetLightingUniforms();
-	void SetViewUniforms();
+	void SetViewUniforms(Camera* cam);
+	void SetShadowMapUniforms(Camera* cam);
 	void SetDebugUniforms();
 	void SetMaterialUniforms(Material* material);
+	void SetPostEffectsUniforms();
 
     Camera *camera;
-	bool m_DrawTerrain;
-	bool m_DrawSky;
-	bool m_WireframeRendering;
-	bool m_UseLighting;
-	bool m_ShowNormals;
-	bool m_ShowSpecular;
-	bool m_ShowDiffuse;
-	bool m_ShowAmbient;
-
+	Camera *m_ShadowCamera;
     bool drawBuildingSides;
-    bool drawGround;
-    bool showText;
     bool saveScreenshot;
 
     float dt, curr_time, fps;
@@ -131,9 +157,13 @@ public:
     float sunTime;
     float sunOrientation;
     // textures
-    GLuint glidTextureScreenRoads; // for implicit definition of the roads.
-    GLuint glidFramebuffer;
+    GLuint glidScreenTexture; // for implicit definition of the roads.
+	GLuint glidFramebuffer;
+	GLuint glidShadowMapFramebuffer;
+	GLuint depthMapTexture;
+
     Texture* pBuildingTex;
+
     std::unordered_map<std::string, Texture*> textureMap;
 
     // shaders
@@ -143,12 +173,14 @@ public:
     ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
     ProgramPipeline* pPipelineGround;
-    ProgramPipeline* pPipelineEnvmap;
+	ProgramPipeline* pPipelineEnvmap;
+	ProgramPipeline* pPipelineScreenSpaceTexture;
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
     ProgramPipeline* pPipelineBasic;
     ProgramPipeline* pPipelineBasicUV;
-    ProgramPipeline* activePipeline;
+	ProgramPipeline* pPipelineShadowMap;
+	ProgramPipeline* activePipeline;
     std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 
     // need to keep those for swapping

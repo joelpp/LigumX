@@ -153,6 +153,7 @@
     <ClCompile Include="src\building_sides.cpp" />
     <ClCompile Include="src\callbacks.cpp" />
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\DisplayOptions.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\filled_buildings.cpp" />
     <ClCompile Include="src\heightfield.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="src\osm_element.cpp" />
     <ClCompile Include="src\PerlinNoise.cpp" />
     <ClCompile Include="src\pipelines.cpp" />
+    <ClCompile Include="src\PostEffects.cpp" />
     <ClCompile Include="src\program_pipeline.cpp" />
     <ClCompile Include="src\relation.cpp" />
     <ClCompile Include="src\RenderDataManager.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="src\SectorManager.cpp" />
     <ClCompile Include="src\SectorMath.cpp" />
     <ClCompile Include="src\Settings.cpp" />
+    <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -192,6 +195,7 @@
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="data\shaders\BasicUniforms.h" />
     <ClInclude Include="include\Building.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\common.h" />
@@ -229,6 +233,7 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\CurlRequest.h" />
+    <ClInclude Include="src\DisplayOptions.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\heightfield.h" />
     <ClInclude Include="src\imconfig.h" />
@@ -245,6 +250,7 @@
     <ClInclude Include="src\node.h" />
     <ClInclude Include="src\osm_element.h" />
     <ClInclude Include="src\PerlinNoise.h" />
+    <ClInclude Include="src\PostEffects.h" />
     <ClInclude Include="src\program_pipeline.h" />
     <ClInclude Include="src\property.h" />
     <ClInclude Include="src\relation.h" />
@@ -272,7 +278,10 @@
     <None Include="data\shaders\BasicUV\control.tcs" />
     <None Include="data\shaders\BasicUV\evaluation.tes" />
     <None Include="src\Camera.gen" />
+    <None Include="src\DisplayOptions.gen" />
     <None Include="src\Material.gen" />
+    <None Include="src\PostEffects.gen" />
+    <None Include="src\renderer.gen" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

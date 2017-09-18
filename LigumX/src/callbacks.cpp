@@ -50,6 +50,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 			if (LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
 			{
 				game.camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+				//Renderer::GetInstance().m_ShadowCamera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
 			}
         }
 		else if (key == GLFW_KEY_R)
@@ -74,6 +75,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
     }
     LigumX::GetInstance().camera->handlePresetKey(pWindow, key, scancode, action, mods);
+	//Renderer::GetInstance().m_ShadowCamera->handlePresetKey(pWindow, key, scancode, action, mods);
 }
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
@@ -114,7 +116,8 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
             }
         }
 
-        LigumX::GetInstance().camera->handlePresetMouseButton(pWindow, button, action, mods);
+		LigumX::GetInstance().camera->handlePresetMouseButton(pWindow, button, action, mods);
+		//Renderer::GetInstance().m_ShadowCamera->handlePresetMouseButton(pWindow, button, action, mods);
 //        TODO
         //        LigumX::GetInstance().renderer->updateMVPMatrix();
 }
@@ -128,9 +131,11 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
             offset.y *= -1; // reversed controls? this should be an option
 
             LigumX::GetInstance().camera->translateBy(vec3(offset/1000.f,0));
+			//Renderer::GetInstance().m_ShadowCamera->translateBy(vec3(offset / 1000.f, 0));
 
-            LigumX::GetInstance().oldMousePosition = vec2(x,y);
+			LigumX::GetInstance().oldMousePosition = vec2(x, y);
 
         }
-        LigumX::GetInstance().camera->handlePresetCursorPos(pWindow, x, y);
+		LigumX::GetInstance().camera->handlePresetCursorPos(pWindow, x, y);
+		//Renderer::GetInstance().m_ShadowCamera->handlePresetCursorPos(pWindow, x, y);
 }

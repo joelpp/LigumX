@@ -1,19 +1,78 @@
 #version 410 core
+#extension GL_ARB_shading_language_include : require
 
 in vec2 myTexCoord;
 in vec3 vNormalWS;
 in vec4 vWorldPosition;
 in float height;
-in vec4 FragPosLightSpace;
-
 
 #define PROVIDER_View
 #define PROVIDER_Light
 #define PROVIDER_Debug
 #define PROVIDER_PostEffects
 #define PROVIDER_Material
-#define PROVIDER_ShadowMap
-// Include Providers Marker
+
+
+#ifdef PROVIDER_Material
+struct Material
+{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	float shininess;
+	sampler2D m_DiffuseTexture;
+	sampler2D m_SpecularTexture;
+};
+
+uniform Material g_Material;
+uniform int g_BlinnPhongShading;
+
+#endif
+
+#ifdef PROVIDER_Light
+struct DirectionalLight
+{
+	vec3 m_Direction;
+	vec3 m_DiffuseColor;
+	vec3 m_AmbientColor;
+	vec3 m_SpecularColor;
+};
+
+uniform DirectionalLight g_DirectionalLight;
+
+struct PointLight
+{
+	vec3 m_Position;
+	vec3 m_DiffuseColor;
+	vec3 m_AmbientColor;
+	vec3 m_SpecularColor;
+};
+
+uniform PointLight g_PointLight;
+
+uniform int g_UseLighting;
+#endif
+
+#ifdef PROVIDER_View
+uniform vec3 g_CameraPosition;
+uniform float g_CameraNearPlane;
+uniform float g_CameraFarPlane;
+
+#endif
+
+#ifdef PROVIDER_Debug
+uniform int g_DebugDiffuseEnabled;
+uniform int g_DebugSpecularEnabled;
+uniform int g_DebugAmbientEnabled;
+uniform int g_DebugNormalsEnabled;
+uniform int g_DebugDepthEnabled;
+uniform int g_DebugLinearizeDepth;
+#endif
+
+#ifdef PROVIDER_PostEffects
+uniform int g_GammaCorrectionEnabled;
+uniform float g_GammaCorrectionExponent;
+#endif
 
 
 out vec4 FinalColor;
@@ -32,25 +91,12 @@ float LinearizeDepth(float nonLinearDepth)
 	return (2.0 * near * far) / (far + near - z * (far - near));
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS)
-{
-    // perform perspective divide
-    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    projCoords = projCoords * 0.5 + 0.5; 
-
-
-	float closestDepth = texture(g_DepthMapTexture, projCoords.xy).r;
-	float currentDepth = projCoords.z;
-
-	float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, normalWS)), 0.005);  
-	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
-		if(projCoords.z > 1.0)
-        shadow = 0.0;
-    return shadow;
-}
-
 void main() 
 {
+			float depth = gl_FragCoord.z;
+		FinalColor = vec4(depth, depth, 0.8, 1.f);
+		return ;
+
 	vec3 fNormalWS = normalize(vNormalWS);
 	
 
@@ -60,18 +106,18 @@ void main()
 		return ;
 	}
 
-	if (g_DebugDepthEnabled > 0)
+	//if (g_DebugDepthEnabled > 0)
 	{
-		float depth = 0;
-		if (g_DebugLinearizeDepth > 0)
-		{
-			depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
-		}
-		else
-		{
+		//float depth = 0;
+		//if (g_DebugLinearizeDepth > 0)
+		//{
+		//	depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
+		//}
+		//else
+		//{
 			depth = gl_FragCoord.z;
-		}
-		FinalColor = vec4(depth, depth, depth, 1.f);
+		//}
+		FinalColor = vec4(depth, depth, 0.8, 1.f);
 		return ;
 	}
 
@@ -90,8 +136,7 @@ void main()
 		ambientContribution *= g_DebugAmbientEnabled;
 
 		// Diffuse
-		//vec4 diffuseColor = texture(g_DepthMapTexture, myTexCoord) * 3;
-		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord) ;
+		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord);
 		//if (g_GammaCorrectionEnabled > 0)
 		//{
 		//	diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
@@ -117,9 +162,9 @@ void main()
 		vec3 specularContribution = spec * specularColor.rgb;  
 		specularContribution *= g_DebugSpecularEnabled;
 
-		float shadow = ShadowCalculation(FragPosLightSpace, fNormalWS);
+
 		// final 
-		FinalColor.rgb = ambientContribution + (1.0 - shadow) * diffuseContribution /*+ specularContribution*/;
+		FinalColor.rgb = ambientContribution + diffuseContribution /*+ specularContribution*/;
 	}
 	else
 	{

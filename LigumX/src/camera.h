@@ -9,7 +9,14 @@
 #include "property.h"
 
 #pragma endregion  FORWARD_DECLARATIONS Camera
-// 2D orthographic camera, look in the -Z direction.
+// 2D orthographic camera, look in the -Z direction.3
+
+enum ProjectionType
+{
+	ProjectionType_Perspective,
+	ProjectionType_Orthographic
+};
+
 class Camera
 {
 #pragma region  HEADER Camera
@@ -25,14 +32,26 @@ const	glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; };
 void SetProjectionMatrix(	glm::mat4 value) { m_ProjectionMatrix = value; };
 const	glm::mat4& GetViewProjectionMatrix() { return m_ViewProjectionMatrix; }; 
 void SetViewProjectionMatrix(	glm::mat4 value) { m_ViewProjectionMatrix = value; };
+const	float& GetNearPlane() { return m_NearPlane; }; 
+void SetNearPlane(	float value) { m_NearPlane = value; };
+const	float& GetFarPlane() { return m_FarPlane; }; 
+void SetFarPlane(	float value) { m_FarPlane = value; };
+const	ProjectionType& GetProjectionType() { return m_ProjectionType; }; 
+void SetProjectionType(	ProjectionType value) { m_ProjectionType = value; };
+const	float& GetOrthoBorders() { return m_OrthoBorders; }; 
+void SetOrthoBorders(	float value) { m_OrthoBorders = value; };
 private:
 	glm::vec3 m_Position;
 	glm::vec3 m_someBullshitVec3;
 	glm::mat4 m_ViewMatrix;
 	glm::mat4 m_ProjectionMatrix;
 	glm::mat4 m_ViewProjectionMatrix;
+	float m_NearPlane;
+	float m_FarPlane;
+	ProjectionType m_ProjectionType;
+	float m_OrthoBorders;
 public:
-static const int g_CameraPropertyCount = 5;
+static const int g_CameraPropertyCount = 9;
 static const ClassPropertyData g_CameraProperties[g_CameraPropertyCount];
 
 
@@ -68,8 +87,6 @@ public:
     float keyMovementSpeed, defaultKeyMovementSpeed, keyMovementSpeedIncreaseFactor;
     float totalViewAngleY;
     float aspectRatio;
-	float nearPlane;
-	float farPlane;
 
 	float minimumSpeed;
 	float maximumSpeed;

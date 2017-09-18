@@ -82,6 +82,7 @@ void LigumX::mainLoop()
 
     physic_accumulator += dt;
 
+	//Renderer::GetInstance().m_ShadowCamera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
     camera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
 
 
@@ -198,6 +199,7 @@ void LigumX::updateWorld(int loadingRingSize)
 void LigumX::initCamera()
 {
     camera = new Camera();
+	camera->SetProjectionType(ProjectionType_Perspective);
     camera->setViewSize(Settings::GetInstance().f("viewSize"));
     Renderer::GetInstance().camera = camera;
     draggingCamera = false;
@@ -216,8 +218,6 @@ void LigumX::loadSettings(){
     buildingSideScaleFactor = 1;
 
 	Renderer& renderer = Renderer::GetInstance();
-	renderer.drawGround = false;
-	renderer.showText = true;
 	renderer.m_ShowGUI = true;
 
     ProgramPipeline::ShadersPath = s.s("ShadersPath");

@@ -213,6 +213,14 @@ public:
 
 		index = 0;
 		std::fstream headerFile(headerFilePath.c_str(), std::ios::out);
+
+		if (lines.size() == 0)
+		{
+
+		 	headerFile << GetFinalOutput();
+			headerFile << std::endl;
+		}
+
 		for (std::string& line : lines)
 		{
 			if (index < beginIndex || index > GetEndIndex())
@@ -223,7 +231,7 @@ public:
 
 			index++;
 
-			if (bWriteCodeRegions && index == beginIndex)
+			if ((bWriteCodeRegions && index == beginIndex) || beginIndex == 0)
 			{
 				headerFile << GetFinalOutput();
 				headerFile << std::endl;
@@ -301,6 +309,8 @@ class ForwardDeclarationRegion : public CodeRegion
 
 		std::vector<std::string> classesToDeclare;
 		WriteLine("#include \"property.h\"");
+
+		// todo : add autoincludes from this
 		for (Variable v : m_Class.m_Members)
 		{
 			if (v.IsAPointer())
@@ -359,6 +369,10 @@ public:
 
 	void WriteBody()
 	{
+		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
+		WriteLine("#include <cstddef>");
+
+
 		std::string propertyCountVarName = "g_" + m_Class.m_Name + "PropertyCount";
 		int numProperties = m_Class.m_Members.size();
 
@@ -368,7 +382,8 @@ public:
 		for (int i = 0; i < numProperties; ++i)
 		{
 			std::string&  varName = m_Class.m_Members[i].m_Name;
-			WriteLine("{ \"" + varName + "\", offsetof(" + m_Class.m_Name + ", m_" + varName + "), " + (m_Class.m_Members[i].m_Type == "\tglm::vec3" ? "1" : "0") + " },");
+			// todo : fix this \t madness
+			WriteLine("{ \"" + varName + "\", offsetof(" + m_Class.m_Name + ", m_" + varName + "), " + (m_Class.m_Members[i].m_Type == "\tbool" ? "1" : "0") + " },");
 		}
 
 		WriteLine("};");

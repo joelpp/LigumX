@@ -8,7 +8,20 @@
 #include "World.h"
 #include "Entity.h"
 #include "RenderDataManager.h"
+#include "DisplayOptions.h"
+#include "Settings.h"
+#include "PostEffects.h"
 
+#pragma region  CLASS_SOURCE Renderer
+#include "Renderer.h"
+#include <cstddef>
+const ClassPropertyData Renderer::g_RendererProperties[] = 
+{
+{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0 },
+{ "PostEffects", offsetof(Renderer, m_PostEffects), 0 },
+};
+
+#pragma endregion  CLASS_SOURCE Renderer
 using namespace glm;
 using namespace std;
 
@@ -16,70 +29,43 @@ using namespace std;
 
 #define FT_SUCCESS 0
 
-void Renderer::Initialize(){
 
-	m_DrawTerrain = true;
-    showText = true;
-	m_WireframeRendering = false;
-    windowWidth = 800;
-    windowHeight = 800;
-    windowTitle = "LigumX";
-    fps = 300;
-    dt = 0.1;
-    //=============================================================================
-    // create window and GLcontext, register callbacks.
-    //=============================================================================
+// TODO : Should this be in like a GL device object?
+GLFWwindow* Renderer::CreateGLWindow()
+{
+	// set window paramaters
+	glfwDefaultWindowHints();
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-    // glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+	return glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
+}
 
-//    glfwSetErrorCallback(test_error_cb);
+void Renderer::InitGL()
+{
+	// Initialise GLFW
+	if (!glfwInit())
+	{
+		PRINT("Failed to initialize GLFW.\n");
+		return;
+	}
+	else {
+		PRINT("Initialized GLFW.");
+	}
 
+	// Create GLFW window
+	pWindow = CreateGLWindow();
 
-    // Initialise GLFW
-    if( !glfwInit() )
-    {
-        PRINT("Failed to initialize GLFW.\n");
-        return;
-    } else {
-        PRINT("Initialized GLFW.");
-    }
-
-
-    // set window paramaters
-    glfwDefaultWindowHints();
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-//#ifdef __APPLE__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-//#else
-//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-//#endif
-
-    // create GLFW window
-//    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
-    pWindow = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
-
-    glfwSetWindowPos(pWindow, 700, 200);
-    glfwMakeContextCurrent(pWindow);
-    if( pWindow == NULL )
-    {
-        cerr << "Failed to open GLFW window.\n";
-        glfwTerminate();
-        return;
-    }
-
-    // Initialize GLEW
-    //glewExperimental = GL_TRUE; // Needed for core profile
-    //GLenum err = glewInit();
-    //if (err != GLEW_OK) {
-    //    cerr << "Failed to initialize GLEW\n"
-    //         << glewGetErrorString(err) << endl;
-    //    return;
-    //} else {
-    //    PRINT("Initialized GLEW.");
-    //}
+	glfwSetWindowPos(pWindow, 700, 200);
+	glfwMakeContextCurrent(pWindow);
+	if (pWindow == NULL)
+	{
+		cerr << "Failed to open GLFW window.\n";
+		glfwTerminate();
+		return;
+	}
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -87,130 +73,195 @@ void Renderer::Initialize(){
 		//return -1;
 		exit(1);
 	}
+
+	// GL Settings
+	glfwSwapInterval(0);
+
+	glEnable(GL_DEPTH_TEST);
+
+	glDepthFunc(GL_LESS);
+
+	// Framebuffer
+	glidFramebuffer = CreateFrameBuffer();
+	glidShadowMapFramebuffer = CreateFrameBuffer();
+
+
+	glidScreenTexture = CreateTexture();
+	BindTexture(glidScreenTexture);
+
+	// todo : hw texture objects should know how to do this stuff on their own
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, glidScreenTexture, 0);
+
+
+
+	glGenTextures(1, &depthMapTexture);
+	glBindTexture(GL_TEXTURE_2D, depthMapTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, glidShadowMapFramebuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, drawBuffers);
+}
+
+GLuint Renderer::CreateFrameBuffer()
+{
+	GLuint val;
+	glGenFramebuffers(1, &val);
+	glBindFramebuffer(GL_FRAMEBUFFER, val);
 	FLUSH_ERRORS();
 
-    glfwSwapInterval(0);
+	return val;
+}
+
+GLuint Renderer::CreateTexture()
+{
+	GLuint val;
+	glGenTextures(1, &val);
+
+	return val;
+}
+
+void Renderer::BindTexture(GLuint& hwTexture)
+{
+	glBindTexture(GL_TEXTURE_2D, hwTexture);
+}
+
+void Renderer::InitFreetype()
+{
+	FT_Library ft;
+	if (FT_Init_FreeType(&ft))
+		std::cout << "ERROR::FREETYPE: Could nolololt init FreeType Library" << std::endl;
+
+	FT_Face face;
+	int success = FT_New_Face(ft, "data/fonts/arial.ttf", 0, &face);
+	if (success == FT_SUCCESS)
+	{
+		PRINT("Loaded Freetype font! yayy");
+	}
+	else
+	{
+		PRINT("Failed to load freetype font.");
+
+	}
+
+	FT_Set_Pixel_Sizes(face, 0, 48);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 	FLUSH_ERRORS();
-
-    glEnable(GL_DEPTH_TEST);
-	FLUSH_ERRORS();
-
-    glDepthFunc(GL_LESS);
-    std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
-//#ifdef __APPLE__
-    textureMap.emplace("bricks", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-	textureMap.emplace("grass", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png"));
-	//textureMap.emplace("gray", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/gray.png"));
-    // textureMap.emplace("rock", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/rock.png"));
-    // textureMap.emplace("ATLAS", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/Atlas.png"));
-    // textureMap.emplace("asphalt", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/asphalt.jpg"));
-    // textureMap.emplace("roof", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/roof_rgba.png"));
-    // textureMap.emplace("building_side1", new Texture("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/building_side1_rgba.png"));
-
-//#else
-//    textureMap.emplace("bricks", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-//    textureMap.emplace("grass", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-//    textureMap.emplace("rock", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-//    textureMap.emplace("ATLAS", new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/brickles.png"));
-//
-//#endif
-
-    glGenFramebuffers(1, &glidFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, glidFramebuffer);
-	FLUSH_ERRORS();
-
-    glGenTextures(1, &glidTextureScreenRoads);
-    glBindTexture(GL_TEXTURE_2D, glidTextureScreenRoads);
-	FLUSH_ERRORS();
-
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, windowWidth, windowHeight, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, glidTextureScreenRoads, 0);
-    GLenum drawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-    glDrawBuffers(1, drawBuffers);
-
-
-
-
-   FT_Library ft;
-   if (FT_Init_FreeType(&ft))
-       std::cout << "ERROR::FREETYPE: Could nolololt init FreeType Library" << std::endl;
-
-   FT_Face face;
-   int success = FT_New_Face(ft, "data/fonts/arial.ttf", 0, &face);
-   if (success == FT_SUCCESS)
-   {
-       PRINT("Loaded Freetype font! yayy");
-   }
-   else
-   {
-       PRINT("Failed to load freetype font.");
-
-   }
-    
-   FT_Set_Pixel_Sizes(face, 0, 48);
-
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
-   FLUSH_ERRORS();
-   for (GLubyte c = 0; c < 128; c++)
-   {
-       // Load character glyph
-       if (FT_Load_Char(face, c, FT_LOAD_RENDER) != FT_SUCCESS)
-       {
-           std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-           continue;
-       }
-       // Generate texture
-       GLuint texture;
-       glGenTextures(1, &texture);
-       glBindTexture(GL_TEXTURE_2D, texture);
-       glTexImage2D(
-           GL_TEXTURE_2D,
-           0,
-           GL_RED,
-           face->glyph->bitmap.width,
-           face->glyph->bitmap.rows,
-           0,
-           GL_RED,
-           GL_UNSIGNED_BYTE,
-           face->glyph->bitmap.buffer
-       );
-       // Set texture options
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-       // Now store character for later use
-       Character character = {
-           texture,
-           glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-           glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+	for (GLubyte c = 0; c < 128; c++)
+	{
+		// Load character glyph
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER) != FT_SUCCESS)
+		{
+			std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+			continue;
+		}
+		// Generate texture
+		GLuint texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RED,
+			face->glyph->bitmap.width,
+			face->glyph->bitmap.rows,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			face->glyph->bitmap.buffer
+		);
+		// Set texture options
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// Now store character for later use
+		Character character = {
+			texture,
+			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
 #ifdef __APPLE__
-           static_cast<GLuint>(face->glyph->advance.x)
+			static_cast<GLuint>(face->glyph->advance.x)
 #else
-           face->glyph->advance.x
+			face->glyph->advance.x
 #endif
-       };
-       Characters.insert(std::pair<GLchar, Character>(c, character));
-   }
-   FT_Done_Face(face);
-   FT_Done_FreeType(ft);
+		};
+		Characters.insert(std::pair<GLchar, Character>(c, character));
+	}
+	FT_Done_Face(face);
+	FT_Done_FreeType(ft);
 
+}
 
-   ImGui_ImplGlfwGL3_Init(pWindow, true);
-   glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+void Renderer::Initialize()
+{
+	// TODO : add default constructors D: and serialization for gen files...
+	m_DisplayOptions = new DisplayOptions();
+
+	m_DisplayOptions->SetDrawTerrain(true);
+	m_DisplayOptions->SetDrawSky(true);
+	m_DisplayOptions->SetUseLighting(true);
+	m_DisplayOptions->SetShowDiffuse(true);
+	m_DisplayOptions->SetShowSpecular(true);
+	m_DisplayOptions->SetShowNormals(false);
+	m_DisplayOptions->SetShowAmbient(true);
+	m_DisplayOptions->SetShowFPS(true);
+
+	m_PostEffects = new PostEffects();
+	m_PostEffects->SetGammaExponent(2.2f);
+
+    windowWidth = 800;
+    windowHeight = 800;
+    windowTitle = "LigumX";
+    fps = 300;
+    dt = 0.1;
+
+	InitGL();
+
+	InitFreetype();
+
+	// todo : put this in startup options?
+    std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
+
+	ImGui_ImplGlfwGL3_Init(pWindow, true);
    
-   m_TestLight.m_DiffuseColor = glm::vec3(0.88, 0.56, 0.76);
-   m_TestLight.m_SpecularColor = glm::vec3(0.56, 0.88, 0.76);
-   m_TestLight.m_AmbientColor = glm::vec3(0.1, 0.1, 0.1);
-   m_TestLight.m_Position = glm::vec3(-0.25, 7, 13);
+	m_TestLight.m_DiffuseColor = glm::vec3(0.88, 0.56, 0.76);
+	m_TestLight.m_SpecularColor = glm::vec3(0.56, 0.88, 0.76);
+	m_TestLight.m_AmbientColor = glm::vec3(0.1, 0.1, 0.1);
+	m_TestLight.m_Position = glm::vec3(-0.25, 7, 13);
 
-   m_ShowDiffuse = true;
-   m_ShowSpecular = true;
-   m_ShowNormals = false;
-   m_ShowAmbient = true;
+	m_ShadowCamera = new Camera();
+	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
+	//m_ShadowCamera->SetProjectionType(ProjectionType_Perspective);
+	//-16.13, -5.9, 20.2
+	//-0.47, -0.81, 0.34
+	m_ShadowCamera->translateTo(glm::vec3(-16.13, -5.9, 20.2));
+	m_ShadowCamera->frontVec = glm::vec3(-0.47, -0.81, 0.34);
+	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0,0,1), m_ShadowCamera->frontVec));
+	m_ShadowCamera->upVec = glm::cross(m_ShadowCamera->frontVec, m_ShadowCamera->rightVec);
+	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->frontVec * 10.f);
+	m_ShadowCamera->updateVPMatrix();
 }
 
 void Renderer::SetUniform(float value, const char* name, GLuint location)
@@ -290,19 +341,23 @@ void Renderer::SetPipeline(ProgramPipeline* pipeline)
 
 void Renderer::SetLightingUniforms()
 {
-	SetFragmentUniform(m_TestLight.m_Position,		"g_Light.m_Position");
-	SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_Light.m_DiffuseColor");
-	SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_Light.m_AmbientColor");
-	SetFragmentUniform(m_TestLight.m_SpecularColor, "g_Light.m_SpecularColor");
+	SetFragmentUniform(m_TestLight.m_Position,		"g_PointLight.m_Position");
+	SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_PointLight.m_DiffuseColor");
+	SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_PointLight.m_AmbientColor");
+	SetFragmentUniform(m_TestLight.m_SpecularColor, "g_PointLight.m_SpecularColor");
+	
+	SetFragmentUniform(m_TestLight.m_Position,		"g_DirectionalLight.m_Direction");
+	SetFragmentUniform(m_TestLight.m_DiffuseColor,	"g_DirectionalLight.m_DiffuseColor");
+	SetFragmentUniform(m_TestLight.m_AmbientColor,	"g_DirectionalLight.m_AmbientColor");
+	SetFragmentUniform(m_TestLight.m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
 }
 
 void Renderer::SetMaterialUniforms(Material* material)
 {
-	SetFragmentUniform(material->GetAmbientColor(),	"g_Material.ambient");
-	SetFragmentUniform(material->GetDiffuseColor(),	"g_Material.diffuse");
+	SetFragmentUniform(material->GetAmbientColor(),		"g_Material.ambient");
+	SetFragmentUniform(material->GetDiffuseColor(),		"g_Material.diffuse");
 	SetFragmentUniform(material->GetSpecularColor(),	"g_Material.specular");
-	SetFragmentUniform(material->GetShininess(),	"g_Material.shininess");
-
+	SetFragmentUniform(material->GetShininess(),		"g_Material.shininess");
 
 	if (material->GetDiffuseTexture())
 	{
@@ -315,51 +370,82 @@ void Renderer::SetMaterialUniforms(Material* material)
 		SetFragmentUniform(1, "g_Material.m_SpecularTexture");
 		Bind2DTexture(1, material->GetSpecularTexture()->GetHWObject());
 	}
-	
+
+	int blinnPhongshading = m_DisplayOptions->GetBlinnPhongShading() ? 1 : 0;
+	SetFragmentUniform(blinnPhongshading, "g_BlinnPhongShading");
 }
 
-void Renderer::SetViewUniforms()
+void Renderer::SetPostEffectsUniforms()
 {
-	SetVertexUniform(camera->GetViewProjectionMatrix(), "vpMat");
-	SetVertexUniform(camera->GetViewMatrix(), "g_WorldToViewMatrix");
-	SetVertexUniform(camera->GetProjectionMatrix(), "g_ProjectionMatrix");
+	int gamma = m_PostEffects->GetGammaCorrectionEnabled() ? 1 : 0;
+	SetFragmentUniform(gamma, "g_GammaCorrectionEnabled");
+	float val = m_PostEffects->GetGammaExponent();
+	SetFragmentUniform(val, "g_GammaCorrectionExponent");
 
-	SetFragmentUniform(camera->GetPosition(), "g_CameraPosition");
+}
+
+void Renderer::SetShadowMapUniforms(Camera* cam)
+{
+	SetFragmentUniform(2, "g_DepthMapTexture");
+	Bind2DTexture(2, depthMapTexture);
+
+	SetVertexUniform(cam->GetViewProjectionMatrix(), "g_LightProjectionMatrix");
+}
+
+void Renderer::SetViewUniforms(Camera* cam)
+{
+	SetVertexUniform(cam->GetViewProjectionMatrix(), "vpMat");
+	SetVertexUniform(cam->GetViewMatrix(),			"g_WorldToViewMatrix");
+	SetFragmentUniform(glm::inverse(cam->GetViewMatrix()), "g_ViewToWorldMatrix");
+	SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
+	SetFragmentUniform(glm::inverse(cam->GetProjectionMatrix()), "g_ProjectionMatrixInverse");
+
+	SetFragmentUniform(cam->GetPosition(),	"g_CameraPosition");
+	SetFragmentUniform(cam->GetNearPlane(),	"g_CameraNearPlane");
+	SetFragmentUniform(cam->GetFarPlane(),	"g_CameraFarPlane");
 }
 
 void Renderer::SetDebugUniforms()
 {
-	int useLighting = m_UseLighting ? 1 : 0;
-	int diffuseEnabled = m_ShowDiffuse ? 1 : 0;
-	int specularEnabled = m_ShowSpecular ? 1 : 0;
-	int ambientEnabled = m_ShowAmbient ? 1 : 0;
-	int normalsEnabled = m_ShowNormals ? 1 : 0;
-	SetFragmentUniform(useLighting, "g_UseLighting");
-	SetFragmentUniform(diffuseEnabled, "g_DebugDiffuseEnabled");
-	SetFragmentUniform(ambientEnabled, "g_DebugAmbientEnabled");
+	int useLighting =		m_DisplayOptions->GetUseLighting() ? 1 : 0;
+	int diffuseEnabled =	m_DisplayOptions->GetShowDiffuse() ? 1 : 0;
+	int specularEnabled =	m_DisplayOptions->GetShowSpecular() ? 1 : 0;
+	int ambientEnabled =	m_DisplayOptions->GetShowAmbient() ? 1 : 0;
+	int normalsEnabled =	m_DisplayOptions->GetShowNormals() ? 1 : 0;
+	int depthEnabled =		m_DisplayOptions->GetShowDepth() ? 1 : 0;
+	int linearizeDepth =	m_DisplayOptions->GetLinearizeDepth() ? 1 : 0;
+	//int gammaCorrection =	m_DisplayOptions->GetGammaCorrection() ? 1 : 0;
+
+	SetFragmentUniform(useLighting,		"g_UseLighting");
+	SetFragmentUniform(diffuseEnabled,	"g_DebugDiffuseEnabled");
+	SetFragmentUniform(ambientEnabled,	"g_DebugAmbientEnabled");
 	SetFragmentUniform(specularEnabled, "g_DebugSpecularEnabled");
-	SetFragmentUniform(normalsEnabled, "g_DebugNormalsEnabled");
+	SetFragmentUniform(depthEnabled,	"g_DebugDepthEnabled");
+	SetFragmentUniform(normalsEnabled,	"g_DebugNormalsEnabled");
+	SetFragmentUniform(linearizeDepth, "g_DebugLinearizeDepth");
+	//SetFragmentUniform(gammaCorrection, "g_GammaCorrection");
 }
 
 void Renderer::DrawModel(Entity* entity, Model* model)
 {
   for (int i = 0; i < model->m_meshes.size(); ++i)
   {
-	SetPipeline(model->m_materialList[0]->GetProgramPipeline());
-
-	SetLightingUniforms();
-	SetViewUniforms();
-	SetDebugUniforms();
-
 	SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
 	DrawMesh(model->m_meshes[i], model->m_materialList[i]);
   }
 }
 
+GLuint slots[] =
+{
+	GL_TEXTURE0,
+	GL_TEXTURE1,
+	GL_TEXTURE2
+};
+
 void Renderer::Bind2DTexture(int slot, GLuint HWObject)
 {
-	GLuint theSlot = slot == 0 ? GL_TEXTURE0 : GL_TEXTURE1;
+	GLuint theSlot = slots[slot];
 	glActiveTexture(theSlot);
 	glBindTexture(GL_TEXTURE_2D, HWObject);
 }
@@ -414,7 +500,7 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
 
 void Renderer::DrawTerrain()
 {
-	if (!m_DrawTerrain)
+	if (!m_DisplayOptions->GetDrawTerrain())
 	{
 		return;
 	}
@@ -435,7 +521,7 @@ void Renderer::DrawTerrain()
     glBindVertexArray(terrainMesh->m_VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainMesh->m_VBOs.glidIndexBuffer);
 
-	if (m_WireframeRendering)
+	if (m_DisplayOptions->GetWireframeRendering())
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
@@ -453,7 +539,7 @@ void Renderer::DrawTerrain()
 		glDrawElements(terrainMesh->m_renderingMode, terrainMesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
     }
 
-	if (m_WireframeRendering)
+	if (m_DisplayOptions->GetWireframeRendering())
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
@@ -493,6 +579,19 @@ void Renderer::ShowVariableAsText(float variable, const char* variableName)
 	ImGui::Text("%s : %f", variableName, variable);
 }
 
+//#define ShowPropertyGrid(object, classname, displayname)\
+//{ \
+//if (ImGui::CollapsingHeader(##displayname)) \
+//{ \
+//	for (const ClassPropertyData& data : ##classname::g_##classnameProperties) \
+//	{ \
+//		{ \
+//			ImGui::Checkbox(data.m_Name, ((bool*)m_DisplayOptions + data.m_Offset)); \
+//		} \
+//	} \
+//} \
+//} \
+
 void Renderer::RenderGUI()
 {
 	ImGui_ImplGlfwGL3_NewFrame();
@@ -505,31 +604,54 @@ void Renderer::RenderGUI()
 	if (m_ShowGUI)
 	{
 		BeginImGUIWindow(1000, 700, 0, 0, "Settings");
-		ImGui::Checkbox("Draw terrain", &m_DrawTerrain);
-		ImGui::Checkbox("Draw sky", &m_DrawSky);
 		ImGui::Checkbox("Test GUI", &m_ShowTestGUI);
-		ImGui::Checkbox("Use Lighting", &m_UseLighting);
 
-		if (ImGui::CollapsingHeader("Debug"))
+		if (ImGui::CollapsingHeader("Rendering Options"))
 		{
-			ImGui::Checkbox("Wireframe mode", &m_WireframeRendering);
-			ImGui::Checkbox("Show Diffuse", &m_ShowDiffuse);
-			ImGui::Checkbox("Show Specular", &m_ShowSpecular);
-			ImGui::Checkbox("Show Ambient", &m_ShowAmbient);
-			ImGui::Checkbox("Show Normals", &m_ShowNormals);
+			for (const ClassPropertyData& data : DisplayOptions::g_DisplayOptionsProperties)
+			{
+				//if (data.debug == 1)
+				{
+					//ShowVariableAsText(*(glm::vec3*)((&(*camera)) + data.m_Offset), data.m_Name);
+					ImGui::Checkbox(data.m_Name, ((bool*)m_DisplayOptions + data.m_Offset));
+				}
+			}
+		}
+
+
+		if (ImGui::CollapsingHeader("Post Effects"))
+		{
+			for (const ClassPropertyData& data : PostEffects::g_PostEffectsProperties)
+			{
+				// todo : fix this data.debug madness
+				if (data.debug == 1)
+				{
+					ImGui::Checkbox(data.m_Name, ((bool*)m_PostEffects + data.m_Offset));
+				}
+			}
 		}
 
 		if (ImGui::CollapsingHeader("Camera"))
 		{
-			ShowVariableAsText(camera->GetPosition(), "Camera Position");
-			ShowVariableAsText(camera->frontVec, "Look at");
-			ShowVariableAsText(camera->rightVec, "Right");
-			ShowVariableAsText(camera->upVec, "Up");
-			ShowVariableAsText(camera->aspectRatio, "Aspect ratio");
-			ImGui::SliderFloat("Speed", &camera->keyMovementSpeed, camera->minimumSpeed, camera->maximumSpeed, "%.3f");
-			ImGui::SliderFloat("Min speed", &camera->minimumSpeed, 0, 1, "%.3f");
-			ImGui::SliderFloat("Max speed", &camera->maximumSpeed, 0, 1, "%.3f");
+			Camera* cam = m_ShadowCamera;
+			ShowVariableAsText(cam->GetPosition(), "Camera Position");
+			ShowVariableAsText(cam->frontVec, "Look at");
+			ShowVariableAsText(cam->rightVec, "Right");
+			ShowVariableAsText(cam->upVec, "Up");
+			ShowVariableAsText(cam->aspectRatio, "Aspect ratio");
+			ImGui::SliderFloat("Speed", &cam->keyMovementSpeed, cam->minimumSpeed, cam->maximumSpeed, "%.3f");
+			ImGui::SliderFloat("Min speed", &cam->minimumSpeed, 0, 1, "%.3f");
+			ImGui::SliderFloat("Max speed", &cam->maximumSpeed, 0, 1, "%.3f");
 			//Imgui::
+
+			for (const ClassPropertyData& data : Camera::g_CameraProperties)
+			{
+				// todo : fix this data.debug madness with PROPER TYPE HANDLING
+				if (data.m_Name == "OrthoBorders")
+				{
+					ImGui::SliderFloat(data.m_Name, ((float*)cam + data.m_Offset), 1.f, 100.f);
+				}
+			}
 		}
 
 		if (ImGui::CollapsingHeader("Light"))
@@ -540,23 +662,46 @@ void Renderer::RenderGUI()
 			ImGui::SliderFloat3("Position", &(m_TestLight.m_Position[0]), -30.f, 30.f);
 		}
 
-		if (ImGui::CollapsingHeader("MatProperties"))
-		{
-			void* addr = &camera;
-			for (const ClassPropertyData& data : Camera::g_CameraProperties)
-			{
-				if (data.debug == 1)
-				{
-					ShowVariableAsText(*(glm::vec3*)((&(*camera))+data.m_Offset),data.m_Name);
-				}
-			}
-		}
-
 
 		EndImGUIWindow();
 	}
 
 	ImGui::Render();
+}
+
+void Renderer::RenderShadowMap()
+{
+	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, glidShadowMapFramebuffer);
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	SetPipeline(pPipelineShadowMap);
+
+	SetLightingUniforms();
+	SetViewUniforms(m_ShadowCamera);
+	SetPostEffectsUniforms();
+	SetDebugUniforms();
+
+	glCullFace(GL_FRONT);
+	RenderEntities(m_World->m_Entities);
+	glCullFace(GL_BACK); // don't forget to reset original culling face
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::RenderOpaque()
+{
+	SetPipeline(m_World->m_Entities[0]->m_Model->m_materialList[0]->GetProgramPipeline());
+
+	SetLightingUniforms();
+	SetViewUniforms(camera);
+	//SetViewUniforms(m_ShadowCamera);
+	SetShadowMapUniforms(m_ShadowCamera);
+
+	SetPostEffectsUniforms();
+	SetDebugUniforms();
+
+	RenderEntities(m_World->m_Entities);
 }
 
 
@@ -566,34 +711,19 @@ void Renderer::RenderGUI()
  */
 void Renderer::render(World* world)
 {
-	FLUSH_ERRORS();
+	m_World = world;
+	RenderShadowMap();
+
+	glViewport(0, 0, windowWidth, windowHeight);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	FLUSH_ERRORS();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	FLUSH_ERRORS();
 	RenderSky();
-
-	FLUSH_ERRORS();
-	RenderEntities(world->m_Entities);
-	FLUSH_ERRORS();
 
 	DrawTerrain();
 
-	if (showText)
-	{
-		// RenderText("LIGUMX BITCHES", -0.7f, 0.5f, 0.0001f, glm::vec3(0.5, 0.8f, 0.2f), true);
-
-		// RenderText("test", 0.5f, 0.5f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f), false);
-		// RenderText("o", 400.f, 400.f, 0.1f, glm::vec3(0.5, 0.8f, 0.2f), false);
-
-		// for (int i = 0; i < texts.size(); i++)
-		{
-		// RenderText(texts[i]);
-		}
-	}
-
-    FLUSH_ERRORS();
+	RenderOpaque();
 
 	RenderGUI();
 
@@ -601,6 +731,25 @@ void Renderer::render(World* world)
 
 	RenderFPS();
 
+	{
+		glViewport(0, 0, 300, 300);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		SetPipeline(pPipelineScreenSpaceTexture);
+
+		SetFragmentUniform(0, "g_Texture");
+		Bind2DTexture(0, depthMapTexture);
+		//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
+
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		FLUSH_ERRORS();
+		//glClear(GL_DEPTH_BUFFER_BIT);
+	}
+
+
+
+
+	FLUSH_ERRORS();
 }
 
 void Renderer::RenderEntities(std::vector<Entity*> entities)
@@ -638,25 +787,32 @@ void Renderer::HandleScreenshot()
 
 void Renderer::RenderFPS()
 {
-  std::stringstream fpsString;
-  float smoothing = 0.99; // larger=more smoothing
-  fps = (fps * smoothing) + (1.f/dt * (1.0-smoothing));
-  fpsString << 1.f / (fps / 1000.f);
-  fpsString << " ms/frame";
-  RenderText(fpsString.str(), 695.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
+	if (!m_DisplayOptions->GetShowFPS())
+	{
+		return;
+	}
 
-  double new_time = glfwGetTime();
-  dt = new_time - curr_time;
-  curr_time = new_time;
+	std::stringstream fpsString;
+	float smoothing = 0.99; // larger=more smoothing
+	fps = (fps * smoothing) + (1.f/dt * (1.0-smoothing));
+	fpsString << 1.f / (fps / 1000.f);
+	fpsString << " ms/frame";
+	RenderText(fpsString.str(), 695.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
+
+	double new_time = glfwGetTime();
+	dt = new_time - curr_time;
+	curr_time = new_time;
 }
 
 void Renderer::RenderSky()
 {
-	if (!m_DrawSky)
+	if (!m_DisplayOptions->GetDrawSky())
 	{
 		return;
 	}
-       pPipelineEnvmap->usePipeline();
+
+	SetPipeline(pPipelineEnvmap);
+       //pPipelineEnvmap->usePipeline();
 	   FLUSH_ERRORS();
 
        GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
@@ -667,8 +823,10 @@ void Renderer::RenderSky()
        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
        glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);
        glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "viewAngles"), camera->totalViewAngleY*glm::pi<float>()/180.0, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()/180.0);
-       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->nearPlane);
+       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->GetNearPlane());
        
+	   SetViewUniforms(camera);
+
 	   FLUSH_ERRORS();
 	   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
        

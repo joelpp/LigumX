@@ -1,0 +1,13 @@
+class Material
+{
+	glm::vec3 Albedo
+	glm::vec3 AmbientColor
+	glm::vec3 DiffuseColor
+	glm::vec3 SpecularColor
+	float Shininess
+
+	Texture* DiffuseTexture
+	Texture* SpecularTexture
+
+	ProgramPipeline* ProgramPipeline
+}

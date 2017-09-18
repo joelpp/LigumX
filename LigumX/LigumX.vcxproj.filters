@@ -135,6 +135,15 @@
     <ClCompile Include="src\imgui_impl_glfw_gl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DisplayOptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PostEffects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -359,6 +368,15 @@
     <ClInclude Include="src\property.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DisplayOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PostEffects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="data\shaders\BasicUniforms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -366,5 +384,8 @@
     <None Include="data\settings.dat" />
     <None Include="src\Material.gen" />
     <None Include="src\Camera.gen" />
+    <None Include="src\DisplayOptions.gen" />
+    <None Include="src\renderer.gen" />
+    <None Include="src\PostEffects.gen" />
   </ItemGroup>
 </Project>

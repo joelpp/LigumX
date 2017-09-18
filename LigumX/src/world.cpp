@@ -11,6 +11,7 @@
 #include "SectorManager.h"
 #include "Material.h"
 #include "Model.h"
+#include "Texture.h"
 #include "Mesh.h"
 
 using namespace std;
@@ -36,7 +37,7 @@ World::World(float sectorSize)
 	testEntity->setPosition(glm::vec3(0, 0, 1));
 	testEntity->setModel(testModel);
 
-	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(0, 20, 0));
+	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(0, 20, 1));
 	toWorld = glm::rotate(toWorld, 90.f, glm::vec3(1, 0, 0));
 	testEntity->m_ModelToWorldMatrix = toWorld;
 	m_Entities.push_back(testEntity);
@@ -44,12 +45,17 @@ World::World(float sectorSize)
 	Entity* testEntity2 = new Entity();
 
 	// todo : properly handle setposition with modelmatrix
-	testEntity2->setPosition(glm::vec3(0, 2, 3));
+	testEntity2->setPosition(glm::vec3(0, 2, 0));
 
-	glm::mat4x4 toWorld2 = glm::translate(glm::mat4(1.0), glm::vec3(15, 20, 10));
-	toWorld2 = glm::rotate(toWorld2, 90.f, glm::vec3(1, 0, 0));
+	glm::mat4x4 toWorld2 = glm::translate(glm::mat4(1.0), glm::vec3(-100, -100, 1));
+	toWorld2 = glm::scale(toWorld2, glm::vec3(200, 200, 1));
+	//toWorld2 = glm::rotate(toWorld2, 90.f, glm::vec3(1, 0, 0));
+	//toWorld2 = glm::rotate(toWorld2, 90.f, glm::vec3(0, 1, 0));
 
-	//testModel = new Model(g_DefaultMeshes->DefaultSphereMesh, testEntity->m_Model->m_materialList[2]);
+	Material* material = new Material(testModel->m_materialList[4]->GetProgramPipeline(), glm::vec3(1, 0, 0));
+	material->SetShininess(1.0f);
+	material->SetDiffuseTexture(new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png"));
+	testModel = new Model(g_DefaultMeshes->DefaultQuadMesh, material);
 	//testModel = new Model("Nanosuit", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere/sphere.obj");
 	testEntity2->setModel(testModel);
 	testEntity2->m_ModelToWorldMatrix = toWorld2;
@@ -89,7 +95,34 @@ SectorList* World::sectorsAroundPoint(Coord2 point, int ringSize)
 
 SectorList* World::updateSectorsAroundPoint(Coord2 point, int ringSize)
 {
-	return m_sectorManager->sectorsAround(point, ringSize, true);
+	SectorList* sectors = m_sectorManager->sectorsAround(point, ringSize, true);
+
+	//for(int i = 0; i < sectors->size(); ++i)
+	//{
+	//
+	//    Sector* sector = sectors->at(i);
+	//    if (sector->m_initializationLevel < Sector::FullyInitialized)
+	//    {
+	//        if (sector->m_initializationLevel == Sector::ContourLoaded)
+	//        {
+	//            renderData->initializeSector(sector);
+	//        }
+
+	//        if (sector->m_initializationLevel == Sector::DataLoaded)
+	//        {
+	//            renderData->fillBuffers(sector);
+	//        }
+
+	//        if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
+	//        {
+	//            //PRINT("heightfield geenerated, adding to terrain buffer")
+	//             renderData->addToTerrainBuffer(sector);
+	//        }
+	//    }
+
+
+	//}
+	return sectors;
 }
 
 SectorList* World::GetAllSectors()

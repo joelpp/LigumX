@@ -7,14 +7,11 @@ uniform mat4 vpMat;
 uniform mat4 g_ModelToWorldMatrix;
 uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;
-uniform mat4 g_LightProjectionMatrix;
-// Include Providers Marker
 
 out vec2 myTexCoord;
 out vec3 vNormalWS;
 out vec4 vWorldPosition;
 out float height;
-out vec4 FragPosLightSpace;
 
 out gl_PerVertex {
     vec4 gl_Position;
@@ -24,9 +21,7 @@ void main() {
 	vWorldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
 	//vWorldPosition = vec4(pos, 1);
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * vWorldPosition;
-    myTexCoord = texCoord;
-	height = pos.z;
-	vNormalWS = mat3(transpose(inverse(g_ModelToWorldMatrix))) * v_Normal;
-
-	FragPosLightSpace = g_LightProjectionMatrix * vWorldPosition;
+ //   myTexCoord = texCoord;
+	//height = pos.z;
+	//vNormalWS = mat3(transpose(inverse(g_ModelToWorldMatrix))) * v_Normal;
 }

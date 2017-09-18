@@ -22,9 +22,11 @@ void Renderer::init_pipelines()
 
     pPipelineBasic = new ProgramPipeline("Basic");
     pPipelineBasicUV = new ProgramPipeline("BasicUV");
-    pPipelineLines = new ProgramPipeline("general_lines");
+	pPipelineShadowMap = new ProgramPipeline("ShadowMap");
+	pPipelineLines = new ProgramPipeline("general_lines");
     pPipelineGround = new ProgramPipeline("Terrain");
-    pPipelineEnvmap = new ProgramPipeline("Envmap");
+	pPipelineEnvmap = new ProgramPipeline("Envmap");
+	pPipelineScreenSpaceTexture = new ProgramPipeline("ScreenSpaceTexture");
     pPipelineNodes = new ProgramPipeline("nodes");
 	Renderer::outputGLError(__func__, __LINE__);
 

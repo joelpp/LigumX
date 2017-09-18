@@ -1,0 +1,5 @@
+class PostEffects
+{
+	bool GammaCorrectionEnabled
+	float GammaExponent
+}

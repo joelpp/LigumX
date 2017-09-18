@@ -9,13 +9,19 @@
 #include "property.h"
 
 #pragma region  CLASS_SOURCE Camera
+#include "Camera.h"
+#include <cstddef>
 const ClassPropertyData Camera::g_CameraProperties[] = 
 {
-{ "Position", offsetof(Camera, m_Position), 1 },
-{ "someBullshitVec3", offsetof(Camera, m_someBullshitVec3), 1 },
+{ "Position", offsetof(Camera, m_Position), 0 },
+{ "someBullshitVec3", offsetof(Camera, m_someBullshitVec3), 0 },
 { "ViewMatrix", offsetof(Camera, m_ViewMatrix), 0 },
 { "ProjectionMatrix", offsetof(Camera, m_ProjectionMatrix), 0 },
 { "ViewProjectionMatrix", offsetof(Camera, m_ViewProjectionMatrix), 0 },
+{ "NearPlane", offsetof(Camera, m_NearPlane), 0 },
+{ "FarPlane", offsetof(Camera, m_FarPlane), 0 },
+{ "ProjectionType", offsetof(Camera, m_ProjectionType), 0 },
+{ "OrthoBorders", offsetof(Camera, m_OrthoBorders), 0 },
 };
 
 #pragma endregion  CLASS_SOURCE Camera
@@ -25,13 +31,14 @@ using namespace glm;
 
 Camera::Camera()
 {
+	m_OrthoBorders = 10.f;
     m_ViewProjectionMatrix = mat4(1);
     viewSize = 1;
     angle = 0;
     totalViewAngleY = 45;
     aspectRatio = 1; // TODO: change to window's aspect ratio.
-    nearPlane = 0.01f;
-    farPlane = 1000.f;
+    m_NearPlane = 0.001f;
+    m_FarPlane = 1000.f;
 
     cameraType = CameraType::CYLINDRICAL;
     controlType = ControlType::QWEASDZXC_DRAG;
@@ -68,7 +75,7 @@ void Camera::translateBy(vec3 delta)
 void Camera::translateTo(vec3 inPosition)
 {
     //TODO: handle this better
-    glm::vec2 coordinateShifting = Settings::GetInstance().f2("coordinateShifting");
+	glm::vec2 coordinateShifting = glm::vec2(2, 0);
 
 
 	m_Position = inPosition;
@@ -135,8 +142,21 @@ void Camera::updateVPMatrix()
     m_ViewProjectionMatrix = inverse(m_ViewProjectionMatrix);
 
 	m_ViewMatrix = m_ViewProjectionMatrix;
-	m_ViewProjectionMatrix = perspective(totalViewAngleY, aspectRatio, nearPlane, farPlane) * m_ViewProjectionMatrix;
-	m_ProjectionMatrix = perspective(totalViewAngleY, aspectRatio, nearPlane, farPlane);
+
+
+	// todo : with 2 types it might not worth it to subclass
+	// but also it might do
+	if (m_ProjectionType == ProjectionType_Perspective)
+	{
+		m_ViewProjectionMatrix = perspective(totalViewAngleY, aspectRatio, m_NearPlane, m_FarPlane) * m_ViewProjectionMatrix;
+		m_ProjectionMatrix = perspective(totalViewAngleY, aspectRatio, m_NearPlane, m_FarPlane);
+	}
+	else
+	{
+		float borders = 20.f;
+		m_ViewProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane) * m_ViewProjectionMatrix;
+		m_ProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane);
+	}
 }
 
 
