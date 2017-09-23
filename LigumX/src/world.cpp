@@ -47,9 +47,13 @@ World::World(float sectorSize)
 	// todo : properly handle setposition with modelmatrix
 	testEntity2->setPosition(glm::vec3(0, 2, 0));
 
+	//glm::mat4x4 toWorld2 = glm::translate(glm::mat4(1.0), glm::vec3(-100, 100, 1));
+	//toWorld2 = glm::scale(toWorld2, glm::vec3(200, 200, 1));
+	//toWorld2 = glm::rotate(toWorld2, 180.f, glm::vec3(1, 0, 0));
+
 	glm::mat4x4 toWorld2 = glm::translate(glm::mat4(1.0), glm::vec3(-100, -100, 1));
 	toWorld2 = glm::scale(toWorld2, glm::vec3(200, 200, 1));
-	//toWorld2 = glm::rotate(toWorld2, 90.f, glm::vec3(1, 0, 0));
+	//toWorld2 = glm::rotate(toWorld2, 180.f, glm::vec3(1, 0, 0));
 	//toWorld2 = glm::rotate(toWorld2, 90.f, glm::vec3(0, 1, 0));
 
 	Material* material = new Material(testModel->m_materialList[4]->GetProgramPipeline(), glm::vec3(1, 0, 0));

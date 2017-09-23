@@ -17,8 +17,8 @@
 #include <cstddef>
 const ClassPropertyData Renderer::g_RendererProperties[] = 
 {
-{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0 },
-{ "PostEffects", offsetof(Renderer, m_PostEffects), 0 },
+{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true,  }, 
+{ "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -121,6 +121,8 @@ void Renderer::InitGL()
 
 	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, drawBuffers);
+
+	glEnable(GL_CULL_FACE);
 }
 
 GLuint Renderer::CreateFrameBuffer()
@@ -704,6 +706,26 @@ void Renderer::RenderOpaque()
 	RenderEntities(m_World->m_Entities);
 }
 
+void Renderer::RenderTextureOverlay()
+{
+	if (!m_DisplayOptions->GetRenderTextureOverlay())
+	{
+		return;
+	}
+
+	glViewport(0, 0, 300, 300);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	SetPipeline(pPipelineScreenSpaceTexture);
+
+	SetFragmentUniform(0, "g_Texture");
+	Bind2DTexture(0, depthMapTexture);
+	//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	FLUSH_ERRORS();
+	//glClear(GL_DEPTH_BUFFER_BIT);
+}
 
 /**
  * [Renderer::render description]
@@ -731,20 +753,7 @@ void Renderer::render(World* world)
 
 	RenderFPS();
 
-	{
-		glViewport(0, 0, 300, 300);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		SetPipeline(pPipelineScreenSpaceTexture);
-
-		SetFragmentUniform(0, "g_Texture");
-		Bind2DTexture(0, depthMapTexture);
-		//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		FLUSH_ERRORS();
-		//glClear(GL_DEPTH_BUFFER_BIT);
-	}
+	RenderTextureOverlay();
 
 
 

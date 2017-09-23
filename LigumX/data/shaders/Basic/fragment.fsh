@@ -53,6 +53,12 @@ void main()
 {
 	vec3 fNormalWS = normalize(vNormalWS);
 	
+	if (g_DebugUVEnabled > 0)
+	{
+		FinalColor = vec4(myTexCoord.x, myTexCoord.y, 0, 1.f);
+		return ;
+	}
+
 
 	if (g_DebugNormalsEnabled > 0)
 	{
@@ -90,17 +96,15 @@ void main()
 		ambientContribution *= g_DebugAmbientEnabled;
 
 		// Diffuse
-		//vec4 diffuseColor = texture(g_DepthMapTexture, myTexCoord) * 3;
 		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord) ;
-		//if (g_GammaCorrectionEnabled > 0)
-		//{
-		//	diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
-		//}
+		if (g_GammaCorrectionEnabled > 0)
+		{
+			diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
+		}
 
 		float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
 		vec3 diffuseContribution = /*diffuseFactor * */diffuseColor.rgb;
-		//diffuseContribution = normalize( /*g_PointLight.m_Position - */vWorldPosition.xyz);;
-		//diffuseContribution *= g_DebugDiffuseEnabled;
+		diffuseContribution *= g_DebugDiffuseEnabled;
 
 		// Specular
 		vec4 specularColor = texture(g_Material.m_SpecularTexture, myTexCoord);

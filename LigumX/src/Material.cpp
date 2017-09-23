@@ -8,14 +8,14 @@
 #include <cstddef>
 const ClassPropertyData Material::g_MaterialProperties[] = 
 {
-{ "Albedo", offsetof(Material, m_Albedo), 0 },
-{ "AmbientColor", offsetof(Material, m_AmbientColor), 0 },
-{ "DiffuseColor", offsetof(Material, m_DiffuseColor), 0 },
-{ "SpecularColor", offsetof(Material, m_SpecularColor), 0 },
-{ "Shininess", offsetof(Material, m_Shininess), 0 },
-{ "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0 },
-{ "SpecularTexture", offsetof(Material, m_SpecularTexture), 0 },
-{ "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0 },
+{ "Albedo", offsetof(Material, m_Albedo), 0, LXType_glmvec3, false,  }, 
+{ "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false,  }, 
+{ "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false,  }, 
+{ "SpecularColor", offsetof(Material, m_SpecularColor), 0, LXType_glmvec3, false,  }, 
+{ "Shininess", offsetof(Material, m_Shininess), 0, LXType_float, false,  }, 
+{ "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true,  }, 
+{ "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true,  }, 
+{ "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Material

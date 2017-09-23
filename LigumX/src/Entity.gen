@@ -1,0 +1,4 @@
+class Entity
+{
+	glm::vec3 Position
+}

@@ -11,6 +11,10 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 
+#pragma region  FORWARD_DECLARATIONS Entity
+#include "property.h"
+
+#pragma endregion  FORWARD_DECLARATIONS Entity
 class Entity;
 class Model;
 
@@ -24,6 +28,20 @@ class Component
 };
 
 class Entity {
+
+#pragma region  HEADER Entity
+static const int ClassID = 3231396602;
+public:
+const glm::vec3& GetPosition() { return m_Position; }; 
+void SetPosition(glm::vec3 value) { m_Position = value; };
+private:
+glm::vec3 m_Position;
+public:
+static const int g_EntityPropertyCount = 1;
+static const ClassPropertyData g_EntityProperties[g_EntityPropertyCount];
+
+
+#pragma endregion  HEADER Entity
 friend class EntityManager;
 friend class PlayerController;
 friend class AIController;

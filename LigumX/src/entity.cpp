@@ -2,6 +2,15 @@
 
 #include "entity.h"
 
+#pragma region  CLASS_SOURCE Entity
+#include "Entity.h"
+#include <cstddef>
+const ClassPropertyData Entity::g_EntityProperties[] = 
+{
+{ "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false,  }, 
+};
+
+#pragma endregion  CLASS_SOURCE Entity
 
 
 using namespace glm;

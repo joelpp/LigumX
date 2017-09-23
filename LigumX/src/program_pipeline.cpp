@@ -61,6 +61,7 @@ uniform int g_DebugSpecularEnabled;
 uniform int g_DebugAmbientEnabled;
 uniform int g_DebugNormalsEnabled;
 uniform int g_DebugDepthEnabled;
+uniform int g_DebugUVEnabled;
 uniform int g_DebugLinearizeDepth;
 #endif
 

@@ -10,7 +10,7 @@ uniform sampler2D g_Texture;
 void main() {
 
     // compute globals
-	color = vec3(texture(g_Texture, uv).rgb);
+	color = vec3(texture(g_Texture, uv).rgb) * 3;
 	//color = vec3(uv, 0.f);
 	return;
 }

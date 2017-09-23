@@ -279,6 +279,7 @@
     <None Include="data\shaders\BasicUV\evaluation.tes" />
     <None Include="src\Camera.gen" />
     <None Include="src\DisplayOptions.gen" />
+    <None Include="src\Entity.gen" />
     <None Include="src\Material.gen" />
     <None Include="src\PostEffects.gen" />
     <None Include="src\renderer.gen" />

@@ -23,8 +23,8 @@
 
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "property.h"
-class 	DisplayOptions;
-class 	PostEffects;
+class DisplayOptions;
+class PostEffects;
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
@@ -62,13 +62,13 @@ class Renderer{
 #pragma region  HEADER Renderer
 static const int ClassID = 1498036510;
 public:
-	DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
-void SetDisplayOptions(	DisplayOptions* value) { m_DisplayOptions = value; };
-	PostEffects* GetPostEffects() { return m_PostEffects; }; 
-void SetPostEffects(	PostEffects* value) { m_PostEffects = value; };
+DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
+void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; };
+PostEffects* GetPostEffects() { return m_PostEffects; }; 
+void SetPostEffects(PostEffects* value) { m_PostEffects = value; };
 private:
-	DisplayOptions* m_DisplayOptions;
-	PostEffects* m_PostEffects;
+DisplayOptions* m_DisplayOptions;
+PostEffects* m_PostEffects;
 public:
 static const int g_RendererPropertyCount = 2;
 static const ClassPropertyData g_RendererProperties[g_RendererPropertyCount];
@@ -88,6 +88,7 @@ public:
 	GLuint CreateTexture();
 	void RenderShadowMap();
 	void RenderOpaque();
+	void RenderTextureOverlay();
 
     // subfunctions
     void init_pipelines();

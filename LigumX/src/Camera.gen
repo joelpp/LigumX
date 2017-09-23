@@ -1,6 +1,6 @@
 class Camera
 {
-	glm::vec3 Position
+	glm::vec3 Position;
 	glm::vec3 someBullshitVec3
 	glm::mat4 ViewMatrix
 	glm::mat4 ProjectionMatrix

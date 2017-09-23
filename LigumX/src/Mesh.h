@@ -17,7 +17,9 @@ public:
 	DefaultMeshes();
 	Mesh* DefaultQuadMesh;
 	Mesh* DefaultSphereMesh;
-	
+	Mesh* DefaultCubeMesh;
+
+	void InitializeDefaultCube();
 	void InitializeDefaultSphere();
 	void InitializeDefaultQuad();
 };

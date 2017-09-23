@@ -387,5 +387,6 @@
     <None Include="src\DisplayOptions.gen" />
     <None Include="src\renderer.gen" />
     <None Include="src\PostEffects.gen" />
+    <None Include="src\Entity.gen" />
   </ItemGroup>
 </Project>

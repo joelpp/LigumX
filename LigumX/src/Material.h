@@ -6,8 +6,8 @@
 
 #pragma region  FORWARD_DECLARATIONS Material
 #include "property.h"
-class 	Texture;
-class 	ProgramPipeline;
+class Texture;
+class ProgramPipeline;
 
 #pragma endregion  FORWARD_DECLARATIONS Material
 
@@ -16,31 +16,31 @@ class Material
 #pragma region  HEADER Material
 static const int ClassID = 3419754368;
 public:
-const	glm::vec3& GetAlbedo() { return m_Albedo; }; 
-void SetAlbedo(	glm::vec3 value) { m_Albedo = value; };
-const	glm::vec3& GetAmbientColor() { return m_AmbientColor; }; 
-void SetAmbientColor(	glm::vec3 value) { m_AmbientColor = value; };
-const	glm::vec3& GetDiffuseColor() { return m_DiffuseColor; }; 
-void SetDiffuseColor(	glm::vec3 value) { m_DiffuseColor = value; };
-const	glm::vec3& GetSpecularColor() { return m_SpecularColor; }; 
-void SetSpecularColor(	glm::vec3 value) { m_SpecularColor = value; };
-const	float& GetShininess() { return m_Shininess; }; 
-void SetShininess(	float value) { m_Shininess = value; };
-	Texture* GetDiffuseTexture() { return m_DiffuseTexture; }; 
-void SetDiffuseTexture(	Texture* value) { m_DiffuseTexture = value; };
-	Texture* GetSpecularTexture() { return m_SpecularTexture; }; 
-void SetSpecularTexture(	Texture* value) { m_SpecularTexture = value; };
-	ProgramPipeline* GetProgramPipeline() { return m_ProgramPipeline; }; 
-void SetProgramPipeline(	ProgramPipeline* value) { m_ProgramPipeline = value; };
+const glm::vec3& GetAlbedo() { return m_Albedo; }; 
+void SetAlbedo(glm::vec3 value) { m_Albedo = value; };
+const glm::vec3& GetAmbientColor() { return m_AmbientColor; }; 
+void SetAmbientColor(glm::vec3 value) { m_AmbientColor = value; };
+const glm::vec3& GetDiffuseColor() { return m_DiffuseColor; }; 
+void SetDiffuseColor(glm::vec3 value) { m_DiffuseColor = value; };
+const glm::vec3& GetSpecularColor() { return m_SpecularColor; }; 
+void SetSpecularColor(glm::vec3 value) { m_SpecularColor = value; };
+const float& GetShininess() { return m_Shininess; }; 
+void SetShininess(float value) { m_Shininess = value; };
+Texture* GetDiffuseTexture() { return m_DiffuseTexture; }; 
+void SetDiffuseTexture(Texture* value) { m_DiffuseTexture = value; };
+Texture* GetSpecularTexture() { return m_SpecularTexture; }; 
+void SetSpecularTexture(Texture* value) { m_SpecularTexture = value; };
+ProgramPipeline* GetProgramPipeline() { return m_ProgramPipeline; }; 
+void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; };
 private:
-	glm::vec3 m_Albedo;
-	glm::vec3 m_AmbientColor;
-	glm::vec3 m_DiffuseColor;
-	glm::vec3 m_SpecularColor;
-	float m_Shininess;
-	Texture* m_DiffuseTexture;
-	Texture* m_SpecularTexture;
-	ProgramPipeline* m_ProgramPipeline;
+glm::vec3 m_Albedo;
+glm::vec3 m_AmbientColor;
+glm::vec3 m_DiffuseColor;
+glm::vec3 m_SpecularColor;
+float m_Shininess;
+Texture* m_DiffuseTexture;
+Texture* m_SpecularTexture;
+ProgramPipeline* m_ProgramPipeline;
 public:
 static const int g_MaterialPropertyCount = 8;
 static const ClassPropertyData g_MaterialProperties[g_MaterialPropertyCount];

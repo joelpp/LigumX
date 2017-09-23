@@ -88,6 +88,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,12 +146,20 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="include\ClassHeaderRegion.h" />
+    <ClInclude Include="include\ClassSourceRegion.h" />
+    <ClInclude Include="include\CodeRegion.h" />
+    <ClInclude Include="include\Common.h" />
+    <ClInclude Include="include\ForwardDeclarationRegion.h" />
+    <ClInclude Include="include\LXClass.h" />
+    <ClInclude Include="include\stdafx.h" />
+    <ClInclude Include="include\StringUtils.h" />
+    <ClInclude Include="include\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LigumXGenerator.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="src\CodeRegion.cpp" />
+    <ClCompile Include="src\LigumXGenerator.cpp" />
+    <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
