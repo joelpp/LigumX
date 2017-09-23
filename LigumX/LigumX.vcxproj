@@ -186,6 +186,7 @@
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\SunLight.cpp" />
     <ClCompile Include="src\text.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
@@ -265,6 +266,7 @@
     <ClInclude Include="src\stb_textedit.h" />
     <ClInclude Include="src\stb_truetype.h" />
     <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\SunLight.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\tinyxml2.h" />
@@ -283,6 +285,7 @@
     <None Include="src\Material.gen" />
     <None Include="src\PostEffects.gen" />
     <None Include="src\renderer.gen" />
+    <None Include="src\SunLight.gen" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,7 +5,7 @@
 #pragma region  CLASS_SOURCE Entity
 #include "Entity.h"
 #include <cstddef>
-const ClassPropertyData Entity::g_EntityProperties[] = 
+const ClassPropertyData Entity::g_Properties[] = 
 {
 { "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false,  }, 
 };
@@ -46,7 +46,7 @@ void Entity::Update(double dt) {
 
 
     if(turning) {
-        angle += dt * 100.f * turning;
+        angle += dt * 100 * turning;
     }
 
     forwardVector = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0));

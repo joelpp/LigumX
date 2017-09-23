@@ -10,7 +10,7 @@
 #pragma region  CLASS_SOURCE Camera
 #include "Camera.h"
 #include <cstddef>
-const ClassPropertyData Camera::g_CameraProperties[] = 
+const ClassPropertyData Camera::g_Properties[] = 
 {
 { "Position", offsetof(Camera, m_Position), 0, LXType_glmvec3, false,  }, 
 { "someBullshitVec3", offsetof(Camera, m_someBullshitVec3), 0, LXType_glmvec3, false,  }, 
@@ -123,10 +123,10 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
         translateBy(deltaFactor * viewSize * vec3(1,0,0));
     }
     if( glfwGetKey(pWindow, GLFW_KEY_R)==GLFW_PRESS ) {
-        rotate(0.01);
+        rotate(0.01f);
     }
     if( glfwGetKey(pWindow, GLFW_KEY_T)==GLFW_PRESS ) {
-        rotate(-0.01);
+        rotate(-0.01f);
     }
 }
 
@@ -152,7 +152,7 @@ void Camera::updateVPMatrix()
 	}
 	else
 	{
-		float borders = 20.f;
+		float borders = m_OrthoBorders;
 		m_ViewProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane) * m_ViewProjectionMatrix;
 		m_ProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane);
 	}

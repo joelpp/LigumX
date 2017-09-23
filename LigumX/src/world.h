@@ -10,21 +10,23 @@
 
 #include "Logging.h"
 
+class Sunlight;
 class Sector;
 class Way;
 class Node;
 class SectorManager;
 class vec2i;
 class Entity;
+class SunLight;
 
 typedef glm::vec2 Coord2;
 typedef std::vector<Sector*> SectorList;
 
-struct Sun{
-    float orientation = 0;
-    float speed = 0.1;
-    bool moveAuto = false;
-};
+//struct Sun{
+//    float orientation = 0;
+//    float speed = 0.1;
+//    bool moveAuto = false;
+//};
 
 //Specialize std::hash for vec2s
 namespace std {
@@ -46,7 +48,10 @@ public:
 
     World();
     World(float sectorSize);
-    Sun sun;
+    SunLight* m_SunLight;
+
+	SunLight* GetSunLight() { return m_SunLight; }
+
     Sector* createSector(Coord2 pos);
 	SectorList* GetAllSectors();
 

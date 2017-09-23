@@ -72,10 +72,18 @@ public:
 		int numProperties = m_Class.m_Members.size();
 		WriteLine("static const int " + propertyCountVarName + " = " + std::to_string(numProperties) + ";");
 
-		WriteLine("static const ClassPropertyData g_" + m_Class.m_Name + "Properties[" + propertyCountVarName + "];");
+		WriteLine(g_PropertyArrayDeclaration + "[" + propertyCountVarName + "];");
 
 		m_Stream << std::endl;
 	}
+
+	void WriteDefaultConstructor()
+	{
+		if (m_Class.m_Name == "SunLight") // todo remove hack
+			WriteLine(m_Class.m_Name + "::" + m_Class.m_Name + "();");
+
+	}
+
 
 	void WriteBody()
 	{
@@ -91,7 +99,7 @@ public:
 		}
 
 		WriteProperties();
-
+		WriteDefaultConstructor();
 	}
 
 	void Process()

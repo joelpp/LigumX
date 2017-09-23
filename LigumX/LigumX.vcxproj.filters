@@ -144,6 +144,9 @@
     <ClCompile Include="src\PostEffects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SunLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -377,6 +380,9 @@
     <ClInclude Include="data\shaders\BasicUniforms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\SunLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -388,5 +394,6 @@
     <None Include="src\renderer.gen" />
     <None Include="src\PostEffects.gen" />
     <None Include="src\Entity.gen" />
+    <None Include="src\SunLight.gen" />
   </ItemGroup>
 </Project>

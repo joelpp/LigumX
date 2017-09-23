@@ -11,6 +11,7 @@
 #include "SectorManager.h"
 #include "Material.h"
 #include "Model.h"
+#include "SunLight.h"
 #include "Texture.h"
 #include "Mesh.h"
 
@@ -64,6 +65,11 @@ World::World(float sectorSize)
 	testEntity2->setModel(testModel);
 	testEntity2->m_ModelToWorldMatrix = toWorld2;
 	m_Entities.push_back(testEntity2);
+
+	m_SunLight = new SunLight();
+	m_SunLight->SetTime(100.f);
+	m_SunLight->SetOrientation(25.f);
+	m_SunLight->SetSpeed(0.f);
 }
 
 

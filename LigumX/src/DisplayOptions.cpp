@@ -5,7 +5,7 @@
 #pragma region  CLASS_SOURCE DisplayOptions
 #include "DisplayOptions.h"
 #include <cstddef>
-const ClassPropertyData DisplayOptions::g_DisplayOptionsProperties[] = 
+const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
 { "DrawTerrain", offsetof(DisplayOptions, m_DrawTerrain), 0, LXType_bool, false,  }, 
 { "DrawSky", offsetof(DisplayOptions, m_DrawSky), 0, LXType_bool, false,  }, 
@@ -20,6 +20,7 @@ const ClassPropertyData DisplayOptions::g_DisplayOptionsProperties[] =
 { "LinearizeDepth", offsetof(DisplayOptions, m_LinearizeDepth), 0, LXType_bool, false,  }, 
 { "BlinnPhongShading", offsetof(DisplayOptions, m_BlinnPhongShading), 0, LXType_bool, false,  }, 
 { "RenderTextureOverlay", offsetof(DisplayOptions, m_RenderTextureOverlay), 0, LXType_bool, false,  }, 
+{ "RenderOpaque", offsetof(DisplayOptions, m_RenderOpaque), 0, LXType_bool, false,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE DisplayOptions

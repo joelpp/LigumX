@@ -25,6 +25,7 @@
 #include "property.h"
 class DisplayOptions;
 class PostEffects;
+class SunLight;
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
@@ -71,7 +72,7 @@ DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;
 public:
 static const int g_RendererPropertyCount = 2;
-static const ClassPropertyData g_RendererProperties[g_RendererPropertyCount];
+static const ClassPropertyData g_Properties[g_RendererPropertyCount];
 
 
 #pragma endregion  HEADER Renderer
@@ -102,9 +103,10 @@ public:
     void RenderText(Text t);
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected);
     void DrawMesh(Mesh* mesh, Material* material);
+	void DrawMesh(Mesh* mesh);
     void DrawModel(Entity* entity, Model* model);
     static void outputGLError(std::string func, int line);
-    void RenderSky();
+    void RenderSky(SunLight* sunLight);
     void RenderFPS();
     void DrawTerrain();
 	void RenderEntities(std::vector<Entity*> entities);
@@ -321,6 +323,7 @@ private:
 	void EndImGUIWindow();
 
 	void ShowVariableAsText(glm::vec3 variable, const char* variableName);
+	void ShowVariableAsText(glm::vec3* variable, const char* variableName);
 	void ShowVariableAsText(float variable, const char* variableName);
 
     // C++ 11

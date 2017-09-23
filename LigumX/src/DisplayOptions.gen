@@ -13,4 +13,5 @@ class DisplayOptions
 	bool LinearizeDepth
 	bool BlinnPhongShading
 	bool RenderTextureOverlay
+	bool RenderOpaque
 }

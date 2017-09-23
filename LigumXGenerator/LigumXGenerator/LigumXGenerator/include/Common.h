@@ -47,3 +47,5 @@ std::unordered_map<std::type_index, int> g_TypeMap;
 
 StringList UnwantedSubstrings; 
 StringList AllowedTypesForGUI;
+
+std::string g_PropertyArrayDeclaration = "static const ClassPropertyData g_"/* + m_Class.m_Name + */"Properties";

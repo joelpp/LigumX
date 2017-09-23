@@ -36,6 +36,8 @@ const bool& GetBlinnPhongShading() { return m_BlinnPhongShading; };
 void SetBlinnPhongShading(bool value) { m_BlinnPhongShading = value; };
 const bool& GetRenderTextureOverlay() { return m_RenderTextureOverlay; }; 
 void SetRenderTextureOverlay(bool value) { m_RenderTextureOverlay = value; };
+const bool& GetRenderOpaque() { return m_RenderOpaque; }; 
+void SetRenderOpaque(bool value) { m_RenderOpaque = value; };
 private:
 bool m_DrawTerrain;
 bool m_DrawSky;
@@ -50,9 +52,10 @@ bool m_ShowDepth;
 bool m_LinearizeDepth;
 bool m_BlinnPhongShading;
 bool m_RenderTextureOverlay;
+bool m_RenderOpaque;
 public:
-static const int g_DisplayOptionsPropertyCount = 13;
-static const ClassPropertyData g_DisplayOptionsProperties[g_DisplayOptionsPropertyCount];
+static const int g_DisplayOptionsPropertyCount = 14;
+static const ClassPropertyData g_Properties[g_DisplayOptionsPropertyCount];
 
 
 #pragma endregion  HEADER DisplayOptions

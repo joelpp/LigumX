@@ -22,16 +22,32 @@ public:
 		m_Stream << std::endl;
 	}
 
-	void WriteBody()
+	void WriteDefaultConstructor()
 	{
-		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
-		WriteLine("#include <cstddef>");
+		if (m_Class.m_Name == "SunLight")
+		{
+			WriteLine(m_Class.m_Name + "::" + m_Class.m_Name + "() { }");
+
+			WriteLine(m_Class.m_Name + "::" + m_Class.m_Name + "(");
+
+			/* todo finish this eventually :effort:
+			for (Variable& var : m_Class.m_Members)
+			{
+				Write()
+
+			}*/
+
+		}
 
 
+	}
+
+	void WritePropertyArray()
+	{
 		std::string propertyCountVarName = "g_" + m_Class.m_Name + "PropertyCount";
 		int numProperties = m_Class.m_Members.size();
 
-		WriteLine("const ClassPropertyData " + m_Class.m_Name + "::g_" + m_Class.m_Name + "Properties[] = ");
+		WriteLine("const ClassPropertyData " + m_Class.m_Name + "::g_Properties[] = ");
 		WriteLine("{");
 
 		for (int i = 0; i < numProperties; ++i)
@@ -39,17 +55,27 @@ public:
 			Variable& var = m_Class.m_Members[i];
 			std::string&  varName = var.m_Name;
 			std::string&  varType = var.m_Type;
-
 			// warning! if you change anything here mirror it in property.h in LigumX
-			WriteLine( "{ \"" + varName + "\", " 
-							  + "offsetof(" + m_Class.m_Name + ", m_" + varName + "), " 
-							  + (m_Class.m_Members[i].m_Type == "\tbool" ? "1" : "0") + ", "
-							  + "LXType_" + RemoveSubstrings(varType, "::") + ", " 
-							  + ( var.IsAPointer() ? "true" : "false") + ", "  
-							  + " }, " );
+			WriteLine("{ \"" + varName + "\", "
+				+ "offsetof(" + m_Class.m_Name + ", m_" + varName + "), "
+				+ (m_Class.m_Members[i].m_Type == "\tbool" ? "1" : "0") + ", "
+				+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
+				+ (var.IsAPointer() ? "true" : "false") + ", "
+				+ " }, ");
 		}
 
+
 		WriteLine("};");
+	}
+
+	void WriteBody()
+	{
+		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
+		WriteLine("#include <cstddef>");
+		
+		WritePropertyArray();
+
+		WriteDefaultConstructor();
 	}
 
 	void WriteFooter()

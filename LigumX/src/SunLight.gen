@@ -1,0 +1,7 @@
+class SunLight
+{
+	bool UseShadowMap;
+	float Time;
+	float Orientation;
+	float Speed;
+}

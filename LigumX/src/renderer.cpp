@@ -11,11 +11,12 @@
 #include "DisplayOptions.h"
 #include "Settings.h"
 #include "PostEffects.h"
+#include "Sunlight.h"
 
 #pragma region  CLASS_SOURCE Renderer
 #include "Renderer.h"
 #include <cstddef>
-const ClassPropertyData Renderer::g_RendererProperties[] = 
+const ClassPropertyData Renderer::g_Properties[] = 
 {
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true,  }, 
 { "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true,  }, 
@@ -229,6 +230,7 @@ void Renderer::Initialize()
 	m_DisplayOptions->SetShowNormals(false);
 	m_DisplayOptions->SetShowAmbient(true);
 	m_DisplayOptions->SetShowFPS(true);
+	m_DisplayOptions->SetRenderOpaque(true);
 
 	m_PostEffects = new PostEffects();
 	m_PostEffects->SetGammaExponent(2.2f);
@@ -258,7 +260,8 @@ void Renderer::Initialize()
 	//m_ShadowCamera->SetProjectionType(ProjectionType_Perspective);
 	//-16.13, -5.9, 20.2
 	//-0.47, -0.81, 0.34
-	m_ShadowCamera->translateTo(glm::vec3(-16.13, -5.9, 20.2));
+	m_ShadowCamera->SetPosition(glm::vec3(-16.13, -5.9, 20.2));
+	//m_ShadowCamera->translateTo(glm::vec3(-16.13, -5.9, 20.2));
 	m_ShadowCamera->frontVec = glm::vec3(-0.47, -0.81, 0.34);
 	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0,0,1), m_ShadowCamera->frontVec));
 	m_ShadowCamera->upVec = glm::cross(m_ShadowCamera->frontVec, m_ShadowCamera->rightVec);
@@ -398,6 +401,7 @@ void Renderer::SetViewUniforms(Camera* cam)
 {
 	SetVertexUniform(cam->GetViewProjectionMatrix(), "vpMat");
 	SetVertexUniform(cam->GetViewMatrix(),			"g_WorldToViewMatrix");
+	SetVertexUniform(glm::mat4(glm::mat3(cam->GetViewMatrix())), "g_WorldToViewMatrixRotationOnly");
 	SetFragmentUniform(glm::inverse(cam->GetViewMatrix()), "g_ViewToWorldMatrix");
 	SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
 	SetFragmentUniform(glm::inverse(cam->GetProjectionMatrix()), "g_ProjectionMatrixInverse");
@@ -430,12 +434,12 @@ void Renderer::SetDebugUniforms()
 
 void Renderer::DrawModel(Entity* entity, Model* model)
 {
-  for (int i = 0; i < model->m_meshes.size(); ++i)
-  {
-	SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+	for (int i = 0; i < model->m_meshes.size(); ++i)
+	{
+		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
-	DrawMesh(model->m_meshes[i], model->m_materialList[i]);
-  }
+		DrawMesh(model->m_meshes[i], model->m_materialList[i]);
+	}
 }
 
 GLuint slots[] =
@@ -457,6 +461,20 @@ void Renderer::FreeBoundTexture()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Renderer::DrawMesh(Mesh* mesh)
+{
+	if (mesh->m_usesIndexBuffer)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
+		glDrawElements(GL_TRIANGLES, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+	}
+	else
+	{
+		glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
+		FLUSH_ERRORS();
+	}
+}
+
 
 void Renderer::DrawMesh(Mesh* mesh, Material* material)
 {
@@ -476,16 +494,7 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
     glEnable(GL_PROGRAM_POINT_SIZE);
   }
 
-  if (mesh->m_usesIndexBuffer)
-  { 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
-    glDrawElements(GL_TRIANGLES, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
-  }
-  else
-  {
-	glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
-	FLUSH_ERRORS();
-  }
+  DrawMesh(mesh);
 
   if (mesh->m_pointRendering)
   {
@@ -576,28 +585,51 @@ void Renderer::ShowVariableAsText(glm::vec3 variable, const char* variableName)
 	ImGui::Text("%s : %f, %f, %f", variableName, variable.x, variable.y, variable.z);
 }
 
+void Renderer::ShowVariableAsText(glm::vec3* variable, const char* variableName)
+{
+	ImGui::Text("%s : %f, %f, %f", variableName, variable->x, variable->y, variable->z);
+}
+
 void Renderer::ShowVariableAsText(float variable, const char* variableName)
 {
 	ImGui::Text("%s : %f", variableName, variable);
 }
 
-//#define ShowPropertyGrid(object, classname, displayname)\
-//{ \
-//if (ImGui::CollapsingHeader(##displayname)) \
-//{ \
-//	for (const ClassPropertyData& data : ##classname::g_##classnameProperties) \
-//	{ \
-//		{ \
-//			ImGui::Checkbox(data.m_Name, ((bool*)m_DisplayOptions + data.m_Offset)); \
-//		} \
-//	} \
-//} \
-//} \
+#define ShowCheckbox(data, object) ImGui::Checkbox(data.m_Name, ((bool*)##object + data.m_Offset));
+
+#define ShowFloatSlider(data, object, min, max) ImGui::SliderFloat(data.m_Name, (float*)(##object)+ data.m_Offset / 4, min, max, "%.3f");
+
+#define ShowVec3(data, object) ShowVariableAsText((glm::vec3*)(##object) + data.m_Offset / sizeof(glm::vec3), data.m_Name); 
+
+#define ShowPropertyGrid(object, className, displayname)\
+{ \
+    ImGui::PushID(#displayname); \
+	if (ImGui::CollapsingHeader(##displayname)) \
+	{ \
+		for (const ClassPropertyData& data : ##className::g_Properties) \
+		{ \
+			switch (data.m_Type) \
+			{ \
+				case LXType_bool: \
+					ShowCheckbox(data, ##object); \
+					break; \
+				case LXType_float: \
+					ShowFloatSlider(data, ##object, -10, 20); \
+					break; \
+				case LXType_glmvec3: \
+					ShowVec3(data, ##object); \
+					break; \
+				default: \
+					break;\
+			} \
+		} \
+	} \
+    ImGui::PopID(); \
+} \
 
 void Renderer::RenderGUI()
 {
 	ImGui_ImplGlfwGL3_NewFrame();
-
 	if (m_ShowTestGUI)
 	{
 		ImGui::ShowTestWindow();
@@ -608,53 +640,66 @@ void Renderer::RenderGUI()
 		BeginImGUIWindow(1000, 700, 0, 0, "Settings");
 		ImGui::Checkbox("Test GUI", &m_ShowTestGUI);
 
-		if (ImGui::CollapsingHeader("Rendering Options"))
-		{
-			for (const ClassPropertyData& data : DisplayOptions::g_DisplayOptionsProperties)
-			{
-				//if (data.debug == 1)
-				{
-					//ShowVariableAsText(*(glm::vec3*)((&(*camera)) + data.m_Offset), data.m_Name);
-					ImGui::Checkbox(data.m_Name, ((bool*)m_DisplayOptions + data.m_Offset));
-				}
-			}
-		}
+		// todo : have a mapping from lxtype to display names and such
+		// or at least keep the display name as a generated static string in each gen'd class
+		ShowPropertyGrid(m_DisplayOptions, DisplayOptions, "Display options");
+		ShowPropertyGrid(m_PostEffects, PostEffects, "Post Effects");
+		ShowPropertyGrid(camera, Camera, "Camera");
+		ShowPropertyGrid(m_ShadowCamera, Camera, "Shadow Camera");
+		ShowPropertyGrid(m_World->GetSunLight(), SunLight, "SunLight");
 
+		//if (ImGui::CollapsingHeader("Camera"))
+		//{
+		//	for (const ClassPropertyData& data : Camera::g_Properties)
+		//	{
+		//		switch (data.m_Type)
+		//		{
+		//			case LXType_bool:
+		//				ImGui::Checkbox(data.m_Name, ((bool*)camera + data.m_Offset));
+		//				break;
+		//			case LXType_float:
+		//				ImGui::SliderFloat(data.m_Name, (float*)(camera)+ data.m_Offset / 4, 0, 5, "%.3f");
+		//				break;
+		//			case LXType_glmvec3:
+		//				ShowVariableAsText((glm::vec3*)(camera) + data.m_Offset / sizeof(glm::vec3), data.m_Name);
+		//				break;
+		//			default:
+		//				break;
+		//		}
+		//	}
+		//}
 
-		if (ImGui::CollapsingHeader("Post Effects"))
-		{
-			for (const ClassPropertyData& data : PostEffects::g_PostEffectsProperties)
-			{
-				// todo : fix this data.debug madness
-				if (data.debug == 1)
-				{
-					ImGui::Checkbox(data.m_Name, ((bool*)m_PostEffects + data.m_Offset));
-				}
-			}
-		}
+		//if (ImGui::CollapsingHeader("shadow Camera"))
+		//{
+		//	Camera* cam = m_ShadowCamera;
+		//	ShowVariableAsText(cam->GetPosition(), "Camera Position");
+		//	ShowVariableAsText(cam->frontVec, "Look at");
+		//	ShowVariableAsText(cam->rightVec, "Right");
+		//	ShowVariableAsText(cam->upVec, "Up");
+		//	ShowVariableAsText(cam->aspectRatio, "Aspect ratio");
+		//	ImGui::SliderFloat("Speed", &cam->keyMovementSpeed, cam->minimumSpeed, cam->maximumSpeed, "%.3f");
+		//	ImGui::SliderFloat("Min speed", &cam->minimumSpeed, 0, 1, "%.3f");
+		//	ImGui::SliderFloat("Max speed", &cam->maximumSpeed, 0, 1, "%.3f");
+		//	//Imgui::
 
-		if (ImGui::CollapsingHeader("Camera"))
-		{
-			Camera* cam = m_ShadowCamera;
-			ShowVariableAsText(cam->GetPosition(), "Camera Position");
-			ShowVariableAsText(cam->frontVec, "Look at");
-			ShowVariableAsText(cam->rightVec, "Right");
-			ShowVariableAsText(cam->upVec, "Up");
-			ShowVariableAsText(cam->aspectRatio, "Aspect ratio");
-			ImGui::SliderFloat("Speed", &cam->keyMovementSpeed, cam->minimumSpeed, cam->maximumSpeed, "%.3f");
-			ImGui::SliderFloat("Min speed", &cam->minimumSpeed, 0, 1, "%.3f");
-			ImGui::SliderFloat("Max speed", &cam->maximumSpeed, 0, 1, "%.3f");
-			//Imgui::
-
-			for (const ClassPropertyData& data : Camera::g_CameraProperties)
-			{
-				// todo : fix this data.debug madness with PROPER TYPE HANDLING
-				if (data.m_Name == "OrthoBorders")
-				{
-					ImGui::SliderFloat(data.m_Name, ((float*)cam + data.m_Offset), 1.f, 100.f);
-				}
-			}
-		}
+		//	for (const ClassPropertyData& data : Camera::g_Properties)
+		//	{
+		//		switch (data.m_Type)
+		//		{
+		//		case LXType_bool:
+		//			ImGui::Checkbox(data.m_Name, ((bool*)m_ShadowCamera + data.m_Offset));
+		//			break;
+		//		case LXType_float:
+		//			ImGui::SliderFloat(data.m_Name, (float*)(m_ShadowCamera)+data.m_Offset / 4, 0, 5, "%.3f");
+		//			break;
+		//		case LXType_glmvec3:
+		//			ShowVariableAsText((glm::vec3*)(m_ShadowCamera) + data.m_Offset / sizeof(glm::vec3), data.m_Name);
+		//			break;
+		//		default:
+		//			break;
+		//		}
+		//	}
+		//}
 
 		if (ImGui::CollapsingHeader("Light"))
 		{
@@ -680,20 +725,30 @@ void Renderer::RenderShadowMap()
 	SetPipeline(pPipelineShadowMap);
 
 	SetLightingUniforms();
+
+	glm::vec3 pos =  glm::normalize(m_World->GetSunLight()->GetSunDirection());
+	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 15.f);
+	m_ShadowCamera->frontVec = pos;
+	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->frontVec));
+	m_ShadowCamera->upVec = normalize(glm::cross(m_ShadowCamera->frontVec, m_ShadowCamera->rightVec));
+	m_ShadowCamera->updateVPMatrix();
 	SetViewUniforms(m_ShadowCamera);
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	glCullFace(GL_FRONT);
 	RenderEntities(m_World->m_Entities);
-	glCullFace(GL_BACK); // don't forget to reset original culling face
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::RenderOpaque()
 {
-	SetPipeline(m_World->m_Entities[0]->m_Model->m_materialList[0]->GetProgramPipeline());
+	if (!m_DisplayOptions->GetRenderOpaque())
+	{
+		return;
+	}
+
+	SetPipeline(pPipelineBasic);
 
 	SetLightingUniforms();
 	SetViewUniforms(camera);
@@ -741,7 +796,7 @@ void Renderer::render(World* world)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	RenderSky();
+	RenderSky(world->GetSunLight());
 
 	DrawTerrain();
 
@@ -808,39 +863,43 @@ void Renderer::RenderFPS()
 	fpsString << " ms/frame";
 	RenderText(fpsString.str(), 695.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
 
-	double new_time = glfwGetTime();
+	float new_time = glfwGetTime();
 	dt = new_time - curr_time;
 	curr_time = new_time;
 }
 
-void Renderer::RenderSky()
+void Renderer::RenderSky(SunLight* sunLight)
 {
 	if (!m_DisplayOptions->GetDrawSky())
 	{
 		return;
 	}
-
 	SetPipeline(pPipelineEnvmap);
-       //pPipelineEnvmap->usePipeline();
-	   FLUSH_ERRORS();
 
-       GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
-       glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth * 2, windowHeight * 2);
-       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), 25);
-       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), 100);
-       glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.
-       glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
-       glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);
-       glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "viewAngles"), camera->totalViewAngleY*glm::pi<float>()/180.0, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()/180.0);
-       glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->GetNearPlane());
-       
-	   SetViewUniforms(camera);
 
-	   FLUSH_ERRORS();
-	   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
+	glBindVertexArray(mesh->m_VAO);
+
+	FLUSH_ERRORS();
+
+	GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth * 2, windowHeight * 2);
+	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), sunLight->GetOrientation());
+	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), sunLight->GetTime());
+	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.
+	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
+	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);
+	glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "viewAngles"), camera->totalViewAngleY*glm::pi<float>()/180.0f, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()/180.0f);
+	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->GetNearPlane());
        
-	   FLUSH_ERRORS();
-	   glClear(GL_DEPTH_BUFFER_BIT);
+	SetViewUniforms(camera);
+
+	//FLUSH_ERRORS();
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	//   
+	DrawMesh(mesh);
+	FLUSH_ERRORS();
+	glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 
@@ -872,13 +931,13 @@ void Renderer::RenderText(Text t)
        GLfloat h = ch.Size.y * t.scale;
        // Update VBO for each character
        GLfloat vertices[6][3] = {
-           { xpos,     ypos + h,  0.0001 },
-           { xpos,     ypos,      0.0001 },
-           { xpos + w, ypos,      0.0001 },
+           { xpos,     ypos + h,  0.0001f },
+           { xpos,     ypos,      0.0001f },
+           { xpos + w, ypos,      0.0001f },
 
-           { xpos,     ypos + h,  0.0001 },
-           { xpos + w, ypos,      0.0001 },
-           { xpos + w, ypos + h,  0.0001 }
+           { xpos,     ypos + h,  0.0001f },
+           { xpos + w, ypos,      0.0001f },
+           { xpos + w, ypos + h,  0.0001f }
        };
        GLfloat uvs[6][2] = {
            {0.0, 0.0},
@@ -1017,13 +1076,13 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
        GLfloat h = ch.Size.y * scale;
        // Update VBO for each character
        GLfloat vertices[6][3] = {
-           { xpos,     ypos + h,  0.0001 },
-           { xpos,     ypos,      0.0001 },
-           { xpos + w, ypos,      0.0001 },
+           { xpos,     ypos + h,  0.0001f },
+           { xpos,     ypos,      0.0001f },
+           { xpos + w, ypos,      0.0001f },
 
-           { xpos,     ypos + h,  0.0001 },
-           { xpos + w, ypos,      0.0001 },
-           { xpos + w, ypos + h,  0.0001 }
+           { xpos,     ypos + h,  0.0001f },
+           { xpos + w, ypos,      0.0001f },
+           { xpos + w, ypos + h,  0.0001f }
        };
        GLfloat uvs[6][2] = {
            {0.0, 0.0},

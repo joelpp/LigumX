@@ -52,7 +52,7 @@ ProjectionType m_ProjectionType;
 float m_OrthoBorders;
 public:
 static const int g_CameraPropertyCount = 9;
-static const ClassPropertyData g_CameraProperties[g_CameraPropertyCount];
+static const ClassPropertyData g_Properties[g_CameraPropertyCount];
 
 
 #pragma endregion  HEADER Camera

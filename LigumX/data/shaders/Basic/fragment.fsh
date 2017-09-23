@@ -97,10 +97,10 @@ void main()
 
 		// Diffuse
 		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord) ;
-		if (g_GammaCorrectionEnabled > 0)
-		{
-			diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
-		}
+		//if (g_GammaCorrectionEnabled > 0)
+		//{
+		//	diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
+		//}
 
 		float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
 		vec3 diffuseContribution = /*diffuseFactor * */diffuseColor.rgb;

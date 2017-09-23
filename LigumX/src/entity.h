@@ -38,7 +38,7 @@ private:
 glm::vec3 m_Position;
 public:
 static const int g_EntityPropertyCount = 1;
-static const ClassPropertyData g_EntityProperties[g_EntityPropertyCount];
+static const ClassPropertyData g_Properties[g_EntityPropertyCount];
 
 
 #pragma endregion  HEADER Entity

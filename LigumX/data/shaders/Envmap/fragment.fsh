@@ -1,6 +1,9 @@
 #version 410 core
 
 in vec4 gl_FragCoord;
+in vec3 direction;
+in vec3 normal;
+in vec2 uv;
 
 uniform vec2 windowSize;
 uniform float sunOrientation; // angle from (1,0,0) around (0,0,1)
@@ -105,12 +108,10 @@ void main() {
 
     //vec3 pos01 = vec3(gl_FragCoord.xy, 0/*gl_FragCoord.z*/);
 	 vec2 pos01 = gl_FragCoord.xy/windowSize;
-    vec3 fragDir = screenToVec(pos01);
+    vec3 fragDir = normalize(direction);
 
     float cosAngleToSun = dot(fragDir, sunDir);
     float cosAngleToWorldUp = dot(fragDir, vec3(0,0,1));
-	//	color = fragDir;
-	//return;
     if(cosAngleToWorldUp > 0) {
         float cosSun01 = 0.5*(cosAngleToSun+1);
 

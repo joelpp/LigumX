@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdafx.h""
+#include "stdafx.h"
 
 #pragma region  FORWARD_DECLARATIONS PostEffects
 #include "property.h"
@@ -20,7 +20,7 @@ bool m_GammaCorrectionEnabled;
 float m_GammaExponent;
 public:
 static const int g_PostEffectsPropertyCount = 2;
-static const ClassPropertyData g_PostEffectsProperties[g_PostEffectsPropertyCount];
+static const ClassPropertyData g_Properties[g_PostEffectsPropertyCount];
 
 
 #pragma endregion  HEADER PostEffects

@@ -94,6 +94,11 @@ public:
 		m_Stream << std::endl;
 	}
 
+	void Write(std::string str)
+	{
+		m_Stream << str;
+	}
+
 	int GetBeginIndex() { return m_BeginIndex; }
 	void SetBeginIndex(int val) { m_BeginIndex = val; }
 	int GetEndIndex() { return m_EndIndex; }

@@ -43,7 +43,7 @@ Texture* m_SpecularTexture;
 ProgramPipeline* m_ProgramPipeline;
 public:
 static const int g_MaterialPropertyCount = 8;
-static const ClassPropertyData g_MaterialProperties[g_MaterialPropertyCount];
+static const ClassPropertyData g_Properties[g_MaterialPropertyCount];
 
 
 #pragma endregion  HEADER Material

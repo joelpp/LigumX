@@ -150,7 +150,8 @@ void InitializeGenerator()
 	UnwantedSubstrings.push_back(";");
 
 	// Type names that have a corresponding gui callback
-	AllowedTypesForGUI.push_back();
+	AllowedTypesForGUI.push_back("bool");
+	AllowedTypesForGUI.push_back("glm::vec3");
 }
 
 int main()

@@ -6,7 +6,7 @@
 #pragma region  CLASS_SOURCE Material
 #include "Material.h"
 #include <cstddef>
-const ClassPropertyData Material::g_MaterialProperties[] = 
+const ClassPropertyData Material::g_Properties[] = 
 {
 { "Albedo", offsetof(Material, m_Albedo), 0, LXType_glmvec3, false,  }, 
 { "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false,  }, 
