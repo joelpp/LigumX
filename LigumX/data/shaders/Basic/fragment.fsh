@@ -88,7 +88,7 @@ void main()
 		// Directions
 		vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 		//vec3 fragmentToLight = normalize( g_PointLight.m_Position - vWorldPosition.xyz);
-		vec3 fragmentToLight = normalize( -g_DirectionalLight.m_Direction );
+		vec3 fragmentToLight = normalize( g_DirectionalLight.m_Direction );
 		vec3 reflectionDir = reflect(-fragmentToLight, fNormalWS);
 
 		// Ambient
@@ -97,17 +97,17 @@ void main()
 
 		// Diffuse
 		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord) ;
-		//if (g_GammaCorrectionEnabled > 0)
-		//{
-		//	diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
-		//}
+		if (g_GammaCorrectionEnabled > 0)
+		{
+			diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
+		}
 
 		float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
-		vec3 diffuseContribution = /*diffuseFactor * */diffuseColor.rgb;
+		vec3 diffuseContribution = diffuseFactor * diffuseColor.rgb;
 		diffuseContribution *= g_DebugDiffuseEnabled;
 
 		// Specular
-		vec4 specularColor = texture(g_Material.m_SpecularTexture, myTexCoord);
+		vec4 specularColor = vec4(0.5,0.5,0.5,1);//texture(g_Material.m_SpecularTexture, myTexCoord);
 		float spec = 0;
 		if (g_BlinnPhongShading > 0)
 		{
@@ -123,7 +123,7 @@ void main()
 
 		float shadow = ShadowCalculation(FragPosLightSpace, fNormalWS);
 		// final 
-		FinalColor.rgb = ambientContribution + (1.0 - shadow) * diffuseContribution /*+ specularContribution*/;
+		FinalColor.rgb = ambientContribution + (1.0 - shadow) * diffuseContribution + specularContribution;
 	}
 	else
 	{

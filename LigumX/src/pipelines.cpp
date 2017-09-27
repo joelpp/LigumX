@@ -4,6 +4,9 @@
 
 void Renderer::init_pipelines()
 {
+
+	// todo : instead parse through the shaders folder and init automatically families
+
 //	std::cout << "GL Version: " <<glGetString(GL_VERSION) << "\n";
 //	std::cout << "GLSL Version: "<< glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
 //	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
@@ -27,7 +30,9 @@ void Renderer::init_pipelines()
     pPipelineGround = new ProgramPipeline("Terrain");
 	pPipelineEnvmap = new ProgramPipeline("Envmap");
 	pPipelineScreenSpaceTexture = new ProgramPipeline("ScreenSpaceTexture");
-    pPipelineNodes = new ProgramPipeline("nodes");
+	pPipelineNodes = new ProgramPipeline("nodes");
+	pPipelinePicking = new ProgramPipeline("picking");
+	pPipelinePickingCompute = new ProgramPipeline("picking_compute", true);
 	Renderer::outputGLError(__func__, __LINE__);
 
 }

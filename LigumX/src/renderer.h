@@ -25,11 +25,22 @@
 #include "property.h"
 class DisplayOptions;
 class PostEffects;
-class SunLight;
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
+
+class Framebuffer;
+class SunLight;
+
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
 //#define FLUSH_ERRORS()
+
+enum FramebufferType
+{
+	FramebufferType_MainColorBuffer,
+	FramebufferType_ShadowMap,
+	FramebufferType_Picking,
+	NBFramebuffers
+};
 
 class Material;
 class Model;
@@ -67,11 +78,14 @@ DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; };
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; };
 PostEffects* GetPostEffects() { return m_PostEffects; }; 
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; };
+const glm::vec2& GetMousePosition() { return m_MousePosition; }; 
+void SetMousePosition(glm::vec2 value) { m_MousePosition = value; };
 private:
 DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;
+glm::vec2 m_MousePosition;
 public:
-static const int g_RendererPropertyCount = 2;
+static const int g_RendererPropertyCount = 3;
 static const ClassPropertyData g_Properties[g_RendererPropertyCount];
 
 
@@ -84,12 +98,12 @@ public:
     void Initialize();
 	void InitGL();
 	void InitFreetype();
-	GLFWwindow*	CreateGLWindow();
-	GLuint CreateFrameBuffer();
 	GLuint CreateTexture();
 	void RenderShadowMap();
 	void RenderOpaque();
 	void RenderTextureOverlay();
+	void RenderPicking();
+
 
     // subfunctions
     void init_pipelines();
@@ -118,10 +132,15 @@ public:
 	void SetUniform(int value, const char* name, GLuint location);
 	void SetUniform(glm::vec3& value, const char* name, GLuint location);
 	void SetUniform(const glm::vec3& value, const char* name, GLuint location);
+	void SetUniform(glm::vec2& value, const char* name, GLuint location);
 	void SetUniform(glm::mat4x4& value, const char* name, GLuint location);
 	void SetUniform(const glm::mat4x4& value, const char* name, GLuint location);
 	void SetUniform(float value, const char* name, GLuint location);
 	void SetFragmentUniform(int value, const char* name);
+	void SetComputeUniform(int value, const char* name);
+
+	template<typename T>
+	void SetComputeUniform(T& value, const char* name);
 
 	//void SetVertexUniform(glm::vec3& value, const char* name);
 	template<typename T>
@@ -157,16 +176,9 @@ public:
     std::string windowTitle;
     GLFWwindow* pWindow;
 
-    float sunTime;
-    float sunOrientation;
-    // textures
-    GLuint glidScreenTexture; // for implicit definition of the roads.
-	GLuint glidFramebuffer;
-	GLuint glidShadowMapFramebuffer;
-	GLuint depthMapTexture;
+	Framebuffer* m_Framebuffers[NBFramebuffers];
 
-    Texture* pBuildingTex;
-
+	// textures
     std::unordered_map<std::string, Texture*> textureMap;
 
     // shaders
@@ -176,6 +188,8 @@ public:
     ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
     ProgramPipeline* pPipelineGround;
+	ProgramPipeline* pPipelinePicking;
+	ProgramPipeline* pPipelinePickingCompute;
 	ProgramPipeline* pPipelineEnvmap;
 	ProgramPipeline* pPipelineScreenSpaceTexture;
     ProgramPipeline* pPipelineText;
@@ -194,7 +208,6 @@ public:
     ProgramPipeline::ShaderProgram* pFragmentShader2;
     ProgramPipeline::ShaderProgram* pFragmentShader3;
 
-    std::vector<Mesh*> m_debugMeshes;
     std::vector<Model*> m_debugModels;
 
     // VBOs
@@ -212,6 +225,7 @@ public:
     GLuint glidGroundTriangleTextureIDs;
     GLuint textVBO;
     GLuint textUvsVBO;
+	GLuint SSBO;
 
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::map<OSMElement::ElementType, bool> displayElementType;
@@ -334,6 +348,9 @@ private:
     void operator=(Renderer const&)  = delete;
 
     RenderDataManager* renderData;
+	const int pickingBufferSize = 128;
+
+	glm::vec3 m_PickedColor;
 };
 
 #endif // RENDERER

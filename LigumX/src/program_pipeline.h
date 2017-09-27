@@ -37,8 +37,9 @@ public:
     GLuint glidVao;
 
     ProgramPipeline();
-    ProgramPipeline(std::string name);
-    void useVertexShader(ShaderProgram* shader);
+    ProgramPipeline(std::string name, bool isCompute = false);
+	void useComputeShader(ShaderProgram* shader);
+	void useVertexShader(ShaderProgram* shader);
     void useGeometryShader(ShaderProgram* shader);
     void useFragmentShader(ShaderProgram* shader);
 	void useTessellationShader(ProgramPipeline::ShaderProgram *evaluationShader, ProgramPipeline::ShaderProgram *controlShader);

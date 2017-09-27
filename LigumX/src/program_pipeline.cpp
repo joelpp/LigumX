@@ -52,7 +52,6 @@ uniform int g_UseLighting;
 uniform vec3 g_CameraPosition;
 uniform float g_CameraNearPlane;
 uniform float g_CameraFarPlane;
-
 #endif
 
 #ifdef PROVIDER_Debug
@@ -73,7 +72,10 @@ uniform float g_GammaCorrectionExponent;
 
 #ifdef PROVIDER_ShadowMap
 uniform sampler2D g_DepthMapTexture;
+#endif
 
+#ifdef PROVIDER_Picking
+uniform float g_PickingID;
 #endif
 
 )";
@@ -237,7 +239,7 @@ void ProgramPipeline::usePipeline()
     glBindVertexArray(this->glidVao);
 }
 
-ProgramPipeline::ProgramPipeline(std::string name)
+ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 {
     pVertexShader = NULL;
     pTessControlShader = NULL;
@@ -256,11 +258,19 @@ ProgramPipeline::ProgramPipeline(std::string name)
     path << ShadersPath;
     path << name << "/";
     
-    useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
-    useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
-	
-	//useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
+	if (isCompute)
+	{
+		useComputeShader(new ProgramPipeline::ShaderProgram(GL_COMPUTE_SHADER, path.str() + "compute.csh", false));
 
+	}
+	else
+	{
+		useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
+		useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
+	}
+
+	//useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
+	
 }
 
 ProgramPipeline::ProgramPipeline()
@@ -337,6 +347,36 @@ ProgramPipeline::ProgramPipeline()
 //    }
 
 //}
+
+void ProgramPipeline::useComputeShader(
+	ProgramPipeline::ShaderProgram* shader)
+{
+	GLbitfield shaderBit = sShaderTypeEnumToBitField(shader->shaderType);
+
+	pComputeShader = shader;
+
+	// attach shader shage
+	glUseProgramStages(glidProgramPipeline, GL_COMPUTE_SHADER_BIT,
+		pComputeShader->glidShaderProgram);
+
+	// check for validation errors.
+	GLint result;
+	int infoLength;
+	char* info;
+	glValidateProgramPipeline(glidProgramPipeline);
+	glGetProgramPipelineiv(glidProgramPipeline, GL_VALIDATE_STATUS, &result);
+	if (!result) {
+		glGetProgramPipelineiv(glidProgramPipeline, GL_INFO_LOG_LENGTH, &infoLength);
+		info = new char[infoLength];
+		glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
+		if (std::string(info).find("compute") == string::npos)
+		{
+			PRINT(m_name);
+			PRINT(info);
+		}
+	}
+
+}
 
 void ProgramPipeline::useVertexShader(
         ProgramPipeline::ShaderProgram* shader)

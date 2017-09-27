@@ -12,6 +12,8 @@
 #include "Settings.h"
 #include "PostEffects.h"
 #include "Sunlight.h"
+#include "GL.h"
+#include "Framebuffer.h"
 
 #pragma region  CLASS_SOURCE Renderer
 #include "Renderer.h"
@@ -20,6 +22,7 @@ const ClassPropertyData Renderer::g_Properties[] =
 {
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true,  }, 
 { "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true,  }, 
+{ "MousePosition", offsetof(Renderer, m_MousePosition), 0, LXType_glmvec2, false,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -30,19 +33,6 @@ using namespace std;
 
 #define FT_SUCCESS 0
 
-
-// TODO : Should this be in like a GL device object?
-GLFWwindow* Renderer::CreateGLWindow()
-{
-	// set window paramaters
-	glfwDefaultWindowHints();
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-
-	return glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), 0, NULL);
-}
 
 void Renderer::InitGL()
 {
@@ -57,7 +47,7 @@ void Renderer::InitGL()
 	}
 
 	// Create GLFW window
-	pWindow = CreateGLWindow();
+	pWindow = GL::CreateGLWindow(windowWidth, windowHeight, windowTitle.c_str());
 
 	glfwSetWindowPos(pWindow, 700, 200);
 	glfwMakeContextCurrent(pWindow);
@@ -78,75 +68,31 @@ void Renderer::InitGL()
 	// GL Settings
 	glfwSwapInterval(0);
 
-	glEnable(GL_DEPTH_TEST);
+	GL::SetCapability(GL::DepthTest, true);
 
-	glDepthFunc(GL_LESS);
+	GL::SetDepthFunction(GL::Depth_Less);
 
-	// Framebuffer
-	glidFramebuffer = CreateFrameBuffer();
-	glidShadowMapFramebuffer = CreateFrameBuffer();
+	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GL::PixelFormat_DepthComponent, GL::PixelType_Float);
+	m_Framebuffers[FramebufferType_ShadowMap]->m_Attachment = GL_DEPTH_ATTACHMENT;
+	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
 
+	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", pickingBufferSize, pickingBufferSize, GL::PixelFormat_RGB, GL::PixelType_uByte);
+	m_Framebuffers[FramebufferType_Picking]->m_Attachment = GL_COLOR_ATTACHMENT0;
+	m_Framebuffers[FramebufferType_Picking]->Initialize();
 
-	glidScreenTexture = CreateTexture();
-	BindTexture(glidScreenTexture);
-
-	// todo : hw texture objects should know how to do this stuff on their own
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, windowWidth, windowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, glidScreenTexture, 0);
-
-
-
-	glGenTextures(1, &depthMapTexture);
-	glBindTexture(GL_TEXTURE_2D, depthMapTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, glidShadowMapFramebuffer);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
+	//glDrawBuffer(GL_NONE);
+	//glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 
 	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, drawBuffers);
 
 	glEnable(GL_CULL_FACE);
-}
 
-GLuint Renderer::CreateFrameBuffer()
-{
-	GLuint val;
-	glGenFramebuffers(1, &val);
-	glBindFramebuffer(GL_FRAMEBUFFER, val);
-	FLUSH_ERRORS();
+	glGenBuffers(1, &SSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, 12 * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
 
-	return val;
-}
-
-GLuint Renderer::CreateTexture()
-{
-	GLuint val;
-	glGenTextures(1, &val);
-
-	return val;
-}
-
-void Renderer::BindTexture(GLuint& hwTexture)
-{
-	glBindTexture(GL_TEXTURE_2D, hwTexture);
 }
 
 void Renderer::InitFreetype()
@@ -287,6 +233,12 @@ void Renderer::SetUniform(glm::vec3& value, const char* name, GLuint location)
 	glProgramUniform3f(prog, glGetUniformLocation(prog, name), value.x, value.y, value.z);
 }
 
+void Renderer::SetUniform(glm::vec2& value, const char* name, GLuint location)
+{
+	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
+	glProgramUniform2f(prog, glGetUniformLocation(prog, name), value.x, value.y);
+}
+
 void Renderer::SetUniform(const glm::vec3& value, const char* name, GLuint location)
 {
 	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
@@ -315,9 +267,21 @@ void Renderer::SetFragmentUniform(T& value, const char* name)
 	SetUniform(value, name, GL_FRAGMENT_SHADER);
 }
 
+template<typename T>
+void Renderer::SetComputeUniform(T& value, const char* name)
+{
+	SetUniform(value, name, GL_COMPUTE_SHADER);
+}
+
 void Renderer::SetFragmentUniform(int value, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
+}
+
+void Renderer::SetComputeUniform(int value, const char* name)
+{
+	GLuint prog = activePipeline->getShader(GL_COMPUTE_SHADER)->glidShaderProgram;
 	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
 }
 
@@ -392,7 +356,7 @@ void Renderer::SetPostEffectsUniforms()
 void Renderer::SetShadowMapUniforms(Camera* cam)
 {
 	SetFragmentUniform(2, "g_DepthMapTexture");
-	Bind2DTexture(2, depthMapTexture);
+	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetTexture());
 
 	SetVertexUniform(cam->GetViewProjectionMatrix(), "g_LightProjectionMatrix");
 }
@@ -463,6 +427,8 @@ void Renderer::FreeBoundTexture()
 
 void Renderer::DrawMesh(Mesh* mesh)
 {
+	glBindVertexArray(mesh->m_VAO);
+
 	if (mesh->m_usesIndexBuffer)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
@@ -601,12 +567,12 @@ void Renderer::ShowVariableAsText(float variable, const char* variableName)
 
 #define ShowVec3(data, object) ShowVariableAsText((glm::vec3*)(##object) + data.m_Offset / sizeof(glm::vec3), data.m_Name); 
 
-#define ShowPropertyGrid(object, className, displayname)\
+#define ShowPropertyGrid(object, displayname)\
 { \
     ImGui::PushID(#displayname); \
 	if (ImGui::CollapsingHeader(##displayname)) \
 	{ \
-		for (const ClassPropertyData& data : ##className::g_Properties) \
+		for (const ClassPropertyData& data : object->g_Properties) \
 		{ \
 			switch (data.m_Type) \
 			{ \
@@ -642,11 +608,11 @@ void Renderer::RenderGUI()
 
 		// todo : have a mapping from lxtype to display names and such
 		// or at least keep the display name as a generated static string in each gen'd class
-		ShowPropertyGrid(m_DisplayOptions, DisplayOptions, "Display options");
-		ShowPropertyGrid(m_PostEffects, PostEffects, "Post Effects");
-		ShowPropertyGrid(camera, Camera, "Camera");
-		ShowPropertyGrid(m_ShadowCamera, Camera, "Shadow Camera");
-		ShowPropertyGrid(m_World->GetSunLight(), SunLight, "SunLight");
+		ShowPropertyGrid(m_DisplayOptions,	"Display options");
+		ShowPropertyGrid(m_PostEffects,		"Post Effects");
+		ShowPropertyGrid(camera,			"Camera");
+		ShowPropertyGrid(m_ShadowCamera,	"Shadow Camera");
+		ShowPropertyGrid(m_World->GetSunLight(), "SunLight");
 
 		//if (ImGui::CollapsingHeader("Camera"))
 		//{
@@ -708,6 +674,7 @@ void Renderer::RenderGUI()
 			ImGui::ColorEdit3("Ambient", &(m_TestLight.m_AmbientColor[0]));
 			ImGui::SliderFloat3("Position", &(m_TestLight.m_Position[0]), -30.f, 30.f);
 		}
+		ImGui::ColorEdit3("Picking", &(m_PickedColor[0]));
 
 
 		EndImGUIWindow();
@@ -719,14 +686,16 @@ void Renderer::RenderGUI()
 void Renderer::RenderShadowMap()
 {
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, glidShadowMapFramebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffers[FramebufferType_ShadowMap]->GetHWObject());
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	SetPipeline(pPipelineShadowMap);
 
+	glm::vec3 pos = glm::normalize(m_World->GetSunLight()->GetSunDirection());
+
+	m_TestLight.m_Position = pos;
 	SetLightingUniforms();
 
-	glm::vec3 pos =  glm::normalize(m_World->GetSunLight()->GetSunDirection());
 	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 15.f);
 	m_ShadowCamera->frontVec = pos;
 	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->frontVec));
@@ -773,7 +742,8 @@ void Renderer::RenderTextureOverlay()
 	SetPipeline(pPipelineScreenSpaceTexture);
 
 	SetFragmentUniform(0, "g_Texture");
-	Bind2DTexture(0, depthMapTexture);
+	//Bind2DTexture(0, m_Framebuffers[FramebufferType_ShadowMap]->GetTexture());
+	Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetTexture());
 	//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -781,6 +751,59 @@ void Renderer::RenderTextureOverlay()
 	FLUSH_ERRORS();
 	//glClear(GL_DEPTH_BUFFER_BIT);
 }
+void Renderer::RenderPicking()
+{
+	GL::SetViewport(pickingBufferSize, pickingBufferSize);
+
+	SetPipeline(pPipelinePicking);
+
+	GL::BindFramebuffer(m_Framebuffers[FramebufferType_Picking]->GetHWObject());
+	GL::ClearColorBuffer();
+
+	SetViewUniforms(camera);
+
+	float i = 0.1;
+	for (Entity* entity : m_World->m_Entities)
+	{
+		SetFragmentUniform(i, "g_PickingID");
+		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+
+		for (int i = 0; i < entity->m_Model->m_meshes.size(); ++i)
+		{
+			DrawMesh(entity->m_Model->m_meshes[i]);
+		}
+		i += 0.1;
+	}
+	
+	GL::BindFramebuffer(0);
+
+	SetPipeline(pPipelinePickingCompute);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
+
+	SetComputeUniform(1, "g_PickingBuffer");
+	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetHWObject());
+	
+	SetComputeUniform(m_MousePosition, "g_MousePosition");
+
+	glDispatchCompute(1, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
+
+	glm::vec3 output;
+	GLfloat *ptr;
+	ptr = (GLfloat *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+
+	m_PickedColor = glm::vec3(*ptr, *(ptr + 1), *(ptr + 2));
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+}
+
 
 /**
  * [Renderer::render description]
@@ -789,16 +812,16 @@ void Renderer::RenderTextureOverlay()
 void Renderer::render(World* world)
 {
 	m_World = world;
+	RenderPicking();
 	RenderShadowMap();
 
-	glViewport(0, 0, windowWidth, windowHeight);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	GL::SetViewport(windowWidth, windowHeight);
+	GL::BindFramebuffer(0);
+	GL::ClearColorAndDepthBuffers();
 
 	RenderSky(world->GetSunLight());
 
-	DrawTerrain();
+	//DrawTerrain();
 
 	RenderOpaque();
 
@@ -809,7 +832,6 @@ void Renderer::render(World* world)
 	RenderFPS();
 
 	RenderTextureOverlay();
-
 
 
 
@@ -874,32 +896,33 @@ void Renderer::RenderSky(SunLight* sunLight)
 	{
 		return;
 	}
+
 	SetPipeline(pPipelineEnvmap);
-
-
-	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
-	glBindVertexArray(mesh->m_VAO);
-
-	FLUSH_ERRORS();
 
 	GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth * 2, windowHeight * 2);
 	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), sunLight->GetOrientation());
 	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), sunLight->GetTime());
-	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewDir"), -camera->frontVec.x, -camera->frontVec.y, -camera->frontVec.z); // the frontVec for the camera points towards the eye, so we reverse it to get the view direction.
 	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
 	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);
 	glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "viewAngles"), camera->totalViewAngleY*glm::pi<float>()/180.0f, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()/180.0f);
 	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->GetNearPlane());
        
+	SetFragmentUniform(2.f * glm::vec2(windowWidth, windowHeight), "windowSize");
+	SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
+	SetFragmentUniform(sunLight->GetTime(), "sunTime");
+	SetFragmentUniform(-camera->frontVec, "viewDir");
+	SetFragmentUniform(camera->rightVec, "viewRight");
+	SetFragmentUniform(camera->upVec, "viewUp");
+	//SetFragmentUniform("viewAngles", camera->totalViewAngleY*glm::pi<float>() / 180.0f, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>() / 180.0f);
+	SetFragmentUniform(camera->GetNearPlane() ,"viewNear");
+
 	SetViewUniforms(camera);
 
-	//FLUSH_ERRORS();
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	//   
+	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
 	DrawMesh(mesh);
-	FLUSH_ERRORS();
-	glClear(GL_DEPTH_BUFFER_BIT);
+
+	GL::ClearDepthBuffer();
 }
 
 
@@ -971,81 +994,6 @@ void Renderer::RenderText(Text t)
    glDisable(GL_BLEND);
    glDisable(GL_CULL_FACE);
 
-//    glEnable(GL_CULL_FACE);
-//    glEnable(GL_BLEND);
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    // Activate corresponding render state
-//    pPipelineText->usePipeline();
-//    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
-//    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
-//    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-//    if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->vpMat));
-//    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
-
-//    std::string text = t.text;
-//    GLfloat uvs[6][2] = {
-//        {0.0, 0.0},
-//        {0.0, 1.0},
-//        {1.0, 1.0},
-
-//        {0.0, 0.0},
-//        {1.0, 1.0},
-//        {1.0, 0.0}
-
-//    };
-//    int index = 0;
-//    GLfloat x = t.position.x;
-//    GLfloat y = t.position.y;
-//    GLfloat scale = t.scale;
-
-//    // Iterate through all characters
-//    std::string::const_iterator c;
-//    for (c = text.begin(); c != text.end(); c++)
-//    {
-//        Character ch = Characters[*c];
-
-//        GLfloat xpos = x + ch.Bearing.x * scale;
-//        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-
-//        GLfloat w = ch.Size.x * scale;
-//        GLfloat h = ch.Size.y * scale;
-//        // Update VBO for each character
-//        GLfloat vertices[6][3] = {
-//            { xpos,     ypos + h,  0.0001 },
-//            { xpos,     ypos,      0.0001 },
-//            { xpos + w, ypos,      0.0001 },
-
-//            { xpos,     ypos + h,  0.0001 },
-//            { xpos + w, ypos,      0.0001 },
-//            { xpos + w, ypos + h,  0.0001 }
-//        };
-
-//        // Render glyph texture over quad
-//        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-//        // Update content of VBO memory
-//        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-//        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-
-//        glBindBuffer(GL_ARRAY_BUFFER, textUvsVBO);
-//        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
-
-//        glBindBuffer(GL_ARRAY_BUFFER, 0);
-//        // Render quad
-//        glDrawArrays(GL_TRIANGLES, 0, 6);
-//        // std::cout << "\n";
-//        // std::cout << xpos << "\n";
-//        // std::cout << ypos << "\n";
-//        // std::cout << h << "\n";
-//        // std::cout << w << "\n";
-//        // std::cout << "\n";
-//        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-//        x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
-//    }
-// //    glBindVertexArray(0);
-// //    glBindTexture(GL_TEXTURE_2D, 0);
-
-//    glDisable(GL_BLEND);
-//    glDisable(GL_CULL_FACE);
 }
 
 void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)

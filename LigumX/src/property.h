@@ -10,10 +10,18 @@ enum LXType
 	LXType_int,
 	LXType_float,
 	LXType_bool,
+	
+	LXType_stdstring,
+
+	LXType_glmvec2,
 	LXType_glmvec3,
 	LXType_glmvec4,
+	LXType_glmivec2,
 	LXType_glmmat4,
+
 	LXType_Texture,
+
+	LXType_GLuint,
 
 	// these are mostly a test. maybe we shouldnt get so specific and instead use LXType_Other
 	// still doing it just to see what happens

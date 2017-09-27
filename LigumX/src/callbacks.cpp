@@ -83,8 +83,8 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 
         // Left-click
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
-            // double x,y;
-            // glfwGetCursorPos(pWindow, &x, &y);
+             double x,y;
+             glfwGetCursorPos(pWindow, &x, &y);
             // vec2 worldPos = LigumX::GetInstance().windowPosToWorldPos(vec2(x,y));
             // int index = 0;
             // std::vector<Way*> closests;
@@ -97,6 +97,8 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
             // if (closests[0] == NULL) return;
             // TIME(LigumX::GetInstance().updateSelectedWay(closests[0]));
             // PRINTELEMENTVECTOR(closests);
+
+			 Renderer::GetInstance().SetMousePosition(glm::vec2(x, y));
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){
