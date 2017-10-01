@@ -408,5 +408,6 @@
     <None Include="src\Entity.gen" />
     <None Include="src\SunLight.gen" />
     <None Include="src\Framebuffer.gen" />
+    <None Include="src\Model.gen" />
   </ItemGroup>
 </Project>

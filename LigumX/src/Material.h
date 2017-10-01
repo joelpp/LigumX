@@ -16,6 +16,8 @@ class Material
 #pragma region  HEADER Material
 static const int ClassID = 3419754368;
 public:
+const bool& GetEnabled() { return m_Enabled; }; 
+void SetEnabled(bool value) { m_Enabled = value; };
 const glm::vec3& GetAlbedo() { return m_Albedo; }; 
 void SetAlbedo(glm::vec3 value) { m_Albedo = value; };
 const glm::vec3& GetAmbientColor() { return m_AmbientColor; }; 
@@ -33,6 +35,7 @@ void SetSpecularTexture(Texture* value) { m_SpecularTexture = value; };
 ProgramPipeline* GetProgramPipeline() { return m_ProgramPipeline; }; 
 void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; };
 private:
+bool m_Enabled;
 glm::vec3 m_Albedo;
 glm::vec3 m_AmbientColor;
 glm::vec3 m_DiffuseColor;
@@ -42,7 +45,7 @@ Texture* m_DiffuseTexture;
 Texture* m_SpecularTexture;
 ProgramPipeline* m_ProgramPipeline;
 public:
-static const int g_MaterialPropertyCount = 8;
+static const int g_MaterialPropertyCount = 9;
 static const ClassPropertyData g_Properties[g_MaterialPropertyCount];
 
 

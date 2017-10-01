@@ -151,7 +151,7 @@ void DefaultMeshes::InitializeDefaultCube()
 //	DefaultQuadMesh->m_usesIndexBuffer = true;
 //	DefaultQuadMesh->m_renderingMode = GL_TRIANGLES;
 
-	Model* testModel = new Model("Nanosuit", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/cube/cube.obj");
+	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/cube/cube.obj");
 	DefaultCubeMesh = testModel->m_meshes[0];
 
 }

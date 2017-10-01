@@ -6,6 +6,7 @@
 #include "glad/glad.h"
 #include "Logging.h"
 #include <iostream>
+
 class Texture;
 class Material;
 class Vertex;
@@ -48,7 +49,9 @@ struct CPUBuffers
 	std::vector<int> indexBuffer;
 };
 
-class Mesh{
+class Mesh
+{
+
 public:
 	// Mesh(std::vector<Vertex> vertexArray);
 	// void addVertex(Vertex v);

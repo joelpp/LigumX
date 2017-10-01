@@ -78,12 +78,12 @@ DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; };
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; };
 PostEffects* GetPostEffects() { return m_PostEffects; }; 
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; };
-const glm::vec2& GetMousePosition() { return m_MousePosition; }; 
-void SetMousePosition(glm::vec2 value) { m_MousePosition = value; };
+const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
+void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; };
 private:
 DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;
-glm::vec2 m_MousePosition;
+glm::vec2 m_MouseClickPosition;
 public:
 static const int g_RendererPropertyCount = 3;
 static const ClassPropertyData g_Properties[g_RendererPropertyCount];
@@ -332,6 +332,13 @@ private:
 
     Renderer() {};                   // Constructor? (the {} brackets) are needed here.
 	void RenderGUI();
+
+	template <typename T>
+	void ShowPropertyGridTemplate(T* object, const char* name);
+
+	template<typename T>
+	void ShowPropertyGridMacro(T* object, const char* name);
+
 	void HandleScreenshot();
 	void BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name);
 	void EndImGUIWindow();
@@ -339,6 +346,17 @@ private:
 	void ShowVariableAsText(glm::vec3 variable, const char* variableName);
 	void ShowVariableAsText(glm::vec3* variable, const char* variableName);
 	void ShowVariableAsText(float variable, const char* variableName);
+	void ShowGUIText(const char* text);
+	void ShowGUIText(std::string* text);
+	void ShowGUIText(std::string* text, const char* variableName);
+	void ShowGUIText(const std::string& text);
+	void ShowGUIText(const std::string& text, const char* variableName);
+
+
+	void ShowProperty(bool* value, const char* name);
+	void ShowProperty(float* value, const char* name, float min, float max);
+	void ShowProperty(glm::vec3* value, const char* name);
+	void ShowProperty(std::string* value, const char* name);
 
     // C++ 11
     // =======
@@ -351,6 +369,9 @@ private:
 	const int pickingBufferSize = 128;
 
 	glm::vec3 m_PickedColor;
+	glm::vec2 m_LastMouseClickPosition;
+
+	Entity* m_PickedEntity;
 };
 
 #endif // RENDERER

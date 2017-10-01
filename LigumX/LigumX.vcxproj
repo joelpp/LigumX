@@ -288,6 +288,7 @@
     <None Include="src\Entity.gen" />
     <None Include="src\Framebuffer.gen" />
     <None Include="src\Material.gen" />
+    <None Include="src\Model.gen" />
     <None Include="src\PostEffects.gen" />
     <None Include="src\renderer.gen" />
     <None Include="src\SunLight.gen" />

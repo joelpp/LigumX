@@ -92,6 +92,20 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			variable.SetType(tokens[0]);
 
 			variable.m_IsPtr = stringContains(variable.m_Type, '*');
+
+			bool varIsTemplate = stringContains(variable.m_Type, '<');
+
+			if (varIsTemplate)
+			{
+				// for now we'll assume the associated type is always a pointer.
+				variable.m_AssociatedType = getSubstringBetweenCharacters(variable.m_Type, '<', '>');
+			
+				// remove template declaration from string
+				variable.RemoveTemplateDeclaration();
+			}
+
+
+
 			variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
 
 			currentClass.m_Members.push_back(variable);

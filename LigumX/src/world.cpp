@@ -29,19 +29,20 @@ World::World(float sectorSize)
 	m_sectorSize = sectorSize;
 	m_invSectorSize = 1.f / sectorSize;
 
-	Model* testModel = new Model("Nanosuit", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/nanosuit2.obj");
-
+	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/nanosuit2.obj");
+	testModel->SetName("NanosuitModel");
 	//Material* testMaterial = new Material(new ProgramPipeline("Basic"), glm::vec3(1,0,0));
 	//testModel->m_materialList.push_back(testMaterial);
 
 	Entity* testEntity = new Entity();
 	testEntity->setPosition(glm::vec3(0, 0, 1));
-	testEntity->setModel(testModel);
+	testEntity->SetModel(testModel);
 
 	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(0, 20, 1));
 	toWorld = glm::rotate(toWorld, 90.f, glm::vec3(1, 0, 0));
 	testEntity->m_ModelToWorldMatrix = toWorld;
 	m_Entities.push_back(testEntity);
+	testEntity->SetName("Nanosuit");
 	
 	Entity* testEntity2 = new Entity();
 
@@ -61,9 +62,11 @@ World::World(float sectorSize)
 	material->SetShininess(1.0f);
 	material->SetDiffuseTexture(new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png"));
 	testModel = new Model(g_DefaultMeshes->DefaultQuadMesh, material);
+	testModel->SetName("TerrainModel");
 	//testModel = new Model("Nanosuit", "C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere/sphere.obj");
-	testEntity2->setModel(testModel);
+	testEntity2->SetModel(testModel);
 	testEntity2->m_ModelToWorldMatrix = toWorld2;
+	testEntity2->SetName("Terrain");
 	m_Entities.push_back(testEntity2);
 
 	m_SunLight = new SunLight();

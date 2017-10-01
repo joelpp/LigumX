@@ -206,7 +206,7 @@ bool Building::GenerateModel()
 	Renderer& renderer = Renderer::GetInstance();
 
 	m_Model = new Model();
-	m_Model->name = "Building";
+	m_Model->SetName("Building");
 
 	Mesh* mesh = new Mesh(buildingTrianglePositions, GL_TRIANGLES);
 	m_Model->addMesh( mesh, new Material(renderer.pPipelineBasic, glm::vec3(1,1,1) ) );

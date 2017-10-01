@@ -251,7 +251,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
         waysModel->addMesh( mesh, new Material(renderer.pPipelineLines, renderer.typeColorMap[index]) );
     }
 
-    waysModel->name = "Ways";
+    waysModel->SetName("Ways");
     renderer.m_debugModels.push_back(waysModel);
     
     // Model* nodesModel = new Model();
@@ -286,7 +286,7 @@ void RenderDataManager::initializeSector(Sector* sector)
     Mesh* linesMesh = new Mesh(points, GL_LINES);
 
     linesModel->addMesh( linesMesh, new Material(renderer.pPipelineLines, glm::vec3(1,0,0)) );
-    linesModel->name = "Sector_lines_";
+    linesModel->SetName("Sector_lines_");
     renderer.m_debugModels.push_back(linesModel);
 
     Text t;

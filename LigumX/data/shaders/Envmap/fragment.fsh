@@ -65,60 +65,27 @@ float stars(vec3 v)
     else return 0;
 }
 
-
-// gives the direction of the ray that passes through the screen at pos01.
-vec3 screenToVec(vec2 pos01)
-{
-    //vec2 pos11 = 2.0*(pos01-vec2(0.5,0.5));
-    //vec3 res =   viewDir * viewNear
-    //           + pos11.x * viewNear*tan(viewAngles.x/2.0) * viewRight
-    //           + pos11.y * viewNear*tan(viewAngles.y/2.0) * viewUp;
-    //return normalize(res);
-
-	//vec3 a = vec3(2.0*(gl_FragCoord.xy - vec2(0.5,0.5), gl_FragCoord.z));
-	//vec3 ndc = a * gl_FragCoord.w;
-
-	   //vec4 ndc = vec4(
-    //    (gl_FragCoord.x /*/ windowSize.x*/ - 0.5) * 2.0,
-    //    (gl_FragCoord.y /*/ windowSize.y*/ - 0.5) * 2.0,
-    //    (gl_FragCoord.z - 0.5) * 2.0,
-    //    1.0);
-
-	vec4 viewport = vec4(0.f, 0.f, windowSize.x, windowSize.y);
-
-	vec4 ndcPos;
-	ndcPos.xy = ((2.0 * gl_FragCoord.xy) - (2.0 * viewport.xy)) / (viewport.zw) - 1;
-	ndcPos.z = (2.0 * gl_FragCoord.z - gl_DepthRange.near - gl_DepthRange.far) /
-		(gl_DepthRange.far - gl_DepthRange.near);
-	ndcPos.w = 1.0;
-
-	vec4 clipPos = ndcPos / gl_FragCoord.w;
-
-	vec4 viewPos = g_ProjectionMatrixInverse*  clipPos ;
-	vec4 worldPos = g_ViewToWorldMatrix* viewPos ;
-
-	return  normalize(viewPos.xyz/* - g_CameraPosition*/);
-}
-
 void main() {
 
     // compute globals
     sunDirFlat = vec2(cos(sunOrientation), sin(sunOrientation));
     sunDir = cos(sunTime)*vec3(0,0,1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);
 
-    //vec3 pos01 = vec3(gl_FragCoord.xy, 0/*gl_FragCoord.z*/);
-	 vec2 pos01 = gl_FragCoord.xy/windowSize;
+	vec2 pos01 = gl_FragCoord.xy/windowSize;
     vec3 fragDir = normalize(direction);
 
     float cosAngleToSun = dot(fragDir, sunDir);
     float cosAngleToWorldUp = dot(fragDir, vec3(0,0,1));
-    if(cosAngleToWorldUp > 0) {
-        float cosSun01 = 0.5*(cosAngleToSun+1);
 
-        float sunsetFact =  smoothstep(-0.2, 0.05, sunDir.z)
-                           *smoothstep( 0.3, 0.05, sunDir.z);
-//        float overGroundBool = float(sunDir.z > 0);
+    if(cosAngleToWorldUp > 0) 
+	{
+        float cosSun01 = 0.5 * (cosAngleToSun + 1);
+
+        float sunsetFact =   smoothstep(-0.2, 0.05, sunDir.z)
+                           * smoothstep( 0.3, 0.05, sunDir.z);
+
         float overGroundBool = smoothstep(-0.05, 0.05, sunDir.z);
+
         int moonBool = int(cosSun01 < 0.001);
 
         color =

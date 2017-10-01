@@ -98,7 +98,7 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
             // TIME(LigumX::GetInstance().updateSelectedWay(closests[0]));
             // PRINTELEMENTVECTOR(closests);
 
-			 Renderer::GetInstance().SetMousePosition(glm::vec2(x, y));
+			 Renderer::GetInstance().SetMouseClickPosition(glm::vec2(x, y));
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){

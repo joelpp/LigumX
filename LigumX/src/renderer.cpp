@@ -22,7 +22,7 @@ const ClassPropertyData Renderer::g_Properties[] =
 {
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true,  }, 
 { "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true,  }, 
-{ "MousePosition", offsetof(Renderer, m_MousePosition), 0, LXType_glmvec2, false,  }, 
+{ "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -402,7 +402,14 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 	{
 		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
-		DrawMesh(model->m_meshes[i], model->m_materialList[i]);
+		Material* material = model->m_materialList[i];
+
+		if (!material->GetEnabled())
+		{
+			continue;
+		}
+
+		DrawMesh(model->m_meshes[i], material);
 	}
 }
 
@@ -556,42 +563,206 @@ void Renderer::ShowVariableAsText(glm::vec3* variable, const char* variableName)
 	ImGui::Text("%s : %f, %f, %f", variableName, variable->x, variable->y, variable->z);
 }
 
+void Renderer::ShowGUIText(const char* text)
+{
+	ImGui::Text("%s", text);
+}
+
+void Renderer::ShowGUIText(const std::string& text)
+{
+	ImGui::Text("%s", text.c_str());
+}
+
+void Renderer::ShowGUIText(std::string* text)
+{
+	ImGui::Text("%s", text->c_str());
+}
+
+void Renderer::ShowGUIText(std::string* text, const char* variableName)
+{
+	ImGui::Text("%s : %s", variableName, text->c_str());
+}
+
+void Renderer::ShowGUIText(const std::string& text, const char* variableName)
+{
+	ImGui::Text("%s : %s", variableName, text.c_str());
+}
+
+
 void Renderer::ShowVariableAsText(float variable, const char* variableName)
 {
 	ImGui::Text("%s : %f", variableName, variable);
 }
 
+//template<typename T>
+//T* GetPropertyValue(T* baseValue, int offset)
+//{
+//	return (T *)(##object) + data.m_Offset / sizeof(T);
+//}
+
+#define GetProperty(type, object, data) (##type *)(##object) + data.m_Offset / sizeof(##type)
+
+#define GetPropertyPtr(type, object, data) *((##type **)(##object) + data.m_Offset / sizeof(##type*))
+
 #define ShowCheckbox(data, object) ImGui::Checkbox(data.m_Name, ((bool*)##object + data.m_Offset));
 
 #define ShowFloatSlider(data, object, min, max) ImGui::SliderFloat(data.m_Name, (float*)(##object)+ data.m_Offset / 4, min, max, "%.3f");
 
-#define ShowVec3(data, object) ShowVariableAsText((glm::vec3*)(##object) + data.m_Offset / sizeof(glm::vec3), data.m_Name); 
+#define ShowVec3(data, object) ShowVariableAsText(GetProperty(glm::vec3, object, data), data.m_Name); 
 
-#define ShowPropertyGrid(object, displayname)\
+#define ShowString(data, object) ShowGUIText((std::string*)(##object) + data.m_Offset / sizeof(std::string), data.m_Name); 
+
+#define ShowModel(data, object) ShowGUIText( "hey" + (GetProperty(Model, ##object, data))->GetName(), data.m_Name); 
+
+
+#define ShowPropertyGrid(objectPtr, displayname) \
 { \
     ImGui::PushID(#displayname); \
 	if (ImGui::CollapsingHeader(##displayname)) \
 	{ \
-		for (const ClassPropertyData& data : object->g_Properties) \
+		if (objectPtr == nullptr) \
 		{ \
-			switch (data.m_Type) \
+			ShowGUIText("Object is null."); \
+		} \
+		else \
+		{ \
+			for (const ClassPropertyData& propertyData : objectPtr->g_Properties) \
 			{ \
+				switch (propertyData.m_Type) \
+				{ \
 				case LXType_bool: \
-					ShowCheckbox(data, ##object); \
+				{ \
+					ShowCheckbox(propertyData, ##objectPtr); \
 					break; \
+				} \
 				case LXType_float: \
-					ShowFloatSlider(data, ##object, -10, 20); \
+				{ \
+					ShowFloatSlider(propertyData, ##objectPtr, -10, 20); \
 					break; \
+				} \
 				case LXType_glmvec3: \
-					ShowVec3(data, ##object); \
+				{ \
+					ShowVec3(propertyData, ##objectPtr); \
 					break; \
+				} \
+				case LXType_stdstring: \
+				{ \
+					ShowString(propertyData, ##objectPtr); \
+					break; \
+				} \
+				case LXType_Model: \
+				{ \
+					/*ShowPropertyGridMacro(objectPtr->GetModel(), "Model")*/ \
+					break; \
+				} \
 				default: \
-					break;\
+				{ \
+					break; \
+				} \
+				  \
+				} \
 			} \
 		} \
 	} \
     ImGui::PopID(); \
 } \
+
+//Model* model = GetProperty(Model, ##objectPtr, data); \
+//					ShowPropertyGridMacro<Model>(model, "Model"); \
+
+template<typename T>
+void Renderer::ShowPropertyGridMacro(T* object, const char* name)
+{
+	ShowPropertyGrid(object, name);
+}
+
+void Renderer::ShowProperty(bool* value, const char* name)
+{
+	ImGui::Checkbox(name, value);
+}
+
+
+void Renderer::ShowProperty(float* value, const char* name, float min, float max)
+{
+	ImGui::SliderFloat(name, value, min, max);
+}
+
+void Renderer::ShowProperty(glm::vec3* value, const char* name)
+{
+	ShowVariableAsText(value, name);
+}
+
+void Renderer::ShowProperty(std::string* value, const char* name)
+{
+	ShowGUIText(value, name);
+}
+
+
+template<typename T> 
+void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
+{
+	ImGui::PushID(name); 
+
+	if (ImGui::TreeNode(name))
+	{
+		if (object == nullptr)
+		{
+			ShowGUIText("Object is null.");
+		} 
+		else 
+		{
+			for (const ClassPropertyData& propertyData : object->g_Properties)
+			{
+				switch (propertyData.m_Type)
+				{
+					case LXType_bool:
+					{
+						ShowProperty(GetProperty(bool, object, propertyData), propertyData.m_Name);
+						break;
+					}
+					case LXType_float:
+					{
+						ShowProperty(GetProperty(float, object, propertyData), propertyData.m_Name, -20.f, 20.f);
+						break;
+					}
+					case LXType_glmvec3:
+					{
+						ShowProperty(GetProperty(glm::vec3, object, propertyData), propertyData.m_Name);
+						break;
+					}
+					case LXType_stdstring:
+					{
+						ShowProperty(GetProperty(std::string, object, propertyData), propertyData.m_Name);
+						break;
+					}
+					case LXType_Model:
+					{
+						Model* model = GetPropertyPtr(Model, object, propertyData);
+						ShowPropertyGridTemplate<Model>(model, propertyData.m_Name);
+
+						int i = 0;
+						// todo : refactor this into proper std vector support
+						for (Material* material : model->m_materialList)
+						{
+							ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
+						}
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+
+			} 
+		} 
+
+		ImGui::TreePop();
+	}
+
+    ImGui::PopID(); 
+}
+
 
 void Renderer::RenderGUI()
 {
@@ -608,64 +779,21 @@ void Renderer::RenderGUI()
 
 		// todo : have a mapping from lxtype to display names and such
 		// or at least keep the display name as a generated static string in each gen'd class
-		ShowPropertyGrid(m_DisplayOptions,	"Display options");
-		ShowPropertyGrid(m_PostEffects,		"Post Effects");
-		ShowPropertyGrid(camera,			"Camera");
-		ShowPropertyGrid(m_ShadowCamera,	"Shadow Camera");
-		ShowPropertyGrid(m_World->GetSunLight(), "SunLight");
+		//ShowPropertyGridMacro<DisplayOptions>(m_DisplayOptions,	"Display options");
 
-		//if (ImGui::CollapsingHeader("Camera"))
-		//{
-		//	for (const ClassPropertyData& data : Camera::g_Properties)
-		//	{
-		//		switch (data.m_Type)
-		//		{
-		//			case LXType_bool:
-		//				ImGui::Checkbox(data.m_Name, ((bool*)camera + data.m_Offset));
-		//				break;
-		//			case LXType_float:
-		//				ImGui::SliderFloat(data.m_Name, (float*)(camera)+ data.m_Offset / 4, 0, 5, "%.3f");
-		//				break;
-		//			case LXType_glmvec3:
-		//				ShowVariableAsText((glm::vec3*)(camera) + data.m_Offset / sizeof(glm::vec3), data.m_Name);
-		//				break;
-		//			default:
-		//				break;
-		//		}
-		//	}
-		//}
+		//ShowPropertyGridMacro<DisplayOptions>(m_DisplayOptions, "Display options");
 
-		//if (ImGui::CollapsingHeader("shadow Camera"))
-		//{
-		//	Camera* cam = m_ShadowCamera;
-		//	ShowVariableAsText(cam->GetPosition(), "Camera Position");
-		//	ShowVariableAsText(cam->frontVec, "Look at");
-		//	ShowVariableAsText(cam->rightVec, "Right");
-		//	ShowVariableAsText(cam->upVec, "Up");
-		//	ShowVariableAsText(cam->aspectRatio, "Aspect ratio");
-		//	ImGui::SliderFloat("Speed", &cam->keyMovementSpeed, cam->minimumSpeed, cam->maximumSpeed, "%.3f");
-		//	ImGui::SliderFloat("Min speed", &cam->minimumSpeed, 0, 1, "%.3f");
-		//	ImGui::SliderFloat("Max speed", &cam->maximumSpeed, 0, 1, "%.3f");
-		//	//Imgui::
+		//ShowPropertyGrid(m_PostEffects,		"Post Effects");
+		//ShowPropertyGrid(camera,			"Camera");
+		//ShowPropertyGrid(m_ShadowCamera,	"Shadow Camera");
+		//ShowPropertyGrid(m_World->GetSunLight(), "SunLight");
+		//ShowPropertyGridMacro<Entity>(m_PickedEntity, "Entity");
 
-		//	for (const ClassPropertyData& data : Camera::g_Properties)
-		//	{
-		//		switch (data.m_Type)
-		//		{
-		//		case LXType_bool:
-		//			ImGui::Checkbox(data.m_Name, ((bool*)m_ShadowCamera + data.m_Offset));
-		//			break;
-		//		case LXType_float:
-		//			ImGui::SliderFloat(data.m_Name, (float*)(m_ShadowCamera)+data.m_Offset / 4, 0, 5, "%.3f");
-		//			break;
-		//		case LXType_glmvec3:
-		//			ShowVariableAsText((glm::vec3*)(m_ShadowCamera) + data.m_Offset / sizeof(glm::vec3), data.m_Name);
-		//			break;
-		//		default:
-		//			break;
-		//		}
-		//	}
-		//}
+		ShowPropertyGridTemplate<DisplayOptions>(m_DisplayOptions, "Display options");
+		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
+		ShowPropertyGridTemplate<Camera>(camera, "Camera");
+		ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
+
 
 		if (ImGui::CollapsingHeader("Light"))
 		{
@@ -674,8 +802,7 @@ void Renderer::RenderGUI()
 			ImGui::ColorEdit3("Ambient", &(m_TestLight.m_AmbientColor[0]));
 			ImGui::SliderFloat3("Position", &(m_TestLight.m_Position[0]), -30.f, 30.f);
 		}
-		ImGui::ColorEdit3("Picking", &(m_PickedColor[0]));
-
+		ShowVariableAsText(m_PickedColor[0], "Picking");
 
 		EndImGUIWindow();
 	}
@@ -685,9 +812,9 @@ void Renderer::RenderGUI()
 
 void Renderer::RenderShadowMap()
 {
-	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_Framebuffers[FramebufferType_ShadowMap]->GetHWObject());
-	glClear(GL_DEPTH_BUFFER_BIT);
+	GL::SetViewport(SHADOW_WIDTH, SHADOW_HEIGHT);
+	GL::BindFramebuffer(m_Framebuffers[FramebufferType_ShadowMap]->GetHWObject());
+	GL::ClearDepthBuffer();
 
 	SetPipeline(pPipelineShadowMap);
 
@@ -707,7 +834,7 @@ void Renderer::RenderShadowMap()
 
 	RenderEntities(m_World->m_Entities);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	GL::BindFramebuffer(0);
 }
 
 void Renderer::RenderOpaque()
@@ -737,7 +864,7 @@ void Renderer::RenderTextureOverlay()
 		return;
 	}
 
-	glViewport(0, 0, 300, 300);
+	GL::SetViewport(300, 300);
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	SetPipeline(pPipelineScreenSpaceTexture);
 
@@ -747,10 +874,13 @@ void Renderer::RenderTextureOverlay()
 	//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	FLUSH_ERRORS();
-	//glClear(GL_DEPTH_BUFFER_BIT);
 }
+
+bool fuzzyEquals(float a, float b, float tolerance)
+{
+	return fabs(a - b) < tolerance;
+}
+
 void Renderer::RenderPicking()
 {
 	GL::SetViewport(pickingBufferSize, pickingBufferSize);
@@ -762,17 +892,15 @@ void Renderer::RenderPicking()
 
 	SetViewUniforms(camera);
 
-	float i = 0.1;
 	for (Entity* entity : m_World->m_Entities)
 	{
-		SetFragmentUniform(i, "g_PickingID");
+		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
-		for (int i = 0; i < entity->m_Model->m_meshes.size(); ++i)
+		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
 		{
-			DrawMesh(entity->m_Model->m_meshes[i]);
+			DrawMesh(entity->GetModel()->m_meshes[i]);
 		}
-		i += 0.1;
 	}
 	
 	GL::BindFramebuffer(0);
@@ -784,7 +912,7 @@ void Renderer::RenderPicking()
 	SetComputeUniform(1, "g_PickingBuffer");
 	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetHWObject());
 	
-	SetComputeUniform(m_MousePosition, "g_MousePosition");
+	SetComputeUniform(m_MouseClickPosition, "g_MousePosition");
 
 	glDispatchCompute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -794,14 +922,33 @@ void Renderer::RenderPicking()
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
 
-	glm::vec3 output;
+	float output;
 	GLfloat *ptr;
 	ptr = (GLfloat *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 
-	m_PickedColor = glm::vec3(*ptr, *(ptr + 1), *(ptr + 2));
+	output = *ptr;
+
+	m_PickedColor[0] = output;
+
+	if (m_LastMouseClickPosition != m_MouseClickPosition)
+	{
+		// search for picked entity
+		for (Entity* entity : m_World->m_Entities)
+		{
+			// todo : proper int rendertarget; how does depth work then? do we care?
+			if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+			{
+				m_PickedEntity = entity;
+				break;
+			}
+		}
+
+		// Update last click position
+		m_LastMouseClickPosition = m_MouseClickPosition;
+	}
+
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-
 }
 
 
@@ -842,7 +989,7 @@ void Renderer::RenderEntities(std::vector<Entity*> entities)
 {
 	for (Entity* entity : entities)
 	{
-		DrawModel(entity, entity->m_Model);
+		DrawModel(entity, entity->GetModel());
 	}
 }
 
@@ -900,21 +1047,16 @@ void Renderer::RenderSky(SunLight* sunLight)
 	SetPipeline(pPipelineEnvmap);
 
 	GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
-	glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "windowSize"), windowWidth * 2, windowHeight * 2);
-	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunOrientation"), sunLight->GetOrientation());
-	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "sunTime"), sunLight->GetTime());
-	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewRight"), camera->rightVec.x, camera->rightVec.y, camera->rightVec.z);
-	glProgramUniform3f(fragProg, glGetUniformLocation(fragProg, "viewUp"), camera->upVec.x, camera->upVec.y, camera->upVec.z);
-	glProgramUniform2f(fragProg, glGetUniformLocation(fragProg, "viewAngles"), camera->totalViewAngleY*glm::pi<float>()/180.0f, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()/180.0f);
-	glProgramUniform1f(fragProg, glGetUniformLocation(fragProg, "viewNear"), camera->GetNearPlane());
-       
+	float pi = 3.141592654f;
+	glm::vec2 viewAngles = glm::vec2(camera->totalViewAngleY*pi, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()) / 180.0f;
+	SetFragmentUniform(viewAngles, "viewAngles");
+
 	SetFragmentUniform(2.f * glm::vec2(windowWidth, windowHeight), "windowSize");
 	SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
 	SetFragmentUniform(sunLight->GetTime(), "sunTime");
 	SetFragmentUniform(-camera->frontVec, "viewDir");
 	SetFragmentUniform(camera->rightVec, "viewRight");
 	SetFragmentUniform(camera->upVec, "viewUp");
-	//SetFragmentUniform("viewAngles", camera->totalViewAngleY*glm::pi<float>() / 180.0f, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>() / 180.0f);
 	SetFragmentUniform(camera->GetNearPlane() ,"viewNear");
 
 	SetViewUniforms(camera);

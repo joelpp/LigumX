@@ -13,6 +13,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Entity
 #include "property.h"
+class Model;
 
 #pragma endregion  FORWARD_DECLARATIONS Entity
 class Entity;
@@ -32,12 +33,21 @@ class Entity {
 #pragma region  HEADER Entity
 static const int ClassID = 3231396602;
 public:
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; };
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; };
+const float& GetPickingID() { return m_PickingID; }; 
+void SetPickingID(float value) { m_PickingID = value; };
+Model* GetModel() { return m_Model; }; 
+void SetModel(Model* value) { m_Model = value; };
 private:
+std::string m_Name;
 glm::vec3 m_Position;
+float m_PickingID;
+Model* m_Model;
 public:
-static const int g_EntityPropertyCount = 1;
+static const int g_EntityPropertyCount = 4;
 static const ClassPropertyData g_Properties[g_EntityPropertyCount];
 
 
@@ -69,9 +79,6 @@ public:
 		this->position = position; 
 	}
 
-	void setModel(Model* model) { m_Model = model; }
-	Model* getModel() { return m_Model; }
-
 public:
     // Entity features
     float mass;                        //!< Entity Mass
@@ -81,8 +88,6 @@ public:
 
     glm::vec3 color;
     ControllerType type;
-
-	Model* m_Model;
 
 	glm::mat4x4 m_ModelToWorldMatrix;
 

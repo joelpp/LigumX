@@ -93,3 +93,10 @@ void TestSubstringRemover()
 
 	std::cout << RemoveSubstrings(str, list);
 }
+
+std::string getSubstringBetweenCharacters(const std::string& str, char c0, char c1)
+{
+	unsigned first = str.find(c0);
+	unsigned last = str.find(c1);
+	return str.substr(first, last - first);
+}

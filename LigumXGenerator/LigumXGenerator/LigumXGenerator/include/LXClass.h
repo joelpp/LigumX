@@ -15,10 +15,19 @@ struct Variable
 		m_Type = fullTypeName;
 	}
 
+	void RemoveTemplateDeclaration()
+	{
+		size_t start = m_Type.find('<');
+		size_t end = m_Type.find('>');
+
+		m_Type.erase(start, end+1);
+	}
+
 	// todo : add .gen files to this project!
 //private:
 	std::string m_Name;
 	std::string m_Type;
+	std::string m_AssociatedType;
 	bool m_IsPtr;
 };
 typedef std::vector<Variable> VariableList;

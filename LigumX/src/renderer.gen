@@ -2,5 +2,5 @@ class Renderer
 {
 	DisplayOptions* DisplayOptions
 	PostEffects* PostEffects
-	glm::vec2 MousePosition
+	glm::vec2 MouseClickPosition
 }

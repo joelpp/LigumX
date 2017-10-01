@@ -7,6 +7,15 @@
 #include "program_pipeline.h"
 #include "glm/gtc/matrix_transform.hpp"
 
+#pragma region  CLASS_SOURCE Model
+#include "Model.h"
+#include <cstddef>
+const ClassPropertyData Model::g_Properties[] = 
+{
+{ "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false,  }, 
+};
+
+#pragma endregion  CLASS_SOURCE Model
 Model::Model()
 {
 
@@ -16,13 +25,6 @@ Model::Model(std::string path)
 {
 	loadModel(path);
 	m_modelMatrix = glm::mat4(1.0);
-}
-
-Model::Model(std::string name, std::string path)
-{
-	loadModel(path);
-	m_modelMatrix = glm::mat4(1.0);
-	this->name = name;
 }
 
 Model::Model(Mesh* mesh, Material* material)

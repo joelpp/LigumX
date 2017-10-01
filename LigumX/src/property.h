@@ -29,6 +29,7 @@ enum LXType
 	LXType_PostEffects,
 	LXType_DisplayOptions,
 	LXType_ProjectionType,
+	LXType_Model,
 
 	LXType_NumTypes
 };

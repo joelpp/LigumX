@@ -7,7 +7,10 @@
 #include <cstddef>
 const ClassPropertyData Entity::g_Properties[] = 
 {
+{ "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false,  }, 
 { "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false,  }, 
+{ "PickingID", offsetof(Entity, m_PickingID), 0, LXType_float, false,  }, 
+{ "Model", offsetof(Entity, m_Model), 0, LXType_Model, true,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Entity
@@ -15,15 +18,25 @@ const ClassPropertyData Entity::g_Properties[] =
 
 using namespace glm;
 
+static float g_NextEntityPickingID = 0.1;
+
 #define ENTITY_SIZE 0.0001f
 #define POWER_MAG ENTITY_SIZE * 10.f
 #define FRICTION_COEFF 0.5f
 
 #define ENTITY_LINE_N 5 // 3 lines for vehicle, 2 lines for local space debug representation
 
-Entity::Entity() :  mass(1.f), maxThrust(50.f), maxForwardSpeed(50.f), maxBackwardSpeed(-10.f),
-                       angle(0.f), turning(0), desiredSpeed(0.f) {
-
+Entity::Entity() 
+	:  mass(1.f), 
+	maxThrust(50.f), 
+	maxForwardSpeed(50.f), 
+	maxBackwardSpeed(-10.f),
+	angle(0.f), 
+	turning(0), 
+	desiredSpeed(0.f)
+{
+	m_PickingID = g_NextEntityPickingID;
+	g_NextEntityPickingID += 0.1;
 }
 
 

@@ -1,4 +1,8 @@
 class Entity
 {
+	std::string Name;
 	glm::vec3 Position
+	float PickingID;
+
+	Model* Model;
 }

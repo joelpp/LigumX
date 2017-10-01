@@ -8,6 +8,7 @@
 #include <cstddef>
 const ClassPropertyData Material::g_Properties[] = 
 {
+{ "Enabled", offsetof(Material, m_Enabled), 0, LXType_bool, false,  }, 
 { "Albedo", offsetof(Material, m_Albedo), 0, LXType_glmvec3, false,  }, 
 { "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false,  }, 
 { "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false,  }, 
@@ -32,12 +33,14 @@ Material* Material::Get(std::string materialName)
 
 Material::Material()
 {
-
+	// todo : handle this once we have default constructors from gen files
+	m_Enabled = true;
 }
 
 
 Material::Material(ProgramPipeline* programPipeline, glm::vec3 albedo)
 {
+	m_Enabled = true;
 	m_ProgramPipeline = programPipeline;
 	SetAlbedo(albedo);
 }
