@@ -7,10 +7,10 @@
 #include <cstddef>
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
-{ "Name", offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false,  }, 
-{ "Width", offsetof(Framebuffer, m_Width), 0, LXType_int, false,  }, 
-{ "Height", offsetof(Framebuffer, m_Height), 0, LXType_int, false,  }, 
-{ "Texture", offsetof(Framebuffer, m_Texture), 0, LXType_GLuint, false,  }, 
+{ "Name", offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false, LXType_None,  }, 
+{ "Width", offsetof(Framebuffer, m_Width), 0, LXType_int, false, LXType_None,  }, 
+{ "Height", offsetof(Framebuffer, m_Height), 0, LXType_int, false, LXType_None,  }, 
+{ "Texture", offsetof(Framebuffer, m_Texture), 0, LXType_GLuint, false, LXType_None,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Framebuffer

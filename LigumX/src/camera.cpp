@@ -12,15 +12,15 @@
 #include <cstddef>
 const ClassPropertyData Camera::g_Properties[] = 
 {
-{ "Position", offsetof(Camera, m_Position), 0, LXType_glmvec3, false,  }, 
-{ "someBullshitVec3", offsetof(Camera, m_someBullshitVec3), 0, LXType_glmvec3, false,  }, 
-{ "ViewMatrix", offsetof(Camera, m_ViewMatrix), 0, LXType_glmmat4, false,  }, 
-{ "ProjectionMatrix", offsetof(Camera, m_ProjectionMatrix), 0, LXType_glmmat4, false,  }, 
-{ "ViewProjectionMatrix", offsetof(Camera, m_ViewProjectionMatrix), 0, LXType_glmmat4, false,  }, 
-{ "NearPlane", offsetof(Camera, m_NearPlane), 0, LXType_float, false,  }, 
-{ "FarPlane", offsetof(Camera, m_FarPlane), 0, LXType_float, false,  }, 
-{ "ProjectionType", offsetof(Camera, m_ProjectionType), 0, LXType_ProjectionType, false,  }, 
-{ "OrthoBorders", offsetof(Camera, m_OrthoBorders), 0, LXType_float, false,  }, 
+{ "Position", offsetof(Camera, m_Position), 0, LXType_glmvec3, false, LXType_None,  }, 
+{ "someBullshitVec3", offsetof(Camera, m_someBullshitVec3), 0, LXType_glmvec3, false, LXType_None,  }, 
+{ "ViewMatrix", offsetof(Camera, m_ViewMatrix), 0, LXType_glmmat4, false, LXType_None,  }, 
+{ "ProjectionMatrix", offsetof(Camera, m_ProjectionMatrix), 0, LXType_glmmat4, false, LXType_None,  }, 
+{ "ViewProjectionMatrix", offsetof(Camera, m_ViewProjectionMatrix), 0, LXType_glmmat4, false, LXType_None,  }, 
+{ "NearPlane", offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None,  }, 
+{ "FarPlane", offsetof(Camera, m_FarPlane), 0, LXType_float, false, LXType_None,  }, 
+{ "ProjectionType", offsetof(Camera, m_ProjectionType), 0, LXType_ProjectionType, false, LXType_None,  }, 
+{ "OrthoBorders", offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Camera

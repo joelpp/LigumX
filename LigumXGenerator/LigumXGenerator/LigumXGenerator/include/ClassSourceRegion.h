@@ -61,6 +61,7 @@ public:
 				+ (m_Class.m_Members[i].m_Type == "\tbool" ? "1" : "0") + ", "
 				+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
 				+ (var.IsAPointer() ? "true" : "false") + ", "
+				+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "
 				+ " }, ");
 		}
 
@@ -75,7 +76,7 @@ public:
 		
 		WritePropertyArray();
 
-		WriteDefaultConstructor();
+		//WriteDefaultConstructor();
 	}
 
 	void WriteFooter()

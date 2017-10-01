@@ -5,8 +5,8 @@
 #include <cstddef>
 const ClassPropertyData PostEffects::g_Properties[] = 
 {
-{ "GammaCorrectionEnabled", offsetof(PostEffects, m_GammaCorrectionEnabled), 0, LXType_bool, false,  }, 
-{ "GammaExponent", offsetof(PostEffects, m_GammaExponent), 0, LXType_float, false,  }, 
+{ "GammaCorrectionEnabled", offsetof(PostEffects, m_GammaCorrectionEnabled), 0, LXType_bool, false, LXType_None,  }, 
+{ "GammaExponent", offsetof(PostEffects, m_GammaExponent), 0, LXType_float, false, LXType_None,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE PostEffects

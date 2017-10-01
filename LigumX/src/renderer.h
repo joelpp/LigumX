@@ -337,7 +337,15 @@ private:
 	void ShowPropertyGridTemplate(T* object, const char* name);
 
 	template<typename T>
+	void ShowGenericProperty(T* object, const ClassPropertyData& propertyData);
+
+	void ShowPropertyTemplate(const char* object, const char* name, const LXType& type, const LXType& associatedType);
+
+	template<typename T>
 	void ShowPropertyGridMacro(T* object, const char* name);
+
+	template<typename T>
+	void ShowPropertyValue(T* object, const ClassPropertyData& propertyData);
 
 	void HandleScreenshot();
 	void BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name);
@@ -358,6 +366,8 @@ private:
 	void ShowProperty(glm::vec3* value, const char* name);
 	void ShowProperty(std::string* value, const char* name);
 
+	template<typename T>
+	void Renderer::ShowPropertyTemplate(T* object, const ClassPropertyData& propertyData);
     // C++ 11
     // =======
     // We can use the better technique of deleting the methods

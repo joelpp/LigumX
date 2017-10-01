@@ -23,12 +23,28 @@ struct Variable
 		m_Type.erase(start, end+1);
 	}
 
+	void CheckForTemplate()
+	{
+		m_IsTemplate = stringContains(m_Type, '<');
+
+		if (m_IsTemplate)
+		{
+			// for now we'll assume the associated type is always a pointer.
+			m_AssociatedType = getSubstringBetweenCharacters(m_Type, '<', '>');
+
+			// remove template declaration from string
+			RemoveTemplateDeclaration();
+		}
+
+	}
+
 	// todo : add .gen files to this project!
 //private:
 	std::string m_Name;
 	std::string m_Type;
 	std::string m_AssociatedType;
 	bool m_IsPtr;
+	bool m_IsTemplate;
 };
 typedef std::vector<Variable> VariableList;
 

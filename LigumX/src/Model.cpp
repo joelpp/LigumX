@@ -12,7 +12,8 @@
 #include <cstddef>
 const ClassPropertyData Model::g_Properties[] = 
 {
-{ "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false,  }, 
+{ "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None,  }, 
+{ "Materials", offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Model
@@ -30,13 +31,13 @@ Model::Model(std::string path)
 Model::Model(Mesh* mesh, Material* material)
 {
 	m_meshes.push_back(mesh);
-	m_materialList.push_back(material);
+	m_Materials.push_back(material);
 }
 
 Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
 {
 	m_meshes = meshList;
-	m_materialList = materialList;
+	m_Materials = materialList;
 }
 
 
@@ -203,7 +204,7 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
 
 void Model::addMesh(Mesh* mesh, Material* material)
 {
-	m_materialList.push_back( material ) ;
+	m_Materials.push_back( material ) ;
 
 	m_meshes.push_back(mesh);
 }

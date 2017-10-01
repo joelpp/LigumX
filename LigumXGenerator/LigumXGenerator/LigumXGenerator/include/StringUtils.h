@@ -98,5 +98,5 @@ std::string getSubstringBetweenCharacters(const std::string& str, char c0, char 
 {
 	unsigned first = str.find(c0);
 	unsigned last = str.find(c1);
-	return str.substr(first, last - first);
+	return str.substr(first + 1, last - first - 1);
 }

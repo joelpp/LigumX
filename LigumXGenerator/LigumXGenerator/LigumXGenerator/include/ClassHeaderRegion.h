@@ -50,6 +50,14 @@ public:
 			bool ptr = var.IsAPointer();
 			m_Stream << (ptr ? "" : "const ");
 			m_Stream << (var.m_Type);
+
+			if (var.m_IsTemplate)
+			{
+				m_Stream << "<";
+				m_Stream << var.m_AssociatedType << "*";
+				m_Stream << ">";
+			}
+
 			m_Stream << (ptr ? "*" : "&");
 			m_Stream << (" ");
 			m_Stream << "Get" << var.m_Name << "() { return m_" << var.m_Name << "; }; ";
@@ -57,6 +65,14 @@ public:
 
 			// Write setter
 			m_Stream << "void Set" << var.m_Name << "(" << var.m_Type;
+
+			if (var.m_IsTemplate)
+			{
+				m_Stream << "<";
+				m_Stream << var.m_AssociatedType << "*";
+				m_Stream << ">";
+			}
+
 			m_Stream << (ptr ? "*" : "");
 			m_Stream << " value) { m_" << var.m_Name << " = value; };";
 			m_Stream << std::endl;
@@ -93,6 +109,14 @@ public:
 		for (Variable var : m_Class.m_Members)
 		{
 			m_Stream << var.m_Type;
+
+			if (var.m_IsTemplate)
+			{
+				m_Stream << "<";
+				m_Stream << var.m_AssociatedType << "*";
+				m_Stream << ">";
+			}
+
 			m_Stream << (var.IsAPointer() ? "*" : "");
 			m_Stream << " m_" << var.m_Name << ";";
 			m_Stream << std::endl;

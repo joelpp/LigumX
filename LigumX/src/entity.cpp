@@ -7,10 +7,10 @@
 #include <cstddef>
 const ClassPropertyData Entity::g_Properties[] = 
 {
-{ "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false,  }, 
-{ "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false,  }, 
-{ "PickingID", offsetof(Entity, m_PickingID), 0, LXType_float, false,  }, 
-{ "Model", offsetof(Entity, m_Model), 0, LXType_Model, true,  }, 
+{ "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None,  }, 
+{ "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None,  }, 
+{ "PickingID", offsetof(Entity, m_PickingID), 0, LXType_float, false, LXType_None,  }, 
+{ "Model", offsetof(Entity, m_Model), 0, LXType_Model, true, LXType_None,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Entity

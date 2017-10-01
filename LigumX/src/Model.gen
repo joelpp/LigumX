@@ -1,4 +1,5 @@
 class Model
 {
 	std::string Name;
+	std::vector<Material> Materials;
 }

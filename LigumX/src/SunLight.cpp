@@ -4,16 +4,23 @@
 #pragma region  CLASS_SOURCE SunLight
 #include "SunLight.h"
 #include <cstddef>
+
+#pragma region  CLASS_SOURCE SunLight
+#include "SunLight.h"
+#include <cstddef>
 const ClassPropertyData SunLight::g_Properties[] = 
 {
-{ "UseShadowMap", offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, false,  }, 
-{ "Time", offsetof(SunLight, m_Time), 0, LXType_float, false,  }, 
-{ "Orientation", offsetof(SunLight, m_Orientation), 0, LXType_float, false,  }, 
-{ "Speed", offsetof(SunLight, m_Speed), 0, LXType_float, false,  }, 
+{ "UseShadowMap", offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, false, LXType_None,  }, 
+{ "Time", offsetof(SunLight, m_Time), 0, LXType_float, false, LXType_None,  }, 
+{ "Orientation", offsetof(SunLight, m_Orientation), 0, LXType_float, false, LXType_None,  }, 
+{ "Speed", offsetof(SunLight, m_Speed), 0, LXType_float, false, LXType_None,  }, 
 };
-SunLight::SunLight() { }
 
 #pragma endregion  CLASS_SOURCE SunLight
+SunLight::SunLight()
+{
+
+}
 
 glm::vec3 SunLight::GetSunDirection()
 {

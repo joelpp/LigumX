@@ -8,15 +8,15 @@
 #include <cstddef>
 const ClassPropertyData Material::g_Properties[] = 
 {
-{ "Enabled", offsetof(Material, m_Enabled), 0, LXType_bool, false,  }, 
-{ "Albedo", offsetof(Material, m_Albedo), 0, LXType_glmvec3, false,  }, 
-{ "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false,  }, 
-{ "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false,  }, 
-{ "SpecularColor", offsetof(Material, m_SpecularColor), 0, LXType_glmvec3, false,  }, 
-{ "Shininess", offsetof(Material, m_Shininess), 0, LXType_float, false,  }, 
-{ "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true,  }, 
-{ "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true,  }, 
-{ "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true,  }, 
+{ "Enabled", offsetof(Material, m_Enabled), 0, LXType_bool, false, LXType_None,  }, 
+{ "Albedo", offsetof(Material, m_Albedo), 0, LXType_glmvec3, false, LXType_None,  }, 
+{ "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false, LXType_None,  }, 
+{ "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false, LXType_None,  }, 
+{ "SpecularColor", offsetof(Material, m_SpecularColor), 0, LXType_glmvec3, false, LXType_None,  }, 
+{ "Shininess", offsetof(Material, m_Shininess), 0, LXType_float, false, LXType_None,  }, 
+{ "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true, LXType_None,  }, 
+{ "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None,  }, 
+{ "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Material

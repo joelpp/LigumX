@@ -11,6 +11,7 @@ enum LXType
 	LXType_float,
 	LXType_bool,
 	
+	LXType_stdvector,
 	LXType_stdstring,
 
 	LXType_glmvec2,
@@ -25,12 +26,14 @@ enum LXType
 
 	// these are mostly a test. maybe we shouldnt get so specific and instead use LXType_Other
 	// still doing it just to see what happens
+	LXType_Material,
 	LXType_ProgramPipeline,
 	LXType_PostEffects,
 	LXType_DisplayOptions,
 	LXType_ProjectionType,
 	LXType_Model,
 
+	LXType_None,
 	LXType_NumTypes
 };
 
@@ -49,5 +52,6 @@ struct ClassPropertyData
 	int debug;
 	LXType m_Type;
 	bool IsAPointer;
+	LXType m_AssociatedType;
 };
 

@@ -58,7 +58,7 @@ World::World(float sectorSize)
 	//toWorld2 = glm::rotate(toWorld2, 180.f, glm::vec3(1, 0, 0));
 	//toWorld2 = glm::rotate(toWorld2, 90.f, glm::vec3(0, 1, 0));
 
-	Material* material = new Material(testModel->m_materialList[4]->GetProgramPipeline(), glm::vec3(1, 0, 0));
+	Material* material = new Material(testModel->GetMaterials()[4]->GetProgramPipeline(), glm::vec3(1, 0, 0));
 	material->SetShininess(1.0f);
 	material->SetDiffuseTexture(new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png"));
 	testModel = new Model(g_DefaultMeshes->DefaultQuadMesh, material);

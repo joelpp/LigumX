@@ -20,9 +20,9 @@
 #include <cstddef>
 const ClassPropertyData Renderer::g_Properties[] = 
 {
-{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true,  }, 
-{ "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true,  }, 
-{ "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false,  }, 
+{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None,  }, 
+{ "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None,  }, 
+{ "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -402,7 +402,7 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 	{
 		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
-		Material* material = model->m_materialList[i];
+		Material* material = model->GetMaterials()[i];
 
 		if (!material->GetEnabled())
 		{
@@ -602,6 +602,12 @@ void Renderer::ShowVariableAsText(float variable, const char* variableName)
 
 #define GetProperty(type, object, data) (##type *)(##object) + data.m_Offset / sizeof(##type)
 
+#define GetPropertyChar(type, object, data) (((char*)(##object)) + data.m_Offset)
+
+#define GetPropertyPtrChar(type, object, data) (char**)(((char*)(##object)) + data.m_Offset)
+
+#define GetPropertyVector(type, object, data) (##type *)(((char*)(##object)) + data.m_Offset); /*/ (2 * sizeof(##type))*/;
+
 #define GetPropertyPtr(type, object, data) *((##type **)(##object) + data.m_Offset / sizeof(##type*))
 
 #define ShowCheckbox(data, object) ImGui::Checkbox(data.m_Name, ((bool*)##object + data.m_Offset));
@@ -697,6 +703,160 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 	ShowGUIText(value, name);
 }
 
+//void Renderer::ShowProperty(Material* value, const char* name)
+//{
+//	ShowGUIText(value, name);
+//}
+
+//template<typename T>
+//void Renderer::ShowPropertyValue(T* object, const ClassPropertyData& propertyData)
+//{
+//
+//}
+
+void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, const LXType& associatedType)
+{
+	switch (type)
+	{
+		case LXType_bool:
+		{
+			ShowProperty((bool*) ptr, name);
+			break;
+		}
+		case LXType_float:
+		{
+			ShowProperty((float*) ptr, name, -20, 20);
+			break;
+		}
+		case LXType_glmvec3:
+		{
+			ShowProperty((glm::vec3*) ptr, name);
+			break;
+		}
+		case LXType_stdstring:
+		{
+			ShowProperty((std::string*) ptr, name);
+			break;
+		}
+		case LXType_Model:
+		{
+			ShowPropertyGridTemplate<Model>((Model*) ptr, name);
+			break;
+		}
+		case LXType_Material:
+		{
+			ShowPropertyGridTemplate<Material>((Material*)ptr, name);
+			break;
+		}
+		//case LXType_stdvector:
+		//{
+		//	std::vector<char*>* v = (std::vector<char*>*) ptr;
+
+		//	for (int i = 0; i < v->size(); ++i)
+		//	{
+		//		char displayName[100];
+		//		sprintf(displayName, "%s[%d]", name, i);
+		//		ShowPropertyTemplate((*v)[i], displayName, associatedType, LXType_None);
+		//	}
+		//	break;
+		//}
+		default:
+		{
+			break;
+		}
+	}
+}
+/*
+template<typename T>
+void Renderer::ShowPropertyTemplate(T* object, const ClassPropertyData& propertyData)
+{
+	switch (propertyData.m_Type)
+	{
+		case LXType_bool:
+		{
+			char* ptr = GetPropertyChar(float, object, propertyData);
+
+			ShowProperty((bool*)ptr, propertyData.m_Name);
+			break;
+		}
+		//case LXType_float:
+		//{
+		//	ShowProperty(GetProperty(float, object, propertyData), propertyData.m_Name, -20.f, 20.f);
+		//	break;
+		//}
+		//case LXType_glmvec3:
+		//{
+		//	ShowProperty(GetProperty(glm::vec3, object, propertyData), propertyData.m_Name);
+		//	break;
+		//}
+		//case LXType_stdstring:
+		//{
+		//	ShowProperty(GetProperty(std::string, object, propertyData), propertyData.m_Name);
+		//	break;
+		//}
+		//case LXType_Model:
+		//{
+		//	Model* model = GetPropertyPtr(Model, object, propertyData);
+		//	ShowPropertyGridTemplate<Model>(model, propertyData.m_Name);
+
+		//	//int i = 0;
+		//	//// todo : refactor this into proper std vector support
+		//	//for (Material* material : model->GetMaterials())
+		//	//{
+		//	//	ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
+		//	//}
+		//	break;
+		//}
+		//case LXType_stdvector:
+		//{
+		//	std::vector<Material*>* v = GetPropertyVector(std::vector<Material*>, object, propertyData);
+
+		//	for (int i = 0; i < v->size(); ++i)
+		//	{
+		//		Material* mat = (*v)[i];
+		//		ShowPropertyGridTemplate<Material>(mat, ("Material #" + std::to_string(i)).c_str());
+		//	}
+
+		//	break;
+		//}
+		default:
+		{
+			break;
+		}
+	}
+}
+*/
+
+template<typename T>
+void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyData)
+{
+	char* ptr = 0;
+
+	if (propertyData.IsAPointer)
+	{
+		ptr = *(GetPropertyPtrChar(float, object, propertyData));
+	}
+	else
+	{
+		ptr = GetPropertyChar(float, object, propertyData);
+	}
+
+	if (propertyData.m_Type == LXType_stdvector)
+	{
+		std::vector<char*>* v = (std::vector<char*>*) ptr;
+
+		for (int i = 0; i < v->size(); ++i)
+		{
+			char displayName[100];
+			sprintf(displayName, "%s[%d]", propertyData.m_Name, i);
+			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, LXType_None);
+		}
+	}
+	else
+	{
+		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, LXType_None);
+	}
+}
 
 template<typename T> 
 void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
@@ -713,50 +873,9 @@ void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 		{
 			for (const ClassPropertyData& propertyData : object->g_Properties)
 			{
-				switch (propertyData.m_Type)
-				{
-					case LXType_bool:
-					{
-						ShowProperty(GetProperty(bool, object, propertyData), propertyData.m_Name);
-						break;
-					}
-					case LXType_float:
-					{
-						ShowProperty(GetProperty(float, object, propertyData), propertyData.m_Name, -20.f, 20.f);
-						break;
-					}
-					case LXType_glmvec3:
-					{
-						ShowProperty(GetProperty(glm::vec3, object, propertyData), propertyData.m_Name);
-						break;
-					}
-					case LXType_stdstring:
-					{
-						ShowProperty(GetProperty(std::string, object, propertyData), propertyData.m_Name);
-						break;
-					}
-					case LXType_Model:
-					{
-						Model* model = GetPropertyPtr(Model, object, propertyData);
-						ShowPropertyGridTemplate<Model>(model, propertyData.m_Name);
-
-						int i = 0;
-						// todo : refactor this into proper std vector support
-						for (Material* material : model->m_materialList)
-						{
-							ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
-						}
-						break;
-					}
-					default:
-					{
-						break;
-					}
-				}
-
+				ShowGenericProperty(object, propertyData);
 			} 
 		} 
-
 		ImGui::TreePop();
 	}
 

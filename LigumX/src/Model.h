@@ -27,10 +27,13 @@ static const int ClassID = 2189814010;
 public:
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; };
+const std::vector<Material*>& GetMaterials() { return m_Materials; }; 
+void SetMaterials(std::vector<Material*> value) { m_Materials = value; };
 private:
 std::string m_Name;
+std::vector<Material*> m_Materials;
 public:
-static const int g_ModelPropertyCount = 1;
+static const int g_ModelPropertyCount = 2;
 static const ClassPropertyData g_Properties[g_ModelPropertyCount];
 
 
@@ -54,7 +57,6 @@ public:
 
 
 	std::vector<Mesh* > m_meshes;
-	std::vector<Material* > m_materialList;
 
 	glm::vec3 position;
     glm::mat4 m_modelMatrix;
