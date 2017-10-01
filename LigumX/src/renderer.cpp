@@ -594,19 +594,13 @@ void Renderer::ShowVariableAsText(float variable, const char* variableName)
 	ImGui::Text("%s : %f", variableName, variable);
 }
 
-//template<typename T>
-//T* GetPropertyValue(T* baseValue, int offset)
-//{
-//	return (T *)(##object) + data.m_Offset / sizeof(T);
-//}
-
 #define GetProperty(type, object, data) (##type *)(##object) + data.m_Offset / sizeof(##type)
 
-#define GetPropertyChar(type, object, data) (((char*)(##object)) + data.m_Offset)
+#define GetPropertyChar(object, data) (((char*)(##object)) + data.m_Offset)
 
-#define GetPropertyPtrChar(type, object, data) (char**)(((char*)(##object)) + data.m_Offset)
+#define GetPropertyPtrChar(object, data) (char**)(((char*)(##object)) + data.m_Offset)
 
-#define GetPropertyVector(type, object, data) (##type *)(((char*)(##object)) + data.m_Offset); /*/ (2 * sizeof(##type))*/;
+#define GetPropertyVector(object, data) (##type *)(((char*)(##object)) + data.m_Offset); /*/ (2 * sizeof(##type))*/;
 
 #define GetPropertyPtr(type, object, data) *((##type **)(##object) + data.m_Offset / sizeof(##type*))
 
@@ -620,62 +614,6 @@ void Renderer::ShowVariableAsText(float variable, const char* variableName)
 
 #define ShowModel(data, object) ShowGUIText( "hey" + (GetProperty(Model, ##object, data))->GetName(), data.m_Name); 
 
-
-#define ShowPropertyGrid(objectPtr, displayname) \
-{ \
-    ImGui::PushID(#displayname); \
-	if (ImGui::CollapsingHeader(##displayname)) \
-	{ \
-		if (objectPtr == nullptr) \
-		{ \
-			ShowGUIText("Object is null."); \
-		} \
-		else \
-		{ \
-			for (const ClassPropertyData& propertyData : objectPtr->g_Properties) \
-			{ \
-				switch (propertyData.m_Type) \
-				{ \
-				case LXType_bool: \
-				{ \
-					ShowCheckbox(propertyData, ##objectPtr); \
-					break; \
-				} \
-				case LXType_float: \
-				{ \
-					ShowFloatSlider(propertyData, ##objectPtr, -10, 20); \
-					break; \
-				} \
-				case LXType_glmvec3: \
-				{ \
-					ShowVec3(propertyData, ##objectPtr); \
-					break; \
-				} \
-				case LXType_stdstring: \
-				{ \
-					ShowString(propertyData, ##objectPtr); \
-					break; \
-				} \
-				case LXType_Model: \
-				{ \
-					/*ShowPropertyGridMacro(objectPtr->GetModel(), "Model")*/ \
-					break; \
-				} \
-				default: \
-				{ \
-					break; \
-				} \
-				  \
-				} \
-			} \
-		} \
-	} \
-    ImGui::PopID(); \
-} \
-
-//Model* model = GetProperty(Model, ##objectPtr, data); \
-//					ShowPropertyGridMacro<Model>(model, "Model"); \
-
 template<typename T>
 void Renderer::ShowPropertyGridMacro(T* object, const char* name)
 {
@@ -686,7 +624,6 @@ void Renderer::ShowProperty(bool* value, const char* name)
 {
 	ImGui::Checkbox(name, value);
 }
-
 
 void Renderer::ShowProperty(float* value, const char* name, float min, float max)
 {
@@ -702,17 +639,6 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 {
 	ShowGUIText(value, name);
 }
-
-//void Renderer::ShowProperty(Material* value, const char* name)
-//{
-//	ShowGUIText(value, name);
-//}
-
-//template<typename T>
-//void Renderer::ShowPropertyValue(T* object, const ClassPropertyData& propertyData)
-//{
-//
-//}
 
 void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, const LXType& associatedType)
 {
@@ -748,84 +674,13 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 			ShowPropertyGridTemplate<Material>((Material*)ptr, name);
 			break;
 		}
-		//case LXType_stdvector:
-		//{
-		//	std::vector<char*>* v = (std::vector<char*>*) ptr;
-
-		//	for (int i = 0; i < v->size(); ++i)
-		//	{
-		//		char displayName[100];
-		//		sprintf(displayName, "%s[%d]", name, i);
-		//		ShowPropertyTemplate((*v)[i], displayName, associatedType, LXType_None);
-		//	}
-		//	break;
-		//}
 		default:
 		{
 			break;
 		}
 	}
 }
-/*
-template<typename T>
-void Renderer::ShowPropertyTemplate(T* object, const ClassPropertyData& propertyData)
-{
-	switch (propertyData.m_Type)
-	{
-		case LXType_bool:
-		{
-			char* ptr = GetPropertyChar(float, object, propertyData);
 
-			ShowProperty((bool*)ptr, propertyData.m_Name);
-			break;
-		}
-		//case LXType_float:
-		//{
-		//	ShowProperty(GetProperty(float, object, propertyData), propertyData.m_Name, -20.f, 20.f);
-		//	break;
-		//}
-		//case LXType_glmvec3:
-		//{
-		//	ShowProperty(GetProperty(glm::vec3, object, propertyData), propertyData.m_Name);
-		//	break;
-		//}
-		//case LXType_stdstring:
-		//{
-		//	ShowProperty(GetProperty(std::string, object, propertyData), propertyData.m_Name);
-		//	break;
-		//}
-		//case LXType_Model:
-		//{
-		//	Model* model = GetPropertyPtr(Model, object, propertyData);
-		//	ShowPropertyGridTemplate<Model>(model, propertyData.m_Name);
-
-		//	//int i = 0;
-		//	//// todo : refactor this into proper std vector support
-		//	//for (Material* material : model->GetMaterials())
-		//	//{
-		//	//	ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
-		//	//}
-		//	break;
-		//}
-		//case LXType_stdvector:
-		//{
-		//	std::vector<Material*>* v = GetPropertyVector(std::vector<Material*>, object, propertyData);
-
-		//	for (int i = 0; i < v->size(); ++i)
-		//	{
-		//		Material* mat = (*v)[i];
-		//		ShowPropertyGridTemplate<Material>(mat, ("Material #" + std::to_string(i)).c_str());
-		//	}
-
-		//	break;
-		//}
-		default:
-		{
-			break;
-		}
-	}
-}
-*/
 
 template<typename T>
 void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyData)
@@ -834,11 +689,11 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 
 	if (propertyData.IsAPointer)
 	{
-		ptr = *(GetPropertyPtrChar(float, object, propertyData));
+		ptr = *(GetPropertyPtrChar(object, propertyData));
 	}
 	else
 	{
-		ptr = GetPropertyChar(float, object, propertyData);
+		ptr = GetPropertyChar(object, propertyData);
 	}
 
 	if (propertyData.m_Type == LXType_stdvector)
@@ -896,23 +751,10 @@ void Renderer::RenderGUI()
 		BeginImGUIWindow(1000, 700, 0, 0, "Settings");
 		ImGui::Checkbox("Test GUI", &m_ShowTestGUI);
 
-		// todo : have a mapping from lxtype to display names and such
-		// or at least keep the display name as a generated static string in each gen'd class
-		//ShowPropertyGridMacro<DisplayOptions>(m_DisplayOptions,	"Display options");
-
-		//ShowPropertyGridMacro<DisplayOptions>(m_DisplayOptions, "Display options");
-
-		//ShowPropertyGrid(m_PostEffects,		"Post Effects");
-		//ShowPropertyGrid(camera,			"Camera");
-		//ShowPropertyGrid(m_ShadowCamera,	"Shadow Camera");
-		//ShowPropertyGrid(m_World->GetSunLight(), "SunLight");
-		//ShowPropertyGridMacro<Entity>(m_PickedEntity, "Entity");
-
 		ShowPropertyGridTemplate<DisplayOptions>(m_DisplayOptions, "Display options");
 		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
 		ShowPropertyGridTemplate<Camera>(camera, "Camera");
 		ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
-
 
 		if (ImGui::CollapsingHeader("Light"))
 		{
