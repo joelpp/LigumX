@@ -38,7 +38,8 @@ Texture* GetDiffuseTexture() { return m_DiffuseTexture; };
 void SetDiffuseTexture(Texture* value) { SetDiffuseTextureCallback(value); }; 
 void SetDiffuseTextureCallback(Texture* value);
 Texture* GetSpecularTexture() { return m_SpecularTexture; }; 
-void SetSpecularTexture(Texture* value) { m_SpecularTexture = value; }; 
+void SetSpecularTexture(Texture* value) { SetSpecularTextureCallback(value); }; 
+void SetSpecularTextureCallback(Texture* value);
 ProgramPipeline* GetProgramPipeline() { return m_ProgramPipeline; }; 
 void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; }; 
 private:

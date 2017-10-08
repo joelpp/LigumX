@@ -4,4 +4,8 @@ class SunLight
 	float Time;
 	float Orientation;
 	float Speed;
+
+	bool UseSkybox;
+	[hidden]
+	Texture* Skybox;
 }

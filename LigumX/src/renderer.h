@@ -40,6 +40,8 @@ enum FramebufferType
 	FramebufferType_MainColorBuffer,
 	FramebufferType_ShadowMap,
 	FramebufferType_Picking,
+	FramebufferType_PingPong0,
+	FramebufferType_PingPong1,
 	NBFramebuffers
 };
 
@@ -127,6 +129,7 @@ public:
 	void RenderOpaque();
 	void RenderTextureOverlay();
 	void RenderPicking();
+	void ApplyEmissiveGlow();
 
 	void RenderHDRFramebuffer();
 
@@ -192,6 +195,7 @@ public:
     ProgramPipeline* pPipelineGround;
 	ProgramPipeline* pPipelinePicking;
 	ProgramPipeline* pPipelinePickingCompute;
+	ProgramPipeline* pPipelineBlur;
 	ProgramPipeline* pPipelineEnvmap;
 	ProgramPipeline* pPipelineScreenSpaceTexture;
     ProgramPipeline* pPipelineText;

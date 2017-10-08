@@ -50,6 +50,16 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_Picking]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_Picking]->Initialize();
 
+	m_Framebuffers[FramebufferType_PingPong0] = new Framebuffer("Ping pong 0", windowWidth, windowHeight, GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GL::PixelType_Float);
+	m_Framebuffers[FramebufferType_PingPong0]->SetHasDepth(false);
+	m_Framebuffers[FramebufferType_PingPong0]->SetNumColorTargets(1);
+	m_Framebuffers[FramebufferType_PingPong0]->Initialize();
+
+	m_Framebuffers[FramebufferType_PingPong1] = new Framebuffer("Ping pong 1", windowWidth, windowHeight, GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GL::PixelType_Float);
+	m_Framebuffers[FramebufferType_PingPong1]->SetHasDepth(false);
+	m_Framebuffers[FramebufferType_PingPong1]->SetNumColorTargets(1);
+	m_Framebuffers[FramebufferType_PingPong1]->Initialize();
+
 	BindFramebuffer(FramebufferType_Default);
 }
 
@@ -338,6 +348,7 @@ void Renderer::SetLightingUniforms()
 		SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_DirectionalLight.m_DiffuseColor");
 		SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_DirectionalLight.m_AmbientColor");
 		SetFragmentUniform(m_TestLight.m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
+
 	}
 	else
 	{
@@ -806,6 +817,7 @@ void Renderer::RenderGUI()
 		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
 		ShowPropertyGridTemplate<Camera>(camera, "Camera");
 		ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
+		ShowPropertyGridTemplate<SunLight>(m_World->GetSunLight(), "SunLight");
 
 		if (ImGui::CollapsingHeader("Light"))
 		{
@@ -908,8 +920,11 @@ void Renderer::RenderHDRFramebuffer()
 
 	SetPipeline(pPipelineScreenSpaceTexture);
 
-	SetFragmentUniform(0, "g_Texture");
+	SetFragmentUniform(0, "g_MainTexture");
 	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetColorTexture(0));
+
+	SetFragmentUniform(1, "g_GlowTexture");
+	Bind2DTexture(1, m_Framebuffers[FramebufferType_PingPong1]->GetColorTexture(0));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
@@ -1012,6 +1027,33 @@ void Renderer::BeforeFrame(World* world)
 	m_TestLight.m_AmbientColor = m_TestLight.m_DiffuseColor;
 }
 
+void Renderer::ApplyEmissiveGlow()
+{
+	SetPipeline(pPipelineBlur);
+
+
+	bool horizontal = true;
+	int amount = 10;
+	for (unsigned int i = 0; i < amount; i++)
+	{
+		FramebufferType fb = horizontal ? FramebufferType_PingPong0 : FramebufferType_PingPong1;
+		FramebufferType fb2 = fb == FramebufferType_PingPong0 ? FramebufferType_PingPong1 : FramebufferType_PingPong0;
+
+		BindFramebuffer(fb);
+
+		SetFragmentUniform(horizontal, "horizontal");
+
+		GLuint sourceTexture = (i == 0 ? m_Framebuffers[FramebufferType_MainColorBuffer]->GetColorTexture(1) : m_Framebuffers[fb2]->GetColorTexture(0));
+		Bind2DTexture(0, sourceTexture);
+
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		horizontal = !horizontal;
+	}
+
+	BindFramebuffer(FramebufferType_Default);
+}
+
 /**
  * [Renderer::render description]
  * @param camera [description]
@@ -1032,6 +1074,8 @@ void Renderer::render(World* world)
 	//DrawTerrain();
 
 	RenderOpaque();
+
+	ApplyEmissiveGlow();
 
 	RenderHDRFramebuffer();
 
@@ -1119,6 +1163,15 @@ void Renderer::RenderSky()
 	SetFragmentUniform(camera->rightVec, "viewRight");
 	SetFragmentUniform(camera->upVec, "viewUp");
 	SetFragmentUniform(camera->GetNearPlane() ,"viewNear");
+
+
+	//SetFragmentUniform(0, "g_Skybox");
+	////Bind2DTexture(0, m_World->GetSunLight()->GetSkybox()->GetHWObject());
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, m_World->GetSunLight()->GetSkybox()->GetHWObject());
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_World->GetSunLight()->GetSkybox()->GetHWObject());
+	SetFragmentUniform(m_World->GetSunLight()->GetUseSkybox(), "g_UseSkybox");
 
 	SetViewUniforms(camera);
 

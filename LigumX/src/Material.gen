@@ -22,6 +22,7 @@ class Material
 	[setcallback]
 	Texture* DiffuseTexture;
 	
+	[setcallback]
 	Texture* SpecularTexture;
 
 	ProgramPipeline* ProgramPipeline;

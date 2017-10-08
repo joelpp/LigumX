@@ -14,6 +14,8 @@ const ClassPropertyData SunLight::g_Properties[] =
 { "Time", offsetof(SunLight, m_Time), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "Orientation", offsetof(SunLight, m_Orientation), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "Speed", offsetof(SunLight, m_Speed), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "UseSkybox", offsetof(SunLight, m_UseSkybox), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "Skybox", offsetof(SunLight, m_Skybox), 0, LXType_Texture, true, LXType_None, PropertyFlags_Hidden, 0, 0, }, 
 };
 
 #pragma endregion  CLASS_SOURCE SunLight

@@ -13,6 +13,8 @@ uniform vec3 viewRight; // assumed to be normalized
 uniform vec3 viewUp; // assumed to be normalized
 uniform vec2 viewAngles; // total view angle in x and y, in radian
 uniform float viewNear;
+uniform bool g_UseSkybox;
+uniform samplerCube g_Skybox;
 
 #define PROVIDER_View
 
@@ -76,6 +78,13 @@ void main() {
 
     float cosAngleToSun = dot(fragDir, sunDir);
     float cosAngleToWorldUp = dot(fragDir, vec3(0,0,1));
+
+	if (g_UseSkybox)
+	{
+		fragDir.y *= -1;
+		color = vec3(texture(g_Skybox, fragDir));
+		return;
+	}
 
     if(cosAngleToWorldUp > 0) 
 	{

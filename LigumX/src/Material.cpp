@@ -18,7 +18,7 @@ const ClassPropertyData Material::g_Properties[] =
 { "SpecularTextureEnabled", offsetof(Material, m_SpecularTextureEnabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Unlit", offsetof(Material, m_Unlit), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
-{ "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, }, 
+{ "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None, 0, 0, 0, }, 
 };
 
@@ -58,3 +58,12 @@ void Material::SetDiffuseTextureCallback(Texture* value)
 
 	m_DiffuseTextureEnabled = (value != nullptr);
 }
+
+
+void Material::SetSpecularTextureCallback(Texture* value)
+{
+	m_SpecularTexture = value;
+
+	m_SpecularTextureEnabled = (value != nullptr);
+}
+

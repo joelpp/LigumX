@@ -15,8 +15,12 @@ public:
     GLuint glidTexture;
 
 	GLuint GetHWObject() { return glidTexture; };
+
+	bool m_IsCubeMap;
+	void LoadFromFile(GLuint target, std::string filename);
+
 public:
-    Texture(std::string filename);
+    Texture(std::string filename, bool isCubeMap = false);
 };
 
 #endif // TEXTURE_H
