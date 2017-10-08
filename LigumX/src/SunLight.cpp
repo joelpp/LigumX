@@ -10,10 +10,10 @@
 #include <cstddef>
 const ClassPropertyData SunLight::g_Properties[] = 
 {
-{ "UseShadowMap", offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, false, LXType_None,  }, 
-{ "Time", offsetof(SunLight, m_Time), 0, LXType_float, false, LXType_None,  }, 
-{ "Orientation", offsetof(SunLight, m_Orientation), 0, LXType_float, false, LXType_None,  }, 
-{ "Speed", offsetof(SunLight, m_Speed), 0, LXType_float, false, LXType_None,  }, 
+{ "UseShadowMap", offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, false, LXType_None, 0,  }, 
+{ "Time", offsetof(SunLight, m_Time), 0, LXType_float, false, LXType_None, 0,  }, 
+{ "Orientation", offsetof(SunLight, m_Orientation), 0, LXType_float, false, LXType_None, 0,  }, 
+{ "Speed", offsetof(SunLight, m_Speed), 0, LXType_float, false, LXType_None, 0,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE SunLight

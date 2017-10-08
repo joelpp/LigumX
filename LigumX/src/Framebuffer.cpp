@@ -8,13 +8,13 @@
 #include <cstddef>
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
-{ "Name", offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false, LXType_None,  }, 
-{ "Width", offsetof(Framebuffer, m_Width), 0, LXType_int, false, LXType_None,  }, 
-{ "Height", offsetof(Framebuffer, m_Height), 0, LXType_int, false, LXType_None,  }, 
-{ "ColorTexture", offsetof(Framebuffer, m_ColorTexture), 0, LXType_GLuint, false, LXType_None,  }, 
-{ "DepthTexture", offsetof(Framebuffer, m_DepthTexture), 0, LXType_GLuint, false, LXType_None,  }, 
-{ "HasDepth", offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, false, LXType_None,  }, 
-{ "NumColorTargets", offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, false, LXType_None,  }, 
+{ "Name", offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false, LXType_None, 0,  }, 
+{ "Width", offsetof(Framebuffer, m_Width), 0, LXType_int, false, LXType_None, 0,  }, 
+{ "Height", offsetof(Framebuffer, m_Height), 0, LXType_int, false, LXType_None, 0,  }, 
+{ "ColorTexture", offsetof(Framebuffer, m_ColorTexture), 0, LXType_GLuint, false, LXType_None, 0,  }, 
+{ "DepthTexture", offsetof(Framebuffer, m_DepthTexture), 0, LXType_GLuint, false, LXType_None, 0,  }, 
+{ "HasDepth", offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, false, LXType_None, 0,  }, 
+{ "NumColorTargets", offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, false, LXType_None, 0,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Framebuffer

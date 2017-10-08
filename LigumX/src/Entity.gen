@@ -1,7 +1,9 @@
 class Entity
 {
 	std::string Name;
-	glm::vec3 Position
+	glm::vec3 Position;
+
+	[hidden, readonly]
 	float PickingID;
 
 	Model* Model;

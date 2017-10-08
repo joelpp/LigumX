@@ -107,12 +107,15 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
 
+			variable.m_PropertyFlags = propertyFlags;
+
 			currentClass.m_Members.push_back(variable);
 
 			// not invalid or a class declaration. we're adding to the class desc
 			void;
 
 			// reset property flags
+			propertyFlags = 0;
 		}
 	}
 

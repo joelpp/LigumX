@@ -42,6 +42,25 @@ public:
 
 	}
 
+	std::string BuildPropertyFlagsString(int flags)
+	{
+		std::string toReturn = "";
+
+		int numFlags = log2(flags);
+
+		if (flags & PropertyFlags_Hidden)
+		{
+			toReturn += "PropertyFlags_Hidden";
+		}
+
+		if (toReturn.size() == 0)
+		{
+			toReturn = "0";
+		}
+
+		return toReturn;
+	}
+
 	void WritePropertyArray()
 	{
 		std::string propertyCountVarName = "g_" + m_Class.m_Name + "PropertyCount";
@@ -62,6 +81,7 @@ public:
 				+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
 				+ (var.IsAPointer() ? "true" : "false") + ", "
 				+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "
+				+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
 				+ " }, ");
 		}
 

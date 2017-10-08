@@ -65,9 +65,18 @@ constexpr unsigned int str2int(const char* str, int h = 0)
 
 std::string RemoveSubstrings(std::string& baseString, std::string substring)
 {
-	std::regex pattern(substring);
+	//std::regex pattern(substring);
 
-	return std::regex_replace(baseString, pattern, "");
+	//return std::regex_replace(baseString, pattern, "");
+
+	std::string::size_type n = substring.length();
+
+	for (std::string::size_type i = baseString.find(substring); i != std::string::npos; i = baseString.find(substring))
+	{
+		baseString.erase(i, n);
+	}
+
+	return baseString;
 }
 
 std::string RemoveSubstrings(std::string& baseString, StringList& substrings)

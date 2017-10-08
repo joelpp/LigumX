@@ -54,6 +54,7 @@ struct Variable
 	std::string m_AssociatedType;
 	bool m_IsPtr;
 	bool m_IsTemplate;
+	int m_PropertyFlags;
 };
 typedef std::vector<Variable> VariableList;
 

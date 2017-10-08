@@ -20,9 +20,9 @@
 #include <cstddef>
 const ClassPropertyData Renderer::g_Properties[] = 
 {
-{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None,  }, 
-{ "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None,  }, 
-{ "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None,  }, 
+{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0,  }, 
+{ "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0,  }, 
+{ "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -687,6 +687,11 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 template<typename T>
 void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyData)
 {
+	if (propertyData.m_PropertyFlags & PropertyFlags_Hidden)
+	{
+		return;
+	}
+
 	char* ptr = (char*)object + propertyData.m_Offset;;
 
 	if (propertyData.IsAPointer)

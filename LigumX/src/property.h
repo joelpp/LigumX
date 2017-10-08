@@ -55,5 +55,6 @@ struct ClassPropertyData
 	LXType m_Type;
 	bool IsAPointer;
 	LXType m_AssociatedType;
+	int m_PropertyFlags;
 };
 
