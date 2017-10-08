@@ -176,6 +176,8 @@ void InitializeGenerator()
 
 	g_PropertyFlagsStringMap.emplace("hidden", PropertyFlags_Hidden);
 	g_PropertyFlagsStringMap.emplace("readonly", PropertyFlags_ReadOnly);
+	g_PropertyFlagsStringMap.emplace("setcallback", PropertyFlags_SetCallback);
+
 }
 
 int main()

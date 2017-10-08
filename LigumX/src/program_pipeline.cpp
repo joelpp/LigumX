@@ -11,12 +11,14 @@ const std::string g_ProviderDefinition = R"(
 #ifdef PROVIDER_Material
 struct Material
 {
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-	float shininess;
+	vec3	  m_AmbientColor;
+	vec3	  m_DiffuseColor;
+	vec3	  m_SpecularColor;
+	float	  m_Shininess;
 	sampler2D m_DiffuseTexture;
 	sampler2D m_SpecularTexture;
+	bool	  m_DiffuseTextureEnabled;
+	bool	  m_SpecularTextureEnabled;
 };
 
 uniform Material g_Material;

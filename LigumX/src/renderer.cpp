@@ -326,10 +326,12 @@ void Renderer::SetLightingUniforms()
 
 void Renderer::SetMaterialUniforms(Material* material)
 {
-	SetFragmentUniform(material->GetAmbientColor(),		"g_Material.ambient");
-	SetFragmentUniform(material->GetDiffuseColor(),		"g_Material.diffuse");
-	SetFragmentUniform(material->GetSpecularColor(),	"g_Material.specular");
-	SetFragmentUniform(material->GetShininess(),		"g_Material.shininess");
+	SetFragmentUniform(material->GetAmbientColor(),				"g_Material.m_AmbientColor");
+	SetFragmentUniform(material->GetDiffuseColor(),				"g_Material.m_DiffuseColor");
+	SetFragmentUniform(material->GetSpecularColor(),			"g_Material.m_SpecularColor");
+	SetFragmentUniform(material->GetDiffuseTextureEnabled(),	"g_Material.m_DiffuseTextureEnabled");
+	SetFragmentUniform(material->GetSpecularTextureEnabled(),	"g_Material.m_SpecularTextureEnabled");
+	SetFragmentUniform(material->GetShininess(),				"g_Material.m_Shininess");
 
 	if (material->GetDiffuseTexture())
 	{
@@ -634,7 +636,9 @@ void Renderer::ShowProperty(float* value, const char* name, float min, float max
 
 void Renderer::ShowProperty(glm::vec3* value, const char* name)
 {
-	ShowVariableAsText(value, name);
+	//ShowVariableAsText(value, name);
+
+	ImGui::SliderFloat3(name, (float*)value, 0.f, 1.0f);
 }
 
 void Renderer::ShowProperty(std::string* value, const char* name)

@@ -34,13 +34,13 @@ class Entity {
 static const int ClassID = 3231396602;
 public:
 const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; };
+void SetName(std::string value) { m_Name = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
-void SetPosition(glm::vec3 value) { m_Position = value; };
+void SetPosition(glm::vec3 value) { m_Position = value; }; 
 const float& GetPickingID() { return m_PickingID; }; 
-void SetPickingID(float value) { m_PickingID = value; };
+void SetPickingID(float value) { m_PickingID = value; }; 
 Model* GetModel() { return m_Model; }; 
-void SetModel(Model* value) { m_Model = value; };
+void SetModel(Model* value) { m_Model = value; }; 
 private:
 std::string m_Name;
 glm::vec3 m_Position;

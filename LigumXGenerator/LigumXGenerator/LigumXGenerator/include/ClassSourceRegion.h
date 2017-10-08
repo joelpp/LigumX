@@ -2,6 +2,21 @@
 
 #include "CodeRegion.h"
 
+
+// count the no. of set bits in a positive integer
+int countSetBits(unsigned int num) {
+	unsigned int count = 0;
+	while (num) {
+		// bitwise AND operation to check if the
+		// leftmost bit is set or not
+		// if set, increment the count
+		count += num & 1;
+		// left shift the nm by one position
+		num >>= 1;
+	}
+	return count;
+}
+
 class ClassSourceRegion : public CodeRegion
 {
 public:
@@ -42,20 +57,44 @@ public:
 
 	}
 
-	std::string BuildPropertyFlagsString(int flags)
+	std::string BuildPropertyFlagsString(unsigned int flags)
 	{
 		std::string toReturn = "";
 
-		int numFlags = log2(flags);
+		int numFlags = countSetBits(flags);
 
+		std::string separator = " | ";
+
+		//for (int i = 1; i < (PropertyFlags_NumPropertyFlags / 2); i *= 2)
+		//{
+
+			//if (flags & (PropertyFlags)i)
 		if (flags & PropertyFlags_Hidden)
 		{
 			toReturn += "PropertyFlags_Hidden";
+			toReturn += separator;
 		}
+
+		if (flags & PropertyFlags_SetCallback)
+		{
+			toReturn += "PropertyFlags_SetCallback";
+			toReturn += separator;
+		}
+
+			//if (i != numFlags)
+			//{
+			//	toReturn += " | ";
+			//}
+		//}
+
 
 		if (toReturn.size() == 0)
 		{
 			toReturn = "0";
+		}
+		else
+		{
+			toReturn.erase(toReturn.size() - separator.size(), toReturn.size());
 		}
 
 		return toReturn;

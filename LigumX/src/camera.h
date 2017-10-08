@@ -23,23 +23,23 @@ class Camera
 static const int ClassID = 3880549230;
 public:
 const glm::vec3& GetPosition() { return m_Position; }; 
-void SetPosition(glm::vec3 value) { m_Position = value; };
+void SetPosition(glm::vec3 value) { m_Position = value; }; 
 const glm::vec3& GetsomeBullshitVec3() { return m_someBullshitVec3; }; 
-void SetsomeBullshitVec3(glm::vec3 value) { m_someBullshitVec3 = value; };
+void SetsomeBullshitVec3(glm::vec3 value) { m_someBullshitVec3 = value; }; 
 const glm::mat4& GetViewMatrix() { return m_ViewMatrix; }; 
-void SetViewMatrix(glm::mat4 value) { m_ViewMatrix = value; };
+void SetViewMatrix(glm::mat4 value) { m_ViewMatrix = value; }; 
 const glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; }; 
-void SetProjectionMatrix(glm::mat4 value) { m_ProjectionMatrix = value; };
+void SetProjectionMatrix(glm::mat4 value) { m_ProjectionMatrix = value; }; 
 const glm::mat4& GetViewProjectionMatrix() { return m_ViewProjectionMatrix; }; 
-void SetViewProjectionMatrix(glm::mat4 value) { m_ViewProjectionMatrix = value; };
+void SetViewProjectionMatrix(glm::mat4 value) { m_ViewProjectionMatrix = value; }; 
 const float& GetNearPlane() { return m_NearPlane; }; 
-void SetNearPlane(float value) { m_NearPlane = value; };
+void SetNearPlane(float value) { m_NearPlane = value; }; 
 const float& GetFarPlane() { return m_FarPlane; }; 
-void SetFarPlane(float value) { m_FarPlane = value; };
+void SetFarPlane(float value) { m_FarPlane = value; }; 
 const ProjectionType& GetProjectionType() { return m_ProjectionType; }; 
-void SetProjectionType(ProjectionType value) { m_ProjectionType = value; };
+void SetProjectionType(ProjectionType value) { m_ProjectionType = value; }; 
 const float& GetOrthoBorders() { return m_OrthoBorders; }; 
-void SetOrthoBorders(float value) { m_OrthoBorders = value; };
+void SetOrthoBorders(float value) { m_OrthoBorders = value; }; 
 private:
 glm::vec3 m_Position;
 glm::vec3 m_someBullshitVec3;

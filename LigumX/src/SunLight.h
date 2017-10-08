@@ -10,13 +10,13 @@ class SunLight
 static const int ClassID = 2842600075;
 public:
 const bool& GetUseShadowMap() { return m_UseShadowMap; }; 
-void SetUseShadowMap(bool value) { m_UseShadowMap = value; };
+void SetUseShadowMap(bool value) { m_UseShadowMap = value; }; 
 const float& GetTime() { return m_Time; }; 
-void SetTime(float value) { m_Time = value; };
+void SetTime(float value) { m_Time = value; }; 
 const float& GetOrientation() { return m_Orientation; }; 
-void SetOrientation(float value) { m_Orientation = value; };
+void SetOrientation(float value) { m_Orientation = value; }; 
 const float& GetSpeed() { return m_Speed; }; 
-void SetSpeed(float value) { m_Speed = value; };
+void SetSpeed(float value) { m_Speed = value; }; 
 private:
 bool m_UseShadowMap;
 float m_Time;

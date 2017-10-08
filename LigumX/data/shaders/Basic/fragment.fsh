@@ -49,6 +49,35 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS)
     return shadow;
 }
 
+vec4 SampleTexture(sampler2D theTexture, vec2 uv)
+{
+	vec4 samplingResult = texture(theTexture, uv);
+
+	return samplingResult;
+}
+
+vec4 GetDiffuseColor(vec2 uv)
+{
+	vec4 diffuseColor;
+	if (g_Material.m_DiffuseTextureEnabled)
+	{
+		diffuseColor = SampleTexture(g_Material.m_DiffuseTexture, uv);
+
+		if (g_GammaCorrectionEnabled > 0)
+		{
+			diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
+		}
+	} 
+	else
+	{
+		diffuseColor = vec4(g_Material.m_DiffuseColor, 1.0f);
+	}
+
+
+
+	return diffuseColor;
+}
+
 void main() 
 {
 	vec3 fNormalWS = normalize(vNormalWS);
@@ -92,19 +121,14 @@ void main()
 		vec3 reflectionDir = reflect(-fragmentToLight, fNormalWS);
 
 		// Ambient
-		vec3 ambientContribution = g_PointLight.m_AmbientColor * g_Material.ambient; 
+		vec3 ambientContribution = g_PointLight.m_AmbientColor * g_Material.m_AmbientColor; 
 		ambientContribution *= g_DebugAmbientEnabled;
 
 		// Diffuse
-		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord) ;
-		if (g_GammaCorrectionEnabled > 0)
-		{
-			diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
-		}
+		vec4 diffuseColor = GetDiffuseColor(myTexCoord);
 
 		float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
 		vec3 diffuseContribution = diffuseFactor * diffuseColor.rgb;
-		diffuseContribution *= g_DebugDiffuseEnabled;
 
 		// Specular
 		vec4 specularColor = vec4(0.5,0.5,0.5,1);//texture(g_Material.m_SpecularTexture, myTexCoord);
@@ -112,11 +136,11 @@ void main()
 		if (g_BlinnPhongShading > 0)
 		{
 			vec3 halfwayVector = normalize(fragmentToLight + fragmentToCamera);
-			spec = pow(max(dot(fNormalWS, halfwayVector), 0.0), g_Material.shininess);
+			spec = pow(max(dot(fNormalWS, halfwayVector), 0.0), g_Material.m_Shininess);
 		}
 		else
 		{
-			spec = pow(max(dot(fragmentToCamera, reflectionDir), 0.0), g_Material.shininess);
+			spec = pow(max(dot(fragmentToCamera, reflectionDir), 0.0), g_Material.m_Shininess);
 		}
 		vec3 specularContribution = spec * specularColor.rgb;  
 		specularContribution *= g_DebugSpecularEnabled;

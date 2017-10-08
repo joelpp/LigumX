@@ -75,11 +75,11 @@ class Renderer{
 static const int ClassID = 1498036510;
 public:
 DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
-void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; };
+void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
 PostEffects* GetPostEffects() { return m_PostEffects; }; 
-void SetPostEffects(PostEffects* value) { m_PostEffects = value; };
+void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
 const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
-void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; };
+void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; }; 
 private:
 DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;

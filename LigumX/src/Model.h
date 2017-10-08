@@ -26,9 +26,9 @@ class Model
 static const int ClassID = 2189814010;
 public:
 const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; };
+void SetName(std::string value) { m_Name = value; }; 
 const std::vector<Material*>& GetMaterials() { return m_Materials; }; 
-void SetMaterials(std::vector<Material*> value) { m_Materials = value; };
+void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
 private:
 std::string m_Name;
 std::vector<Material*> m_Materials;

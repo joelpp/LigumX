@@ -74,8 +74,29 @@ public:
 			}
 
 			m_Stream << (ptr ? "*" : "");
-			m_Stream << " value) { m_" << var.m_Name << " = value; };";
+			m_Stream << " value) { ";
+
+			if (var.m_PropertyFlags & PropertyFlags_SetCallback)
+			{
+				m_Stream << "Set" << var.m_Name << "Callback(value);";
+			}
+			else
+			{
+				m_Stream << "m_" << var.m_Name << " = value;";
+			}
+
+			m_Stream << " }; ";
+
 			m_Stream << std::endl;
+
+			if (var.m_PropertyFlags & PropertyFlags_SetCallback)
+			{
+				m_Stream << "void Set" << var.m_Name << "Callback(" << var.m_Type;
+				m_Stream << (ptr ? "*" : "");
+				m_Stream << " value);";
+				m_Stream << std::endl;
+			}
+
 		}
 	}
 

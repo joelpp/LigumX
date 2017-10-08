@@ -6,8 +6,8 @@ enum PropertyFlags
 {
 	PropertyFlags_Hidden = 1,
 	PropertyFlags_ReadOnly = 2,
-	//PropertyFlags_NextFlag = 4,
-	PropertyFlags_NumPropertyFlags
+	PropertyFlags_SetCallback = 4,
+	PropertyFlags_NumPropertyFlags = 2 * PropertyFlags_SetCallback
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;

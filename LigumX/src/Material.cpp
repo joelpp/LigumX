@@ -9,13 +9,13 @@
 const ClassPropertyData Material::g_Properties[] = 
 {
 { "Enabled", offsetof(Material, m_Enabled), 0, LXType_bool, false, LXType_None, 0,  }, 
-{ "Albedo", offsetof(Material, m_Albedo), 0, LXType_glmvec3, false, LXType_None, 0,  }, 
 { "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false, LXType_None, 0,  }, 
 { "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false, LXType_None, 0,  }, 
 { "SpecularColor", offsetof(Material, m_SpecularColor), 0, LXType_glmvec3, false, LXType_None, 0,  }, 
 { "Shininess", offsetof(Material, m_Shininess), 0, LXType_float, false, LXType_None, 0,  }, 
-{ "UseTextures", offsetof(Material, m_UseTextures), 0, LXType_bool, false, LXType_None, 0,  }, 
-{ "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true, LXType_None, 0,  }, 
+{ "DiffuseTextureEnabled", offsetof(Material, m_DiffuseTextureEnabled), 0, LXType_bool, false, LXType_None, 0,  }, 
+{ "SpecularTextureEnabled", offsetof(Material, m_SpecularTextureEnabled), 0, LXType_bool, false, LXType_None, 0,  }, 
+{ "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback,  }, 
 { "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None, 0,  }, 
 { "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None, 0,  }, 
 };
@@ -43,5 +43,12 @@ Material::Material(ProgramPipeline* programPipeline, glm::vec3 albedo)
 {
 	m_Enabled = true;
 	m_ProgramPipeline = programPipeline;
-	SetAlbedo(albedo);
+	SetDiffuseColor(albedo);
+}
+
+void Material::SetDiffuseTextureCallback(Texture* value)
+{
+	m_DiffuseTexture = value;
+
+	m_DiffuseTextureEnabled = (value != nullptr);
 }
