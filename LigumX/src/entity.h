@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include "program_pipeline.h"
 #include <iostream>
 //#include "glfw\include\GLFW\glfw3.h"
@@ -37,17 +38,29 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
+const float& GetRotationAngle() { return m_RotationAngle; }; 
+void SetRotationAngle(float value) { m_RotationAngle = value; }; 
+const glm::vec3& GetRotationAxis() { return m_RotationAxis; }; 
+void SetRotationAxis(glm::vec3 value) { m_RotationAxis = value; }; 
+const glm::vec3& GetScale() { return m_Scale; }; 
+void SetScale(glm::vec3 value) { m_Scale = value; }; 
 const float& GetPickingID() { return m_PickingID; }; 
 void SetPickingID(float value) { m_PickingID = value; }; 
 Model* GetModel() { return m_Model; }; 
 void SetModel(Model* value) { m_Model = value; }; 
+const bool& GetIsLight() { return m_IsLight; }; 
+void SetIsLight(bool value) { m_IsLight = value; }; 
 private:
 std::string m_Name;
 glm::vec3 m_Position;
+float m_RotationAngle;
+glm::vec3 m_RotationAxis;
+glm::vec3 m_Scale;
 float m_PickingID;
 Model* m_Model;
+bool m_IsLight;
 public:
-static const int g_EntityPropertyCount = 4;
+static const int g_EntityPropertyCount = 8;
 static const ClassPropertyData g_Properties[g_EntityPropertyCount];
 
 

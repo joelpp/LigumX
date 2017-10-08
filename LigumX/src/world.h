@@ -48,9 +48,14 @@ public:
 
     World();
     World(float sectorSize);
+
+	void InitTestWorld();
+
     SunLight* m_SunLight;
 
 	SunLight* GetSunLight() { return m_SunLight; }
+
+	void Update();
 
     Sector* createSector(Coord2 pos);
 	SectorList* GetAllSectors();

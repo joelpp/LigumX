@@ -10,6 +10,8 @@ class DisplayOptions
 #pragma region  HEADER DisplayOptions
 static const int ClassID = 2473594549;
 public:
+const bool& GetUseSkyLighting() { return m_UseSkyLighting; }; 
+void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 
 const bool& GetDrawTerrain() { return m_DrawTerrain; }; 
 void SetDrawTerrain(bool value) { m_DrawTerrain = value; }; 
 const bool& GetDrawSky() { return m_DrawSky; }; 
@@ -38,9 +40,12 @@ const bool& GetRenderTextureOverlay() { return m_RenderTextureOverlay; };
 void SetRenderTextureOverlay(bool value) { m_RenderTextureOverlay = value; }; 
 const bool& GetRenderOpaque() { return m_RenderOpaque; }; 
 void SetRenderOpaque(bool value) { m_RenderOpaque = value; }; 
+const bool& GetRenderShadows() { return m_RenderShadows; }; 
+void SetRenderShadows(bool value) { m_RenderShadows = value; }; 
 const bool& GetOutputGLErrors() { return m_OutputGLErrors; }; 
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
 private:
+bool m_UseSkyLighting;
 bool m_DrawTerrain;
 bool m_DrawSky;
 bool m_WireframeRendering;
@@ -55,9 +60,10 @@ bool m_LinearizeDepth;
 bool m_BlinnPhongShading;
 bool m_RenderTextureOverlay;
 bool m_RenderOpaque;
+bool m_RenderShadows;
 bool m_OutputGLErrors;
 public:
-static const int g_DisplayOptionsPropertyCount = 15;
+static const int g_DisplayOptionsPropertyCount = 17;
 static const ClassPropertyData g_Properties[g_DisplayOptionsPropertyCount];
 
 

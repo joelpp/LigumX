@@ -15,8 +15,9 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_ShadowMap
 // Include Providers Marker
 
+layout (location = 0) out vec4 FinalColor;
+layout (location = 1) out vec4 BrightColor;
 
-out vec4 FinalColor;
 
 vec4 GetDebugNormalColor(vec3 normalWS)
 {
@@ -34,6 +35,10 @@ float LinearizeDepth(float nonLinearDepth)
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS)
 {
+	if (!g_UseShadows)
+	{
+		return 0.f;
+	}
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5; 
@@ -73,10 +78,54 @@ vec4 GetDiffuseColor(vec2 uv)
 		diffuseColor = vec4(g_Material.m_DiffuseColor, 1.0f);
 	}
 
-
-
 	return diffuseColor;
 }
+
+vec3 GetLightColor()
+{
+	vec3 lightColor;
+	if (g_UseSkyLighting)
+	{
+		lightColor = g_DirectionalLight.m_DiffuseColor;
+	}
+	else
+	{
+		lightColor = g_PointLight.m_DiffuseColor;
+	}
+
+	return lightColor;
+}
+
+vec3 GetLightDirection()
+{
+	vec3 lightDirection;
+	if (g_UseSkyLighting)
+	{
+		lightDirection = g_DirectionalLight.m_Direction;
+	}
+	else
+	{
+		lightDirection = g_PointLight.m_Position - vWorldPosition.xyz;
+	}
+
+	return lightDirection;
+}
+
+vec3 GetDiffuseLighting(vec3 fragmentToLight, vec3 fNormalWS)
+{
+ 	// Diffuse
+	vec4 diffuseColor = GetDiffuseColor(myTexCoord);
+
+	if (g_Material.m_Unlit)
+	{
+		return diffuseColor.rgb;
+	}
+
+	float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
+
+	return diffuseFactor * diffuseColor.rgb * GetLightColor();
+}
+
 
 void main() 
 {
@@ -87,7 +136,6 @@ void main()
 		FinalColor = vec4(myTexCoord.x, myTexCoord.y, 0, 1.f);
 		return ;
 	}
-
 
 	if (g_DebugNormalsEnabled > 0)
 	{
@@ -117,18 +165,14 @@ void main()
 		// Directions
 		vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 		//vec3 fragmentToLight = normalize( g_PointLight.m_Position - vWorldPosition.xyz);
-		vec3 fragmentToLight = normalize( g_DirectionalLight.m_Direction );
+		vec3 fragmentToLight = normalize( GetLightDirection() );
 		vec3 reflectionDir = reflect(-fragmentToLight, fNormalWS);
 
 		// Ambient
 		vec3 ambientContribution = g_PointLight.m_AmbientColor * g_Material.m_AmbientColor; 
 		ambientContribution *= g_DebugAmbientEnabled;
 
-		// Diffuse
-		vec4 diffuseColor = GetDiffuseColor(myTexCoord);
-
-		float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
-		vec3 diffuseContribution = diffuseFactor * diffuseColor.rgb;
+		vec3 diffuseContribution = GetDiffuseLighting(fragmentToLight, fNormalWS);
 
 		// Specular
 		vec4 specularColor = vec4(0.5,0.5,0.5,1);//texture(g_Material.m_SpecularTexture, myTexCoord);
@@ -147,7 +191,7 @@ void main()
 
 		float shadow = ShadowCalculation(FragPosLightSpace, fNormalWS);
 		// final 
-		FinalColor.rgb = ambientContribution + (1.0 - shadow) * diffuseContribution + specularContribution;
+		FinalColor.rgb = /*ambientContribution +*/ (1.0 - shadow) * diffuseContribution /*+ specularContribution*/;
 	}
 	else
 	{
@@ -159,5 +203,6 @@ void main()
 	{
 		FinalColor.rgb = pow(FinalColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 	}
-
+	
+	BrightColor = FinalColor * g_Material.m_EmissiveFactor;
 }

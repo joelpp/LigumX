@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 typedef unsigned int GLuint;
 
@@ -23,6 +24,10 @@ const GLuint& GetColorTexture() { return m_ColorTexture; };
 void SetColorTexture(GLuint value) { m_ColorTexture = value; }; 
 const GLuint& GetDepthTexture() { return m_DepthTexture; }; 
 void SetDepthTexture(GLuint value) { m_DepthTexture = value; }; 
+const GL::PixelFormat& GetPixelFormat() { return m_PixelFormat; }; 
+void SetPixelFormat(GL::PixelFormat value) { m_PixelFormat = value; }; 
+const GL::PixelFormat& GetInternalPixelFormat() { return m_InternalPixelFormat; }; 
+void SetInternalPixelFormat(GL::PixelFormat value) { m_InternalPixelFormat = value; }; 
 const bool& GetHasDepth() { return m_HasDepth; }; 
 void SetHasDepth(bool value) { m_HasDepth = value; }; 
 const int& GetNumColorTargets() { return m_NumColorTargets; }; 
@@ -33,32 +38,34 @@ int m_Width;
 int m_Height;
 GLuint m_ColorTexture;
 GLuint m_DepthTexture;
+GL::PixelFormat m_PixelFormat;
+GL::PixelFormat m_InternalPixelFormat;
 bool m_HasDepth;
 int m_NumColorTargets;
 public:
-static const int g_FramebufferPropertyCount = 7;
+static const int g_FramebufferPropertyCount = 9;
 static const ClassPropertyData g_Properties[g_FramebufferPropertyCount];
 
 
 #pragma endregion  HEADER Framebuffer
 
 Framebuffer();
-Framebuffer(std::string name, int width, int height, GL::PixelFormat pixelFormat, GL::PixelType pixelType);
+Framebuffer(std::string name, int width, int height,  GL::PixelFormat internalpixelFormat, GL::PixelFormat pixelFormat, GL::PixelType pixelType);
 
 void Initialize();
 
 GLuint GetHWObject() { return m_HWObject; }
-void InitAttachment(GLuint& texture, GLuint attachment, GL::PixelFormat pixelFormat, GL::PixelType pixelType);
+void InitAttachment(GLuint& texture, GLuint attachment, GL::PixelFormat internalPixelFormat, GL::PixelFormat pixelFormat, GL::PixelType pixelType);
+const GLuint& GetColorTexture(int i) { return m_ColorTextures[i]; };
 
 private:
 GLuint m_HWObject;
 
 
+std::vector<GLuint> m_ColorTextures;
 
 
 public:
-	// todo : check how to do enums in code gen
-	GL::PixelFormat m_PixelFormat;
 	GL::PixelType m_PixelType;
 	
 	// todo : we should have a list of textures and their corresponding attachments rather than a single one

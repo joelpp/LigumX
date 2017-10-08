@@ -64,16 +64,16 @@ namespace GL
 		glTexParameteri(GL_TEXTURE_2D, param, value);
 	}
 
-	void GL::ClearTexture(int width, int height, PixelFormat pixelFormat, PixelType pixelType)
+	void GL::ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, PixelType pixelType)
 	{
 		// todo problem : assuming all parameters
-		glTexImage2D(GL_TEXTURE_2D, 0, pixelFormat, width, height, 0, pixelFormat, pixelType, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalPixelFormat, width, height, 0, pixelFormat, pixelType, 0);
 	}
 
 	void GL::AttachTextureToFramebuffer(GLuint texture, GLuint slot)
 	{
 		// todo : see what's needed for mrt
-		glFramebufferTexture(GL_FRAMEBUFFER, slot, texture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, slot, GL_TEXTURE_2D, texture, 0);
 	}
 
 	void GL::BindFramebuffer(GLuint frameBuffer)

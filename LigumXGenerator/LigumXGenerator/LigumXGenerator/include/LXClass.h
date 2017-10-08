@@ -4,10 +4,12 @@
 
 enum PropertyFlags
 {
-	PropertyFlags_Hidden = 1,
-	PropertyFlags_ReadOnly = 2,
-	PropertyFlags_SetCallback = 4,
-	PropertyFlags_NumPropertyFlags = 2 * PropertyFlags_SetCallback
+	PropertyFlags_Hidden			= 1,
+	PropertyFlags_ReadOnly			= 2,
+	PropertyFlags_SetCallback		= 4,
+	PropertyFlags_MinValue			= 8,
+	PropertyFlags_MaxValue			= 16,
+	PropertyFlags_NumPropertyFlags	= 2 * PropertyFlags_MaxValue
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;
@@ -55,6 +57,9 @@ struct Variable
 	bool m_IsPtr;
 	bool m_IsTemplate;
 	int m_PropertyFlags;
+
+	std::string m_MinValue;
+	std::string m_MaxValue;
 };
 typedef std::vector<Variable> VariableList;
 
@@ -86,12 +91,31 @@ bool IsPropertyFlags(std::string& line)
 	return stringContains(line, '[');
 }
 
-int GetPropertyFlags(TokenList& tokens)
+int GetPropertyFlags(TokenList& tokens, Variable& variable)
 {
 	int flags = 0;
+
 	for (std::string& token : tokens)
 	{
-		flags |= g_PropertyFlagsStringMap[token];
+		std::string flagName = token;
+		if (stringContains(token, '='))
+		{
+			TokenList list = splitString(token, '=');
+
+			flagName = list[0];
+
+			if (flagName == "min")
+			{
+				variable.m_MinValue = list[1];
+			}
+
+			if (flagName == "max")
+			{
+				variable.m_MaxValue = list[1];
+			}
+		}
+
+		flags |= g_PropertyFlagsStringMap[flagName];
 	}
 
 	return flags;

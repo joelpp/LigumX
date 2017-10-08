@@ -2,9 +2,15 @@ class Entity
 {
 	std::string Name;
 	glm::vec3 Position;
+	float RotationAngle;
+	glm::vec3 RotationAxis;
+	glm::vec3 Scale;
+
 
 	[hidden, readonly]
 	float PickingID;
 
 	Model* Model;
+
+	bool IsLight;
 }

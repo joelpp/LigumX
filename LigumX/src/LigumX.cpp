@@ -185,14 +185,7 @@ void LigumX::updateWorld(int loadingRingSize)
 
     delete(newSectors);
 
-    // newSectors = world->sectorsAroundPoint(glm::vec2(camera->position), 0);
-
-    // Sector* sector = newSectors->at(0);
-    // if (sector->m_heightfield)
-    // {
-    //     double height = sector->m_heightfield->getHeight(glm::vec2(camera->position));
-    //     PRINT(height * 15000);
-    // }
+	world->Update();
 }
 
 

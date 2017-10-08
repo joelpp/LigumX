@@ -12,8 +12,8 @@
 #include <cstddef>
 const ClassPropertyData Model::g_Properties[] = 
 {
-{ "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0,  }, 
-{ "Materials", offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0,  }, 
+{ "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "Materials", offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, }, 
 };
 
 #pragma endregion  CLASS_SOURCE Model

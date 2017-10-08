@@ -1,16 +1,20 @@
 #include "stdafx.h"
 
-#include "entity.h"
+#include "glm/glm.hpp"
 
 #pragma region  CLASS_SOURCE Entity
 #include "Entity.h"
 #include <cstddef>
 const ClassPropertyData Entity::g_Properties[] = 
 {
-{ "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None, 0,  }, 
-{ "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, 0,  }, 
-{ "PickingID", offsetof(Entity, m_PickingID), 0, LXType_float, false, LXType_None, PropertyFlags_Hidden,  }, 
-{ "Model", offsetof(Entity, m_Model), 0, LXType_Model, true, LXType_None, 0,  }, 
+{ "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "RotationAngle", offsetof(Entity, m_RotationAngle), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "RotationAxis", offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "Scale", offsetof(Entity, m_Scale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "PickingID", offsetof(Entity, m_PickingID), 0, LXType_float, false, LXType_None, PropertyFlags_Hidden, 0, 0, }, 
+{ "Model", offsetof(Entity, m_Model), 0, LXType_Model, true, LXType_None, 0, 0, 0, }, 
+{ "IsLight", offsetof(Entity, m_IsLight), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 
 #pragma endregion  CLASS_SOURCE Entity
@@ -37,6 +41,9 @@ Entity::Entity()
 {
 	m_PickingID = g_NextEntityPickingID;
 	g_NextEntityPickingID += 0.1;
+
+	m_RotationAxis = glm::vec3(1, 0, 0);
+	m_Scale = glm::vec3(1, 1, 1);
 }
 
 
@@ -52,46 +59,16 @@ vec3 Entity::GetLateralVelocity() const {
     return rightVector * dot(rightVector, velocity);
 }
 
-void Entity::Update(double dt) {
-    // euler integration
-    position += velocity * (float)dt;
-    velocity += acceleration * (float)dt;
+void Entity::Update(double dt) 
+{
+	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), m_Position);
+	toWorld = glm::rotate(toWorld, m_RotationAngle, m_RotationAxis);
+	toWorld = glm::scale(toWorld, m_Scale);
 
+	m_ModelToWorldMatrix = toWorld;
 
-    if(turning) {
-        angle += dt * 100 * turning;
-    }
-
-    forwardVector = normalize(vec3(cosf(glm::radians(angle)), sinf(glm::radians(angle)), 0));
-    rightVector = normalize(vec3(cosf(glm::radians(angle-90.f)), sinf(glm::radians(angle-90.f)), 0.f));
-
-    vec3 thrust_force(0.f);
-    vec3 friction_force(0.f);
-
-    float curr_speed = GetForwardSpeed();
-
-    // Forward thrust power
-    if(desiredSpeed != 0.f) {
-        thrust_force = (desiredSpeed > curr_speed ? 1 : -1) * maxThrust * forwardVector * ENTITY_SIZE;;
-    }
-
-    // Ground friction & lateral force cancellation
-    // TODO : Different ground characteristics
-    if(length(velocity) > 0.f) {
-        // apply friction
-        vec3 lateral_velocity = GetLateralVelocity();
-        vec3 forward_velocity = GetForwardVelocity();
-        float friction_mag = -2.f * 1000.f* POWER_MAG * length(forward_velocity);
-        friction_force = friction_mag * normalize(forward_velocity);
-
-        // apply lateral impulse to remove lateral movement
-        velocity += -lateral_velocity * mass;
-    }
-
-//    std::cout << desiredSpeed << "   " << curr_speed << std::endl;
-
-    // a = \sum(F)/m
-    acceleration = (thrust_force + friction_force) / mass;
+	// todo : check out what adrien did for cars
+	// , but for now it sleeps safely in source control
 }
 
 // #############################################

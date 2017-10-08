@@ -58,7 +58,8 @@ namespace GL
 		PixelFormat_BGRAi			= GL_BGRA_INTEGER,
 		PixelFormat_StencilIndex	= GL_STENCIL_INDEX,
 		PixelFormat_DepthComponent	= GL_DEPTH_COMPONENT,
-		PixelFormat_DepthStencil	= GL_DEPTH_STENCIL
+		PixelFormat_DepthStencil	= GL_DEPTH_STENCIL,
+		PixelFormat_RGBA16F			= GL_RGBA16F,
 	};
 
 	enum PixelType
@@ -93,7 +94,7 @@ namespace GL
 	GLuint CreateTexture();
 	void BindTexture(GLuint& hwTexture);
 
-	void ClearTexture(int width, int height, PixelFormat pixelFormat, PixelType pixelType);
+	void ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, PixelType pixelType);
 
 	void SetTextureParameter(GLuint param, GLuint value);
 

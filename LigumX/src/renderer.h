@@ -36,6 +36,7 @@ class SunLight;
 
 enum FramebufferType
 {
+	FramebufferType_Default = 0,
 	FramebufferType_MainColorBuffer,
 	FramebufferType_ShadowMap,
 	FramebufferType_Picking,
@@ -127,7 +128,9 @@ public:
 	void RenderTextureOverlay();
 	void RenderPicking();
 
+	void RenderHDRFramebuffer();
 
+	void BindFramebuffer(FramebufferType buffer);
 	void Bind2DTexture(int slot, GLuint HWObject);
 	void BindTexture(GLuint& hwTexture);
 	void FreeBoundTexture();
@@ -333,7 +336,9 @@ private:
 	template<typename T>
 	void ShowGenericProperty(T* object, const ClassPropertyData& propertyData);
 
-	void ShowPropertyTemplate(const char* object, const char* name, const LXType& type);
+	//void ShowPropertyTemplate(const char* object, const char* name, const LXType& type);
+	void ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max);
+
 
 	template<typename T>
 	void ShowPropertyGridMacro(T* object, const char* name);
@@ -357,7 +362,7 @@ private:
 
 	void ShowProperty(bool* value, const char* name);
 	void ShowProperty(float* value, const char* name, float min, float max);
-	void ShowProperty(glm::vec3* value, const char* name);
+	void ShowProperty(glm::vec3* value, const char* name, float min, float max);
 	void ShowProperty(std::string* value, const char* name);
 
 	template<typename T>

@@ -20,9 +20,9 @@
 #include <cstddef>
 const ClassPropertyData Renderer::g_Properties[] = 
 {
-{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0,  }, 
-{ "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0,  }, 
-{ "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0,  }, 
+{ "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
+{ "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
+{ "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 };
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -35,20 +35,22 @@ using namespace std;
 
 void Renderer::InitFramebuffers()
 {
-	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GL::PixelFormat_DepthComponent, GL::PixelType_Float);
+	m_Framebuffers[FramebufferType_MainColorBuffer] = new Framebuffer("Main Color Buffer", windowWidth, windowHeight, GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GL::PixelType_Float);
+	m_Framebuffers[FramebufferType_MainColorBuffer]->SetHasDepth(true);
+	m_Framebuffers[FramebufferType_MainColorBuffer]->SetNumColorTargets(2);
+	m_Framebuffers[FramebufferType_MainColorBuffer]->Initialize();
+
+	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GL::PixelFormat_DepthComponent, GL::PixelFormat_DepthComponent, GL::PixelType_Float);
 	m_Framebuffers[FramebufferType_ShadowMap]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
 	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
 
-	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", pickingBufferSize, pickingBufferSize, GL::PixelFormat_RGB, GL::PixelType_uByte);
+	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", pickingBufferSize, pickingBufferSize, GL::PixelFormat_RGB, GL::PixelFormat_RGB, GL::PixelType_uByte);
 	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_Picking]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_Picking]->Initialize();
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, drawBuffers);
+	BindFramebuffer(FramebufferType_Default);
 }
 
 void Renderer::InitGL()
@@ -97,6 +99,18 @@ void Renderer::InitGL()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, 12 * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
 
+}
+
+// this should be in device object
+// which then calls gl namespace (maybe)
+void Renderer::BindFramebuffer(FramebufferType buffer)
+{
+	if (buffer == FramebufferType_Default)
+	{
+		GL::BindFramebuffer(0);
+		return;
+	}
+	GL::BindFramebuffer(m_Framebuffers[buffer]->GetHWObject());
 }
 
 void Renderer::InitFreetype()
@@ -171,8 +185,9 @@ void Renderer::Initialize()
 	// TODO : add default constructors D: and serialization for gen files...
 	m_DisplayOptions = new DisplayOptions();
 
+	m_DisplayOptions->SetRenderShadows(false);
 	m_DisplayOptions->SetDrawTerrain(true);
-	m_DisplayOptions->SetDrawSky(true);
+	m_DisplayOptions->SetDrawSky(false);
 	m_DisplayOptions->SetUseLighting(true);
 	m_DisplayOptions->SetShowDiffuse(true);
 	m_DisplayOptions->SetShowSpecular(true);
@@ -313,15 +328,24 @@ void Renderer::SetPipeline(ProgramPipeline* pipeline)
 
 void Renderer::SetLightingUniforms()
 {
-	SetFragmentUniform(m_TestLight.m_Position,		"g_PointLight.m_Position");
-	SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_PointLight.m_DiffuseColor");
-	SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_PointLight.m_AmbientColor");
-	SetFragmentUniform(m_TestLight.m_SpecularColor, "g_PointLight.m_SpecularColor");
-	
-	SetFragmentUniform(m_TestLight.m_Position,		"g_DirectionalLight.m_Direction");
-	SetFragmentUniform(m_TestLight.m_DiffuseColor,	"g_DirectionalLight.m_DiffuseColor");
-	SetFragmentUniform(m_TestLight.m_AmbientColor,	"g_DirectionalLight.m_AmbientColor");
-	SetFragmentUniform(m_TestLight.m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
+	bool useSkyLighting = m_DisplayOptions->GetUseSkyLighting();
+	SetFragmentUniform(useSkyLighting,	"g_UseSkyLighting");
+	SetFragmentUniform(m_DisplayOptions->GetRenderShadows(),	"g_UseShadows");
+
+	if (useSkyLighting)
+	{
+		SetFragmentUniform(m_TestLight.m_Position,		"g_DirectionalLight.m_Direction");
+		SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_DirectionalLight.m_DiffuseColor");
+		SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_DirectionalLight.m_AmbientColor");
+		SetFragmentUniform(m_TestLight.m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
+	}
+	else
+	{
+		SetFragmentUniform(m_TestLight.m_Position,		"g_PointLight.m_Position");
+		SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_PointLight.m_DiffuseColor");
+		SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_PointLight.m_AmbientColor");
+		SetFragmentUniform(m_TestLight.m_SpecularColor, "g_PointLight.m_SpecularColor");
+	}
 }
 
 void Renderer::SetMaterialUniforms(Material* material)
@@ -332,6 +356,8 @@ void Renderer::SetMaterialUniforms(Material* material)
 	SetFragmentUniform(material->GetDiffuseTextureEnabled(),	"g_Material.m_DiffuseTextureEnabled");
 	SetFragmentUniform(material->GetSpecularTextureEnabled(),	"g_Material.m_SpecularTextureEnabled");
 	SetFragmentUniform(material->GetShininess(),				"g_Material.m_Shininess");
+	SetFragmentUniform(material->GetUnlit(),					"g_Material.m_Unlit");
+	SetFragmentUniform(material->GetEmissiveFactor(),			"g_Material.m_EmissiveFactor");
 
 	if (material->GetDiffuseTexture())
 	{
@@ -483,7 +509,7 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
-  FreeBoundTexture();
+  //FreeBoundTexture();
 }
 
 void Renderer::DrawTerrain()
@@ -631,14 +657,29 @@ void Renderer::ShowProperty(bool* value, const char* name)
 
 void Renderer::ShowProperty(float* value, const char* name, float min, float max)
 {
-	ImGui::SliderFloat(name, value, min, max);
+	if (min == 0 && max == 0)
+	{
+		ImGui::DragFloat(name, (float*)value);
+	}
+	else
+	{
+		ImGui::SliderFloat(name, value, min, max);
+	}
+
 }
 
-void Renderer::ShowProperty(glm::vec3* value, const char* name)
+void Renderer::ShowProperty(glm::vec3* value, const char* name, float min, float max)
 {
 	//ShowVariableAsText(value, name);
 
-	ImGui::SliderFloat3(name, (float*)value, 0.f, 1.0f);
+	if (min == 0 && max == 0)
+	{
+		ImGui::DragFloat3(name, (float*)value);
+	}
+	else
+	{
+		ImGui::SliderFloat3(name, (float*)value, min, max);
+	}
 }
 
 void Renderer::ShowProperty(std::string* value, const char* name)
@@ -646,7 +687,7 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 	ShowGUIText(value, name);
 }
 
-void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type)
+void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max)
 {
 	switch (type)
 	{
@@ -657,12 +698,12 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 		}
 		case LXType_float:
 		{
-			ShowProperty((float*) ptr, name, -20, 20);
+			ShowProperty((float*) ptr, name, min, max);
 			break;
 		}
 		case LXType_glmvec3:
 		{
-			ShowProperty((glm::vec3*) ptr, name);
+			ShowProperty((glm::vec3*) ptr, name, min, max);
 			break;
 		}
 		case LXType_stdstring:
@@ -703,6 +744,9 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 		ptr = *(char**)ptr;
 	}
 
+	float min = propertyData.m_MinValue;
+	float max = propertyData.m_MaxValue;
+
 	if (propertyData.m_Type == LXType_stdvector)
 	{
 		std::vector<char*>* v = (std::vector<char*>*) ptr;
@@ -711,12 +755,12 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 		{
 			char displayName[100];
 			sprintf(displayName, "%s[%d]", propertyData.m_Name, i);
-			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType);
+			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, min, max);
 		}
 	}
 	else
 	{
-		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type);
+		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, min, max);
 	}
 }
 
@@ -780,8 +824,15 @@ void Renderer::RenderGUI()
 
 void Renderer::RenderShadowMap()
 {
+	if (!m_DisplayOptions->GetRenderShadows())
+	{
+		return;
+	}
+
 	GL::SetViewport(SHADOW_WIDTH, SHADOW_HEIGHT);
-	GL::BindFramebuffer(m_Framebuffers[FramebufferType_ShadowMap]->GetHWObject());
+	
+	BindFramebuffer(FramebufferType_ShadowMap);
+	
 	GL::ClearDepthBuffer();
 
 	SetPipeline(pPipelineShadowMap);
@@ -802,7 +853,7 @@ void Renderer::RenderShadowMap()
 
 	RenderEntities(m_World->m_Entities);
 
-	GL::BindFramebuffer(0);
+	BindFramebuffer(FramebufferType_Default);
 }
 
 void Renderer::RenderOpaque()
@@ -822,6 +873,9 @@ void Renderer::RenderOpaque()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
+
 	RenderEntities(m_World->m_Entities);
 }
 
@@ -838,8 +892,24 @@ void Renderer::RenderTextureOverlay()
 
 	SetFragmentUniform(0, "g_Texture");
 	//Bind2DTexture(0, m_Framebuffers[FramebufferType_ShadowMap]->GetTexture());
-	Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetColorTexture());
+	//Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetColorTexture());
+	Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
 	//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+
+void Renderer::RenderHDRFramebuffer()
+{
+	BindFramebuffer(FramebufferType_Default);
+	GL::SetViewport(windowWidth, windowHeight);
+	GL::ClearColorAndDepthBuffers();
+
+	SetPipeline(pPipelineScreenSpaceTexture);
+
+	SetFragmentUniform(0, "g_Texture");
+	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetColorTexture(0));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
@@ -855,7 +925,7 @@ void Renderer::RenderPicking()
 
 	SetPipeline(pPipelinePicking);
 
-	GL::BindFramebuffer(m_Framebuffers[FramebufferType_Picking]->GetHWObject());
+	BindFramebuffer(FramebufferType_Picking);
 	//GL::ClearColorBuffer();
 	GL::ClearColorAndDepthBuffers();
 
@@ -872,14 +942,14 @@ void Renderer::RenderPicking()
 		}
 	}
 	
-	GL::BindFramebuffer(0);
+	BindFramebuffer(FramebufferType_Default);
 
 	SetPipeline(pPipelinePickingCompute);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
 
 	SetComputeUniform(1, "g_PickingBuffer");
-	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture());
+	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
 	
 	SetComputeUniform(m_MouseClickPosition, "g_MousePosition");
 
@@ -924,6 +994,22 @@ void Renderer::BeforeFrame(World* world)
 {
 	m_World = world;
 	GL::g_CheckGLErrors = m_DisplayOptions->GetOutputGLErrors();
+
+	Entity* lightEntity = nullptr;
+
+	for (Entity* entity : m_World->m_Entities)
+	{
+		if (entity->GetIsLight())
+		{
+			lightEntity = entity;
+			break;
+		}
+	}
+
+	m_TestLight.m_Position = lightEntity->GetPosition();
+	m_TestLight.m_DiffuseColor = lightEntity->GetModel()->GetMaterials()[0]->GetDiffuseColor();
+	m_TestLight.m_SpecularColor = m_TestLight.m_DiffuseColor;
+	m_TestLight.m_AmbientColor = m_TestLight.m_DiffuseColor;
 }
 
 /**
@@ -937,8 +1023,8 @@ void Renderer::render(World* world)
 	RenderPicking();
 	RenderShadowMap();
 
+	BindFramebuffer(FramebufferType_MainColorBuffer);
 	GL::SetViewport(windowWidth, windowHeight);
-	GL::BindFramebuffer(0);
 	GL::ClearColorAndDepthBuffers();
 
 	RenderSky();
@@ -946,6 +1032,8 @@ void Renderer::render(World* world)
 	//DrawTerrain();
 
 	RenderOpaque();
+
+	RenderHDRFramebuffer();
 
 	RenderGUI();
 

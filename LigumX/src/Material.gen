@@ -1,18 +1,28 @@
 class Material
 {
 	bool Enabled
-	glm::vec3 AmbientColor
-	glm::vec3 DiffuseColor
-	glm::vec3 SpecularColor
-	float Shininess
+
+	[min=0, max=1]
+	glm::vec3 AmbientColor;
+
+	[min=0, max=1]
+	glm::vec3 DiffuseColor;
+
+	[min=0, max=1]
+	glm::vec3 SpecularColor;
+	float Shininess;
+
+	float EmissiveFactor;
 
 	bool DiffuseTextureEnabled;
 	bool SpecularTextureEnabled;
+
+	bool Unlit;
 	
 	[setcallback]
-	Texture* DiffuseTexture
+	Texture* DiffuseTexture;
+	
+	Texture* SpecularTexture;
 
-	Texture* SpecularTexture
-
-	ProgramPipeline* ProgramPipeline
+	ProgramPipeline* ProgramPipeline;
 }

@@ -19,6 +19,8 @@ struct Material
 	sampler2D m_SpecularTexture;
 	bool	  m_DiffuseTextureEnabled;
 	bool	  m_SpecularTextureEnabled;
+	bool	  m_Unlit;
+	float	  m_EmissiveFactor;
 };
 
 uniform Material g_Material;
@@ -48,6 +50,8 @@ struct PointLight
 uniform PointLight g_PointLight;
 
 uniform int g_UseLighting;
+uniform bool g_UseSkyLighting;
+uniform bool g_UseShadows;
 #endif
 
 #ifdef PROVIDER_View

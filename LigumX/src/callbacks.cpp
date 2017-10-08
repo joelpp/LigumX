@@ -80,7 +80,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
-
+	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow();
         // Left-click
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
              double x,y;
@@ -98,7 +98,10 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
             // TIME(LigumX::GetInstance().updateSelectedWay(closests[0]));
             // PRINTELEMENTVECTOR(closests);
 
-			 Renderer::GetInstance().SetMouseClickPosition(glm::vec2(x, y));
+			 if (!caughtByImgui)
+			 {
+				 Renderer::GetInstance().SetMouseClickPosition(glm::vec2(x, y));
+			 }
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){

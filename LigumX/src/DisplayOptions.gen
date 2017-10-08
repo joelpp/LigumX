@@ -1,5 +1,6 @@
 class DisplayOptions
 {
+	bool UseSkyLighting;
 	bool DrawTerrain;
 	bool DrawSky;
 	bool WireframeRendering;
@@ -14,5 +15,6 @@ class DisplayOptions
 	bool BlinnPhongShading;
 	bool RenderTextureOverlay;
 	bool RenderOpaque;
+	bool RenderShadows;
 	bool OutputGLErrors;
 }

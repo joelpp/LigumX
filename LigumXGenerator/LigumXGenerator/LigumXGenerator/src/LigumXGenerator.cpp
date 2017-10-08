@@ -53,6 +53,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 	LXClass currentClass;
 	{
+		Variable variable;
 		int propertyFlags = 0;
 		// read lines
 		for (std::string& line : lines)
@@ -70,7 +71,8 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			if (isPropertyFlags)
 			{
-				propertyFlags = GetPropertyFlags(tokens);
+				propertyFlags = GetPropertyFlags(tokens, variable);
+
 				continue;
 			}
 
@@ -97,7 +99,6 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			// then its a variable
 
-			Variable variable;
 			variable.m_Name = tokens[1];;
 			variable.SetType(tokens[0]);
 
@@ -110,7 +111,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			variable.m_PropertyFlags = propertyFlags;
 
 			currentClass.m_Members.push_back(variable);
-
+			variable = Variable();
 			// not invalid or a class declaration. we're adding to the class desc
 			void;
 
@@ -177,6 +178,8 @@ void InitializeGenerator()
 	g_PropertyFlagsStringMap.emplace("hidden", PropertyFlags_Hidden);
 	g_PropertyFlagsStringMap.emplace("readonly", PropertyFlags_ReadOnly);
 	g_PropertyFlagsStringMap.emplace("setcallback", PropertyFlags_SetCallback);
+	g_PropertyFlagsStringMap.emplace("min", PropertyFlags_MinValue);
+	g_PropertyFlagsStringMap.emplace("max", PropertyFlags_MaxValue);
 
 }
 

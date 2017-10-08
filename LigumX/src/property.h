@@ -23,6 +23,7 @@ enum LXType
 	LXType_Texture,
 
 	LXType_GLuint,
+	LXType_GLPixelFormat,
 
 	// these are mostly a test. maybe we shouldnt get so specific and instead use LXType_Other
 	// still doing it just to see what happens
@@ -56,5 +57,7 @@ struct ClassPropertyData
 	bool IsAPointer;
 	LXType m_AssociatedType;
 	int m_PropertyFlags;
+	float m_MinValue;
+	float m_MaxValue;
 };
 
