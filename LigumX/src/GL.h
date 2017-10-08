@@ -109,4 +109,9 @@ namespace GL
 
 	void ClearDepthBuffer();
 
+	void DrawElements(GLuint primitiveType, int numIndices, GLuint indicesType, int firstIndex);
+
+	void OutputErrors();
+
+	extern bool g_CheckGLErrors;
 }

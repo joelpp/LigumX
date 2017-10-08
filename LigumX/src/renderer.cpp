@@ -33,6 +33,23 @@ using namespace std;
 
 #define FT_SUCCESS 0
 
+void Renderer::InitFramebuffers()
+{
+	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GL::PixelFormat_DepthComponent, GL::PixelType_Float);
+	m_Framebuffers[FramebufferType_ShadowMap]->SetHasDepth(true);
+	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
+	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
+
+	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", pickingBufferSize, pickingBufferSize, GL::PixelFormat_RGB, GL::PixelType_uByte);
+	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
+	m_Framebuffers[FramebufferType_Picking]->SetNumColorTargets(1);
+	m_Framebuffers[FramebufferType_Picking]->Initialize();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
+	glDrawBuffers(1, drawBuffers);
+}
 
 void Renderer::InitGL()
 {
@@ -49,7 +66,7 @@ void Renderer::InitGL()
 	// Create GLFW window
 	pWindow = GL::CreateGLWindow(windowWidth, windowHeight, windowTitle.c_str());
 
-	glfwSetWindowPos(pWindow, 700, 200);
+	glfwSetWindowPos(pWindow, -900, 200);
 	glfwMakeContextCurrent(pWindow);
 	if (pWindow == NULL)
 	{
@@ -72,22 +89,9 @@ void Renderer::InitGL()
 
 	GL::SetDepthFunction(GL::Depth_Less);
 
-	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GL::PixelFormat_DepthComponent, GL::PixelType_Float);
-	m_Framebuffers[FramebufferType_ShadowMap]->m_Attachment = GL_DEPTH_ATTACHMENT;
-	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
+	InitFramebuffers();
 
-	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", pickingBufferSize, pickingBufferSize, GL::PixelFormat_RGB, GL::PixelType_uByte);
-	m_Framebuffers[FramebufferType_Picking]->m_Attachment = GL_COLOR_ATTACHMENT0;
-	m_Framebuffers[FramebufferType_Picking]->Initialize();
-
-	//glDrawBuffer(GL_NONE);
-	//glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
-	glDrawBuffers(1, drawBuffers);
-
-	glEnable(GL_CULL_FACE);
+	GL::SetCapability(GL::CullFace, true);
 
 	glGenBuffers(1, &SSBO);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
@@ -116,7 +120,6 @@ void Renderer::InitFreetype()
 	FT_Set_Pixel_Sizes(face, 0, 48);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
-	FLUSH_ERRORS();
 	for (GLubyte c = 0; c < 128; c++)
 	{
 		// Load character glyph
@@ -356,7 +359,7 @@ void Renderer::SetPostEffectsUniforms()
 void Renderer::SetShadowMapUniforms(Camera* cam)
 {
 	SetFragmentUniform(2, "g_DepthMapTexture");
-	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetTexture());
+	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
 
 	SetVertexUniform(cam->GetViewProjectionMatrix(), "g_LightProjectionMatrix");
 }
@@ -439,7 +442,8 @@ void Renderer::DrawMesh(Mesh* mesh)
 	if (mesh->m_usesIndexBuffer)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
-		glDrawElements(GL_TRIANGLES, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+
+		GL::DrawElements(GL_TRIANGLES, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
@@ -452,8 +456,6 @@ void Renderer::DrawMesh(Mesh* mesh)
 void Renderer::DrawMesh(Mesh* mesh, Material* material)
 {
   glBindVertexArray(mesh->m_VAO);
-
-  FLUSH_ERRORS();
 
   SetMaterialUniforms(material);
 
@@ -640,7 +642,7 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 	ShowGUIText(value, name);
 }
 
-void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, const LXType& associatedType)
+void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type)
 {
 	switch (type)
 	{
@@ -685,15 +687,11 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 template<typename T>
 void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyData)
 {
-	char* ptr = 0;
+	char* ptr = (char*)object + propertyData.m_Offset;;
 
 	if (propertyData.IsAPointer)
 	{
-		ptr = *(GetPropertyPtrChar(object, propertyData));
-	}
-	else
-	{
-		ptr = GetPropertyChar(object, propertyData);
+		ptr = *(char**)ptr;
 	}
 
 	if (propertyData.m_Type == LXType_stdvector)
@@ -704,12 +702,12 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 		{
 			char displayName[100];
 			sprintf(displayName, "%s[%d]", propertyData.m_Name, i);
-			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, LXType_None);
+			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType);
 		}
 	}
 	else
 	{
-		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, LXType_None);
+		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type);
 	}
 }
 
@@ -831,7 +829,7 @@ void Renderer::RenderTextureOverlay()
 
 	SetFragmentUniform(0, "g_Texture");
 	//Bind2DTexture(0, m_Framebuffers[FramebufferType_ShadowMap]->GetTexture());
-	Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetTexture());
+	Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetColorTexture());
 	//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -849,7 +847,8 @@ void Renderer::RenderPicking()
 	SetPipeline(pPipelinePicking);
 
 	GL::BindFramebuffer(m_Framebuffers[FramebufferType_Picking]->GetHWObject());
-	GL::ClearColorBuffer();
+	//GL::ClearColorBuffer();
+	GL::ClearColorAndDepthBuffers();
 
 	SetViewUniforms(camera);
 
@@ -871,7 +870,7 @@ void Renderer::RenderPicking()
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
 
 	SetComputeUniform(1, "g_PickingBuffer");
-	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetHWObject());
+	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture());
 	
 	SetComputeUniform(m_MouseClickPosition, "g_MousePosition");
 
@@ -912,6 +911,11 @@ void Renderer::RenderPicking()
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
+void Renderer::BeforeFrame(World* world)
+{
+	m_World = world;
+	GL::g_CheckGLErrors = m_DisplayOptions->GetOutputGLErrors();
+}
 
 /**
  * [Renderer::render description]
@@ -919,7 +923,8 @@ void Renderer::RenderPicking()
  */
 void Renderer::render(World* world)
 {
-	m_World = world;
+	BeforeFrame(world);
+
 	RenderPicking();
 	RenderShadowMap();
 
@@ -927,7 +932,7 @@ void Renderer::render(World* world)
 	GL::BindFramebuffer(0);
 	GL::ClearColorAndDepthBuffers();
 
-	RenderSky(world->GetSunLight());
+	RenderSky();
 
 	//DrawTerrain();
 
@@ -940,10 +945,6 @@ void Renderer::render(World* world)
 	RenderFPS();
 
 	RenderTextureOverlay();
-
-
-
-	FLUSH_ERRORS();
 }
 
 void Renderer::RenderEntities(std::vector<Entity*> entities)
@@ -998,12 +999,14 @@ void Renderer::RenderFPS()
 	curr_time = new_time;
 }
 
-void Renderer::RenderSky(SunLight* sunLight)
+void Renderer::RenderSky()
 {
 	if (!m_DisplayOptions->GetDrawSky())
 	{
 		return;
 	}
+
+	SunLight* sunLight = m_World->GetSunLight();
 
 	SetPipeline(pPipelineEnvmap);
 

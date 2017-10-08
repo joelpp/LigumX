@@ -2,6 +2,15 @@
 
 #include "Common.h"
 
+enum PropertyFlags
+{
+	PropertyFlags_Hidden = 1,
+	PropertyFlags_ReadOnly = 2,
+	//PropertyFlags_NextFlag = 4,
+	PropertyFlags_NumPropertyFlags
+};
+
+std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;
 
 struct Variable
 {
@@ -69,6 +78,22 @@ bool DiscardTokens(TokenList& tokens)
 bool IsClassDeclaration(TokenList& tokens)
 {
 	return tokens[0] == "class";
+}
+
+bool IsPropertyFlags(std::string& line)
+{
+	return stringContains(line, '[');
+}
+
+int GetPropertyFlags(TokenList& tokens)
+{
+	int flags = 0;
+	for (std::string& token : tokens)
+	{
+		flags |= g_PropertyFlagsStringMap[token];
+	}
+
+	return flags;
 }
 
 bool IsIncludeDeclaration(TokenList& tokens)

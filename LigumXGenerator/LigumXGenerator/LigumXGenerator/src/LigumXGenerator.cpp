@@ -53,10 +53,13 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 	LXClass currentClass;
 	{
+		int propertyFlags = 0;
 		// read lines
 		for (std::string& line : lines)
 		{
-			std::string sanitizedLine = RemoveSubstrings(line, UnwantedSubstrings);
+			bool isPropertyFlags = IsPropertyFlags(line);
+
+			std::string sanitizedLine = RemoveSubstrings(line, g_UnwantedSubstrings);
 			// tokenize
 			TokenList tokens = splitString(sanitizedLine, ' ');
 
@@ -64,6 +67,13 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			{
 				continue;
 			}
+
+			if (isPropertyFlags)
+			{
+				propertyFlags = GetPropertyFlags(tokens);
+				continue;
+			}
+
 			if (IsMethodDeclaration(tokens))
 			{
 				// todo implement
@@ -101,6 +111,8 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			// not invalid or a class declaration. we're adding to the class desc
 			void;
+
+			// reset property flags
 		}
 	}
 
@@ -149,12 +161,18 @@ void SystemPause()
 void InitializeGenerator()
 {
 	// Substrings we want to remove from property names
-	UnwantedSubstrings.push_back("\t");
-	UnwantedSubstrings.push_back(";");
+	g_UnwantedSubstrings.push_back("\t");
+	g_UnwantedSubstrings.push_back(";");
+	g_UnwantedSubstrings.push_back("[");
+	g_UnwantedSubstrings.push_back("]");
+	g_UnwantedSubstrings.push_back(",");
 
 	// Type names that have a corresponding gui callback
-	AllowedTypesForGUI.push_back("bool");
-	AllowedTypesForGUI.push_back("glm::vec3");
+	g_AllowedTypesForGUI.push_back("bool");
+	g_AllowedTypesForGUI.push_back("glm::vec3");
+
+	g_PropertyFlagsStringMap.emplace("hidden", PropertyFlags_Hidden);
+	g_PropertyFlagsStringMap.emplace("readonly", PropertyFlags_ReadOnly);
 }
 
 int main()

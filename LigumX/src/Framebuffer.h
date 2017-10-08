@@ -19,15 +19,24 @@ const int& GetWidth() { return m_Width; };
 void SetWidth(int value) { m_Width = value; };
 const int& GetHeight() { return m_Height; }; 
 void SetHeight(int value) { m_Height = value; };
-const GLuint& GetTexture() { return m_Texture; }; 
-void SetTexture(GLuint value) { m_Texture = value; };
+const GLuint& GetColorTexture() { return m_ColorTexture; }; 
+void SetColorTexture(GLuint value) { m_ColorTexture = value; };
+const GLuint& GetDepthTexture() { return m_DepthTexture; }; 
+void SetDepthTexture(GLuint value) { m_DepthTexture = value; };
+const bool& GetHasDepth() { return m_HasDepth; }; 
+void SetHasDepth(bool value) { m_HasDepth = value; };
+const int& GetNumColorTargets() { return m_NumColorTargets; }; 
+void SetNumColorTargets(int value) { m_NumColorTargets = value; };
 private:
 std::string m_Name;
 int m_Width;
 int m_Height;
-GLuint m_Texture;
+GLuint m_ColorTexture;
+GLuint m_DepthTexture;
+bool m_HasDepth;
+int m_NumColorTargets;
 public:
-static const int g_FramebufferPropertyCount = 4;
+static const int g_FramebufferPropertyCount = 7;
 static const ClassPropertyData g_Properties[g_FramebufferPropertyCount];
 
 
@@ -39,6 +48,7 @@ Framebuffer(std::string name, int width, int height, GL::PixelFormat pixelFormat
 void Initialize();
 
 GLuint GetHWObject() { return m_HWObject; }
+void InitAttachment(GLuint& texture, GLuint attachment, GL::PixelFormat pixelFormat, GL::PixelType pixelType);
 
 private:
 GLuint m_HWObject;

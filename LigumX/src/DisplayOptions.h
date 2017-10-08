@@ -38,6 +38,8 @@ const bool& GetRenderTextureOverlay() { return m_RenderTextureOverlay; };
 void SetRenderTextureOverlay(bool value) { m_RenderTextureOverlay = value; };
 const bool& GetRenderOpaque() { return m_RenderOpaque; }; 
 void SetRenderOpaque(bool value) { m_RenderOpaque = value; };
+const bool& GetOutputGLErrors() { return m_OutputGLErrors; }; 
+void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; };
 private:
 bool m_DrawTerrain;
 bool m_DrawSky;
@@ -53,8 +55,9 @@ bool m_LinearizeDepth;
 bool m_BlinnPhongShading;
 bool m_RenderTextureOverlay;
 bool m_RenderOpaque;
+bool m_OutputGLErrors;
 public:
-static const int g_DisplayOptionsPropertyCount = 14;
+static const int g_DisplayOptionsPropertyCount = 15;
 static const ClassPropertyData g_Properties[g_DisplayOptionsPropertyCount];
 
 

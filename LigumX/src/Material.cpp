@@ -14,6 +14,7 @@ const ClassPropertyData Material::g_Properties[] =
 { "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false, LXType_None,  }, 
 { "SpecularColor", offsetof(Material, m_SpecularColor), 0, LXType_glmvec3, false, LXType_None,  }, 
 { "Shininess", offsetof(Material, m_Shininess), 0, LXType_float, false, LXType_None,  }, 
+{ "UseTextures", offsetof(Material, m_UseTextures), 0, LXType_bool, false, LXType_None,  }, 
 { "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true, LXType_None,  }, 
 { "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None,  }, 
 { "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None,  }, 

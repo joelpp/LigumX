@@ -1,17 +1,18 @@
 class DisplayOptions
 {
-	bool DrawTerrain
-	bool DrawSky
-	bool WireframeRendering
-	bool UseLighting
-	bool ShowNormals
-	bool ShowSpecular
-	bool ShowDiffuse
-	bool ShowAmbient
-	bool ShowFPS
-	bool ShowDepth
-	bool LinearizeDepth
-	bool BlinnPhongShading
-	bool RenderTextureOverlay
-	bool RenderOpaque
+	bool DrawTerrain;
+	bool DrawSky;
+	bool WireframeRendering;
+	bool UseLighting;
+	bool ShowNormals;
+	bool ShowSpecular;
+	bool ShowDiffuse;
+	bool ShowAmbient;
+	bool ShowFPS;
+	bool ShowDepth;
+	bool LinearizeDepth;
+	bool BlinnPhongShading;
+	bool RenderTextureOverlay;
+	bool RenderOpaque;
+	bool OutputGLErrors;
 }

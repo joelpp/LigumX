@@ -27,7 +27,9 @@ static std::string GetTimeString(){
 
 #define PRINTCLASSTIME std::cout << GetTimeString() << " : [" <<_ClassName<< "::" << __func__ << " (" << __LINE__ << ") ] "
 
+#define OUTPUT_STRING(s) std::cout << GetTimeString() << " : " << s;
 
+#define OUTPUT_STRING_LINE(s) std::cout << GetTimeString() << " : " << s << std::endl;
 
 #define PRINTPAIR(v) { PRINTCLASSTIME << #v << ": x=" << v.first << " y=" << v.second << "\n"; }
 

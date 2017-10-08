@@ -97,13 +97,9 @@ public:
 
     void Initialize();
 	void InitGL();
+	void InitFramebuffers();
 	void InitFreetype();
 	GLuint CreateTexture();
-	void RenderShadowMap();
-	void RenderOpaque();
-	void RenderTextureOverlay();
-	void RenderPicking();
-
 
     // subfunctions
     void init_pipelines();
@@ -120,10 +116,17 @@ public:
 	void DrawMesh(Mesh* mesh);
     void DrawModel(Entity* entity, Model* model);
     static void outputGLError(std::string func, int line);
-    void RenderSky(SunLight* sunLight);
+    void RenderSky();
     void RenderFPS();
     void DrawTerrain();
 	void RenderEntities(std::vector<Entity*> entities);
+
+	void BeforeFrame(World* world);
+	void RenderShadowMap();
+	void RenderOpaque();
+	void RenderTextureOverlay();
+	void RenderPicking();
+
 
 	void Bind2DTexture(int slot, GLuint HWObject);
 	void BindTexture(GLuint& hwTexture);
@@ -151,10 +154,6 @@ public:
 	void  SetFragmentUniform(glm::vec3& value, const char* name, GLuint location);
 
 
-	//template<typename T>
-	//void SetFragmentUniform(T value, const char* name);
-
-	//void SetVertexUniform(glm::mat4x4& value, const char* name);
 	void SetPipeline(ProgramPipeline* pipeline);
 	void SetLightingUniforms();
 	void SetViewUniforms(Camera* cam);
@@ -260,17 +259,12 @@ public:
     template<typename T> static void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) 
     {
 //#ifdef __APPLE__
-		FLUSH_ERRORS();
 		glGenBuffers(1, &bufferName);
-		FLUSH_ERRORS();
         glBindBuffer(GL_ARRAY_BUFFER, bufferName);
-		FLUSH_ERRORS();
 		glBufferData(GL_ARRAY_BUFFER, bufferData.size() * sizeof(T), bufferData.data(), GL_DYNAMIC_DRAW /*GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
                              GL_MAP_WRITE_BIT*/);
         // glBufferSubData(GL_ARRAY_BUFFER, 0, bufferData.size() * sizeof(T), bufferData.data());
-		FLUSH_ERRORS();
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-		FLUSH_ERRORS();
 
 #if 0
         glCreateBuffers(1, &bufferName);
@@ -339,7 +333,7 @@ private:
 	template<typename T>
 	void ShowGenericProperty(T* object, const ClassPropertyData& propertyData);
 
-	void ShowPropertyTemplate(const char* object, const char* name, const LXType& type, const LXType& associatedType);
+	void ShowPropertyTemplate(const char* object, const char* name, const LXType& type);
 
 	template<typename T>
 	void ShowPropertyGridMacro(T* object, const char* name);

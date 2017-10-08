@@ -150,13 +150,16 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
     glCompileShader(shader);
     glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
 
+	bool hadError = false;
+
     if(!result) {
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
         glGetShaderInfoLog(shader, infoLength, NULL, info);
         cerr << "Compiler error in shader :" << endl;
         cerr << info << endl;
-    } else {
+		hadError = true;
+	} else {
         glidShaderProgram = glCreateProgram();
         glProgramParameteri(glidShaderProgram, GL_PROGRAM_SEPARABLE, GL_TRUE);
         glAttachShader(glidShaderProgram, shader);
@@ -172,10 +175,14 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
             glGetProgramInfoLog(glidShaderProgram, infoLength, NULL, info);
             cerr << "Linker error in shader :" << endl;
             cerr << info << endl;
-			assert(false);
+			hadError = true;
         }
     }
 
+	if (hadError)
+	{
+		assert(false);
+	}
 }
 
 GLbitfield ProgramPipeline::sShaderTypeEnumToBitField(

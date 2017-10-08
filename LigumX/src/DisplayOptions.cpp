@@ -21,6 +21,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "BlinnPhongShading", offsetof(DisplayOptions, m_BlinnPhongShading), 0, LXType_bool, false, LXType_None,  }, 
 { "RenderTextureOverlay", offsetof(DisplayOptions, m_RenderTextureOverlay), 0, LXType_bool, false, LXType_None,  }, 
 { "RenderOpaque", offsetof(DisplayOptions, m_RenderOpaque), 0, LXType_bool, false, LXType_None,  }, 
+{ "OutputGLErrors", offsetof(DisplayOptions, m_OutputGLErrors), 0, LXType_bool, false, LXType_None,  }, 
 };
 
 #pragma endregion  CLASS_SOURCE DisplayOptions

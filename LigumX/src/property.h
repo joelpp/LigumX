@@ -37,10 +37,12 @@ enum LXType
 	LXType_NumTypes
 };
 
+// keep in sync with generator
 enum PropertyFlags
 {
-	PropertyFlags_Hidden = 0,
-	//PropertyFlags_NextFlag = 2,
+	PropertyFlags_Hidden = 1,
+	PropertyFlags_ReadOnly = 2,
+	//PropertyFlags_NextFlag = 4,
 	PropertyFlags_NumPropertyFlags
 };
 

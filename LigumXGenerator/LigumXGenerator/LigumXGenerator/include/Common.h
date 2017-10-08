@@ -45,7 +45,7 @@ bool bWriteCodeRegions = true;
 
 std::unordered_map<std::type_index, int> g_TypeMap;
 
-StringList UnwantedSubstrings; 
-StringList AllowedTypesForGUI;
+StringList g_UnwantedSubstrings; 
+StringList g_AllowedTypesForGUI;
 
 std::string g_PropertyArrayDeclaration = "static const ClassPropertyData g_"/* + m_Class.m_Name + */"Properties";

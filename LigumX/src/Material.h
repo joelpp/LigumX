@@ -28,6 +28,8 @@ const glm::vec3& GetSpecularColor() { return m_SpecularColor; };
 void SetSpecularColor(glm::vec3 value) { m_SpecularColor = value; };
 const float& GetShininess() { return m_Shininess; }; 
 void SetShininess(float value) { m_Shininess = value; };
+const bool& GetUseTextures() { return m_UseTextures; }; 
+void SetUseTextures(bool value) { m_UseTextures = value; };
 Texture* GetDiffuseTexture() { return m_DiffuseTexture; }; 
 void SetDiffuseTexture(Texture* value) { m_DiffuseTexture = value; };
 Texture* GetSpecularTexture() { return m_SpecularTexture; }; 
@@ -41,11 +43,12 @@ glm::vec3 m_AmbientColor;
 glm::vec3 m_DiffuseColor;
 glm::vec3 m_SpecularColor;
 float m_Shininess;
+bool m_UseTextures;
 Texture* m_DiffuseTexture;
 Texture* m_SpecularTexture;
 ProgramPipeline* m_ProgramPipeline;
 public:
-static const int g_MaterialPropertyCount = 9;
+static const int g_MaterialPropertyCount = 10;
 static const ClassPropertyData g_Properties[g_MaterialPropertyCount];
 
 

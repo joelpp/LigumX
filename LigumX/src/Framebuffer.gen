@@ -3,5 +3,9 @@ class Framebuffer
 	std::string Name;
 	int Width;
 	int Height;
-	GLuint Texture;
+	GLuint ColorTexture;
+	GLuint DepthTexture;
+
+	bool HasDepth;
+	int NumColorTargets;
 }
