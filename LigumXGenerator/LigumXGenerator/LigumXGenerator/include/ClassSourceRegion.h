@@ -130,6 +130,83 @@ public:
 		WriteLine("};");
 	}
 
+	void WriteSerializer()
+	{
+		WriteLine("void " + m_Class.m_Name + "::Serialize(bool writing)");
+		WriteLine("{");
+		WriteLine(R"(	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";)");
+		WriteLine("	std::string fileName = \"" + m_Class.m_Name + ".LXobj\";");
+
+		WriteLine(R"(
+			int fileMask = writing ? std::ios::out : std::ios::in;
+			std::fstream objectStream(basePath + fileName, fileMask);
+
+			if (objectStream.is_open())
+			{
+				if (writing)
+				{)");
+
+		int numProperties = m_Class.m_Members.size();
+		for (int i = 0; i < numProperties; ++i)
+		{
+			Variable& var = m_Class.m_Members[i];
+			std::string&  varName = var.m_Name;
+			std::string&  varType = var.m_Type;
+
+
+			WriteLine("					objectStream << \"" + varName + "\" << std::endl;");
+			WriteLine("					objectStream << m_" + varName + " << std::endl;");
+		}
+
+		//WriteLine(R"(
+		//			objectStream << m_UseSkyLighting << std::endl;
+		//			objectStream << m_DrawTerrain << std::endl;
+		//			objectStream << m_DrawSky << std::endl;
+		//)");
+		WriteLine(R"(}
+				else
+				{)");
+
+		//for (int i = 0; i < numProperties; ++i)
+		//{
+		//	Variable& var = m_Class.m_Members[i];
+		//	std::string&  varName = var.m_Name;
+		//	std::string&  varType = var.m_Type;
+
+
+		//	WriteLine("					objectStream >> m_" + varName + ";");
+		//}
+
+		// todo fix that this only works for bools....
+		WriteLine(R"(
+					int i = 0;
+					std::string line;
+					while (std::getline(objectStream, line))
+					{
+					
+						if (i >= (sizeof(g_Properties) / sizeof(g_Properties[0])) || 
+							line != g_Properties[i].m_Name)
+						{
+							continue;
+						}
+
+						
+						char* propertyPtr = (char*)this + g_Properties[i].m_Offset;
+
+						bool value;
+						objectStream >> value;
+
+						*((bool*)propertyPtr) = value;
+
+						i++;
+					}
+		)");
+		WriteLine(R"(
+				}
+			}
+		})");
+	}
+
 	void WriteBody()
 	{
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
@@ -137,7 +214,12 @@ public:
 		
 		WritePropertyArray();
 
-		//WriteDefaultConstructor();
+		// todo unleash for all LXclasses
+		if (m_Class.m_Name == "DisplayOptions"/* || 
+			m_Class.m_Name == "Renderer"*/)
+		{
+			WriteSerializer();
+		}
 	}
 
 	void WriteFooter()

@@ -48,6 +48,8 @@ public:
     bool running;
     void mainLoop();
 
+	void Shutdown();
+
     World* getWorld();
 
     std::pair<glm::vec2, glm::vec2> windowBoundingBox();

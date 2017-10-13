@@ -1,5 +1,6 @@
 class PostEffects
 {
-	bool GammaCorrectionEnabled
-	float GammaExponent
+	bool GammaCorrectionEnabled;
+	float GammaExponent;
+	bool ToneMappingEnabled;
 }

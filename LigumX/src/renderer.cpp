@@ -104,6 +104,8 @@ void Renderer::InitGL()
 	InitFramebuffers();
 
 	GL::SetCapability(GL::CullFace, true);
+	GL::SetCapability(GL::Dither,	true);
+	GL::SetCapability(GL::TextureCubemapSeamless,	true);
 
 	glGenBuffers(1, &SSBO);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
@@ -111,8 +113,6 @@ void Renderer::InitGL()
 
 }
 
-// this should be in device object
-// which then calls gl namespace (maybe)
 void Renderer::BindFramebuffer(FramebufferType buffer)
 {
 	if (buffer == FramebufferType_Default)
@@ -192,28 +192,30 @@ void Renderer::InitFreetype()
 
 void Renderer::Initialize()
 {
+	windowWidth = 800;
+	windowHeight = 800;
+	windowTitle = "LigumX";
+	fps = 300;
+	dt = 0.1;
+
 	// TODO : add default constructors D: and serialization for gen files...
 	m_DisplayOptions = new DisplayOptions();
-
-	m_DisplayOptions->SetRenderShadows(false);
-	m_DisplayOptions->SetDrawTerrain(true);
-	m_DisplayOptions->SetDrawSky(false);
-	m_DisplayOptions->SetUseLighting(true);
-	m_DisplayOptions->SetShowDiffuse(true);
-	m_DisplayOptions->SetShowSpecular(true);
-	m_DisplayOptions->SetShowNormals(false);
-	m_DisplayOptions->SetShowAmbient(true);
-	m_DisplayOptions->SetShowFPS(true);
-	m_DisplayOptions->SetRenderOpaque(true);
+	m_DisplayOptions->Serialize(false);
 
 	m_PostEffects = new PostEffects();
+	m_PostEffects->SetGammaCorrectionEnabled(true);
 	m_PostEffects->SetGammaExponent(2.2f);
+	m_PostEffects->SetToneMappingEnabled(false);
 
-    windowWidth = 800;
-    windowHeight = 800;
-    windowTitle = "LigumX";
-    fps = 300;
-    dt = 0.1;
+
+	m_ShadowCamera = new Camera();
+	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
+	m_ShadowCamera->SetPosition(glm::vec3(-16.13, -5.9, 20.2));
+	m_ShadowCamera->frontVec = glm::vec3(-0.47, -0.81, 0.34);
+	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->frontVec));
+	m_ShadowCamera->upVec = glm::cross(m_ShadowCamera->frontVec, m_ShadowCamera->rightVec);
+	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->frontVec * 10.f);
+	m_ShadowCamera->updateVPMatrix();
 
 	InitGL();
 
@@ -223,24 +225,7 @@ void Renderer::Initialize()
     std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
 
 	ImGui_ImplGlfwGL3_Init(pWindow, true);
-   
-	m_TestLight.m_DiffuseColor = glm::vec3(0.88, 0.56, 0.76);
-	m_TestLight.m_SpecularColor = glm::vec3(0.56, 0.88, 0.76);
-	m_TestLight.m_AmbientColor = glm::vec3(0.1, 0.1, 0.1);
-	m_TestLight.m_Position = glm::vec3(-0.25, 7, 13);
 
-	m_ShadowCamera = new Camera();
-	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
-	//m_ShadowCamera->SetProjectionType(ProjectionType_Perspective);
-	//-16.13, -5.9, 20.2
-	//-0.47, -0.81, 0.34
-	m_ShadowCamera->SetPosition(glm::vec3(-16.13, -5.9, 20.2));
-	//m_ShadowCamera->translateTo(glm::vec3(-16.13, -5.9, 20.2));
-	m_ShadowCamera->frontVec = glm::vec3(-0.47, -0.81, 0.34);
-	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0,0,1), m_ShadowCamera->frontVec));
-	m_ShadowCamera->upVec = glm::cross(m_ShadowCamera->frontVec, m_ShadowCamera->rightVec);
-	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->frontVec * 10.f);
-	m_ShadowCamera->updateVPMatrix();
 }
 
 void Renderer::SetUniform(float value, const char* name, GLuint location)
@@ -336,6 +321,18 @@ void Renderer::SetPipeline(ProgramPipeline* pipeline)
 	activePipeline->usePipeline();
 }
 
+void Renderer::SetSkyUniforms(int skyCubemapSlot)
+{
+	SunLight* sunLight = m_World->GetSunLight();
+
+	SetFragmentUniform(skyCubemapSlot, "g_Skybox");
+	BindCubemap(skyCubemapSlot, m_World->GetSunLight()->GetSkybox()->GetHWObject());
+
+	SetFragmentUniform(m_World->GetSunLight()->GetUseSkybox(), "g_UseSkybox");
+	SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
+	SetFragmentUniform(sunLight->GetTime(), "sunTime");
+}
+
 void Renderer::SetLightingUniforms()
 {
 	bool useSkyLighting = m_DisplayOptions->GetUseSkyLighting();
@@ -344,19 +341,24 @@ void Renderer::SetLightingUniforms()
 
 	if (useSkyLighting)
 	{
-		SetFragmentUniform(m_TestLight.m_Position,		"g_DirectionalLight.m_Direction");
-		SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_DirectionalLight.m_DiffuseColor");
-		SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_DirectionalLight.m_AmbientColor");
-		SetFragmentUniform(m_TestLight.m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
-
+		SetFragmentUniform(m_TestLight[0].m_Position, "g_DirectionalLight.m_Direction");
+		SetFragmentUniform(m_TestLight[0].m_DiffuseColor, "g_DirectionalLight.m_DiffuseColor");
+		SetFragmentUniform(m_TestLight[0].m_AmbientColor, "g_DirectionalLight.m_AmbientColor");
+		SetFragmentUniform(m_TestLight[0].m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
 	}
 	else
 	{
-		SetFragmentUniform(m_TestLight.m_Position,		"g_PointLight.m_Position");
-		SetFragmentUniform(m_TestLight.m_DiffuseColor,  "g_PointLight.m_DiffuseColor");
-		SetFragmentUniform(m_TestLight.m_AmbientColor,  "g_PointLight.m_AmbientColor");
-		SetFragmentUniform(m_TestLight.m_SpecularColor, "g_PointLight.m_SpecularColor");
+		for (int i = 0; i < m_NumLights; ++i)
+		{
+			std::string index = std::to_string(i);
+			SetFragmentUniform(m_TestLight[i].m_Position,		("g_PointLight[" + index + "].m_Position").c_str()	);
+			SetFragmentUniform(m_TestLight[i].m_DiffuseColor,	("g_PointLight[" + index + "].m_DiffuseColor").c_str());
+			SetFragmentUniform(m_TestLight[i].m_AmbientColor,	("g_PointLight[" + index + "].m_AmbientColor").c_str());
+			SetFragmentUniform(m_TestLight[i].m_SpecularColor,	("g_PointLight[" + index + "].m_SpecularColor").c_str());
+		}
 	}
+
+	SetFragmentUniform(m_NumLights, "g_NumLights");
 }
 
 void Renderer::SetMaterialUniforms(Material* material)
@@ -369,6 +371,13 @@ void Renderer::SetMaterialUniforms(Material* material)
 	SetFragmentUniform(material->GetShininess(),				"g_Material.m_Shininess");
 	SetFragmentUniform(material->GetUnlit(),					"g_Material.m_Unlit");
 	SetFragmentUniform(material->GetEmissiveFactor(),			"g_Material.m_EmissiveFactor");
+	SetFragmentUniform(material->GetIsGlass(),					"g_Material.m_IsGlass");
+	SetFragmentUniform(material->GetRefractionIndex(),			"g_Material.m_RefractionIndex");
+	SetFragmentUniform(material->GetReflectEnvironment(),		"g_Material.m_ReflectEnvironment");
+	SetFragmentUniform(material->GetMetallic(),					"g_Material.m_Metallic");
+	SetFragmentUniform(material->GetRoughness(),				"g_Material.m_Roughness");
+	SetFragmentUniform(material->GetAO(),						"g_Material.m_AO");
+	SetFragmentUniform(material->GetIsPBR(),					"g_Material.m_IsPBR");
 
 	if (material->GetDiffuseTexture())
 	{
@@ -393,6 +402,7 @@ void Renderer::SetPostEffectsUniforms()
 	float val = m_PostEffects->GetGammaExponent();
 	SetFragmentUniform(val, "g_GammaCorrectionExponent");
 
+	SetFragmentUniform(m_PostEffects->GetToneMappingEnabled(), "g_ToneMappingEnabled");
 }
 
 void Renderer::SetShadowMapUniforms(Camera* cam)
@@ -459,7 +469,9 @@ GLuint slots[] =
 {
 	GL_TEXTURE0,
 	GL_TEXTURE1,
-	GL_TEXTURE2
+	GL_TEXTURE2,
+	GL_TEXTURE3,
+	GL_TEXTURE4
 };
 
 void Renderer::Bind2DTexture(int slot, GLuint HWObject)
@@ -468,6 +480,14 @@ void Renderer::Bind2DTexture(int slot, GLuint HWObject)
 	glActiveTexture(theSlot);
 	glBindTexture(GL_TEXTURE_2D, HWObject);
 }
+
+void Renderer::BindCubemap(int slot, GLuint HWObject)
+{
+	GLuint theSlot = slots[slot];
+	glActiveTexture(theSlot);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, HWObject);
+}
+
 
 void Renderer::FreeBoundTexture()
 {
@@ -700,6 +720,12 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 
 void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max)
 {
+	if (m_RenderingMenu && type == LXType_bool)
+	{
+		ImGui::MenuItem(name, NULL, (bool*)ptr);
+		return;
+	}
+
 	switch (type)
 	{
 		case LXType_bool:
@@ -730,6 +756,16 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 		case LXType_Material:
 		{
 			ShowPropertyGridTemplate<Material>((Material*)ptr, name);
+			break;
+		}
+		case LXType_Texture:
+		{
+			if (ptr)
+			{
+				ShowGUIText(name);
+				ImGui::Image((ImTextureID)((Texture*)ptr)->GetHWObject(), ImVec2(50, 50));
+			}
+
 			break;
 		}
 		default:
@@ -775,32 +811,53 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 	}
 }
 
-template<typename T> 
+template<typename T>
 void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 {
-	ImGui::PushID(name); 
+	ImGui::PushID(name);
 
-	if (ImGui::TreeNode(name))
+
+	// one could have see having an enum to control how the property grid will be rendered
+	// i.e. menu, own window with treenode, treenode only
+	bool readyToDisplay = false;
+	if (m_RenderingMenu)
+	{
+		readyToDisplay = ImGui::BeginMenu(name);
+	}
+	else
+	{
+		readyToDisplay = ImGui::TreeNode(name);
+	}
+
+	if (readyToDisplay)
 	{
 		if (object == nullptr)
 		{
 			ShowGUIText("Object is null.");
-		} 
-		else 
+		}
+		else
 		{
 			for (const ClassPropertyData& propertyData : object->g_Properties)
 			{
 				ShowGenericProperty(object, propertyData);
-			} 
-		} 
-		ImGui::TreePop();
+			}
+		}
+
+		if (m_RenderingMenu)
+		{
+			ImGui::EndMenu();
+		}
+		else
+		{
+			ImGui::TreePop();
+		}
 	}
 
-    ImGui::PopID(); 
+	ImGui::PopID();
 }
 
 
-void Renderer::RenderGUI()
+void Renderer::RenderImgui()
 {
 	ImGui_ImplGlfwGL3_NewFrame();
 	if (m_ShowTestGUI)
@@ -810,23 +867,38 @@ void Renderer::RenderGUI()
 
 	if (m_ShowGUI)
 	{
-		BeginImGUIWindow(1000, 700, 0, 0, "Settings");
-		ImGui::Checkbox("Test GUI", &m_ShowTestGUI);
+		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
 
-		ShowPropertyGridTemplate<DisplayOptions>(m_DisplayOptions, "Display options");
 		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
 		ShowPropertyGridTemplate<Camera>(camera, "Camera");
 		ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
 		ShowPropertyGridTemplate<SunLight>(m_World->GetSunLight(), "SunLight");
 
-		if (ImGui::CollapsingHeader("Light"))
+		// Menu
+		if (ImGui::BeginMenuBar())
 		{
-			ImGui::ColorEdit3("Diffuse", &(m_TestLight.m_DiffuseColor[0]));
-			ImGui::ColorEdit3("Specular", &(m_TestLight.m_SpecularColor[0]));
-			ImGui::ColorEdit3("Ambient", &(m_TestLight.m_AmbientColor[0]));
-			ImGui::SliderFloat3("Position", &(m_TestLight.m_Position[0]), -30.f, 30.f);
+			m_RenderingMenu = true;
+			if (ImGui::BeginMenu("Menu"))
+			{
+				if (ImGui::MenuItem("Save")) 
+				{
+					m_DisplayOptions->Serialize(true);
+				}
+
+				ImGui::EndMenu();
+			}
+
+			ShowPropertyGridTemplate<DisplayOptions>(m_DisplayOptions, "Display options");
+
+			if (ImGui::BeginMenu("Help"))
+			{
+				ImGui::MenuItem("Show Test GUI", NULL, &m_ShowTestGUI);
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+			m_RenderingMenu = false;
 		}
-		ShowVariableAsText(m_PickedColor[0], "Picking");
 
 		EndImGUIWindow();
 	}
@@ -851,7 +923,7 @@ void Renderer::RenderShadowMap()
 
 	glm::vec3 pos = glm::normalize(m_World->GetSunLight()->GetSunDirection());
 
-	m_TestLight.m_Position = pos;
+	m_TestLight[0].m_Position = pos;
 	SetLightingUniforms();
 
 	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 15.f);
@@ -881,6 +953,7 @@ void Renderer::RenderOpaque()
 	SetViewUniforms(camera);
 	//SetViewUniforms(m_ShadowCamera);
 	SetShadowMapUniforms(m_ShadowCamera);
+	SetSkyUniforms(3);
 
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
@@ -919,6 +992,8 @@ void Renderer::RenderHDRFramebuffer()
 	GL::ClearColorAndDepthBuffers();
 
 	SetPipeline(pPipelineScreenSpaceTexture);
+
+	SetPostEffectsUniforms();
 
 	SetFragmentUniform(0, "g_MainTexture");
 	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetColorTexture(0));
@@ -1005,26 +1080,26 @@ void Renderer::RenderPicking()
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
 
-void Renderer::BeforeFrame(World* world)
+void Renderer::BeginFrame(World* world)
 {
 	m_World = world;
 	GL::g_CheckGLErrors = m_DisplayOptions->GetOutputGLErrors();
 
-	Entity* lightEntity = nullptr;
+	m_NumLights = 0;
 
 	for (Entity* entity : m_World->m_Entities)
 	{
 		if (entity->GetIsLight())
 		{
-			lightEntity = entity;
-			break;
+			m_TestLight[m_NumLights].m_Position			= entity->GetPosition();
+			m_TestLight[m_NumLights].m_DiffuseColor		= entity->GetModel()->GetMaterials()[0]->GetDiffuseColor();
+			m_TestLight[m_NumLights].m_SpecularColor	= m_TestLight[m_NumLights].m_DiffuseColor;
+			m_TestLight[m_NumLights].m_AmbientColor		= m_TestLight[m_NumLights].m_DiffuseColor;
+		
+			m_NumLights++;
 		}
 	}
 
-	m_TestLight.m_Position = lightEntity->GetPosition();
-	m_TestLight.m_DiffuseColor = lightEntity->GetModel()->GetMaterials()[0]->GetDiffuseColor();
-	m_TestLight.m_SpecularColor = m_TestLight.m_DiffuseColor;
-	m_TestLight.m_AmbientColor = m_TestLight.m_DiffuseColor;
 }
 
 void Renderer::ApplyEmissiveGlow()
@@ -1054,20 +1129,48 @@ void Renderer::ApplyEmissiveGlow()
 	BindFramebuffer(FramebufferType_Default);
 }
 
+void Renderer::BeforeWorldRender()
+{
+	BindFramebuffer(FramebufferType_MainColorBuffer);
+	GL::SetViewport(windowWidth, windowHeight);
+	GL::ClearColorAndDepthBuffers();
+}
+
+void Renderer::AfterWorldRender()
+{
+	ApplyEmissiveGlow();
+}
+
+void Renderer::FinishFrame()
+{
+	HandleScreenshot();
+	
+	glfwSwapBuffers(pWindow);
+}
+
+void Renderer::RenderGUI()
+{
+	RenderImgui();
+
+	RenderFPS();
+
+	RenderTextureOverlay();
+}
+
+
 /**
  * [Renderer::render description]
  * @param camera [description]
  */
 void Renderer::render(World* world)
 {
-	BeforeFrame(world);
+	BeginFrame(world);
 
 	RenderPicking();
+
 	RenderShadowMap();
 
-	BindFramebuffer(FramebufferType_MainColorBuffer);
-	GL::SetViewport(windowWidth, windowHeight);
-	GL::ClearColorAndDepthBuffers();
+	BeforeWorldRender();
 
 	RenderSky();
 
@@ -1075,17 +1178,13 @@ void Renderer::render(World* world)
 
 	RenderOpaque();
 
-	ApplyEmissiveGlow();
+	AfterWorldRender();
 
 	RenderHDRFramebuffer();
 
 	RenderGUI();
 
-	HandleScreenshot();
-
-	RenderFPS();
-
-	RenderTextureOverlay();
+	FinishFrame();
 }
 
 void Renderer::RenderEntities(std::vector<Entity*> entities)
@@ -1147,8 +1246,6 @@ void Renderer::RenderSky()
 		return;
 	}
 
-	SunLight* sunLight = m_World->GetSunLight();
-
 	SetPipeline(pPipelineEnvmap);
 
 	GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
@@ -1157,21 +1254,8 @@ void Renderer::RenderSky()
 	SetFragmentUniform(viewAngles, "viewAngles");
 
 	SetFragmentUniform(2.f * glm::vec2(windowWidth, windowHeight), "windowSize");
-	SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
-	SetFragmentUniform(sunLight->GetTime(), "sunTime");
-	SetFragmentUniform(-camera->frontVec, "viewDir");
-	SetFragmentUniform(camera->rightVec, "viewRight");
-	SetFragmentUniform(camera->upVec, "viewUp");
-	SetFragmentUniform(camera->GetNearPlane() ,"viewNear");
 
-
-	//SetFragmentUniform(0, "g_Skybox");
-	////Bind2DTexture(0, m_World->GetSunLight()->GetSkybox()->GetHWObject());
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, m_World->GetSunLight()->GetSkybox()->GetHWObject());
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_World->GetSunLight()->GetSkybox()->GetHWObject());
-	SetFragmentUniform(m_World->GetSunLight()->GetUseSkybox(), "g_UseSkybox");
+	SetSkyUniforms(0);
 
 	SetViewUniforms(camera);
 

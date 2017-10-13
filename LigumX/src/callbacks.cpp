@@ -16,7 +16,7 @@ using namespace glm;
 
 void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 {
-    LigumX::GetInstance().running = false;
+    LigumX::GetInstance().Shutdown();
 }
 
 void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)

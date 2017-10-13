@@ -6,28 +6,12 @@ in vec3 normal;
 in vec2 uv;
 
 uniform vec2 windowSize;
-uniform float sunOrientation; // angle from (1,0,0) around (0,0,1)
-uniform float sunTime;
-uniform vec3 viewDir; // assumed to be normalized
-uniform vec3 viewRight; // assumed to be normalized
-uniform vec3 viewUp; // assumed to be normalized
-uniform vec2 viewAngles; // total view angle in x and y, in radian
-uniform float viewNear;
-uniform bool g_UseSkybox;
-uniform samplerCube g_Skybox;
 
 #define PROVIDER_View
 
-#ifdef PROVIDER_View
-uniform vec3 g_CameraPosition;
-uniform float g_CameraNearPlane;
-uniform float g_CameraFarPlane;
-uniform mat4 g_ViewToWorldMatrix;
-uniform mat4 g_ProjectionMatrixInverse;
-#endif
+#define PROVIDER_Sky
 
-
-
+// Include Providers Marker
 
 out vec3 color;
 
@@ -81,7 +65,6 @@ void main() {
 
 	if (g_UseSkybox)
 	{
-		fragDir.y *= -1;
 		color = vec3(texture(g_Skybox, fragDir));
 		return;
 	}
@@ -97,7 +80,7 @@ void main() {
 
         int moonBool = int(cosSun01 < 0.001);
 
-        color =
+        color = 0.5 * 
             sunsetFact *(
                 (0.5+0.5*pow(cosSun01,1))*vec3(245.0/255.0, 98.0/255.0, 35.0/255.0)
                 + 0.75*pow(cosSun01,64.0)*vec3(1,1, 1)

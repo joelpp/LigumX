@@ -32,14 +32,9 @@ void World::InitTestWorld()
 		testEntity->SetPosition(glm::vec3(0, 20, 1));
 		testEntity->SetRotationAngle(90.f);
 
-
 		nanosuitModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/nanosuit2.obj");
 		nanosuitModel->SetName("NanosuitModel");
 		testEntity->SetModel(nanosuitModel);
-
-		//glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(0, 20, 1));
-		//toWorld = glm::rotate(toWorld, 90.f, glm::vec3(1, 0, 0));
-		//testEntity->m_ModelToWorldMatrix = toWorld;
 
 		m_Entities.push_back(testEntity);
 	}
@@ -65,17 +60,17 @@ void World::InitTestWorld()
 		m_Entities.push_back(testEntity);
 	}
 
-
+	// light 0
 	{
 		Entity* pointLightEntity = new Entity();
 		pointLightEntity->SetName("PointLight");
-		pointLightEntity->SetPosition(glm::vec3(-5.f, 11.f, 13.8f));
+		pointLightEntity->SetPosition(glm::vec3(-7.f, 11.f, 13.8f));
 		pointLightEntity->SetScale(glm::vec3(2,2,2));
 		pointLightEntity->SetIsLight(true);
 
 		Material* material = new Material();
 		material->SetShininess(1.0f);
-		material->SetDiffuseColor(glm::vec3(1, 1,1));
+		material->SetDiffuseColor(glm::vec3(0, 1, 0));
 		material->SetUnlit(true);
 		material->SetEmissiveFactor(1.0f);
 
@@ -83,11 +78,70 @@ void World::InitTestWorld()
 		cubeModel->SetName("CubeLightModel");
 		pointLightEntity->SetModel(cubeModel);
 
-		//glm::mat4x4 toWorld = glm::mat4(1.0);
-		//toWorld = glm::scale(toWorld, glm::vec3(5,5,5));
-		//pointLightEntity->m_ModelToWorldMatrix = toWorld;
+		m_Entities.push_back(pointLightEntity);
+	}
+
+	// light 1
+	//if (false)
+	{
+		Entity* pointLightEntity = new Entity();
+		pointLightEntity->SetName("PointLight");
+		pointLightEntity->SetPosition(glm::vec3(7.f, 11.f, 13.8f));
+		pointLightEntity->SetScale(glm::vec3(2, 2, 2));
+		pointLightEntity->SetIsLight(true);
+
+		Material* material = new Material();
+		material->SetShininess(1.0f);
+		material->SetDiffuseColor(glm::vec3(1, 0, 0));
+		material->SetUnlit(true);
+		material->SetEmissiveFactor(1.0f);
+
+		Model* cubeModel = new Model(g_DefaultMeshes->DefaultCubeMesh, material);
+		cubeModel->SetName("CubeLightModel");
+		pointLightEntity->SetModel(cubeModel);
 
 		m_Entities.push_back(pointLightEntity);
+	}
+
+	// light 2
+	//if (false)
+	{
+		Entity* pointLightEntity = new Entity();
+		pointLightEntity->SetName("PointLight");
+		pointLightEntity->SetPosition(glm::vec3(0.f, 33.f, 13.8f));
+		pointLightEntity->SetScale(glm::vec3(2, 2, 2));
+		pointLightEntity->SetIsLight(true);
+
+		Material* material = new Material();
+		material->SetShininess(1.0f);
+		material->SetDiffuseColor(glm::vec3(0, 0, 1));
+		material->SetUnlit(true);
+		material->SetEmissiveFactor(1.0f);
+
+		Model* cubeModel = new Model(g_DefaultMeshes->DefaultCubeMesh, material);
+		cubeModel->SetName("CubeLightModel");
+		pointLightEntity->SetModel(cubeModel);
+
+		m_Entities.push_back(pointLightEntity);
+	}
+
+	// sphere
+	//if (false)
+	{
+		Entity* sphereEntity = new Entity();
+		sphereEntity->SetName("Sphere");
+		sphereEntity->SetPosition(glm::vec3(0.f, 7.f, 10.f));
+		sphereEntity->SetScale(glm::vec3(2, 2, 2));
+
+		Material* material = new Material();
+		material->SetShininess(1.0f);
+		material->SetDiffuseColor(glm::vec3(1,1, 1));
+
+		Model* sphereModel = new Model(g_DefaultMeshes->DefaultSphereMesh, material);
+		sphereModel->SetName("SphereModel");
+		sphereEntity->SetModel(sphereModel);
+
+		m_Entities.push_back(sphereEntity);
 	}
 
 }
@@ -98,7 +152,6 @@ World::World(float sectorSize)
 	m_sectorSize = sectorSize;
 	m_invSectorSize = 1.f / sectorSize;
 
-
 	InitTestWorld();
 
 	m_SunLight = new SunLight();
@@ -107,7 +160,7 @@ World::World(float sectorSize)
 	m_SunLight->SetSpeed(0.f);
 
 	m_SunLight->SetSkybox(new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/skybox/", true));
-
+	m_SunLight->SetUseSkybox(true);
 }
 
 

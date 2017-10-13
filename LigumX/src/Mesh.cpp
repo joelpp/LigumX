@@ -196,8 +196,8 @@ void DefaultMeshes::InitializeDefaultQuad()
 
 void DefaultMeshes::InitializeDefaultSphere()
 {
-	DefaultSphereMesh = new Mesh();
-
+	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere/sphere.obj");
+	DefaultSphereMesh = testModel->m_meshes[0];
 }
 
 DefaultMeshes::DefaultMeshes()

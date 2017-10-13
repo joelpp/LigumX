@@ -69,4 +69,6 @@ static const ClassPropertyData g_Properties[g_DisplayOptionsPropertyCount];
 
 #pragma endregion  HEADER DisplayOptions
 
+public:
+void Serialize(bool writing);
 };

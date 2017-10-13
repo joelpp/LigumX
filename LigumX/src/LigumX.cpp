@@ -13,6 +13,7 @@
 #include "Sector.h"
 #include "Heightfield.h"
 #include "Mesh.h"
+#include "DisplayOptions.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -30,44 +31,15 @@ int main(int argc, char *argv[])
     srand(987654321);
 
     LigumX& game = LigumX::GetInstance();
-
-
-
-	// Restore state
-	//glBindTexture(GL_TEXTURE_2D, last_texture);
-	
 	
 	game.running = true;
     game.init();
-
-	//io.IniFilename = "imgui.ini";
-	//io.RenderDrawListsFn = my_render_function;  // Setup a render function, or set to NULL and call GetDrawData() after Render() to access the render data.
-
-	// TODO: Fill others settings of the io structure
-
-	// Load texture atlas
-	// There is a default font so you don't need to care about choosing a font yet
-	//unsigned char* pixels;
-	//int width, height;
-	//io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-	//// Upload texture to graphics system
-	//GLint last_texture;
-	//glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
 
     while(game.running) 
 	{
         glfwPollEvents();
 
-		//ImGuiIO& io = ImGui::GetIO();
-		//io.DeltaTime = 1.0f / 60.0f;
-		//io.MousePos = mouse_pos;
-		//io.MouseDown[0] = mouse_button_0;
-		//io.MouseDown[1] = mouse_button_1;
-		//io.KeysDown[i] = ...
-
         game.mainLoop();
-
-        glfwSwapBuffers(Renderer::GetInstance().pWindow);
     }
 
     glfwTerminate();
@@ -82,19 +54,14 @@ void LigumX::mainLoop()
 
     physic_accumulator += dt;
 
-	//Renderer::GetInstance().m_ShadowCamera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
     camera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
 
-
-
-    
     if (Settings::GetInstance().i("loadNewSectors"))
     {
         updateWorld(10);
     }
 
 	Renderer::GetInstance().render(world);
-
 }
 
 void LigumX::init()
@@ -343,3 +310,11 @@ void LigumX::SetCallbacks(){
     glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
 }
 
+void LigumX::Shutdown()
+{
+	// todo remove display options include
+	Renderer::GetInstance().GetDisplayOptions()->Serialize(true);
+
+
+	running = false;
+}

@@ -124,7 +124,12 @@ public:
     void DrawTerrain();
 	void RenderEntities(std::vector<Entity*> entities);
 
-	void BeforeFrame(World* world);
+	void BeforeWorldRender();
+	void AfterWorldRender();
+
+	void BeginFrame(World* world);
+	void FinishFrame();
+
 	void RenderShadowMap();
 	void RenderOpaque();
 	void RenderTextureOverlay();
@@ -134,6 +139,7 @@ public:
 	void RenderHDRFramebuffer();
 
 	void BindFramebuffer(FramebufferType buffer);
+	void BindCubemap(int slot, GLuint HWObject);
 	void Bind2DTexture(int slot, GLuint HWObject);
 	void BindTexture(GLuint& hwTexture);
 	void FreeBoundTexture();
@@ -167,6 +173,7 @@ public:
 	void SetDebugUniforms();
 	void SetMaterialUniforms(Material* material);
 	void SetPostEffectsUniforms();
+	void SetSkyUniforms(int skyCubemapSlot);
 
     Camera *camera;
 	Camera *m_ShadowCamera;
@@ -261,7 +268,7 @@ public:
     std::map<GLchar, Character> Characters;
     std::vector<Text> texts;
 
-	Light m_TestLight;
+	Light m_TestLight[8];
 
     template<typename T> static void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) 
     {
@@ -333,6 +340,8 @@ private:
 
     Renderer() {};                   // Constructor? (the {} brackets) are needed here.
 	void RenderGUI();
+	void RenderImgui();
+	bool m_RenderingMenu;
 
 	template <typename T>
 	void ShowPropertyGridTemplate(T* object, const char* name);
@@ -385,6 +394,8 @@ private:
 	glm::vec2 m_LastMouseClickPosition;
 
 	Entity* m_PickedEntity;
+
+	int m_NumLights;
 };
 
 #endif // RENDERER

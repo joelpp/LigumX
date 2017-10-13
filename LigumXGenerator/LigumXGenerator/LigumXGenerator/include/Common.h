@@ -34,10 +34,6 @@ enum FileType
 	FileType_NumFileTypes
 };
 
-
-
-
-
 const std::string g_CodeRegionBeginString = "#pragma region ";
 const std::string g_CodeRegionEndString = "#pragma endregion ";
 std::string g_GenerationRootDir;

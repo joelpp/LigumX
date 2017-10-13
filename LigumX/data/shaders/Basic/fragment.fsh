@@ -13,6 +13,7 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_PostEffects
 #define PROVIDER_Material
 #define PROVIDER_ShadowMap
+#define PROVIDER_Sky
 // Include Providers Marker
 
 layout (location = 0) out vec4 FinalColor;
@@ -97,7 +98,7 @@ vec4 GetDiffuseColor(vec2 uv)
 	return diffuseColor;
 }
 
-vec3 GetLightColor()
+vec3 GetLightColor(int lightIndex)
 {
 	vec3 lightColor;
 	if (g_UseSkyLighting)
@@ -106,13 +107,13 @@ vec3 GetLightColor()
 	}
 	else
 	{
-		lightColor = g_PointLight.m_DiffuseColor;
+		lightColor = g_PointLight[lightIndex].m_DiffuseColor;
 	}
 
 	return lightColor;
 }
 
-vec3 GetLightDirection()
+vec3 GetLightDirection(int lightIndex)
 {
 	vec3 lightDirection;
 	if (g_UseSkyLighting)
@@ -121,13 +122,13 @@ vec3 GetLightDirection()
 	}
 	else
 	{
-		lightDirection = g_PointLight.m_Position - vWorldPosition.xyz;
+		lightDirection = g_PointLight[lightIndex].m_Position - vWorldPosition.xyz;
 	}
 
 	return lightDirection;
 }
 
-vec3 GetDiffuseLighting(vec3 fragmentToLight, vec3 fNormalWS)
+vec3 GetDiffuseLighting(int lightIndex, vec3 fragmentToLight, vec3 fNormalWS)
 {
  	// Diffuse
 	vec4 diffuseColor = GetDiffuseColor(myTexCoord);
@@ -139,20 +140,58 @@ vec3 GetDiffuseLighting(vec3 fragmentToLight, vec3 fNormalWS)
 
 	float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
 
-	return diffuseFactor * diffuseColor.rgb * GetLightColor();
+	return diffuseFactor * diffuseColor.rgb * GetLightColor(lightIndex);
 }
 
+vec3 fresnelSchlick(float cosTheta, vec3 F0)
+{
+    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}  
 
-vec3 GetSpecularLighting(vec3 fragmentToLight, vec3 fragmentToCamera, vec3 fNormalWS)
+float DistributionGGX(vec3 N, vec3 H, float roughness)
+{
+    float a      = roughness*roughness;
+    float a2     = a*a;
+    float NdotH  = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH*NdotH;
+	
+    float nom   = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+	
+    return nom / denom;
+}
+
+float GeometrySchlickGGX(float NdotV, float roughness)
+{
+    float r = (roughness + 1.0);
+    float k = (r*r) / 8.0;
+
+    float nom   = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+	
+    return nom / denom;
+}
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2  = GeometrySchlickGGX(NdotV, roughness);
+    float ggx1  = GeometrySchlickGGX(NdotL, roughness);
+	
+    return ggx1 * ggx2;
+}
+
+vec3 GetSpecularLighting(int lightIndex, vec3 fragmentToLight, vec3 fragmentToCamera, vec3 fNormalWS)
 {
 	// Specular
 	vec4 specularColor = GetSpecularColor(myTexCoord);
 
 	vec3 reflectionDir = reflect(-fragmentToLight, fNormalWS);
+	vec3 halfwayVector = normalize(fragmentToLight + fragmentToCamera);
 	float spec = 0;
 	if (g_BlinnPhongShading > 0)
 	{
-		vec3 halfwayVector = normalize(fragmentToLight + fragmentToCamera);
 		spec = pow(max(dot(fNormalWS, halfwayVector), 0.0), g_Material.m_Shininess);
 	}
 	else
@@ -162,13 +201,18 @@ vec3 GetSpecularLighting(vec3 fragmentToLight, vec3 fragmentToCamera, vec3 fNorm
 
 	spec *= g_DebugSpecularEnabled;
 
-	return spec * specularColor.rgb;  
+
+
+	return spec * specularColor.rgb * GetLightColor(lightIndex);  
 }
 
 
 void main() 
 {
+	FinalColor.rgb = vec3(0,0,0);
+
 	vec3 fNormalWS = normalize(vNormalWS);
+	vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 	
 	if (g_DebugUVEnabled > 0)
 	{
@@ -201,22 +245,100 @@ void main()
 
 	if (g_UseLighting > 0)
 	{
-		// Directions
-		vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
-		//vec3 fragmentToLight = normalize( g_PointLight.m_Position - vWorldPosition.xyz);
-		vec3 fragmentToLight = normalize( GetLightDirection() );
+		for (int lightIndex = 0; lightIndex < g_NumLights; ++lightIndex)
+		{
+			if (!g_Material.m_IsPBR)
+			{
+				// Directions
+				//vec3 fragmentToCamera = g_CameraPosition - vWorldPosition.xyz;
+				//vec3 fragmentToLight = normalize( g_PointLight.m_Position - vWorldPosition.xyz);
+				vec3 fragmentToLight = GetLightDirection(lightIndex);
+				vec3 fragmentToLightDir = normalize(fragmentToLight);
 
-		// Ambient
-		vec3 ambientContribution = g_PointLight.m_AmbientColor * g_Material.m_AmbientColor; 
-		ambientContribution *= g_DebugAmbientEnabled;
+				float lightDistance = length(fragmentToLight);
 
-		vec3 diffuseContribution = GetDiffuseLighting(fragmentToLight, fNormalWS);
+				float constant = 1.0f;
+				float llinear = 0.09f;
+				float quadratic = 0.032f;
+				//float attenuation = 1.0 / (constant + llinear * lightDistance + quadratic * (lightDistance * lightDistance));    
+				float attenuation = 1.0 / (lightDistance * lightDistance);
+			
+				// Ambient
+				vec3 ambientContribution = g_PointLight[0].m_AmbientColor * g_Material.m_AmbientColor; 
+				ambientContribution *= g_DebugAmbientEnabled;
 
-		vec3 specularContribution = GetSpecularLighting(fragmentToLight, fragmentToCamera, fNormalWS);
 
-		float shadow = ShadowCalculation(FragPosLightSpace, fNormalWS);
-		// final 
-		FinalColor.rgb = /*ambientContribution +*/ (1.0 - shadow) * diffuseContribution + specularContribution;
+				vec3 diffuseContribution = GetDiffuseLighting(lightIndex, fragmentToLightDir, fNormalWS);
+
+			
+				vec3 specularContribution = GetSpecularLighting(lightIndex, fragmentToLightDir, fragmentToCamera, fNormalWS);
+
+				float shadow = ShadowCalculation(FragPosLightSpace, fNormalWS);
+				// final 
+				//FinalColor.rgb += /*ambientContribution +*/ (1.0 - shadow) * diffuseContribution + specularContribution;
+				FinalColor.rgb += attenuation * (diffuseContribution + specularContribution);
+			}
+			else
+			{
+			   // calculate per-light radiance
+
+					vec3 fragmentToLight = GetLightDirection(lightIndex);
+					vec3 fragmentToLightDir = normalize(fragmentToLight);
+
+					float lightDistance = length(fragmentToLight);
+
+					float constant = 1.0f;
+					float llinear = 0.09f;
+					float quadratic = 0.032f;
+					//float attenuation = 1.0 / (constant + llinear * lightDistance + quadratic * (lightDistance * lightDistance));    
+					float attenuation = 1.0 / (lightDistance * lightDistance);
+			
+					vec3 halfwayVector = normalize(fragmentToLightDir + fragmentToCamera);
+					vec3 radiance = GetLightColor(lightIndex) * attenuation;        
+        
+
+					vec3 F0 = vec3(0.04); 
+					F0      = mix(F0, g_Material.m_DiffuseColor, g_Material.m_Metallic);
+					vec3 F  = fresnelSchlick(max(dot(halfwayVector, fragmentToCamera), 0.0), F0);
+					float NDF = DistributionGGX(fNormalWS, halfwayVector, g_Material.m_Roughness);       
+					float G   = GeometrySmith(fNormalWS, fragmentToCamera, fragmentToLightDir, g_Material.m_Roughness);  
+
+					vec3 nominator    = NDF * G * F;
+					float denominator = 4 * max(dot(fNormalWS, fragmentToCamera), 0.0) * max(dot(fNormalWS, fragmentToLightDir), 0.0) + 0.001; 
+					vec3 specular     = nominator / denominator;  
+
+					vec3 kS = F;
+					vec3 kD = vec3(1.0) - kS;
+					kD *= 1.0 - g_Material.m_Metallic;	  
+        
+					// add to outgoing radiance Lo
+					float NdotL = max(dot(fNormalWS, fragmentToLightDir), 0.0);                
+					FinalColor.rgb += (kD * GetDiffuseColor(myTexCoord).rgb / PI + specular) * radiance * NdotL; 
+					//FinalColor.rgb = NdotL * vec3(1.0); 
+			}
+		}
+		// sky tests
+		//float ratio = 1.00 / 1.52;
+		//vec3 R = vec3(0.f);
+
+		//if (g_Material.m_ReflectEnvironment)
+		//{
+		//	R = reflect(-fragmentToCamera, fNormalWS);
+		//	vec3 skyColor = texture(g_Skybox, R).rgb;
+
+		//	// todo handle this blend properly wow
+		//	float ratio = g_Material.m_Shininess / 500.f;
+		//	FinalColor.rgb = ratio * skyColor + (1.f - ratio) * FinalColor.rgb;
+		//}
+		
+		//if (g_Material.m_IsGlass)
+		//{
+		//	R = refract(-fragmentToCamera, normalize(fNormalWS), g_Material.m_RefractionIndex);
+		//	vec3 skyColor = texture(g_Skybox, R).rgb;
+		//	FinalColor = vec4(skyColor, 1.0);
+
+		//}
+
 	}
 	else
 	{
@@ -224,10 +346,13 @@ void main()
 		FinalColor = diffuseColor;
 	}
 
+	BrightColor = FinalColor * g_Material.m_EmissiveFactor;
+
 	if (g_GammaCorrectionEnabled > 0)
 	{
 		FinalColor.rgb = pow(FinalColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
+		BrightColor.rgb = pow(BrightColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 	}
 	
-	BrightColor = FinalColor * g_Material.m_EmissiveFactor;
+
 }

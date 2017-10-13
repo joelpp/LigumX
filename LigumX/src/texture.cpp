@@ -82,8 +82,8 @@ Texture::Texture(string filename, bool isCubeMap)
 //
 			std::string names[] =
 			{
-				"back",
 				"front",
+				"back",
 				"right",
 				"left",
 				"top",
