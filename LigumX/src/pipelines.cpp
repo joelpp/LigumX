@@ -33,6 +33,7 @@ void Renderer::init_pipelines()
 	pPipelineNodes = new ProgramPipeline("nodes");
 	pPipelinePicking = new ProgramPipeline("picking");
 	pPipelinePickingCompute = new ProgramPipeline("picking_compute", true);
+	pPipelineUVEdges= new ProgramPipeline("UVEdges");
 	pPipelineBlur = new ProgramPipeline("blur");
 	Renderer::outputGLError(__func__, __LINE__);
 

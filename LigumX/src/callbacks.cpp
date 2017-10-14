@@ -38,7 +38,6 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 {
     // send event to entity Manager (temporary before a playerInput class)
 	LigumX& game = LigumX::GetInstance();
-    game.entityManager.KeyCallback(key, action);
 
     if(action == GLFW_PRESS){
         if (key == GLFW_KEY_SPACE) 

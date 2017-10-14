@@ -42,7 +42,7 @@ void World::InitTestWorld()
 	{
 		Entity* testEntity = new Entity();
 		testEntity->SetName("Terrain");
-		testEntity->SetPosition(glm::vec3(-100, -100, 1));
+		testEntity->SetPosition(glm::vec3(-100, -100, -1));
 		testEntity->SetScale(glm::vec3(200, 200, 1));
 
 		Material* material = new Material(nanosuitModel->GetMaterials()[4]->GetProgramPipeline(), glm::vec3(1, 0, 0));
@@ -56,6 +56,8 @@ void World::InitTestWorld()
 		//glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(-100, -100, 1));
 		//toWorld = glm::scale(toWorld, glm::vec3(200, 200, 1));
 		//testEntity->m_ModelToWorldMatrix = toWorld;
+
+		
 
 		m_Entities.push_back(testEntity);
 	}

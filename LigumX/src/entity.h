@@ -11,29 +11,21 @@
 #include "GLFW/glfw3.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
+#include "AABB.h"
 
 #pragma region  FORWARD_DECLARATIONS Entity
 #include "property.h"
 class Model;
+class Component;
 
 #pragma endregion  FORWARD_DECLARATIONS Entity
 class Entity;
 class Model;
-
-class Component
-{
-	Entity* GetParentEntity();
-
-	Entity* m_ParentEntity;
-
-
-};
-
 class Entity {
 
 #pragma region  HEADER Entity
-static const int ClassID = 3231396602;
 public:
+static const int ClassID = 3231396602;
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
@@ -50,6 +42,8 @@ Model* GetModel() { return m_Model; };
 void SetModel(Model* value) { m_Model = value; }; 
 const bool& GetIsLight() { return m_IsLight; }; 
 void SetIsLight(bool value) { m_IsLight = value; }; 
+const std::vector<Component*>& GetComponents() { return m_Components; }; 
+void SetComponents(std::vector<Component*> value) { m_Components = value; }; 
 private:
 std::string m_Name;
 glm::vec3 m_Position;
@@ -59,13 +53,25 @@ glm::vec3 m_Scale;
 float m_PickingID;
 Model* m_Model;
 bool m_IsLight;
+std::vector<Component*> m_Components;
 public:
-static const int g_EntityPropertyCount = 8;
-static const ClassPropertyData g_Properties[g_EntityPropertyCount];
+static const int g_PropertyCount = 9;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
+enum g_EntityPIDX
+{
+PIDX_Name,
+PIDX_Position,
+PIDX_RotationAngle,
+PIDX_RotationAxis,
+PIDX_Scale,
+PIDX_PickingID,
+PIDX_Model,
+PIDX_IsLight,
+PIDX_Components,
+};
 
 #pragma endregion  HEADER Entity
-friend class EntityManager;
 friend class PlayerController;
 friend class AIController;
 public :
@@ -85,8 +91,6 @@ public:
     glm::vec3 GetForwardVelocity() const;
     glm::vec3 GetLateralVelocity() const;
 
-	std::vector<Component*> m_Components;
-
 	void setPosition(glm::vec3 position) 
 	{ 
 		this->position = position; 
@@ -104,6 +108,22 @@ public:
 
 	glm::mat4x4 m_ModelToWorldMatrix;
 
+	template <typename T>
+	Component* GetComponent()
+	{
+		for (Component* component : m_Components)
+		{
+			if ( ((T*)component)->ClassID == T::ClassID)
+			{
+				return component;
+			}
+		}
+
+		return nullptr;
+	}
+
+
+
 
 private:
     size_t entityIndex;
@@ -119,68 +139,5 @@ private:
     glm::vec3 rightVector;
 
 };
-
-// ####################################
-
-class EntityController {
-public:
-    EntityController(Entity *e) : entity(e) {}
-    virtual ~EntityController() {}
-
-    virtual void Update() {}
-    virtual void OnKey(int key, int action) {}
-
-protected:
-    Entity *entity;
-};
-
-class PlayerController : public EntityController {
-public:
-    PlayerController(Entity *e = NULL) : EntityController(e) {}
-
-    void Update();
-    void OnKey(int key, int action);
-};
-
-class AIController : public EntityController {
-public:
-    AIController(Entity *e = NULL) : EntityController(e) {}
-
-    void Update();
-};
-
-// ####################################
-
-class EntityManager {
-public:
-    EntityManager();
-
-    bool Init();
-    void KeyCallback(int key, int action);
-    void Update(double dt);
-    void Render(const glm::mat4 &viewMatrix);
-
-    void AddEntity(const Entity &e);
-
-private:
-    std::vector<Entity> entities;
-
-    PlayerController playerController;
-    std::vector<AIController> aiControllers;
-
-    // internal rendering stuff
-    ProgramPipeline* pPipelineEntities;
-    bool array_modification;
-    size_t dataSize;
-
-    std::vector<glm::vec3> entityPositions;
-    GLuint glidEntitiesPositions;
-
-    std::vector<glm::vec3> entityColors;
-    GLuint glidEntitiesColors;
-
-    void makeVBO();
-};
-
 
 #endif // ENTITY_H

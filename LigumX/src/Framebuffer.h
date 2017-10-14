@@ -11,9 +11,12 @@ typedef unsigned int GLuint;
 
 class Framebuffer
 {
-#pragma region  HEADER Framebuffer
-static const int ClassID = 199658736;
 public:
+public:
+public:
+#pragma region  HEADER Framebuffer
+public:
+static const int ClassID = 199658736;
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
 const int& GetWidth() { return m_Width; }; 
@@ -43,9 +46,21 @@ GL::PixelFormat m_InternalPixelFormat;
 bool m_HasDepth;
 int m_NumColorTargets;
 public:
-static const int g_FramebufferPropertyCount = 9;
-static const ClassPropertyData g_Properties[g_FramebufferPropertyCount];
+static const int g_PropertyCount = 9;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
+enum g_FramebufferPIDX
+{
+PIDX_Name,
+PIDX_Width,
+PIDX_Height,
+PIDX_ColorTexture,
+PIDX_DepthTexture,
+PIDX_PixelFormat,
+PIDX_InternalPixelFormat,
+PIDX_HasDepth,
+PIDX_NumColorTargets,
+};
 
 #pragma endregion  HEADER Framebuffer
 

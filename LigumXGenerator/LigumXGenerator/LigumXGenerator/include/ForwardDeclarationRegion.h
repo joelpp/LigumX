@@ -26,11 +26,25 @@ public:
 		// todo : add autoincludes from this
 		for (Variable v : m_Class.m_Members)
 		{
-			if (v.IsAPointer())
+			bool isTemplate = v.m_IsTemplate;
+
+			if (v.IsAPointer() || isTemplate)
 			{
-				if (!stringArrayContains(classesToDeclare, v.m_Type))
+				std::string type;
+
+				if (isTemplate)
 				{
-					classesToDeclare.push_back(v.m_Type);
+					type = v.m_AssociatedType;
+				}
+				else
+				{
+					type = v.m_Type;
+				}
+
+
+				if (!stringArrayContains(classesToDeclare, type))
+				{
+					classesToDeclare.push_back(type);
 				}
 			}
 		}

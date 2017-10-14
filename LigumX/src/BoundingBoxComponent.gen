@@ -1,0 +1,7 @@
+class BoundingBoxComponent
+{
+	AABB BoundingBox;
+	bool UpdatesWithEntity;
+
+	glm::mat4 ModelToWorldMatrix;
+}

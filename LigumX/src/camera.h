@@ -19,9 +19,12 @@ enum ProjectionType
 
 class Camera
 {
-#pragma region  HEADER Camera
-static const int ClassID = 3880549230;
 public:
+public:
+public:
+#pragma region  HEADER Camera
+public:
+static const int ClassID = 3880549230;
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
 const glm::vec3& GetsomeBullshitVec3() { return m_someBullshitVec3; }; 
@@ -51,9 +54,21 @@ float m_FarPlane;
 ProjectionType m_ProjectionType;
 float m_OrthoBorders;
 public:
-static const int g_CameraPropertyCount = 9;
-static const ClassPropertyData g_Properties[g_CameraPropertyCount];
+static const int g_PropertyCount = 9;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
+enum g_CameraPIDX
+{
+PIDX_Position,
+PIDX_someBullshitVec3,
+PIDX_ViewMatrix,
+PIDX_ProjectionMatrix,
+PIDX_ViewProjectionMatrix,
+PIDX_NearPlane,
+PIDX_FarPlane,
+PIDX_ProjectionType,
+PIDX_OrthoBorders,
+};
 
 #pragma endregion  HEADER Camera
 

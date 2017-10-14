@@ -13,4 +13,6 @@ class Entity
 	Model* Model;
 
 	bool IsLight;
+
+	std::vector<Component> Components;
 }

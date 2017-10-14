@@ -13,6 +13,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Model
 #include "property.h"
+class Material;
 
 #pragma endregion  FORWARD_DECLARATIONS Model
 class Mesh;
@@ -22,9 +23,12 @@ class Material;
 
 class Model
 {
-#pragma region  HEADER Model
-static const int ClassID = 2189814010;
 public:
+public:
+public:
+#pragma region  HEADER Model
+public:
+static const int ClassID = 2189814010;
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
 const std::vector<Material*>& GetMaterials() { return m_Materials; }; 
@@ -33,9 +37,14 @@ private:
 std::string m_Name;
 std::vector<Material*> m_Materials;
 public:
-static const int g_ModelPropertyCount = 2;
-static const ClassPropertyData g_Properties[g_ModelPropertyCount];
+static const int g_PropertyCount = 2;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
+enum g_ModelPIDX
+{
+PIDX_Name,
+PIDX_Materials,
+};
 
 #pragma endregion  HEADER Model
 

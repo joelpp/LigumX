@@ -14,6 +14,7 @@
 #include "Sunlight.h"
 #include "GL.h"
 #include "Framebuffer.h"
+#include "BoundingBoxComponent.h"
 
 #pragma region  CLASS_SOURCE Renderer
 #include "Renderer.h"
@@ -78,7 +79,7 @@ void Renderer::InitGL()
 	// Create GLFW window
 	pWindow = GL::CreateGLWindow(windowWidth, windowHeight, windowTitle.c_str());
 
-	glfwSetWindowPos(pWindow, -900, 200);
+	glfwSetWindowPos(pWindow, -1180, 50);
 	glfwMakeContextCurrent(pWindow);
 	if (pWindow == NULL)
 	{
@@ -192,8 +193,8 @@ void Renderer::InitFreetype()
 
 void Renderer::Initialize()
 {
-	windowWidth = 800;
-	windowHeight = 800;
+	windowWidth = 1100;
+	windowHeight = 880;
 	windowTitle = "LigumX";
 	fps = 300;
 	dt = 0.1;
@@ -768,6 +769,24 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 
 			break;
 		}
+		case LXType_Component:
+		{
+			if (ptr)
+			{
+				ShowPropertyGridTemplate<BoundingBoxComponent>((BoundingBoxComponent*)ptr, name);
+			}
+
+			break;
+		}
+		case LXType_AABB:
+		{
+			if (ptr)
+			{
+				ShowPropertyGridTemplate<AABB>((AABB*)ptr, name);
+			}
+			
+			break;
+		}
 		default:
 		{
 			break;
@@ -818,7 +837,7 @@ void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 
 
 	// one could have see having an enum to control how the property grid will be rendered
-	// i.e. menu, own window with treenode, treenode only
+	// i.e. menu, own window with treenode, treenode only, __just the properties__
 	bool readyToDisplay = false;
 	if (m_RenderingMenu)
 	{
@@ -871,7 +890,6 @@ void Renderer::RenderImgui()
 
 		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
 		ShowPropertyGridTemplate<Camera>(camera, "Camera");
-		ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
 		ShowPropertyGridTemplate<SunLight>(m_World->GetSunLight(), "SunLight");
 
 		// Menu
@@ -899,8 +917,23 @@ void Renderer::RenderImgui()
 			ImGui::EndMenuBar();
 			m_RenderingMenu = false;
 		}
-
 		EndImGUIWindow();
+
+		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
+		ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
+		EndImGUIWindow();		
+
+		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Materials");
+		if (m_PickedEntity)
+		{
+			int i = 0;
+			for (Material* material : m_PickedEntity->GetModel()->GetMaterials())
+			{
+				ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
+			}
+		}
+		EndImGUIWindow();
+
 	}
 
 	ImGui::Render();
@@ -1041,6 +1074,8 @@ void Renderer::RenderPicking()
 	SetComputeUniform(1, "g_PickingBuffer");
 	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
 	
+	
+	SetComputeUniform(glm::vec2(windowWidth, windowHeight), "g_WindowSize");
 	SetComputeUniform(m_MouseClickPosition, "g_MousePosition");
 
 	glDispatchCompute(1, 1, 1);
@@ -1138,6 +1173,8 @@ void Renderer::BeforeWorldRender()
 
 void Renderer::AfterWorldRender()
 {
+	RenderPickedEntity();
+
 	ApplyEmissiveGlow();
 }
 
@@ -1148,8 +1185,45 @@ void Renderer::FinishFrame()
 	glfwSwapBuffers(pWindow);
 }
 
-void Renderer::RenderGUI()
+void Renderer::RenderAABB(const AABB& aabb)
 {
+	SetPipeline(pPipelineUVEdges);
+	
+	SetViewUniforms(camera);
+
+	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
+	DrawMesh(mesh);
+}
+
+
+void Renderer::RenderPickedEntity()
+{
+	if (!m_PickedEntity)
+	{
+		return;
+	}
+	BoundingBoxComponent* bb = (BoundingBoxComponent*) m_PickedEntity->GetComponent<BoundingBoxComponent>();
+
+	if (bb)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		SetPipeline(pPipelineUVEdges);
+
+		SetViewUniforms(camera);
+		SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+
+		Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
+		DrawMesh(mesh);
+
+		glDisable(GL_BLEND);
+	}
+}
+
+void Renderer::RenderEditor()
+{
+
 	RenderImgui();
 
 	RenderFPS();
@@ -1182,7 +1256,7 @@ void Renderer::render(World* world)
 
 	RenderHDRFramebuffer();
 
-	RenderGUI();
+	RenderEditor();
 
 	FinishFrame();
 }

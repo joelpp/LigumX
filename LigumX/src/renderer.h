@@ -20,6 +20,7 @@
 #include "camera.h"
 #include "osm_element.h"
 #include "imgui_impl_glfw_gl3.h"
+#include "AABB.h"
 
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "property.h"
@@ -74,9 +75,12 @@ struct Text {
 
 class Renderer{
 
-#pragma region  HEADER Renderer
-static const int ClassID = 1498036510;
 public:
+public:
+public:
+#pragma region  HEADER Renderer
+public:
+static const int ClassID = 1498036510;
 DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
 PostEffects* GetPostEffects() { return m_PostEffects; }; 
@@ -88,9 +92,15 @@ DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;
 glm::vec2 m_MouseClickPosition;
 public:
-static const int g_RendererPropertyCount = 3;
-static const ClassPropertyData g_Properties[g_RendererPropertyCount];
+static const int g_PropertyCount = 3;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
+enum g_RendererPIDX
+{
+PIDX_DisplayOptions,
+PIDX_PostEffects,
+PIDX_MouseClickPosition,
+};
 
 #pragma endregion  HEADER Renderer
 public:
@@ -210,6 +220,7 @@ public:
     ProgramPipeline* pPipelineBasic;
     ProgramPipeline* pPipelineBasicUV;
 	ProgramPipeline* pPipelineShadowMap;
+	ProgramPipeline* pPipelineUVEdges;
 	ProgramPipeline* activePipeline;
     std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 
@@ -339,7 +350,9 @@ private:
     REGISTERCLASS(Renderer);
 
     Renderer() {};                   // Constructor? (the {} brackets) are needed here.
-	void RenderGUI();
+	void RenderEditor();
+	void RenderPickedEntity();
+	void RenderAABB(const AABB& aabb);
 	void RenderImgui();
 	bool m_RenderingMenu;
 

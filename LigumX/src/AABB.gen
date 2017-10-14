@@ -1,0 +1,6 @@
+
+class AABB
+{
+	glm::vec3 Offset;
+	glm::vec3 Scale;
+}

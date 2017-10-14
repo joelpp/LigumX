@@ -7,9 +7,12 @@ class Texture;
 #pragma endregion  FORWARD_DECLARATIONS SunLight
 class SunLight
 {
-#pragma region  HEADER SunLight
-static const int ClassID = 2842600075;
 public:
+public:
+public:
+#pragma region  HEADER SunLight
+public:
+static const int ClassID = 2842600075;
 const bool& GetUseShadowMap() { return m_UseShadowMap; }; 
 void SetUseShadowMap(bool value) { m_UseShadowMap = value; }; 
 const float& GetTime() { return m_Time; }; 
@@ -30,10 +33,19 @@ float m_Speed;
 bool m_UseSkybox;
 Texture* m_Skybox;
 public:
-static const int g_SunLightPropertyCount = 6;
-static const ClassPropertyData g_Properties[g_SunLightPropertyCount];
+static const int g_PropertyCount = 6;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
 SunLight::SunLight();
+enum g_SunLightPIDX
+{
+PIDX_UseShadowMap,
+PIDX_Time,
+PIDX_Orientation,
+PIDX_Speed,
+PIDX_UseSkybox,
+PIDX_Skybox,
+};
 
 #pragma endregion  HEADER SunLight
 

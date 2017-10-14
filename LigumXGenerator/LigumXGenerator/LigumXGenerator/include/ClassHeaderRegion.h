@@ -28,8 +28,8 @@ public:
 
 	void WriteHeader()
 	{
-		m_Stream << m_CodeRegionBeginString;
-		m_Stream << std::endl;
+		WriteLine(m_CodeRegionBeginString);
+		WriteLine("public:");
 		m_Stream << "static const int ClassID = " << std::hash_value(m_Class.m_Name) << ";";
 		m_Stream << std::endl;
 	}
@@ -42,8 +42,6 @@ public:
 
 	void WriteClassVariableGettersAndSetters()
 	{
-		m_Stream << "public:";
-		m_Stream << std::endl;
 		for (Variable var : m_Class.m_Members)
 		{
 			// Write getter
@@ -105,7 +103,7 @@ public:
 		WriteLine("public:");
 
 		// TODO : functions to compute this or store it
-		std::string propertyCountVarName = "g_" + m_Class.m_Name + "PropertyCount";
+		std::string propertyCountVarName = "g_PropertyCount";
 		int numProperties = m_Class.m_Members.size();
 		WriteLine("static const int " + propertyCountVarName + " = " + std::to_string(numProperties) + ";");
 
@@ -121,6 +119,17 @@ public:
 
 	}
 
+	void WritePropertyIndexEnum()
+	{
+		WriteLine("enum g_" + m_Class.m_Name + "PIDX");
+		WriteLine("{");
+
+		for (Variable var : m_Class.m_Members)
+		{
+			WriteLine("PIDX_" + var.m_Name + ",");
+		}
+		WriteLine("};");
+	}
 
 	void WriteBody()
 	{
@@ -144,7 +153,10 @@ public:
 		}
 
 		WriteProperties();
+		
 		WriteDefaultConstructor();
+
+		WritePropertyIndexEnum();
 	}
 
 	void Process()

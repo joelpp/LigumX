@@ -103,6 +103,11 @@ uniform float sunOrientation;
 uniform float sunTime;
 #endif
 
+//#ifdef PROVIDER_Window
+//uniform vec2 g_WindowSize;
+//uniform vec2 g_MouseCoords;
+//#endif
+
 )";
 
 

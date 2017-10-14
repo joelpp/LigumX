@@ -82,24 +82,28 @@ void DisplayOptions::Serialize(bool writing)
 					std::string line;
 					while (std::getline(objectStream, line))
 					{
-					
-						if (i >= (sizeof(g_Properties) / sizeof(g_Properties[0])) || 
-							line != g_Properties[i].m_Name)
+						if (line == "")
 						{
 							continue;
 						}
 
-						
-						char* propertyPtr = (char*)this + g_Properties[i].m_Offset;
+						bool found = false;
+						for (int i = 0; i < g_PropertyCount; ++i)
+						{
+							const ClassPropertyData& data = g_Properties[i];
+							if (line == data.m_Name)
+							{
+								bool value;
+								objectStream >> value;
 
-						bool value;
-						objectStream >> value;
+								char* propertyPtr = (char*)this + data.m_Offset;
+								*((bool*)propertyPtr) = value;
 
-						*((bool*)propertyPtr) = value;
-
-						i++;
+								found = true;
+								break;
+							}
+						}
 					}
-		
 
 				}
 			}

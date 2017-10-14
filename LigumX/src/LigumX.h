@@ -112,7 +112,6 @@ public:
     void loadSettings();
     
     // Entity stuff
-    EntityManager entityManager;
     Camera savedCam;
     bool inEntityLand;
     void toggleEntityLand();

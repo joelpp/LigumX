@@ -27,12 +27,15 @@ enum LXType
 
 	// these are mostly a test. maybe we shouldnt get so specific and instead use LXType_Other
 	// still doing it just to see what happens
+	LXType_Entity,
 	LXType_Material,
+	LXType_Component,
 	LXType_ProgramPipeline,
 	LXType_PostEffects,
 	LXType_DisplayOptions,
 	LXType_ProjectionType,
 	LXType_Model,
+	LXType_AABB,
 
 	LXType_None,
 	LXType_NumTypes

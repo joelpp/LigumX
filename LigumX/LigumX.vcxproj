@@ -102,6 +102,8 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +138,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,10 +152,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AABB.cpp" />
+    <ClCompile Include="src\BoundingBoxComponent.cpp" />
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\building_sides.cpp" />
     <ClCompile Include="src\callbacks.cpp" />
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\DisplayOptions.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\filled_buildings.cpp" />
@@ -232,9 +238,12 @@
     <ClInclude Include="include\vec2i.h" />
     <ClInclude Include="include\way.h" />
     <ClInclude Include="include\world.h" />
+    <ClInclude Include="src\AABB.h" />
+    <ClInclude Include="src\BoundingBoxComponent.h" />
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\CurlRequest.h" />
     <ClInclude Include="src\DisplayOptions.h" />
     <ClInclude Include="src\entity.h" />
@@ -283,7 +292,10 @@
     <None Include="data\settings.dat" />
     <None Include="data\shaders\BasicUV\control.tcs" />
     <None Include="data\shaders\BasicUV\evaluation.tes" />
+    <None Include="src\AABB.gen" />
+    <None Include="src\BoundingBoxComponent.gen" />
     <None Include="src\Camera.gen" />
+    <None Include="src\Component.gen" />
     <None Include="src\DisplayOptions.gen" />
     <None Include="src\Entity.gen" />
     <None Include="src\Framebuffer.gen" />

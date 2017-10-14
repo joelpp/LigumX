@@ -8,9 +8,12 @@
 #pragma endregion  FORWARD_DECLARATIONS PostEffects
 class PostEffects
 {
-#pragma region  HEADER PostEffects
-static const int ClassID = 3178515267;
 public:
+public:
+public:
+#pragma region  HEADER PostEffects
+public:
+static const int ClassID = 3178515267;
 const bool& GetGammaCorrectionEnabled() { return m_GammaCorrectionEnabled; }; 
 void SetGammaCorrectionEnabled(bool value) { m_GammaCorrectionEnabled = value; }; 
 const float& GetGammaExponent() { return m_GammaExponent; }; 
@@ -22,9 +25,15 @@ bool m_GammaCorrectionEnabled;
 float m_GammaExponent;
 bool m_ToneMappingEnabled;
 public:
-static const int g_PostEffectsPropertyCount = 3;
-static const ClassPropertyData g_Properties[g_PostEffectsPropertyCount];
+static const int g_PropertyCount = 3;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
+enum g_PostEffectsPIDX
+{
+PIDX_GammaCorrectionEnabled,
+PIDX_GammaExponent,
+PIDX_ToneMappingEnabled,
+};
 
 #pragma endregion  HEADER PostEffects
 

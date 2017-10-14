@@ -9,11 +9,12 @@ layout(std430, binding = 0) writeonly buffer g_OutputBuffer
 	vec3 outMousePosition;
 };
 
+uniform vec2 g_WindowSize;
 uniform vec2 g_MousePosition;
 
 void main() 
 {
-	vec2 coords = g_MousePosition / vec2(800, 800);
+	vec2 coords = g_MousePosition / g_WindowSize;
 	coords.y = 1.f - coords.y;
 
 	outMousePosition = texture(g_PickingBuffer, coords).rgb;

@@ -7,9 +7,12 @@
 
 class DisplayOptions
 {
-#pragma region  HEADER DisplayOptions
-static const int ClassID = 2473594549;
 public:
+public:
+public:
+#pragma region  HEADER DisplayOptions
+public:
+static const int ClassID = 2473594549;
 const bool& GetUseSkyLighting() { return m_UseSkyLighting; }; 
 void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 
 const bool& GetDrawTerrain() { return m_DrawTerrain; }; 
@@ -63,9 +66,29 @@ bool m_RenderOpaque;
 bool m_RenderShadows;
 bool m_OutputGLErrors;
 public:
-static const int g_DisplayOptionsPropertyCount = 17;
-static const ClassPropertyData g_Properties[g_DisplayOptionsPropertyCount];
+static const int g_PropertyCount = 17;
+static const ClassPropertyData g_Properties[g_PropertyCount];
 
+enum g_DisplayOptionsPIDX
+{
+PIDX_UseSkyLighting,
+PIDX_DrawTerrain,
+PIDX_DrawSky,
+PIDX_WireframeRendering,
+PIDX_UseLighting,
+PIDX_ShowNormals,
+PIDX_ShowSpecular,
+PIDX_ShowDiffuse,
+PIDX_ShowAmbient,
+PIDX_ShowFPS,
+PIDX_ShowDepth,
+PIDX_LinearizeDepth,
+PIDX_BlinnPhongShading,
+PIDX_RenderTextureOverlay,
+PIDX_RenderOpaque,
+PIDX_RenderShadows,
+PIDX_OutputGLErrors,
+};
 
 #pragma endregion  HEADER DisplayOptions
 
