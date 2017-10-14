@@ -89,9 +89,9 @@ PIDX_RenderOpaque,
 PIDX_RenderShadows,
 PIDX_OutputGLErrors,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER DisplayOptions
 
 public:
-void Serialize(bool writing);
 };

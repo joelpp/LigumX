@@ -34,6 +34,7 @@ PIDX_GammaCorrectionEnabled,
 PIDX_GammaExponent,
 PIDX_ToneMappingEnabled,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER PostEffects
 

@@ -131,6 +131,11 @@ public:
 		WriteLine("};");
 	}
 
+	void WriteSerializerDeclaration()
+	{
+		WriteLine("void Serialize(bool writing);");
+	}
+
 	void WriteBody()
 	{
 		WriteClassVariableGettersAndSetters();
@@ -157,6 +162,8 @@ public:
 		WriteDefaultConstructor();
 
 		WritePropertyIndexEnum();
+
+		WriteSerializerDeclaration();
 	}
 
 	void Process()

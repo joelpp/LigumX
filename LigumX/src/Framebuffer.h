@@ -61,6 +61,7 @@ PIDX_InternalPixelFormat,
 PIDX_HasDepth,
 PIDX_NumColorTargets,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER Framebuffer
 

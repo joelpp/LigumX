@@ -46,6 +46,7 @@ PIDX_Speed,
 PIDX_UseSkybox,
 PIDX_Skybox,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER SunLight
 

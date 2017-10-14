@@ -2,6 +2,7 @@
 
 #pragma region  CLASS_SOURCE Component
 #include "Component.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData Component::g_Properties[] = 
 {

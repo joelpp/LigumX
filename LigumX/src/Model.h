@@ -45,6 +45,7 @@ enum g_ModelPIDX
 PIDX_Name,
 PIDX_Materials,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER Model
 

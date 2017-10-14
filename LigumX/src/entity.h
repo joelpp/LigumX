@@ -70,6 +70,7 @@ PIDX_Model,
 PIDX_IsLight,
 PIDX_Components,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER Entity
 friend class PlayerController;

@@ -1,10 +1,11 @@
 #pragma once
-#include "stdafx.h"
+#include <fstream>
 
 // if you change something here don't forget to change it in the LXGenerator also
 
 // todo would be nice to gen this from a .gen file
 // bonus points : that is common to LXGenerator and LigumX
+
 enum LXType
 {
 	LXType_int,
@@ -42,11 +43,13 @@ enum LXType
 };
 
 // keep in sync with generator
+// todo : replace with bitset if it gets too large (same with osmelement!)
 enum PropertyFlags
 {
 	PropertyFlags_Hidden = 1,
 	PropertyFlags_ReadOnly = 2,
 	PropertyFlags_SetCallback = 4,
+	PropertyFlags_Transient = 8,
 	PropertyFlags_NumPropertyFlags
 };
 
@@ -63,4 +66,3 @@ struct ClassPropertyData
 	float m_MinValue;
 	float m_MaxValue;
 };
-

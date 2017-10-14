@@ -18,6 +18,7 @@
 
 #pragma region  CLASS_SOURCE Renderer
 #include "Renderer.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData Renderer::g_Properties[] = 
 {
@@ -204,9 +205,8 @@ void Renderer::Initialize()
 	m_DisplayOptions->Serialize(false);
 
 	m_PostEffects = new PostEffects();
-	m_PostEffects->SetGammaCorrectionEnabled(true);
-	m_PostEffects->SetGammaExponent(2.2f);
-	m_PostEffects->SetToneMappingEnabled(false);
+	m_PostEffects->Serialize(false);
+
 
 
 	m_ShadowCamera = new Camera();
@@ -901,6 +901,7 @@ void Renderer::RenderImgui()
 				if (ImGui::MenuItem("Save")) 
 				{
 					m_DisplayOptions->Serialize(true);
+					m_PostEffects->Serialize(true);
 				}
 
 				ImGui::EndMenu();

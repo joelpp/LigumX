@@ -2,6 +2,7 @@
 
 #pragma region  CLASS_SOURCE AABB
 #include "AABB.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData AABB::g_Properties[] = 
 {

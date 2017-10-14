@@ -2,6 +2,7 @@
 
 #pragma region  CLASS_SOURCE BoundingBoxComponent
 #include "BoundingBoxComponent.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData BoundingBoxComponent::g_Properties[] = 
 {

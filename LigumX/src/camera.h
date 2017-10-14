@@ -69,6 +69,7 @@ PIDX_FarPlane,
 PIDX_ProjectionType,
 PIDX_OrthoBorders,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER Camera
 

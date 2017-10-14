@@ -34,6 +34,7 @@ PIDX_BoundingBox,
 PIDX_UpdatesWithEntity,
 PIDX_ModelToWorldMatrix,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER BoundingBoxComponent
 

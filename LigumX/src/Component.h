@@ -23,6 +23,7 @@ enum g_ComponentPIDX
 {
 PIDX_ParentEntity,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER Component
 

@@ -32,6 +32,7 @@ enum g_AABBPIDX
 PIDX_Offset,
 PIDX_Scale,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER AABB
 

@@ -5,6 +5,7 @@
 
 #pragma region  CLASS_SOURCE Material
 #include "Material.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData Material::g_Properties[] = 
 {

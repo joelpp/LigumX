@@ -5,6 +5,7 @@
 
 #pragma region  CLASS_SOURCE Framebuffer
 #include "Framebuffer.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {

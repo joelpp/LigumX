@@ -101,6 +101,7 @@ PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_MouseClickPosition,
 };
+void Serialize(bool writing);
 
 #pragma endregion  HEADER Renderer
 public:

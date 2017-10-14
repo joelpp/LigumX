@@ -189,6 +189,7 @@
     <ClCompile Include="src\SectorData.cpp" />
     <ClCompile Include="src\SectorManager.cpp" />
     <ClCompile Include="src\SectorMath.cpp" />
+    <ClCompile Include="src\Serializer.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\stdafx.cpp">
@@ -274,6 +275,7 @@
     <ClInclude Include="src\SectorData.h" />
     <ClInclude Include="src\SectorManager.h" />
     <ClInclude Include="src\SectorMath.h" />
+    <ClInclude Include="src\serializer.h" />
     <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\stb_rect_pack.h" />
     <ClInclude Include="src\stb_textedit.h" />

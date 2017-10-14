@@ -138,89 +138,30 @@ public:
 		WriteLine("	std::string fileName = \"" + m_Class.m_Name + ".LXobj\";");
 
 		WriteLine(R"(
-			int fileMask = writing ? std::ios::out : std::ios::in;
-			std::fstream objectStream(basePath + fileName, fileMask);
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
 
-			if (objectStream.is_open())
-			{
-				if (writing)
-				{)");
-
-		int numProperties = m_Class.m_Members.size();
-		for (int i = 0; i < numProperties; ++i)
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
 		{
-			Variable& var = m_Class.m_Members[i];
-			std::string&  varName = var.m_Name;
-			std::string&  varType = var.m_Type;
-
-
-			WriteLine("					objectStream << \"" + varName + "\" << std::endl;");
-			WriteLine("					objectStream << m_" + varName + " << std::endl;");
+			Serializer::SerializeObject(this, objectStream, writing);
 		}
-
-		//WriteLine(R"(
-		//			objectStream << m_UseSkyLighting << std::endl;
-		//			objectStream << m_DrawTerrain << std::endl;
-		//			objectStream << m_DrawSky << std::endl;
-		//)");
-		WriteLine(R"(}
-				else
-				{)");
-
-		//for (int i = 0; i < numProperties; ++i)
-		//{
-		//	Variable& var = m_Class.m_Members[i];
-		//	std::string&  varName = var.m_Name;
-		//	std::string&  varType = var.m_Type;
-
-
-		//	WriteLine("					objectStream >> m_" + varName + ";");
-		//}
-
-		// todo fix that this only works for bools....
-		WriteLine(R"(
-					int i = 0;
-					std::string line;
-					while (std::getline(objectStream, line))
-					{
-						if (line == "")
-						{
-							continue;
-						}
-
-						bool found = false;
-						for (int i = 0; i < g_PropertyCount; ++i)
-						{
-							const ClassPropertyData& data = g_Properties[i];
-							if (line == data.m_Name)
-							{
-								bool value;
-								objectStream >> value;
-
-								char* propertyPtr = (char*)this + data.m_Offset;
-								*((bool*)propertyPtr) = value;
-
-								found = true;
-								break;
-							}
-						}
-					})");
-		WriteLine(R"(
-				}
-			}
-		})");
+	}
+})");
 	}
 
 	void WriteBody()
 	{
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
+		WriteLine("#include \"serializer.h\"");
 		WriteLine("#include <cstddef>");
 		
 		WritePropertyArray();
 
 		// todo unleash for all LXclasses
-		if (m_Class.m_Name == "DisplayOptions"/* || 
-			m_Class.m_Name == "Renderer"*/)
+		if (m_Class.m_Name == "DisplayOptions" || 
+			m_Class.m_Name == "PostEffects")
 		{
 			WriteSerializer();
 		}

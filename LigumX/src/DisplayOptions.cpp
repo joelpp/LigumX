@@ -1,12 +1,9 @@
 #include "stdafx.h"
 #include <cstddef>
-#include "DisplayOptions.h"
-#include "Serializer.h"
-#include <string>
-#include <fstream>
 
 #pragma region  CLASS_SOURCE DisplayOptions
 #include "DisplayOptions.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
@@ -33,81 +30,17 @@ void DisplayOptions::Serialize(bool writing)
 	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
 	std::string fileName = "DisplayOptions.LXobj";
 
-			int fileMask = writing ? std::ios::out : std::ios::in;
-			std::fstream objectStream(basePath + fileName, fileMask);
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
 
-			if (objectStream.is_open())
-			{
-				if (writing)
-				{
-					objectStream << "UseSkyLighting" << std::endl;
-					objectStream << m_UseSkyLighting << std::endl;
-					objectStream << "DrawTerrain" << std::endl;
-					objectStream << m_DrawTerrain << std::endl;
-					objectStream << "DrawSky" << std::endl;
-					objectStream << m_DrawSky << std::endl;
-					objectStream << "WireframeRendering" << std::endl;
-					objectStream << m_WireframeRendering << std::endl;
-					objectStream << "UseLighting" << std::endl;
-					objectStream << m_UseLighting << std::endl;
-					objectStream << "ShowNormals" << std::endl;
-					objectStream << m_ShowNormals << std::endl;
-					objectStream << "ShowSpecular" << std::endl;
-					objectStream << m_ShowSpecular << std::endl;
-					objectStream << "ShowDiffuse" << std::endl;
-					objectStream << m_ShowDiffuse << std::endl;
-					objectStream << "ShowAmbient" << std::endl;
-					objectStream << m_ShowAmbient << std::endl;
-					objectStream << "ShowFPS" << std::endl;
-					objectStream << m_ShowFPS << std::endl;
-					objectStream << "ShowDepth" << std::endl;
-					objectStream << m_ShowDepth << std::endl;
-					objectStream << "LinearizeDepth" << std::endl;
-					objectStream << m_LinearizeDepth << std::endl;
-					objectStream << "BlinnPhongShading" << std::endl;
-					objectStream << m_BlinnPhongShading << std::endl;
-					objectStream << "RenderTextureOverlay" << std::endl;
-					objectStream << m_RenderTextureOverlay << std::endl;
-					objectStream << "RenderOpaque" << std::endl;
-					objectStream << m_RenderOpaque << std::endl;
-					objectStream << "RenderShadows" << std::endl;
-					objectStream << m_RenderShadows << std::endl;
-					objectStream << "OutputGLErrors" << std::endl;
-					objectStream << m_OutputGLErrors << std::endl;
-}
-				else
-				{
-
-					int i = 0;
-					std::string line;
-					while (std::getline(objectStream, line))
-					{
-						if (line == "")
-						{
-							continue;
-						}
-
-						bool found = false;
-						for (int i = 0; i < g_PropertyCount; ++i)
-						{
-							const ClassPropertyData& data = g_Properties[i];
-							if (line == data.m_Name)
-							{
-								bool value;
-								objectStream >> value;
-
-								char* propertyPtr = (char*)this + data.m_Offset;
-								*((bool*)propertyPtr) = value;
-
-								found = true;
-								break;
-							}
-						}
-					}
-
-				}
-			}
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
 		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE DisplayOptions
 

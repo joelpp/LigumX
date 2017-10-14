@@ -5,6 +5,7 @@
 
 #pragma region  CLASS_SOURCE Entity
 #include "Entity.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData Entity::g_Properties[] = 
 {

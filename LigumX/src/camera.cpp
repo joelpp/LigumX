@@ -9,6 +9,7 @@
 
 #pragma region  CLASS_SOURCE Camera
 #include "Camera.h"
+#include "serializer.h"
 #include <cstddef>
 const ClassPropertyData Camera::g_Properties[] = 
 {
