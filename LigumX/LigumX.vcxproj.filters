@@ -36,9 +36,6 @@
     <ClCompile Include="src\triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\tweak_bar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\way.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

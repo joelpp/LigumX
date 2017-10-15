@@ -80,10 +80,6 @@ public:
 
 
 
-    //TODO: maybe some kind of viewport struct or class could hold a camera, renderer (or renderer holds viewport), mouse positions, etc.
-    // camera
-    Camera* camera;
-    bool draggingCamera;
     glm::vec2 oldMousePosition;
     glm::vec2 windowPosToWorldPos(glm::vec2 ij);
 
@@ -108,18 +104,8 @@ public:
 
     void init_tweakBar();
 
-    void initCamera();
     void loadSettings();
-    
-    // Entity stuff
-    Camera savedCam;
-    bool inEntityLand;
-    void toggleEntityLand();
 
-
-//    void RenderText(Text t);
-//    
-//    
 static LigumX& GetInstance()
 {
     static LigumX instance; // Guaranteed to be destroyed.

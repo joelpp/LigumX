@@ -26,6 +26,7 @@
 #include "property.h"
 class DisplayOptions;
 class PostEffects;
+class Camera;
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 
@@ -87,12 +88,15 @@ PostEffects* GetPostEffects() { return m_PostEffects; };
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
 const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
 void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; }; 
+Camera* GetDebugCamera() { return m_DebugCamera; }; 
+void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
 DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;
 glm::vec2 m_MouseClickPosition;
+Camera* m_DebugCamera;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
@@ -100,6 +104,7 @@ enum g_RendererPIDX
 PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_MouseClickPosition,
+PIDX_DebugCamera,
 };
 void Serialize(bool writing);
 
@@ -114,6 +119,8 @@ public:
 	void InitFramebuffers();
 	void InitFreetype();
 	GLuint CreateTexture();
+
+	void Shutdown();
 
     // subfunctions
     void init_pipelines();
@@ -186,7 +193,6 @@ public:
 	void SetPostEffectsUniforms();
 	void SetSkyUniforms(int skyCubemapSlot);
 
-    Camera *camera;
 	Camera *m_ShadowCamera;
     bool drawBuildingSides;
     bool saveScreenshot;

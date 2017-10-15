@@ -25,7 +25,24 @@ const ClassPropertyData Renderer::g_Properties[] =
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
 { "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
 { "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
+{ "DebugCamera", offsetof(Renderer, m_DebugCamera), 0, LXType_Camera, true, LXType_None, 0, 0, 0, }, 
 };
+void Renderer::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Renderer.LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE Renderer
 using namespace glm;
@@ -202,20 +219,21 @@ void Renderer::Initialize()
 
 	// TODO : add default constructors D: and serialization for gen files...
 	m_DisplayOptions = new DisplayOptions();
-	m_DisplayOptions->Serialize(false);
-
 	m_PostEffects = new PostEffects();
-	m_PostEffects->Serialize(false);
 
-
+	m_DebugCamera = new Camera();
+	m_DebugCamera->SetProjectionType(ProjectionType_Perspective);
+	m_DebugCamera->setViewSize(Settings::GetInstance().f("viewSize"));
+	m_DebugCamera->translateTo(Settings::GetInstance().f3("cameraPosition"));
+	m_DebugCamera->lookAtTargetPos = Settings::GetInstance().f3("cameraLookAt");
 
 	m_ShadowCamera = new Camera();
 	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
 	m_ShadowCamera->SetPosition(glm::vec3(-16.13, -5.9, 20.2));
-	m_ShadowCamera->frontVec = glm::vec3(-0.47, -0.81, 0.34);
-	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->frontVec));
-	m_ShadowCamera->upVec = glm::cross(m_ShadowCamera->frontVec, m_ShadowCamera->rightVec);
-	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->frontVec * 10.f);
+	m_ShadowCamera->SetFrontVector(glm::vec3(-0.47, -0.81, 0.34));
+	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->GetFrontVector())));
+	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
+	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->GetFrontVector() * 10.f);
 	m_ShadowCamera->updateVPMatrix();
 
 	InitGL();
@@ -227,6 +245,12 @@ void Renderer::Initialize()
 
 	ImGui_ImplGlfwGL3_Init(pWindow, true);
 
+	Serialize(false);
+}
+
+void Renderer::Shutdown()
+{
+	Serialize(true);
 }
 
 void Renderer::SetUniform(float value, const char* name, GLuint location)
@@ -561,7 +585,7 @@ void Renderer::DrawTerrain()
     ProgramPipeline* activePipeline = pPipelineBasicUV;
     
     Mesh* terrainMesh = renderData->terrainMesh();
-    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(camera->GetViewProjectionMatrix()));
+    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
     glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "modelMatrix"), 1, false, value_ptr(glm::mat4(1.0)));
     
     glBindVertexArray(terrainMesh->m_VAO);
@@ -889,7 +913,7 @@ void Renderer::RenderImgui()
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
 
 		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
-		ShowPropertyGridTemplate<Camera>(camera, "Camera");
+		ShowPropertyGridTemplate<Camera>(m_DebugCamera, "Camera");
 		ShowPropertyGridTemplate<SunLight>(m_World->GetSunLight(), "SunLight");
 
 		// Menu
@@ -900,8 +924,7 @@ void Renderer::RenderImgui()
 			{
 				if (ImGui::MenuItem("Save")) 
 				{
-					m_DisplayOptions->Serialize(true);
-					m_PostEffects->Serialize(true);
+					Serialize(true);
 				}
 
 				ImGui::EndMenu();
@@ -961,10 +984,11 @@ void Renderer::RenderShadowMap()
 	SetLightingUniforms();
 
 	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 15.f);
-	m_ShadowCamera->frontVec = pos;
-	m_ShadowCamera->rightVec = normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->frontVec));
-	m_ShadowCamera->upVec = normalize(glm::cross(m_ShadowCamera->frontVec, m_ShadowCamera->rightVec));
+	m_ShadowCamera->SetFrontVector(pos);
+	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->GetFrontVector())));
+	m_ShadowCamera->SetUpVector(normalize(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector())));
 	m_ShadowCamera->updateVPMatrix();
+
 	SetViewUniforms(m_ShadowCamera);
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
@@ -984,8 +1008,7 @@ void Renderer::RenderOpaque()
 	SetPipeline(pPipelineBasic);
 
 	SetLightingUniforms();
-	SetViewUniforms(camera);
-	//SetViewUniforms(m_ShadowCamera);
+	SetViewUniforms(m_DebugCamera);
 	SetShadowMapUniforms(m_ShadowCamera);
 	SetSkyUniforms(3);
 
@@ -1053,7 +1076,7 @@ void Renderer::RenderPicking()
 	//GL::ClearColorBuffer();
 	GL::ClearColorAndDepthBuffers();
 
-	SetViewUniforms(camera);
+	SetViewUniforms(m_DebugCamera);
 
 	for (Entity* entity : m_World->m_Entities)
 	{
@@ -1120,6 +1143,8 @@ void Renderer::BeginFrame(World* world)
 {
 	m_World = world;
 	GL::g_CheckGLErrors = m_DisplayOptions->GetOutputGLErrors();
+
+	m_DebugCamera->handlePresetNewFrame(pWindow);
 
 	m_NumLights = 0;
 
@@ -1190,7 +1215,7 @@ void Renderer::RenderAABB(const AABB& aabb)
 {
 	SetPipeline(pPipelineUVEdges);
 	
-	SetViewUniforms(camera);
+	SetViewUniforms(m_DebugCamera);
 
 	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
 	DrawMesh(mesh);
@@ -1212,7 +1237,7 @@ void Renderer::RenderPickedEntity()
 
 		SetPipeline(pPipelineUVEdges);
 
-		SetViewUniforms(camera);
+		SetViewUniforms(m_DebugCamera);
 		SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 		Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
@@ -1325,14 +1350,14 @@ void Renderer::RenderSky()
 
 	GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	float pi = 3.141592654f;
-	glm::vec2 viewAngles = glm::vec2(camera->totalViewAngleY*pi, camera->aspectRatio*camera->totalViewAngleY*glm::pi<float>()) / 180.0f;
+	glm::vec2 viewAngles = glm::vec2(m_DebugCamera->totalViewAngleY*pi, m_DebugCamera->aspectRatio*m_DebugCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");
 
 	SetFragmentUniform(2.f * glm::vec2(windowWidth, windowHeight), "windowSize");
 
 	SetSkyUniforms(0);
 
-	SetViewUniforms(camera);
+	SetViewUniforms(m_DebugCamera);
 
 	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
 	DrawMesh(mesh);
@@ -1351,7 +1376,7 @@ void Renderer::RenderText(Text t)
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->GetViewProjectionMatrix()));
+   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
    glActiveTexture(GL_TEXTURE0);
@@ -1421,7 +1446,7 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(camera->GetViewProjectionMatrix()));
+   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
    glActiveTexture(GL_TEXTURE0);

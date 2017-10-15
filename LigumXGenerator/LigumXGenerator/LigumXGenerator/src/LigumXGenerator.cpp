@@ -180,6 +180,7 @@ void InitializeGenerator()
 	g_PropertyFlagsStringMap.emplace("setcallback", PropertyFlags_SetCallback);
 	g_PropertyFlagsStringMap.emplace("min", PropertyFlags_MinValue);
 	g_PropertyFlagsStringMap.emplace("max", PropertyFlags_MaxValue);
+	g_PropertyFlagsStringMap.emplace("transient", PropertyFlags_Transient);
 
 }
 

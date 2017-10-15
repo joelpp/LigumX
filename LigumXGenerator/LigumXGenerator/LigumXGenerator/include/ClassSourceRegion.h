@@ -65,10 +65,6 @@ public:
 
 		std::string separator = " | ";
 
-		//for (int i = 1; i < (PropertyFlags_NumPropertyFlags / 2); i *= 2)
-		//{
-
-			//if (flags & (PropertyFlags)i)
 		if (flags & PropertyFlags_Hidden)
 		{
 			toReturn += "PropertyFlags_Hidden";
@@ -81,12 +77,11 @@ public:
 			toReturn += separator;
 		}
 
-			//if (i != numFlags)
-			//{
-			//	toReturn += " | ";
-			//}
-		//}
-
+		if (flags & PropertyFlags_Transient)
+		{
+			toReturn += "PropertyFlags_Transient";
+			toReturn += separator;
+		}
 
 		if (toReturn.size() == 0)
 		{
@@ -161,7 +156,9 @@ public:
 
 		// todo unleash for all LXclasses
 		if (m_Class.m_Name == "DisplayOptions" || 
-			m_Class.m_Name == "PostEffects")
+			m_Class.m_Name == "PostEffects" || 
+			m_Class.m_Name == "Renderer" ||
+			m_Class.m_Name == "Camera")
 		{
 			WriteSerializer();
 		}

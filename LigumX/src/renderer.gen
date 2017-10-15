@@ -3,4 +3,5 @@ class Renderer
 	DisplayOptions* DisplayOptions
 	PostEffects* PostEffects
 	glm::vec2 MouseClickPosition
+	Camera* DebugCamera;
 }

@@ -13,7 +13,6 @@
 #include "Sector.h"
 #include "Heightfield.h"
 #include "Mesh.h"
-#include "DisplayOptions.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -54,8 +53,6 @@ void LigumX::mainLoop()
 
     physic_accumulator += dt;
 
-    camera->handlePresetNewFrame(Renderer::GetInstance().pWindow);
-
     if (Settings::GetInstance().i("loadNewSectors"))
     {
         updateWorld(10);
@@ -69,12 +66,10 @@ void LigumX::init()
     //=============================================================================
     // Parameters, camera setup.
     //=============================================================================
-    
+	loadSettings();
+
     Renderer::GetInstance().Initialize();
     running = true;
-    loadSettings();
-
-    initCamera();
 
     populateTypeColorArray();
 
@@ -95,8 +90,8 @@ void LigumX::init()
     world = new World(settings.f("sectorSize"));
     // world->createSector(vec2(-73.650, 45.500));
     vec2 tp;
-    if (settings.i("useCameraPositionAsTestPoint")) tp = glm::vec2(camera->GetPosition());
-    else tp = settings.f2("testPoint");
+    //if (settings.i("useCameraPositionAsTestPoint")) tp = glm::vec2(camera->GetPosition());
+    //else tp = settings.f2("testPoint");
     
 
     //=============================================================================
@@ -121,8 +116,9 @@ void LigumX::init()
 void LigumX::updateWorld(int loadingRingSize)
 {
     Renderer& renderer = Renderer::GetInstance();
+	glm::vec2 cameraPos = glm::vec2(renderer.GetDebugCamera()->GetPosition());
 
-    std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(glm::vec2(camera->GetPosition()), loadingRingSize);
+    std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(cameraPos, loadingRingSize);
 
     for(int i = 0; i < newSectors->size(); ++i)
     {
@@ -155,18 +151,6 @@ void LigumX::updateWorld(int loadingRingSize)
 	world->Update();
 }
 
-
-void LigumX::initCamera()
-{
-    camera = new Camera();
-	camera->SetProjectionType(ProjectionType_Perspective);
-    camera->setViewSize(Settings::GetInstance().f("viewSize"));
-    Renderer::GetInstance().camera = camera;
-    draggingCamera = false;
-
-    camera->translateTo(Settings::GetInstance().f3("cameraPosition"));
-    camera->lookAtTargetPos = Settings::GetInstance().f3("cameraLookAt");
-}
 
 void LigumX::loadSettings(){
     Settings& s = Settings::GetInstance();
@@ -271,23 +255,6 @@ void LigumX::populateTypeColorArray(){
 static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
 
 
-void LigumX::toggleEntityLand() {
-    if(!inEntityLand) {
-        savedCam = *camera; // save current camera setup
-
-        camera->translateTo(vec3(0,0,0.01));
-        camera->lookAtTargetPos = vec3(0,0,0);
-        camera->cameraType = Camera::CameraType::TOP_3D;
-        camera->controlType = Camera::ControlType::QWEASDZXC_ARROWS;
-        inEntityLand = true;
-    } else {
-        // go back to regular LigumX space
-        inEntityLand = false;
-        *camera = savedCam; // reinstall saved camera setup
-    }
-}
-
-
 static void test_error_cb (int error, const char *description)
 {
     fprintf(stderr, "%d: %s\n", error, description);
@@ -312,9 +279,7 @@ void LigumX::SetCallbacks(){
 
 void LigumX::Shutdown()
 {
-	// todo remove display options include
-	Renderer::GetInstance().GetDisplayOptions()->Serialize(true);
-
+	Renderer::GetInstance().Shutdown();
 
 	running = false;
 }

@@ -14,15 +14,33 @@
 const ClassPropertyData Camera::g_Properties[] = 
 {
 { "Position", offsetof(Camera, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
-{ "someBullshitVec3", offsetof(Camera, m_someBullshitVec3), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
-{ "ViewMatrix", offsetof(Camera, m_ViewMatrix), 0, LXType_glmmat4, false, LXType_None, 0, 0, 0, }, 
-{ "ProjectionMatrix", offsetof(Camera, m_ProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, 0, 0, 0, }, 
-{ "ViewProjectionMatrix", offsetof(Camera, m_ViewProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, 0, 0, 0, }, 
+{ "FrontVector", offsetof(Camera, m_FrontVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "RightVector", offsetof(Camera, m_RightVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "UpVector", offsetof(Camera, m_UpVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "ViewMatrix", offsetof(Camera, m_ViewMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
+{ "ProjectionMatrix", offsetof(Camera, m_ProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
+{ "ViewProjectionMatrix", offsetof(Camera, m_ViewProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "NearPlane", offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "FarPlane", offsetof(Camera, m_FarPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ProjectionType", offsetof(Camera, m_ProjectionType), 0, LXType_ProjectionType, false, LXType_None, 0, 0, 0, }, 
 { "OrthoBorders", offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
+void Camera::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Camera.LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE Camera
 #define PI (3.14159265359)
@@ -42,17 +60,17 @@ Camera::Camera()
 
     cameraType = CameraType::CYLINDRICAL;
     controlType = ControlType::QWEASDZXC_DRAG;
-    upVec = normalize(vec3(0,0,1));
-    frontVec = normalize(vec3(0,-1,0));
-    rightVec = vec3(1,0,0);
+    m_UpVector = normalize(vec3(0,0,1));
+    m_FrontVector = normalize(vec3(0,-1,0));
+    m_RightVector = vec3(1,0,0);
     cylindricalUpVec = vec3(0,0,1);
-    upVecReference = upVec;
-    frontVecReference = frontVec;
-    rightVecReference = rightVec;
+    upVecReference = m_UpVector;
+    frontVecReference = m_FrontVector;
+    rightVecReference = m_RightVector;
 //    translateTo(vec3(45.47500,-73.65500,10000));
 //    scaleTo(vec3(1,1,1));
 //    lookAtTargetPos = vec3(45.47500,-73.65500,0);
-    lookAtTargetPos = m_Position + frontVec;
+    lookAtTargetPos = m_Position + m_FrontVector;
     defaultViewMovementSpeed = 0.1f;
     viewMovementSpeed = defaultViewMovementSpeed;
     defaultKeyMovementSpeed = 0.05f;
@@ -134,9 +152,9 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
 void Camera::updateVPMatrix()
 {
 
-    m_ViewProjectionMatrix = column(mat4(1), 0, vec4(rightVec, 0));
-    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 1, vec4(upVec, 0));
-    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 2, vec4(frontVec, 0));
+    m_ViewProjectionMatrix = column(mat4(1), 0, vec4(m_RightVector, 0));
+    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 1, vec4(m_UpVector, 0));
+    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 2, vec4(m_FrontVector, 0));
     m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 3, vec4(0, 0, 0, 1));
     m_ViewProjectionMatrix = translate(m_Position) * m_ViewProjectionMatrix;
     m_ViewProjectionMatrix = inverse(m_ViewProjectionMatrix);
@@ -191,28 +209,28 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
             glfwGetCursorPos(pWindow, &xx, &yy);
             mouseDragReferencePosition = vec2(xx, yy);
             distanceReference = distance(m_Position, lookAtTargetPos);
-            frontVecReference = frontVec;
-            upVecReference = upVec;
-            rightVecReference = rightVec;
+            frontVecReference = m_FrontVector;
+            upVecReference = m_UpVector;
+            rightVecReference = m_RightVector;
 //            mbRotationMatrixIsDirty = true;
             updateVPMatrix();
         } else if(action == GLFW_RELEASE) {
            mouseIsDragging = false;
             if(cameraType == CameraType::TOP_3D) {
-                frontVec = vec3(0,0,1);
-                upVec = vec3(0,1,0);
-                rightVec = vec3(1,0,0);
+				m_FrontVector = vec3(0,0,1);
+				m_UpVector = vec3(0,1,0);
+				m_RightVector = vec3(1,0,0);
             } else {
-                frontVec = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
+				m_FrontVector = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
                 if(cameraType == CameraType::CYLINDRICAL) {
-                    rightVec = normalize(cross(cylindricalUpVec, frontVec));
-                    upVec = cross(frontVec, rightVec);
+					m_RightVector = normalize(cross(cylindricalUpVec, m_FrontVector));
+					m_UpVector = cross(m_FrontVector, m_RightVector);
                 } else {
-                    upVec = vec3(tempExtraRotationMat * vec4(upVecReference,1));
-                    rightVec = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
+					m_UpVector = vec3(tempExtraRotationMat * vec4(upVecReference,1));
+					m_RightVector = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
                 }
                 if(cameraType == CameraType::AROUND_TARGET) {
-					m_Position = lookAtTargetPos + distanceReference*frontVec;
+					m_Position = lookAtTargetPos + distanceReference*m_FrontVector;
                 }
 //                mbTranslationMatrixIsDirty = true;
 //                mbRotationMatrixIsDirty = true;
@@ -253,10 +271,10 @@ void Camera::dragMousePresetCursorPos(GLFWwindow* /*pWindow*/, double x, double 
                                         upVecReference);
             tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
                         mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVecReference);
-            frontVec = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
-            upVec = vec3(tempExtraRotationMat * vec4(upVecReference,1));
-            rightVec = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
-			m_Position = lookAtTargetPos + distanceReference*frontVec;
+			m_FrontVector = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
+			m_UpVector = vec3(tempExtraRotationMat * vec4(upVecReference,1));
+			m_RightVector = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
+			m_Position = lookAtTargetPos + distanceReference*m_FrontVector;
 //            mbRotationMatrixIsDirty = true;
 //            mbTranslationMatrixIsDirty = true;
         } else if(cameraType == CameraType::CYLINDRICAL) {
@@ -265,9 +283,9 @@ void Camera::dragMousePresetCursorPos(GLFWwindow* /*pWindow*/, double x, double 
                                         cylindricalUpVec);
             tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
                         mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVecReference);
-            frontVec = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
-            rightVec = normalize(cross(cylindricalUpVec, frontVec));
-            upVec = cross(frontVec, rightVec);
+			m_FrontVector = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
+			m_RightVector = normalize(cross(cylindricalUpVec, m_FrontVector));
+			m_UpVector = cross(m_FrontVector, m_RightVector);
 //            mbRotationMatrixIsDirty = true;
         } else if(cameraType == CameraType::AIRPLANE) {
             tempExtraRotationMat = glm::rotate(mat4(1.0),
@@ -275,14 +293,14 @@ void Camera::dragMousePresetCursorPos(GLFWwindow* /*pWindow*/, double x, double 
                                         upVecReference);
             tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
                         mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVecReference);
-            frontVec = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
-            upVec = vec3(tempExtraRotationMat * vec4(upVecReference,1));
-            rightVec = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
+			m_FrontVector = vec3(tempExtraRotationMat * vec4(frontVecReference,1));
+			m_UpVector = vec3(tempExtraRotationMat * vec4(upVecReference,1));
+			m_RightVector = vec3(tempExtraRotationMat * vec4(rightVecReference,1));
 //            mbRotationMatrixIsDirty = true;
         } else if(cameraType == CameraType::TOP_3D) {
-            frontVec = vec3(0,0,1);
-            upVec = vec3(0,1,0);
-            rightVec = vec3(1,0,0);
+			m_FrontVector = vec3(0,0,1);
+			m_UpVector = vec3(0,1,0);
+			m_RightVector = vec3(1,0,0);
 			m_Position = positionReference - viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
         }
     }
@@ -368,54 +386,65 @@ void Camera::handlePresetNewFrame(GLFWwindow* pWindow)
 void Camera::viewArrowsPreset(GLFWwindow* pWindow)
 {
     vec2 deltaPos = vec2(0,0);
-    if(glfwGetKey(pWindow, GLFW_KEY_UP) == GLFW_PRESS) {
+    if(glfwGetKey(pWindow, GLFW_KEY_UP) == GLFW_PRESS) 
+	{
         deltaPos = deltaPos - vec2(0,1);
     }
-    if(glfwGetKey(pWindow, GLFW_KEY_DOWN) == GLFW_PRESS) {
+    if(glfwGetKey(pWindow, GLFW_KEY_DOWN) == GLFW_PRESS) 
+	{
         deltaPos = deltaPos + vec2(0,1);
     }
-    if(glfwGetKey(pWindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
+    if(glfwGetKey(pWindow, GLFW_KEY_LEFT) == GLFW_PRESS) 
+	{
         deltaPos = deltaPos - vec2(1,0);
     }
-    if(glfwGetKey(pWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+    if(glfwGetKey(pWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) 
+	{
         deltaPos = deltaPos + vec2(1,0);
     }
-    if(cameraType == CameraType::AROUND_TARGET) {
+    if(cameraType == CameraType::AROUND_TARGET) 
+	{
         tempExtraRotationMat = glm::rotate(mat4(1.0),
                                     -deltaPos.x*viewMovementSpeed,
-                                    upVec);
+                                    m_UpVector);
         tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
-                    mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVec);
-        frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
-        upVec = vec3(tempExtraRotationMat * vec4(upVec,1));
-        rightVec = vec3(tempExtraRotationMat * vec4(rightVec,1));
-		m_Position = lookAtTargetPos + (distance(lookAtTargetPos, m_Position))*frontVec;
+                    mat4(1.0), -deltaPos.y*viewMovementSpeed, m_RightVector);
+        m_FrontVector = vec3(tempExtraRotationMat * vec4(m_FrontVector,1));
+		m_UpVector = vec3(tempExtraRotationMat * vec4(m_UpVector,1));
+		m_RightVector = vec3(tempExtraRotationMat * vec4(m_RightVector,1));
+		m_Position = lookAtTargetPos + (distance(lookAtTargetPos, m_Position))*m_FrontVector;
 //        mbRotationMatrixIsDirty = true;
 //        mbTranslationMatrixIsDirty = true;
-    } else if(cameraType == CameraType::CYLINDRICAL) {
+    } 
+	else if(cameraType == CameraType::CYLINDRICAL) 
+	{
         tempExtraRotationMat = glm::rotate(mat4(1.0),
                                     -deltaPos.x*viewMovementSpeed,
                                     cylindricalUpVec);
         tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
-                    mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVec);
-        frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
-        rightVec = normalize(cross(cylindricalUpVec, frontVec));
-        upVec = cross(frontVec, rightVec);
+                    mat4(1.0), -deltaPos.y*viewMovementSpeed, m_RightVector);
+        m_FrontVector = vec3(tempExtraRotationMat * vec4(m_FrontVector,1));
+		m_RightVector = normalize(cross(cylindricalUpVec, m_FrontVector));
+		m_UpVector = cross(m_FrontVector, m_RightVector);
 //        mbRotationMatrixIsDirty = true;
-    } else if(cameraType == CameraType::AIRPLANE) {
+    } 
+	else if(cameraType == CameraType::AIRPLANE) 
+	{
         tempExtraRotationMat = glm::rotate(mat4(1.0),
                                     -deltaPos.x*viewMovementSpeed,
-                                    upVec);
+                                    m_UpVector);
         tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
-                    mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVec);
-        frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
-        upVec = vec3(tempExtraRotationMat * vec4(upVec,1));
-        rightVec = vec3(tempExtraRotationMat * vec4(rightVec,1));
+                    mat4(1.0), -deltaPos.y*viewMovementSpeed, m_RightVector);
+        m_FrontVector = vec3(tempExtraRotationMat * vec4(m_FrontVector,1));
+		m_UpVector = vec3(tempExtraRotationMat * vec4(m_UpVector, 1));
+		m_RightVector = vec3(tempExtraRotationMat * vec4(m_RightVector, 1));
 //        mbRotationMatrixIsDirty = true;
-    } else if(cameraType == CameraType::TOP_3D) {
-        frontVec = vec3(0,0,1);
-        upVec = vec3(0,1,0);
-        rightVec = vec3(1,0,0);
+    } 
+	else if(cameraType == CameraType::TOP_3D) 
+	{
+        m_FrontVector = vec3(0,0,1);
+		m_UpVector = vec3(0,1,0);
+		m_RightVector = vec3(1,0,0);
 		m_Position += viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
     }
 }
@@ -431,13 +460,13 @@ void Camera::continuousMousePresetCursorPos(
     if(cameraType == CameraType::AROUND_TARGET) {
         tempExtraRotationMat = glm::rotate(mat4(1.0),
                                     -deltaPos.x*viewMovementSpeed,
-                                    upVec);
+			m_UpVector);
         tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
-                    mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVec);
-        frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
-        upVec = vec3(tempExtraRotationMat * vec4(upVec,1));
-        rightVec = vec3(tempExtraRotationMat * vec4(rightVec,1));
-		m_Position = lookAtTargetPos + (distance(lookAtTargetPos, m_Position))*frontVec;
+                    mat4(1.0), -deltaPos.y*viewMovementSpeed, m_RightVector);
+        m_FrontVector = vec3(tempExtraRotationMat * vec4(m_FrontVector,1));
+		m_UpVector = vec3(tempExtraRotationMat * vec4(m_UpVector,1));
+		m_RightVector = vec3(tempExtraRotationMat * vec4(m_RightVector,1));
+		m_Position = lookAtTargetPos + (distance(lookAtTargetPos, m_Position))*m_FrontVector;
 //        mbRotationMatrixIsDirty = true;
 //        mbTranslationMatrixIsDirty = true;
     } else if(cameraType == CameraType::CYLINDRICAL) {
@@ -445,25 +474,25 @@ void Camera::continuousMousePresetCursorPos(
                                     -deltaPos.x*viewMovementSpeed,
                                     cylindricalUpVec);
         tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
-                    mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVec);
-        frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
-        rightVec = normalize(cross(cylindricalUpVec, frontVec));
-        upVec = cross(frontVec, rightVec);
+                    mat4(1.0), -deltaPos.y*viewMovementSpeed, m_RightVector);
+        m_FrontVector = vec3(tempExtraRotationMat * vec4(m_FrontVector,1));
+		m_RightVector = normalize(cross(cylindricalUpVec, m_FrontVector));
+		m_UpVector = cross(m_FrontVector, m_RightVector);
 //        mbRotationMatrixIsDirty = true;
     } else if(cameraType == CameraType::AIRPLANE) {
         tempExtraRotationMat = glm::rotate(mat4(1.0),
                                     -deltaPos.x*viewMovementSpeed,
-                                    upVec);
+                                    m_UpVector);
         tempExtraRotationMat = tempExtraRotationMat * glm::rotate(
-                    mat4(1.0), -deltaPos.y*viewMovementSpeed, rightVec);
-        frontVec = vec3(tempExtraRotationMat * vec4(frontVec,1));
-        upVec = vec3(tempExtraRotationMat * vec4(upVec,1));
-        rightVec = vec3(tempExtraRotationMat * vec4(rightVec,1));
+                    mat4(1.0), -deltaPos.y*viewMovementSpeed, m_RightVector);
+        m_FrontVector = vec3(tempExtraRotationMat * vec4(m_FrontVector,1));
+		m_UpVector = vec3(tempExtraRotationMat * vec4(m_UpVector,1));
+		m_RightVector = vec3(tempExtraRotationMat * vec4(m_RightVector,1));
 //        mbRotationMatrixIsDirty = true;
     } else if(cameraType == CameraType::TOP_3D) {
-        frontVec = vec3(0,0,1);
-        upVec = vec3(0,1,0);
-        rightVec = vec3(1,0,0);
+        m_FrontVector = vec3(0,0,1);
+		m_UpVector = vec3(0,1,0);
+		m_RightVector = vec3(1,0,0);
 		m_Position += viewMovementSpeed*vec3(deltaPos.x, -deltaPos.y, 0);
     }
 //    vec2 centerPos = vec2(pWindow->getCenter());
@@ -474,54 +503,54 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
 {
     if(cameraType == CameraType::AROUND_TARGET) {
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
-			m_Position -= keyMovementSpeed * frontVec;
+			m_Position -= keyMovementSpeed * m_FrontVector;
             distanceReference = max(distanceReference - keyMovementSpeed, 0.0f);
         }
         if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
-			m_Position += keyMovementSpeed * frontVec;
+			m_Position += keyMovementSpeed * m_FrontVector;
             distanceReference = max(distanceReference + keyMovementSpeed, 0.0f);
         }
     } else if(cameraType == CameraType::TOP_3D) {
-        frontVec = vec3(0,0,1);
-        upVec = vec3(0,1,0);
-        rightVec = vec3(1,0,0);
+        m_FrontVector = vec3(0,0,1);
+		m_UpVector = vec3(0,1,0);
+		m_RightVector = vec3(1,0,0);
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
-			m_Position += keyMovementSpeed * upVec;
+			m_Position += keyMovementSpeed * m_UpVector;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
-			m_Position -= keyMovementSpeed * upVec;
+			m_Position -= keyMovementSpeed * m_UpVector;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) {
-			m_Position -= keyMovementSpeed * rightVec;
+			m_Position -= keyMovementSpeed * m_RightVector;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) {
-			m_Position += keyMovementSpeed * rightVec;
+			m_Position += keyMovementSpeed * m_RightVector;
         }
     } else {
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
-			m_Position -= keyMovementSpeed * frontVec;
+			m_Position -= keyMovementSpeed * m_FrontVector;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
-			m_Position += keyMovementSpeed * frontVec;
+			m_Position += keyMovementSpeed * m_FrontVector;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) {
-			m_Position -= keyMovementSpeed * rightVec;
+			m_Position -= keyMovementSpeed * m_RightVector;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) {
-			m_Position += keyMovementSpeed * rightVec;
+			m_Position += keyMovementSpeed * m_RightVector;
         }
         if(glfwGetKey(pWindow, GLFW_KEY_Q) == GLFW_PRESS) {
             if(cameraType == CameraType::CYLINDRICAL) {
 				m_Position -= keyMovementSpeed * cylindricalUpVec;
             } else {
-				m_Position -= keyMovementSpeed * upVec;
+				m_Position -= keyMovementSpeed * m_UpVector;
             }
         }
         if(glfwGetKey(pWindow, GLFW_KEY_E) == GLFW_PRESS) {
             if(cameraType == CameraType::CYLINDRICAL) {
 				m_Position += keyMovementSpeed * cylindricalUpVec;
             } else {
-				m_Position += keyMovementSpeed * upVec;
+				m_Position += keyMovementSpeed * m_UpVector;
             }
         }
     }

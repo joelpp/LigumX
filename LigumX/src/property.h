@@ -32,6 +32,7 @@ enum LXType
 	LXType_Material,
 	LXType_Component,
 	LXType_ProgramPipeline,
+	LXType_Camera,
 	LXType_PostEffects,
 	LXType_DisplayOptions,
 	LXType_ProjectionType,

@@ -9,7 +9,7 @@ enum PropertyFlags
 	PropertyFlags_SetCallback		= 4,
 	PropertyFlags_MinValue			= 8,
 	PropertyFlags_MaxValue			= 16,
-	PropertyFlags_NumPropertyFlags	= 2 * PropertyFlags_MaxValue
+	PropertyFlags_Transient			= 32,
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;

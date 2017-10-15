@@ -23,9 +23,9 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, do
 {
         static const float factor = 1.1;
         if(yOffset < 0) {
-            LigumX::GetInstance().camera->multViewSizeBy(factor);
+            Renderer::GetInstance().GetDebugCamera()->multViewSizeBy(factor);
         } else {
-            LigumX::GetInstance().camera->multViewSizeBy(1.f/factor);
+			Renderer::GetInstance().GetDebugCamera()->multViewSizeBy(1.f/factor);
         }
 }
 
@@ -46,10 +46,9 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		}
         else if (key == GLFW_KEY_ESCAPE) 
 		{
-			if (LigumX::GetInstance().camera->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
+			if (Renderer::GetInstance().GetDebugCamera()->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
 			{
-				game.camera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
-				//Renderer::GetInstance().m_ShadowCamera->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+				Renderer::GetInstance().GetDebugCamera()->controlType = Camera::ControlType::QWEASDZXC_DRAG;
 			}
         }
 		else if (key == GLFW_KEY_R)
@@ -65,7 +64,6 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
         }
 		else if(key == GLFW_KEY_F4)
 		{
-			game.toggleEntityLand();
         }
 		else if (key == GLFW_KEY_L)
 		{
@@ -73,8 +71,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		}
 
     }
-    LigumX::GetInstance().camera->handlePresetKey(pWindow, key, scancode, action, mods);
-	//Renderer::GetInstance().m_ShadowCamera->handlePresetKey(pWindow, key, scancode, action, mods);
+	Renderer::GetInstance().GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
 }
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
@@ -107,39 +104,31 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
             if (action == GLFW_PRESS)
 			{
 				glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-//                LigumX::GetInstance().draggingCamera = true;
-//                double x; double y;
-//                glfwGetCursorPos(pWindow, &x, &y);
-//                LigumX::GetInstance().oldMousePosition = vec2(x,y);
             }
             else if (action == GLFW_RELEASE)
 			{
 				glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-//                LigumX::GetInstance().draggingCamera = false;
             }
         }
 
-		LigumX::GetInstance().camera->handlePresetMouseButton(pWindow, button, action, mods);
-		//Renderer::GetInstance().m_ShadowCamera->handlePresetMouseButton(pWindow, button, action, mods);
-//        TODO
-        //        LigumX::GetInstance().renderer->updateMVPMatrix();
+		Renderer::GetInstance().GetDebugCamera()->handlePresetMouseButton(pWindow, button, action, mods);
 }
 
 void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 {
-        if (LigumX::GetInstance().draggingCamera){
+        if (false)
+		{
+
             double x; double y;
             glfwGetCursorPos(pWindow, &x, &y);
             vec2 offset = vec2(x,y) - LigumX::GetInstance().oldMousePosition;
             offset.y *= -1; // reversed controls? this should be an option
 
-            LigumX::GetInstance().camera->translateBy(vec3(offset/1000.f,0));
+			Renderer::GetInstance().GetDebugCamera()->translateBy(vec3(offset/1000.f,0));
 			//Renderer::GetInstance().m_ShadowCamera->translateBy(vec3(offset / 1000.f, 0));
 
 			LigumX::GetInstance().oldMousePosition = vec2(x, y);
 
         }
-		LigumX::GetInstance().camera->handlePresetCursorPos(pWindow, x, y);
-		//Renderer::GetInstance().m_ShadowCamera->handlePresetCursorPos(pWindow, x, y);
+		Renderer::GetInstance().GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);
 }

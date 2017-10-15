@@ -27,8 +27,12 @@ public:
 static const int ClassID = 3880549230;
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
-const glm::vec3& GetsomeBullshitVec3() { return m_someBullshitVec3; }; 
-void SetsomeBullshitVec3(glm::vec3 value) { m_someBullshitVec3 = value; }; 
+const glm::vec3& GetFrontVector() { return m_FrontVector; }; 
+void SetFrontVector(glm::vec3 value) { m_FrontVector = value; }; 
+const glm::vec3& GetRightVector() { return m_RightVector; }; 
+void SetRightVector(glm::vec3 value) { m_RightVector = value; }; 
+const glm::vec3& GetUpVector() { return m_UpVector; }; 
+void SetUpVector(glm::vec3 value) { m_UpVector = value; }; 
 const glm::mat4& GetViewMatrix() { return m_ViewMatrix; }; 
 void SetViewMatrix(glm::mat4 value) { m_ViewMatrix = value; }; 
 const glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; }; 
@@ -45,7 +49,9 @@ const float& GetOrthoBorders() { return m_OrthoBorders; };
 void SetOrthoBorders(float value) { m_OrthoBorders = value; }; 
 private:
 glm::vec3 m_Position;
-glm::vec3 m_someBullshitVec3;
+glm::vec3 m_FrontVector;
+glm::vec3 m_RightVector;
+glm::vec3 m_UpVector;
 glm::mat4 m_ViewMatrix;
 glm::mat4 m_ProjectionMatrix;
 glm::mat4 m_ViewProjectionMatrix;
@@ -54,13 +60,15 @@ float m_FarPlane;
 ProjectionType m_ProjectionType;
 float m_OrthoBorders;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
 {
 PIDX_Position,
-PIDX_someBullshitVec3,
+PIDX_FrontVector,
+PIDX_RightVector,
+PIDX_UpVector,
 PIDX_ViewMatrix,
 PIDX_ProjectionMatrix,
 PIDX_ViewProjectionMatrix,
@@ -93,7 +101,6 @@ public:
     ControlType controlType;
     bool mouseIsDragging;
     glm::vec2 mouseDragReferencePosition;
-    glm::vec3 frontVec, upVec, rightVec;
     glm::vec3 frontVecReference, upVecReference, rightVecReference;
     glm::vec3 positionReference;
     float distanceReference;

@@ -1,10 +1,19 @@
 class Camera
 {
 	glm::vec3 Position;
-	glm::vec3 someBullshitVec3
+	glm::vec3 FrontVector
+	glm::vec3 RightVector
+	glm::vec3 UpVector
+
+	[transient, hidden]
 	glm::mat4 ViewMatrix
+
+	[transient, hidden]
 	glm::mat4 ProjectionMatrix
+
+	[transient, hidden]
 	glm::mat4 ViewProjectionMatrix
+
 	float NearPlane
 	float FarPlane
 	ProjectionType ProjectionType
