@@ -203,15 +203,15 @@ bool Building::GenerateModel()
 	{
 		return false;
 	}
-	Renderer& renderer = Renderer::GetInstance();
+	//Renderer& renderer = Renderer::GetInstance();
 
-	m_Model = new Model();
-	m_Model->SetName("Building");
+	//m_Model = new Model();
+	//m_Model->SetName("Building");
 
-	Mesh* mesh = new Mesh(buildingTrianglePositions, GL_TRIANGLES);
-	m_Model->addMesh( mesh, new Material(renderer.pPipelineBasic, glm::vec3(1,1,1) ) );
+	//Mesh* mesh = new Mesh(buildingTrianglePositions, GL_TRIANGLES);
+	//m_Model->addMesh( mesh, new Material(renderer.pPipelineBasic, glm::vec3(1,1,1) ) );
 
-	renderer.m_debugModels.push_back(m_Model);
+	//renderer.m_debugModels.push_back(m_Model);
     
     return true;
 }

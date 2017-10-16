@@ -9,6 +9,7 @@
 #include <cstddef>
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
+{ "ObjectID", offsetof(Framebuffer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Width", offsetof(Framebuffer, m_Width), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Height", offsetof(Framebuffer, m_Height), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -19,12 +20,29 @@ const ClassPropertyData Framebuffer::g_Properties[] =
 { "HasDepth", offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "NumColorTargets", offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
+void Framebuffer::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Framebuffer_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE Framebuffer
 
 
 Framebuffer::Framebuffer()
 {
+	m_ObjectID = rand();
 
 }
 
@@ -36,6 +54,7 @@ Framebuffer::Framebuffer(std::string name, int width, int height, GL::PixelForma
 		m_PixelFormat(pixelFormat),
 		m_PixelType(pixelType)
 {
+	m_ObjectID = rand();
 
 }
 

@@ -14,6 +14,8 @@ class BoundingBoxComponent : public Component
 #pragma region  HEADER BoundingBoxComponent
 public:
 static const int ClassID = 1140622857;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
 const AABB& GetBoundingBox() { return m_BoundingBox; }; 
 void SetBoundingBox(AABB value) { m_BoundingBox = value; }; 
 const bool& GetUpdatesWithEntity() { return m_UpdatesWithEntity; }; 
@@ -21,15 +23,17 @@ void SetUpdatesWithEntity(bool value) { m_UpdatesWithEntity = value; };
 const glm::mat4& GetModelToWorldMatrix() { return m_ModelToWorldMatrix; }; 
 void SetModelToWorldMatrix(glm::mat4 value) { m_ModelToWorldMatrix = value; }; 
 private:
+int m_ObjectID;
 AABB m_BoundingBox;
 bool m_UpdatesWithEntity;
 glm::mat4 m_ModelToWorldMatrix;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_BoundingBoxComponentPIDX
 {
+PIDX_ObjectID,
 PIDX_BoundingBox,
 PIDX_UpdatesWithEntity,
 PIDX_ModelToWorldMatrix,

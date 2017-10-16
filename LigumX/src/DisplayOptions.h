@@ -13,6 +13,8 @@ public:
 #pragma region  HEADER DisplayOptions
 public:
 static const int ClassID = 2473594549;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
 const bool& GetUseSkyLighting() { return m_UseSkyLighting; }; 
 void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 
 const bool& GetDrawTerrain() { return m_DrawTerrain; }; 
@@ -48,6 +50,7 @@ void SetRenderShadows(bool value) { m_RenderShadows = value; };
 const bool& GetOutputGLErrors() { return m_OutputGLErrors; }; 
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
 private:
+int m_ObjectID;
 bool m_UseSkyLighting;
 bool m_DrawTerrain;
 bool m_DrawSky;
@@ -66,11 +69,12 @@ bool m_RenderOpaque;
 bool m_RenderShadows;
 bool m_OutputGLErrors;
 public:
-static const int g_PropertyCount = 17;
+static const int g_PropertyCount = 18;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
 {
+PIDX_ObjectID,
 PIDX_UseSkyLighting,
 PIDX_DrawTerrain,
 PIDX_DrawSky,
@@ -94,4 +98,6 @@ void Serialize(bool writing);
 #pragma endregion  HEADER DisplayOptions
 
 public:
+
+	DisplayOptions::DisplayOptions();
 };

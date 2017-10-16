@@ -10,6 +10,11 @@
 
 #include "Logging.h"
 
+#pragma region  FORWARD_DECLARATIONS World
+#include "property.h"
+class SunLight;
+
+#pragma endregion  FORWARD_DECLARATIONS World
 class Sunlight;
 class Sector;
 class Way;
@@ -40,7 +45,31 @@ namespace std {
     };
 };
 
-class World{
+class World
+{
+#pragma region  HEADER World
+public:
+static const int ClassID = 3714116915;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
+SunLight* GetSunLight() { return m_SunLight; }; 
+void SetSunLight(SunLight* value) { m_SunLight = value; }; 
+private:
+int m_ObjectID;
+SunLight* m_SunLight;
+public:
+static const int g_PropertyCount = 2;
+static const ClassPropertyData g_Properties[g_PropertyCount];
+
+enum g_WorldPIDX
+{
+PIDX_ObjectID,
+PIDX_SunLight,
+};
+void Serialize(bool writing);
+
+#pragma endregion  HEADER World
+
 private:
     REGISTERCLASS(World);
     
@@ -50,10 +79,6 @@ public:
     World(float sectorSize);
 
 	void InitTestWorld();
-
-    SunLight* m_SunLight;
-
-	SunLight* GetSunLight() { return m_SunLight; }
 
 	void Update();
 

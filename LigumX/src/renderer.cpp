@@ -22,6 +22,7 @@
 #include <cstddef>
 const ClassPropertyData Renderer::g_Properties[] = 
 {
+{ "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
 { "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
 { "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
@@ -30,7 +31,7 @@ const ClassPropertyData Renderer::g_Properties[] =
 void Renderer::Serialize(bool writing)
 {
 	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
-	std::string fileName = "Renderer.LXobj";
+	std::string fileName = "Renderer_" + std::to_string(m_ObjectID) + ".LXobj";
 
 	int fileMask = writing ? std::ios::out : std::ios::in;
 	std::fstream objectStream(basePath + fileName, fileMask);
@@ -45,12 +46,21 @@ void Renderer::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE Renderer
+
+Renderer* g_Instance;
+
 using namespace glm;
 using namespace std;
 
 #define CHAR_BUFFER_SIZE 64
 
 #define FT_SUCCESS 0
+
+Renderer::Renderer()
+{
+	g_Instance = this;
+	m_ObjectID = rand();
+}
 
 void Renderer::InitFramebuffers()
 {
@@ -211,6 +221,8 @@ void Renderer::InitFreetype()
 
 void Renderer::Initialize()
 {
+	m_ObjectID = rand();
+
 	windowWidth = 1100;
 	windowHeight = 880;
 	windowTitle = "LigumX";
@@ -219,9 +231,12 @@ void Renderer::Initialize()
 
 	// TODO : add default constructors D: and serialization for gen files...
 	m_DisplayOptions = new DisplayOptions();
+	m_DisplayOptions->SetObjectID(0);
 	m_PostEffects = new PostEffects();
+	m_PostEffects->SetObjectID(0);
 
 	m_DebugCamera = new Camera();
+	m_DebugCamera->SetObjectID(0);
 	m_DebugCamera->SetProjectionType(ProjectionType_Perspective);
 	m_DebugCamera->setViewSize(Settings::GetInstance().f("viewSize"));
 	m_DebugCamera->translateTo(Settings::GetInstance().f3("cameraPosition"));
@@ -245,6 +260,7 @@ void Renderer::Initialize()
 
 	ImGui_ImplGlfwGL3_Init(pWindow, true);
 
+	SetObjectID(0);
 	Serialize(false);
 }
 

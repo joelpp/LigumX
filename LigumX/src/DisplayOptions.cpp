@@ -7,6 +7,7 @@
 #include <cstddef>
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
+{ "ObjectID", offsetof(DisplayOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "UseSkyLighting", offsetof(DisplayOptions, m_UseSkyLighting), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DrawTerrain", offsetof(DisplayOptions, m_DrawTerrain), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DrawSky", offsetof(DisplayOptions, m_DrawSky), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
@@ -28,7 +29,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 void DisplayOptions::Serialize(bool writing)
 {
 	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
-	std::string fileName = "DisplayOptions.LXobj";
+	std::string fileName = "DisplayOptions_" + std::to_string(m_ObjectID) + ".LXobj";
 
 	int fileMask = writing ? std::ios::out : std::ios::in;
 	std::fstream objectStream(basePath + fileName, fileMask);
@@ -43,6 +44,11 @@ void DisplayOptions::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE DisplayOptions
+
+DisplayOptions::DisplayOptions()
+{
+	m_ObjectID = rand();
+}
 
 //void DisplayOptions::Serialize(bool writing)
 //{

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "glm/glm.hpp"
+#include "Model.h"
 #include "BoundingBoxComponent.h"
 
 #pragma region  CLASS_SOURCE Entity
@@ -9,6 +10,7 @@
 #include <cstddef>
 const ClassPropertyData Entity::g_Properties[] = 
 {
+{ "ObjectID", offsetof(Entity, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "RotationAngle", offsetof(Entity, m_RotationAngle), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
@@ -19,6 +21,22 @@ const ClassPropertyData Entity::g_Properties[] =
 { "IsLight", offsetof(Entity, m_IsLight), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Components", offsetof(Entity, m_Components), 0, LXType_stdvector, false, LXType_Component, 0, 0, 0, }, 
 };
+void Entity::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Entity_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE Entity
 
@@ -52,7 +70,9 @@ Entity::Entity()
 	bb->SetParentEntity(this);
 	m_Components.push_back(bb);
 
+	m_ObjectID = rand();
 
+	m_Model = new Model();
 }
 
 

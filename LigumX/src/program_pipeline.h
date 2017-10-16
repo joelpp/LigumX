@@ -1,7 +1,7 @@
 #ifndef ProgramPipeline_H
 #define ProgramPipeline_H
 
-#include "glad/glad.h"
+#include "GL.h"
 #include "glm/glm.hpp"
 #include "Logging.h"
 #include <string>

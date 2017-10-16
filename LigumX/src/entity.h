@@ -5,7 +5,6 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "program_pipeline.h"
 #include <iostream>
 //#include "glfw\include\GLFW\glfw3.h"
 #include "GLFW/glfw3.h"
@@ -26,6 +25,8 @@ class Entity {
 #pragma region  HEADER Entity
 public:
 static const int ClassID = 3231396602;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
@@ -45,6 +46,7 @@ void SetIsLight(bool value) { m_IsLight = value; };
 const std::vector<Component*>& GetComponents() { return m_Components; }; 
 void SetComponents(std::vector<Component*> value) { m_Components = value; }; 
 private:
+int m_ObjectID;
 std::string m_Name;
 glm::vec3 m_Position;
 float m_RotationAngle;
@@ -55,11 +57,12 @@ Model* m_Model;
 bool m_IsLight;
 std::vector<Component*> m_Components;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EntityPIDX
 {
+PIDX_ObjectID,
 PIDX_Name,
 PIDX_Position,
 PIDX_RotationAngle,

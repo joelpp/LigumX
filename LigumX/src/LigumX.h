@@ -42,7 +42,7 @@ class RenderDataManager;
 class LigumX {
 
 public:
-
+	static Renderer* m_Renderer;
     // general state and functions
     void init();
     bool running;

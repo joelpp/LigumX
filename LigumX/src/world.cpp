@@ -12,15 +12,45 @@
 #include "Material.h"
 #include "Model.h"
 #include "SunLight.h"
+#include "GL.h"
 #include "Texture.h"
 #include "Mesh.h"
 
+#pragma region  CLASS_SOURCE World
+#include "World.h"
+#include "serializer.h"
+#include <cstddef>
+const ClassPropertyData World::g_Properties[] = 
+{
+{ "ObjectID", offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "SunLight", offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
+};
+void World::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "World_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
+
+#pragma endregion  CLASS_SOURCE World
 using namespace std;
 using namespace glm;
 
 
 World::World()
 {
+	m_ObjectID = rand();
+
 }
 
 void World::InitTestWorld()
@@ -107,25 +137,15 @@ void World::InitTestWorld()
 
 	// light 2
 	//if (false)
-	{
-		Entity* pointLightEntity = new Entity();
-		pointLightEntity->SetName("PointLight");
-		pointLightEntity->SetPosition(glm::vec3(0.f, 33.f, 13.8f));
-		pointLightEntity->SetScale(glm::vec3(2, 2, 2));
-		pointLightEntity->SetIsLight(true);
+	//{
+	//	Entity* pointLightEntity = new Entity();
+	//	pointLightEntity->SetObjectID(19817);
+	//	pointLightEntity->Serialize(false);
+	//	pointLightEntity->GetModel()->addMesh(g_DefaultMeshes->DefaultCubeMesh);
 
-		Material* material = new Material();
-		material->SetShininess(1.0f);
-		material->SetDiffuseColor(glm::vec3(0, 0, 1));
-		material->SetUnlit(true);
-		material->SetEmissiveFactor(1.0f);
 
-		Model* cubeModel = new Model(g_DefaultMeshes->DefaultCubeMesh, material);
-		cubeModel->SetName("CubeLightModel");
-		pointLightEntity->SetModel(cubeModel);
-
-		m_Entities.push_back(pointLightEntity);
-	}
+	//	m_Entities.push_back(pointLightEntity);
+	//}
 
 	// sphere
 	//if (false)
@@ -150,6 +170,8 @@ void World::InitTestWorld()
 
 World::World(float sectorSize)
 {
+	m_ObjectID = rand();
+
 	m_sectorManager = new SectorManager(sectorSize);
 	m_sectorSize = sectorSize;
 	m_invSectorSize = 1.f / sectorSize;
@@ -163,6 +185,8 @@ World::World(float sectorSize)
 
 	m_SunLight->SetSkybox(new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/skybox/", true));
 	m_SunLight->SetUseSkybox(true);
+
+
 }
 
 

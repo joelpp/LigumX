@@ -433,5 +433,6 @@
     <None Include="src\AABB.gen" />
     <None Include="src\BoundingBoxComponent.gen" />
     <None Include="src\Component.gen" />
+    <None Include="src\World.gen" />
   </ItemGroup>
 </Project>

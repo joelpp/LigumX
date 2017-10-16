@@ -13,12 +13,12 @@ class ProgramPipeline;
 
 class Material
 {
-public:
-public:
-public:
+
 #pragma region  HEADER Material
 public:
 static const int ClassID = 3419754368;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
 const bool& GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 const glm::vec3& GetAmbientColor() { return m_AmbientColor; }; 
@@ -60,6 +60,7 @@ void SetSpecularTextureCallback(Texture* value);
 ProgramPipeline* GetProgramPipeline() { return m_ProgramPipeline; }; 
 void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; }; 
 private:
+int m_ObjectID;
 bool m_Enabled;
 glm::vec3 m_AmbientColor;
 glm::vec3 m_DiffuseColor;
@@ -80,11 +81,12 @@ Texture* m_DiffuseTexture;
 Texture* m_SpecularTexture;
 ProgramPipeline* m_ProgramPipeline;
 public:
-static const int g_PropertyCount = 19;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MaterialPIDX
 {
+PIDX_ObjectID,
 PIDX_Enabled,
 PIDX_AmbientColor,
 PIDX_DiffuseColor,

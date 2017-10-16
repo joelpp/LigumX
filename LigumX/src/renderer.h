@@ -2,7 +2,7 @@
 #define RENDERER
 
 
-#include "glad/glad.h"
+#include "GL.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -32,6 +32,10 @@ class Camera;
 
 class Framebuffer;
 class SunLight;
+
+class Renderer;
+extern Renderer* g_Instance;
+
 
 #define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
 //#define FLUSH_ERRORS()
@@ -82,6 +86,8 @@ public:
 #pragma region  HEADER Renderer
 public:
 static const int ClassID = 1498036510;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
 DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
 PostEffects* GetPostEffects() { return m_PostEffects; }; 
@@ -91,16 +97,18 @@ void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; };
 Camera* GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
+int m_ObjectID;
 DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;
 glm::vec2 m_MouseClickPosition;
 Camera* m_DebugCamera;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
 {
+PIDX_ObjectID,
 PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_MouseClickPosition,
@@ -111,6 +119,8 @@ void Serialize(bool writing);
 #pragma endregion  HEADER Renderer
 public:
 	const unsigned int SHADOW_WIDTH = 800, SHADOW_HEIGHT = 800;
+
+	Renderer::Renderer();
 
 	World* m_World;
 
@@ -338,9 +348,7 @@ public:
 
     static Renderer& GetInstance()
      {
-         static Renderer instance; // Guaranteed to be destroyed.
-                                   // Instantiated on first use.
-         return instance;
+         return *g_Instance;
      }
     
     void setDataSource(RenderDataManager* manager)
@@ -356,7 +364,6 @@ public:
 private:
     REGISTERCLASS(Renderer);
 
-    Renderer() {};                   // Constructor? (the {} brackets) are needed here.
 	void RenderEditor();
 	void RenderPickedEntity();
 	void RenderAABB(const AABB& aabb);

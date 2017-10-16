@@ -13,6 +13,7 @@
 #include <cstddef>
 const ClassPropertyData Camera::g_Properties[] = 
 {
+{ "ObjectID", offsetof(Camera, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Position", offsetof(Camera, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "FrontVector", offsetof(Camera, m_FrontVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "RightVector", offsetof(Camera, m_RightVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
@@ -28,7 +29,7 @@ const ClassPropertyData Camera::g_Properties[] =
 void Camera::Serialize(bool writing)
 {
 	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
-	std::string fileName = "Camera.LXobj";
+	std::string fileName = "Camera_" + std::to_string(m_ObjectID) + ".LXobj";
 
 	int fileMask = writing ? std::ios::out : std::ios::in;
 	std::fstream objectStream(basePath + fileName, fileMask);

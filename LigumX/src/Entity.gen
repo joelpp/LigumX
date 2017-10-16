@@ -6,7 +6,6 @@ class Entity
 	glm::vec3 RotationAxis;
 	glm::vec3 Scale;
 
-
 	[hidden, readonly]
 	float PickingID;
 

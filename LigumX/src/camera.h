@@ -25,6 +25,8 @@ public:
 #pragma region  HEADER Camera
 public:
 static const int ClassID = 3880549230;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
 const glm::vec3& GetFrontVector() { return m_FrontVector; }; 
@@ -48,6 +50,7 @@ void SetProjectionType(ProjectionType value) { m_ProjectionType = value; };
 const float& GetOrthoBorders() { return m_OrthoBorders; }; 
 void SetOrthoBorders(float value) { m_OrthoBorders = value; }; 
 private:
+int m_ObjectID;
 glm::vec3 m_Position;
 glm::vec3 m_FrontVector;
 glm::vec3 m_RightVector;
@@ -60,11 +63,12 @@ float m_FarPlane;
 ProjectionType m_ProjectionType;
 float m_OrthoBorders;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 12;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
 {
+PIDX_ObjectID,
 PIDX_Position,
 PIDX_FrontVector,
 PIDX_RightVector,

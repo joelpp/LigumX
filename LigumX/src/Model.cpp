@@ -13,32 +13,59 @@
 #include <cstddef>
 const ClassPropertyData Model::g_Properties[] = 
 {
+{ "ObjectID", offsetof(Model, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Materials", offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, }, 
 };
+void Model::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Model_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE Model
+
+
 Model::Model()
 {
-
+	m_modelMatrix = glm::mat4(1.0);
+	m_ObjectID = rand();
 }
 
 Model::Model(std::string path)
 {
 	loadModel(path);
 	m_modelMatrix = glm::mat4(1.0);
+	m_ObjectID = rand();
 }
 
 Model::Model(Mesh* mesh, Material* material)
 {
 	m_meshes.push_back(mesh);
-	m_Materials.push_back(material);
+
+	if (material != nullptr)
+	{
+		m_Materials.push_back(material);
+	}
+	m_ObjectID = rand();
 }
 
 Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
 {
 	m_meshes = meshList;
 	m_Materials = materialList;
+	m_ObjectID = rand();
 }
 
 
@@ -203,11 +230,16 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
     return newMesh;
 }  
 
+void Model::addMesh(Mesh* mesh)
+{
+	m_meshes.push_back(mesh);
+}
+
 void Model::addMesh(Mesh* mesh, Material* material)
 {
 	m_Materials.push_back( material ) ;
-
 	m_meshes.push_back(mesh);
+
 }
 
 

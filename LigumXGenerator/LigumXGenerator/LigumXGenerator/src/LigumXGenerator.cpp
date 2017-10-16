@@ -86,6 +86,15 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			{
 				currentClass.m_Name = tokens[1];
 				generatingClass = true;
+
+				Variable objectIDVar;
+				objectIDVar.m_IsPtr = false;
+				objectIDVar.m_IsTemplate = false;
+				objectIDVar.m_Name = "ObjectID";
+				objectIDVar.m_Type = "int";
+				objectIDVar.m_PropertyFlags = 0;
+				currentClass.m_Members.push_back(objectIDVar);
+
 				continue;
 			}
 

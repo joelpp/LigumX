@@ -9,6 +9,7 @@
 #include <cstddef>
 const ClassPropertyData Material::g_Properties[] = 
 {
+{ "ObjectID", offsetof(Material, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Enabled", offsetof(Material, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 1, }, 
 { "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 1, }, 
@@ -29,6 +30,22 @@ const ClassPropertyData Material::g_Properties[] =
 { "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None, 0, 0, 0, }, 
 };
+void Material::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Material_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE Material
 
@@ -48,6 +65,8 @@ Material::Material()
 	m_Enabled = true;
 
 	m_EmissiveFactor = 0.0f;
+
+	m_ObjectID = rand();
 }
 
 

@@ -6,16 +6,35 @@
 #include <cstddef>
 const ClassPropertyData BoundingBoxComponent::g_Properties[] = 
 {
+{ "ObjectID", offsetof(BoundingBoxComponent, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "BoundingBox", offsetof(BoundingBoxComponent, m_BoundingBox), 0, LXType_AABB, false, LXType_None, 0, 0, 0, }, 
 { "UpdatesWithEntity", offsetof(BoundingBoxComponent, m_UpdatesWithEntity), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ModelToWorldMatrix", offsetof(BoundingBoxComponent, m_ModelToWorldMatrix), 0, LXType_glmmat4, false, LXType_None, 0, 0, 0, }, 
 };
+void BoundingBoxComponent::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "BoundingBoxComponent_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
 
 #pragma endregion  CLASS_SOURCE BoundingBoxComponent
 
 BoundingBoxComponent::BoundingBoxComponent()
 {
 	m_BoundingBox.SetScale(glm::vec3(1, 1, 1));
+
+	m_ObjectID = rand();
 }
 
 void BoundingBoxComponent::Update()

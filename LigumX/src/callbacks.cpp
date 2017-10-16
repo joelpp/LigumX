@@ -3,6 +3,7 @@
 #include "LigumX.h"
 #include "World.h"
 #include "SectorManager.h"
+#include "Renderer.h"
 #include <string>
 #include <chrono>
 
@@ -13,6 +14,7 @@ using std::string;
 
 using namespace glm;
 
+Renderer* LigumX::m_Renderer;
 
 void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 {
@@ -23,9 +25,9 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, do
 {
         static const float factor = 1.1;
         if(yOffset < 0) {
-            Renderer::GetInstance().GetDebugCamera()->multViewSizeBy(factor);
+            m_Renderer->GetDebugCamera()->multViewSizeBy(factor);
         } else {
-			Renderer::GetInstance().GetDebugCamera()->multViewSizeBy(1.f/factor);
+			m_Renderer->GetDebugCamera()->multViewSizeBy(1.f/factor);
         }
 }
 
@@ -42,22 +44,22 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
     if(action == GLFW_PRESS){
         if (key == GLFW_KEY_SPACE) 
 		{ 
-			Renderer::GetInstance().m_ShowGUI = !Renderer::GetInstance().m_ShowGUI;
+			m_Renderer->m_ShowGUI = !m_Renderer->m_ShowGUI;
 		}
         else if (key == GLFW_KEY_ESCAPE) 
 		{
-			if (Renderer::GetInstance().GetDebugCamera()->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
+			if (m_Renderer->GetDebugCamera()->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
 			{
-				Renderer::GetInstance().GetDebugCamera()->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+				m_Renderer->GetDebugCamera()->controlType = Camera::ControlType::QWEASDZXC_DRAG;
 			}
         }
 		else if (key == GLFW_KEY_R)
 		{ 
-			Renderer::GetInstance().init_pipelines(); 
+			m_Renderer->init_pipelines(); 
 		}
 		else if (key == GLFW_KEY_M)
 		{
-            for( auto it = Renderer::GetInstance().displayElementType.begin(); it != Renderer::GetInstance().displayElementType.end(); ++it)
+            for( auto it = m_Renderer->displayElementType.begin(); it != m_Renderer->displayElementType.end(); ++it)
 			{
                 it->second = false;
             }
@@ -71,7 +73,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		}
 
     }
-	Renderer::GetInstance().GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
+	m_Renderer->GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
 }
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
@@ -96,7 +98,7 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 
 			 if (!caughtByImgui)
 			 {
-				 Renderer::GetInstance().SetMouseClickPosition(glm::vec2(x, y));
+				 m_Renderer->SetMouseClickPosition(glm::vec2(x, y));
 			 }
         }
         //Right Click
@@ -111,7 +113,7 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
             }
         }
 
-		Renderer::GetInstance().GetDebugCamera()->handlePresetMouseButton(pWindow, button, action, mods);
+		m_Renderer->GetDebugCamera()->handlePresetMouseButton(pWindow, button, action, mods);
 }
 
 void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
@@ -124,11 +126,11 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
             vec2 offset = vec2(x,y) - LigumX::GetInstance().oldMousePosition;
             offset.y *= -1; // reversed controls? this should be an option
 
-			Renderer::GetInstance().GetDebugCamera()->translateBy(vec3(offset/1000.f,0));
-			//Renderer::GetInstance().m_ShadowCamera->translateBy(vec3(offset / 1000.f, 0));
+			m_Renderer->GetDebugCamera()->translateBy(vec3(offset/1000.f,0));
+			//m_Renderer->m_ShadowCamera->translateBy(vec3(offset / 1000.f, 0));
 
 			LigumX::GetInstance().oldMousePosition = vec2(x, y);
 
         }
-		Renderer::GetInstance().GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);
+		m_Renderer->GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);
 }

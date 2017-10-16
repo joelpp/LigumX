@@ -130,7 +130,7 @@ public:
 		WriteLine("void " + m_Class.m_Name + "::Serialize(bool writing)");
 		WriteLine("{");
 		WriteLine(R"(	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";)");
-		WriteLine("	std::string fileName = \"" + m_Class.m_Name + ".LXobj\";");
+		WriteLine("	std::string fileName = \"" + m_Class.m_Name + "_\" + std::to_string(m_ObjectID) + \".LXobj\";");
 
 		WriteLine(R"(
 	int fileMask = writing ? std::ios::out : std::ios::in;
@@ -155,10 +155,10 @@ public:
 		WritePropertyArray();
 
 		// todo unleash for all LXclasses
-		if (m_Class.m_Name == "DisplayOptions" || 
-			m_Class.m_Name == "PostEffects" || 
-			m_Class.m_Name == "Renderer" ||
-			m_Class.m_Name == "Camera")
+		//if (m_Class.m_Name == "DisplayOptions" || 
+		//	m_Class.m_Name == "PostEffects" || 
+		//	m_Class.m_Name == "Renderer" ||
+		//	m_Class.m_Name == "Camera")
 		{
 			WriteSerializer();
 		}

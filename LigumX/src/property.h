@@ -38,6 +38,7 @@ enum LXType
 	LXType_ProjectionType,
 	LXType_Model,
 	LXType_AABB,
+	LXType_SunLight,
 
 	LXType_None,
 	LXType_NumTypes

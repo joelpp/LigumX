@@ -23,6 +23,7 @@ using namespace std;
 std::string ProgramPipeline::ShadersPath;
 const double static_dt = 1.0 / 100.0;
 
+//Renderer* LigumX::m_Renderer;
 
 int main(int argc, char *argv[])
 {
@@ -58,7 +59,7 @@ void LigumX::mainLoop()
         updateWorld(10);
     }
 
-	Renderer::GetInstance().render(world);
+	m_Renderer->render(world);
 }
 
 void LigumX::init()
@@ -66,9 +67,11 @@ void LigumX::init()
     //=============================================================================
     // Parameters, camera setup.
     //=============================================================================
+
+	m_Renderer = new Renderer();
 	loadSettings();
 
-    Renderer::GetInstance().Initialize();
+    m_Renderer->Initialize();
     running = true;
 
     populateTypeColorArray();
@@ -116,37 +119,37 @@ void LigumX::init()
 void LigumX::updateWorld(int loadingRingSize)
 {
     Renderer& renderer = Renderer::GetInstance();
-	glm::vec2 cameraPos = glm::vec2(renderer.GetDebugCamera()->GetPosition());
+	//glm::vec2 cameraPos = glm::vec2(renderer.GetDebugCamera()->GetPosition());
 
-    std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(cameraPos, loadingRingSize);
+ //   std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(cameraPos, loadingRingSize);
 
-    for(int i = 0; i < newSectors->size(); ++i)
-    {
-    
-        Sector* sector = newSectors->at(i);
-        if (sector->m_initializationLevel < Sector::FullyInitialized)
-        {
-            if (sector->m_initializationLevel == Sector::ContourLoaded)
-            {
-                renderData->initializeSector(sector);
-            }
+ //   for(int i = 0; i < newSectors->size(); ++i)
+ //   {
+ //   
+ //       Sector* sector = newSectors->at(i);
+ //       if (sector->m_initializationLevel < Sector::FullyInitialized)
+ //       {
+ //           if (sector->m_initializationLevel == Sector::ContourLoaded)
+ //           {
+ //               renderData->initializeSector(sector);
+ //           }
 
-            if (sector->m_initializationLevel == Sector::DataLoaded)
-            {
-                renderData->fillBuffers(sector);
-            }
+ //           if (sector->m_initializationLevel == Sector::DataLoaded)
+ //           {
+ //               renderData->fillBuffers(sector);
+ //           }
 
-            if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
-            {
-                //PRINT("heightfield geenerated, adding to terrain buffer")
-                 renderData->addToTerrainBuffer(sector);
-            }
-        }
+ //           if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
+ //           {
+ //               //PRINT("heightfield geenerated, adding to terrain buffer")
+ //                renderData->addToTerrainBuffer(sector);
+ //           }
+ //       }
 
 
-    }
+ //   }
 
-    delete(newSectors);
+ //   delete(newSectors);
 
 	world->Update();
 }
@@ -279,7 +282,7 @@ void LigumX::SetCallbacks(){
 
 void LigumX::Shutdown()
 {
-	Renderer::GetInstance().Shutdown();
+	m_Renderer->Shutdown();
 
 	running = false;
 }

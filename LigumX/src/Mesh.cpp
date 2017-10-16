@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Mesh.h"
+#include "LigumX.h"
 #include "Renderer.h"
 #include "Model.h" // todo rmove horrible hack to load objs
 using namespace std;
@@ -46,10 +47,10 @@ void Mesh::padBuffer(EBufferType bufferType)
 void Mesh::createBuffers()
 {
 	// TODO: I'm not quite convinced this belongs here. or does it?
-    Renderer::GetInstance().createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.vertexPositions);
+    LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.vertexPositions);
     // Renderer::createGLBuffer(m_VBOs.glidNormals,   m_buffers.m_vertexNormals);
-	Renderer::GetInstance().createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs,			m_buffers.m_vertexUVs);
-	Renderer::GetInstance().createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals, 	   m_buffers.m_vertexNormals);
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs,			m_buffers.m_vertexUVs);
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals, 	   m_buffers.m_vertexNormals);
 	
     glGenVertexArrays(1, &m_VAO);
 	glBindVertexArray(m_VAO);

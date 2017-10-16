@@ -5,7 +5,6 @@
 #include <sstream>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "glad/glad.h"
 #include "Logging.h"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -29,19 +28,23 @@ public:
 #pragma region  HEADER Model
 public:
 static const int ClassID = 2189814010;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
 const std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
 private:
+int m_ObjectID;
 std::string m_Name;
 std::vector<Material*> m_Materials;
 public:
-static const int g_PropertyCount = 2;
+static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ModelPIDX
 {
+PIDX_ObjectID,
 PIDX_Name,
 PIDX_Materials,
 };
@@ -64,6 +67,7 @@ public:
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
                                              std::string typeName);
 	void addMesh(Mesh* mesh, Material* material);
+	void addMesh(Mesh* mesh);
 
 
 	std::vector<Mesh* > m_meshes;

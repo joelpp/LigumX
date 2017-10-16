@@ -5,7 +5,7 @@
 //#include "FreeImage\Dist\x64\FreeImage.h"
 #include "FreeImage/Dist/x64/FreeImage.h"
 #include "glm/glm.hpp"
-#include "glad/glad.h"
+#include "GL.h"
 
 #include <string>
 
