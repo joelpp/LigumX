@@ -45,10 +45,12 @@ const float& GetNearPlane() { return m_NearPlane; };
 void SetNearPlane(float value) { m_NearPlane = value; }; 
 const float& GetFarPlane() { return m_FarPlane; }; 
 void SetFarPlane(float value) { m_FarPlane = value; }; 
-const ProjectionType& GetProjectionType() { return m_ProjectionType; }; 
-void SetProjectionType(ProjectionType value) { m_ProjectionType = value; }; 
+const int& GetProjectionType() { return m_ProjectionType; }; 
+void SetProjectionType(int value) { m_ProjectionType = value; }; 
 const float& GetOrthoBorders() { return m_OrthoBorders; }; 
 void SetOrthoBorders(float value) { m_OrthoBorders = value; }; 
+const float& GetViewSize() { return m_ViewSize; }; 
+void SetViewSize(float value) { m_ViewSize = value; }; 
 private:
 int m_ObjectID;
 glm::vec3 m_Position;
@@ -60,10 +62,11 @@ glm::mat4 m_ProjectionMatrix;
 glm::mat4 m_ViewProjectionMatrix;
 float m_NearPlane;
 float m_FarPlane;
-ProjectionType m_ProjectionType;
+int m_ProjectionType;
 float m_OrthoBorders;
+float m_ViewSize;
 public:
-static const int g_PropertyCount = 12;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -80,6 +83,7 @@ PIDX_NearPlane,
 PIDX_FarPlane,
 PIDX_ProjectionType,
 PIDX_OrthoBorders,
+PIDX_ViewSize,
 };
 void Serialize(bool writing);
 
@@ -97,7 +101,6 @@ public:
 	//glm::mat4 m_ProjectionMatrix;
 
     // TOP2D ad TOP3D parameters
-    float viewSize;
     float angle;
 
     // 3D parameters
@@ -120,13 +123,10 @@ public:
 
 public:
     Camera();
-    Camera(glm::vec3 position, glm::vec3 lookAt, float viewSize);
     void translateBy(glm::vec3 delta);
     void translateTo(glm::vec3 position);
     void moveFromUserInput(GLFWwindow* pWindow);
     void updateVPMatrix();
-    void setViewSize(float inViewSize);
-    void multViewSizeBy(float factor);
     void rotate(float _angle);
 
     void handlePresetMouseButton(

@@ -83,12 +83,6 @@ void World::InitTestWorld()
 		terrainQuadModel->SetName("TerrainModel");
 		testEntity->SetModel(terrainQuadModel);
 
-		//glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), glm::vec3(-100, -100, 1));
-		//toWorld = glm::scale(toWorld, glm::vec3(200, 200, 1));
-		//testEntity->m_ModelToWorldMatrix = toWorld;
-
-		
-
 		m_Entities.push_back(testEntity);
 	}
 
@@ -135,17 +129,26 @@ void World::InitTestWorld()
 		m_Entities.push_back(pointLightEntity);
 	}
 
-	// light 2
+	// light 3
 	//if (false)
-	//{
-	//	Entity* pointLightEntity = new Entity();
-	//	pointLightEntity->SetObjectID(19817);
-	//	pointLightEntity->Serialize(false);
-	//	pointLightEntity->GetModel()->addMesh(g_DefaultMeshes->DefaultCubeMesh);
+	{
+		Entity* pointLightEntity = new Entity();
+		pointLightEntity->SetName("PointLight");
+		pointLightEntity->SetPosition(glm::vec3(0.f, 33.f, 13.18f));
+		pointLightEntity->SetScale(glm::vec3(2, 2, 2));
+		pointLightEntity->SetIsLight(true);
 
+		// todo remove const from std vector getters
+		// todo fix vector serialization
+		Model* cubeModel = new Model();
+		cubeModel->SetObjectID(19309);
+		cubeModel->GetMaterials().push_back(new Material());
+		cubeModel->Serialize(false);
+		cubeModel->addMesh(g_DefaultMeshes->DefaultCubeMesh);
+		pointLightEntity->SetModel(cubeModel);
 
-	//	m_Entities.push_back(pointLightEntity);
-	//}
+		m_Entities.push_back(pointLightEntity);
+	}
 
 	// sphere
 	//if (false)

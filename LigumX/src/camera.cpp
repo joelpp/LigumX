@@ -23,8 +23,9 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ViewProjectionMatrix", offsetof(Camera, m_ViewProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "NearPlane", offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "FarPlane", offsetof(Camera, m_FarPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
-{ "ProjectionType", offsetof(Camera, m_ProjectionType), 0, LXType_ProjectionType, false, LXType_None, 0, 0, 0, }, 
+{ "ProjectionType", offsetof(Camera, m_ProjectionType), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "OrthoBorders", offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "ViewSize", offsetof(Camera, m_ViewSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 void Camera::Serialize(bool writing)
 {
@@ -52,7 +53,7 @@ Camera::Camera()
 {
 	m_OrthoBorders = 10.f;
     m_ViewProjectionMatrix = mat4(1);
-    viewSize = 1;
+    m_ViewSize = 1;
     angle = 0;
     totalViewAngleY = 45;
     aspectRatio = 1; // TODO: change to window's aspect ratio.
@@ -105,18 +106,6 @@ void Camera::translateTo(vec3 inPosition)
     updateVPMatrix();
 }
 
-void Camera::setViewSize(float inViewSize)
-{
-    viewSize = inViewSize;
-    updateVPMatrix();
-}
-
-void Camera::multViewSizeBy(float factor)
-{
-    viewSize *= factor;
-    updateVPMatrix();
-}
-
 void Camera::rotate(float _angle){
     angle += _angle;
     updateVPMatrix();
@@ -128,19 +117,19 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
 
     if( glfwGetKey(pWindow, GLFW_KEY_S)==GLFW_PRESS ||
         glfwGetKey(pWindow, GLFW_KEY_DOWN)==GLFW_PRESS ) {
-        translateBy(deltaFactor * viewSize * vec3(0,-1,0));
+        translateBy(deltaFactor * m_ViewSize * vec3(0,-1,0));
     }
     if( glfwGetKey(pWindow, GLFW_KEY_W)==GLFW_PRESS ||
         glfwGetKey(pWindow, GLFW_KEY_UP)==GLFW_PRESS ) {
-        translateBy(deltaFactor * viewSize * vec3(0,1,0));
+        translateBy(deltaFactor * m_ViewSize * vec3(0,1,0));
     }
     if( glfwGetKey(pWindow, GLFW_KEY_A)==GLFW_PRESS ||
         glfwGetKey(pWindow, GLFW_KEY_LEFT)==GLFW_PRESS ) {
-        translateBy(deltaFactor * viewSize * vec3(-1,0,0));
+        translateBy(deltaFactor * m_ViewSize * vec3(-1,0,0));
     }
     if( glfwGetKey(pWindow, GLFW_KEY_D)==GLFW_PRESS ||
         glfwGetKey(pWindow, GLFW_KEY_RIGHT)==GLFW_PRESS ) {
-        translateBy(deltaFactor * viewSize * vec3(1,0,0));
+        translateBy(deltaFactor * m_ViewSize * vec3(1,0,0));
     }
     if( glfwGetKey(pWindow, GLFW_KEY_R)==GLFW_PRESS ) {
         rotate(0.01f);

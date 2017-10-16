@@ -1,5 +1,5 @@
 ObjectID
-0
+3
 UseSkyLighting
 1
 DrawTerrain
@@ -9,7 +9,7 @@ DrawSky
 WireframeRendering
 0
 UseLighting
-0
+1
 ShowNormals
 0
 ShowSpecular

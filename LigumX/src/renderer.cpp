@@ -232,15 +232,12 @@ void Renderer::Initialize()
 	// TODO : add default constructors D: and serialization for gen files...
 	m_DisplayOptions = new DisplayOptions();
 	m_DisplayOptions->SetObjectID(0);
+
 	m_PostEffects = new PostEffects();
 	m_PostEffects->SetObjectID(0);
 
 	m_DebugCamera = new Camera();
 	m_DebugCamera->SetObjectID(0);
-	m_DebugCamera->SetProjectionType(ProjectionType_Perspective);
-	m_DebugCamera->setViewSize(Settings::GetInstance().f("viewSize"));
-	m_DebugCamera->translateTo(Settings::GetInstance().f3("cameraPosition"));
-	m_DebugCamera->lookAtTargetPos = Settings::GetInstance().f3("cameraLookAt");
 
 	m_ShadowCamera = new Camera();
 	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
@@ -690,6 +687,10 @@ void Renderer::ShowGUIText(const std::string& text, const char* variableName)
 	ImGui::Text("%s : %s", variableName, text.c_str());
 }
 
+void Renderer::ShowVariableAsText(int variable, const char* variableName)
+{
+	ImGui::Text("%s : %d", variableName, variable);
+}
 
 void Renderer::ShowVariableAsText(float variable, const char* variableName)
 {
@@ -720,6 +721,11 @@ template<typename T>
 void Renderer::ShowPropertyGridMacro(T* object, const char* name)
 {
 	ShowPropertyGrid(object, name);
+}
+
+void Renderer::ShowProperty(int* value, const char* name)
+{
+	ShowVariableAsText(*value, name);
 }
 
 void Renderer::ShowProperty(bool* value, const char* name)
@@ -769,6 +775,11 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 
 	switch (type)
 	{
+		case LXType_int:
+		{
+			ShowProperty((int*)ptr, name);
+			break;
+		}
 		case LXType_bool:
 		{
 			ShowProperty((bool*) ptr, name);
@@ -1273,11 +1284,6 @@ void Renderer::RenderEditor()
 	RenderTextureOverlay();
 }
 
-
-/**
- * [Renderer::render description]
- * @param camera [description]
- */
 void Renderer::render(World* world)
 {
 	BeginFrame(world);
@@ -1289,8 +1295,6 @@ void Renderer::render(World* world)
 	BeforeWorldRender();
 
 	RenderSky();
-
-	//DrawTerrain();
 
 	RenderOpaque();
 

@@ -24,10 +24,14 @@ void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
 {
         static const float factor = 1.1;
-        if(yOffset < 0) {
-            m_Renderer->GetDebugCamera()->multViewSizeBy(factor);
-        } else {
-			m_Renderer->GetDebugCamera()->multViewSizeBy(1.f/factor);
+		Camera* cam = m_Renderer->GetDebugCamera();
+        if(yOffset < 0) 
+		{
+			cam->SetViewSize(factor * cam->GetViewSize());
+        } 
+		else 
+		{
+			cam->SetViewSize(cam->GetViewSize() * (1.f / factor));
         }
 }
 

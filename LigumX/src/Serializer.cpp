@@ -12,7 +12,7 @@
 case LXType_##type : \
 { \
 ##type* val = (##type*) ptr; \
-objectStream << #type << std::endl; \
+objectStream << name << std::endl; \
 objectStream << val->GetObjectID() << std::endl; \
 val->Serialize(true); \
 break; \
@@ -152,7 +152,9 @@ break; \
 case LXType_##type : \
 { \
 ##type* val = (##type *)ptr; \
-val->SetObjectID(0); \
+int ObjectID; \
+objectStream >> ObjectID; \
+val->SetObjectID(ObjectID); \
 val->Serialize(false); \
 break; \
 } \
@@ -196,35 +198,8 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		// todo : camera
 		SERIALIZE_PTR_IN(DisplayOptions)
 		SERIALIZE_PTR_IN(PostEffects)
-		//SERIALIZE_PTR_IN(Camera)
-
-		case LXType_Camera:
-		{
-			Camera* val = (Camera *)ptr;
-			val->SetObjectID(0);
-			val->Serialize(false);
-			break;
-		}
-
-		//case LXType_stdvector:
-		//{
-		//	std::string line;
-		//	std::getline(objectStream, line);
-
-		//	int numItems = std::atoi(line.c_str());
-
-		//	std::vector<char*>* v = (std::vector<char*>*) ptr;
-		//	v->resize(numItems);
-
-		//	for (int i = 0; i < numItems; ++i)
-		//	{
-		//		SerializePropertyIn((*v)[i], associatedType, LXType_None, objectStream);
-		//	}
-
-		//	break;
-		//}
-
-
+		SERIALIZE_PTR_IN(Camera)
+		SERIALIZE_PTR_IN(Material)
 
 		case LXType_Model:
 		{
@@ -240,23 +215,23 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 			val->Serialize(false);
 			break;
 		}
-		case LXType_Material:
-		{
-			Material** val = (Material **)ptr;
+		//case LXType_Material:
+		//{
+		//	Material** val = (Material **)ptr;
 
-			if (*val == nullptr)
-			{
-				*val = new Material();
-			}
+		//	if (*val == nullptr)
+		//	{
+		//		*val = new Material();
+		//	}
 
-			int objectID;
-			objectStream >> objectID;
+		//	int objectID;
+		//	objectStream >> objectID;
 
-			(*val)->SetObjectID(objectID);
+		//	(*val)->SetObjectID(objectID);
 
-			(*val)->Serialize(false);
-			break;
-		}
+		//	(*val)->Serialize(false);
+		//	break;
+		//}
 		case LXType_Entity:
 		{
 			Entity** val = (Entity **)ptr;

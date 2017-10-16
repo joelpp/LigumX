@@ -9,7 +9,7 @@ AmbientColor
 DiffuseColor
 0
 0
-0
+1
 SpecularColor
 0
 0
@@ -17,7 +17,7 @@ SpecularColor
 IsPBR
 0
 Shininess
-0
+1
 Metallic
 0
 Roughness
@@ -31,7 +31,7 @@ DiffuseTextureEnabled
 SpecularTextureEnabled
 0
 Unlit
-0
+1
 RefractionIndex
 0
 IsGlass

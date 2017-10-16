@@ -393,6 +393,7 @@ private:
 	void ShowVariableAsText(glm::vec3 variable, const char* variableName);
 	void ShowVariableAsText(glm::vec3* variable, const char* variableName);
 	void ShowVariableAsText(float variable, const char* variableName);
+	void ShowVariableAsText(int variable, const char* variableName);
 	void ShowGUIText(const char* text);
 	void ShowGUIText(std::string* text);
 	void ShowGUIText(std::string* text, const char* variableName);
@@ -400,6 +401,7 @@ private:
 	void ShowGUIText(const std::string& text, const char* variableName);
 
 
+	void ShowProperty(int* value, const char* name);
 	void ShowProperty(bool* value, const char* name);
 	void ShowProperty(float* value, const char* name, float min, float max);
 	void ShowProperty(glm::vec3* value, const char* name, float min, float max);

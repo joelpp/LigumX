@@ -99,6 +99,7 @@ public:
 					ptr = *(char**)ptr;
 
 					SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, objectStream);
+					break;
 				}
 				else
 				{
@@ -108,10 +109,11 @@ public:
 						int numItems = std::atoi(line.c_str());
 
 						std::vector<char*>* v = (std::vector<char*>*) ((char*)object + propertyData.m_Offset);
-						v->resize(numItems);
+						//v->resize(numItems);
 						for (int i = 0; i < numItems; ++i)
 						{
-							char* ptr = (char*)&((*v)[i]);
+							char* ptr = (char*)((*v)[i]);
+
 							SerializePropertyIn(ptr, propertyData.m_AssociatedType, LXType_None, objectStream);
 						}
 
