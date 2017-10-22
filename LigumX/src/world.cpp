@@ -77,7 +77,10 @@ void World::InitTestWorld()
 
 		Material* material = new Material(nanosuitModel->GetMaterials()[4]->GetProgramPipeline(), glm::vec3(1, 0, 0));
 		material->SetShininess(1.0f);
-		material->SetDiffuseTexture(new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png"));
+
+		Texture* diffuseTexture = new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png");
+		diffuseTexture->Initialize();
+		material->SetDiffuseTexture(diffuseTexture);
 
 		Model* terrainQuadModel = new Model(g_DefaultMeshes->DefaultQuadMesh, material);
 		terrainQuadModel->SetName("TerrainModel");
@@ -177,10 +180,12 @@ World::World(float sectorSize)
 	m_SunLight->SetOrientation(25.f);
 	m_SunLight->SetSpeed(0.f);
 
-	m_SunLight->SetSkybox(new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/skybox/", true));
+	Texture* skyTexture = new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/skybox/", true);
+	skyTexture->Initialize();
+	m_SunLight->SetSkybox(skyTexture);
 	m_SunLight->SetUseSkybox(true);
 
-
+	m_SunLight->Serialize(true);
 }
 
 

@@ -6,6 +6,7 @@
 #include "Material.h"
 #include "Component.h"
 #include "Entity.h"
+#include "Texture.h"
 #include "glm/glm.hpp"
 
 #define SERIALIZE_PTR_OUT(type) \
@@ -66,6 +67,7 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 		SERIALIZE_PTR_OUT(DisplayOptions);
 		SERIALIZE_PTR_OUT(PostEffects);
 		SERIALIZE_PTR_OUT(Camera);
+		SERIALIZE_PTR_OUT(Texture);
 
 		//case LXType_stdstring:
 		//{

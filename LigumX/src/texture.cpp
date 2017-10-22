@@ -3,7 +3,107 @@
 #include "texture.h"
 #include <vector>
 
+#pragma region  CLASS_SOURCE Texture
+#include "Texture.h"
+#include "serializer.h"
+#include <cstddef>
+const ClassPropertyData Texture::g_Properties[] = 
+{
+{ "ObjectID", offsetof(Texture, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Filename", offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "IsCubeMap", offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+};
+void Texture::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Texture_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		if (objectStream.is_open())
+		{
+			Serializer::SerializeObject(this, objectStream, writing);
+		}
+	}
+}
+
+#pragma endregion  CLASS_SOURCE Texture
 using namespace std;
+
+Texture::Texture()
+{
+
+}
+
+
+// create texture from file.
+Texture::Texture(string filename, bool isCubeMap)
+	: m_Filename(filename),
+	  m_IsCubeMap(isCubeMap)
+{
+	
+
+}
+
+void Texture::Initialize()
+{
+	std::vector<std::string> filenames;
+	GLuint target;
+	if (!m_IsCubeMap)
+	{
+		filenames.push_back(m_Filename);
+		target = GL_TEXTURE_2D;
+	}
+	else
+	{
+		for (int i = 0; i < 6; ++i)
+		{
+			std::string names[] =
+			{
+				"front",
+				"back",
+				"right",
+				"left",
+				"top",
+				"bottom",
+			};
+			filenames.push_back(m_Filename + names[i] + ".jpg");
+		}
+
+	}
+	GLuint bindingTarget = GL_TEXTURE_2D;
+	if (m_IsCubeMap)
+	{
+		bindingTarget = GL_TEXTURE_CUBE_MAP;
+	}
+
+	glGenTextures(1, &glidTexture);
+	glBindTexture(bindingTarget, glidTexture);
+
+	glTexParameteri(bindingTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(bindingTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	int i = 0;
+	for (std::string& file : filenames)
+	{
+		if (m_IsCubeMap)
+		{
+			target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
+		}
+
+		LoadFromFile(target, filenames[i]);
+		i++;
+	}
+
+	glGenerateMipmap(bindingTarget);
+
+	glBindTexture(bindingTarget, 0);
+}
 
 void Texture::LoadFromFile(GLuint target, std::string filename)
 {
@@ -56,72 +156,3 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	FreeImage_Unload(dib);
 }
 
-// create texture from file.
-Texture::Texture(string filename, bool isCubeMap)
-{
-	m_IsCubeMap = isCubeMap;
-
-	std::vector<std::string> filenames;
-	GLuint target;
-	if (!m_IsCubeMap)
-	{
-		filenames.push_back(filename);
-		target = GL_TEXTURE_2D;
-	}
-	else
-	{
-		for (int i = 0; i < 6; ++i)
-		{
-//
-//#define GL_TEXTURE_CUBE_MAP_POSITIVE_X 0x8515
-//#define GL_TEXTURE_CUBE_MAP_NEGATIVE_X 0x8516
-//#define GL_TEXTURE_CUBE_MAP_POSITIVE_Y 0x8517
-//#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y 0x8518
-//#define GL_TEXTURE_CUBE_MAP_POSITIVE_Z 0x8519
-//#define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z 0x851A
-//
-			std::string names[] =
-			{
-				"front",
-				"back",
-				"right",
-				"left",
-				"top",
-				"bottom",
-			};
-			filenames.push_back(filename + names[i] + ".jpg");
-		}
-	}
-
-
-	GLuint bindingTarget = GL_TEXTURE_2D;
-	if (m_IsCubeMap)
-	{
-		bindingTarget = GL_TEXTURE_CUBE_MAP;
-	}
-
-	glGenTextures(1, &glidTexture);
-	glBindTexture(bindingTarget, glidTexture);
-
-
-	glTexParameteri(bindingTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(bindingTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	int i = 0;
-	for (std::string& file : filenames)
-	{
-		if (m_IsCubeMap)
-		{
-			target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
-		}
-
-		LoadFromFile(target, filenames[i]);
-		i++;
-	}
-
-	glGenerateMipmap(bindingTarget);
-
-	glBindTexture(bindingTarget, 0);
-}

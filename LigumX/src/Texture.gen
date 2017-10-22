@@ -1,0 +1,5 @@
+class Texture
+{
+	std::string Filename
+	bool IsCubeMap
+}

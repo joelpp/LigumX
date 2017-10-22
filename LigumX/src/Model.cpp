@@ -138,6 +138,7 @@ Texture* tryLoadTexture(std::string path)
 	try
 	{
 		texture = new Texture(path);
+		texture->Initialize();
 	}
 	catch (std::exception e)
 	{
