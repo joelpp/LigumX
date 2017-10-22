@@ -15,6 +15,7 @@ const ClassPropertyData Model::g_Properties[] =
 {
 { "ObjectID", offsetof(Model, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "Filename", offsetof(Model, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Materials", offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, }, 
 };
 void Model::Serialize(bool writing)
@@ -29,6 +30,7 @@ void Model::Serialize(bool writing)
 	{
 		Serializer::SerializeObject(this, objectStream, writing);
 	}
+	PostSerialization(writing);
 }
 
 #pragma endregion  CLASS_SOURCE Model
@@ -41,8 +43,8 @@ Model::Model()
 }
 
 Model::Model(std::string path)
+	: m_Filename(path)
 {
-	loadModel(path);
 	m_modelMatrix = glm::mat4(1.0);
 	m_ObjectID = rand();
 }
@@ -65,6 +67,13 @@ Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
 	m_ObjectID = rand();
 }
 
+void Model::PostSerialization(bool writing)
+{
+	if (!writing) // reading
+	{
+		loadModel();
+	}
+}
 
 
 void Model::CreateHWBuffers()
@@ -77,10 +86,10 @@ void Model::CreateHWBuffers()
 	}
 }
 
-void Model::loadModel(std::string path)
+void Model::loadModel()
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | /*aiProcess_GenNormals |*/ aiProcess_GenSmoothNormals);
+    const aiScene* scene = import.ReadFile(m_Filename, aiProcess_Triangulate | /*aiProcess_GenNormals |*/ aiProcess_GenSmoothNormals);
 	
     if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
@@ -104,12 +113,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 		
 		Mesh* mesh = processMesh(assimpMesh, scene);
 
-		Material* material = processMaterial(assimpMesh, scene);
-
-		//todo : more graceful handling of program pipeline
-		material->SetProgramPipeline(new ProgramPipeline("Basic"));
-
-		addMesh(mesh, material);
+		addMesh(mesh);
 		//addMesh(g_DefaultMeshes->DefaultQuadMesh, material);
     }
     // Then do the same for each of its children

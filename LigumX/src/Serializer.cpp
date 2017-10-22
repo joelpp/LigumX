@@ -8,22 +8,28 @@
 #include "Entity.h"
 #include "Texture.h"
 #include "Sunlight.h"
+#include "Mesh.h"
 #include "glm/glm.hpp"
 
 #define SERIALIZE_PTR_OUT(type) \
 case LXType_##type : \
 { \
-##type* val = (##type*) ptr; \
-objectStream << name << std::endl; \
-objectStream << val->GetObjectID() << std::endl; \
-val->Serialize(true); \
-break; \
+	##type* val = (##type*) ptr; \
+	if (ptr) \
+	{ \
+		objectStream << val->GetObjectID() << std::endl; \
+		val->Serialize(true); \
+	} \
+	else \
+	{ \
+		objectStream << 0 << std::endl; \
+	} \
+	break; \
 } \
 
 #define SERIALIZE_VALUE_OUT(type, name) \
 case LXType_##type : \
 { \
-objectStream << name << std::endl; \
 objectStream << *((##type *)ptr) << std::endl; \
 break; \
 } \
@@ -31,7 +37,6 @@ break; \
 #define SERIALIZE_VALUE_OUT_NS(nameSpace, type, name) \
 case LXType_##nameSpace##type : \
 { \
-objectStream << name << std::endl; \
 objectStream << *((##nameSpace::##type *)ptr) << std::endl; \
 break; \
 } \
@@ -48,8 +53,6 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 
 		case LXType_glmvec3:
 		{
-			objectStream << name << std::endl;
-
 			glm::vec3* value = (glm::vec3*) ptr;
 			objectStream << value->x << std::endl;
 			objectStream << value->y << std::endl;
@@ -58,53 +61,55 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 		}
 		case LXType_glmvec2:
 		{
-			objectStream << name << std::endl;
-
 			glm::vec2* value = (glm::vec2*) ptr;
 			objectStream << value->x << std::endl;
 			objectStream << value->y << std::endl;
 			break;
 		}
-		SERIALIZE_PTR_OUT(DisplayOptions);
-		SERIALIZE_PTR_OUT(PostEffects);
-		SERIALIZE_PTR_OUT(Camera);
-		SERIALIZE_PTR_OUT(Texture);
-		SERIALIZE_PTR_OUT(SunLight);
+		SERIALIZE_PTR_OUT(DisplayOptions)
+		SERIALIZE_PTR_OUT(PostEffects)
+		SERIALIZE_PTR_OUT(Camera)
+		SERIALIZE_PTR_OUT(Texture)
+		SERIALIZE_PTR_OUT(SunLight)
+		SERIALIZE_PTR_OUT(Entity)
+		SERIALIZE_PTR_OUT(Model)
+		SERIALIZE_PTR_OUT(Mesh)
+		SERIALIZE_PTR_OUT(Material)
 
 		//case LXType_stdstring:
 		//{
 		//ShowProperty((std::string*) ptr, name);
 		//break;
 		//}
-		case LXType_Model:
-		{
-			objectStream << name << std::endl;
+		//case LXType_Model:
+		//{
+		//	objectStream << name << std::endl;
 
-			Model* model = (Model*) ptr;
-			objectStream << model->GetObjectID() << std::endl;
+		//	Model* model = (Model*) ptr;
+		//	objectStream << model->GetObjectID() << std::endl;
 
-			model->Serialize(true);
-			break;
-		}
-		case LXType_Material:
-		{
-			Material* material = (Material*)ptr;
+		//	model->Serialize(true);
+		//	break;
+		//}
+		//case LXType_Material:
+		//{
+		//	Material* material = (Material*)ptr;
 
-			objectStream << material->GetObjectID() << std::endl;
+		//	objectStream << material->GetObjectID() << std::endl;
 
-			material->Serialize(true);
-			break;
-		}
+		//	material->Serialize(true);
+		//	break;
+		//}
 
-		case LXType_Entity:
-		{
-			Entity* entity = (Entity*)ptr;
+		//case LXType_Entity:
+		//{
+		//	Entity* entity = (Entity*)ptr;
 
-			objectStream << entity->GetObjectID() << std::endl;
+		//	objectStream << entity->GetObjectID() << std::endl;
 
-			entity->Serialize(true);
-			break;
-		}
+		//	entity->Serialize(true);
+		//	break;
+		//}
 
 		//case LXType_Texture:
 		//{
@@ -155,6 +160,12 @@ break; \
 #define SERIALIZE_PTR_IN(type) \
 case LXType_##type : \
 { \
+	int ObjectID; \
+	objectStream >> ObjectID; \
+	if (ObjectID == 0) \
+	{ \
+		break; \
+	} \
 	if (*ptr == 0) \
 	{ \
 		##type* dptr = new type(); \
@@ -163,8 +174,6 @@ case LXType_##type : \
 		ptr = *(char**)ptr; \
 	} \
 	##type* val = (##type *)ptr; \
-	int ObjectID; \
-	objectStream >> ObjectID; \
 	val->SetObjectID(ObjectID); \
 	val->Serialize(false); \
 	break; \
@@ -184,7 +193,17 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PRIMITIVE_IN(int)
 		SERIALIZE_PRIMITIVE_IN(bool)
 		SERIALIZE_PRIMITIVE_IN(float)
-		SERIALIZE_PRIMITIVE_IN_NS(std, string)
+		//SERIALIZE_PRIMITIVE_IN_NS(std, string)
+
+		case LXType_stdstring:
+		{
+			std::string* sptr = (std::string *)ptr;
+			std::string temp;
+			objectStream >> temp;
+			*sptr = temp;
+			break;
+		} 
+
 		case LXType_glmvec3:
 		{
 			glm::vec3* vector = (glm::vec3*) ptr;
@@ -242,8 +261,10 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PTR_IN(Camera)
 		SERIALIZE_PTR_IN(Material)
 		SERIALIZE_PTR_IN(Model)
+		SERIALIZE_PTR_IN(Mesh)
 		SERIALIZE_PTR_IN(Texture)
 		SERIALIZE_PTR_IN(SunLight)
+		SERIALIZE_PTR_IN(Entity)
 
 		//case LXType_Model:
 		//{
@@ -294,23 +315,23 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		//	(*val)->Serialize(false);
 		//	break;
 		//}
-		case LXType_Entity:
-		{
-			Entity** val = (Entity **)ptr;
+		//case LXType_Entity:
+		//{
+		//	Entity** val = (Entity **)ptr;
 
-			if (*val == nullptr)
-			{
-				*val = new Entity();
-			}
+		//	if (*val == nullptr)
+		//	{
+		//		*val = new Entity();
+		//	}
 
-			int objectID;
-			objectStream >> objectID;
+		//	int objectID;
+		//	objectStream >> objectID;
 
-			(*val)->SetObjectID(objectID);
+		//	(*val)->SetObjectID(objectID);
 
-			(*val)->Serialize(false);
-			break;
-		}
+		//	(*val)->Serialize(false);
+		//	break;
+		//}
 
 		//case LXType_Texture:
 		//{

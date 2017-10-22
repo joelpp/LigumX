@@ -25,7 +25,7 @@ void Texture::Serialize(bool writing)
 	{
 		Serializer::SerializeObject(this, objectStream, writing);
 	}
-PostSerialization();
+PostSerialization(writing);
 }
 
 #pragma endregion  CLASS_SOURCE Texture
@@ -33,7 +33,7 @@ using namespace std;
 
 Texture::Texture()
 {
-
+	m_ObjectID = rand();
 }
 
 
@@ -42,13 +42,15 @@ Texture::Texture(string filename, bool isCubeMap)
 	: m_Filename(filename),
 	  m_IsCubeMap(isCubeMap)
 {
-	
-
+	m_ObjectID = rand();
 }
 
-void Texture::PostSerialization()
+void Texture::PostSerialization(bool writing)
 {
-	Initialize();
+	if (!writing)
+	{
+		Initialize();
+	}
 }
 
 void Texture::Initialize()

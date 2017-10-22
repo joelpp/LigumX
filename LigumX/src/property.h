@@ -37,6 +37,7 @@ enum LXType
 	LXType_DisplayOptions,
 	LXType_ProjectionType,
 	LXType_Model,
+	LXType_Mesh,
 	LXType_AABB,
 	LXType_SunLight,
 

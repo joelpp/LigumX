@@ -40,5 +40,6 @@ class Material
 	[setcallback]
 	Texture* SpecularTexture;
 
+	[transient]
 	ProgramPipeline* ProgramPipeline;
 }

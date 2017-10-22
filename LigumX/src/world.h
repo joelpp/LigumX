@@ -13,6 +13,7 @@
 #pragma region  FORWARD_DECLARATIONS World
 #include "property.h"
 class SunLight;
+class Entity;
 
 #pragma endregion  FORWARD_DECLARATIONS World
 class Sunlight;
@@ -54,17 +55,21 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 SunLight* GetSunLight() { return m_SunLight; }; 
 void SetSunLight(SunLight* value) { m_SunLight = value; }; 
+const std::vector<Entity*>& GetEntities() { return m_Entities; }; 
+void SetEntities(std::vector<Entity*> value) { m_Entities = value; }; 
 private:
 int m_ObjectID;
 SunLight* m_SunLight;
+std::vector<Entity*> m_Entities;
 public:
-static const int g_PropertyCount = 2;
+static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WorldPIDX
 {
 PIDX_ObjectID,
 PIDX_SunLight,
+PIDX_Entities,
 };
 void Serialize(bool writing);
 
@@ -126,7 +131,6 @@ public:
     SectorManager* m_sectorManager;
     float m_globalTime;
 
-	std::vector<Entity*> m_Entities;
 };
 #endif
 

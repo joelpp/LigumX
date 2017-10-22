@@ -1015,7 +1015,7 @@ void Renderer::RenderShadowMap()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	RenderEntities(m_World->m_Entities);
+	RenderEntities(m_World->GetEntities());
 
 	BindFramebuffer(FramebufferType_Default);
 }
@@ -1040,7 +1040,7 @@ void Renderer::RenderOpaque()
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	RenderEntities(m_World->m_Entities);
+	RenderEntities(m_World->GetEntities());
 }
 
 void Renderer::RenderTextureOverlay()
@@ -1100,7 +1100,7 @@ void Renderer::RenderPicking()
 
 	SetViewUniforms(m_DebugCamera);
 
-	for (Entity* entity : m_World->m_Entities)
+	for (Entity* entity : m_World->GetEntities())
 	{
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
@@ -1143,7 +1143,7 @@ void Renderer::RenderPicking()
 	if (m_LastMouseClickPosition != m_MouseClickPosition)
 	{
 		// search for picked entity
-		for (Entity* entity : m_World->m_Entities)
+		for (Entity* entity : m_World->GetEntities())
 		{
 			// todo : proper int rendertarget; how does depth work then? do we care?
 			if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
@@ -1170,7 +1170,7 @@ void Renderer::BeginFrame(World* world)
 
 	m_NumLights = 0;
 
-	for (Entity* entity : m_World->m_Entities)
+	for (Entity* entity : m_World->GetEntities())
 	{
 		if (entity->GetIsLight())
 		{

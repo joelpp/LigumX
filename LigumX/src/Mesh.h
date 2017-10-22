@@ -6,6 +6,10 @@
 #include "Logging.h"
 #include <iostream>
 
+#pragma region  FORWARD_DECLARATIONS Mesh
+#include "property.h"
+
+#pragma endregion  FORWARD_DECLARATIONS Mesh
 class Texture;
 class Material;
 class Vertex;
@@ -50,6 +54,25 @@ struct CPUBuffers
 
 class Mesh
 {
+#pragma region  HEADER Mesh
+public:
+static const int ClassID = 132142556;
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
+private:
+int m_ObjectID;
+public:
+static const int g_PropertyCount = 1;
+static const ClassPropertyData g_Properties[g_PropertyCount];
+
+enum g_MeshPIDX
+{
+PIDX_ObjectID,
+};
+void Serialize(bool writing);
+
+#pragma endregion  HEADER Mesh
+
 
 public:
 	// Mesh(std::vector<Vertex> vertexArray);

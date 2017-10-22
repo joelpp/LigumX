@@ -435,5 +435,6 @@
     <None Include="src\Component.gen" />
     <None Include="src\World.gen" />
     <None Include="src\Texture.gen" />
+    <None Include="src\Mesh.gen" />
   </ItemGroup>
 </Project>

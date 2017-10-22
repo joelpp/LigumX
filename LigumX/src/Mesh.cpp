@@ -5,6 +5,29 @@
 #include "Renderer.h"
 #include "Model.h" // todo rmove horrible hack to load objs
 using namespace std;
+#pragma region  CLASS_SOURCE Mesh
+#include "Mesh.h"
+#include "serializer.h"
+#include <cstddef>
+const ClassPropertyData Mesh::g_Properties[] = 
+{
+{ "ObjectID", offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+};
+void Mesh::Serialize(bool writing)
+{
+	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+	std::string fileName = "Mesh_" + std::to_string(m_ObjectID) + ".LXobj";
+
+	int fileMask = writing ? std::ios::out : std::ios::in;
+	std::fstream objectStream(basePath + fileName, fileMask);
+
+	if (objectStream.is_open())
+	{
+		Serializer::SerializeObject(this, objectStream, writing);
+	}
+}
+
+#pragma endregion  CLASS_SOURCE Mesh
 
 Mesh::Mesh()
 {
@@ -153,6 +176,7 @@ void DefaultMeshes::InitializeDefaultCube()
 //	DefaultQuadMesh->m_renderingMode = GL_TRIANGLES;
 
 	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/cube/cube.obj");
+	testModel->loadModel();
 	DefaultCubeMesh = testModel->m_meshes[0];
 
 }
@@ -198,6 +222,7 @@ void DefaultMeshes::InitializeDefaultQuad()
 void DefaultMeshes::InitializeDefaultSphere()
 {
 	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere/sphere.obj");
+	testModel->loadModel();
 	DefaultSphereMesh = testModel->m_meshes[0];
 }
 

@@ -143,7 +143,7 @@ public:
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{
-			WriteLine("PostSerialization();");
+			WriteLine("PostSerialization(writing);");
 		}
 		WriteLine("}");
 	}

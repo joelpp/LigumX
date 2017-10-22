@@ -44,6 +44,7 @@ public:
 			}
 			else
 			{
+				objectStream << propertyData.m_Name << std::endl;
 				SerializePropertyOut(ptr, propertyData.m_Name, propertyData.m_Type, objectStream);
 			}
 

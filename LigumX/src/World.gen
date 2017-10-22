@@ -1,4 +1,5 @@
 class World
 {
 	SunLight* SunLight;
+	std::vector<Entity> Entities;
 }

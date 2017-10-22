@@ -24,6 +24,7 @@ const ClassPropertyData World::g_Properties[] =
 {
 { "ObjectID", offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "SunLight", offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
+{ "Entities", offsetof(World, m_Entities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
 };
 void World::Serialize(bool writing)
 {
@@ -55,17 +56,23 @@ void World::InitTestWorld()
 	Model* nanosuitModel;
 	{
 		Entity* testEntity = new Entity();
-		testEntity->SetName("Nanosuit");
-		testEntity->SetPosition(glm::vec3(0, 20, 1));
-		testEntity->SetRotationAngle(90.f);
+		testEntity->SetObjectID(11072);
+		testEntity->Serialize(false);
+		//testEntity->SetName("Nanosuit");
+		//testEntity->SetPosition(glm::vec3(0, 20, 1));
+		//testEntity->SetRotationAngle(90.f);
 
-		nanosuitModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/nanosuit2.obj");
-		nanosuitModel->SetName("NanosuitModel");
-		testEntity->SetModel(nanosuitModel);
+		//nanosuitModel = new Model();
+		//nanosuitModel->SetObjectID(4699);
+		//nanosuitModel->Serialize(false);
+		//testEntity->SetModel(nanosuitModel);
 
 		m_Entities.push_back(testEntity);
+
+		//testEntity->Serialize(true);
 	}
 
+	if (false)
 	{
 		Entity* testEntity = new Entity();
 		testEntity->SetName("Terrain");
@@ -87,6 +94,7 @@ void World::InitTestWorld()
 	}
 
 	// light 0
+	if (false)
 	{
 		Entity* pointLightEntity = new Entity();
 		pointLightEntity->SetName("PointLight");
@@ -108,7 +116,7 @@ void World::InitTestWorld()
 	}
 
 	// light 1
-	//if (false)
+	if (false)
 	{
 		Entity* pointLightEntity = new Entity();
 		pointLightEntity->SetName("PointLight");
@@ -130,7 +138,7 @@ void World::InitTestWorld()
 	}
 
 	// light 3
-	//if (false)
+	if (false)
 	{
 		Entity* pointLightEntity = new Entity();
 		pointLightEntity->SetObjectID(19817);
@@ -142,7 +150,7 @@ void World::InitTestWorld()
 	}
 
 	// sphere
-	//if (false)
+	if (false)
 	{
 		Entity* sphereEntity = new Entity();
 		sphereEntity->SetName("Sphere");

@@ -32,23 +32,28 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
+const std::string& GetFilename() { return m_Filename; }; 
+void SetFilename(std::string value) { m_Filename = value; }; 
 const std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
+std::string m_Filename;
 std::vector<Material*> m_Materials;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ModelPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
+PIDX_Filename,
 PIDX_Materials,
 };
 void Serialize(bool writing);
+void PostSerialization(bool writing);
 
 #pragma endregion  HEADER Model
 
@@ -60,7 +65,7 @@ public:
 
 	Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList);
 
-	void loadModel(std::string path);
+	void loadModel();
     void processNode(aiNode* node, const aiScene* scene);
 	Material* processMaterial(aiMesh* assimpMesh, const aiScene* scene);
     Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
