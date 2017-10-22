@@ -173,16 +173,18 @@ World::World(float sectorSize)
 	InitTestWorld();
 
 	m_SunLight = new SunLight();
-	m_SunLight->SetTime(100.f);
-	m_SunLight->SetOrientation(25.f);
-	m_SunLight->SetSpeed(0.f);
+	m_SunLight->SetObjectID(3796);
+	m_SunLight->Serialize(false);
 
-	Texture* skyTexture = new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/skybox/", true);
-	skyTexture->Initialize();
-	m_SunLight->SetSkybox(skyTexture);
-	m_SunLight->SetUseSkybox(true);
+	//m_SunLight->SetTime(100.f);
+	//m_SunLight->SetOrientation(25.f);
+	//m_SunLight->SetSpeed(0.f);
 
-	m_SunLight->Serialize(true);
+	//Texture* skyTexture = new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/skybox/", true);
+	//skyTexture->Initialize();
+	//m_SunLight->SetSkybox(skyTexture);
+	//m_SunLight->SetUseSkybox(true);
+
 }
 
 

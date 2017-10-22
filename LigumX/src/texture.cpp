@@ -25,6 +25,7 @@ void Texture::Serialize(bool writing)
 	{
 		Serializer::SerializeObject(this, objectStream, writing);
 	}
+PostSerialization();
 }
 
 #pragma endregion  CLASS_SOURCE Texture
@@ -43,6 +44,11 @@ Texture::Texture(string filename, bool isCubeMap)
 {
 	
 
+}
+
+void Texture::PostSerialization()
+{
+	Initialize();
 }
 
 void Texture::Initialize()

@@ -1,3 +1,4 @@
+[postserialization]
 class Texture
 {
 	std::string Filename

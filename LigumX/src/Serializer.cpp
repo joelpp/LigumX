@@ -240,6 +240,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PTR_IN(Camera)
 		SERIALIZE_PTR_IN(Material)
 		SERIALIZE_PTR_IN(Model)
+		SERIALIZE_PTR_IN(Texture)
 
 		//case LXType_Model:
 		//{

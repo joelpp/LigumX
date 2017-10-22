@@ -80,6 +80,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				else
 				{
 					classPropertyFlags = GetClassPropertyFlags(tokens);
+					currentClass.m_PropertyFlags = classPropertyFlags;
 				}
 
 				continue;
