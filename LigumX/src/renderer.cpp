@@ -33,6 +33,7 @@ const ClassPropertyData Renderer::g_Properties[] =
 void Renderer::Serialize(bool writing)
 {
 	g_Serializer->SerializeObject(this, writing); 
+	PostSerialization(writing);
 }
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -209,10 +210,16 @@ void Renderer::InitFreetype()
 
 }
 
+void Renderer::PostSerialization(bool writing)
+{
+	if (!writing)
+	{
+		Initialize();
+	}
+}
+
 void Renderer::Initialize()
 {
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
-
 	windowWidth = 1100;
 	windowHeight = 880;
 	windowTitle = "LigumX";
@@ -240,8 +247,6 @@ void Renderer::Initialize()
     std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
 
 	ImGui_ImplGlfwGL3_Init(pWindow, true);
-
-	SetObjectID(0);
 }
 
 void Renderer::Shutdown()

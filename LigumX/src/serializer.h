@@ -142,6 +142,16 @@ public:
 		}
 	}
 
+	void SetObjectDataPath(std::string& s)
+	{
+		m_CurrentObjectDataPath = s;
+	}
+
+	std::string GetObjectDataPath()
+	{
+		return m_CurrentObjectDataPath;
+	}
+
 private:
 	std::string m_CurrentObjectDataPath;
 	void SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, std::fstream& objectStream);

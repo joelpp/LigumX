@@ -66,9 +66,9 @@ void LigumX::mainLoop()
 
 void LigumX::init()
 {
-    //=============================================================================
-    // Parameters, camera setup.
-    //=============================================================================
+	//=============================================================================
+	// Load Default data.
+	//=============================================================================
 
 
 	g_Serializer = new Serializer();
@@ -78,22 +78,13 @@ void LigumX::init()
 	m_Renderer->SetObjectID(28763);
 	m_Renderer->Serialize(false);
 
+	g_DefaultMeshes = new DefaultMeshes();
+
+	SetCallbacks();
+
 	loadSettings();
 
-    m_Renderer->Initialize();
-    running = true;
-
-    populateTypeColorArray();
-
-    // register GLFW and GLdebug callbacks
-    SetCallbacks();
-
-	//=============================================================================
-	// Load Default data.
-	//=============================================================================
-
-	// todo :reenable this
-	g_DefaultMeshes = new DefaultMeshes();
+	populateTypeColorArray();
 
 
     //=============================================================================
