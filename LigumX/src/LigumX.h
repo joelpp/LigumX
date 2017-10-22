@@ -16,6 +16,7 @@
 #include "glm/ext.hpp"
 #include "Logging.h"
 #include "entity.h"
+#include "DefaultMeshes.h"
 #include "settings.h"
 
 

@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData Texture::g_Properties[] = 
 {
 { "ObjectID", offsetof(Texture, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -25,7 +26,7 @@ void Texture::Serialize(bool writing)
 	{
 		Serializer::SerializeObject(this, objectStream, writing);
 	}
-PostSerialization(writing);
+	PostSerialization(writing);
 }
 
 #pragma endregion  CLASS_SOURCE Texture

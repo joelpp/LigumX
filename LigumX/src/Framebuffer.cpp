@@ -7,6 +7,7 @@
 #include "Framebuffer.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
 { "ObjectID", offsetof(Framebuffer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

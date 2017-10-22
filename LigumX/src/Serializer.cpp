@@ -1,8 +1,10 @@
 #include "serializer.h"
+#include "ObjectIDManager.h"
 #include "DisplayOptions.h"
 #include "PostEffects.h"
 #include "Camera.h"
 #include "Model.h"
+#include "DefaultMeshes.h"
 #include "Material.h"
 #include "Component.h"
 #include "Entity.h"
@@ -73,8 +75,32 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 		SERIALIZE_PTR_OUT(SunLight)
 		SERIALIZE_PTR_OUT(Entity)
 		SERIALIZE_PTR_OUT(Model)
-		SERIALIZE_PTR_OUT(Mesh)
+		//SERIALIZE_PTR_OUT(Mesh)
 		SERIALIZE_PTR_OUT(Material)
+
+		case LXType_Mesh:
+		{
+			Mesh* val = (Mesh*) ptr;
+			if (ptr)
+			{
+				int id = val->GetObjectID();
+				objectStream << id << std::endl;
+
+				if (g_ObjectIDManager->IsHardcodedID(id))
+				{
+
+				}
+				else
+				{
+					val->Serialize(true);
+				}
+			}
+			else
+			{
+				objectStream << 0 << std::endl;
+			}
+			break;
+		}
 
 		//case LXType_stdstring:
 		//{
@@ -261,10 +287,49 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PTR_IN(Camera)
 		SERIALIZE_PTR_IN(Material)
 		SERIALIZE_PTR_IN(Model)
-		SERIALIZE_PTR_IN(Mesh)
+		//SERIALIZE_PTR_IN(Mesh)
 		SERIALIZE_PTR_IN(Texture)
 		SERIALIZE_PTR_IN(SunLight)
 		SERIALIZE_PTR_IN(Entity)
+
+		case LXType_Mesh:
+		{
+			int objectID;
+			objectStream >> objectID;
+			if (!g_ObjectIDManager->IsValidID(objectID))
+			{
+				break;
+			}
+
+			bool hardcodedId = g_ObjectIDManager->IsHardcodedID(objectID);
+			if (*ptr == 0)
+			{
+				if (hardcodedId)
+				{
+
+				}
+				else
+				{
+					Mesh* dptr = new Mesh();
+					char** aptr = (char**)ptr;
+					*aptr = (char*)dptr;
+					ptr = *(char**)ptr;
+				}
+			}
+			Mesh* val = (Mesh *) ptr;
+
+			if (hardcodedId)
+			{
+				val = g_DefaultMeshes->GetMeshFromID(objectID);
+			}
+			else
+			{
+				val->SetObjectID(objectID);
+				val->Serialize(false);
+			}
+
+			break;
+		}
 
 		//case LXType_Model:
 		//{

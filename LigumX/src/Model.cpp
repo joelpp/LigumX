@@ -5,18 +5,21 @@
 #include "Texture.h"
 #include "Material.h"
 #include "program_pipeline.h"
+#include "DefaultMeshes.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 #pragma region  CLASS_SOURCE Model
 #include "Model.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData Model::g_Properties[] = 
 {
 { "ObjectID", offsetof(Model, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Filename", offsetof(Model, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Materials", offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, }, 
+{ "FilenameIsID", offsetof(Model, m_FilenameIsID), 0, LXType_bool, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 };
 void Model::Serialize(bool writing)
 {
@@ -71,7 +74,16 @@ void Model::PostSerialization(bool writing)
 {
 	if (!writing) // reading
 	{
-		loadModel();
+		if (m_FilenameIsID)
+		{
+			int hardcodedMeshID = std::atoi(m_Filename.c_str());
+			Mesh* mesh = g_DefaultMeshes->GetMeshFromID(hardcodedMeshID);
+			m_meshes.push_back(mesh);
+		}
+		else
+		{
+			loadModel();
+		}
 	}
 }
 
@@ -245,4 +257,12 @@ void Model::addMesh(Mesh* mesh, Material* material)
 }
 
 
+void Model::SetFilenameIsIDCallback(bool value)
+{
+	m_FilenameIsID = value;
 
+	if (m_FilenameIsID)
+	{
+		m_Filename = std::to_string(m_meshes[0]->GetObjectID());
+	}
+}

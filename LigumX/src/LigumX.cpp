@@ -6,6 +6,7 @@
 #include "glm/gtx/string_cast.hpp"
 
 #include "LigumX.h"
+#include "ObjectIDManager.h"
 #include "SectorData.h"
 #include "Settings.h"
 #include "RenderDataManager.h"
@@ -32,9 +33,9 @@ int main(int argc, char *argv[])
 
     LigumX& game = LigumX::GetInstance();
 	
-	game.running = true;
     game.init();
 
+	game.running = true;
     while(game.running) 
 	{
         glfwPollEvents();
@@ -68,6 +69,9 @@ void LigumX::init()
     // Parameters, camera setup.
     //=============================================================================
 
+
+	g_ObjectIDManager = new ObjectIDManager();
+
 	m_Renderer = new Renderer();
 	loadSettings();
 
@@ -95,6 +99,7 @@ void LigumX::init()
     world = new World(settings.f("sectorSize"));
 	world->SetObjectID(28716);
 	world->Serialize(false);
+	//world->InitTestWorld();
 
     //=============================================================================
     // create and fill VBOs.

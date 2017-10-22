@@ -4,6 +4,7 @@
 #include "PostEffects.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData PostEffects::g_Properties[] = 
 {
 { "ObjectID", offsetof(PostEffects, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

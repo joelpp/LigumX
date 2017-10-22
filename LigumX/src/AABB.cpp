@@ -4,6 +4,7 @@
 #include "AABB.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData AABB::g_Properties[] = 
 {
 { "ObjectID", offsetof(AABB, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

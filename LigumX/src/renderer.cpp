@@ -12,6 +12,7 @@
 #include "Settings.h"
 #include "PostEffects.h"
 #include "Sunlight.h"
+#include "DefaultMeshes.h"
 #include "GL.h"
 #include "Framebuffer.h"
 #include "BoundingBoxComponent.h"
@@ -20,6 +21,7 @@
 #include "Renderer.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
 { "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

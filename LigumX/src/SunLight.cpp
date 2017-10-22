@@ -9,6 +9,7 @@
 #include "SunLight.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData SunLight::g_Properties[] = 
 {
 { "ObjectID", offsetof(SunLight, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

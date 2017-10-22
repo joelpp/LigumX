@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData Material::g_Properties[] = 
 {
 { "ObjectID", offsetof(Material, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -28,7 +29,7 @@ const ClassPropertyData Material::g_Properties[] =
 { "ReflectEnvironment", offsetof(Material, m_ReflectEnvironment), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DiffuseTexture", offsetof(Material, m_DiffuseTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "SpecularTexture", offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
-{ "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None, 0, 0, 0, }, 
+{ "ProgramPipeline", offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 };
 void Material::Serialize(bool writing)
 {

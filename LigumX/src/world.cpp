@@ -15,11 +15,13 @@
 #include "GL.h"
 #include "Texture.h"
 #include "Mesh.h"
+#include "DefaultMeshes.h"
 
 #pragma region  CLASS_SOURCE World
 #include "World.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData World::g_Properties[] = 
 {
 { "ObjectID", offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -53,33 +55,31 @@ World::World()
 
 void World::InitTestWorld()
 {
-	Model* nanosuitModel;
+	//if (false)
 	{
 		Entity* testEntity = new Entity();
-		testEntity->SetObjectID(11072);
+		testEntity->SetObjectID(9895);
 		testEntity->Serialize(false);
-		m_Entities.push_back(testEntity);
-	}
+		//testEntity->SetName("Terrain");
+		//testEntity->SetPosition(glm::vec3(-100, -100, -1));
+		//testEntity->SetScale(glm::vec3(200, 200, 1));
 
-	if (false)
-	{
-		Entity* testEntity = new Entity();
-		testEntity->SetName("Terrain");
-		testEntity->SetPosition(glm::vec3(-100, -100, -1));
-		testEntity->SetScale(glm::vec3(200, 200, 1));
+		//Material* material = new Material();
+		//material->SetDiffuseColor(glm::vec3(1, 0, 0));
+		//material->SetShininess(1.0f);
 
-		Material* material = new Material(nanosuitModel->GetMaterials()[4]->GetProgramPipeline(), glm::vec3(1, 0, 0));
-		material->SetShininess(1.0f);
+		//Texture* diffuseTexture = new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png");
+		//diffuseTexture->Initialize();
+		//material->SetDiffuseTexture(diffuseTexture);
 
-		Texture* diffuseTexture = new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png");
-		diffuseTexture->Initialize();
-		material->SetDiffuseTexture(diffuseTexture);
-
-		Model* terrainQuadModel = new Model(g_DefaultMeshes->DefaultQuadMesh, material);
-		terrainQuadModel->SetName("TerrainModel");
-		testEntity->SetModel(terrainQuadModel);
+		//Model* terrainQuadModel = new Model(g_DefaultMeshes->DefaultQuadMesh, material);
+		//terrainQuadModel->SetName("TerrainModel");
+		//terrainQuadModel->SetFilenameIsID(true);
+		//testEntity->SetModel(terrainQuadModel);
 
 		m_Entities.push_back(testEntity);
+
+		//testEntity->Serialize(true);
 	}
 
 	// light 0

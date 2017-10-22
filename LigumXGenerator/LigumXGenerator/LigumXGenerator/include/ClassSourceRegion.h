@@ -143,7 +143,7 @@ public:
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{
-			WriteLine("PostSerialization(writing);");
+			WriteLine("	PostSerialization(writing);");
 		}
 		WriteLine("}");
 	}
@@ -153,6 +153,7 @@ public:
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
 		WriteLine("#include \"serializer.h\"");
 		WriteLine("#include <cstddef>");
+		WriteLine("#include \"ObjectIdManager.h\"");
 		
 		WritePropertyArray();
 

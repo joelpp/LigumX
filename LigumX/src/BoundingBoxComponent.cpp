@@ -4,6 +4,7 @@
 #include "BoundingBoxComponent.h"
 #include "serializer.h"
 #include <cstddef>
+#include "ObjectIdManager.h"
 const ClassPropertyData BoundingBoxComponent::g_Properties[] = 
 {
 { "ObjectID", offsetof(BoundingBoxComponent, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
