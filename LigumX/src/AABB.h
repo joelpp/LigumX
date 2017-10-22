@@ -16,6 +16,8 @@ public:
 #pragma region  HEADER AABB
 public:
 static const int ClassID = 1726995287;
+static constexpr const char* ClassName = "AABB";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const glm::vec3& GetOffset() { return m_Offset; }; 

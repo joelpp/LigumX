@@ -13,6 +13,8 @@ public:
 #pragma region  HEADER DisplayOptions
 public:
 static const int ClassID = 2473594549;
+static constexpr const char* ClassName = "DisplayOptions";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const bool& GetUseSkyLighting() { return m_UseSkyLighting; }; 

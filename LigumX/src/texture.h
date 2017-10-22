@@ -18,6 +18,8 @@ class Texture
 #pragma region  HEADER Texture
 public:
 static const int ClassID = 2571916692;
+static constexpr const char* ClassName = "Texture";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetFilename() { return m_Filename; }; 

@@ -13,6 +13,13 @@
 #include "Mesh.h"
 #include "glm/glm.hpp"
 
+Serializer* g_Serializer;
+
+Serializer::Serializer()
+{
+	m_CurrentObjectDataPath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
+}
+
 #define SERIALIZE_PTR_OUT(type) \
 case LXType_##type : \
 { \

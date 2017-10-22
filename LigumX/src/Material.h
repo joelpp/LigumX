@@ -17,6 +17,8 @@ class Material
 #pragma region  HEADER Material
 public:
 static const int ClassID = 3419754368;
+static constexpr const char* ClassName = "Material";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const bool& GetEnabled() { return m_Enabled; }; 

@@ -14,6 +14,7 @@
 #include "Sector.h"
 #include "Heightfield.h"
 #include "Mesh.h"
+#include "Serializer.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -70,9 +71,13 @@ void LigumX::init()
     //=============================================================================
 
 
+	g_Serializer = new Serializer();
 	g_ObjectIDManager = new ObjectIDManager();
 
 	m_Renderer = new Renderer();
+	m_Renderer->SetObjectID(28763);
+	m_Renderer->Serialize(false);
+
 	loadSettings();
 
     m_Renderer->Initialize();
@@ -99,7 +104,6 @@ void LigumX::init()
     world = new World(settings.f("sectorSize"));
 	world->SetObjectID(28716);
 	world->Serialize(false);
-	world->InitTestWorld();
 
     //=============================================================================
     // create and fill VBOs.

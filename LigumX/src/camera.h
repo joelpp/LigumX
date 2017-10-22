@@ -25,6 +25,8 @@ public:
 #pragma region  HEADER Camera
 public:
 static const int ClassID = 3880549230;
+static constexpr const char* ClassName = "Camera";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 

@@ -14,6 +14,8 @@ public:
 #pragma region  HEADER PostEffects
 public:
 static const int ClassID = 3178515267;
+static constexpr const char* ClassName = "PostEffects";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const bool& GetGammaCorrectionEnabled() { return m_GammaCorrectionEnabled; }; 

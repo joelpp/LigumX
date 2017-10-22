@@ -10,9 +10,10 @@ class Serializer
 {
 
 public:
+	Serializer::Serializer();
 
 	template <typename T>
-	static void SerializeObjectOut(T* object, std::fstream& objectStream)
+	void SerializeObjectOut(T* object, std::fstream& objectStream)
 	{
 		for (int i = 0; i < object->g_PropertyCount; ++i)
 		{
@@ -52,7 +53,7 @@ public:
 	}
 
 	template <typename T>
-	static void SerializeObjectIn(T* object, std::fstream& objectStream)
+	void SerializeObjectIn(T* object, std::fstream& objectStream)
 	{
 		std::string line;
 		while (std::getline(objectStream, line))
@@ -112,8 +113,24 @@ public:
 		}
 	}
 
+
 	template<typename T>
-	static void SerializeObject(T* object, std::fstream& objectStream, bool writing)
+	void SerializeObject(T* object, bool writing)
+	{
+		std::string basePath = m_CurrentObjectDataPath;
+		std::string fileName = object->ClassName + std::string("_") + std::to_string(object->GetObjectID()) + ".LXobj";
+
+		int fileMask = writing ? std::ios::out : std::ios::in;
+		std::fstream objectStream(basePath + fileName, fileMask);
+
+		if (objectStream.is_open())
+		{
+			SerializeObject(object, objectStream, writing);
+		}
+	}
+
+	template<typename T>
+	void SerializeObject(T* object, std::fstream& objectStream, bool writing)
 	{
 		if (writing)
 		{
@@ -126,7 +143,9 @@ public:
 	}
 
 private:
-
-	static void SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, std::fstream& objectStream);
-	static void SerializePropertyOut(const char* ptr, const char* name, const LXType& type, std::fstream& objectStream);
+	std::string m_CurrentObjectDataPath;
+	void SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, std::fstream& objectStream);
+	void SerializePropertyOut(const char* ptr, const char* name, const LXType& type, std::fstream& objectStream);
 };
+
+extern Serializer* g_Serializer;

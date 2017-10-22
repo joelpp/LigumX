@@ -41,6 +41,8 @@ class Mesh
 #pragma region  HEADER Mesh
 public:
 static const int ClassID = 132142556;
+static constexpr const char* ClassName = "Mesh";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 private:

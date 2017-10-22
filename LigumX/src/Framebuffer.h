@@ -17,6 +17,8 @@ public:
 #pragma region  HEADER Framebuffer
 public:
 static const int ClassID = 199658736;
+static constexpr const char* ClassName = "Framebuffer";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 

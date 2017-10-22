@@ -30,16 +30,7 @@ const ClassPropertyData World::g_Properties[] =
 };
 void World::Serialize(bool writing)
 {
-	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
-	std::string fileName = "World_" + std::to_string(m_ObjectID) + ".LXobj";
-
-	int fileMask = writing ? std::ios::out : std::ios::in;
-	std::fstream objectStream(basePath + fileName, fileMask);
-
-	if (objectStream.is_open())
-	{
-		Serializer::SerializeObject(this, objectStream, writing);
-	}
+	g_Serializer->SerializeObject(this, writing); 
 }
 
 #pragma endregion  CLASS_SOURCE World
@@ -58,7 +49,7 @@ void World::InitTestWorld()
 
 
 	// light 1
-	if (false)
+	//if (false)
 	{
 		Entity* pointLightEntity = new Entity();
 		pointLightEntity->SetName("PointLight");
@@ -73,26 +64,15 @@ void World::InitTestWorld()
 		material->SetEmissiveFactor(1.0f);
 
 		Model* cubeModel = new Model(g_DefaultMeshes->DefaultCubeMesh, material);
+		cubeModel->SetFilenameIsIDCallback(true);
 		cubeModel->SetName("CubeLightModel");
 		pointLightEntity->SetModel(cubeModel);
 
 		m_Entities.push_back(pointLightEntity);
 	}
 
-	// light 3
-	if (false)
-	{
-		Entity* pointLightEntity = new Entity();
-		pointLightEntity->SetObjectID(19817);
-		pointLightEntity->Serialize(false);
-
-		pointLightEntity->GetModel()->addMesh(g_DefaultMeshes->DefaultCubeMesh);
-
-		m_Entities.push_back(pointLightEntity);
-	}
-
 	// sphere
-	if (false)
+	//if (false)
 	{
 		Entity* sphereEntity = new Entity();
 		sphereEntity->SetName("Sphere");
@@ -105,6 +85,8 @@ void World::InitTestWorld()
 
 		Model* sphereModel = new Model(g_DefaultMeshes->DefaultSphereMesh, material);
 		sphereModel->SetName("SphereModel");
+		sphereModel->SetFilenameIsIDCallback(true);
+
 		sphereEntity->SetModel(sphereModel);
 
 		m_Entities.push_back(sphereEntity);

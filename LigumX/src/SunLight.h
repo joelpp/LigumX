@@ -13,6 +13,8 @@ public:
 #pragma region  HEADER SunLight
 public:
 static const int ClassID = 2842600075;
+static constexpr const char* ClassName = "SunLight";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const bool& GetUseShadowMap() { return m_UseShadowMap; }; 

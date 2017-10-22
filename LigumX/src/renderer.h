@@ -86,6 +86,8 @@ public:
 #pragma region  HEADER Renderer
 public:
 static const int ClassID = 1498036510;
+static constexpr const char* ClassName = "Renderer";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 

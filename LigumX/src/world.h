@@ -51,6 +51,8 @@ class World
 #pragma region  HEADER World
 public:
 static const int ClassID = 3714116915;
+static constexpr const char* ClassName = "World";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 SunLight* GetSunLight() { return m_SunLight; }; 

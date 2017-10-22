@@ -24,16 +24,7 @@ const ClassPropertyData Entity::g_Properties[] =
 };
 void Entity::Serialize(bool writing)
 {
-	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
-	std::string fileName = "Entity_" + std::to_string(m_ObjectID) + ".LXobj";
-
-	int fileMask = writing ? std::ios::out : std::ios::in;
-	std::fstream objectStream(basePath + fileName, fileMask);
-
-	if (objectStream.is_open())
-	{
-		Serializer::SerializeObject(this, objectStream, writing);
-	}
+	g_Serializer->SerializeObject(this, writing); 
 }
 
 #pragma endregion  CLASS_SOURCE Entity

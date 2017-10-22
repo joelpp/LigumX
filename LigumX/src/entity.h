@@ -25,6 +25,8 @@ class Entity {
 #pragma region  HEADER Entity
 public:
 static const int ClassID = 3231396602;
+static constexpr const char* ClassName = "Entity";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 

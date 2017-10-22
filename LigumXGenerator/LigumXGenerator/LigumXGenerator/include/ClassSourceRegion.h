@@ -129,17 +129,7 @@ public:
 	{
 		WriteLine("void " + m_Class.m_Name + "::Serialize(bool writing)");
 		WriteLine("{");
-		WriteLine(R"(	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";)");
-		WriteLine("	std::string fileName = \"" + m_Class.m_Name + "_\" + std::to_string(m_ObjectID) + \".LXobj\";");
-
-		WriteLine(R"(
-	int fileMask = writing ? std::ios::out : std::ios::in;
-	std::fstream objectStream(basePath + fileName, fileMask);
-
-	if (objectStream.is_open())
-	{
-		Serializer::SerializeObject(this, objectStream, writing);
-	})");
+		WriteLine(R"(	g_Serializer->SerializeObject(this, writing); )");
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{

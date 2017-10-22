@@ -11,6 +11,8 @@ class Component
 #pragma region  HEADER Component
 public:
 static const int ClassID = 718440320;
+static constexpr const char* ClassName = "Component";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 Entity* GetParentEntity() { return m_ParentEntity; }; 

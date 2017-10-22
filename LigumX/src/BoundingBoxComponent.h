@@ -14,6 +14,8 @@ class BoundingBoxComponent : public Component
 #pragma region  HEADER BoundingBoxComponent
 public:
 static const int ClassID = 1140622857;
+static constexpr const char* ClassName = "BoundingBoxComponent";
+
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const AABB& GetBoundingBox() { return m_BoundingBox; }; 
