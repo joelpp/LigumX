@@ -55,54 +55,7 @@ World::World()
 
 void World::InitTestWorld()
 {
-	//if (false)
-	{
-		Entity* testEntity = new Entity();
-		testEntity->SetObjectID(9895);
-		testEntity->Serialize(false);
-		//testEntity->SetName("Terrain");
-		//testEntity->SetPosition(glm::vec3(-100, -100, -1));
-		//testEntity->SetScale(glm::vec3(200, 200, 1));
 
-		//Material* material = new Material();
-		//material->SetDiffuseColor(glm::vec3(1, 0, 0));
-		//material->SetShininess(1.0f);
-
-		//Texture* diffuseTexture = new Texture("C:/Users/Joel/Documents/LigumX/LigumX/data/textures/grass.png");
-		//diffuseTexture->Initialize();
-		//material->SetDiffuseTexture(diffuseTexture);
-
-		//Model* terrainQuadModel = new Model(g_DefaultMeshes->DefaultQuadMesh, material);
-		//terrainQuadModel->SetName("TerrainModel");
-		//terrainQuadModel->SetFilenameIsID(true);
-		//testEntity->SetModel(terrainQuadModel);
-
-		m_Entities.push_back(testEntity);
-
-		//testEntity->Serialize(true);
-	}
-
-	// light 0
-	if (false)
-	{
-		Entity* pointLightEntity = new Entity();
-		pointLightEntity->SetName("PointLight");
-		pointLightEntity->SetPosition(glm::vec3(-7.f, 11.f, 13.8f));
-		pointLightEntity->SetScale(glm::vec3(2,2,2));
-		pointLightEntity->SetIsLight(true);
-
-		Material* material = new Material();
-		material->SetShininess(1.0f);
-		material->SetDiffuseColor(glm::vec3(0, 1, 0));
-		material->SetUnlit(true);
-		material->SetEmissiveFactor(1.0f);
-
-		Model* cubeModel = new Model(g_DefaultMeshes->DefaultCubeMesh, material);
-		cubeModel->SetName("CubeLightModel");
-		pointLightEntity->SetModel(cubeModel);
-
-		m_Entities.push_back(pointLightEntity);
-	}
 
 	// light 1
 	if (false)

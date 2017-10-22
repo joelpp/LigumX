@@ -342,7 +342,7 @@ void main()
 	}
 	else
 	{
-		vec4 diffuseColor = texture(g_Material.m_DiffuseTexture, myTexCoord);
+		vec4 diffuseColor = GetDiffuseColor(myTexCoord);
 		FinalColor = diffuseColor;
 	}
 

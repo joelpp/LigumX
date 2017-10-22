@@ -99,7 +99,7 @@ void LigumX::init()
     world = new World(settings.f("sectorSize"));
 	world->SetObjectID(28716);
 	world->Serialize(false);
-	//world->InitTestWorld();
+	world->InitTestWorld();
 
     //=============================================================================
     // create and fill VBOs.
