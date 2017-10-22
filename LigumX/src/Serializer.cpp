@@ -237,18 +237,19 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PTR_IN(PostEffects)
 		SERIALIZE_PTR_IN(Camera)
 		SERIALIZE_PTR_IN(Material)
+		SERIALIZE_PTR_IN(Model)
 
-		//case LXType_Material:
+		//case LXType_Model:
 		//{
 		//	if (*ptr == 0)
 		//	{
-		//		Material* dptr = new Material();
+		//		Model* dptr = new Model();
 		//		char** aptr = (char**)ptr;
 		//		*aptr = (char*)dptr;
 		//		ptr = *(char**)ptr;
 		//	}
 		//	
-		//	Material* val = (Material *)ptr;
+		//	Model* val = (Model *)ptr;
 		//	int ObjectID;
 		//	objectStream >> ObjectID;
 		//	val->SetObjectID(ObjectID);
@@ -256,20 +257,20 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		//	break;
 		//}
 
-		case LXType_Model:
-		{
-			Model* val = (Model *)ptr;
+		//case LXType_Model:
+		//{
+		//	Model* val = (Model *)ptr;
 
-			//val = new Model();
+		//	//val = new Model();
 
-			int objectID;
-			objectStream >> objectID;
+		//	int objectID;
+		//	objectStream >> objectID;
 
-			val->SetObjectID(objectID);
+		//	val->SetObjectID(objectID);
 
-			val->Serialize(false);
-			break;
-		}
+		//	val->Serialize(false);
+		//	break;
+		//}
 		//case LXType_Material:
 		//{
 		//	Material** val = (Material **)ptr;

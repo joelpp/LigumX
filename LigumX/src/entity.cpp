@@ -72,7 +72,7 @@ Entity::Entity()
 
 	m_ObjectID = rand();
 
-	m_Model = new Model();
+	//m_Model = new Model();
 }
 
 

@@ -133,19 +133,10 @@ void World::InitTestWorld()
 	//if (false)
 	{
 		Entity* pointLightEntity = new Entity();
-		pointLightEntity->SetName("PointLight");
-		pointLightEntity->SetPosition(glm::vec3(0.f, 33.f, 13.18f));
-		pointLightEntity->SetScale(glm::vec3(2, 2, 2));
-		pointLightEntity->SetIsLight(true);
+		pointLightEntity->SetObjectID(19817);
+		pointLightEntity->Serialize(false);
 
-		// todo remove const from std vector getters
-		// todo fix vector serialization
-		Model* cubeModel = new Model();
-		cubeModel->SetObjectID(19039);
-		cubeModel->Serialize(false);
-
-		cubeModel->addMesh(g_DefaultMeshes->DefaultCubeMesh);
-		pointLightEntity->SetModel(cubeModel);
+		pointLightEntity->GetModel()->addMesh(g_DefaultMeshes->DefaultCubeMesh);
 
 		m_Entities.push_back(pointLightEntity);
 	}
