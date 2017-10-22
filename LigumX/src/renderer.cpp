@@ -875,7 +875,6 @@ void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 {
 	ImGui::PushID(name);
 
-
 	// one could have see having an enum to control how the property grid will be rendered
 	// i.e. menu, own window with treenode, treenode only, __just the properties__
 	bool readyToDisplay = false;
