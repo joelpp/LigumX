@@ -28,7 +28,7 @@ void SunLight::Serialize(bool writing)
 #pragma endregion  CLASS_SOURCE SunLight
 SunLight::SunLight()
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 }
 
 glm::vec3 SunLight::GetSunDirection()

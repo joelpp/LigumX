@@ -21,5 +21,5 @@ void PostEffects::Serialize(bool writing)
 
 PostEffects::PostEffects()
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 }

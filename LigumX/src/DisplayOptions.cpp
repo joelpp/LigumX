@@ -36,7 +36,7 @@ void DisplayOptions::Serialize(bool writing)
 
 DisplayOptions::DisplayOptions()
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 }
 
 //void DisplayOptions::Serialize(bool writing)

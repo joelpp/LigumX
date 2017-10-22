@@ -31,7 +31,7 @@ void Framebuffer::Serialize(bool writing)
 
 Framebuffer::Framebuffer()
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 
 }
 
@@ -43,7 +43,7 @@ Framebuffer::Framebuffer(std::string name, int width, int height, GL::PixelForma
 		m_PixelFormat(pixelFormat),
 		m_PixelType(pixelType)
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();;
 
 }
 

@@ -40,7 +40,7 @@ using namespace glm;
 
 World::World()
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 
 }
 
@@ -96,7 +96,7 @@ void World::InitTestWorld()
 
 World::World(float sectorSize)
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 
 	m_sectorManager = new SectorManager(sectorSize);
 	m_sectorSize = sectorSize;

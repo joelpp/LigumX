@@ -49,7 +49,7 @@ using namespace std;
 Renderer::Renderer()
 {
 	g_Instance = this;
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 }
 
 void Renderer::InitFramebuffers()
@@ -211,7 +211,7 @@ void Renderer::InitFreetype()
 
 void Renderer::Initialize()
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 
 	windowWidth = 1100;
 	windowHeight = 880;

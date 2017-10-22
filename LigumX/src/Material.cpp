@@ -55,7 +55,7 @@ Material::Material()
 
 	m_EmissiveFactor = 0.0f;
 
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();;
 }
 
 

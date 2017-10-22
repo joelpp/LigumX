@@ -5,6 +5,7 @@ class ObjectIDManager
 public:
 	ObjectIDManager();
 
+	int GetObjectID();
 	int GetTransientID();
 
 	bool IsValidID(int id) { return id == InvalidID; }

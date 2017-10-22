@@ -20,5 +20,5 @@ void AABB::Serialize(bool writing)
 
 AABB::AABB()
 {
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 }

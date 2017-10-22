@@ -59,7 +59,7 @@ Entity::Entity()
 	bb->SetParentEntity(this);
 	m_Components.push_back(bb);
 
-	m_ObjectID = rand();
+	m_ObjectID = g_ObjectIDManager->GetObjectID();
 
 	//m_Model = new Model();
 }
