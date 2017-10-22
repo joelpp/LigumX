@@ -170,11 +170,9 @@ World::World(float sectorSize)
 	m_sectorSize = sectorSize;
 	m_invSectorSize = 1.f / sectorSize;
 
-	InitTestWorld();
-
-	m_SunLight = new SunLight();
-	m_SunLight->SetObjectID(3796);
-	m_SunLight->Serialize(false);
+	//m_SunLight = new SunLight();
+	//m_SunLight->SetObjectID(3796);
+	//m_SunLight->Serialize(false);
 
 	//m_SunLight->SetTime(100.f);
 	//m_SunLight->SetOrientation(25.f);

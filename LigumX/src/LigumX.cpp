@@ -91,6 +91,9 @@ void LigumX::init()
 
     Settings& settings = Settings::GetInstance();
     world = new World(settings.f("sectorSize"));
+	world->SetObjectID(28716);
+	world->Serialize(false);
+	world->InitTestWorld();;
     // world->createSector(vec2(-73.650, 45.500));
     vec2 tp;
     //if (settings.i("useCameraPositionAsTestPoint")) tp = glm::vec2(camera->GetPosition());

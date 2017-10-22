@@ -940,9 +940,13 @@ void Renderer::RenderImgui()
 			m_RenderingMenu = true;
 			if (ImGui::BeginMenu("Menu"))
 			{
-				if (ImGui::MenuItem("Save")) 
+				if (ImGui::MenuItem("Save renderer")) 
 				{
 					Serialize(true);
+				}
+				if (ImGui::MenuItem("Save world"))
+				{
+					m_World->Serialize(true);
 				}
 
 				ImGui::EndMenu();
