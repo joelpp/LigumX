@@ -1,3 +1,4 @@
+[postserialization]
 class Camera
 {
 	glm::vec3 Position;

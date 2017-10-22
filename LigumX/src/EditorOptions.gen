@@ -1,0 +1,9 @@
+class EditorOptions
+{
+	bool Enabled;
+	bool ShowWorldWindow;
+	bool ShowMaterialWindow;
+	bool ShowEntityWindow;
+	bool ShowMaterialCreator;
+	bool ShowTestGUI;
+}

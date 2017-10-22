@@ -35,6 +35,7 @@ enum LXType
 	LXType_Camera,
 	LXType_PostEffects,
 	LXType_DisplayOptions,
+	LXType_EditorOptions,
 	LXType_ProjectionType,
 	LXType_Model,
 	LXType_Mesh,
@@ -53,6 +54,7 @@ enum PropertyFlags
 	PropertyFlags_ReadOnly = 2,
 	PropertyFlags_SetCallback = 4,
 	PropertyFlags_Transient = 8,
+	PropertyFlags_NonEditable = 16,
 	PropertyFlags_NumPropertyFlags
 };
 

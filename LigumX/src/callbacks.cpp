@@ -4,6 +4,7 @@
 #include "World.h"
 #include "SectorManager.h"
 #include "Renderer.h"
+#include "EditorOptions.h"
 #include <string>
 #include <chrono>
 
@@ -48,7 +49,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
     if(action == GLFW_PRESS){
         if (key == GLFW_KEY_SPACE) 
 		{ 
-			m_Renderer->m_ShowGUI = !m_Renderer->m_ShowGUI;
+			m_Renderer->GetEditorOptions()->SetEnabled(!m_Renderer->GetEditorOptions()->GetEnabled());
 		}
         else if (key == GLFW_KEY_ESCAPE) 
 		{
@@ -78,6 +79,8 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
     }
 	m_Renderer->GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
+
+	ImGui_ImplGlfwGL3_KeyCallback(pWindow, key, scancode, action, mods);
 }
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)

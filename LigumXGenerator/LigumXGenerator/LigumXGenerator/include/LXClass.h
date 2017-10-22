@@ -15,6 +15,7 @@ enum PropertyFlags
 	PropertyFlags_MinValue			= 8,
 	PropertyFlags_MaxValue			= 16,
 	PropertyFlags_Transient			= 32,
+	PropertyFlags_NonEditable		= 64,
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;

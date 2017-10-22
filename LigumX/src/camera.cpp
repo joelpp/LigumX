@@ -14,7 +14,7 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData Camera::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Camera, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", offsetof(Camera, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
 { "Position", offsetof(Camera, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "FrontVector", offsetof(Camera, m_FrontVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "RightVector", offsetof(Camera, m_RightVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
@@ -31,6 +31,7 @@ const ClassPropertyData Camera::g_Properties[] =
 void Camera::Serialize(bool writing)
 {
 	g_Serializer->SerializeObject(this, writing); 
+	PostSerialization(writing);
 }
 
 #pragma endregion  CLASS_SOURCE Camera
@@ -74,6 +75,13 @@ Camera::Camera()
     updateVPMatrix();
 }
 
+void Camera::PostSerialization(bool writing)
+{
+	if (!writing)
+	{
+		updateVPMatrix();
+	}
+}
 
 void Camera::translateBy(vec3 delta)
 {
@@ -222,22 +230,21 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
 
 void Camera::handlePresetCursorPos(GLFWwindow *pWindow, double x, double y)
 {
-//    if(mbUsePresetCursorPosBehavior) {
-        //vec2 cursorPos;
-        switch(controlType) {
-        case ControlType::QWEASDZXC_DRAG:
-            dragMousePresetCursorPos(pWindow, x, y);
-            break;
-        case ControlType::QWEASDZXC_CONTINUOUS:
-            //cursorPos = pWindow->getCursorPos();
-            //continuousMousePresetCursorPos(pWindow, cursorPos.x, cursorPos.y);
-            continuousMousePresetCursorPos(pWindow, x, y);
-            qweasdzxcKeyHoldPreset(pWindow);
-            break;
-        default:
-            break;
-        }
-//    }
+
+    switch(controlType) 
+	{
+		case ControlType::QWEASDZXC_DRAG:
+			dragMousePresetCursorPos(pWindow, x, y);
+			break;
+		case ControlType::QWEASDZXC_CONTINUOUS:
+			//cursorPos = pWindow->getCursorPos();
+			//continuousMousePresetCursorPos(pWindow, cursorPos.x, cursorPos.y);
+			continuousMousePresetCursorPos(pWindow, x, y);
+			qweasdzxcKeyHoldPreset(pWindow);
+			break;
+		default:
+			break;
+    }
 }
 
 void Camera::dragMousePresetCursorPos(GLFWwindow* /*pWindow*/, double x, double y)
@@ -344,6 +351,10 @@ void Camera::qweasdzxcKeyPreset(
 
 void Camera::handlePresetNewFrame(GLFWwindow* pWindow)
 {
+	if (!mouseIsDragging)
+	{
+		return;
+	}
 //    if(mbUsePresetNewFrameBehavior) {
         //vec2 cursorPos;
         switch(controlType) {
@@ -505,30 +516,43 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
         if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) {
 			m_Position += keyMovementSpeed * m_RightVector;
         }
-    } else {
-        if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
+    } else 
+	{
+        if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) 
+		{
 			m_Position -= keyMovementSpeed * m_FrontVector;
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) 
+		{
 			m_Position += keyMovementSpeed * m_FrontVector;
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) 
+		{
 			m_Position -= keyMovementSpeed * m_RightVector;
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) 
+		{
 			m_Position += keyMovementSpeed * m_RightVector;
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_Q) == GLFW_PRESS) {
-            if(cameraType == CameraType::CYLINDRICAL) {
+        if(glfwGetKey(pWindow, GLFW_KEY_Q) == GLFW_PRESS) 
+		{
+            if(cameraType == CameraType::CYLINDRICAL) 
+			{
 				m_Position -= keyMovementSpeed * cylindricalUpVec;
-            } else {
+            } 
+			else 
+			{
 				m_Position -= keyMovementSpeed * m_UpVector;
             }
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_E) == GLFW_PRESS) {
-            if(cameraType == CameraType::CYLINDRICAL) {
+        if(glfwGetKey(pWindow, GLFW_KEY_E) == GLFW_PRESS) 
+		{
+            if(cameraType == CameraType::CYLINDRICAL) 
+			{
 				m_Position += keyMovementSpeed * cylindricalUpVec;
-            } else {
+            } 
+			else 
+			{
 				m_Position += keyMovementSpeed * m_UpVector;
             }
         }

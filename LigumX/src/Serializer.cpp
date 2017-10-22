@@ -1,6 +1,7 @@
 #include "serializer.h"
 #include "ObjectIDManager.h"
 #include "DisplayOptions.h"
+#include "EditorOptions.h"
 #include "PostEffects.h"
 #include "Camera.h"
 #include "Model.h"
@@ -76,6 +77,7 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 			break;
 		}
 		SERIALIZE_PTR_OUT(DisplayOptions)
+		SERIALIZE_PTR_OUT(EditorOptions)
 		SERIALIZE_PTR_OUT(PostEffects)
 		SERIALIZE_PTR_OUT(Camera)
 		SERIALIZE_PTR_OUT(Texture)
@@ -233,7 +235,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 			std::string* sptr = (std::string *)ptr;
 			std::string temp;
 			objectStream >> temp;
-			*sptr = temp;
+			*sptr = std::string(temp.c_str());
 			break;
 		} 
 
@@ -298,6 +300,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PTR_IN(Texture)
 		SERIALIZE_PTR_IN(SunLight)
 		SERIALIZE_PTR_IN(Entity)
+		SERIALIZE_PTR_IN(EditorOptions)
 
 		case LXType_Mesh:
 		{

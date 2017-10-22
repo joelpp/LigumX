@@ -17,6 +17,14 @@ int countSetBits(unsigned int num) {
 	return count;
 }
 
+#define ADD_PROPERTY(propertyflag) \
+if (flags & propertyflag) \
+{ \
+	toReturn += #propertyflag; \
+	toReturn += separator; \
+} \
+
+
 class ClassSourceRegion : public CodeRegion
 {
 public:
@@ -65,23 +73,10 @@ public:
 
 		std::string separator = " | ";
 
-		if (flags & PropertyFlags_Hidden)
-		{
-			toReturn += "PropertyFlags_Hidden";
-			toReturn += separator;
-		}
-
-		if (flags & PropertyFlags_SetCallback)
-		{
-			toReturn += "PropertyFlags_SetCallback";
-			toReturn += separator;
-		}
-
-		if (flags & PropertyFlags_Transient)
-		{
-			toReturn += "PropertyFlags_Transient";
-			toReturn += separator;
-		}
+		ADD_PROPERTY(PropertyFlags_Hidden)
+		ADD_PROPERTY(PropertyFlags_SetCallback)
+		ADD_PROPERTY(PropertyFlags_Transient)
+		ADD_PROPERTY(PropertyFlags_NonEditable)
 
 		if (toReturn.size() == 0)
 		{

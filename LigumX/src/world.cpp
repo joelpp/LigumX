@@ -24,7 +24,7 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData World::g_Properties[] = 
 {
-{ "ObjectID", offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
 { "SunLight", offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
 { "Entities", offsetof(World, m_Entities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
 };

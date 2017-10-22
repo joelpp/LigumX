@@ -2,6 +2,7 @@
 class Renderer
 {
 	DisplayOptions* DisplayOptions
+	EditorOptions* EditorOptions
 	PostEffects* PostEffects
 	glm::vec2 MouseClickPosition
 	Camera* DebugCamera;

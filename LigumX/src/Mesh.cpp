@@ -12,7 +12,7 @@ using namespace std;
 #include "ObjectIdManager.h"
 const ClassPropertyData Mesh::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
 };
 void Mesh::Serialize(bool writing)
 {

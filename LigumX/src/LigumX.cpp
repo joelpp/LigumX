@@ -265,8 +265,8 @@ static void test_error_cb (int error, const char *description)
 void LigumX::SetCallbacks(){
     Renderer& renderer = Renderer::GetInstance();
     glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
-    glfwSetKeyCallback( renderer.pWindow, HandleKeyboardInput);
-    glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
+    //glfwSetKeyCallback( renderer.pWindow, HandleKeyboardInput);
+    //glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
     glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
     glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );
     //glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );

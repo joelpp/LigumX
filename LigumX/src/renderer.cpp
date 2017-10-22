@@ -9,6 +9,7 @@
 #include "Entity.h"
 #include "RenderDataManager.h"
 #include "DisplayOptions.h"
+#include "EditorOptions.h"
 #include "Settings.h"
 #include "PostEffects.h"
 #include "Sunlight.h"
@@ -24,8 +25,9 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
+{ "EditorOptions", offsetof(Renderer, m_EditorOptions), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
 { "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
 { "MouseClickPosition", offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "DebugCamera", offsetof(Renderer, m_DebugCamera), 0, LXType_Camera, true, LXType_None, 0, 0, 0, }, 
@@ -247,6 +249,8 @@ void Renderer::Initialize()
 	ImGui_ImplGlfwGL3_Init(pWindow, true);
 
 	// 
+	m_TempMaterial = new Material();
+	m_TempEntity = new Entity();
 }
 
 void Renderer::Shutdown()
@@ -753,6 +757,21 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 	ShowGUIText(value, name);
 }
 
+void Renderer::ShowEditableProperty(int* ptr, const char* name)
+{
+	int val = *((int*)ptr);
+	std::string sCopy = std::to_string(val);
+
+	static char buf_int[64] = "";
+	memset(buf_int, 0, 64);
+	memcpy(buf_int, sCopy.c_str(), sCopy.size() * sizeof(char));
+
+	if (ImGui::InputText(name, buf_int, 64, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsDecimal))
+	{
+		*((int*)ptr) = std::atoi(buf_int);
+	}
+}
+
 #define SHOW_PROPERTY_PTR(type) \
 case LXType_##type : \
 { \
@@ -760,24 +779,33 @@ case LXType_##type : \
 	break; \
 } \
 
-void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max)
+void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max, bool noneditable)
 {
-	if (m_RenderingMenu && type == LXType_bool)
-	{
-		ImGui::MenuItem(name, NULL, (bool*)ptr);
-		return;
-	}
-
 	switch (type)
 	{
 		case LXType_int:
 		{
-			ShowProperty((int*)ptr, name);
+			if (noneditable)
+			{
+				ShowProperty((int*)ptr, name);
+			}
+			else
+			{
+				ShowEditableProperty((int*)ptr, name);
+			}
+
 			break;
 		}
 		case LXType_bool:
 		{
-			ShowProperty((bool*) ptr, name);
+			if (m_RenderingMenu)
+			{
+				ImGui::MenuItem(name, NULL, (bool*)ptr);
+			}
+			else
+			{
+				ShowProperty((bool*)ptr, name);
+			}
 			break;
 		}
 		case LXType_float:
@@ -792,7 +820,17 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 		}
 		case LXType_stdstring:
 		{
-			ShowProperty((std::string*) ptr, name);
+			std::string sCopy = *((std::string*) ptr);
+			static char buf_stdstring[64] = "";
+
+			memset(buf_stdstring, 0, 64);
+			memcpy(buf_stdstring, sCopy.c_str(), sCopy.size() * sizeof(char));
+			 
+			if (ImGui::InputText(name, buf_stdstring, 64, ImGuiInputTextFlags_EnterReturnsTrue))
+			{
+				*((std::string*) ptr) = std::string(buf_stdstring);
+			}
+
 			break;
 		}
 
@@ -852,6 +890,7 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 
 	float min = propertyData.m_MinValue;
 	float max = propertyData.m_MaxValue;
+	bool noneditable = propertyData.m_PropertyFlags & PropertyFlags_NonEditable;
 
 	if (propertyData.m_Type == LXType_stdvector)
 	{
@@ -861,12 +900,12 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 		{
 			char displayName[100];
 			sprintf(displayName, "%s[%d]", propertyData.m_Name, i);
-			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, min, max);
+			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, min, max, noneditable);
 		}
 	}
 	else
 	{
-		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, min, max);
+		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, min, max, noneditable);
 	}
 }
 
@@ -914,17 +953,52 @@ void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 	ImGui::PopID();
 }
 
+template <typename T>
+void Renderer::ShowObjectCreator()
+{
+	static T* m_TempObject = new T();
+	static int m_TempObjectID = g_ObjectIDManager->GetObjectID();
+	ImGui::PushID(m_TempObjectID);
+
+	ShowPropertyGridTemplate<T>( m_TempObject, ("New " + std::string(T::ClassName)).c_str() );
+
+	if (ImGui::Button("Save"))
+	{
+		m_TempObject->Serialize(true);
+	}
+
+	if (ImGui::Button("Reset"))
+	{
+		//m_TempMaterial = new Material();
+		m_TempObject = new T();
+	}
+
+	ShowEditableProperty(&m_TempObjectID, "ID to load");
+
+	if (ImGui::Button("Load"))
+	{
+		//m_TempMaterial->SetObjectID(m_TempObjectID);
+		//m_TempMaterial->Serialize(false);
+
+		m_TempObject->SetObjectID(m_TempObjectID);
+		m_TempObject->Serialize(false);
+	}
+
+	ImGui::PopID();
+}
+
 
 void Renderer::RenderImgui()
 {
 	ImGui_ImplGlfwGL3_NewFrame();
-	if (m_ShowTestGUI)
+	if (m_EditorOptions->GetShowTestGUI())
 	{
 		ImGui::ShowTestWindow();
 	}
 
-	if (m_ShowGUI)
+	//if (m_EditorOptions->GetShowWorldWindow())
 	{
+		ImGui::PushID("WorldWindow");
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
 
 		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
@@ -936,9 +1010,10 @@ void Renderer::RenderImgui()
 		if (ImGui::BeginMenuBar())
 		{
 			m_RenderingMenu = true;
+
 			if (ImGui::BeginMenu("Menu"))
 			{
-				if (ImGui::MenuItem("Save renderer")) 
+				if (ImGui::MenuItem("Save renderer"))
 				{
 					Serialize(true);
 				}
@@ -951,23 +1026,39 @@ void Renderer::RenderImgui()
 			}
 
 			ShowPropertyGridTemplate<DisplayOptions>(m_DisplayOptions, "Display options");
-
-			if (ImGui::BeginMenu("Help"))
-			{
-				ImGui::MenuItem("Show Test GUI", NULL, &m_ShowTestGUI);
-				ImGui::EndMenu();
-			}
+			ShowPropertyGridTemplate<EditorOptions>(m_EditorOptions, "Editor options");
 
 			ImGui::EndMenuBar();
+
 			m_RenderingMenu = false;
 		}
 		EndImGUIWindow();
+		ImGui::PopID();
+
+	}
+	
+	if (m_EditorOptions->GetShowEntityWindow())
+	{
+		ImGui::PushID("EntityWindow");
 
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
-		ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
-		EndImGUIWindow();		
+		if (m_PickedEntity)
+		{
+			ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
+		}
+		else
+		{
+			ShowGUIText("No entity selected.");
+		}
+		EndImGUIWindow();
+		ImGui::PopID();
+	}
 
+	if (m_EditorOptions->GetShowMaterialWindow())
+	{
+		ImGui::PushID("MaterialWindow");
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Materials");
+
 		if (m_PickedEntity)
 		{
 			int i = 0;
@@ -976,9 +1067,60 @@ void Renderer::RenderImgui()
 				ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
 			}
 		}
-		EndImGUIWindow();
+		else
+		{
+			ShowGUIText("No entity selected.");
+		}
 
+		EndImGUIWindow();
+		ImGui::PopID();
 	}
+
+	//if (m_EditorOptions->GetShowMaterialCreator())
+	//{
+	//	ImGui::PushID("MaterialCreator");
+
+	//	BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Material creator");
+
+	//	if (m_PickedEntity)
+	//	{
+	//		//ShowPropertyGridTemplate<Material>(m_TempMaterial, "New material");
+	//		ShowPropertyGridTemplate<Entity>(m_TempEntity, "New material");
+	//	}
+
+	//	if (ImGui::Button("Save")) 
+	//	{ 
+	//		//m_TempMaterial->Serialize(true);
+	//		m_TempEntity->Serialize(true);
+	//	}
+
+	//	if (ImGui::Button("Reset"))
+	//	{
+	//		//m_TempMaterial = new Material();
+	//		m_TempEntity = new Entity();
+	//	}
+
+	//	ShowEditableProperty(&m_TempObjectID, "ID to load");
+
+	//	if (ImGui::Button("Load"))
+	//	{
+	//		//m_TempMaterial->SetObjectID(m_TempObjectID);
+	//		//m_TempMaterial->Serialize(false);
+
+	//		m_TempEntity->SetObjectID(m_TempObjectID);
+	//		m_TempEntity->Serialize(false);
+	//	}
+
+	//	EndImGUIWindow();
+	//	ImGui::PopID();
+	//}
+
+	BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Creator");
+
+	ShowObjectCreator<Entity>();
+	ShowObjectCreator<Material>();
+	EndImGUIWindow();
+
 
 	ImGui::Render();
 }
@@ -1269,6 +1411,10 @@ void Renderer::RenderPickedEntity()
 
 void Renderer::RenderEditor()
 {
+	if (!m_EditorOptions->GetEnabled())
+	{
+		return;
+	}
 
 	RenderImgui();
 

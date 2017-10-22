@@ -10,7 +10,7 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData Material::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Material, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", offsetof(Material, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
 { "Enabled", offsetof(Material, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "AmbientColor", offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 1, }, 
 { "DiffuseColor", offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 1, }, 

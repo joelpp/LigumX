@@ -25,6 +25,7 @@
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "property.h"
 class DisplayOptions;
+class EditorOptions;
 class PostEffects;
 class Camera;
 
@@ -92,6 +93,8 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
+EditorOptions* GetEditorOptions() { return m_EditorOptions; }; 
+void SetEditorOptions(EditorOptions* value) { m_EditorOptions = value; }; 
 PostEffects* GetPostEffects() { return m_PostEffects; }; 
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
 const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
@@ -101,17 +104,19 @@ void SetDebugCamera(Camera* value) { m_DebugCamera = value; };
 private:
 int m_ObjectID;
 DisplayOptions* m_DisplayOptions;
+EditorOptions* m_EditorOptions;
 PostEffects* m_PostEffects;
 glm::vec2 m_MouseClickPosition;
 Camera* m_DebugCamera;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
 {
 PIDX_ObjectID,
 PIDX_DisplayOptions,
+PIDX_EditorOptions,
 PIDX_PostEffects,
 PIDX_MouseClickPosition,
 PIDX_DebugCamera,
@@ -380,8 +385,10 @@ private:
 	void ShowGenericProperty(T* object, const ClassPropertyData& propertyData);
 
 	//void ShowPropertyTemplate(const char* object, const char* name, const LXType& type);
-	void ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max);
+	void ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max, bool noneditable);
 
+	template <typename T>
+	void ShowObjectCreator();
 
 	template<typename T>
 	void ShowPropertyGridMacro(T* object, const char* name);
@@ -410,6 +417,9 @@ private:
 	void ShowProperty(glm::vec3* value, const char* name, float min, float max);
 	void ShowProperty(std::string* value, const char* name);
 
+	void ShowEditableProperty(int* value, const char* name);
+
+
 	template<typename T>
 	void Renderer::ShowPropertyTemplate(T* object, const ClassPropertyData& propertyData);
     // C++ 11
@@ -429,7 +439,9 @@ private:
 
 	int m_NumLights;
 
-	Material* tempMaterial;
+	Material* m_TempMaterial;
+	Entity* m_TempEntity;
+	int m_TempObjectID;
 };
 
 #endif // RENDERER

@@ -11,7 +11,7 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData Entity::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Entity, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", offsetof(Entity, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
 { "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "RotationAngle", offsetof(Entity, m_RotationAngle), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 

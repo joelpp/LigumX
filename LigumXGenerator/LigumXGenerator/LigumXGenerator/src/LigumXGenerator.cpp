@@ -102,7 +102,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				objectIDVar.m_IsTemplate = false;
 				objectIDVar.m_Name = "ObjectID";
 				objectIDVar.m_Type = "int";
-				objectIDVar.m_PropertyFlags = 0;
+				objectIDVar.m_PropertyFlags = PropertyFlags_NonEditable;
 				currentClass.m_Members.push_back(objectIDVar);
 
 				continue;
@@ -201,6 +201,7 @@ void InitializeGenerator()
 	g_PropertyFlagsStringMap.emplace("min", PropertyFlags_MinValue);
 	g_PropertyFlagsStringMap.emplace("max", PropertyFlags_MaxValue);
 	g_PropertyFlagsStringMap.emplace("transient", PropertyFlags_Transient);
+	g_PropertyFlagsStringMap.emplace("noneditable", PropertyFlags_NonEditable);
 
 	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
 }
