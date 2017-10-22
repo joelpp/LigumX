@@ -753,6 +753,13 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 	ShowGUIText(value, name);
 }
 
+#define SHOW_PROPERTY_PTR(type) \
+case LXType_##type : \
+{ \
+	ShowPropertyGridTemplate<##type>((##type *) ptr, name); \
+	break; \
+} \
+
 void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max)
 {
 	if (m_RenderingMenu && type == LXType_bool)
@@ -788,16 +795,18 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 			ShowProperty((std::string*) ptr, name);
 			break;
 		}
-		case LXType_Model:
-		{
-			ShowPropertyGridTemplate<Model>((Model*) ptr, name);
-			break;
-		}
-		case LXType_Material:
-		{
-			ShowPropertyGridTemplate<Material>((Material*)ptr, name);
-			break;
-		}
+
+		SHOW_PROPERTY_PTR(Model)
+		SHOW_PROPERTY_PTR(Material)
+		SHOW_PROPERTY_PTR(AABB)
+		SHOW_PROPERTY_PTR(Entity)
+		SHOW_PROPERTY_PTR(SunLight)
+		//case LXType_Model:
+		//{
+		//	ShowPropertyGridTemplate<Model>((Model*) ptr, name);
+		//	break;
+		//}
+
 		case LXType_Texture:
 		{
 			if (ptr)
@@ -817,15 +826,7 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 
 			break;
 		}
-		case LXType_AABB:
-		{
-			if (ptr)
-			{
-				ShowPropertyGridTemplate<AABB>((AABB*)ptr, name);
-			}
-			
-			break;
-		}
+
 		default:
 		{
 			break;
@@ -930,6 +931,7 @@ void Renderer::RenderImgui()
 		ShowPropertyGridTemplate<PostEffects>(m_PostEffects, "Post Effects");
 		ShowPropertyGridTemplate<Camera>(m_DebugCamera, "Camera");
 		ShowPropertyGridTemplate<SunLight>(m_World->GetSunLight(), "SunLight");
+		ShowPropertyGridTemplate<World>(m_World, "World");
 
 		// Menu
 		if (ImGui::BeginMenuBar())
