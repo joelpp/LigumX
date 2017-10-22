@@ -27,10 +27,7 @@ void Model::Serialize(bool writing)
 
 	if (objectStream.is_open())
 	{
-		if (objectStream.is_open())
-		{
-			Serializer::SerializeObject(this, objectStream, writing);
-		}
+		Serializer::SerializeObject(this, objectStream, writing);
 	}
 }
 

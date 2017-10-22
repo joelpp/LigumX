@@ -134,6 +134,11 @@ public:
 	void WriteSerializerDeclaration()
 	{
 		WriteLine("void Serialize(bool writing);");
+
+		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
+		{
+			WriteLine("void PostSerialization();");
+		}
 	}
 
 	void WriteBody()

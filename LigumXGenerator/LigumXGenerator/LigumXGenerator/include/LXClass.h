@@ -2,6 +2,11 @@
 
 #include "Common.h"
 
+enum ClassPropertyFlags
+{
+	ClassPropertyFlags_PostSerialization = 1,
+};
+
 enum PropertyFlags
 {
 	PropertyFlags_Hidden			= 1,
@@ -13,6 +18,7 @@ enum PropertyFlags
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;
+std::unordered_map<std::string, ClassPropertyFlags> g_ClassPropertyFlagsStringMap;
 
 struct Variable
 {
@@ -68,6 +74,7 @@ struct LXClass
 {
 	std::string m_Name;
 	std::string m_FileNames[FileType_NumFileTypes];
+	int m_PropertyFlags;
 	VariableList m_Members;
 };
 typedef std::vector<LXClass> ClassList;
@@ -91,7 +98,7 @@ bool IsPropertyFlags(std::string& line)
 	return stringContains(line, '[');
 }
 
-int GetPropertyFlags(TokenList& tokens, Variable& variable)
+int GetVarPropertyFlags(TokenList& tokens, Variable& variable)
 {
 	int flags = 0;
 
@@ -116,6 +123,26 @@ int GetPropertyFlags(TokenList& tokens, Variable& variable)
 		}
 
 		flags |= g_PropertyFlagsStringMap[flagName];
+	}
+
+	return flags;
+}
+
+int GetClassPropertyFlags(TokenList& tokens)
+{
+	int flags = 0;
+
+	for (std::string& token : tokens)
+	{
+		std::string flagName = token;
+		if (stringContains(token, '='))
+		{
+			TokenList list = splitString(token, '=');
+
+			flagName = list[0];
+		}
+
+		flags |= g_ClassPropertyFlagsStringMap[flagName];
 	}
 
 	return flags;

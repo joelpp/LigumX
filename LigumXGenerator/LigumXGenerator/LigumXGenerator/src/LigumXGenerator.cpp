@@ -54,8 +54,10 @@ ClassList createLXClass(std::vector<std::string>& lines)
 	LXClass currentClass;
 	{
 		Variable variable;
-		int propertyFlags = 0;
+		int classPropertyFlags = 0;
+		int varPropertyFlags = 0;
 		// read lines
+
 		for (std::string& line : lines)
 		{
 			bool isPropertyFlags = IsPropertyFlags(line);
@@ -71,7 +73,14 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			if (isPropertyFlags)
 			{
-				propertyFlags = GetPropertyFlags(tokens, variable);
+				if (generatingClass)
+				{
+					varPropertyFlags = GetVarPropertyFlags(tokens, variable);
+				}
+				else
+				{
+					classPropertyFlags = GetClassPropertyFlags(tokens);
+				}
 
 				continue;
 			}
@@ -117,7 +126,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
 
-			variable.m_PropertyFlags = propertyFlags;
+			variable.m_PropertyFlags = varPropertyFlags;
 
 			currentClass.m_Members.push_back(variable);
 			variable = Variable();
@@ -125,8 +134,9 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			void;
 
 			// reset property flags
-			propertyFlags = 0;
+			varPropertyFlags = 0;
 		}
+
 	}
 
 	return classes;
@@ -191,6 +201,7 @@ void InitializeGenerator()
 	g_PropertyFlagsStringMap.emplace("max", PropertyFlags_MaxValue);
 	g_PropertyFlagsStringMap.emplace("transient", PropertyFlags_Transient);
 
+	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
 }
 
 int main()

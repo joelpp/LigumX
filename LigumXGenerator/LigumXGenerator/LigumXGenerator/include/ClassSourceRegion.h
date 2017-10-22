@@ -138,12 +138,14 @@ public:
 
 	if (objectStream.is_open())
 	{
-		if (objectStream.is_open())
+		Serializer::SerializeObject(this, objectStream, writing);
+	})");
+
+		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{
-			Serializer::SerializeObject(this, objectStream, writing);
+			WriteLine("PostSerialization();");
 		}
-	}
-})");
+		WriteLine("}");
 	}
 
 	void WriteBody()
