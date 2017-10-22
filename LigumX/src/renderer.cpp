@@ -243,10 +243,10 @@ void Renderer::Initialize()
 
 	InitFreetype();
 
-	// todo : put this in startup options?
-    std::string texturePath = "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/textures/";
-
+	// Init Imgui
 	ImGui_ImplGlfwGL3_Init(pWindow, true);
+
+	// 
 }
 
 void Renderer::Shutdown()

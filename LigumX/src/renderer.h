@@ -428,6 +428,8 @@ private:
 	Entity* m_PickedEntity;
 
 	int m_NumLights;
+
+	Material* tempMaterial;
 };
 
 #endif // RENDERER
