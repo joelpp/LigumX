@@ -7,7 +7,8 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData AABB::g_Properties[] = 
 {
-{ "ObjectID", offsetof(AABB, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
+{ "ObjectID", offsetof(AABB, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", offsetof(AABB, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Offset", offsetof(AABB, m_Offset), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "Scale", offsetof(AABB, m_Scale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 };

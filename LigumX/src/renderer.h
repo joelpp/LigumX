@@ -91,6 +91,8 @@ static constexpr const char* ClassName = "Renderer";
 
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
 EditorOptions* GetEditorOptions() { return m_EditorOptions; }; 
@@ -103,18 +105,20 @@ Camera* GetDebugCamera() { return m_DebugCamera; };
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
 int m_ObjectID;
+std::string m_Name;
 DisplayOptions* m_DisplayOptions;
 EditorOptions* m_EditorOptions;
 PostEffects* m_PostEffects;
 glm::vec2 m_MouseClickPosition;
 Camera* m_DebugCamera;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
 {
 PIDX_ObjectID,
+PIDX_Name,
 PIDX_DisplayOptions,
 PIDX_EditorOptions,
 PIDX_PostEffects,
@@ -384,8 +388,7 @@ private:
 	template<typename T>
 	void ShowGenericProperty(T* object, const ClassPropertyData& propertyData);
 
-	//void ShowPropertyTemplate(const char* object, const char* name, const LXType& type);
-	void ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max, bool noneditable);
+	void ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable);
 
 	template <typename T>
 	void ShowObjectCreator();
@@ -394,9 +397,10 @@ private:
 	void ShowPropertyGridMacro(T* object, const char* name);
 
 	template<typename T>
-	void ShowPropertyValue(T* object, const ClassPropertyData& propertyData);
+	void SaveObjectFromCreator(T* object);
 
-	void HandleScreenshot();
+	void ShowAddButton(std::vector<char*>* vectorPtr, const LXType& type);
+
 	void BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name);
 	void EndImGUIWindow();
 
@@ -419,10 +423,8 @@ private:
 
 	void ShowEditableProperty(int* value, const char* name);
 
-
-	template<typename T>
-	void Renderer::ShowPropertyTemplate(T* object, const ClassPropertyData& propertyData);
-    // C++ 11
+	void HandleScreenshot();
+	// C++ 11
     // =======
     // We can use the better technique of deleting the methods
     // we don't want.

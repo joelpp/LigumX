@@ -45,7 +45,7 @@ Model* GetModel() { return m_Model; };
 void SetModel(Model* value) { m_Model = value; }; 
 const bool& GetIsLight() { return m_IsLight; }; 
 void SetIsLight(bool value) { m_IsLight = value; }; 
-const std::vector<Component*>& GetComponents() { return m_Components; }; 
+std::vector<Component*>& GetComponents() { return m_Components; }; 
 void SetComponents(std::vector<Component*> value) { m_Components = value; }; 
 private:
 int m_ObjectID;

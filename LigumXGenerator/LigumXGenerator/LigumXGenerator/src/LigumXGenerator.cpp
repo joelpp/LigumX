@@ -102,8 +102,16 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				objectIDVar.m_IsTemplate = false;
 				objectIDVar.m_Name = "ObjectID";
 				objectIDVar.m_Type = "int";
-				objectIDVar.m_PropertyFlags = PropertyFlags_NonEditable;
+				objectIDVar.m_PropertyFlags = 0;
 				currentClass.m_Members.push_back(objectIDVar);
+
+				Variable nameVar;
+				nameVar.m_IsPtr = false;
+				nameVar.m_IsTemplate = false;
+				nameVar.m_Name = "Name";
+				nameVar.m_Type = "std::string";
+				nameVar.m_PropertyFlags = 0;
+				currentClass.m_Members.push_back(nameVar);
 
 				continue;
 			}

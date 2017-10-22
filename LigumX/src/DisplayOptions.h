@@ -17,6 +17,8 @@ static constexpr const char* ClassName = "DisplayOptions";
 
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 const bool& GetUseSkyLighting() { return m_UseSkyLighting; }; 
 void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 
 const bool& GetDrawTerrain() { return m_DrawTerrain; }; 
@@ -53,6 +55,7 @@ const bool& GetOutputGLErrors() { return m_OutputGLErrors; };
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
 private:
 int m_ObjectID;
+std::string m_Name;
 bool m_UseSkyLighting;
 bool m_DrawTerrain;
 bool m_DrawSky;
@@ -71,12 +74,13 @@ bool m_RenderOpaque;
 bool m_RenderShadows;
 bool m_OutputGLErrors;
 public:
-static const int g_PropertyCount = 18;
+static const int g_PropertyCount = 19;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
 {
 PIDX_ObjectID,
+PIDX_Name,
 PIDX_UseSkyLighting,
 PIDX_DrawTerrain,
 PIDX_DrawSky,

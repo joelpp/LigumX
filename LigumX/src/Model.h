@@ -36,7 +36,7 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const std::string& GetFilename() { return m_Filename; }; 
 void SetFilename(std::string value) { m_Filename = value; }; 
-const std::vector<Material*>& GetMaterials() { return m_Materials; }; 
+std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
 const bool& GetFilenameIsID() { return m_FilenameIsID; }; 
 void SetFilenameIsID(bool value) { SetFilenameIsIDCallback(value); }; 

@@ -14,7 +14,8 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData Camera::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Camera, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
+{ "ObjectID", offsetof(Camera, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", offsetof(Camera, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Position", offsetof(Camera, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "FrontVector", offsetof(Camera, m_FrontVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "RightVector", offsetof(Camera, m_RightVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 

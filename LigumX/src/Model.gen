@@ -1,7 +1,6 @@
 [postserialization]
 class Model
 {
-	std::string Name;
 	std::string Filename;
 
 	std::vector<Material> Materials;

@@ -1,6 +1,5 @@
 class Entity
 {
-	std::string Name;
 	glm::vec3 Position;
 	float RotationAngle;
 	glm::vec3 RotationAxis;

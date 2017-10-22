@@ -47,7 +47,8 @@ public:
 		{
 			// Write getter
 			bool ptr = var.IsAPointer();
-			m_Stream << (ptr ? "" : "const ");
+			bool vector = var.m_IsTemplate;
+			m_Stream << ((ptr || vector) ? "" : "const ");
 			m_Stream << (var.m_Type);
 
 			if (var.m_IsTemplate)

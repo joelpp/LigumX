@@ -21,6 +21,8 @@ static constexpr const char* ClassName = "Material";
 
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 const bool& GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 const glm::vec3& GetAmbientColor() { return m_AmbientColor; }; 
@@ -63,6 +65,7 @@ ProgramPipeline* GetProgramPipeline() { return m_ProgramPipeline; };
 void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; }; 
 private:
 int m_ObjectID;
+std::string m_Name;
 bool m_Enabled;
 glm::vec3 m_AmbientColor;
 glm::vec3 m_DiffuseColor;
@@ -83,12 +86,13 @@ Texture* m_DiffuseTexture;
 Texture* m_SpecularTexture;
 ProgramPipeline* m_ProgramPipeline;
 public:
-static const int g_PropertyCount = 20;
+static const int g_PropertyCount = 21;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MaterialPIDX
 {
 PIDX_ObjectID,
+PIDX_Name,
 PIDX_Enabled,
 PIDX_AmbientColor,
 PIDX_DiffuseColor,

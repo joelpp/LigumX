@@ -29,6 +29,8 @@ static constexpr const char* ClassName = "Camera";
 
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
 const glm::vec3& GetFrontVector() { return m_FrontVector; }; 
@@ -55,6 +57,7 @@ const float& GetViewSize() { return m_ViewSize; };
 void SetViewSize(float value) { m_ViewSize = value; }; 
 private:
 int m_ObjectID;
+std::string m_Name;
 glm::vec3 m_Position;
 glm::vec3 m_FrontVector;
 glm::vec3 m_RightVector;
@@ -68,12 +71,13 @@ int m_ProjectionType;
 float m_OrthoBorders;
 float m_ViewSize;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
 {
 PIDX_ObjectID,
+PIDX_Name,
 PIDX_Position,
 PIDX_FrontVector,
 PIDX_RightVector,

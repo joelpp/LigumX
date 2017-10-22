@@ -10,7 +10,7 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Framebuffer, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
+{ "ObjectID", offsetof(Framebuffer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Width", offsetof(Framebuffer, m_Width), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Height", offsetof(Framebuffer, m_Height), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

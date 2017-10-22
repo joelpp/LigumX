@@ -55,21 +55,25 @@ static constexpr const char* ClassName = "World";
 
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 SunLight* GetSunLight() { return m_SunLight; }; 
 void SetSunLight(SunLight* value) { m_SunLight = value; }; 
-const std::vector<Entity*>& GetEntities() { return m_Entities; }; 
+std::vector<Entity*>& GetEntities() { return m_Entities; }; 
 void SetEntities(std::vector<Entity*> value) { m_Entities = value; }; 
 private:
 int m_ObjectID;
+std::string m_Name;
 SunLight* m_SunLight;
 std::vector<Entity*> m_Entities;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WorldPIDX
 {
 PIDX_ObjectID,
+PIDX_Name,
 PIDX_SunLight,
 PIDX_Entities,
 };

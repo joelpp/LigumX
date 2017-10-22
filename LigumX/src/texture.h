@@ -22,21 +22,25 @@ static constexpr const char* ClassName = "Texture";
 
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 const std::string& GetFilename() { return m_Filename; }; 
 void SetFilename(std::string value) { m_Filename = value; }; 
 const bool& GetIsCubeMap() { return m_IsCubeMap; }; 
 void SetIsCubeMap(bool value) { m_IsCubeMap = value; }; 
 private:
 int m_ObjectID;
+std::string m_Name;
 std::string m_Filename;
 bool m_IsCubeMap;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_TexturePIDX
 {
 PIDX_ObjectID,
+PIDX_Name,
 PIDX_Filename,
 PIDX_IsCubeMap,
 };

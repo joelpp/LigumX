@@ -1,6 +1,5 @@
 class Framebuffer
 {
-	std::string Name;
 	int Width;
 	int Height;
 	GLuint ColorTexture;

@@ -8,7 +8,8 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
-{ "ObjectID", offsetof(DisplayOptions, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
+{ "ObjectID", offsetof(DisplayOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", offsetof(DisplayOptions, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "UseSkyLighting", offsetof(DisplayOptions, m_UseSkyLighting), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DrawTerrain", offsetof(DisplayOptions, m_DrawTerrain), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DrawSky", offsetof(DisplayOptions, m_DrawSky), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 

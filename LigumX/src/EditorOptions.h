@@ -14,6 +14,8 @@ static constexpr const char* ClassName = "EditorOptions";
 
 const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 const bool& GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 const bool& GetShowWorldWindow() { return m_ShowWorldWindow; }; 
@@ -28,6 +30,7 @@ const bool& GetShowTestGUI() { return m_ShowTestGUI; };
 void SetShowTestGUI(bool value) { m_ShowTestGUI = value; }; 
 private:
 int m_ObjectID;
+std::string m_Name;
 bool m_Enabled;
 bool m_ShowWorldWindow;
 bool m_ShowMaterialWindow;
@@ -35,12 +38,13 @@ bool m_ShowEntityWindow;
 bool m_ShowMaterialCreator;
 bool m_ShowTestGUI;
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
 {
 PIDX_ObjectID,
+PIDX_Name,
 PIDX_Enabled,
 PIDX_ShowWorldWindow,
 PIDX_ShowMaterialWindow,

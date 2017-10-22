@@ -12,7 +12,8 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData SunLight::g_Properties[] = 
 {
-{ "ObjectID", offsetof(SunLight, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
+{ "ObjectID", offsetof(SunLight, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", offsetof(SunLight, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "UseShadowMap", offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Time", offsetof(SunLight, m_Time), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "Orientation", offsetof(SunLight, m_Orientation), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 

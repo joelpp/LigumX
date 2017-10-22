@@ -26,6 +26,7 @@
 const ClassPropertyData Renderer::g_Properties[] = 
 {
 { "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
+{ "Name", offsetof(Renderer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
 { "EditorOptions", offsetof(Renderer, m_EditorOptions), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
 { "PostEffects", offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
@@ -689,6 +690,27 @@ void Renderer::ShowVariableAsText(float variable, const char* variableName)
 	ImGui::Text("%s : %f", variableName, variable);
 }
 
+
+#define SHOW_ADD_BUTTON(type) \
+{ \
+	case LXType_##type: \
+	{ \
+		if (ImGui::Button("+")) \
+		{ \
+			((std::vector<type *>*)vectorPtr)->push_back(new type()); \
+		} \
+	} \
+}
+
+void Renderer::ShowAddButton(std::vector<char*>* vectorPtr, const LXType& type)
+{
+	switch (type)
+	{
+		SHOW_ADD_BUTTON(Model)
+		SHOW_ADD_BUTTON(Material)
+	}
+}
+
 #define GetProperty(type, object, data) (##type *)(##object) + data.m_Offset / sizeof(##type)
 
 #define GetPropertyChar(object, data) (((char*)(##object)) + data.m_Offset)
@@ -775,11 +797,24 @@ void Renderer::ShowEditableProperty(int* ptr, const char* name)
 #define SHOW_PROPERTY_PTR(type) \
 case LXType_##type : \
 { \
-	ShowPropertyGridTemplate<##type>((##type *) ptr, name); \
+	if (*ptr == 0) \
+	{ \
+		ShowGUIText(name); \
+		if (ImGui::Button("New")) \
+		{ \
+			type* dptr = new type(); \
+			*(char**)ptr = (char*)dptr; \
+		} \
+	} \
+	else \
+	{ \
+		ShowPropertyGridTemplate<##type>((##type *) ptr, name); \
+	} \
 	break; \
 } \
 
-void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXType& type, float min, float max, bool noneditable)
+
+void Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable)
 {
 	switch (type)
 	{
@@ -835,6 +870,25 @@ void Renderer::ShowPropertyTemplate(const char* ptr, const char* name, const LXT
 		}
 
 		SHOW_PROPERTY_PTR(Model)
+		//case LXType_Model:
+		//{
+		//	if (*ptr == 0)
+		//	{
+		//		ShowGUIText(name);
+		//		if (ImGui::Button("New"))
+		//		{
+		//			Model* dptr = new Model();
+		//			//memcpy(&ptr, dptr, sizeof(char*));
+		//			*(char**)ptr = (char*)dptr;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		ShowPropertyGridTemplate<Model>((Model *) ptr, name);
+		//	}
+		//	break;
+		//}
+
 		SHOW_PROPERTY_PTR(Material)
 		SHOW_PROPERTY_PTR(AABB)
 		SHOW_PROPERTY_PTR(Entity)
@@ -883,7 +937,7 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 
 	char* ptr = (char*)object + propertyData.m_Offset;;
 
-	if (propertyData.IsAPointer)
+	if (propertyData.IsAPointer && (*ptr != 0))
 	{
 		ptr = *(char**)ptr;
 	}
@@ -899,13 +953,25 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 		for (int i = 0; i < v->size(); ++i)
 		{
 			char displayName[100];
-			sprintf(displayName, "%s[%d]", propertyData.m_Name, i);
+			sprintf(displayName, "%s[%d] : %s", propertyData.m_Name, i, object->GetName().c_str());
+
 			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, min, max, noneditable);
 		}
+
+		ShowAddButton(v, propertyData.m_AssociatedType);
 	}
 	else
 	{
 		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, min, max, noneditable);
+
+		if (propertyData.m_Name == "ObjectID")
+		{
+			ImGui::SameLine();
+			if (ImGui::Button("Reload"))
+			{
+				object->Serialize(false);
+			}
+		}
 	}
 }
 
@@ -953,6 +1019,21 @@ void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 	ImGui::PopID();
 }
 
+
+
+template<typename T>
+void Renderer::SaveObjectFromCreator(T* object)
+{
+
+}
+
+template<>
+void Renderer::SaveObjectFromCreator(Entity* newEntity)
+{
+	newEntity->GetModel()->PostSerialization(false);
+	m_World->GetEntities().push_back(newEntity);
+}
+
 template <typename T>
 void Renderer::ShowObjectCreator()
 {
@@ -964,7 +1045,7 @@ void Renderer::ShowObjectCreator()
 
 	if (ImGui::Button("Save"))
 	{
-		m_TempObject->Serialize(true);
+		SaveObjectFromCreator<T>(m_TempObject);
 	}
 
 	if (ImGui::Button("Reset"))
