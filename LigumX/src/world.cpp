@@ -58,18 +58,7 @@ void World::InitTestWorld()
 		Entity* testEntity = new Entity();
 		testEntity->SetObjectID(11072);
 		testEntity->Serialize(false);
-		//testEntity->SetName("Nanosuit");
-		//testEntity->SetPosition(glm::vec3(0, 20, 1));
-		//testEntity->SetRotationAngle(90.f);
-
-		//nanosuitModel = new Model();
-		//nanosuitModel->SetObjectID(4699);
-		//nanosuitModel->Serialize(false);
-		//testEntity->SetModel(nanosuitModel);
-
 		m_Entities.push_back(testEntity);
-
-		//testEntity->Serialize(true);
 	}
 
 	if (false)
