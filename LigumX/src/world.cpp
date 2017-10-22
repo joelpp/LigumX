@@ -141,9 +141,9 @@ void World::InitTestWorld()
 		// todo remove const from std vector getters
 		// todo fix vector serialization
 		Model* cubeModel = new Model();
-		cubeModel->SetObjectID(19309);
-		cubeModel->GetMaterials().push_back(new Material());
+		cubeModel->SetObjectID(19039);
 		cubeModel->Serialize(false);
+
 		cubeModel->addMesh(g_DefaultMeshes->DefaultCubeMesh);
 		pointLightEntity->SetModel(cubeModel);
 

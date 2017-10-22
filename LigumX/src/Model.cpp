@@ -22,8 +22,10 @@ void Model::Serialize(bool writing)
 	std::string basePath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
 	std::string fileName = "Model_" + std::to_string(m_ObjectID) + ".LXobj";
 
+	std::string full = basePath + fileName;
+
 	int fileMask = writing ? std::ios::out : std::ios::in;
-	std::fstream objectStream(basePath + fileName, fileMask);
+	std::fstream objectStream(full, fileMask);
 
 	if (objectStream.is_open())
 	{

@@ -151,12 +151,19 @@ break; \
 #define SERIALIZE_PTR_IN(type) \
 case LXType_##type : \
 { \
-##type* val = (##type *)ptr; \
-int ObjectID; \
-objectStream >> ObjectID; \
-val->SetObjectID(ObjectID); \
-val->Serialize(false); \
-break; \
+	if (*ptr == 0) \
+	{ \
+		##type* dptr = new type(); \
+		char** aptr = (char**)ptr; \
+		*aptr = (char*)dptr; \
+		ptr = *(char**)ptr; \
+	} \
+	##type* val = (##type *)ptr; \
+	int ObjectID; \
+	objectStream >> ObjectID; \
+	val->SetObjectID(ObjectID); \
+	val->Serialize(false); \
+	break; \
 } \
 
 #define SERIALIZE_PRIMITIVE_IN_NS(nameSpace, type) \
@@ -196,10 +203,58 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 			break;
 		}
 		// todo : camera
+
+		//case LXType_DisplayOptions:
+		//{
+		//	//if ((int) *ptr == 0)
+		//	//{
+		//	//	DisplayOptions* newPtr = new DisplayOptions();
+
+		//	//	for (int i = 0; i < 4; ++i)
+		//	//	{
+		//	//		*(ptr + i * sizeof(char)) = (char)(ptr + i * sizeof(char));
+		//	//	}
+		//	//}
+
+		//	DisplayOptions* dptr = new DisplayOptions();
+
+		//	char** aptr = (char**)ptr;
+		//	*aptr = (char*)dptr;
+
+		//	ptr = *(char**)ptr;
+
+		//	DisplayOptions* val = (DisplayOptions *)ptr;
+
+		//	int ObjectID;
+		//	objectStream >> ObjectID;
+		//	val->SetObjectID(ObjectID);
+		//	val->Serialize(false);
+		//	break;
+		//}
+
+
 		SERIALIZE_PTR_IN(DisplayOptions)
 		SERIALIZE_PTR_IN(PostEffects)
 		SERIALIZE_PTR_IN(Camera)
 		SERIALIZE_PTR_IN(Material)
+
+		//case LXType_Material:
+		//{
+		//	if (*ptr == 0)
+		//	{
+		//		Material* dptr = new Material();
+		//		char** aptr = (char**)ptr;
+		//		*aptr = (char*)dptr;
+		//		ptr = *(char**)ptr;
+		//	}
+		//	
+		//	Material* val = (Material *)ptr;
+		//	int ObjectID;
+		//	objectStream >> ObjectID;
+		//	val->SetObjectID(ObjectID);
+		//	val->Serialize(false);
+		//	break;
+		//}
 
 		case LXType_Model:
 		{

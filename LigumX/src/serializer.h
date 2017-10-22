@@ -1,6 +1,7 @@
 #pragma once
 
 #include "property.h"
+#include "DisplayOptions.h"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -52,27 +53,6 @@ public:
 	template <typename T>
 	static void SerializeObjectIn(T* object, std::fstream& objectStream)
 	{
-		// first serialize pointers
-		//for (int i = 0; i < object->g_PropertyCount; ++i)
-		//{
-		//	const ClassPropertyData& propertyData = object->g_Properties[i];
-		//	if (!(propertyData.IsAPointer) || (propertyData.m_PropertyFlags & PropertyFlags_Transient))
-		//	{
-		//		continue;
-		//	}
-
-		//	char* ptr = (char*)object + propertyData.m_Offset;
-
-		//	// todo : get rid of this dumb hack
-		//	if (propertyData.m_Name != "Model")
-		//	{
-		//		ptr = *(char**)ptr;
-		//	}
-
-		//	SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, objectStream);
-		//}
-
-		// then serialize class variables
 		std::string line;
 		while (std::getline(objectStream, line))
 		{
@@ -96,7 +76,6 @@ public:
 				if (propertyData.IsAPointer)
 				{
 					char* ptr = (char*)object + propertyData.m_Offset;
-					ptr = *(char**)ptr;
 
 					SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, objectStream);
 					break;
@@ -109,10 +88,10 @@ public:
 						int numItems = std::atoi(line.c_str());
 
 						std::vector<char*>* v = (std::vector<char*>*) ((char*)object + propertyData.m_Offset);
-						//v->resize(numItems);
+						v->resize(numItems);
 						for (int i = 0; i < numItems; ++i)
 						{
-							char* ptr = (char*)((*v)[i]);
+							char* ptr = (char*)(&((*v)[i]));
 
 							SerializePropertyIn(ptr, propertyData.m_AssociatedType, LXType_None, objectStream);
 						}

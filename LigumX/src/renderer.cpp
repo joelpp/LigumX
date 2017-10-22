@@ -230,14 +230,8 @@ void Renderer::Initialize()
 	dt = 0.1;
 
 	// TODO : add default constructors D: and serialization for gen files...
-	m_DisplayOptions = new DisplayOptions();
-	m_DisplayOptions->SetObjectID(0);
-
-	m_PostEffects = new PostEffects();
-	m_PostEffects->SetObjectID(0);
-
-	m_DebugCamera = new Camera();
-	m_DebugCamera->SetObjectID(0);
+	//m_DisplayOptions = new DisplayOptions();
+	//m_DisplayOptions->SetObjectID(0);
 
 	m_ShadowCamera = new Camera();
 	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
