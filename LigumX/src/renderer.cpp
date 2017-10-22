@@ -899,16 +899,17 @@ void Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 		//	break;
 		//}
 
-		case LXType_Texture:
-		{
-			if (ptr)
-			{
-				ShowGUIText(name);
-				ImGui::Image((ImTextureID)((Texture*)ptr)->GetHWObject(), ImVec2(50, 50));
-			}
+		SHOW_PROPERTY_PTR(Texture);
+		//case LXType_Texture:
+		//{
+		//	if (ptr)
+		//	{
+		//		ShowGUIText(name);
+		//		ImGui::Image((ImTextureID)((Texture*)ptr)->GetHWObject(), ImVec2(50, 50));
+		//	}
 
-			break;
-		}
+		//	break;
+		//}
 		case LXType_Component:
 		{
 			if (ptr)
@@ -966,7 +967,6 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 
 		if (propertyData.m_Name == "ObjectID")
 		{
-			ImGui::SameLine();
 			if (ImGui::Button("Reload"))
 			{
 				object->Serialize(false);
@@ -976,7 +976,7 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 }
 
 template<typename T>
-void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
+bool Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 {
 	ImGui::PushID(name);
 
@@ -1017,6 +1017,8 @@ void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 	}
 
 	ImGui::PopID();
+
+	return readyToDisplay;
 }
 
 
@@ -1024,7 +1026,7 @@ void Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 template<typename T>
 void Renderer::SaveObjectFromCreator(T* object)
 {
-
+	object->Serialize(true);
 }
 
 template<>
@@ -1041,30 +1043,33 @@ void Renderer::ShowObjectCreator()
 	static int m_TempObjectID = g_ObjectIDManager->GetObjectID();
 	ImGui::PushID(m_TempObjectID);
 
-	ShowPropertyGridTemplate<T>( m_TempObject, ("New " + std::string(T::ClassName)).c_str() );
-
-	if (ImGui::Button("Save"))
+	if (ShowPropertyGridTemplate<T>(m_TempObject, ("New " + std::string(T::ClassName)).c_str()))
 	{
-		SaveObjectFromCreator<T>(m_TempObject);
+		if (ImGui::Button("Save"))
+		{
+			SaveObjectFromCreator<T>(m_TempObject);
+		}
+
+		if (ImGui::Button("Reset"))
+		{
+			//m_TempMaterial = new Material();
+			m_TempObject = new T();
+		}
+
+		ShowEditableProperty(&m_TempObjectID, "ID to load");
+
+		if (ImGui::Button("Load"))
+		{
+			//m_TempMaterial->SetObjectID(m_TempObjectID);
+			//m_TempMaterial->Serialize(false);
+
+			m_TempObject->SetObjectID(m_TempObjectID);
+			m_TempObject->Serialize(false);
+		}
+
 	}
 
-	if (ImGui::Button("Reset"))
-	{
-		//m_TempMaterial = new Material();
-		m_TempObject = new T();
-	}
-
-	ShowEditableProperty(&m_TempObjectID, "ID to load");
-
-	if (ImGui::Button("Load"))
-	{
-		//m_TempMaterial->SetObjectID(m_TempObjectID);
-		//m_TempMaterial->Serialize(false);
-
-		m_TempObject->SetObjectID(m_TempObjectID);
-		m_TempObject->Serialize(false);
-	}
-
+	
 	ImGui::PopID();
 }
 
@@ -1199,6 +1204,7 @@ void Renderer::RenderImgui()
 	BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Creator");
 
 	ShowObjectCreator<Entity>();
+	ShowObjectCreator<Texture>();
 	ShowObjectCreator<Material>();
 	EndImGUIWindow();
 

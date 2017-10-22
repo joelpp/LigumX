@@ -383,7 +383,7 @@ private:
 	bool m_RenderingMenu;
 
 	template <typename T>
-	void ShowPropertyGridTemplate(T* object, const char* name);
+	bool ShowPropertyGridTemplate(T* object, const char* name);
 
 	template<typename T>
 	void ShowGenericProperty(T* object, const ClassPropertyData& propertyData);
