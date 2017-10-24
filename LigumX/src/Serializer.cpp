@@ -260,36 +260,6 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 
 			break;
 		}
-		// todo : camera
-
-		//case LXType_DisplayOptions:
-		//{
-		//	//if ((int) *ptr == 0)
-		//	//{
-		//	//	DisplayOptions* newPtr = new DisplayOptions();
-
-		//	//	for (int i = 0; i < 4; ++i)
-		//	//	{
-		//	//		*(ptr + i * sizeof(char)) = (char)(ptr + i * sizeof(char));
-		//	//	}
-		//	//}
-
-		//	DisplayOptions* dptr = new DisplayOptions();
-
-		//	char** aptr = (char**)ptr;
-		//	*aptr = (char*)dptr;
-
-		//	ptr = *(char**)ptr;
-
-		//	DisplayOptions* val = (DisplayOptions *)ptr;
-
-		//	int ObjectID;
-		//	objectStream >> ObjectID;
-		//	val->SetObjectID(ObjectID);
-		//	val->Serialize(false);
-		//	break;
-		//}
-
 
 		SERIALIZE_PTR_IN(DisplayOptions)
 		SERIALIZE_PTR_IN(PostEffects)
@@ -297,10 +267,52 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PTR_IN(Material)
 		SERIALIZE_PTR_IN(Model)
 		//SERIALIZE_PTR_IN(Mesh)
-		SERIALIZE_PTR_IN(Texture)
+		//SERIALIZE_PTR_IN(Texture)
 		SERIALIZE_PTR_IN(SunLight)
 		SERIALIZE_PTR_IN(Entity)
 		SERIALIZE_PTR_IN(EditorOptions)
+
+		case LXType_Texture:
+		{
+			int objectID;
+			objectStream >> objectID;
+			if (objectID == 0)
+			{
+				break;
+			}
+
+			ObjectPtr loadedObject = g_ObjectIDManager->FindObjectByID(objectID, false);
+			bool mustSerialize = false;
+			Texture* dptr = nullptr;
+			if (loadedObject == nullptr)
+			{
+				if (*ptr == 0)
+				{
+					dptr = new Texture();
+					g_ObjectIDManager->AddObject(objectID, (ObjectPtr) dptr);
+				}
+
+				mustSerialize = true;
+			}
+			else
+			{
+				dptr = (Texture*) loadedObject;
+			}
+
+			char** aptr = (char**)ptr;
+			*aptr = (char*)dptr;
+			ptr = *(char**)ptr;
+
+			if (mustSerialize)
+			{
+				Texture* val = (Texture *)ptr;
+				val->SetObjectID(objectID);
+				val->Serialize(false);
+			}
+
+			break;
+		}
+
 
 		case LXType_Mesh:
 		{
@@ -341,101 +353,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 			break;
 		}
 
-		//case LXType_Model:
-		//{
-		//	if (*ptr == 0)
-		//	{
-		//		Model* dptr = new Model();
-		//		char** aptr = (char**)ptr;
-		//		*aptr = (char*)dptr;
-		//		ptr = *(char**)ptr;
-		//	}
-		//	
-		//	Model* val = (Model *)ptr;
-		//	int ObjectID;
-		//	objectStream >> ObjectID;
-		//	val->SetObjectID(ObjectID);
-		//	val->Serialize(false);
-		//	break;
-		//}
-
-		//case LXType_Model:
-		//{
-		//	Model* val = (Model *)ptr;
-
-		//	//val = new Model();
-
-		//	int objectID;
-		//	objectStream >> objectID;
-
-		//	val->SetObjectID(objectID);
-
-		//	val->Serialize(false);
-		//	break;
-		//}
-		//case LXType_Material:
-		//{
-		//	Material** val = (Material **)ptr;
-
-		//	if (*val == nullptr)
-		//	{
-		//		*val = new Material();
-		//	}
-
-		//	int objectID;
-		//	objectStream >> objectID;
-
-		//	(*val)->SetObjectID(objectID);
-
-		//	(*val)->Serialize(false);
-		//	break;
-		//}
-		//case LXType_Entity:
-		//{
-		//	Entity** val = (Entity **)ptr;
-
-		//	if (*val == nullptr)
-		//	{
-		//		*val = new Entity();
-		//	}
-
-		//	int objectID;
-		//	objectStream >> objectID;
-
-		//	(*val)->SetObjectID(objectID);
-
-		//	(*val)->Serialize(false);
-		//	break;
-		//}
-
-		//case LXType_Texture:
-		//{
-		//if (ptr)
-		//{
-		//ShowGUIText(name);
-		//ImGui::Image((ImTextureID)((Texture*)ptr)->GetHWObject(), ImVec2(50, 50));
-		//}
-
-		//break;
-		//}
-		//case LXType_Component:
-		//{
-		//if (ptr)
-		//{
-		//ShowPropertyGridTemplate<BoundingBoxComponent>((BoundingBoxComponent*)ptr, name);
-		//}
-
-		//break;
-		//}
-		//case LXType_AABB:
-		//{
-		//if (ptr)
-		//{
-		//ShowPropertyGridTemplate<AABB>((AABB*)ptr, name);
-		//}
-
-		//break;
-		//}
+	
 		default:
 		{
 			break;

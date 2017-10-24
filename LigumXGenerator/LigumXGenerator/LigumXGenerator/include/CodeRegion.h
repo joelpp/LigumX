@@ -10,10 +10,42 @@ public:
 
 	}
 
+	std::string GenerateFileName()
+	{
+		return g_GenerationRootDir + m_Class.m_Name + m_FileExtension;
+	}
+
+
+	void CreateFileStub()
+	{
+		std::string fileStub;
+			
+		bool stub = GenerateFileStub(fileStub);
+
+		if (stub)
+		{
+
+			std::string fileName = GenerateFileName();
+
+			std::fstream file(fileName.c_str(), std::fstream::out);
+
+			if (file.is_open())
+			{
+				file << fileStub;
+				file.close();
+			}
+		}
+	}
+
 	void WriteToFile()
 	{
-		std::string headerFilePath = g_GenerationRootDir + m_Class.m_Name + m_FileExtension;
+		std::string headerFilePath = GenerateFileName();
 		std::vector<std::string> lines = readFileLines(headerFilePath.c_str());
+
+		if (lines.size() == 0)
+		{
+			CreateFileStub();
+		}
 
 		// saerch for code_region line
 		int index = 0;
@@ -110,8 +142,9 @@ public:
 	}
 
 	virtual void Process() = 0;
+	virtual bool GenerateFileStub(std::string& stub) { return false; }
+	
 	virtual bool IsBeginMarker(TokenList& token) { return false; }
-
 
 protected:
 	std::stringstream m_Stream;

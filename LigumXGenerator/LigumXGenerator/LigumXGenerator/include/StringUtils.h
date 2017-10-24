@@ -10,12 +10,15 @@ std::vector<std::string> readFileLines(const char* fileName)
 	std::vector<std::string> values;
 
 	std::fstream refFile(fileName, std::fstream::in);
-	std::string line;
-	while (std::getline(refFile, line))
+	if (refFile.is_open())
 	{
-		values.push_back(line);
+		std::string line;
+		while (std::getline(refFile, line))
+		{
+			values.push_back(line);
+		}
+		refFile.close();
 	}
-	refFile.close();
 
 	return values;
 }

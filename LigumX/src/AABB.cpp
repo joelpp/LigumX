@@ -21,5 +21,5 @@ void AABB::Serialize(bool writing)
 
 AABB::AABB()
 {
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }

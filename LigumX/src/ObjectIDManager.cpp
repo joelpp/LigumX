@@ -30,7 +30,7 @@ ObjectIDManager::ObjectIDManager()
 	DefaultCubeMeshID = m_NextHardcodedID++;
 }
 
-int ObjectIDManager::GetObjectID()
+int ObjectIDManager::GetNewObjectID()
 {
 	return rand_interval(StartObjectIDs, RAND_MAX);
 }
@@ -41,4 +41,31 @@ int ObjectIDManager::GetTransientID()
 	int toReturn = m_NextTransientID;
 	m_NextTransientID++;
 	return toReturn;
+}
+
+ObjectPtr ObjectIDManager::FindObjectByID(ObjectID id, bool createIfNotFound)
+{
+	auto it = m_Objects.find(id);
+
+	if (it == m_Objects.end())
+	{
+		if (createIfNotFound)
+		{
+			// todo: we need to allocate a something*. not sure about the best way to do so now.
+			return nullptr;
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+	else
+	{
+		return it->second;
+	}
+}
+
+void ObjectIDManager::AddObject(ObjectID id, ObjectPtr ptr)
+{
+	m_Objects[id] = ptr;
 }

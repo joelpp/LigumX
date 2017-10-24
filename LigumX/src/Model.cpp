@@ -33,14 +33,14 @@ void Model::Serialize(bool writing)
 Model::Model()
 {
 	m_modelMatrix = glm::mat4(1.0);
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 Model::Model(std::string path)
 	: m_Filename(path)
 {
 	m_modelMatrix = glm::mat4(1.0);
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 Model::Model(Mesh* mesh, Material* material)
@@ -51,14 +51,14 @@ Model::Model(Mesh* mesh, Material* material)
 	{
 		m_Materials.push_back(material);
 	}
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
 {
 	m_meshes = meshList;
 	m_Materials = materialList;
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 void Model::PostSerialization(bool writing)

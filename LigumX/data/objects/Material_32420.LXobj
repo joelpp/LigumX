@@ -1,5 +1,7 @@
 ObjectID
 32420
+Name
+
 Enabled
 1
 AmbientColor
@@ -39,6 +41,6 @@ IsGlass
 ReflectEnvironment
 0
 DiffuseTexture
-10892
+10691
 SpecularTexture
 23680

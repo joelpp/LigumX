@@ -24,7 +24,7 @@ BoundingBoxComponent::BoundingBoxComponent()
 {
 	m_BoundingBox.SetScale(glm::vec3(1, 1, 1));
 
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 void BoundingBoxComponent::Update()

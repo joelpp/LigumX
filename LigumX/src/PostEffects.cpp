@@ -22,5 +22,5 @@ void PostEffects::Serialize(bool writing)
 
 PostEffects::PostEffects()
 {
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }

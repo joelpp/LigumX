@@ -1,5 +1,7 @@
 ObjectID
 12466
+Name
+EditorOptions
 Enabled
 1
 ShowWorldWindow
@@ -9,6 +11,6 @@ ShowMaterialWindow
 ShowEntityWindow
 1
 ShowMaterialCreator
-1
+0
 ShowTestGUI
-1
+0

@@ -26,7 +26,7 @@ using namespace std;
 
 Texture::Texture()
 {
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 
@@ -35,7 +35,7 @@ Texture::Texture(string filename, bool isCubeMap)
 	: m_Filename(filename),
 	  m_IsCubeMap(isCubeMap)
 {
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 void Texture::PostSerialization(bool writing)

@@ -25,7 +25,7 @@
 #include "ObjectIdManager.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, PropertyFlags_NonEditable, 0, 0, }, 
+{ "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Renderer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "DisplayOptions", offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
 { "EditorOptions", offsetof(Renderer, m_EditorOptions), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
@@ -53,7 +53,7 @@ using namespace std;
 Renderer::Renderer()
 {
 	g_Instance = this;
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }
 
 void Renderer::InitFramebuffers()
@@ -1032,7 +1032,7 @@ void Renderer::SaveObjectFromCreator(T* object)
 template<>
 void Renderer::SaveObjectFromCreator(Entity* newEntity)
 {
-	newEntity->GetModel()->PostSerialization(false);
+	newEntity->GetModel()->Serialize(false);
 	m_World->GetEntities().push_back(newEntity);
 }
 
@@ -1040,7 +1040,7 @@ template <typename T>
 void Renderer::ShowObjectCreator()
 {
 	static T* m_TempObject = new T();
-	static int m_TempObjectID = g_ObjectIDManager->GetObjectID();
+	static int m_TempObjectID = g_ObjectIDManager->GetNewObjectID();
 	ImGui::PushID(m_TempObjectID);
 
 	if (ShowPropertyGridTemplate<T>(m_TempObject, ("New " + std::string(T::ClassName)).c_str()))
@@ -1201,12 +1201,17 @@ void Renderer::RenderImgui()
 	//	ImGui::PopID();
 	//}
 
-	BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Creator");
 
-	ShowObjectCreator<Entity>();
-	ShowObjectCreator<Texture>();
-	ShowObjectCreator<Material>();
-	EndImGUIWindow();
+	if (m_EditorOptions->GetShowMaterialCreator())
+	{
+		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Creator");
+
+		ShowObjectCreator<Entity>();
+		ShowObjectCreator<Texture>();
+		ShowObjectCreator<Material>();
+
+		EndImGUIWindow();
+	}
 
 
 	ImGui::Render();

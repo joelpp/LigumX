@@ -1,5 +1,7 @@
 ObjectID
 28763
+Name
+BaseRenderer
 DisplayOptions
 28764
 EditorOptions
@@ -7,7 +9,7 @@ EditorOptions
 PostEffects
 28765
 MouseClickPosition
-790
-531
+726
+532
 DebugCamera
 28766

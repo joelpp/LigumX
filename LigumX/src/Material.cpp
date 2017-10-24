@@ -56,7 +56,7 @@ Material::Material()
 
 	m_EmissiveFactor = 0.0f;
 
-	m_ObjectID = g_ObjectIDManager->GetObjectID();;
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();;
 }
 
 

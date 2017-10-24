@@ -25,5 +25,5 @@ void EditorOptions::Serialize(bool writing)
 
 EditorOptions::EditorOptions()
 {
-	m_ObjectID = g_ObjectIDManager->GetObjectID();
+	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
 }

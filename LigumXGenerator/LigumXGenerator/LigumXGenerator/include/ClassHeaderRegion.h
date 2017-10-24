@@ -13,6 +13,18 @@ public:
 		m_CodeRegionBeginString = g_CodeRegionBeginString + " " + m_IDString + " " + m_Class.m_Name;
 		m_CodeRegionEndString = g_CodeRegionEndString + " " + m_IDString + " " + m_Class.m_Name;
 	}
+
+
+	bool GenerateFileStub(std::string& stub)
+	{
+		std::stringstream ss;
+
+		ss << "666 42";
+
+		stub = ss.str();
+		return true;
+	}
+
 	bool IsBeginMarker(TokenList& token)
 	{
 		bool ok = false;
