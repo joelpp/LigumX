@@ -39,9 +39,27 @@ public:
 
 	bool IsBeginMarker(TokenList& token) { return IsIncludeDeclaration(token); }
 
+	bool GenerateFileStub(std::string& stub)
+	{
+		std::stringstream ss;
+
+		ss << "#include \"" << m_Class.m_Name << ".h\"";
+		ss << "\n";
+		ss << "\n";
+
+		stub = ss.str();
+		return true;
+	}
+
 	void WriteHeader()
 	{
-		m_Stream << m_CodeRegionBeginString;
+		WriteLine(m_CodeRegionBeginString);
+
+		if (m_Class.m_PropertyFlags & ClassPropertyFlags_GlobalInstance)
+		{
+			WriteLine(m_Class.m_Name + "* g_" + m_Class.m_Name + ";");
+		}
+
 		m_Stream << std::endl;
 	}
 
@@ -73,10 +91,13 @@ public:
 
 		std::string separator = " | ";
 
+		// todo mapping between enum and strings
+		// generated with lxgen
 		ADD_PROPERTY(PropertyFlags_Hidden)
 		ADD_PROPERTY(PropertyFlags_SetCallback)
 		ADD_PROPERTY(PropertyFlags_Transient)
 		ADD_PROPERTY(PropertyFlags_NonEditable)
+		ADD_PROPERTY(PropertyFlags_Adder)
 
 		if (toReturn.size() == 0)
 		{

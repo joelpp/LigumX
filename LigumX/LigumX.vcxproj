@@ -163,6 +163,7 @@
     <ClCompile Include="src\DefaultMeshes.cpp" />
     <ClCompile Include="src\DisplayOptions.cpp" />
     <ClCompile Include="src\EditorOptions.cpp" />
+    <ClCompile Include="src\EngineStats.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\filled_buildings.cpp" />
     <ClCompile Include="src\Framebuffer.cpp" />
@@ -252,6 +253,7 @@
     <ClInclude Include="src\DefaultMeshes.h" />
     <ClInclude Include="src\DisplayOptions.h" />
     <ClInclude Include="src\EditorOptions.h" />
+    <ClInclude Include="src\EngineStats.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\Framebuffer.h" />
     <ClInclude Include="src\GL.h" />
@@ -306,6 +308,7 @@
     <None Include="src\Component.gen" />
     <None Include="src\DisplayOptions.gen" />
     <None Include="src\EditorOptions.gen" />
+    <None Include="src\EngineStats.gen" />
     <None Include="src\Entity.gen" />
     <None Include="src\Framebuffer.gen" />
     <None Include="src\Material.gen" />

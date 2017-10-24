@@ -1,6 +1,7 @@
 #include "Component.h"
 
 #pragma region  CLASS_SOURCE Component
+
 #include "Component.h"
 #include "serializer.h"
 #include <cstddef>

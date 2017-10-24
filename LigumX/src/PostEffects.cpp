@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #pragma region  CLASS_SOURCE PostEffects
+
 #include "PostEffects.h"
 #include "serializer.h"
 #include <cstddef>

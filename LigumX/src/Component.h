@@ -3,7 +3,10 @@
 
 #pragma region  FORWARD_DECLARATIONS Component
 #include "property.h"
+
+class Component;
 class Entity;
+
 
 #pragma endregion  FORWARD_DECLARATIONS Component
 class Component

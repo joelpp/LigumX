@@ -4,6 +4,7 @@
 #include "property.h" // todo : make a mandatory includes code region
 
 #pragma region  CLASS_SOURCE Material
+
 #include "Material.h"
 #include "serializer.h"
 #include <cstddef>

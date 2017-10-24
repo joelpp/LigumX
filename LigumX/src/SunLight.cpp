@@ -6,6 +6,7 @@
 #include <cstddef>
 
 #pragma region  CLASS_SOURCE SunLight
+
 #include "SunLight.h"
 #include "serializer.h"
 #include <cstddef>

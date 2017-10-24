@@ -19,7 +19,17 @@ public:
 	{
 		std::stringstream ss;
 
-		ss << "666 42";
+		ss << "#pragma once";
+		ss << "\n";
+		ss << "\n";
+		ss << "\n";
+
+		ss << "class " << m_Class.m_Name;
+		ss << "\n";
+		ss << "{";
+		ss << "\n";
+		ss << "\n";
+		ss << "};";
 
 		stub = ss.str();
 		return true;
@@ -106,6 +116,13 @@ public:
 				m_Stream << "void Set" << var.m_Name << "Callback(" << var.m_Type;
 				m_Stream << (ptr ? "*" : "");
 				m_Stream << " value);";
+				m_Stream << std::endl;
+			}
+
+			if (var.m_PropertyFlags & PropertyFlags_Adder)
+			{
+				m_Stream << "void AddTo" << var.m_Name << "(" << var.m_Type;
+				m_Stream << " value) { m_" << var.m_Name << " += value; };";
 				m_Stream << std::endl;
 			}
 

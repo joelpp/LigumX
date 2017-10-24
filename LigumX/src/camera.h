@@ -8,6 +8,9 @@
 #pragma region  FORWARD_DECLARATIONS Camera
 #include "property.h"
 
+class Camera;
+
+
 #pragma endregion  FORWARD_DECLARATIONS Camera
 // 2D orthographic camera, look in the -Z direction.3
 

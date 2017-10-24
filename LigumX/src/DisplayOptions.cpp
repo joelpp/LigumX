@@ -2,6 +2,7 @@
 #include <cstddef>
 
 #pragma region  CLASS_SOURCE DisplayOptions
+
 #include "DisplayOptions.h"
 #include "serializer.h"
 #include <cstddef>

@@ -171,6 +171,9 @@
     <ClCompile Include="src\EditorOptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\EngineStats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -434,6 +437,9 @@
     <ClInclude Include="src\EditorOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\EngineStats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -455,5 +461,6 @@
     <None Include="src\Texture.gen" />
     <None Include="src\Mesh.gen" />
     <None Include="src\EditorOptions.gen" />
+    <None Include="src\EngineStats.gen" />
   </ItemGroup>
 </Project>

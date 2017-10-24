@@ -1,6 +1,7 @@
 #include "EditorOptions.h"
 
 #pragma region  CLASS_SOURCE EditorOptions
+
 #include "EditorOptions.h"
 #include "serializer.h"
 #include <cstddef>
@@ -14,6 +15,7 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "ShowMaterialWindow", offsetof(EditorOptions, m_ShowMaterialWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowEntityWindow", offsetof(EditorOptions, m_ShowEntityWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowMaterialCreator", offsetof(EditorOptions, m_ShowMaterialCreator), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowEngineStats", offsetof(EditorOptions, m_ShowEngineStats), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowTestGUI", offsetof(EditorOptions, m_ShowTestGUI), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 void EditorOptions::Serialize(bool writing)

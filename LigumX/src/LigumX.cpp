@@ -13,6 +13,7 @@
 #include "World.h"
 #include "Sector.h"
 #include "Heightfield.h"
+#include "EngineStats.h"
 #include "Mesh.h"
 #include "Serializer.h"
 
@@ -79,6 +80,7 @@ void LigumX::init()
 	m_Renderer->Serialize(false);
 
 	g_DefaultMeshes = new DefaultMeshes();
+	g_EngineStats = new EngineStats();
 
 	SetCallbacks();
 

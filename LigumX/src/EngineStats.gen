@@ -1,0 +1,9 @@
+[globalinstance]
+class EngineStats
+{
+	[adder]
+	int NumObjectMapHits;
+
+	[adder]
+	int NumDrawCalls;
+}

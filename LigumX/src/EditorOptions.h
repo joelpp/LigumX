@@ -3,6 +3,9 @@
 #pragma region  FORWARD_DECLARATIONS EditorOptions
 #include "property.h"
 
+class EditorOptions;
+
+
 #pragma endregion  FORWARD_DECLARATIONS EditorOptions
 
 class EditorOptions
@@ -26,6 +29,8 @@ const bool& GetShowEntityWindow() { return m_ShowEntityWindow; };
 void SetShowEntityWindow(bool value) { m_ShowEntityWindow = value; }; 
 const bool& GetShowMaterialCreator() { return m_ShowMaterialCreator; }; 
 void SetShowMaterialCreator(bool value) { m_ShowMaterialCreator = value; }; 
+const bool& GetShowEngineStats() { return m_ShowEngineStats; }; 
+void SetShowEngineStats(bool value) { m_ShowEngineStats = value; }; 
 const bool& GetShowTestGUI() { return m_ShowTestGUI; }; 
 void SetShowTestGUI(bool value) { m_ShowTestGUI = value; }; 
 private:
@@ -36,9 +41,10 @@ bool m_ShowWorldWindow;
 bool m_ShowMaterialWindow;
 bool m_ShowEntityWindow;
 bool m_ShowMaterialCreator;
+bool m_ShowEngineStats;
 bool m_ShowTestGUI;
 public:
-static const int g_PropertyCount = 8;
+static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -50,6 +56,7 @@ PIDX_ShowWorldWindow,
 PIDX_ShowMaterialWindow,
 PIDX_ShowEntityWindow,
 PIDX_ShowMaterialCreator,
+PIDX_ShowEngineStats,
 PIDX_ShowTestGUI,
 };
 void Serialize(bool writing);

@@ -6,6 +6,9 @@
 #pragma region  FORWARD_DECLARATIONS BoundingBoxComponent
 #include "property.h"
 
+class BoundingBoxComponent;
+
+
 #pragma endregion  FORWARD_DECLARATIONS BoundingBoxComponent
 
 

@@ -12,6 +12,9 @@
 #pragma region  FORWARD_DECLARATIONS Texture
 #include "property.h"
 
+class Texture;
+
+
 #pragma endregion  FORWARD_DECLARATIONS Texture
 class Texture
 {

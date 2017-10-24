@@ -21,7 +21,11 @@ public:
 		m_Stream << std::endl;
 
 		std::vector<std::string> classesToDeclare;
+		classesToDeclare.push_back(m_Class.m_Name);
+
 		WriteLine("#include \"property.h\"");
+
+		WriteLine("");
 
 		// todo : add autoincludes from this
 		for (Variable v : m_Class.m_Members)
@@ -53,6 +57,14 @@ public:
 		{
 			WriteLine("class " + str + ";");
 		}
+
+		WriteLine("");
+
+		if (m_Class.m_PropertyFlags & ClassPropertyFlags_GlobalInstance)
+		{
+			WriteLine("extern " + m_Class.m_Name + "* g_" + m_Class.m_Name + ";");
+		}
+
 	}
 
 	void WriteFooter()

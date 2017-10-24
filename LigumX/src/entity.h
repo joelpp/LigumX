@@ -14,8 +14,11 @@
 
 #pragma region  FORWARD_DECLARATIONS Entity
 #include "property.h"
+
+class Entity;
 class Model;
 class Component;
+
 
 #pragma endregion  FORWARD_DECLARATIONS Entity
 class Entity;

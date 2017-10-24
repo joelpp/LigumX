@@ -1,6 +1,7 @@
 #include <string> // todo this is bs only to make the lxgen work
 
 #pragma region  CLASS_SOURCE AABB
+
 #include "AABB.h"
 #include "serializer.h"
 #include <cstddef>

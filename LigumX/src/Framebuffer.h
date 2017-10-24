@@ -7,6 +7,9 @@ typedef unsigned int GLuint;
 #pragma region  FORWARD_DECLARATIONS Framebuffer
 #include "property.h"
 
+class Framebuffer;
+
+
 #pragma endregion  FORWARD_DECLARATIONS Framebuffer
 
 class Framebuffer

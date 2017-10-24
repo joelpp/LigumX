@@ -6,6 +6,9 @@
 #pragma region  FORWARD_DECLARATIONS AABB
 #include "property.h"
 
+class AABB;
+
+
 #pragma endregion  FORWARD_DECLARATIONS AABB
 
 class AABB

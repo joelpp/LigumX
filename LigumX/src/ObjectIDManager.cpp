@@ -1,6 +1,7 @@
 #include "ObjectIDManager.h"
 #include <cstddef>
 #include <random>
+#include "EngineStats.h"
 
 ObjectIDManager* g_ObjectIDManager;
 
@@ -46,6 +47,8 @@ int ObjectIDManager::GetTransientID()
 ObjectPtr ObjectIDManager::FindObjectByID(ObjectID id, bool createIfNotFound)
 {
 	auto it = m_Objects.find(id);
+
+	g_EngineStats->AddToNumObjectMapHits(1);
 
 	if (it == m_Objects.end())
 	{

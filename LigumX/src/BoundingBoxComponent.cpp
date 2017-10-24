@@ -1,6 +1,7 @@
 #include "BoundingBoxComponent.h"
 
 #pragma region  CLASS_SOURCE BoundingBoxComponent
+
 #include "BoundingBoxComponent.h"
 #include "serializer.h"
 #include <cstddef>

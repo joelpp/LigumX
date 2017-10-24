@@ -17,8 +17,10 @@
 #include "GL.h"
 #include "Framebuffer.h"
 #include "BoundingBoxComponent.h"
+#include "EngineStats.h"
 
 #pragma region  CLASS_SOURCE Renderer
+
 #include "Renderer.h"
 #include "serializer.h"
 #include <cstddef>
@@ -540,6 +542,8 @@ void Renderer::DrawMesh(Mesh* mesh)
 		glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
 		FLUSH_ERRORS();
 	}
+
+	g_EngineStats->AddToNumDrawCalls(1);
 }
 
 
@@ -976,6 +980,22 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 }
 
 template<typename T>
+void Renderer::ShowPropertyGridObject(T* object, const char* name)
+{
+	if (object == nullptr)
+	{
+		ShowGUIText("Object is null.");
+	}
+	else
+	{
+		for (const ClassPropertyData& propertyData : object->g_Properties)
+		{
+			ShowGenericProperty(object, propertyData);
+		}
+	}
+}
+
+template<typename T>
 bool Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 {
 	ImGui::PushID(name);
@@ -994,17 +1014,7 @@ bool Renderer::ShowPropertyGridTemplate(T* object, const char* name)
 
 	if (readyToDisplay)
 	{
-		if (object == nullptr)
-		{
-			ShowGUIText("Object is null.");
-		}
-		else
-		{
-			for (const ClassPropertyData& propertyData : object->g_Properties)
-			{
-				ShowGenericProperty(object, propertyData);
-			}
-		}
+		ShowPropertyGridObject(object, name);
 
 		if (m_RenderingMenu)
 		{
@@ -1162,46 +1172,6 @@ void Renderer::RenderImgui()
 		ImGui::PopID();
 	}
 
-	//if (m_EditorOptions->GetShowMaterialCreator())
-	//{
-	//	ImGui::PushID("MaterialCreator");
-
-	//	BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Material creator");
-
-	//	if (m_PickedEntity)
-	//	{
-	//		//ShowPropertyGridTemplate<Material>(m_TempMaterial, "New material");
-	//		ShowPropertyGridTemplate<Entity>(m_TempEntity, "New material");
-	//	}
-
-	//	if (ImGui::Button("Save")) 
-	//	{ 
-	//		//m_TempMaterial->Serialize(true);
-	//		m_TempEntity->Serialize(true);
-	//	}
-
-	//	if (ImGui::Button("Reset"))
-	//	{
-	//		//m_TempMaterial = new Material();
-	//		m_TempEntity = new Entity();
-	//	}
-
-	//	ShowEditableProperty(&m_TempObjectID, "ID to load");
-
-	//	if (ImGui::Button("Load"))
-	//	{
-	//		//m_TempMaterial->SetObjectID(m_TempObjectID);
-	//		//m_TempMaterial->Serialize(false);
-
-	//		m_TempEntity->SetObjectID(m_TempObjectID);
-	//		m_TempEntity->Serialize(false);
-	//	}
-
-	//	EndImGUIWindow();
-	//	ImGui::PopID();
-	//}
-
-
 	if (m_EditorOptions->GetShowMaterialCreator())
 	{
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Creator");
@@ -1213,6 +1183,14 @@ void Renderer::RenderImgui()
 		EndImGUIWindow();
 	}
 
+	if (m_EditorOptions->GetShowEngineStats())
+	{
+		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Engine Stats");
+
+		ShowPropertyGridObject(g_EngineStats, "Engine Stats");
+
+		EndImGUIWindow();
+	}
 
 	ImGui::Render();
 }
@@ -1395,6 +1373,8 @@ void Renderer::RenderPicking()
 
 void Renderer::BeginFrame(World* world)
 {
+	g_EngineStats->ResetFrame();
+
 	m_World = world;
 	GL::g_CheckGLErrors = m_DisplayOptions->GetOutputGLErrors();
 

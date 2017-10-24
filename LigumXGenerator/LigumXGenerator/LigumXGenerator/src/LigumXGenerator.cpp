@@ -210,8 +210,10 @@ void InitializeGenerator()
 	g_PropertyFlagsStringMap.emplace("max", PropertyFlags_MaxValue);
 	g_PropertyFlagsStringMap.emplace("transient", PropertyFlags_Transient);
 	g_PropertyFlagsStringMap.emplace("noneditable", PropertyFlags_NonEditable);
+	g_PropertyFlagsStringMap.emplace("adder", PropertyFlags_Adder);
 
 	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
+	g_ClassPropertyFlagsStringMap.emplace("globalinstance", ClassPropertyFlags_GlobalInstance);
 }
 
 int main()

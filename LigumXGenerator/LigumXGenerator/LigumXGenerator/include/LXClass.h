@@ -5,6 +5,7 @@
 enum ClassPropertyFlags
 {
 	ClassPropertyFlags_PostSerialization = 1,
+	ClassPropertyFlags_GlobalInstance	 = 2,
 };
 
 enum PropertyFlags
@@ -16,6 +17,7 @@ enum PropertyFlags
 	PropertyFlags_MaxValue			= 16,
 	PropertyFlags_Transient			= 32,
 	PropertyFlags_NonEditable		= 64,
+	PropertyFlags_Adder				= 128,
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;

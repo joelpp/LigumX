@@ -55,6 +55,7 @@ enum PropertyFlags
 	PropertyFlags_SetCallback = 4,
 	PropertyFlags_Transient = 8,
 	PropertyFlags_NonEditable = 16,
+	PropertyFlags_Adder = 32,
 	PropertyFlags_NumPropertyFlags
 };
 

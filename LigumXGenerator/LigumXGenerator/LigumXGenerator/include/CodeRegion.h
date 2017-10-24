@@ -45,6 +45,7 @@ public:
 		if (lines.size() == 0)
 		{
 			CreateFileStub();
+			lines = readFileLines(headerFilePath.c_str());
 		}
 
 		// saerch for code_region line

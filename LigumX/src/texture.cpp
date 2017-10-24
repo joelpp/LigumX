@@ -4,6 +4,7 @@
 #include <vector>
 
 #pragma region  CLASS_SOURCE Texture
+
 #include "Texture.h"
 #include "serializer.h"
 #include <cstddef>

@@ -6,8 +6,11 @@
 
 #pragma region  FORWARD_DECLARATIONS Material
 #include "property.h"
+
+class Material;
 class Texture;
 class ProgramPipeline;
+
 
 #pragma endregion  FORWARD_DECLARATIONS Material
 

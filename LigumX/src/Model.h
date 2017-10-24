@@ -12,7 +12,10 @@
 
 #pragma region  FORWARD_DECLARATIONS Model
 #include "property.h"
+
+class Model;
 class Material;
+
 
 #pragma endregion  FORWARD_DECLARATIONS Model
 class Mesh;

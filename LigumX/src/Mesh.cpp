@@ -6,6 +6,7 @@
 #include "Model.h" // todo rmove horrible hack to load objs
 using namespace std;
 #pragma region  CLASS_SOURCE Mesh
+
 #include "Mesh.h"
 #include "serializer.h"
 #include <cstddef>

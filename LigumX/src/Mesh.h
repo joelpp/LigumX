@@ -9,6 +9,9 @@
 #pragma region  FORWARD_DECLARATIONS Mesh
 #include "property.h"
 
+class Mesh;
+
+
 #pragma endregion  FORWARD_DECLARATIONS Mesh
 class Texture;
 class Material;

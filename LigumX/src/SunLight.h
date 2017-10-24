@@ -2,7 +2,10 @@
 
 #pragma region  FORWARD_DECLARATIONS SunLight
 #include "property.h"
+
+class SunLight;
 class Texture;
+
 
 #pragma endregion  FORWARD_DECLARATIONS SunLight
 class SunLight

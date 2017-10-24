@@ -3,6 +3,9 @@
 #pragma region  FORWARD_DECLARATIONS DisplayOptions
 #include "property.h"
 
+class DisplayOptions;
+
+
 #pragma endregion  FORWARD_DECLARATIONS DisplayOptions
 
 class DisplayOptions

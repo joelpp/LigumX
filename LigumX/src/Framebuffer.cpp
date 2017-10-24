@@ -4,6 +4,7 @@
 #include <assert.h>
 
 #pragma region  CLASS_SOURCE Framebuffer
+
 #include "Framebuffer.h"
 #include "serializer.h"
 #include <cstddef>

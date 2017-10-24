@@ -382,6 +382,9 @@ private:
 	void RenderImgui();
 	bool m_RenderingMenu;
 
+	template<typename T>
+	void ShowPropertyGridObject(T* object, const char* name);
+
 	template <typename T>
 	bool ShowPropertyGridTemplate(T* object, const char* name);
 

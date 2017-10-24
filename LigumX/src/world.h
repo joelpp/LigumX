@@ -12,8 +12,11 @@
 
 #pragma region  FORWARD_DECLARATIONS World
 #include "property.h"
+
+class World;
 class SunLight;
 class Entity;
+
 
 #pragma endregion  FORWARD_DECLARATIONS World
 class Sunlight;

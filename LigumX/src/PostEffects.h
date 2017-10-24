@@ -5,6 +5,9 @@
 #pragma region  FORWARD_DECLARATIONS PostEffects
 #include "property.h"
 
+class PostEffects;
+
+
 #pragma endregion  FORWARD_DECLARATIONS PostEffects
 class PostEffects
 {
