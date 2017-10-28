@@ -24,7 +24,7 @@
 #include "Renderer.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
 { "ObjectID", offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -55,7 +55,7 @@ using namespace std;
 Renderer::Renderer()
 {
 	g_Instance = this;
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 void Renderer::InitFramebuffers()
@@ -783,7 +783,7 @@ void Renderer::ShowProperty(std::string* value, const char* name)
 	ShowGUIText(value, name);
 }
 
-void Renderer::ShowEditableProperty(int* ptr, const char* name)
+bool Renderer::ShowEditableProperty(int* ptr, const char* name)
 {
 	int val = *((int*)ptr);
 	std::string sCopy = std::to_string(val);
@@ -792,10 +792,29 @@ void Renderer::ShowEditableProperty(int* ptr, const char* name)
 	memset(buf_int, 0, 64);
 	memcpy(buf_int, sCopy.c_str(), sCopy.size() * sizeof(char));
 
-	if (ImGui::InputText(name, buf_int, 64, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsDecimal))
+	bool changed = ImGui::InputText(name, buf_int, 64, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CharsDecimal);
+	if (changed)
 	{
 		*((int*)ptr) = std::atoi(buf_int);
 	}
+
+	return changed;
+}
+
+void Renderer::ShowProperty(std::map<int, char*>* map, const char* name)
+{
+	ImGui::PushID(name);
+	if (ImGui::TreeNode(name))
+	{
+		for (auto it = map->begin(); it != map->end(); ++it)
+		{
+			Texture* tex = (Texture*)it->second;
+			std::string label = tex->GetName() + " [" + std::to_string(it->first) + "]";
+			ShowPropertyGridTemplate(tex, label.c_str());
+		}
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
 }
 
 #define SHOW_PROPERTY_PTR(type) \
@@ -812,27 +831,26 @@ case LXType_##type : \
 	} \
 	else \
 	{ \
-		ShowPropertyGridTemplate<##type>((##type *) ptr, name); \
+		ShowPropertyGridTemplate<##type>((##type *&) ptr, name); \
 	} \
 	break; \
 } \
 
 
-void Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable)
+bool Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable)
 {
 	switch (type)
 	{
 		case LXType_int:
 		{
-			if (noneditable)
-			{
-				ShowProperty((int*)ptr, name);
-			}
-			else
-			{
-				ShowEditableProperty((int*)ptr, name);
-			}
-
+				if (noneditable)
+				{
+					ShowProperty((int*)ptr, name);
+				}
+				else
+				{
+					ShowEditableProperty((int*)ptr, name);
+				}
 			break;
 		}
 		case LXType_bool:
@@ -873,25 +891,25 @@ void Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 			break;
 		}
 
-		SHOW_PROPERTY_PTR(Model)
-		//case LXType_Model:
-		//{
-		//	if (*ptr == 0)
-		//	{
-		//		ShowGUIText(name);
-		//		if (ImGui::Button("New"))
-		//		{
-		//			Model* dptr = new Model();
-		//			//memcpy(&ptr, dptr, sizeof(char*));
-		//			*(char**)ptr = (char*)dptr;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		ShowPropertyGridTemplate<Model>((Model *) ptr, name);
-		//	}
-		//	break;
-		//}
+		//SHOW_PROPERTY_PTR(Model)
+		case LXType_Model:
+		{
+			if (*ptr == 0)
+			{
+				ShowGUIText(name);
+				if (ImGui::Button("New"))
+				{
+					Model* dptr = new Model();
+					*(char**)ptr = (char*)dptr;
+				}
+			}
+			else
+			{
+
+				ShowPropertyGridTemplate<Model>((Model *&) ptr, name);
+			}
+			break;
+		}
 
 		SHOW_PROPERTY_PTR(Material)
 		SHOW_PROPERTY_PTR(AABB)
@@ -918,7 +936,7 @@ void Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 		{
 			if (ptr)
 			{
-				ShowPropertyGridTemplate<BoundingBoxComponent>((BoundingBoxComponent*)ptr, name);
+				ShowPropertyGridTemplate<BoundingBoxComponent>((BoundingBoxComponent *&)ptr, name);
 			}
 
 			break;
@@ -929,11 +947,13 @@ void Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 			break;
 		}
 	}
+
+	return false;
 }
 
 
 template<typename T>
-void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyData)
+void Renderer::ShowGenericProperty(T*& object, const ClassPropertyData& propertyData)
 {
 	if (propertyData.m_PropertyFlags & PropertyFlags_Hidden)
 	{
@@ -967,36 +987,71 @@ void Renderer::ShowGenericProperty(T* object, const ClassPropertyData& propertyD
 	}
 	else
 	{
+		char* oldptr = ptr;
 		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, min, max, noneditable);
 
-		if (propertyData.m_Name == "ObjectID")
+		if (oldptr != ptr)
 		{
-			if (ImGui::Button("Reload"))
-			{
-				object->Serialize(false);
-			}
+			char** pptr = (char**)((char*)object + propertyData.m_Offset);
+			*pptr = ptr;
 		}
+
 	}
 }
 
 template<typename T>
-void Renderer::ShowPropertyGridObject(T* object, const char* name)
+void Renderer::ShowPropertyGridObject(T*& object, const char* name)
 {
-	if (object == nullptr)
+	if (object)
 	{
-		ShowGUIText("Object is null.");
+		bool editing = false;
+		for (const ClassPropertyData& propertyData : object->g_Properties)
+		{
+			bool display = !editing;
+			if (T::ClassName == "Texture")
+			{
+				if (propertyData.m_Name == "ObjectID")
+				{
+					int objectID = object->GetObjectID();
+
+					// todo :  the contents of this is shared with serializer.cpp and should go in its own function asap
+					// rename ObjectManager to just ObjectManager?
+					if (ShowEditableProperty(&objectID, propertyData.m_Name))
+					{
+						ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, LXType_Texture, false);
+						T* dptr = nullptr;
+						if (loadedObject == nullptr)
+						{
+							PRINT("Object " + std::to_string(objectID) + " not found in ObjectManager.");
+						}
+						else
+						{
+							object = (T*)loadedObject;
+						}
+					}
+
+					editing = ImGui::IsItemActive();
+
+					display = false;
+				}
+			}
+
+			if (display)
+			{
+				ShowGenericProperty(object, propertyData);
+			}
+
+		}
 	}
 	else
 	{
-		for (const ClassPropertyData& propertyData : object->g_Properties)
-		{
-			ShowGenericProperty(object, propertyData);
-		}
+		ShowGUIText("Object is null.");
+
 	}
 }
 
 template<typename T>
-bool Renderer::ShowPropertyGridTemplate(T* object, const char* name)
+bool Renderer::ShowPropertyGridTemplate(T*& object, const char* name)
 {
 	ImGui::PushID(name);
 
@@ -1050,7 +1105,7 @@ template <typename T>
 void Renderer::ShowObjectCreator()
 {
 	static T* m_TempObject = new T();
-	static int m_TempObjectID = g_ObjectIDManager->GetNewObjectID();
+	static int m_TempObjectID = g_ObjectManager->GetNewObjectID();
 	ImGui::PushID(m_TempObjectID);
 
 	if (ShowPropertyGridTemplate<T>(m_TempObject, ("New " + std::string(T::ClassName)).c_str()))
@@ -1140,7 +1195,7 @@ void Renderer::RenderImgui()
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
 		if (m_PickedEntity)
 		{
-			ShowPropertyGridTemplate<Entity>(m_PickedEntity, "Entity");
+			ShowPropertyGridObject<Entity>(m_PickedEntity, "Entity");
 		}
 		else
 		{
@@ -1188,6 +1243,16 @@ void Renderer::RenderImgui()
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Engine Stats");
 
 		ShowPropertyGridObject(g_EngineStats, "Engine Stats");
+
+		EndImGUIWindow();
+	}
+
+	if (m_EditorOptions->GetShowObjectManager())
+	{
+		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Manager");
+
+		ShowProperty(g_ObjectManager->GetObjects(LXType_Texture), "Textures");
+		ShowProperty(g_ObjectManager->GetObjects(LXType_Mesh), "Meshes");
 
 		EndImGUIWindow();
 	}
@@ -1522,6 +1587,12 @@ void Renderer::RenderEntities(std::vector<Entity*> entities)
 {
 	for (Entity* entity : entities)
 	{
+		if (!entity->GetVisible())
+		{
+
+			continue;
+		}
+
 		DrawModel(entity, entity->GetModel());
 	}
 }

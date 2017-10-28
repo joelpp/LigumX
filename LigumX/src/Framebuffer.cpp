@@ -8,7 +8,7 @@
 #include "Framebuffer.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
 { "ObjectID", offsetof(Framebuffer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -32,7 +32,7 @@ void Framebuffer::Serialize(bool writing)
 
 Framebuffer::Framebuffer()
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 
 }
 
@@ -44,7 +44,7 @@ Framebuffer::Framebuffer(std::string name, int width, int height, GL::PixelForma
 		m_PixelFormat(pixelFormat),
 		m_PixelType(pixelType)
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();;
+	m_ObjectID = g_ObjectManager->GetNewObjectID();;
 
 }
 

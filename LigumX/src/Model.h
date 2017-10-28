@@ -41,17 +41,13 @@ const std::string& GetFilename() { return m_Filename; };
 void SetFilename(std::string value) { m_Filename = value; }; 
 std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
-const bool& GetFilenameIsID() { return m_FilenameIsID; }; 
-void SetFilenameIsID(bool value) { SetFilenameIsIDCallback(value); }; 
-void SetFilenameIsIDCallback(bool value);
 private:
 int m_ObjectID;
 std::string m_Name;
 std::string m_Filename;
 std::vector<Material*> m_Materials;
-bool m_FilenameIsID;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ModelPIDX
@@ -60,7 +56,6 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_Filename,
 PIDX_Materials,
-PIDX_FilenameIsID,
 };
 void Serialize(bool writing);
 void PostSerialization(bool writing);

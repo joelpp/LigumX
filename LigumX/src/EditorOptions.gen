@@ -7,4 +7,5 @@ class EditorOptions
 	bool ShowMaterialCreator;
 	bool ShowEngineStats;
 	bool ShowTestGUI;
+	bool ShowObjectManager;
 }

@@ -8,7 +8,7 @@
 #include "Texture.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData Texture::g_Properties[] = 
 {
 { "ObjectID", offsetof(Texture, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -27,7 +27,7 @@ using namespace std;
 
 Texture::Texture()
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 
@@ -36,7 +36,7 @@ Texture::Texture(string filename, bool isCubeMap)
 	: m_Filename(filename),
 	  m_IsCubeMap(isCubeMap)
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 void Texture::PostSerialization(bool writing)

@@ -6,7 +6,7 @@ EngineStats* g_EngineStats;
 #include "EngineStats.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData EngineStats::g_Properties[] = 
 {
 { "ObjectID", offsetof(EngineStats, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

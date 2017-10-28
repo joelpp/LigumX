@@ -24,10 +24,13 @@
 
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "property.h"
+
+class Renderer;
 class DisplayOptions;
 class EditorOptions;
 class PostEffects;
 class Camera;
+
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 
@@ -93,15 +96,15 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-DisplayOptions* GetDisplayOptions() { return m_DisplayOptions; }; 
+DisplayOptions*& GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
-EditorOptions* GetEditorOptions() { return m_EditorOptions; }; 
+EditorOptions*& GetEditorOptions() { return m_EditorOptions; }; 
 void SetEditorOptions(EditorOptions* value) { m_EditorOptions = value; }; 
-PostEffects* GetPostEffects() { return m_PostEffects; }; 
+PostEffects*& GetPostEffects() { return m_PostEffects; }; 
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
 const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
 void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; }; 
-Camera* GetDebugCamera() { return m_DebugCamera; }; 
+Camera*& GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
 int m_ObjectID;
@@ -382,16 +385,21 @@ private:
 	void RenderImgui();
 	bool m_RenderingMenu;
 
+	
+
 	template<typename T>
-	void ShowPropertyGridObject(T* object, const char* name);
+	void ShowPropertyGridObject(T*& object, const char* name);
+
+	template<typename T>
+	bool ShowPropertyGridPtr(T** object, const char* name);
 
 	template <typename T>
-	bool ShowPropertyGridTemplate(T* object, const char* name);
+	bool ShowPropertyGridTemplate(T*& object, const char* name);
 
 	template<typename T>
-	void ShowGenericProperty(T* object, const ClassPropertyData& propertyData);
+	void ShowGenericProperty(T*& object, const ClassPropertyData& propertyData);
 
-	void ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable);
+	bool ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable);
 
 	template <typename T>
 	void ShowObjectCreator();
@@ -423,8 +431,9 @@ private:
 	void ShowProperty(float* value, const char* name, float min, float max);
 	void ShowProperty(glm::vec3* value, const char* name, float min, float max);
 	void ShowProperty(std::string* value, const char* name);
+	void ShowProperty(std::map<int, char *>* map, const char* name);
 
-	void ShowEditableProperty(int* value, const char* name);
+	bool ShowEditableProperty(int* value, const char* name);
 
 	void HandleScreenshot();
 	// C++ 11

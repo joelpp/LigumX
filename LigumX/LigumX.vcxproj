@@ -179,7 +179,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\node.cpp" />
-    <ClCompile Include="src\ObjectIDManager.cpp" />
+    <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\osm_element.cpp" />
     <ClCompile Include="src\PerlinNoise.cpp" />
     <ClCompile Include="src\pipelines.cpp" />
@@ -200,6 +200,7 @@
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\StringUtils.cpp" />
     <ClCompile Include="src\SunLight.cpp" />
     <ClCompile Include="src\text.cpp" />
     <ClCompile Include="src\texture.cpp" />
@@ -247,7 +248,6 @@
     <ClInclude Include="src\BoundingBoxComponent.h" />
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\camera.h" />
-    <ClInclude Include="src\common.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\CurlRequest.h" />
     <ClInclude Include="src\DefaultMeshes.h" />
@@ -270,7 +270,7 @@
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\node.h" />
-    <ClInclude Include="src\ObjectIDManager.h" />
+    <ClInclude Include="src\ObjectManager.h" />
     <ClInclude Include="src\osm_element.h" />
     <ClInclude Include="src\PerlinNoise.h" />
     <ClInclude Include="src\PostEffects.h" />
@@ -289,6 +289,7 @@
     <ClInclude Include="src\stb_textedit.h" />
     <ClInclude Include="src\stb_truetype.h" />
     <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\SunLight.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\texture.h" />

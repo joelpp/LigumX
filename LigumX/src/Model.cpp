@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "stringutils.h"
 
 #include "Model.h"	
 #include "Mesh.h"
@@ -13,14 +14,13 @@
 #include "Model.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData Model::g_Properties[] = 
 {
 { "ObjectID", offsetof(Model, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Filename", offsetof(Model, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Materials", offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, }, 
-{ "FilenameIsID", offsetof(Model, m_FilenameIsID), 0, LXType_bool, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 };
 void Model::Serialize(bool writing)
 {
@@ -34,14 +34,14 @@ void Model::Serialize(bool writing)
 Model::Model()
 {
 	m_modelMatrix = glm::mat4(1.0);
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 Model::Model(std::string path)
 	: m_Filename(path)
 {
 	m_modelMatrix = glm::mat4(1.0);
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 Model::Model(Mesh* mesh, Material* material)
@@ -52,23 +52,29 @@ Model::Model(Mesh* mesh, Material* material)
 	{
 		m_Materials.push_back(material);
 	}
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
 {
 	m_meshes = meshList;
 	m_Materials = materialList;
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 void Model::PostSerialization(bool writing)
 {
 	if (!writing) // reading
 	{
-		if (m_FilenameIsID)
+		if (g_ObjectManager->FilenameIsID(m_Filename))
 		{
-			int hardcodedMeshID = std::atoi(m_Filename.c_str());
+			StringList list;
+			list.push_back("<");
+			list.push_back(">");
+
+			std::string filenameCopy = StringUtils::RemoveSubstrings(m_Filename, list);
+
+			int hardcodedMeshID = std::atoi(filenameCopy.c_str());
 			Mesh* mesh = g_DefaultMeshes->GetMeshFromID(hardcodedMeshID);
 			m_meshes.push_back(mesh);
 		}
@@ -248,13 +254,3 @@ void Model::addMesh(Mesh* mesh, Material* material)
 
 }
 
-
-void Model::SetFilenameIsIDCallback(bool value)
-{
-	m_FilenameIsID = value;
-
-	if (m_FilenameIsID)
-	{
-		m_Filename = std::to_string(m_meshes[0]->GetObjectID());
-	}
-}

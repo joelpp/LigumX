@@ -80,7 +80,7 @@ public:
 				m_Stream << ">";
 			}
 
-			m_Stream << (ptr ? "*" : "&");
+			m_Stream << (ptr ? "*&" : "&");
 			m_Stream << (" ");
 			m_Stream << "Get" << var.m_Name << "() { return m_" << var.m_Name << "; }; ";
 			m_Stream << std::endl;

@@ -1,5 +1,7 @@
 class Entity
 {
+	bool Visible;
+
 	glm::vec3 Position;
 	float RotationAngle;
 	glm::vec3 RotationAxis;
@@ -13,4 +15,5 @@ class Entity
 	bool IsLight;
 
 	std::vector<Component> Components;
+
 }

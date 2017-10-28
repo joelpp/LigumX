@@ -6,7 +6,7 @@
 #include "DisplayOptions.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
 { "ObjectID", offsetof(DisplayOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -38,7 +38,7 @@ void DisplayOptions::Serialize(bool writing)
 
 DisplayOptions::DisplayOptions()
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 //void DisplayOptions::Serialize(bool writing)

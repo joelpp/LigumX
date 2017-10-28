@@ -34,6 +34,8 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
+const bool& GetVisible() { return m_Visible; }; 
+void SetVisible(bool value) { m_Visible = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
 const float& GetRotationAngle() { return m_RotationAngle; }; 
@@ -44,7 +46,7 @@ const glm::vec3& GetScale() { return m_Scale; };
 void SetScale(glm::vec3 value) { m_Scale = value; }; 
 const float& GetPickingID() { return m_PickingID; }; 
 void SetPickingID(float value) { m_PickingID = value; }; 
-Model* GetModel() { return m_Model; }; 
+Model*& GetModel() { return m_Model; }; 
 void SetModel(Model* value) { m_Model = value; }; 
 const bool& GetIsLight() { return m_IsLight; }; 
 void SetIsLight(bool value) { m_IsLight = value; }; 
@@ -53,6 +55,7 @@ void SetComponents(std::vector<Component*> value) { m_Components = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
+bool m_Visible;
 glm::vec3 m_Position;
 float m_RotationAngle;
 glm::vec3 m_RotationAxis;
@@ -62,13 +65,14 @@ Model* m_Model;
 bool m_IsLight;
 std::vector<Component*> m_Components;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EntityPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
+PIDX_Visible,
 PIDX_Position,
 PIDX_RotationAngle,
 PIDX_RotationAxis,

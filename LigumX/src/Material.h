@@ -58,13 +58,13 @@ const bool& GetIsGlass() { return m_IsGlass; };
 void SetIsGlass(bool value) { m_IsGlass = value; }; 
 const bool& GetReflectEnvironment() { return m_ReflectEnvironment; }; 
 void SetReflectEnvironment(bool value) { m_ReflectEnvironment = value; }; 
-Texture* GetDiffuseTexture() { return m_DiffuseTexture; }; 
+Texture*& GetDiffuseTexture() { return m_DiffuseTexture; }; 
 void SetDiffuseTexture(Texture* value) { SetDiffuseTextureCallback(value); }; 
 void SetDiffuseTextureCallback(Texture* value);
-Texture* GetSpecularTexture() { return m_SpecularTexture; }; 
+Texture*& GetSpecularTexture() { return m_SpecularTexture; }; 
 void SetSpecularTexture(Texture* value) { SetSpecularTextureCallback(value); }; 
 void SetSpecularTextureCallback(Texture* value);
-ProgramPipeline* GetProgramPipeline() { return m_ProgramPipeline; }; 
+ProgramPipeline*& GetProgramPipeline() { return m_ProgramPipeline; }; 
 void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; }; 
 private:
 int m_ObjectID;

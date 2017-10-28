@@ -9,11 +9,12 @@
 #include "Entity.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData Entity::g_Properties[] = 
 {
 { "ObjectID", offsetof(Entity, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "Visible", offsetof(Entity, m_Visible), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Position", offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "RotationAngle", offsetof(Entity, m_RotationAngle), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "RotationAxis", offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
@@ -60,7 +61,7 @@ Entity::Entity()
 	bb->SetParentEntity(this);
 	m_Components.push_back(bb);
 
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 
 	//m_Model = new Model();
 }

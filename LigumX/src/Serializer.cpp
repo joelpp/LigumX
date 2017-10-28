@@ -1,5 +1,5 @@
 #include "serializer.h"
-#include "ObjectIDManager.h"
+#include "ObjectManager.h"
 #include "DisplayOptions.h"
 #include "EditorOptions.h"
 #include "PostEffects.h"
@@ -95,7 +95,7 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 				int id = val->GetObjectID();
 				objectStream << id << std::endl;
 
-				if (g_ObjectIDManager->IsHardcodedID(id))
+				if (g_ObjectManager->IsHardcodedID(id))
 				{
 
 				}
@@ -281,7 +281,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 				break;
 			}
 
-			ObjectPtr loadedObject = g_ObjectIDManager->FindObjectByID(objectID, false);
+			ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, LXType_Texture, false);
 			bool mustSerialize = false;
 			Texture* dptr = nullptr;
 			if (loadedObject == nullptr)
@@ -289,7 +289,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 				if (*ptr == 0)
 				{
 					dptr = new Texture();
-					g_ObjectIDManager->AddObject(objectID, (ObjectPtr) dptr);
+					g_ObjectManager->AddObject(objectID, LXType_Texture, (ObjectPtr) dptr);
 				}
 
 				mustSerialize = true;
@@ -318,12 +318,12 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		{
 			int objectID;
 			objectStream >> objectID;
-			if (!g_ObjectIDManager->IsValidID(objectID))
+			if (!g_ObjectManager->IsValidID(objectID))
 			{
 				break;
 			}
 
-			bool hardcodedId = g_ObjectIDManager->IsHardcodedID(objectID);
+			bool hardcodedId = g_ObjectManager->IsHardcodedID(objectID);
 			if (*ptr == 0)
 			{
 				if (hardcodedId)

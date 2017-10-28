@@ -5,7 +5,7 @@
 #include "EditorOptions.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData EditorOptions::g_Properties[] = 
 {
 { "ObjectID", offsetof(EditorOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -17,6 +17,7 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "ShowMaterialCreator", offsetof(EditorOptions, m_ShowMaterialCreator), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowEngineStats", offsetof(EditorOptions, m_ShowEngineStats), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowTestGUI", offsetof(EditorOptions, m_ShowTestGUI), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowObjectManager", offsetof(EditorOptions, m_ShowObjectManager), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 void EditorOptions::Serialize(bool writing)
 {
@@ -27,5 +28,5 @@ void EditorOptions::Serialize(bool writing)
 
 EditorOptions::EditorOptions()
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }

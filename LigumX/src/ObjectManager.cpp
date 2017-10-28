@@ -1,9 +1,10 @@
-#include "ObjectIDManager.h"
+#include "ObjectManager.h"
 #include <cstddef>
 #include <random>
 #include "EngineStats.h"
+#include "stringutils.h"
 
-ObjectIDManager* g_ObjectIDManager;
+ObjectManager* g_ObjectManager;
 
 unsigned int rand_interval(unsigned int min, unsigned int max)
 {
@@ -23,34 +24,66 @@ unsigned int rand_interval(unsigned int min, unsigned int max)
 	return min + (r / buckets);
 }
 
-ObjectIDManager::ObjectIDManager()
+ObjectManager::ObjectManager()
 {
 	m_NextHardcodedID = StartHardcodedIDs;
 	DefaultSphereMeshID = m_NextHardcodedID++;
 	DefaultQuadMeshID = m_NextHardcodedID++;
 	DefaultCubeMeshID = m_NextHardcodedID++;
+
+	m_SupportedTypes.push_back(LXType_Texture);
+	m_SupportedTypes.push_back(LXType_Mesh);
+
+	Initialize();
 }
 
-int ObjectIDManager::GetNewObjectID()
+void ObjectManager::Initialize()
+{
+	for (LXType& type : m_SupportedTypes)
+	{
+		m_ObjectMaps[type] = ObjectMap();
+	}
+}
+
+
+int ObjectManager::GetNewObjectID()
 {
 	return rand_interval(StartObjectIDs, RAND_MAX);
 }
 
 
-int ObjectIDManager::GetTransientID()
+int ObjectManager::GetTransientID()
 {
 	int toReturn = m_NextTransientID;
 	m_NextTransientID++;
 	return toReturn;
 }
 
-ObjectPtr ObjectIDManager::FindObjectByID(ObjectID id, bool createIfNotFound)
+bool ObjectManager::IsSupportedType(LXType type)
 {
-	auto it = m_Objects.find(id);
+	for (LXType& atype : m_SupportedTypes)
+	{
+		if (type == atype)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+ObjectPtr ObjectManager::FindObjectByID(ObjectID id, LXType type, bool createIfNotFound)
+{
+	if (!IsSupportedType(type))
+	{
+		return nullptr;
+	}
+
+	auto it = m_ObjectMaps[type].find(id);
 
 	g_EngineStats->AddToNumObjectMapHits(1);
 
-	if (it == m_Objects.end())
+	if (it == m_ObjectMaps[type].end())
 	{
 		if (createIfNotFound)
 		{
@@ -68,7 +101,19 @@ ObjectPtr ObjectIDManager::FindObjectByID(ObjectID id, bool createIfNotFound)
 	}
 }
 
-void ObjectIDManager::AddObject(ObjectID id, ObjectPtr ptr)
+bool ObjectManager::AddObject(ObjectID id, LXType type, ObjectPtr ptr)
 {
-	m_Objects[id] = ptr;
+	if (!IsSupportedType(type))
+	{
+		return false;
+	}
+
+	m_ObjectMaps[type][id] = ptr;
+
+	return true;
+}
+
+bool ObjectManager::FilenameIsID(std::string& s)
+{
+	return StringUtils::StringContains(s, '<');
 }

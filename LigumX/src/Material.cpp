@@ -8,7 +8,7 @@
 #include "Material.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData Material::g_Properties[] = 
 {
 { "ObjectID", offsetof(Material, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -57,7 +57,7 @@ Material::Material()
 
 	m_EmissiveFactor = 0.0f;
 
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();;
+	m_ObjectID = g_ObjectManager->GetNewObjectID();;
 }
 
 

@@ -1,7 +1,7 @@
 #include "DefaultMeshes.h"
 #include "Mesh.h"
 #include "Model.h"
-#include "ObjectIDManager.h"
+#include "ObjectManager.h"
 
 DefaultMeshes* g_DefaultMeshes;
 
@@ -83,7 +83,10 @@ void DefaultMeshes::InitializeDefaultCube()
 	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/cube/cube.obj");
 	testModel->loadModel();
 	DefaultCubeMesh = testModel->m_meshes[0];
-	DefaultCubeMesh->SetObjectID(g_ObjectIDManager->DefaultCubeMeshID);
+	DefaultCubeMesh->SetName("Default Cube Mesh");
+	DefaultCubeMesh->SetObjectID(g_ObjectManager->DefaultCubeMeshID);
+
+	g_ObjectManager->AddObject(LXType_Mesh, DefaultCubeMesh);
 
 }
 
@@ -124,7 +127,9 @@ void DefaultMeshes::InitializeDefaultQuad()
 	DefaultQuadMesh->m_usesIndexBuffer = true;
 	DefaultQuadMesh->m_renderingMode = GL_TRIANGLES;
 
-	DefaultQuadMesh->SetObjectID(g_ObjectIDManager->DefaultQuadMeshID);
+	DefaultQuadMesh->SetName("Default Quad Mesh");
+	DefaultQuadMesh->SetObjectID(g_ObjectManager->DefaultQuadMeshID);
+	g_ObjectManager->AddObject(LXType_Mesh, DefaultQuadMesh);
 }
 
 void DefaultMeshes::InitializeDefaultSphere()
@@ -132,8 +137,10 @@ void DefaultMeshes::InitializeDefaultSphere()
 	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere/sphere.obj");
 	testModel->loadModel();
 	DefaultSphereMesh = testModel->m_meshes[0];
-	DefaultSphereMesh->SetObjectID(g_ObjectIDManager->DefaultSphereMeshID);
+	DefaultSphereMesh->SetName("Default Sphere Mesh");
+	DefaultSphereMesh->SetObjectID(g_ObjectManager->DefaultSphereMeshID);
 
+	g_ObjectManager->AddObject(LXType_Mesh, DefaultSphereMesh);
 }
 
 DefaultMeshes::DefaultMeshes()
@@ -141,26 +148,25 @@ DefaultMeshes::DefaultMeshes()
 	InitializeDefaultQuad();
 	InitializeDefaultSphere();
 	InitializeDefaultCube();
-
 }
 
 
 Mesh* DefaultMeshes::GetMeshFromID(int id)
 {
-	if (!g_ObjectIDManager->IsHardcodedID(id))
+	if (!g_ObjectManager->IsHardcodedID(id))
 	{
 		return nullptr;
 	}
 
-	if (id == g_ObjectIDManager->DefaultCubeMeshID)
+	if (id == g_ObjectManager->DefaultCubeMeshID)
 	{
 		return DefaultCubeMesh;
 	}
-	else if (id == g_ObjectIDManager->DefaultQuadMeshID)
+	else if (id == g_ObjectManager->DefaultQuadMeshID)
 	{
 		return DefaultQuadMesh;
 	}
-	else if (id == g_ObjectIDManager->DefaultSphereMeshID)
+	else if (id == g_ObjectManager->DefaultSphereMeshID)
 	{
 		return DefaultSphereMesh;
 	}

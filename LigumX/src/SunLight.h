@@ -32,7 +32,7 @@ const float& GetSpeed() { return m_Speed; };
 void SetSpeed(float value) { m_Speed = value; }; 
 const bool& GetUseSkybox() { return m_UseSkybox; }; 
 void SetUseSkybox(bool value) { m_UseSkybox = value; }; 
-Texture* GetSkybox() { return m_Skybox; }; 
+Texture*& GetSkybox() { return m_Skybox; }; 
 void SetSkybox(Texture* value) { m_Skybox = value; }; 
 private:
 int m_ObjectID;

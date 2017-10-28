@@ -159,7 +159,7 @@ public:
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
 		WriteLine("#include \"serializer.h\"");
 		WriteLine("#include <cstddef>");
-		WriteLine("#include \"ObjectIdManager.h\"");
+		WriteLine("#include \"ObjectManager.h\"");
 		
 		WritePropertyArray();
 

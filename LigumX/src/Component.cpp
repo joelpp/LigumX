@@ -5,7 +5,7 @@
 #include "Component.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData Component::g_Properties[] = 
 {
 { "ObjectID", offsetof(Component, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 

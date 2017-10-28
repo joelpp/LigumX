@@ -6,7 +6,7 @@
 #include "glm/gtx/string_cast.hpp"
 
 #include "LigumX.h"
-#include "ObjectIDManager.h"
+#include "ObjectManager.h"
 #include "SectorData.h"
 #include "Settings.h"
 #include "RenderDataManager.h"
@@ -73,7 +73,7 @@ void LigumX::init()
 
 
 	g_Serializer = new Serializer();
-	g_ObjectIDManager = new ObjectIDManager();
+	g_ObjectManager = new ObjectManager();
 
 	m_Renderer = new Renderer();
 	m_Renderer->SetObjectID(28763);

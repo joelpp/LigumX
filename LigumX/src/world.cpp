@@ -22,7 +22,7 @@
 #include "World.h"
 #include "serializer.h"
 #include <cstddef>
-#include "ObjectIdManager.h"
+#include "ObjectManager.h"
 const ClassPropertyData World::g_Properties[] = 
 {
 { "ObjectID", offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -42,7 +42,7 @@ using namespace glm;
 
 World::World()
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 
 }
 
@@ -66,7 +66,6 @@ void World::InitTestWorld()
 		material->SetEmissiveFactor(1.0f);
 
 		Model* cubeModel = new Model(g_DefaultMeshes->DefaultCubeMesh, material);
-		cubeModel->SetFilenameIsIDCallback(true);
 		cubeModel->SetName("CubeLightModel");
 		pointLightEntity->SetModel(cubeModel);
 
@@ -87,7 +86,6 @@ void World::InitTestWorld()
 
 		Model* sphereModel = new Model(g_DefaultMeshes->DefaultSphereMesh, material);
 		sphereModel->SetName("SphereModel");
-		sphereModel->SetFilenameIsIDCallback(true);
 
 		sphereEntity->SetModel(sphereModel);
 
@@ -98,7 +96,7 @@ void World::InitTestWorld()
 
 World::World(float sectorSize)
 {
-	m_ObjectID = g_ObjectIDManager->GetNewObjectID();
+	m_ObjectID = g_ObjectManager->GetNewObjectID();
 
 	m_sectorManager = new SectorManager(sectorSize);
 	m_sectorSize = sectorSize;

@@ -4,7 +4,5 @@ class Model
 	std::string Filename;
 
 	std::vector<Material> Materials;
-
-	[setcallback]
-	bool FilenameIsID;
+	
 }
