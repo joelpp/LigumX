@@ -23,7 +23,6 @@
 using namespace glm;
 using namespace std;
 
-std::string ProgramPipeline::ShadersPath;
 const double static_dt = 1.0 / 100.0;
 
 //Renderer* LigumX::m_Renderer;
@@ -166,8 +165,6 @@ void LigumX::loadSettings(){
 
 	Renderer& renderer = Renderer::GetInstance();
 	renderer.m_ShowGUI = true;
-
-    ProgramPipeline::ShadersPath = s.s("ShadersPath");
 
 }
 

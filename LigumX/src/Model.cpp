@@ -99,13 +99,16 @@ void Model::CreateHWBuffers()
 void Model::loadModel()
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(m_Filename, aiProcess_Triangulate | /*aiProcess_GenNormals |*/ aiProcess_GenSmoothNormals);
+
+	std::string fullPath = g_PathModels + m_Filename;
+    const aiScene* scene = import.ReadFile(fullPath, aiProcess_Triangulate | /*aiProcess_GenNormals |*/ aiProcess_GenSmoothNormals);
 	
     if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
     	std::stringstream ss;
     	ss << "ERROR::ASSIMP::" << import.GetErrorString();
         PRINT(ss.str());
+		assert(false);
         return;
     }
 	
@@ -165,6 +168,7 @@ Material* Model::processMaterial(aiMesh* assimpMesh, const aiScene* scene)
 
 	aiMaterial* mat = scene->mMaterials[assimpMesh->mMaterialIndex];
 
+	// todo once we resurrect material processing change this
 	std::string texturePath = "C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/tex/";
 
 	if (mat)

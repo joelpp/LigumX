@@ -80,7 +80,7 @@ void DefaultMeshes::InitializeDefaultCube()
 	//	DefaultQuadMesh->m_usesIndexBuffer = true;
 	//	DefaultQuadMesh->m_renderingMode = GL_TRIANGLES;
 
-	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/cube/cube.obj");
+	Model* testModel = new Model("cube/cube.obj");
 	testModel->loadModel();
 	DefaultCubeMesh = testModel->m_meshes[0];
 	DefaultCubeMesh->SetName("Default Cube Mesh");
@@ -134,7 +134,7 @@ void DefaultMeshes::InitializeDefaultQuad()
 
 void DefaultMeshes::InitializeDefaultSphere()
 {
-	Model* testModel = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere/sphere.obj");
+	Model* testModel = new Model("sphere/sphere.obj");
 	testModel->loadModel();
 	DefaultSphereMesh = testModel->m_meshes[0];
 	DefaultSphereMesh->SetName("Default Sphere Mesh");

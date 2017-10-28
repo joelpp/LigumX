@@ -1,5 +1,4 @@
 #include "serializer.h"
-#include "ObjectManager.h"
 #include "DisplayOptions.h"
 #include "EditorOptions.h"
 #include "PostEffects.h"
@@ -18,7 +17,6 @@ Serializer* g_Serializer;
 
 Serializer::Serializer()
 {
-	m_CurrentObjectDataPath = "C:\\Users\\Joel\\Documents\\LigumX\\LigumX\\data\\objects\\";
 }
 
 #define SERIALIZE_PTR_OUT(type) \

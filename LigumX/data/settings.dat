@@ -35,6 +35,4 @@ buildingHeight 3
 
 HeightfieldResolution 0.25
 
-; ShadersPath C:/Users/Joel/Documents/LigumX/LigumX/data/shaders/
-ShadersPath data/shaders/
 RenderingScale 2

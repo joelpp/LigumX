@@ -1,6 +1,7 @@
 #pragma once
 
 #include "property.h"
+#include "ObjectManager.h"
 #include "DisplayOptions.h"
 #include <fstream>
 #include <string>
@@ -117,7 +118,7 @@ public:
 	template<typename T>
 	void SerializeObject(T* object, bool writing)
 	{
-		std::string basePath = m_CurrentObjectDataPath;
+		std::string basePath = g_PathObjects;
 		std::string fileName = object->ClassName + std::string("_") + std::to_string(object->GetObjectID()) + ".LXobj";
 
 		int fileMask = writing ? std::ios::out : std::ios::in;
@@ -142,18 +143,8 @@ public:
 		}
 	}
 
-	void SetObjectDataPath(std::string& s)
-	{
-		m_CurrentObjectDataPath = s;
-	}
-
-	std::string GetObjectDataPath()
-	{
-		return m_CurrentObjectDataPath;
-	}
 
 private:
-	std::string m_CurrentObjectDataPath;
 	void SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, std::fstream& objectStream);
 	void SerializePropertyOut(const char* ptr, const char* name, const LXType& type, std::fstream& objectStream);
 };

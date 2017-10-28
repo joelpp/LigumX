@@ -25,8 +25,6 @@ public:
         ~ShaderProgram() {}
     };
 
-    static std::string ShadersPath;
-
     ShaderProgram  *pVertexShader,
                    *pTessControlShader,
                    *pTessEvalShader,

@@ -106,6 +106,8 @@ void Texture::Initialize()
 
 void Texture::LoadFromFile(GLuint target, std::string filename)
 {
+	std::string fullName = g_PathTextures + filename;
+
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
@@ -116,22 +118,22 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	unsigned int fiWidth(0), fiHeight(0);
 
 	//check the file signature and deduce its format
-	fif = FreeImage_GetFileType(filename.c_str(), 0);
+	fif = FreeImage_GetFileType(fullName.c_str(), 0);
 	//if still unknown, try to guess the file format from the file extension
 	if (fif == FIF_UNKNOWN) {
-		fif = FreeImage_GetFIFFromFilename(filename.c_str());
+		fif = FreeImage_GetFIFFromFilename(fullName.c_str());
 	}
 	//if still unkown, return failure
 	if (fif == FIF_UNKNOWN) {
-		cout << "error opening texture : " << filename << endl;
+		cout << "error opening texture : " << fullName << endl;
 		throw std::exception();
 	}
 
 	if (FreeImage_FIFSupportsReading(fif))
-		dib = FreeImage_Load(fif, filename.c_str());
+		dib = FreeImage_Load(fif, fullName.c_str());
 	//if the image failed to load, return failure
 	if (!dib) {
-		cout << "error opening texture : " << filename << endl;
+		cout << "error opening texture : " << fullName << endl;
 		throw std::exception();
 	}
 

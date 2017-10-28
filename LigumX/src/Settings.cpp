@@ -37,7 +37,6 @@ bool Settings::load()
 	std::string key, value, line;
 	std::ifstream file;
 	file.open("data/settings.dat");
-//	file.open("C:/Users/Joel/Documents/LigumX/LigumX/LigumX/data/settings.dat");
 
 	while (std::getline(file, line))
 	{

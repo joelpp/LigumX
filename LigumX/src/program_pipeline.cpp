@@ -2,6 +2,7 @@
 
 #include "program_pipeline.h"
 #include "renderer.h"
+#include "ObjectManager.h"
 using namespace std;
 
 const std::string g_ProviderIncludeMarker = "// Include Providers Marker";
@@ -292,7 +293,7 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
     glBindVertexArray(glidVao);
 
     std::stringstream path;
-    path << ShadersPath;
+    path << g_PathShaders;
     path << name << "/";
     
 	if (isCompute)
