@@ -18,6 +18,7 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "ShowEngineStats", offsetof(EditorOptions, m_ShowEngineStats), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowTestGUI", offsetof(EditorOptions, m_ShowTestGUI), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowObjectManager", offsetof(EditorOptions, m_ShowObjectManager), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "BackupDataOnSave", offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 void EditorOptions::Serialize(bool writing)
 {

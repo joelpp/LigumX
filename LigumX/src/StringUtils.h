@@ -27,4 +27,6 @@ namespace StringUtils
 	std::string RemoveSubstrings(const std::string& baseString, StringList& substrings);
 
 	std::string GetSubstringBetweenCharacters(const std::string& str, char c0, char c1);
+
+	std::string GetTimestamp();
 }

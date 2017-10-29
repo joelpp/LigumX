@@ -444,6 +444,9 @@ private:
     void operator=(Renderer const&)  = delete;
 
     RenderDataManager* renderData;
+	
+	// todo : i think it makes sense that all the stuff down there should go in "editor" class
+	// + the "editor options"
 	const int pickingBufferSize = 128;
 
 	glm::vec3 m_PickedColor;
@@ -456,6 +459,9 @@ private:
 	Material* m_TempMaterial;
 	Entity* m_TempEntity;
 	int m_TempObjectID;
+
+	void BackupData();
+
 };
 
 #endif // RENDERER

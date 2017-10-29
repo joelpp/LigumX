@@ -1138,6 +1138,13 @@ void Renderer::ShowObjectCreator()
 	ImGui::PopID();
 }
 
+void Renderer::BackupData()
+{
+	if (m_EditorOptions->GetBackupDataOnSave())
+	{
+		g_Serializer->BackupData();
+	}
+}
 
 void Renderer::RenderImgui()
 {
@@ -1166,10 +1173,12 @@ void Renderer::RenderImgui()
 			{
 				if (ImGui::MenuItem("Save renderer"))
 				{
+					BackupData();
 					Serialize(true);
 				}
 				if (ImGui::MenuItem("Save world"))
 				{
+					BackupData();
 					m_World->Serialize(true);
 				}
 

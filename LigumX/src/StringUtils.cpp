@@ -1,5 +1,7 @@
 #include "StringUtils.h"
-
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 std::vector<std::string> StringUtils::ReadFileLines(const char* fileName)
 {
@@ -97,4 +99,15 @@ std::string StringUtils::GetSubstringBetweenCharacters(const std::string& str, c
 	unsigned first = str.find(c0);
 	unsigned last = str.find(c1);
 	return str.substr(first + 1, last - first - 1);
+}
+
+std::string StringUtils::GetTimestamp()
+{
+	auto t = std::time(nullptr);	
+	auto tm = *std::localtime(&t);
+
+	std::ostringstream oss;
+	oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+
+	return oss.str();
 }

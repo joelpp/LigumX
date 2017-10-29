@@ -143,7 +143,7 @@ public:
 		}
 	}
 
-
+	void BackupData();
 private:
 	void SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, std::fstream& objectStream);
 	void SerializePropertyOut(const char* ptr, const char* name, const LXType& type, std::fstream& objectStream);

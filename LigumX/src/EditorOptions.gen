@@ -8,4 +8,5 @@ class EditorOptions
 	bool ShowEngineStats;
 	bool ShowTestGUI;
 	bool ShowObjectManager;
+	bool BackupDataOnSave;
 }

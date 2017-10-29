@@ -35,6 +35,8 @@ const bool& GetShowTestGUI() { return m_ShowTestGUI; };
 void SetShowTestGUI(bool value) { m_ShowTestGUI = value; }; 
 const bool& GetShowObjectManager() { return m_ShowObjectManager; }; 
 void SetShowObjectManager(bool value) { m_ShowObjectManager = value; }; 
+const bool& GetBackupDataOnSave() { return m_BackupDataOnSave; }; 
+void SetBackupDataOnSave(bool value) { m_BackupDataOnSave = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -46,8 +48,9 @@ bool m_ShowMaterialCreator;
 bool m_ShowEngineStats;
 bool m_ShowTestGUI;
 bool m_ShowObjectManager;
+bool m_BackupDataOnSave;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -62,6 +65,7 @@ PIDX_ShowMaterialCreator,
 PIDX_ShowEngineStats,
 PIDX_ShowTestGUI,
 PIDX_ShowObjectManager,
+PIDX_BackupDataOnSave,
 };
 void Serialize(bool writing);
 

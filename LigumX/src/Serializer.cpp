@@ -11,7 +11,10 @@
 #include "Texture.h"
 #include "Sunlight.h"
 #include "Mesh.h"
+#include "StringUtils.h"
 #include "glm/glm.hpp"
+
+#include <experimental/filesystem> 
 
 Serializer* g_Serializer;
 
@@ -359,3 +362,9 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 	}
 }
 
+void Serializer::BackupData()
+{
+	std::string backupFolderName = StringUtils::GetTimestamp();
+
+	std::experimental::filesystem::copy(g_PathObjects, g_PathObjectsBkp + backupFolderName);
+}
