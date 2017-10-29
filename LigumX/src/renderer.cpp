@@ -43,7 +43,7 @@ bool Renderer::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing);
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -1455,57 +1455,55 @@ void Renderer::RenderPicking()
 
 	m_PickedColor[0] = output;
 
-	//if (m_PickedEntity)
+
+	manipulatorDragging &= m_MouseButton1Down;
+
+	if (manipulatorDragging)
 	{
 		glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
 
-		manipulatorDragging &= m_MouseButton1Down;
-
-		if (manipulatorDragging)
+		float distance = screenDistance.x / 10.f;
+		glm::vec3 toAdd = distance * m_XYZMask;
+		m_PickedEntity->AddToPosition(toAdd);
+	}
+	else
+	{
+		if (m_LastMouseClickPosition != m_MouseClickPosition)
 		{
-			float distance = screenDistance.x / 10.f;
-			glm::vec3 toAdd = distance * m_XYZMask;
-			m_PickedEntity->AddToPosition(toAdd);
-		}
-		else
-		{
-			if (m_LastMouseClickPosition != m_MouseClickPosition)
+			for (Entity* entity : m_World->GetDebugEntities())
 			{
-				for (Entity* entity : m_World->GetDebugEntities())
+				// todo : proper int rendertarget; how does depth work then? do we care?
+				if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
 				{
-					// todo : proper int rendertarget; how does depth work then? do we care?
-					if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+					if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
 					{
-						if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
-						{
-							manipulatorDragging = true;
-						}
-					}
-				}
-
-				for (Entity* entity : m_World->GetEntities())
-				{
-					// todo : proper int rendertarget; how does depth work then? do we care?
-					if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
-					{
-						m_PickedEntity = entity;
-						break;
+						manipulatorDragging = true;
 					}
 				}
 			}
 
+			for (Entity* entity : m_World->GetEntities())
+			{
+				// todo : proper int rendertarget; how does depth work then? do we care?
+				if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+				{
+					m_PickedEntity = entity;
+					break;
+				}
+			}
 		}
 
-		// todo : this should be controlled by ManipulatorComponent
-		if (m_PickedEntity)
-		{
-			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
-		}
-
-		// Update last click position
-		m_LastMouseClickPosition = m_MouseClickPosition;
-		m_LastMousePosition = m_MousePosition;
 	}
+
+	// todo : this should be controlled by ManipulatorComponent
+	if (m_PickedEntity)
+	{
+		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
+	}
+
+	// Update last click position
+	m_LastMouseClickPosition = m_MouseClickPosition;
+	m_LastMousePosition = m_MousePosition;
 
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);

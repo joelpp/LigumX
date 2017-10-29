@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "LXEnum.h"
 
 enum ClassPropertyFlags
 {
@@ -71,6 +72,7 @@ struct Variable
 	std::string m_MaxValue;
 };
 typedef std::vector<Variable> VariableList;
+typedef std::vector<LXEnum> EnumList;
 
 
 struct LXClass
@@ -79,6 +81,7 @@ struct LXClass
 	std::string m_FileNames[FileType_NumFileTypes];
 	int m_PropertyFlags;
 	VariableList m_Members;
+	EnumList m_Enums;
 };
 typedef std::vector<LXClass> ClassList;
 typedef std::vector<std::string> TokenList;
@@ -90,6 +93,12 @@ bool DiscardTokens(TokenList& tokens)
 		(tokens[0] == "") ||
 		(tokens.size() == 0);
 }
+
+bool IsEnumDeclaration(TokenList& tokens)
+{
+	return tokens[0] == "enum";
+}
+
 
 bool IsClassDeclaration(TokenList& tokens)
 {

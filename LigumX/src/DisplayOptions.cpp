@@ -32,7 +32,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 bool DisplayOptions::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE DisplayOptions

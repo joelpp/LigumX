@@ -152,6 +152,7 @@
     <ClInclude Include="include\Common.h" />
     <ClInclude Include="include\ForwardDeclarationRegion.h" />
     <ClInclude Include="include\LXClass.h" />
+    <ClInclude Include="include\LXEnum.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\StringUtils.h" />
     <ClInclude Include="include\targetver.h" />

@@ -16,7 +16,7 @@ const ClassPropertyData AABB::g_Properties[] =
 bool AABB::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE AABB

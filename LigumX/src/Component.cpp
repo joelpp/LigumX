@@ -15,7 +15,7 @@ const ClassPropertyData Component::g_Properties[] =
 bool Component::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Component

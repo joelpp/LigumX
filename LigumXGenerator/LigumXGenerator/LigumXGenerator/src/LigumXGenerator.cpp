@@ -50,12 +50,14 @@ ClassList createLXClass(std::vector<std::string>& lines)
 {
 	ClassList classes;
 	bool generatingClass = false;
-
+	bool generatingEnum = false;
 	LXClass currentClass;
+	LXEnum currentEnum;
 	{
 		Variable variable;
 		int classPropertyFlags = 0;
 		int varPropertyFlags = 0;
+
 		// read lines
 
 		for (std::string& line : lines)
@@ -92,6 +94,12 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				continue;
 			}
 
+			if (IsEnumDeclaration(tokens))
+			{
+				generatingEnum = true;
+				continue;
+			}
+
 			if (IsClassDeclaration(tokens))
 			{
 				currentClass.m_Name = tokens[1];
@@ -118,32 +126,48 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			if (EndClassDeclaration(tokens))
 			{
+				if (generatingClass)
+				{
+					classes.push_back(currentClass);
+					currentClass = LXClass();
+				}
+				else if (generatingEnum)
+				{
+					currentClass.m_Enums.push_back(currentEnum);
+					currentEnum = LXEnum();
+				}
+
 				generatingClass = false;
-				classes.push_back(currentClass);
-				currentClass = LXClass();
+				generatingEnum = false;
 				continue;
 			}
 
 			// then its a variable
 
-			variable.m_Name = tokens[1];;
-			variable.SetType(tokens[0]);
+			if (generatingEnum)
+			{
+				currentEnum.m_Values.push_back(tokens[0]);
+			}
+			else
+			{
+				variable.m_Name = tokens[1];;
+				variable.SetType(tokens[0]);
 
-			variable.m_IsPtr = stringContains(variable.m_Type, '*');
+				variable.m_IsPtr = stringContains(variable.m_Type, '*');
 
-			variable.CheckForTemplate();
+				variable.CheckForTemplate();
 
-			variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
+				variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
 
-			variable.m_PropertyFlags = varPropertyFlags;
+				variable.m_PropertyFlags = varPropertyFlags;
 
-			currentClass.m_Members.push_back(variable);
-			variable = Variable();
-			// not invalid or a class declaration. we're adding to the class desc
-			void;
+				currentClass.m_Members.push_back(variable);
+				variable = Variable();
 
-			// reset property flags
-			varPropertyFlags = 0;
+				// reset property flags
+				varPropertyFlags = 0;
+			}
+
 		}
 
 	}

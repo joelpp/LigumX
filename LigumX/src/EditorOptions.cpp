@@ -24,7 +24,7 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 bool EditorOptions::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE EditorOptions

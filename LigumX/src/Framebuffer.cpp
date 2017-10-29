@@ -25,7 +25,7 @@ const ClassPropertyData Framebuffer::g_Properties[] =
 bool Framebuffer::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Framebuffer

@@ -45,6 +45,9 @@
     <ClInclude Include="include\ClassHeaderRegion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\LXEnum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LigumXGenerator.cpp">

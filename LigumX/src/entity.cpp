@@ -27,7 +27,7 @@ const ClassPropertyData Entity::g_Properties[] =
 bool Entity::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Entity

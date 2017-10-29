@@ -17,7 +17,7 @@ const ClassPropertyData EngineStats::g_Properties[] =
 bool EngineStats::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE EngineStats

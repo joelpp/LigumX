@@ -17,7 +17,7 @@ const ClassPropertyData PostEffects::g_Properties[] =
 bool PostEffects::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE PostEffects

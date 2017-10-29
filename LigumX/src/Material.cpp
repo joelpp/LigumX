@@ -36,7 +36,7 @@ const ClassPropertyData Material::g_Properties[] =
 bool Material::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Material

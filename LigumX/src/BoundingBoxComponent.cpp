@@ -17,7 +17,7 @@ const ClassPropertyData BoundingBoxComponent::g_Properties[] =
 bool BoundingBoxComponent::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE BoundingBoxComponent

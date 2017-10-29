@@ -19,7 +19,7 @@ const ClassPropertyData Mesh::g_Properties[] =
 bool Mesh::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Mesh

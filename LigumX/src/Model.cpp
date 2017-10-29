@@ -26,7 +26,7 @@ bool Model::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing);
-return success;
+	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Model
