@@ -167,7 +167,7 @@ public:
 
 	void WriteSerializerDeclaration()
 	{
-		WriteLine("void Serialize(bool writing);");
+		WriteLine("bool Serialize(bool writing);");
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{

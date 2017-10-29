@@ -48,7 +48,7 @@ PIDX_Name,
 PIDX_Filename,
 PIDX_IsCubeMap,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 void PostSerialization(bool writing);
 
 #pragma endregion  HEADER Texture

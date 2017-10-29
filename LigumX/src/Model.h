@@ -58,7 +58,7 @@ PIDX_Name,
 PIDX_Filename,
 PIDX_Materials,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 void PostSerialization(bool writing);
 
 #pragma endregion  HEADER Model

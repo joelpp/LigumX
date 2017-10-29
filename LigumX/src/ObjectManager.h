@@ -49,6 +49,12 @@ public:
 		return AddObject(ptr->GetObjectID(), type, (ObjectPtr)ptr);
 	}
 
+	template <typename T>
+	bool AddObject(T* ptr)
+	{
+		return AddObject(T::Type, ptr);
+	}
+
 private:
 	int m_NextTransientID = StartTransientIDs;
 	int m_NextHardcodedID;

@@ -13,9 +13,10 @@ const ClassPropertyData AABB::g_Properties[] =
 { "Offset", PIDX_Offset, offsetof(AABB, m_Offset), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 };
-void AABB::Serialize(bool writing)
+bool AABB::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE AABB

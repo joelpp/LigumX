@@ -1,11 +1,14 @@
 #pragma once
 
-#include "property.h"
-#include "ObjectManager.h"
-#include "DisplayOptions.h"
 #include <fstream>
 #include <string>
 #include <vector>
+
+#include "property.h"
+#include "ObjectManager.h"
+#include "DisplayOptions.h"
+#include "Logging.h"
+
 
 class Serializer
 {
@@ -116,7 +119,7 @@ public:
 
 
 	template<typename T>
-	void SerializeObject(T* object, bool writing)
+	bool SerializeObject(T* object, bool writing)
 	{
 		std::string basePath = g_PathObjects;
 		std::string fileName = object->ClassName + std::string("_") + std::to_string(object->GetObjectID()) + ".LXobj";
@@ -128,6 +131,14 @@ public:
 		{
 			SerializeObject(object, objectStream, writing);
 		}
+		else
+		{
+			OUTPUT_STRING("File " + fileName + " not found in objects bank.");
+
+			return false;
+		}
+
+		return true;
 	}
 
 	template<typename T>

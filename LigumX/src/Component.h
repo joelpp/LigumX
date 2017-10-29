@@ -37,7 +37,7 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_ParentEntity,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 
 #pragma endregion  HEADER Component
 

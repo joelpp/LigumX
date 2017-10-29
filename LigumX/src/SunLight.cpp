@@ -22,9 +22,10 @@ const ClassPropertyData SunLight::g_Properties[] =
 { "UseSkybox", PIDX_UseSkybox, offsetof(SunLight, m_UseSkybox), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Skybox", PIDX_Skybox, offsetof(SunLight, m_Skybox), 0, LXType_Texture, true, LXType_None, PropertyFlags_Hidden, 0, 0, }, 
 };
-void SunLight::Serialize(bool writing)
+bool SunLight::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE SunLight

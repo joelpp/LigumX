@@ -28,8 +28,8 @@ const bool& GetShowMaterialWindow() { return m_ShowMaterialWindow; };
 void SetShowMaterialWindow(bool value) { m_ShowMaterialWindow = value; }; 
 const bool& GetShowEntityWindow() { return m_ShowEntityWindow; }; 
 void SetShowEntityWindow(bool value) { m_ShowEntityWindow = value; }; 
-const bool& GetShowMaterialCreator() { return m_ShowMaterialCreator; }; 
-void SetShowMaterialCreator(bool value) { m_ShowMaterialCreator = value; }; 
+const bool& GetShowObjectCreator() { return m_ShowObjectCreator; }; 
+void SetShowObjectCreator(bool value) { m_ShowObjectCreator = value; }; 
 const bool& GetShowEngineStats() { return m_ShowEngineStats; }; 
 void SetShowEngineStats(bool value) { m_ShowEngineStats = value; }; 
 const bool& GetShowTestGUI() { return m_ShowTestGUI; }; 
@@ -45,7 +45,7 @@ bool m_Enabled;
 bool m_ShowWorldWindow;
 bool m_ShowMaterialWindow;
 bool m_ShowEntityWindow;
-bool m_ShowMaterialCreator;
+bool m_ShowObjectCreator;
 bool m_ShowEngineStats;
 bool m_ShowTestGUI;
 bool m_ShowObjectManager;
@@ -62,13 +62,13 @@ PIDX_Enabled,
 PIDX_ShowWorldWindow,
 PIDX_ShowMaterialWindow,
 PIDX_ShowEntityWindow,
-PIDX_ShowMaterialCreator,
+PIDX_ShowObjectCreator,
 PIDX_ShowEngineStats,
 PIDX_ShowTestGUI,
 PIDX_ShowObjectManager,
 PIDX_BackupDataOnSave,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 
 #pragma endregion  HEADER EditorOptions
 

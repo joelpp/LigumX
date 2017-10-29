@@ -117,7 +117,7 @@ PIDX_DiffuseTexture,
 PIDX_SpecularTexture,
 PIDX_ProgramPipeline,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 
 #pragma endregion  HEADER Material
 

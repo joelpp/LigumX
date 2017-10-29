@@ -24,9 +24,10 @@ const ClassPropertyData Entity::g_Properties[] =
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Components", PIDX_Components, offsetof(Entity, m_Components), 0, LXType_stdvector, false, LXType_Component, 0, 0, 0, }, 
 };
-void Entity::Serialize(bool writing)
+bool Entity::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Entity

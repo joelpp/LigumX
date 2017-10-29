@@ -29,9 +29,10 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "RenderShadows", PIDX_RenderShadows, offsetof(DisplayOptions, m_RenderShadows), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "OutputGLErrors", PIDX_OutputGLErrors, offsetof(DisplayOptions, m_OutputGLErrors), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
-void DisplayOptions::Serialize(bool writing)
+bool DisplayOptions::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE DisplayOptions

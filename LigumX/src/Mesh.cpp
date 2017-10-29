@@ -16,9 +16,10 @@ const ClassPropertyData Mesh::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Mesh, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 };
-void Mesh::Serialize(bool writing)
+bool Mesh::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Mesh

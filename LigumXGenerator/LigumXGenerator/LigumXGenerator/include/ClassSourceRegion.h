@@ -144,14 +144,15 @@ public:
 
 	void WriteSerializer()
 	{
-		WriteLine("void " + m_Class.m_Name + "::Serialize(bool writing)");
+		WriteLine("bool " + m_Class.m_Name + "::Serialize(bool writing)");
 		WriteLine("{");
-		WriteLine(R"(	g_Serializer->SerializeObject(this, writing); )");
+		WriteLine(R"(	bool success = g_Serializer->SerializeObject(this, writing); )");
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{
 			WriteLine("	PostSerialization(writing);");
 		}
+		WriteLine("	return success;");
 		WriteLine("}");
 	}
 
@@ -164,14 +165,8 @@ public:
 		
 		WritePropertyArray();
 
-		// todo unleash for all LXclasses
-		//if (m_Class.m_Name == "DisplayOptions" || 
-		//	m_Class.m_Name == "PostEffects" || 
-		//	m_Class.m_Name == "Renderer" ||
-		//	m_Class.m_Name == "Camera")
-		{
-			WriteSerializer();
-		}
+
+		WriteSerializer();
 	}
 
 	void WriteFooter()

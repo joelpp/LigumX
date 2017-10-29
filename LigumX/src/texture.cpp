@@ -16,10 +16,11 @@ const ClassPropertyData Texture::g_Properties[] =
 { "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "IsCubeMap", PIDX_IsCubeMap, offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
-void Texture::Serialize(bool writing)
+bool Texture::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing);
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Texture
@@ -111,7 +112,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
-	FIBITMAP *dib(0);
+	FIBITMAP *bitmap(0);
 	//pointer to the image data
 	BYTE* bits(0);
 	//image width and height
@@ -130,30 +131,72 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	}
 
 	if (FreeImage_FIFSupportsReading(fif))
-		dib = FreeImage_Load(fif, fullName.c_str());
+		bitmap = FreeImage_Load(fif, fullName.c_str());
 	//if the image failed to load, return failure
-	if (!dib) {
+	if (!bitmap) {
 		cout << "error opening texture : " << fullName << endl;
 		throw std::exception();
 	}
 
-	bits = FreeImage_GetBits(dib);
-	unsigned int width = FreeImage_GetWidth(dib);
-	unsigned int height = FreeImage_GetHeight(dib);
+	// How many bits-per-pixel is the source image?
+	int bitsPerPixel = FreeImage_GetBPP(bitmap);
+
+	// Convert our image up to 32 bits (8 bits per channel, Red/Green/Blue/Alpha) -
+	// but only if the image is not already 32 bits (i.e. 8 bits per channel).
+	// Note: ConvertTo32Bits returns a CLONE of the image data - so if we
+	// allocate this back to itself without using our bitmap32 intermediate
+	// we will LEAK the original bitmap data, and valgrind will show things like this:
+	//
+	// LEAK SUMMARY:
+	//  definitely lost: 24 bytes in 2 blocks
+	//  indirectly lost: 1,024,874 bytes in 14 blocks    <--- Ouch.
+	//
+	// Using our intermediate and cleaning up the initial bitmap data we get:
+	//
+	// LEAK SUMMARY:
+	//  definitely lost: 16 bytes in 1 blocks
+	//  indirectly lost: 176 bytes in 4 blocks
+	//
+	// All above leaks (192 bytes) are caused by XGetDefault (in /usr/lib/libX11.so.6.3.0) - we have no control over this.
+	//
+	FIBITMAP* bitmap32;
+	if (bitsPerPixel == 32)
+	{
+		cout << "Source image has " << bitsPerPixel << " bits per pixel. Skipping conversion." << endl;
+		bitmap32 = bitmap;
+	}
+	else
+	{
+		cout << "Source image has " << bitsPerPixel << " bits per pixel. Converting to 32-bit colour." << endl;
+		bitmap32 = FreeImage_ConvertTo32Bits(bitmap);
+	}
+
+	bits = FreeImage_GetBits(bitmap32);
+	unsigned int width = FreeImage_GetWidth(bitmap);
+	unsigned int height = FreeImage_GetHeight(bitmap);
 
 	unsigned int nbLevels;
 
 	if (m_IsCubeMap)
 	{
-		glTexImage2D(target, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, bits);
+		glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
 
 	}
 	else
 	{
-		glTexImage2D(target, 0, GL_RGB, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
+		glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
 
 	}
 
-	FreeImage_Unload(dib);
+	FreeImage_Unload(bitmap32);
+
+	// If we had to do a conversion to 32-bit colour, then unload the original
+	// non-32-bit-colour version of the image data too. Otherwise, bitmap32 and
+	// bitmap point at the same data, and that data's already been free'd, so
+	// don't attempt to free it again! (or we'll crash).
+	if (bitsPerPixel != 32)
+	{
+		FreeImage_Unload(bitmap);
+	}
 }
 

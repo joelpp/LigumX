@@ -95,7 +95,7 @@ PIDX_ProjectionType,
 PIDX_OrthoBorders,
 PIDX_ViewSize,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 void PostSerialization(bool writing);
 
 #pragma endregion  HEADER Camera

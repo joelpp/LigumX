@@ -14,15 +14,16 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "ShowWorldWindow", PIDX_ShowWorldWindow, offsetof(EditorOptions, m_ShowWorldWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowMaterialWindow", PIDX_ShowMaterialWindow, offsetof(EditorOptions, m_ShowMaterialWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowEntityWindow", PIDX_ShowEntityWindow, offsetof(EditorOptions, m_ShowEntityWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowMaterialCreator", PIDX_ShowMaterialCreator, offsetof(EditorOptions, m_ShowMaterialCreator), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowObjectCreator", PIDX_ShowObjectCreator, offsetof(EditorOptions, m_ShowObjectCreator), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowEngineStats", PIDX_ShowEngineStats, offsetof(EditorOptions, m_ShowEngineStats), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowTestGUI", PIDX_ShowTestGUI, offsetof(EditorOptions, m_ShowTestGUI), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowObjectManager", PIDX_ShowObjectManager, offsetof(EditorOptions, m_ShowObjectManager), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "BackupDataOnSave", PIDX_BackupDataOnSave, offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
-void EditorOptions::Serialize(bool writing)
+bool EditorOptions::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE EditorOptions

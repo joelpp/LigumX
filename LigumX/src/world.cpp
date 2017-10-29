@@ -30,9 +30,10 @@ const ClassPropertyData World::g_Properties[] =
 { "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
 { "Entities", PIDX_Entities, offsetof(World, m_Entities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
 };
-void World::Serialize(bool writing)
+bool World::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE World

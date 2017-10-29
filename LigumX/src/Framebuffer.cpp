@@ -22,9 +22,10 @@ const ClassPropertyData Framebuffer::g_Properties[] =
 { "HasDepth", PIDX_HasDepth, offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "NumColorTargets", PIDX_NumColorTargets, offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
-void Framebuffer::Serialize(bool writing)
+bool Framebuffer::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Framebuffer

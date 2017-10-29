@@ -30,10 +30,11 @@ const ClassPropertyData Camera::g_Properties[] =
 { "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
-void Camera::Serialize(bool writing)
+bool Camera::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing);
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Camera

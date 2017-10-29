@@ -35,10 +35,11 @@ const ClassPropertyData Renderer::g_Properties[] =
 { "MouseClickPosition", PIDX_MouseClickPosition, offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_Camera, true, LXType_None, 0, 0, 0, }, 
 };
-void Renderer::Serialize(bool writing)
+bool Renderer::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing);
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Renderer
@@ -1020,10 +1021,18 @@ void Renderer::ShowPropertyGridObject(T*& object, const char* name)
 					if (ShowEditableProperty(&objectID, propertyData.m_Name))
 					{
 						ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, T::Type, false);
-						T* dptr = nullptr;
 						if (loadedObject == nullptr)
 						{
-							PRINT("Object " + std::to_string(objectID) + " not found in ObjectManager.");
+							PRINT("Object " + std::to_string(objectID) + " not found in ObjectManager. Trying to serialize from file.");
+							T* newObject = new T();
+							newObject->SetObjectID(objectID);
+							bool success = newObject->Serialize(false);
+
+							if (success)
+							{
+								object = newObject;
+								g_ObjectManager->AddObject(newObject);
+							}
 						}
 						else
 						{
@@ -1233,9 +1242,9 @@ void Renderer::RenderImgui()
 		ImGui::PopID();
 	}
 
-	if (m_EditorOptions->GetShowMaterialCreator())
+	if (m_EditorOptions->GetShowObjectCreator())
 	{
-		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Creator");
+		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Creator");
 
 		ShowObjectCreator<Entity>();
 		ShowObjectCreator<Texture>();

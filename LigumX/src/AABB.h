@@ -46,7 +46,7 @@ PIDX_Name,
 PIDX_Offset,
 PIDX_Scale,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 
 #pragma endregion  HEADER AABB
 

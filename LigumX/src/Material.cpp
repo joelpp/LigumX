@@ -33,9 +33,10 @@ const ClassPropertyData Material::g_Properties[] =
 { "SpecularTexture", PIDX_SpecularTexture, offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "ProgramPipeline", PIDX_ProgramPipeline, offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 };
-void Material::Serialize(bool writing)
+bool Material::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Material

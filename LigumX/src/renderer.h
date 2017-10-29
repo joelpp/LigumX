@@ -129,7 +129,7 @@ PIDX_PostEffects,
 PIDX_MouseClickPosition,
 PIDX_DebugCamera,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 void PostSerialization(bool writing);
 
 #pragma endregion  HEADER Renderer

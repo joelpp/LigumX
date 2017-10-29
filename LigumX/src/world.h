@@ -81,7 +81,7 @@ PIDX_Name,
 PIDX_SunLight,
 PIDX_Entities,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 
 #pragma endregion  HEADER World
 

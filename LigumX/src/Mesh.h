@@ -63,7 +63,7 @@ enum g_MeshPIDX
 PIDX_ObjectID,
 PIDX_Name,
 };
-void Serialize(bool writing);
+bool Serialize(bool writing);
 
 #pragma endregion  HEADER Mesh
 

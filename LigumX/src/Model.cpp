@@ -22,10 +22,11 @@ const ClassPropertyData Model::g_Properties[] =
 { "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, }, 
 };
-void Model::Serialize(bool writing)
+bool Model::Serialize(bool writing)
 {
-	g_Serializer->SerializeObject(this, writing); 
+	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing);
+return success;
 }
 
 #pragma endregion  CLASS_SOURCE Model

@@ -4,7 +4,7 @@ class EditorOptions
 	bool ShowWorldWindow;
 	bool ShowMaterialWindow;
 	bool ShowEntityWindow;
-	bool ShowMaterialCreator;
+	bool ShowObjectCreator;
 	bool ShowEngineStats;
 	bool ShowTestGUI;
 	bool ShowObjectManager;
