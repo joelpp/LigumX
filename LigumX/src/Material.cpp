@@ -38,6 +38,12 @@ bool Material::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+const std::string Material::g_ShaderFamilyEnumValues[] = 
+{
+"Basic",
+"SolidColor",
+};
+
 
 #pragma endregion  CLASS_SOURCE Material
 

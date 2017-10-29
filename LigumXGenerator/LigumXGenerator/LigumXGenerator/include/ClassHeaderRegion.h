@@ -205,6 +205,27 @@ public:
 		WriteSerializerDeclaration();
 	}
 
+
+	void WriteEnums()
+	{
+		for (LXEnum& anEnum : m_Class.m_Enums)
+		{
+			WriteLine("enum " + anEnum.m_Name);
+			WriteLine("{");
+
+			for (std::string& name : anEnum.m_Values)
+			{
+				WriteLine(name + ",");
+			}
+			WriteLine("};");
+			WriteLine("");
+
+			WriteLine("static const std::string g_" + anEnum.m_Name + "EnumValues[" + std::to_string(anEnum.m_Values.size()) + "];");
+
+			WriteLine("");
+		}
+	}
+
 	void Process()
 	{
 		// Write class header region
@@ -212,6 +233,7 @@ public:
 
 		WriteBody();
 
+		WriteEnums();
 
 		WriteFooter();
 

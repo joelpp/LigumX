@@ -96,6 +96,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 			if (IsEnumDeclaration(tokens))
 			{
+				currentEnum.m_Name = tokens[1];
 				generatingEnum = true;
 				continue;
 			}

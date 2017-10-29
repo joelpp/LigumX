@@ -118,6 +118,14 @@ PIDX_SpecularTexture,
 PIDX_ProgramPipeline,
 };
 bool Serialize(bool writing);
+enum ShaderFamily
+{
+Basic,
+SolidColor,
+};
+
+static const std::string g_ShaderFamilyEnumValues[2];
+
 
 #pragma endregion  HEADER Material
 

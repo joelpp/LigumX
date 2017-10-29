@@ -175,6 +175,23 @@ public:
 		m_Stream << m_CodeRegionEndString;
 	}
 
+	void WriteEnums()
+	{
+		for (LXEnum& anEnum : m_Class.m_Enums)
+		{
+			WriteLine("const std::string " + m_Class.m_Name + "::g_" + anEnum.m_Name + "EnumValues[] = ");
+			WriteLine("{");
+			for (std::string& name : anEnum.m_Values)
+			{
+				WriteLine("\"" + name + "\",");
+			}
+			WriteLine("};");
+
+			WriteLine("");
+		}
+	}
+
+
 
 	void Process()
 	{
@@ -182,6 +199,8 @@ public:
 		WriteHeader();
 
 		WriteBody();
+
+		WriteEnums();
 
 		WriteFooter();
 

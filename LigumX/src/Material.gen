@@ -1,3 +1,9 @@
+enum ShaderFamily
+{
+	Basic,
+	SolidColor,
+}
+
 class Material
 {
 	bool Enabled
