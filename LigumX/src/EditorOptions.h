@@ -13,6 +13,7 @@ class EditorOptions
 #pragma region  HEADER EditorOptions
 public:
 static const int ClassID = 3240762054;
+static const LXType Type = LXType_EditorOptions;
 static constexpr const char* ClassName = "EditorOptions";
 
 const int& GetObjectID() { return m_ObjectID; }; 

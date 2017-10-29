@@ -17,6 +17,7 @@ class BoundingBoxComponent : public Component
 #pragma region  HEADER BoundingBoxComponent
 public:
 static const int ClassID = 1140622857;
+static const LXType Type = LXType_BoundingBoxComponent;
 static constexpr const char* ClassName = "BoundingBoxComponent";
 
 const int& GetObjectID() { return m_ObjectID; }; 

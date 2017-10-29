@@ -31,6 +31,7 @@ enum LXType
 	LXType_Entity,
 	LXType_Material,
 	LXType_Component,
+	LXType_BoundingBoxComponent,
 	LXType_ProgramPipeline,
 	LXType_Camera,
 	LXType_PostEffects,
@@ -41,6 +42,10 @@ enum LXType
 	LXType_Mesh,
 	LXType_AABB,
 	LXType_SunLight,
+	LXType_Renderer,
+	LXType_EngineStats,
+	LXType_World,
+	LXType_Framebuffer,
 
 	LXType_None,
 	LXType_NumTypes
@@ -63,6 +68,7 @@ enum PropertyFlags
 struct ClassPropertyData
 {
 	const char* m_Name;
+	int m_Index;
 	int m_Offset;
 	int debug;
 	LXType m_Type;

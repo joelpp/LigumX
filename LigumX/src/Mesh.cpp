@@ -13,8 +13,8 @@ using namespace std;
 #include "ObjectManager.h"
 const ClassPropertyData Mesh::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", offsetof(Mesh, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Mesh, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 };
 void Mesh::Serialize(bool writing)
 {

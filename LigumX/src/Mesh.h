@@ -44,6 +44,7 @@ class Mesh
 #pragma region  HEADER Mesh
 public:
 static const int ClassID = 132142556;
+static const LXType Type = LXType_Mesh;
 static constexpr const char* ClassName = "Mesh";
 
 const int& GetObjectID() { return m_ObjectID; }; 

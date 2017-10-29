@@ -14,6 +14,7 @@ class Component
 #pragma region  HEADER Component
 public:
 static const int ClassID = 718440320;
+static const LXType Type = LXType_Component;
 static constexpr const char* ClassName = "Component";
 
 const int& GetObjectID() { return m_ObjectID; }; 

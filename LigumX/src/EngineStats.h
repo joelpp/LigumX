@@ -14,6 +14,7 @@ class EngineStats
 #pragma region  HEADER EngineStats
 public:
 static const int ClassID = 2882477190;
+static const LXType Type = LXType_EngineStats;
 static constexpr const char* ClassName = "EngineStats";
 
 const int& GetObjectID() { return m_ObjectID; }; 

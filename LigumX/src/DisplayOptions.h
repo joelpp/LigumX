@@ -16,6 +16,7 @@ public:
 #pragma region  HEADER DisplayOptions
 public:
 static const int ClassID = 2473594549;
+static const LXType Type = LXType_DisplayOptions;
 static constexpr const char* ClassName = "DisplayOptions";
 
 const int& GetObjectID() { return m_ObjectID; }; 

@@ -25,10 +25,10 @@
 #include "ObjectManager.h"
 const ClassPropertyData World::g_Properties[] = 
 {
-{ "ObjectID", offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", offsetof(World, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "SunLight", offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
-{ "Entities", offsetof(World, m_Entities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(World, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(World, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
+{ "Entities", PIDX_Entities, offsetof(World, m_Entities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
 };
 void World::Serialize(bool writing)
 {

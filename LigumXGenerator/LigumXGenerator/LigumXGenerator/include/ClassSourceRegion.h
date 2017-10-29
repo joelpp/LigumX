@@ -126,6 +126,7 @@ public:
 			std::string&  varType = var.m_Type;
 			// warning! if you change anything here mirror it in property.h in LigumX
 			WriteLine("{ \"" + varName + "\", "
+				+ "PIDX_" + varName + ", "
 				+ "offsetof(" + m_Class.m_Name + ", m_" + varName + "), "
 				+ (m_Class.m_Members[i].m_Type == "\tbool" ? "1" : "0") + ", "
 				+ "LXType_" + RemoveSubstrings(varType, "::") + ", "

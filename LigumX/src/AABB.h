@@ -19,6 +19,7 @@ public:
 #pragma region  HEADER AABB
 public:
 static const int ClassID = 1726995287;
+static const LXType Type = LXType_AABB;
 static constexpr const char* ClassName = "AABB";
 
 const int& GetObjectID() { return m_ObjectID; }; 

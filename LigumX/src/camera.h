@@ -28,6 +28,7 @@ public:
 #pragma region  HEADER Camera
 public:
 static const int ClassID = 3880549230;
+static const LXType Type = LXType_Camera;
 static constexpr const char* ClassName = "Camera";
 
 const int& GetObjectID() { return m_ObjectID; }; 

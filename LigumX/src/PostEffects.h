@@ -17,6 +17,7 @@ public:
 #pragma region  HEADER PostEffects
 public:
 static const int ClassID = 3178515267;
+static const LXType Type = LXType_PostEffects;
 static constexpr const char* ClassName = "PostEffects";
 
 const int& GetObjectID() { return m_ObjectID; }; 

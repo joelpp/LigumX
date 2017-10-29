@@ -17,4 +17,6 @@ ShowEngineStats
 ShowTestGUI
 0
 ShowObjectManager
+1
+BackupDataOnSave
 0

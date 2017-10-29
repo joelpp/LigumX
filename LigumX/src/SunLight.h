@@ -16,6 +16,7 @@ public:
 #pragma region  HEADER SunLight
 public:
 static const int ClassID = 2842600075;
+static const LXType Type = LXType_SunLight;
 static constexpr const char* ClassName = "SunLight";
 
 const int& GetObjectID() { return m_ObjectID; }; 

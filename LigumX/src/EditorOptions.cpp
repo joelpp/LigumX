@@ -8,17 +8,17 @@
 #include "ObjectManager.h"
 const ClassPropertyData EditorOptions::g_Properties[] = 
 {
-{ "ObjectID", offsetof(EditorOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", offsetof(EditorOptions, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Enabled", offsetof(EditorOptions, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowWorldWindow", offsetof(EditorOptions, m_ShowWorldWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowMaterialWindow", offsetof(EditorOptions, m_ShowMaterialWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowEntityWindow", offsetof(EditorOptions, m_ShowEntityWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowMaterialCreator", offsetof(EditorOptions, m_ShowMaterialCreator), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowEngineStats", offsetof(EditorOptions, m_ShowEngineStats), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowTestGUI", offsetof(EditorOptions, m_ShowTestGUI), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowObjectManager", offsetof(EditorOptions, m_ShowObjectManager), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "BackupDataOnSave", offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(EditorOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(EditorOptions, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "Enabled", PIDX_Enabled, offsetof(EditorOptions, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowWorldWindow", PIDX_ShowWorldWindow, offsetof(EditorOptions, m_ShowWorldWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowMaterialWindow", PIDX_ShowMaterialWindow, offsetof(EditorOptions, m_ShowMaterialWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowEntityWindow", PIDX_ShowEntityWindow, offsetof(EditorOptions, m_ShowEntityWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowMaterialCreator", PIDX_ShowMaterialCreator, offsetof(EditorOptions, m_ShowMaterialCreator), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowEngineStats", PIDX_ShowEngineStats, offsetof(EditorOptions, m_ShowEngineStats), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowTestGUI", PIDX_ShowTestGUI, offsetof(EditorOptions, m_ShowTestGUI), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowObjectManager", PIDX_ShowObjectManager, offsetof(EditorOptions, m_ShowObjectManager), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "BackupDataOnSave", PIDX_BackupDataOnSave, offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 void EditorOptions::Serialize(bool writing)
 {

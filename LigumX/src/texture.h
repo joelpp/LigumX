@@ -21,6 +21,7 @@ class Texture
 #pragma region  HEADER Texture
 public:
 static const int ClassID = 2571916692;
+static const LXType Type = LXType_Texture;
 static constexpr const char* ClassName = "Texture";
 
 const int& GetObjectID() { return m_ObjectID; }; 

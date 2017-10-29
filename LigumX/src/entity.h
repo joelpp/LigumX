@@ -28,6 +28,7 @@ class Entity {
 #pragma region  HEADER Entity
 public:
 static const int ClassID = 3231396602;
+static const LXType Type = LXType_Entity;
 static constexpr const char* ClassName = "Entity";
 
 const int& GetObjectID() { return m_ObjectID; }; 

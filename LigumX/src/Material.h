@@ -20,6 +20,7 @@ class Material
 #pragma region  HEADER Material
 public:
 static const int ClassID = 3419754368;
+static const LXType Type = LXType_Material;
 static constexpr const char* ClassName = "Material";
 
 const int& GetObjectID() { return m_ObjectID; }; 

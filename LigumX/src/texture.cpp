@@ -11,10 +11,10 @@
 #include "ObjectManager.h"
 const ClassPropertyData Texture::g_Properties[] = 
 {
-{ "ObjectID", offsetof(Texture, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", offsetof(Texture, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Filename", offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "IsCubeMap", offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Texture, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Texture, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "IsCubeMap", PIDX_IsCubeMap, offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 void Texture::Serialize(bool writing)
 {

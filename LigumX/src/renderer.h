@@ -90,6 +90,7 @@ public:
 #pragma region  HEADER Renderer
 public:
 static const int ClassID = 1498036510;
+static const LXType Type = LXType_Renderer;
 static constexpr const char* ClassName = "Renderer";
 
 const int& GetObjectID() { return m_ObjectID; }; 

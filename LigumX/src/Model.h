@@ -31,6 +31,7 @@ public:
 #pragma region  HEADER Model
 public:
 static const int ClassID = 2189814010;
+static const LXType Type = LXType_Model;
 static constexpr const char* ClassName = "Model";
 
 const int& GetObjectID() { return m_ObjectID; }; 
