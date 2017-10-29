@@ -1117,7 +1117,6 @@ void Renderer::ShowObjectCreator()
 
 		if (ImGui::Button("Reset"))
 		{
-			//m_TempMaterial = new Material();
 			m_TempObject = new T();
 		}
 
@@ -1125,9 +1124,6 @@ void Renderer::ShowObjectCreator()
 
 		if (ImGui::Button("Load"))
 		{
-			//m_TempMaterial->SetObjectID(m_TempObjectID);
-			//m_TempMaterial->Serialize(false);
-
 			m_TempObject->SetObjectID(m_TempObjectID);
 			m_TempObject->Serialize(false);
 		}
@@ -1262,6 +1258,7 @@ void Renderer::RenderImgui()
 
 		ShowProperty(g_ObjectManager->GetObjects(LXType_Texture), "Textures");
 		ShowProperty(g_ObjectManager->GetObjects(LXType_Mesh), "Meshes");
+		ShowProperty(g_ObjectManager->GetObjects(LXType_Material), "Materials");
 
 		EndImGUIWindow();
 	}

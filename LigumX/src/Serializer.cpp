@@ -193,25 +193,42 @@ objectStream >> *((##type *)ptr); \
 break; \
 } \
 
-#define SERIALIZE_PTR_IN(type) \
-case LXType_##type : \
+#define SERIALIZE_PTR_IN(className) \
+case LXType_##className : \
 { \
-	int ObjectID; \
-	objectStream >> ObjectID; \
-	if (ObjectID == 0) \
+	int objectID; \
+	objectStream >> objectID; \
+	if (objectID == 0) \
 	{ \
 		break; \
 	} \
-	if (*ptr == 0) \
+	\
+	bool mustSerialize = false; \
+	ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, type, false); \
+	\
+	##className* dptr = nullptr; \
+	if (loadedObject == nullptr) \
 	{ \
-		##type* dptr = new type(); \
-		char** aptr = (char**)ptr; \
-		*aptr = (char*)dptr; \
-		ptr = *(char**)ptr; \
+		if (*ptr == 0) \
+		{ \
+			dptr = new className(); \
+			g_ObjectManager->AddObject(objectID, type, (ObjectPtr) dptr); \
+		} \
+		mustSerialize = true; \
 	} \
-	##type* val = (##type *)ptr; \
-	val->SetObjectID(ObjectID); \
-	val->Serialize(false); \
+	else \
+	{ \
+		dptr = (##className *)loadedObject; \
+	} \
+	char** aptr = (char**)ptr; \
+	*aptr = (char*)dptr; \
+	ptr = *(char**)ptr; \
+	if (mustSerialize) \
+	{ \
+		##className* val = (##className *)ptr; \
+		val->SetObjectID(objectID); \
+		val->Serialize(false); \
+	} \
 	break; \
 } \
 
@@ -263,6 +280,48 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		}
 
 		SERIALIZE_PTR_IN(DisplayOptions)
+
+
+	//case LXType_DisplayOptions :
+	//{
+	//	int objectID;
+	//	objectStream >> objectID;
+	//	if (objectID == 0)
+	//	{
+	//		break;
+	//	} 
+	//	
+	//	bool mustSerialize = false; 
+	//	ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, type, false); 
+	//
+	//	DisplayOptions* dptr = nullptr; 
+	//	if (loadedObject == nullptr)
+	//	{
+	//		if (*ptr == 0)
+	//		{
+	//			dptr = new DisplayOptions();
+	//			g_ObjectManager->AddObject(objectID, type, (ObjectPtr) dptr);
+	//		}
+	//		mustSerialize = true;
+	//	}
+	//	else
+	//	{
+	//		dptr = (DisplayOptions *)loadedObject;
+	//	}
+	//	char** aptr = (char**)ptr;
+	//	*aptr = (char*)dptr;
+	//	ptr = *(char**)ptr;
+	//	if (mustSerialize)
+	//	{
+	//		DisplayOptions* val = (DisplayOptions *)ptr;
+	//		val->SetObjectID(objectID);
+	//		val->Serialize(false);
+	//	}
+	//	break;
+	//}
+
+
+
 		SERIALIZE_PTR_IN(PostEffects)
 		SERIALIZE_PTR_IN(Camera)
 		SERIALIZE_PTR_IN(Material)
@@ -272,47 +331,50 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		SERIALIZE_PTR_IN(SunLight)
 		SERIALIZE_PTR_IN(Entity)
 		SERIALIZE_PTR_IN(EditorOptions)
+		SERIALIZE_PTR_IN(Texture)
 
-		case LXType_Texture:
-		{
-			int objectID;
-			objectStream >> objectID;
-			if (objectID == 0)
-			{
-				break;
-			}
+		//case LXType_Texture:
+		//{
+		//	int objectID;
+		//	objectStream >> objectID;
+		//	if (objectID == 0)
+		//	{
+		//		break;
+		//	}
 
-			ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, LXType_Texture, false);
-			bool mustSerialize = false;
-			Texture* dptr = nullptr;
-			if (loadedObject == nullptr)
-			{
-				if (*ptr == 0)
-				{
-					dptr = new Texture();
-					g_ObjectManager->AddObject(objectID, LXType_Texture, (ObjectPtr) dptr);
-				}
+		//	bool mustSerialize = false;
 
-				mustSerialize = true;
-			}
-			else
-			{
-				dptr = (Texture*) loadedObject;
-			}
+		//	ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, type, false);
 
-			char** aptr = (char**)ptr;
-			*aptr = (char*)dptr;
-			ptr = *(char**)ptr;
+		//	Texture* dptr = nullptr;
+		//	if (loadedObject == nullptr)
+		//	{
+		//		if (*ptr == 0)
+		//		{
+		//			dptr = new Texture();
+		//			g_ObjectManager->AddObject(objectID, type, (ObjectPtr) dptr);
+		//		}
 
-			if (mustSerialize)
-			{
-				Texture* val = (Texture *)ptr;
-				val->SetObjectID(objectID);
-				val->Serialize(false);
-			}
+		//		mustSerialize = true;
+		//	}
+		//	else
+		//	{
+		//		dptr = (Texture*) loadedObject;
+		//	}
 
-			break;
-		}
+		//	char** aptr = (char**)ptr;
+		//	*aptr = (char*)dptr;
+		//	ptr = *(char**)ptr;
+
+		//	if (mustSerialize)
+		//	{
+		//		Texture* val = (Texture *)ptr;
+		//		val->SetObjectID(objectID);
+		//		val->Serialize(false);
+		//	}
+
+		//	break;
+		//}
 
 
 		case LXType_Mesh:

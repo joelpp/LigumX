@@ -33,6 +33,7 @@ ObjectManager::ObjectManager()
 
 	m_SupportedTypes.push_back(LXType_Texture);
 	m_SupportedTypes.push_back(LXType_Mesh);
+	m_SupportedTypes.push_back(LXType_Material);
 
 	Initialize();
 }
