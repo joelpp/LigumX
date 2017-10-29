@@ -47,6 +47,8 @@ enum LXType
 	LXType_World,
 	LXType_Framebuffer,
 
+	LXType_ShaderFamily,
+
 	LXType_None,
 	LXType_NumTypes
 };
@@ -61,6 +63,7 @@ enum PropertyFlags
 	PropertyFlags_Transient = 8,
 	PropertyFlags_NonEditable = 16,
 	PropertyFlags_Adder = 32,
+	PropertyFlags_Enum = 64,
 	PropertyFlags_NumPropertyFlags
 };
 

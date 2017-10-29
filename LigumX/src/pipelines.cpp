@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "renderer.h"
+#include "Material.h"
 
 void Renderer::init_pipelines()
 {
@@ -37,6 +38,12 @@ void Renderer::init_pipelines()
 	pPipelineSolidColor = new ProgramPipeline("SolidColor");
 	pPipelineBlur = new ProgramPipeline("blur");
 	Renderer::outputGLError(__func__, __LINE__);
+
+	m_Pipelines.clear();
+	for (int i = 0; i < g_ShaderFamilyEnumLength; ++i)
+	{
+		m_Pipelines.push_back(new ProgramPipeline(g_ShaderFamilyEnumValues[i]));
+	}
 
 }
 

@@ -21,6 +21,7 @@
 #include "osm_element.h"
 #include "imgui_impl_glfw_gl3.h"
 #include "AABB.h"
+#include "Material.h"
 
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "property.h"
@@ -184,6 +185,7 @@ public:
     void RenderSky();
     void RenderFPS();
     void DrawTerrain();
+	void RenderEntities(ShaderFamily family, std::vector<Entity*> entities);
 	void RenderEntities(std::vector<Entity*> entities);
 
 	void BeforeWorldRender();
@@ -213,6 +215,7 @@ public:
 	void SetUniform(glm::mat4x4& value, const char* name, GLuint location);
 	void SetUniform(const glm::mat4x4& value, const char* name, GLuint location);
 	void SetUniform(float value, const char* name, GLuint location);
+	void SetVertexUniform(int value, const char* name);
 	void SetFragmentUniform(int value, const char* name);
 	void SetComputeUniform(int value, const char* name);
 
@@ -253,6 +256,8 @@ public:
 
 	// textures
     std::unordered_map<std::string, Texture*> textureMap;
+
+	std::vector<ProgramPipeline*> m_Pipelines;
 
     // shaders
     ProgramPipeline* pPipelineLines;

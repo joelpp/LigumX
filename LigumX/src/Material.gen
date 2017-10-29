@@ -2,6 +2,8 @@ enum ShaderFamily
 {
 	Basic,
 	SolidColor,
+	Envmap,
+	Terrain,
 }
 
 class Material
@@ -46,6 +48,10 @@ class Material
 	[setcallback]
 	Texture* SpecularTexture;
 
+	Texture* HeightfieldTexture;
+
 	[transient]
 	ProgramPipeline* ProgramPipeline;
+
+	ShaderFamily ShaderFamily;
 }

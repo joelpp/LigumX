@@ -325,6 +325,13 @@ void Renderer::SetComputeUniform(T& value, const char* name)
 	SetUniform(value, name, GL_COMPUTE_SHADER);
 }
 
+
+void Renderer::SetVertexUniform(int value, const char* name)
+{
+	GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
+}
+
 void Renderer::SetFragmentUniform(int value, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
@@ -402,36 +409,60 @@ void Renderer::SetLightingUniforms()
 
 void Renderer::SetMaterialUniforms(Material* material)
 {
-	SetFragmentUniform(material->GetAmbientColor(),				"g_Material.m_AmbientColor");
-	SetFragmentUniform(material->GetDiffuseColor(),				"g_Material.m_DiffuseColor");
-	SetFragmentUniform(material->GetSpecularColor(),			"g_Material.m_SpecularColor");
-	SetFragmentUniform(material->GetDiffuseTextureEnabled(),	"g_Material.m_DiffuseTextureEnabled");
-	SetFragmentUniform(material->GetSpecularTextureEnabled(),	"g_Material.m_SpecularTextureEnabled");
-	SetFragmentUniform(material->GetShininess(),				"g_Material.m_Shininess");
-	SetFragmentUniform(material->GetUnlit(),					"g_Material.m_Unlit");
-	SetFragmentUniform(material->GetEmissiveFactor(),			"g_Material.m_EmissiveFactor");
-	SetFragmentUniform(material->GetIsGlass(),					"g_Material.m_IsGlass");
-	SetFragmentUniform(material->GetRefractionIndex(),			"g_Material.m_RefractionIndex");
-	SetFragmentUniform(material->GetReflectEnvironment(),		"g_Material.m_ReflectEnvironment");
-	SetFragmentUniform(material->GetMetallic(),					"g_Material.m_Metallic");
-	SetFragmentUniform(material->GetRoughness(),				"g_Material.m_Roughness");
-	SetFragmentUniform(material->GetAO(),						"g_Material.m_AO");
-	SetFragmentUniform(material->GetIsPBR(),					"g_Material.m_IsPBR");
-
-	if (material->GetDiffuseTexture())
+	switch (material->GetShaderFamily())
 	{
-		SetFragmentUniform(0, "g_Material.m_DiffuseTexture");
-		Bind2DTexture(0, material->GetDiffuseTexture()->GetHWObject());
+		
+		case ShaderFamily_SolidColor:
+		{
+			SetFragmentUniform(material->GetDiffuseColor(), "g_Material.m_DiffuseColor");
+			break;
+		}
+		case ShaderFamily_Basic:
+		{
+			SetFragmentUniform(material->GetAmbientColor(), "g_Material.m_AmbientColor");
+			SetFragmentUniform(material->GetDiffuseColor(), "g_Material.m_DiffuseColor");
+			SetFragmentUniform(material->GetSpecularColor(), "g_Material.m_SpecularColor");
+			SetFragmentUniform(material->GetDiffuseTextureEnabled(), "g_Material.m_DiffuseTextureEnabled");
+			SetFragmentUniform(material->GetSpecularTextureEnabled(), "g_Material.m_SpecularTextureEnabled");
+			SetFragmentUniform(material->GetShininess(), "g_Material.m_Shininess");
+			SetFragmentUniform(material->GetUnlit(), "g_Material.m_Unlit");
+			SetFragmentUniform(material->GetEmissiveFactor(), "g_Material.m_EmissiveFactor");
+			SetFragmentUniform(material->GetIsGlass(), "g_Material.m_IsGlass");
+			SetFragmentUniform(material->GetRefractionIndex(), "g_Material.m_RefractionIndex");
+			SetFragmentUniform(material->GetReflectEnvironment(), "g_Material.m_ReflectEnvironment");
+			SetFragmentUniform(material->GetMetallic(), "g_Material.m_Metallic");
+			SetFragmentUniform(material->GetRoughness(), "g_Material.m_Roughness");
+			SetFragmentUniform(material->GetAO(), "g_Material.m_AO");
+			SetFragmentUniform(material->GetIsPBR(), "g_Material.m_IsPBR");
+
+			if (material->GetDiffuseTexture())
+			{
+				SetFragmentUniform(0, "g_Material.m_DiffuseTexture");
+				Bind2DTexture(0, material->GetDiffuseTexture()->GetHWObject());
+			}
+
+			if (material->GetSpecularTexture())
+			{
+				SetFragmentUniform(1, "g_Material.m_SpecularTexture");
+				Bind2DTexture(1, material->GetSpecularTexture()->GetHWObject());
+			}
+
+			int blinnPhongshading = m_DisplayOptions->GetBlinnPhongShading() ? 1 : 0;
+			SetFragmentUniform(blinnPhongshading, "g_BlinnPhongShading");
+
+			break;
+		}
+		case ShaderFamily_Terrain:
+		{
+			SetVertexUniform(0, "heightfieldTexture");
+			Bind2DTexture(0, material->GetHeightfieldTexture()->GetHWObject());
+		}
+		default:
+		{
+			break;
+		}
 	}
 
-	if (material->GetSpecularTexture())
-	{
-		SetFragmentUniform(1, "g_Material.m_SpecularTexture");
-		Bind2DTexture(1, material->GetSpecularTexture()->GetHWObject());
-	}
-
-	int blinnPhongshading = m_DisplayOptions->GetBlinnPhongShading() ? 1 : 0;
-	SetFragmentUniform(blinnPhongshading, "g_BlinnPhongShading");
 }
 
 void Renderer::SetPostEffectsUniforms()
@@ -591,45 +622,21 @@ void Renderer::DrawTerrain()
 		return;
 	}
 
-    std::vector<TerrainRenderingJob>& renderList = renderData->terrainRenderingJobs;
-    
-    if (!renderList.size())
-    {
-        return;
-    }
-    pPipelineBasicUV->usePipeline();
-    ProgramPipeline* activePipeline = pPipelineBasicUV;
-    
-    Mesh* terrainMesh = renderData->terrainMesh();
-    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "vpMat"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
-    glProgramUniformMatrix4fv(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "modelMatrix"), 1, false, value_ptr(glm::mat4(1.0)));
-    
-    glBindVertexArray(terrainMesh->m_VAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainMesh->m_VBOs.glidIndexBuffer);
 
-	if (m_DisplayOptions->GetWireframeRendering())
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
+	SetPipeline(m_Pipelines[ShaderFamily_Terrain]);
 
-    for (TerrainRenderingJob& job : renderList)
-    {
-        glProgramUniform2f(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, "offset"), job.start[0], job.start[1]);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, job.buffer);
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, textureMap["grass"]->glidTexture);
+	SetLightingUniforms();
+	SetViewUniforms(m_DebugCamera);
+	SetShadowMapUniforms(m_ShadowCamera);
+	SetSkyUniforms(3);
 
-        //glProgramUniform1i(activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram,glGetUniformLocation(activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram, "g_DiffuseTexture"), textureMap["grass"]->glidTexture);
+	SetPostEffectsUniforms();
+	SetDebugUniforms();
 
-		glDrawElements(terrainMesh->m_renderingMode, terrainMesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
-    }
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
 
-	if (m_DisplayOptions->GetWireframeRendering())
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-
+	RenderEntities(ShaderFamily_Terrain, m_World->GetEntities());
 }
 
 void Renderer::BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name)
@@ -830,6 +837,7 @@ case LXType_##type : \
 	if (*ptr == 0) \
 	{ \
 		ShowGUIText(name); \
+		ImGui::SameLine(); \
 		if (ImGui::Button("New")) \
 		{ \
 			type* dptr = new type(); \
@@ -945,6 +953,33 @@ bool Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 			{
 				ShowPropertyGridTemplate<BoundingBoxComponent>((BoundingBoxComponent *&)ptr, name);
 			}
+
+			break;
+		}
+
+		case LXType_ShaderFamily:
+		{
+			ShowGUIText(name);
+
+			int* intPtr = (int*)ptr;
+			ImGui::SameLine();
+			if (ImGui::Button(g_ShaderFamilyEnumValues[*intPtr].c_str()))
+				ImGui::OpenPopup("select");
+			if (ImGui::BeginPopup("select"))
+			{
+				ImGui::Text("ShaderFamily");
+				ImGui::Separator();
+				for (int i = 0; i < ShaderFamily_NumItems; i++)
+				{
+					if (ImGui::Selectable(g_ShaderFamilyEnumValues[i].c_str()))
+					{
+						*intPtr = i;
+					}
+				}
+
+				ImGui::EndPopup();
+			}
+
 
 			break;
 		}
@@ -1324,7 +1359,7 @@ void Renderer::RenderOpaque()
 		return;
 	}
 
-	SetPipeline(pPipelineBasic);
+	SetPipeline(m_Pipelines[ShaderFamily_Basic]);
 
 	SetLightingUniforms();
 	SetViewUniforms(m_DebugCamera);
@@ -1337,11 +1372,11 @@ void Renderer::RenderOpaque()
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	RenderEntities(m_World->GetEntities());
+	RenderEntities(ShaderFamily_Basic, m_World->GetEntities());
 
 	if (m_EditorOptions->GetDebugDisplay())
 	{
-		RenderEntities(m_World->GetDebugEntities());
+		RenderEntities(ShaderFamily_Basic, m_World->GetDebugEntities());
 	}
 }
 
@@ -1674,6 +1709,8 @@ void Renderer::render(World* world)
 
 	RenderOpaque();
 
+	DrawTerrain();
+
 	AfterWorldRender();
 
 	RenderHDRFramebuffer();
@@ -1681,6 +1718,24 @@ void Renderer::render(World* world)
 	RenderEditor();
 
 	FinishFrame();
+}
+
+void Renderer::RenderEntities(ShaderFamily family, std::vector<Entity*> entities)
+{
+	for (Entity* entity : entities)
+	{
+		if (!entity->GetVisible())
+		{
+			continue;
+		}
+
+		if (entity->GetModel()->GetMaterials()[0]->GetShaderFamily() != family)
+		{
+			continue;
+		}
+
+		DrawModel(entity, entity->GetModel());
+	}
 }
 
 void Renderer::RenderEntities(std::vector<Entity*> entities)

@@ -11,6 +11,18 @@ class Material;
 class Texture;
 class ProgramPipeline;
 
+enum ShaderFamily
+{
+ShaderFamily_Basic,
+ShaderFamily_SolidColor,
+ShaderFamily_Envmap,
+ShaderFamily_Terrain,
+ShaderFamily_NumItems,
+};
+
+extern const std::string g_ShaderFamilyEnumValues[4];
+const int g_ShaderFamilyEnumLength = 4;
+
 
 #pragma endregion  FORWARD_DECLARATIONS Material
 
@@ -65,8 +77,12 @@ void SetDiffuseTextureCallback(Texture* value);
 Texture*& GetSpecularTexture() { return m_SpecularTexture; }; 
 void SetSpecularTexture(Texture* value) { SetSpecularTextureCallback(value); }; 
 void SetSpecularTextureCallback(Texture* value);
+Texture*& GetHeightfieldTexture() { return m_HeightfieldTexture; }; 
+void SetHeightfieldTexture(Texture* value) { m_HeightfieldTexture = value; }; 
 ProgramPipeline*& GetProgramPipeline() { return m_ProgramPipeline; }; 
 void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; }; 
+const ShaderFamily& GetShaderFamily() { return m_ShaderFamily; }; 
+void SetShaderFamily(ShaderFamily value) { m_ShaderFamily = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -88,9 +104,11 @@ bool m_IsGlass;
 bool m_ReflectEnvironment;
 Texture* m_DiffuseTexture;
 Texture* m_SpecularTexture;
+Texture* m_HeightfieldTexture;
 ProgramPipeline* m_ProgramPipeline;
+ShaderFamily m_ShaderFamily;
 public:
-static const int g_PropertyCount = 21;
+static const int g_PropertyCount = 23;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MaterialPIDX
@@ -115,17 +133,11 @@ PIDX_IsGlass,
 PIDX_ReflectEnvironment,
 PIDX_DiffuseTexture,
 PIDX_SpecularTexture,
+PIDX_HeightfieldTexture,
 PIDX_ProgramPipeline,
+PIDX_ShaderFamily,
 };
 bool Serialize(bool writing);
-enum ShaderFamily
-{
-Basic,
-SolidColor,
-};
-
-static const std::string g_ShaderFamilyEnumValues[2];
-
 
 #pragma endregion  HEADER Material
 

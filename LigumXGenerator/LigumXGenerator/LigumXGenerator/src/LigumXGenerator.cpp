@@ -151,6 +151,15 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			}
 			else
 			{
+				for (LXEnum& anEnum : currentClass.m_Enums)
+				{
+					if (tokens[0] == anEnum.m_Name)
+					{
+						varPropertyFlags &= PropertyFlags_Enum;
+						break;
+					}
+				}
+
 				variable.m_Name = tokens[1];;
 				variable.SetType(tokens[0]);
 

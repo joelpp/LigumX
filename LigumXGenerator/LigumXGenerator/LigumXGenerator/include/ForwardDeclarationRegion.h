@@ -74,10 +74,32 @@ public:
 	}
 
 
+	void WriteEnums()
+	{
+		for (LXEnum& anEnum : m_Class.m_Enums)
+		{
+			WriteLine("enum " + anEnum.m_Name);
+			WriteLine("{");
+
+			for (std::string& name : anEnum.m_Values)
+			{
+				WriteLine(anEnum.m_Name + "_" + name + ",");
+			}
+			WriteLine("ShaderFamily_NumItems,");
+			WriteLine("};");
+			WriteLine("");
+
+			WriteLine("extern const std::string g_" + anEnum.m_Name + "EnumValues[" + std::to_string(anEnum.m_Values.size()) + "];");
+			WriteLine("const int g_" + anEnum.m_Name + "EnumLength = " + std::to_string(anEnum.m_Values.size()) + ";");
+
+			WriteLine("");
+		}
+	}
 	void Process()
 	{
 		// Write class header region
 		WriteHeader();
+		WriteEnums();
 
 		WriteFooter();
 

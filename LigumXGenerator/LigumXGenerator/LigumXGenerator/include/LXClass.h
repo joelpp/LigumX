@@ -19,6 +19,7 @@ enum PropertyFlags
 	PropertyFlags_Transient			= 32,
 	PropertyFlags_NonEditable		= 64,
 	PropertyFlags_Adder				= 128,
+	PropertyFlags_Enum				= 256,
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;
