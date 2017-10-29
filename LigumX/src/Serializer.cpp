@@ -4,7 +4,7 @@
 #include "PostEffects.h"
 #include "Camera.h"
 #include "Model.h"
-#include "DefaultMeshes.h"
+#include "DefaultObjects.h"
 #include "Material.h"
 #include "Component.h"
 #include "Entity.h"
@@ -405,7 +405,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 
 			if (hardcodedId)
 			{
-				val = g_DefaultMeshes->GetMeshFromID(objectID);
+				val = g_DefaultObjects->GetMeshFromID(objectID);
 			}
 			else
 			{

@@ -160,7 +160,7 @@
     <ClCompile Include="src\callbacks.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\Component.cpp" />
-    <ClCompile Include="src\DefaultMeshes.cpp" />
+    <ClCompile Include="src\DefaultObjects.cpp" />
     <ClCompile Include="src\DisplayOptions.cpp" />
     <ClCompile Include="src\EditorOptions.cpp" />
     <ClCompile Include="src\EngineStats.cpp" />
@@ -250,7 +250,7 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\CurlRequest.h" />
-    <ClInclude Include="src\DefaultMeshes.h" />
+    <ClInclude Include="src\DefaultObjects.h" />
     <ClInclude Include="src\DisplayOptions.h" />
     <ClInclude Include="src\EditorOptions.h" />
     <ClInclude Include="src\EngineStats.h" />

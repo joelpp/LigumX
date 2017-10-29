@@ -15,7 +15,7 @@
 #include "GL.h"
 #include "Texture.h"
 #include "Mesh.h"
-#include "DefaultMeshes.h"
+#include "DefaultObjects.h"
 
 #pragma region  CLASS_SOURCE World
 
@@ -33,6 +33,7 @@ const ClassPropertyData World::g_Properties[] =
 bool World::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
+	PostSerialization(writing);
 return success;
 }
 
@@ -47,52 +48,14 @@ World::World()
 
 }
 
-void World::InitTestWorld()
+
+
+void World::PostSerialization(bool writing)
 {
-
-
-	// light 1
-	//if (false)
+	if (!writing)
 	{
-		Entity* pointLightEntity = new Entity();
-		pointLightEntity->SetName("PointLight");
-		pointLightEntity->SetPosition(glm::vec3(7.f, 11.f, 13.8f));
-		pointLightEntity->SetScale(glm::vec3(2, 2, 2));
-		pointLightEntity->SetIsLight(true);
-
-		Material* material = new Material();
-		material->SetShininess(1.0f);
-		material->SetDiffuseColor(glm::vec3(1, 0, 0));
-		material->SetUnlit(true);
-		material->SetEmissiveFactor(1.0f);
-
-		Model* cubeModel = new Model(g_DefaultMeshes->DefaultCubeMesh, material);
-		cubeModel->SetName("CubeLightModel");
-		pointLightEntity->SetModel(cubeModel);
-
-		m_Entities.push_back(pointLightEntity);
+		m_Entities.push_back(g_DefaultObjects->DefaultManipulatorEntity);
 	}
-
-	// sphere
-	//if (false)
-	{
-		Entity* sphereEntity = new Entity();
-		sphereEntity->SetName("Sphere");
-		sphereEntity->SetPosition(glm::vec3(0.f, 7.f, 10.f));
-		sphereEntity->SetScale(glm::vec3(2, 2, 2));
-
-		Material* material = new Material();
-		material->SetShininess(1.0f);
-		material->SetDiffuseColor(glm::vec3(1,1, 1));
-
-		Model* sphereModel = new Model(g_DefaultMeshes->DefaultSphereMesh, material);
-		sphereModel->SetName("SphereModel");
-
-		sphereEntity->SetModel(sphereModel);
-
-		m_Entities.push_back(sphereEntity);
-	}
-
 }
 
 World::World(float sectorSize)

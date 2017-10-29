@@ -26,10 +26,16 @@ unsigned int rand_interval(unsigned int min, unsigned int max)
 
 ObjectManager::ObjectManager()
 {
-	m_NextHardcodedID = StartHardcodedIDs;
+	m_NextHardcodedID	= StartHardcodedIDs;
+
 	DefaultSphereMeshID = m_NextHardcodedID++;
-	DefaultQuadMeshID = m_NextHardcodedID++;
-	DefaultCubeMeshID = m_NextHardcodedID++;
+	DefaultQuadMeshID	= m_NextHardcodedID++;
+	DefaultCubeMeshID	= m_NextHardcodedID++;
+
+	DefaultRedMaterialID = m_NextHardcodedID++;
+
+	DefaultCubeModelID = m_NextHardcodedID++;
+	DefaultManipulatorEntityID = m_NextHardcodedID++;
 
 	m_SupportedTypes.push_back(LXType_Texture);
 	m_SupportedTypes.push_back(LXType_Mesh);

@@ -78,7 +78,7 @@ void LigumX::init()
 	m_Renderer->SetObjectID(28763);
 	m_Renderer->Serialize(false);
 
-	g_DefaultMeshes = new DefaultMeshes();
+	g_DefaultObjects = new DefaultObjects();
 	g_EngineStats = new EngineStats();
 
 	SetCallbacks();
@@ -263,7 +263,7 @@ static void test_error_cb (int error, const char *description)
 void LigumX::SetCallbacks(){
     Renderer& renderer = Renderer::GetInstance();
     glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
-    //glfwSetKeyCallback( renderer.pWindow, HandleKeyboardInput);
+    glfwSetKeyCallback( renderer.pWindow, HandleKeyboardInput);
     //glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
     glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
     glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );

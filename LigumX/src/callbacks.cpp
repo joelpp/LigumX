@@ -43,6 +43,7 @@ void flipBool(bool& value)
 
 void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
+	
     // send event to entity Manager (temporary before a playerInput class)
 	LigumX& game = LigumX::GetInstance();
 
@@ -76,8 +77,14 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		{
 			game.world->m_sectorManager->setLoadNewSectors(game.world->m_sectorManager->getLoadNewSectors());
 		}
-
     }
+
+	if (action == GLFW_PRESS || action == GLFW_RELEASE)
+	{
+		float add = 2.f * (int)(action == GLFW_PRESS) - 1;
+		m_Renderer->AddToXYZMask(add * glm::vec3(key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z));
+	}
+
 	m_Renderer->GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
 
 	ImGui_ImplGlfwGL3_KeyCallback(pWindow, key, scancode, action, mods);
@@ -87,26 +94,23 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 {
 	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow();
         // Left-click
-        if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS){
-             double x,y;
-             glfwGetCursorPos(pWindow, &x, &y);
-            // vec2 worldPos = LigumX::GetInstance().windowPosToWorldPos(vec2(x,y));
-            // int index = 0;
-            // std::vector<Way*> closests;
-            // std::vector<double> distances;
-            // std::vector<vec2> directions;
-            // vector<std::pair<Node*, Node*>> nodePairs;
-            // int filter = OSMElement::CONTOUR;
-            // TIME(closests = LigumX::GetInstance().findNClosestWays(2, worldPos, filter, distances, directions, nodePairs));
+        if (button == GLFW_MOUSE_BUTTON_1)
+		{
+			double x, y;
+			glfwGetCursorPos(pWindow, &x, &y);
 
-            // if (closests[0] == NULL) return;
-            // TIME(LigumX::GetInstance().updateSelectedWay(closests[0]));
-            // PRINTELEMENTVECTOR(closests);
-
-			 if (!caughtByImgui)
-			 {
-				 m_Renderer->SetMouseClickPosition(glm::vec2(x, y));
-			 }
+			if (!caughtByImgui)
+			{
+				if (action == GLFW_PRESS)
+				{
+					m_Renderer->SetMouseButton1Down(true);
+					m_Renderer->SetMouseClickPosition(glm::vec2(x, y));
+				}
+				else if (action == GLFW_RELEASE)
+				{
+					m_Renderer->SetMouseButton1Down(false);
+				}
+			}
         }
         //Right Click
         else if (button == GLFW_MOUSE_BUTTON_2){
@@ -125,19 +129,14 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 
 void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 {
-        if (false)
+        if (true)
 		{
 
             double x; double y;
             glfwGetCursorPos(pWindow, &x, &y);
-            vec2 offset = vec2(x,y) - LigumX::GetInstance().oldMousePosition;
-            offset.y *= -1; // reversed controls? this should be an option
 
-			m_Renderer->GetDebugCamera()->translateBy(vec3(offset/1000.f,0));
-			//m_Renderer->m_ShadowCamera->translateBy(vec3(offset / 1000.f, 0));
-
-			LigumX::GetInstance().oldMousePosition = vec2(x, y);
-
+			m_Renderer->SetMousePosition(glm::vec2(x, y));
         }
+
 		m_Renderer->GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);
 }

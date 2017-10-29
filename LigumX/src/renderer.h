@@ -36,6 +36,7 @@ class Camera;
 
 class Framebuffer;
 class SunLight;
+class BoundingBoxComponent;
 
 class Renderer;
 extern Renderer* g_Instance;
@@ -105,6 +106,15 @@ PostEffects*& GetPostEffects() { return m_PostEffects; };
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
 const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
 void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; }; 
+const glm::vec2& GetLastMousePosition() { return m_LastMousePosition; }; 
+void SetLastMousePosition(glm::vec2 value) { m_LastMousePosition = value; }; 
+const glm::vec2& GetMousePosition() { return m_MousePosition; }; 
+void SetMousePosition(glm::vec2 value) { m_MousePosition = value; }; 
+const bool& GetMouseButton1Down() { return m_MouseButton1Down; }; 
+void SetMouseButton1Down(bool value) { m_MouseButton1Down = value; }; 
+const glm::vec3& GetXYZMask() { return m_XYZMask; }; 
+void SetXYZMask(glm::vec3 value) { m_XYZMask = value; }; 
+void AddToXYZMask(glm::vec3 value) { m_XYZMask += value; };
 Camera*& GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
@@ -114,9 +124,13 @@ DisplayOptions* m_DisplayOptions;
 EditorOptions* m_EditorOptions;
 PostEffects* m_PostEffects;
 glm::vec2 m_MouseClickPosition;
+glm::vec2 m_LastMousePosition;
+glm::vec2 m_MousePosition;
+bool m_MouseButton1Down;
+glm::vec3 m_XYZMask;
 Camera* m_DebugCamera;
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
@@ -127,6 +141,10 @@ PIDX_DisplayOptions,
 PIDX_EditorOptions,
 PIDX_PostEffects,
 PIDX_MouseClickPosition,
+PIDX_LastMousePosition,
+PIDX_MousePosition,
+PIDX_MouseButton1Down,
+PIDX_XYZMask,
 PIDX_DebugCamera,
 };
 bool Serialize(bool writing);
@@ -254,6 +272,7 @@ public:
     ProgramPipeline* pPipelineBasicUV;
 	ProgramPipeline* pPipelineShadowMap;
 	ProgramPipeline* pPipelineUVEdges;
+	ProgramPipeline* pPipelineSolidColor;
 	ProgramPipeline* activePipeline;
     std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 
@@ -380,6 +399,10 @@ public:
 private:
     REGISTERCLASS(Renderer);
 
+	void DrawBoundingBox(BoundingBoxComponent* bb);
+	void DrawManipulator(Entity* entity);
+
+
 	void RenderEditor();
 	void RenderPickedEntity();
 	void RenderAABB(const AABB& aabb);
@@ -461,9 +484,13 @@ private:
 
 	Material* m_TempMaterial;
 	Entity* m_TempEntity;
+
+	Entity* m_ManipulatorEntity;
 	int m_TempObjectID;
 
 	void BackupData();
+
+	bool manipulatorDragging;
 
 };
 

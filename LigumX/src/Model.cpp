@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "Material.h"
 #include "program_pipeline.h"
-#include "DefaultMeshes.h"
+#include "DefaultObjects.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 #pragma region  CLASS_SOURCE Model
@@ -76,7 +76,7 @@ void Model::PostSerialization(bool writing)
 			std::string filenameCopy = StringUtils::RemoveSubstrings(m_Filename, list);
 
 			int hardcodedMeshID = std::atoi(filenameCopy.c_str());
-			Mesh* mesh = g_DefaultMeshes->GetMeshFromID(hardcodedMeshID);
+			Mesh* mesh = g_DefaultObjects->GetMeshFromID(hardcodedMeshID);
 			m_meshes.push_back(mesh);
 		}
 		else
@@ -128,7 +128,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 		Mesh* mesh = processMesh(assimpMesh, scene);
 
 		addMesh(mesh);
-		//addMesh(g_DefaultMeshes->DefaultQuadMesh, material);
+		//addMesh(g_DefaultObjects->DefaultQuadMesh, material);
     }
     // Then do the same for each of its children
     for(GLuint i = 0; i < node->mNumChildren; i++)

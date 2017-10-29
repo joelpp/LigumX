@@ -13,7 +13,7 @@
 #include "Settings.h"
 #include "PostEffects.h"
 #include "Sunlight.h"
-#include "DefaultMeshes.h"
+#include "DefaultObjects.h"
 #include "GL.h"
 #include "Framebuffer.h"
 #include "BoundingBoxComponent.h"
@@ -32,7 +32,11 @@ const ClassPropertyData Renderer::g_Properties[] =
 { "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
 { "EditorOptions", PIDX_EditorOptions, offsetof(Renderer, m_EditorOptions), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
 { "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
-{ "MouseClickPosition", PIDX_MouseClickPosition, offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
+{ "MouseClickPosition", PIDX_MouseClickPosition, offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "LastMousePosition", PIDX_LastMousePosition, offsetof(Renderer, m_LastMousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "MousePosition", PIDX_MousePosition, offsetof(Renderer, m_MousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "MouseButton1Down", PIDX_MouseButton1Down, offsetof(Renderer, m_MouseButton1Down), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "XYZMask", PIDX_XYZMask, offsetof(Renderer, m_XYZMask), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
 { "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_Camera, true, LXType_None, 0, 0, 0, }, 
 };
 bool Renderer::Serialize(bool writing)
@@ -255,6 +259,7 @@ void Renderer::Initialize()
 	// 
 	m_TempMaterial = new Material();
 	m_TempEntity = new Entity();
+
 }
 
 void Renderer::Shutdown()
@@ -1249,6 +1254,7 @@ void Renderer::RenderImgui()
 		ShowObjectCreator<Entity>();
 		ShowObjectCreator<Texture>();
 		ShowObjectCreator<Material>();
+		ShowObjectCreator<Model>();
 
 		EndImGUIWindow();
 	}
@@ -1386,7 +1392,6 @@ void Renderer::RenderPicking()
 	SetPipeline(pPipelinePicking);
 
 	BindFramebuffer(FramebufferType_Picking);
-	//GL::ClearColorBuffer();
 	GL::ClearColorAndDepthBuffers();
 
 	SetViewUniforms(m_DebugCamera);
@@ -1431,21 +1436,51 @@ void Renderer::RenderPicking()
 
 	m_PickedColor[0] = output;
 
-	if (m_LastMouseClickPosition != m_MouseClickPosition)
+	//if (m_LastMousePosition != m_MousePosition)
 	{
-		// search for picked entity
-		for (Entity* entity : m_World->GetEntities())
+		glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
+
+		manipulatorDragging &= m_MouseButton1Down;
+
+		if (manipulatorDragging)
 		{
-			// todo : proper int rendertarget; how does depth work then? do we care?
-			if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+			float distance = screenDistance.x / 10.f;
+			glm::vec3 toAdd = distance * m_XYZMask;
+			m_PickedEntity->AddToPosition(toAdd);
+		}
+		else
+		{
+			if (m_LastMouseClickPosition != m_MouseClickPosition)
 			{
-				m_PickedEntity = entity;
-				break;
+				for (Entity* entity : m_World->GetEntities())
+				{
+					// todo : proper int rendertarget; how does depth work then? do we care?
+					if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+					{
+						if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
+						{
+							manipulatorDragging = true;
+						}
+						else
+						{
+							m_PickedEntity = entity;
+						}
+						break;
+					}
+				}
 			}
+
+		}
+
+		// todo : this should be controlled by ManipulatorComponent
+		if (m_PickedEntity)
+		{
+			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
 		}
 
 		// Update last click position
 		m_LastMouseClickPosition = m_MouseClickPosition;
+		m_LastMousePosition = m_MousePosition;
 	}
 
 
@@ -1532,8 +1567,42 @@ void Renderer::RenderAABB(const AABB& aabb)
 	
 	SetViewUniforms(m_DebugCamera);
 
-	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
+	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
+}
+
+void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	SetPipeline(pPipelineUVEdges);
+
+	SetViewUniforms(m_DebugCamera);
+	SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+
+	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
+	DrawMesh(mesh);
+
+	glDisable(GL_BLEND);
+}
+
+void Renderer::DrawManipulator(Entity* entity)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	SetPipeline(pPipelineSolidColor);
+
+	SetViewUniforms(m_DebugCamera);
+	SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+	SetFragmentUniform(glm::vec3(1,0,0), "g_InputColor");
+
+
+	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
+	DrawMesh(mesh);
+
+	glDisable(GL_BLEND);
 }
 
 
@@ -1543,23 +1612,16 @@ void Renderer::RenderPickedEntity()
 	{
 		return;
 	}
-	BoundingBoxComponent* bb = (BoundingBoxComponent*) m_PickedEntity->GetComponent<BoundingBoxComponent>();
 
+
+	BoundingBoxComponent* bb = (BoundingBoxComponent*) m_PickedEntity->GetComponent<BoundingBoxComponent>();
 	if (bb)
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		SetPipeline(pPipelineUVEdges);
-
-		SetViewUniforms(m_DebugCamera);
-		SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
-
-		Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
-		DrawMesh(mesh);
-
-		glDisable(GL_BLEND);
+		DrawBoundingBox(bb);
 	}
+
+	//DrawManipulator(m_PickedEntity);
+
 }
 
 void Renderer::RenderEditor()
@@ -1605,7 +1667,6 @@ void Renderer::RenderEntities(std::vector<Entity*> entities)
 	{
 		if (!entity->GetVisible())
 		{
-
 			continue;
 		}
 
@@ -1677,7 +1738,7 @@ void Renderer::RenderSky()
 
 	SetViewUniforms(m_DebugCamera);
 
-	Mesh* mesh = g_DefaultMeshes->DefaultCubeMesh;
+	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
 
 	GL::ClearDepthBuffer();

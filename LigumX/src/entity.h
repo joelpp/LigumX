@@ -39,6 +39,7 @@ const bool& GetVisible() { return m_Visible; };
 void SetVisible(bool value) { m_Visible = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
+void AddToPosition(glm::vec3 value) { m_Position += value; };
 const float& GetRotationAngle() { return m_RotationAngle; }; 
 void SetRotationAngle(float value) { m_RotationAngle = value; }; 
 const glm::vec3& GetRotationAxis() { return m_RotationAxis; }; 

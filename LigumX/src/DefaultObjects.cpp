@@ -1,11 +1,13 @@
-#include "DefaultMeshes.h"
+#include "DefaultObjects.h"
+#include "Entity.h"
+#include "Material.h"
 #include "Mesh.h"
 #include "Model.h"
 #include "ObjectManager.h"
 
-DefaultMeshes* g_DefaultMeshes;
+DefaultObjects* g_DefaultObjects;
 
-void DefaultMeshes::InitializeDefaultCube()
+void DefaultObjects::InitializeDefaultCube()
 {
 	//	DefaultCubeMesh = new Mesh();
 	//
@@ -91,7 +93,7 @@ void DefaultMeshes::InitializeDefaultCube()
 }
 
 
-void DefaultMeshes::InitializeDefaultQuad()
+void DefaultObjects::InitializeDefaultQuad()
 {
 	DefaultQuadMesh = new Mesh();
 
@@ -132,7 +134,7 @@ void DefaultMeshes::InitializeDefaultQuad()
 	g_ObjectManager->AddObject(LXType_Mesh, DefaultQuadMesh);
 }
 
-void DefaultMeshes::InitializeDefaultSphere()
+void DefaultObjects::InitializeDefaultSphere()
 {
 	Model* testModel = new Model("sphere/sphere.obj");
 	testModel->loadModel();
@@ -143,15 +145,17 @@ void DefaultMeshes::InitializeDefaultSphere()
 	g_ObjectManager->AddObject(LXType_Mesh, DefaultSphereMesh);
 }
 
-DefaultMeshes::DefaultMeshes()
+DefaultObjects::DefaultObjects()
 {
 	InitializeDefaultQuad();
 	InitializeDefaultSphere();
 	InitializeDefaultCube();
+
+	InitializeManipulator();
 }
 
 
-Mesh* DefaultMeshes::GetMeshFromID(int id)
+Mesh* DefaultObjects::GetMeshFromID(int id)
 {
 	if (!g_ObjectManager->IsHardcodedID(id))
 	{
@@ -172,4 +176,26 @@ Mesh* DefaultMeshes::GetMeshFromID(int id)
 	}
 
 	return nullptr;
+}
+
+void DefaultObjects::InitializeManipulator()
+{
+	DefaultManipulatorEntity = new Entity();
+	DefaultManipulatorEntity->SetObjectID(g_ObjectManager->DefaultManipulatorEntityID);
+	DefaultManipulatorEntity->SetName("Manipulator Entity");
+	DefaultManipulatorEntity->SetPickingID(0.15f);
+	DefaultManipulatorEntity->SetVisible(true);
+
+	DefaultRedMaterial = new Material();
+	DefaultRedMaterial->SetName("Default red material");
+	DefaultRedMaterial->SetObjectID(g_ObjectManager->DefaultRedMaterialID);
+	DefaultRedMaterial->SetDiffuseColor(glm::vec3(1, 0, 0));
+	DefaultRedMaterial->SetUnlit(true);
+
+	DefaultCubeModel = new Model();
+	DefaultCubeModel->SetName("Default cube model");
+	DefaultCubeModel->SetObjectID(g_ObjectManager->DefaultCubeModelID);
+	DefaultCubeModel->addMesh(DefaultCubeMesh, DefaultRedMaterial);
+
+	DefaultManipulatorEntity->SetModel(DefaultCubeModel);
 }

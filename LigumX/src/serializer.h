@@ -19,6 +19,12 @@ public:
 	template <typename T>
 	void SerializeObjectOut(T* object, std::fstream& objectStream)
 	{
+		bool hardcodedId = g_ObjectManager->IsHardcodedID(object->GetObjectID());
+		if (hardcodedId)
+		{
+			return;
+		}
+
 		for (int i = 0; i < object->g_PropertyCount; ++i)
 		{
 			const ClassPropertyData& propertyData = object->g_Properties[i];

@@ -162,9 +162,6 @@
     <ClCompile Include="src\Serializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DefaultMeshes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\EditorOptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -175,6 +172,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\StringUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DefaultObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -428,9 +428,6 @@
     <ClInclude Include="src\serializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DefaultMeshes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\EditorOptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -441,6 +438,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DefaultObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

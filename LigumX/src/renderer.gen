@@ -4,6 +4,17 @@ class Renderer
 	DisplayOptions* DisplayOptions
 	EditorOptions* EditorOptions
 	PostEffects* PostEffects
+
+	[transient]
 	glm::vec2 MouseClickPosition
+	[transient]
+	glm::vec2 LastMousePosition
+	[transient]
+	glm::vec2 MousePosition
+	[transient]
+	bool MouseButton1Down
+	[transient, adder]
+	glm::vec3 XYZMask;
+
 	Camera* DebugCamera;
 }

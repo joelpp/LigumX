@@ -40,6 +40,10 @@ public:
 	ObjectID DefaultQuadMeshID;
 	ObjectID DefaultCubeMeshID;
 
+	ObjectID DefaultManipulatorEntityID;
+	ObjectID DefaultCubeModelID;
+	ObjectID DefaultRedMaterialID;
+
 	ObjectPtr FindObjectByID(ObjectID id, LXType type, bool createIfNotFound);
 	bool AddObject(ObjectID id, LXType type, ObjectPtr ptr);
 
