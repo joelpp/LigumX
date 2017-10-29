@@ -801,6 +801,7 @@ bool Renderer::ShowEditableProperty(int* ptr, const char* name)
 	return changed;
 }
 
+template <typename T>
 void Renderer::ShowProperty(std::map<int, char*>* map, const char* name)
 {
 	ImGui::PushID(name);
@@ -808,7 +809,7 @@ void Renderer::ShowProperty(std::map<int, char*>* map, const char* name)
 	{
 		for (auto it = map->begin(); it != map->end(); ++it)
 		{
-			Texture* tex = (Texture*)it->second;
+			T* tex = (T*)it->second;
 			std::string label = tex->GetName() + " [" + std::to_string(it->first) + "]";
 			ShowPropertyGridTemplate(tex, label.c_str());
 		}
@@ -1018,7 +1019,7 @@ void Renderer::ShowPropertyGridObject(T*& object, const char* name)
 					// rename ObjectManager to just ObjectManager?
 					if (ShowEditableProperty(&objectID, propertyData.m_Name))
 					{
-						ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, LXType_Texture, false);
+						ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, T::Type, false);
 						T* dptr = nullptr;
 						if (loadedObject == nullptr)
 						{
@@ -1218,7 +1219,7 @@ void Renderer::RenderImgui()
 		if (m_PickedEntity)
 		{
 			int i = 0;
-			for (Material* material : m_PickedEntity->GetModel()->GetMaterials())
+			for (Material*& material : m_PickedEntity->GetModel()->GetMaterials())
 			{
 				ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
 			}
@@ -1256,9 +1257,9 @@ void Renderer::RenderImgui()
 	{
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Manager");
 
-		ShowProperty(g_ObjectManager->GetObjects(LXType_Texture), "Textures");
-		ShowProperty(g_ObjectManager->GetObjects(LXType_Mesh), "Meshes");
-		ShowProperty(g_ObjectManager->GetObjects(LXType_Material), "Materials");
+		ShowProperty<Texture>(g_ObjectManager->GetObjects(LXType_Texture), "Textures");
+		ShowProperty<Mesh>(g_ObjectManager->GetObjects(LXType_Mesh), "Meshes");
+		ShowProperty<Material>(g_ObjectManager->GetObjects(LXType_Material), "Materials");
 
 		EndImGUIWindow();
 	}

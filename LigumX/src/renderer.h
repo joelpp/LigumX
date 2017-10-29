@@ -432,6 +432,8 @@ private:
 	void ShowProperty(float* value, const char* name, float min, float max);
 	void ShowProperty(glm::vec3* value, const char* name, float min, float max);
 	void ShowProperty(std::string* value, const char* name);
+
+	template <typename T>
 	void ShowProperty(std::map<int, char *>* map, const char* name);
 
 	bool ShowEditableProperty(int* value, const char* name);
