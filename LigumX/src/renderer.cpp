@@ -1338,6 +1338,11 @@ void Renderer::RenderOpaque()
 	glDrawBuffers(2, attachments);
 
 	RenderEntities(m_World->GetEntities());
+
+	if (m_EditorOptions->GetDebugDisplay())
+	{
+		RenderEntities(m_World->GetDebugEntities());
+	}
 }
 
 void Renderer::RenderTextureOverlay()
@@ -1406,7 +1411,21 @@ void Renderer::RenderPicking()
 			DrawMesh(entity->GetModel()->m_meshes[i]);
 		}
 	}
-	
+
+	if (m_EditorOptions->GetDebugDisplay())
+	{
+		for (Entity* entity : m_World->GetDebugEntities())
+		{
+			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+			SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+
+			for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
+			{
+				DrawMesh(entity->GetModel()->m_meshes[i]);
+			}
+		}
+	}
+
 	BindFramebuffer(FramebufferType_Default);
 
 	SetPipeline(pPipelinePickingCompute);
@@ -1436,7 +1455,7 @@ void Renderer::RenderPicking()
 
 	m_PickedColor[0] = output;
 
-	//if (m_LastMousePosition != m_MousePosition)
+	//if (m_PickedEntity)
 	{
 		glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
 
@@ -1452,7 +1471,7 @@ void Renderer::RenderPicking()
 		{
 			if (m_LastMouseClickPosition != m_MouseClickPosition)
 			{
-				for (Entity* entity : m_World->GetEntities())
+				for (Entity* entity : m_World->GetDebugEntities())
 				{
 					// todo : proper int rendertarget; how does depth work then? do we care?
 					if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
@@ -1461,10 +1480,15 @@ void Renderer::RenderPicking()
 						{
 							manipulatorDragging = true;
 						}
-						else
-						{
-							m_PickedEntity = entity;
-						}
+					}
+				}
+
+				for (Entity* entity : m_World->GetEntities())
+				{
+					// todo : proper int rendertarget; how does depth work then? do we care?
+					if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+					{
+						m_PickedEntity = entity;
 						break;
 					}
 				}

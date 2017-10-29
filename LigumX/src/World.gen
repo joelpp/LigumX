@@ -3,4 +3,9 @@ class World
 {
 	SunLight* SunLight;
 	std::vector<Entity> Entities;
+
+	[transient]
+	std::vector<Entity> DebugEntities;
+
+
 }

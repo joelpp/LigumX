@@ -19,12 +19,6 @@ public:
 	template <typename T>
 	void SerializeObjectOut(T* object, std::fstream& objectStream)
 	{
-		bool hardcodedId = g_ObjectManager->IsHardcodedID(object->GetObjectID());
-		if (hardcodedId)
-		{
-			return;
-		}
-
 		for (int i = 0; i < object->g_PropertyCount; ++i)
 		{
 			const ClassPropertyData& propertyData = object->g_Properties[i];
@@ -127,6 +121,12 @@ public:
 	template<typename T>
 	bool SerializeObject(T* object, bool writing)
 	{
+		bool hardcodedId = g_ObjectManager->IsHardcodedID(object->GetObjectID());
+		if (writing && hardcodedId)
+		{
+			return false;
+		}
+
 		std::string basePath = g_PathObjects;
 		std::string fileName = object->ClassName + std::string("_") + std::to_string(object->GetObjectID()) + ".LXobj";
 

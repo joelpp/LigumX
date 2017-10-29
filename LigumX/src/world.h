@@ -65,13 +65,16 @@ SunLight*& GetSunLight() { return m_SunLight; };
 void SetSunLight(SunLight* value) { m_SunLight = value; }; 
 std::vector<Entity*>& GetEntities() { return m_Entities; }; 
 void SetEntities(std::vector<Entity*> value) { m_Entities = value; }; 
+std::vector<Entity*>& GetDebugEntities() { return m_DebugEntities; }; 
+void SetDebugEntities(std::vector<Entity*> value) { m_DebugEntities = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 SunLight* m_SunLight;
 std::vector<Entity*> m_Entities;
+std::vector<Entity*> m_DebugEntities;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WorldPIDX
@@ -80,6 +83,7 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_SunLight,
 PIDX_Entities,
+PIDX_DebugEntities,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing);

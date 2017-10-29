@@ -9,4 +9,5 @@ class EditorOptions
 	bool ShowTestGUI;
 	bool ShowObjectManager;
 	bool BackupDataOnSave;
+	bool DebugDisplay;
 }

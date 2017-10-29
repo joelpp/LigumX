@@ -29,6 +29,7 @@ const ClassPropertyData World::g_Properties[] =
 { "Name", PIDX_Name, offsetof(World, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
 { "Entities", PIDX_Entities, offsetof(World, m_Entities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
+{ "DebugEntities", PIDX_DebugEntities, offsetof(World, m_DebugEntities), 0, LXType_stdvector, false, LXType_Entity, PropertyFlags_Transient, 0, 0, }, 
 };
 bool World::Serialize(bool writing)
 {
@@ -54,7 +55,7 @@ void World::PostSerialization(bool writing)
 {
 	if (!writing)
 	{
-		m_Entities.push_back(g_DefaultObjects->DefaultManipulatorEntity);
+		m_DebugEntities.push_back(g_DefaultObjects->DefaultManipulatorEntity);
 	}
 }
 
@@ -259,6 +260,10 @@ std::vector<Way*> World::getAllContourLines(SectorList* sectors)
 void World::Update()
 {
 	for (Entity* entity : m_Entities)
+	{
+		entity->Update(0);
+	}
+	for (Entity* entity : m_DebugEntities)
 	{
 		entity->Update(0);
 	}
