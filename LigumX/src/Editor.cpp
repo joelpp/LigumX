@@ -115,3 +115,9 @@ void Editor::RenderPicking()
 
 
 }
+
+
+void Editor::Render()
+{
+	RenderPicking();
+}

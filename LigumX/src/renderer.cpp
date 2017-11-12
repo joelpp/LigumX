@@ -1545,6 +1545,8 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 			}
 		}
 	}
+
+	BindFramebuffer(FramebufferType_Default);
 }
 
 
@@ -1780,6 +1782,10 @@ void Renderer::RenderEditor()
 		return;
 	}
 
+	g_Editor->Render();
+
+	GL::SetViewport(windowWidth, windowHeight);
+
 	RenderImgui();
 
 	RenderFPS();
@@ -1791,7 +1797,7 @@ void Renderer::render(World* world)
 {
 	BeginFrame(world);
 
-	g_Editor->RenderPicking();
+	//g_Editor->RenderPicking();
 
 	RenderShadowMap();
 

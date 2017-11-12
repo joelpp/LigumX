@@ -89,4 +89,6 @@ Editor(int ObjectID);
 
 void RenderPicking();
 
+void Render();
+
 };
