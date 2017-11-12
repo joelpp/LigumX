@@ -51,8 +51,17 @@ void SetXYZMask(glm::vec3 value) { m_XYZMask = value; };
 void AddToXYZMask(glm::vec3 value) { m_XYZMask += value; };
 Entity*& GetPickedEntity() { return m_PickedEntity; }; 
 void SetPickedEntity(Entity* value) { m_PickedEntity = value; }; 
+const glm::vec3& GetPickedWorldPosition() { return m_PickedWorldPosition; }; 
+void SetPickedWorldPosition(glm::vec3 value) { m_PickedWorldPosition = value; }; 
 const bool& GetManipulatorDragging() { return m_ManipulatorDragging; }; 
 void SetManipulatorDragging(bool value) { m_ManipulatorDragging = value; }; 
+const glm::vec2& GetMouseDragDistance() { return m_MouseDragDistance; }; 
+void SetMouseDragDistance(glm::vec2 value) { m_MouseDragDistance = value; }; 
+const glm::ivec2& GetPickedTexelOffset() { return m_PickedTexelOffset; }; 
+void SetPickedTexelOffset(glm::ivec2 value) { m_PickedTexelOffset = value; }; 
+const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
+void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; }; 
+void AddToTerrainBrushSize(float value) { m_TerrainBrushSize += value; };
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 private:
@@ -66,10 +75,14 @@ glm::vec2 m_MousePosition;
 bool m_MouseButton1Down;
 glm::vec3 m_XYZMask;
 Entity* m_PickedEntity;
+glm::vec3 m_PickedWorldPosition;
 bool m_ManipulatorDragging;
+glm::vec2 m_MouseDragDistance;
+glm::ivec2 m_PickedTexelOffset;
+float m_TerrainBrushSize;
 int m_PickingBufferSize;
 public:
-static const int g_PropertyCount = 12;
+static const int g_PropertyCount = 16;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -84,7 +97,11 @@ PIDX_MousePosition,
 PIDX_MouseButton1Down,
 PIDX_XYZMask,
 PIDX_PickedEntity,
+PIDX_PickedWorldPosition,
 PIDX_ManipulatorDragging,
+PIDX_MouseDragDistance,
+PIDX_PickedTexelOffset,
+PIDX_TerrainBrushSize,
 PIDX_PickingBufferSize,
 };
 bool Serialize(bool writing);
@@ -153,6 +170,7 @@ void ShowProperty(int* value, const char* name);
 void ShowProperty(bool* value, const char* name);
 void ShowProperty(float* value, const char* name, float min, float max);
 void ShowProperty(glm::vec3* value, const char* name, float min, float max);
+void ShowProperty(glm::ivec2* value, const char* name, float min, float max);
 void ShowProperty(std::string* value, const char* name);
 
 template <typename T>

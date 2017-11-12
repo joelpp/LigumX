@@ -78,6 +78,13 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 			objectStream << value->y << std::endl;
 			break;
 		}
+		case LXType_glmivec2:
+		{
+			glm::ivec2* value = (glm::ivec2*) ptr;
+			objectStream << value->x << std::endl;
+			objectStream << value->y << std::endl;
+			break;
+		}
 		SERIALIZE_PTR_OUT(DisplayOptions)
 		SERIALIZE_PTR_OUT(EditorOptions)
 		SERIALIZE_PTR_OUT(PostEffects)
@@ -279,6 +286,16 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 				objectStream >> (*vector)[i];
 			}
 
+			break;
+		}
+
+		case LXType_glmivec2:
+		{
+			glm::ivec2* vector = (glm::ivec2*) ptr;
+			for (int i = 0; i < 2; ++i)
+			{
+				objectStream >> (*vector)[i];
+			}
 			break;
 		}
 

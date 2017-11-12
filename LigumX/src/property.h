@@ -28,6 +28,7 @@ enum LXType
 	LXType_World,
 	LXType_bool,
 	LXType_float,
+	LXType_glmivec2,
 	LXType_glmmat4,
 	LXType_glmvec2,
 	LXType_glmvec3,

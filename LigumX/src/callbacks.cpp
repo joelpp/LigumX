@@ -23,18 +23,17 @@ void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
     LigumX::GetInstance().Shutdown();
 }
 
-void LigumX::glfwMouseScrollCallback(GLFWwindow* /*pWindow*/, double xOffset, double yOffset)
+void LigumX::glfwMouseScrollCallback(GLFWwindow* pWindow, double xOffset, double yOffset)
 {
-        static const float factor = 1.1;
-		Camera* cam = m_Renderer->GetDebugCamera();
-        if(yOffset < 0) 
-		{
-			cam->SetViewSize(factor * cam->GetViewSize());
-        } 
-		else 
-		{
-			cam->SetViewSize(cam->GetViewSize() * (1.f / factor));
-        }
+	ImGui_ImplGlfwGL3_ScrollCallback(pWindow, xOffset, yOffset);
+
+	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow();
+
+	if (!caughtByImgui)
+	{
+		g_Editor->AddToTerrainBrushSize(yOffset);
+	}
+
 }
 
 void flipBool(bool& value)

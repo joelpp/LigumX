@@ -4,5 +4,7 @@ Name
 LigumXEditor
 Options
 12466
+TerrainBrushSize
+23
 PickingBufferSize
 128

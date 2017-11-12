@@ -18,7 +18,16 @@ class Editor
 	[transient]
 	Entity* PickedEntity
 	[transient]
+	glm::vec3 PickedWorldPosition
+	[transient]
 	bool ManipulatorDragging
+	[transient]
+	glm::vec2 MouseDragDistance;
+	[transient]
+	glm::ivec2 PickedTexelOffset;
+
+	[adder]
+	float TerrainBrushSize;
 
 	int PickingBufferSize;
 }

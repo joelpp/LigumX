@@ -34,14 +34,17 @@ const bool& GetIsCubeMap() { return m_IsCubeMap; };
 void SetIsCubeMap(bool value) { m_IsCubeMap = value; }; 
 const GLuint& GetHWObject() { return m_HWObject; }; 
 void SetHWObject(GLuint value) { m_HWObject = value; }; 
+const glm::ivec2& GetSize() { return m_Size; }; 
+void SetSize(glm::ivec2 value) { m_Size = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 std::string m_Filename;
 bool m_IsCubeMap;
 GLuint m_HWObject;
+glm::ivec2 m_Size;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_TexturePIDX
@@ -51,6 +54,7 @@ PIDX_Name,
 PIDX_Filename,
 PIDX_IsCubeMap,
 PIDX_HWObject,
+PIDX_Size,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing);

@@ -30,7 +30,11 @@ const ClassPropertyData Editor::g_Properties[] =
 { "MouseButton1Down", PIDX_MouseButton1Down, offsetof(Editor, m_MouseButton1Down), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
 { "PickedEntity", PIDX_PickedEntity, offsetof(Editor, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "PickedWorldPosition", PIDX_PickedWorldPosition, offsetof(Editor, m_PickedWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "MouseDragDistance", PIDX_MouseDragDistance, offsetof(Editor, m_MouseDragDistance), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "PickedTexelOffset", PIDX_PickedTexelOffset, offsetof(Editor, m_PickedTexelOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool Editor::Serialize(bool writing)
@@ -82,18 +86,61 @@ void Editor::RenderPicking()
 	renderer->GetPickingData(m_MousePosition, pickingData);
 
 	float pickedID = pickingData[3];
-	glm::vec3 eyePos = glm::swizzle(pickingData, glm::R, glm::G, glm::B);
+	glm::vec3 worldPosition = glm::swizzle(pickingData, glm::R, glm::G, glm::B);
 
-
+	static bool editingTerrain = false;
 	m_ManipulatorDragging &= m_MouseButton1Down;
+	editingTerrain &= m_MouseButton1Down;
 
-	if (false /*manipulatorDragging*/)
+	if (editingTerrain || m_ManipulatorDragging)
 	{
-		glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
 
-		float distance = screenDistance.x / 10.f;
-		glm::vec3 toAdd = distance * m_XYZMask;
-		m_PickedEntity->AddToPosition(toAdd);
+		if (m_ManipulatorDragging)
+		{
+			glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
+			float distance = screenDistance.x / 10.f;
+			glm::vec3 toAdd = distance * m_XYZMask;
+
+			m_PickedEntity->AddToPosition(toAdd);
+		}
+		else
+		{
+			glm::vec2 screenDistance = m_MousePosition - m_LastMouseClickPosition;
+			screenDistance.y *= -1;
+
+			glm::vec3 scale = m_PickedEntity->GetScale();
+			glm::vec3 normalized = worldPosition / scale;
+
+			PRINTVEC3(normalized);
+
+			int width = m_TerrainBrushSize;
+			glm::ivec2 offset = m_PickedTexelOffset;
+
+			std::vector<char> values(width * width * 4);
+			char* val = values.data();
+			float maxVal = std::max(-screenDistance.y, 0.f);
+
+			for (int i = 0; i < width; ++i)
+			{
+				for (int j = 0; j < width; ++j)
+				{
+					glm::vec2 localUV = glm::vec2(i, j) / glm::vec2(width);
+
+					glm::vec2 centerOffset = localUV - glm::vec2(0.5f, 0.5f);
+					float height = maxVal * sqrt(1.f - glm::dot(centerOffset, centerOffset));
+					val[4* (i * width + j)] = (char)(height);
+				}
+			}
+
+			Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
+			renderer->Bind2DTexture(0, tex->GetHWObject());
+			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, GL_RGBA, GL_UNSIGNED_BYTE, values.data());
+
+			PRINTVEC2(offset);
+			PRINT(width);
+
+			renderer->Bind2DTexture(0, 0);
+		}
 	}
 	else
 	{
@@ -118,12 +165,26 @@ void Editor::RenderPicking()
 				if (fuzzyEquals(pickedID, entity->GetPickingID(), 0.005f))
 				{
 					m_PickedEntity = entity;
+
+					if (fuzzyEquals(9895.f, entity->GetObjectID(), 0.005f))
+					{
+						editingTerrain = true;
+						SetMouseDragDistance(glm::vec2(0.f));
+
+						glm::vec3 scale = m_PickedEntity->GetScale();
+						glm::vec3 normalized = worldPosition / scale;
+
+						glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
+
+						int width = m_TerrainBrushSize;
+
+						glm::ivec2 offset = glm::ivec2(xyCoords * glm::vec2(450, 450)) - glm::ivec2(width) / 2;
+						SetPickedTexelOffset(offset);
+					}
+
 					break;
 				}
 			}
-
-
-			Camera* camera = renderer->GetDebugCamera();
 
 
 			// Update last click position
@@ -288,8 +349,6 @@ void Editor::ShowProperty(float* value, const char* name, float min, float max)
 
 void Editor::ShowProperty(glm::vec3* value, const char* name, float min, float max)
 {
-	//ShowVariableAsText(value, name);
-
 	if (min == 0 && max == 0)
 	{
 		ImGui::DragFloat3(name, (float*)value);
@@ -297,6 +356,18 @@ void Editor::ShowProperty(glm::vec3* value, const char* name, float min, float m
 	else
 	{
 		ImGui::SliderFloat3(name, (float*)value, min, max);
+	}
+}
+
+void Editor::ShowProperty(glm::ivec2* value, const char* name, float min, float max)
+{
+	if (min == 0 && max == 0)
+	{
+		ImGui::DragInt2(name, (int*)value);
+	}
+	else
+	{
+		ImGui::SliderInt2(name, (int*)value, min, max);
 	}
 }
 
@@ -407,6 +478,12 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	{
 		ShowProperty((glm::vec3*) ptr, name, min, max);
 		break;
+	}
+	case LXType_glmivec2:
+	{
+		ShowProperty((glm::ivec2*) ptr, name, min, max);
+		break;
+
 	}
 	case LXType_stdstring:
 	{

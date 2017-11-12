@@ -16,6 +16,7 @@ const ClassPropertyData Texture::g_Properties[] =
 { "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "IsCubeMap", PIDX_IsCubeMap, offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HWObject", PIDX_HWObject, offsetof(Texture, m_HWObject), 0, LXType_GLuint, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 };
 bool Texture::Serialize(bool writing)
 {
@@ -176,7 +177,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	unsigned int width = FreeImage_GetWidth(bitmap);
 	unsigned int height = FreeImage_GetHeight(bitmap);
 
-	unsigned int nbLevels;
+	SetSize(glm::ivec2(width, height));
 
 	if (m_IsCubeMap)
 	{

@@ -268,7 +268,7 @@ void LigumX::SetCallbacks(){
     //glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
     glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
     glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );
-    //glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );
+    glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );
     glfwSetWindowPosCallback( renderer.pWindow, glfwWindowPositionCallback );
     glfwSetWindowSizeCallback( renderer.pWindow, glfwWindowSizeCallback );
     glfwSetWindowCloseCallback( renderer.pWindow, glfwWindowClosedCallback );

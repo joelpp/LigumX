@@ -6,4 +6,6 @@ class Texture
 
 	[transient]
 	GLuint HWObject;
+
+	glm::ivec2 Size;
 }
