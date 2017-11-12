@@ -19,7 +19,14 @@ struct GeneratorFile
 	std::vector<LXClass> m_Contained;
 };
 
+std::map<std::string, int> g_FoundTypes;
 
+void AddToFoundTypesMap(std::string type)
+{
+	StringList toRemoveFromFoundTypes = { "::" };
+	std::string entryKey = RemoveSubstrings(type, toRemoveFromFoundTypes);
+	g_FoundTypes[entryKey] = 1;
+}
 
 FileType GetTypeFromHeader(std::string fileType)
 {
@@ -129,6 +136,8 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			{
 				if (generatingClass)
 				{
+					AddToFoundTypesMap(currentClass.m_Name);
+
 					classes.push_back(currentClass);
 					currentClass = LXClass();
 				}
@@ -160,14 +169,19 @@ ClassList createLXClass(std::vector<std::string>& lines)
 					}
 				}
 
+				std::string& varType = tokens[0];
+				variable.SetType(varType);
+
 				variable.m_Name = tokens[1];;
-				variable.SetType(tokens[0]);
+
 
 				variable.m_IsPtr = stringContains(variable.m_Type, '*');
 
 				variable.CheckForTemplate();
 
 				variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
+
+				AddToFoundTypesMap(variable.m_Type);
 
 				variable.m_PropertyFlags = varPropertyFlags;
 
@@ -224,6 +238,8 @@ void SystemPause()
 	system("pause");
 }
 
+#define EMPLACE_PROPERTY_FLAG(flag) g_PropertyFlagsNames.emplace(flag, #flag);
+
 void InitializeGenerator()
 {
 	// Substrings we want to remove from property names
@@ -246,8 +262,97 @@ void InitializeGenerator()
 	g_PropertyFlagsStringMap.emplace("noneditable", PropertyFlags_NonEditable);
 	g_PropertyFlagsStringMap.emplace("adder", PropertyFlags_Adder);
 
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_SetCallback);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_MinValue);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_MaxValue);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Transient);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_NonEditable);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Adder);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Enum);
+
 	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
 	g_ClassPropertyFlagsStringMap.emplace("globalinstance", ClassPropertyFlags_GlobalInstance);
+
+
+}
+
+void WriteLineToFile(std::fstream& file, const char* line)
+{
+	file << line << std::endl;
+}
+
+void WriteLineToFile(std::fstream& file, std::string& line)
+{
+	WriteLineToFile(file, line.c_str());
+}
+
+void GeneratePropertyFile()
+{
+	std::string propertyFileName = "property.h";
+	std::string filePath = g_GenerationRootDir + propertyFileName;
+
+	std::fstream propertyFile (filePath, std::fstream::out);
+	if (propertyFile.is_open())
+	{
+		WriteLineToFile(propertyFile, "#pragma once");
+		WriteLineToFile(propertyFile, "#include <fstream>");
+		WriteLineToFile(propertyFile, "// This file is auto generated. Any modification will be deleted on next LXGenerator run.");
+		WriteLineToFile(propertyFile, "");
+
+		// Types
+		WriteLineToFile(propertyFile, "enum LXType");
+		WriteLineToFile(propertyFile, "{");
+		for (auto& it = g_FoundTypes.begin(); it != g_FoundTypes.end(); ++it)
+		{
+			std::string typeName = "LXType_";
+			typeName += it->first;
+
+			WriteLineToFile(propertyFile, "	" + typeName + ",");
+		}
+		WriteLineToFile(propertyFile, "	LXType_None,");
+		WriteLineToFile(propertyFile, "};");
+		WriteLineToFile(propertyFile, "");
+
+		// Property flags
+		WriteLineToFile(propertyFile, "enum PropertyFlags");
+		WriteLineToFile(propertyFile, "{");
+		
+		int power = 1;
+		for (auto& it = g_PropertyFlagsNames.begin(); it != g_PropertyFlagsNames.end(); ++it)
+		{
+			PropertyFlags flag = it->first;
+			std::string name = it->second;
+
+			WriteLineToFile(propertyFile, "	" + name + " = " + std::to_string(power) + ",");
+
+			power *= 2;
+		}
+		WriteLineToFile(propertyFile, "};");
+		WriteLineToFile(propertyFile, "");
+
+		// ClassPropertyData definition
+		WriteLineToFile(propertyFile, R"(
+// todo handle structs in .gen files
+struct ClassPropertyData
+{
+	const char* m_Name;
+	int m_Index;
+	int m_Offset;
+	int debug;
+	LXType m_Type;
+	bool IsAPointer;
+	LXType m_AssociatedType;
+	int m_PropertyFlags;
+	float m_MinValue;
+	float m_MaxValue;
+};
+		)");
+
+		propertyFile.close();
+	}
+
 }
 
 int main()
@@ -326,6 +431,8 @@ int main()
 	}
 
 	processGeneratorFiles(generatorFiles);
+
+	GeneratePropertyFile();
 
 	return 0;
 }

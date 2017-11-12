@@ -1,71 +1,55 @@
 #pragma once
 #include <fstream>
-
-// if you change something here don't forget to change it in the LXGenerator also
-
-// todo would be nice to gen this from a .gen file
-// bonus points : that is common to LXGenerator and LigumX
+// This file is auto generated. Any modification will be deleted on next LXGenerator run.
 
 enum LXType
 {
-	LXType_int,
-	LXType_float,
+	LXType_AABB,
+	LXType_BoundingBoxComponent,
+	LXType_Camera,
+	LXType_Component,
+	LXType_DisplayOptions,
+	LXType_Editor,
+	LXType_EditorOptions,
+	LXType_EngineStats,
+	LXType_Entity,
+	LXType_Framebuffer,
+	LXType_GLPixelFormat,
+	LXType_GLuint,
+	LXType_Material,
+	LXType_Mesh,
+	LXType_Model,
+	LXType_PostEffects,
+	LXType_ProgramPipeline,
+	LXType_Renderer,
+	LXType_ShaderFamily,
+	LXType_SunLight,
+	LXType_Texture,
+	LXType_World,
 	LXType_bool,
-	
-	LXType_stdvector,
-	LXType_stdstring,
-
+	LXType_float,
+	LXType_glmmat4,
 	LXType_glmvec2,
 	LXType_glmvec3,
-	LXType_glmvec4,
-	LXType_glmivec2,
-	LXType_glmmat4,
-
-	LXType_Texture,
-
-	LXType_GLuint,
-	LXType_GLPixelFormat,
-
-	// these are mostly a test. maybe we shouldnt get so specific and instead use LXType_Other
-	// still doing it just to see what happens
-	LXType_Entity,
-	LXType_Material,
-	LXType_Component,
-	LXType_BoundingBoxComponent,
-	LXType_ProgramPipeline,
-	LXType_Camera,
-	LXType_PostEffects,
-	LXType_DisplayOptions,
-	LXType_EditorOptions,
-	LXType_ProjectionType,
-	LXType_Model,
-	LXType_Mesh,
-	LXType_AABB,
-	LXType_SunLight,
-	LXType_Renderer,
-	LXType_EngineStats,
-	LXType_World,
-	LXType_Framebuffer,
-
-	LXType_ShaderFamily,
-
+	LXType_int,
+	LXType_stdstring,
+	LXType_stdvector,
 	LXType_None,
-	LXType_NumTypes
 };
 
-// keep in sync with generator
-// todo : replace with bitset if it gets too large (same with osmelement!)
 enum PropertyFlags
 {
 	PropertyFlags_Hidden = 1,
 	PropertyFlags_ReadOnly = 2,
 	PropertyFlags_SetCallback = 4,
-	PropertyFlags_Transient = 8,
-	PropertyFlags_NonEditable = 16,
-	PropertyFlags_Adder = 32,
-	PropertyFlags_Enum = 64,
-	PropertyFlags_NumPropertyFlags
+	PropertyFlags_NonEditable = 8,
+	PropertyFlags_Adder = 16,
+	PropertyFlags_Transient = 32,
+	PropertyFlags_MaxValue = 64,
+	PropertyFlags_MinValue = 128,
+	PropertyFlags_Enum = 256,
 };
+
 
 // todo handle structs in .gen files
 struct ClassPropertyData
@@ -81,3 +65,4 @@ struct ClassPropertyData
 	float m_MinValue;
 	float m_MaxValue;
 };
+		

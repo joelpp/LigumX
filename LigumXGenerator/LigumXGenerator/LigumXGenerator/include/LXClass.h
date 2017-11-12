@@ -23,6 +23,7 @@ enum PropertyFlags
 };
 
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;
+std::unordered_map<PropertyFlags, std::string> g_PropertyFlagsNames;
 std::unordered_map<std::string, ClassPropertyFlags> g_ClassPropertyFlagsStringMap;
 
 struct Variable
