@@ -2,7 +2,11 @@
 
 #include "EditorOptions.h"
 #include "glm/glm.hpp"
+#include <map>
+#include <vector>
+#include "imgui_impl_glfw_gl3.h"
 
+class Texture;
 
 #pragma region  FORWARD_DECLARATIONS Editor
 #include "property.h"
@@ -87,8 +91,73 @@ bool Serialize(bool writing);
 Editor();
 Editor(int ObjectID);
 
+void Initialize();
+
 void RenderPicking();
 
 void Render();
 
+void RenderImgui();
+
+template <typename T>
+void TrySaveObject(T* object);
+
+template<typename T>
+void EndShowPropertyGridObject(T*& object, const char* name);
+
+void EndShowPropertyGridObject(Texture*& object, const char* name);
+
+template<typename T>
+void ShowPropertyGridObject(T*& object, const char* name);
+
+template<typename T>
+bool ShowPropertyGridPtr(T** object, const char* name);
+
+template <typename T>
+bool ShowPropertyGridTemplate(T*& object, const char* name);
+
+template<typename T>
+void ShowGenericProperty(T*& object, const ClassPropertyData& propertyData);
+
+bool ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable);
+
+template <typename T>
+void ShowObjectCreator();
+
+template<typename T>
+void ShowPropertyGridMacro(T* object, const char* name);
+
+template<typename T>
+void SaveObjectFromCreator(T* object);
+
+void ShowAddButton(std::vector<char*>* vectorPtr, const LXType& type);
+
+void BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name);
+void EndImGUIWindow();
+
+void ShowVariableAsText(glm::vec3 variable, const char* variableName);
+void ShowVariableAsText(glm::vec3* variable, const char* variableName);
+void ShowVariableAsText(float variable, const char* variableName);
+void ShowVariableAsText(int variable, const char* variableName);
+void ShowGUIText(const char* text);
+void ShowGUIText(std::string* text);
+void ShowGUIText(std::string* text, const char* variableName);
+void ShowGUIText(const std::string& text);
+void ShowGUIText(const std::string& text, const char* variableName);
+
+
+void ShowProperty(int* value, const char* name);
+void ShowProperty(bool* value, const char* name);
+void ShowProperty(float* value, const char* name, float min, float max);
+void ShowProperty(glm::vec3* value, const char* name, float min, float max);
+void ShowProperty(std::string* value, const char* name);
+
+template <typename T>
+void ShowProperty(std::map<int, char *>* map, const char* name);
+
+bool ShowEditableProperty(int* value, const char* name);
+void BackupData();
+
+private:
+	bool m_RenderingMenu;
 };
