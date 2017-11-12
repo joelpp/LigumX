@@ -1,6 +1,7 @@
 [postserialization]
 class Texture
 {
-	std::string Filename
-	bool IsCubeMap
+	std::string Filename;
+	bool IsCubeMap;
+	GLuint HWObject;
 }

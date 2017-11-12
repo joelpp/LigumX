@@ -73,7 +73,9 @@ vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 
 	normal.x = clamp(normal.x, -1.f, 1.f);
 	normal.y = clamp(normal.y, -1.f, 1.f);
-	normal.z = cross(vec3(normal.x , 0, 0), vec3(0, normal.y, 0)).z;
+
+	float hypotenuse = 0.5f;
+	normal.z = max(sqrt(pow(hypotenuse, 2) - pow(normal.x, 2) - pow(normal.y, 2)), 1e-6);
 
 	normal = normalize(normal);
 

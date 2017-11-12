@@ -828,9 +828,9 @@ void Renderer::ShowProperty(std::map<int, char*>* map, const char* name)
 	{
 		for (auto it = map->begin(); it != map->end(); ++it)
 		{
-			T* tex = (T*)it->second;
-			std::string label = tex->GetName() + " [" + std::to_string(it->first) + "]";
-			ShowPropertyGridTemplate(tex, label.c_str());
+			T* obj = (T*)it->second;
+			std::string label = obj->GetName() + " [" + std::to_string(it->first) + "]";
+			ShowPropertyGridTemplate(obj, label.c_str());
 		}
 		ImGui::TreePop();
 	}
@@ -952,6 +952,20 @@ bool Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 		//}
 
 		SHOW_PROPERTY_PTR(Texture)
+
+		//{
+		//	BEGIN_PROPERTY(Texture);
+
+		//	SHOW_PROPERTY_PTR_INTERNAL(Texture);
+
+		//	if (*ptr != 0)
+		//	{
+		//		ImGui::Image((ImTextureID)((Texture*)ptr)->GetHWObject(), ImVec2(50, 50));
+		//	}
+
+		//	END_PROPERTY(Texture);
+		//}
+
 		//case LXType_Texture:
 		//{
 		//	if (ptr)
@@ -1057,6 +1071,19 @@ void Renderer::ShowGenericProperty(T*& object, const ClassPropertyData& property
 	}
 }
 
+
+template<typename T>
+void Renderer::EndShowPropertyGridObject(T*& object, const char* name)
+{
+
+}
+
+void Renderer::EndShowPropertyGridObject(Texture*& object, const char* name)
+{
+	ImGui::Image( (ImTextureID) object->GetHWObject(), ImVec2(50, 50) );
+}
+
+
 template<typename T>
 void Renderer::ShowPropertyGridObject(T*& object, const char* name)
 {
@@ -1106,8 +1133,9 @@ void Renderer::ShowPropertyGridObject(T*& object, const char* name)
 			{
 				ShowGenericProperty(object, propertyData);
 			}
-
 		}
+
+		EndShowPropertyGridObject(object, name);
 	}
 	else
 	{

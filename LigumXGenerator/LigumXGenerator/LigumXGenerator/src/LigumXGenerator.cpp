@@ -155,7 +155,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				{
 					if (tokens[0] == anEnum.m_Name)
 					{
-						varPropertyFlags &= PropertyFlags_Enum;
+						varPropertyFlags |= PropertyFlags_Enum;
 						break;
 					}
 				}

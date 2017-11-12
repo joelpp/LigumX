@@ -15,6 +15,7 @@ const ClassPropertyData Texture::g_Properties[] =
 { "Name", PIDX_Name, offsetof(Texture, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "IsCubeMap", PIDX_IsCubeMap, offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "HWObject", PIDX_HWObject, offsetof(Texture, m_HWObject), 0, LXType_GLuint, false, LXType_None, 0, 0, 0, }, 
 };
 bool Texture::Serialize(bool writing)
 {
@@ -80,8 +81,8 @@ void Texture::Initialize()
 		bindingTarget = GL_TEXTURE_CUBE_MAP;
 	}
 
-	glGenTextures(1, &glidTexture);
-	glBindTexture(bindingTarget, glidTexture);
+	glGenTextures(1, &m_HWObject);
+	glBindTexture(bindingTarget, m_HWObject);
 
 	glTexParameteri(bindingTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(bindingTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

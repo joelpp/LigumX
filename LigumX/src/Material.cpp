@@ -33,7 +33,7 @@ const ClassPropertyData Material::g_Properties[] =
 { "SpecularTexture", PIDX_SpecularTexture, offsetof(Material, m_SpecularTexture), 0, LXType_Texture, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "HeightfieldTexture", PIDX_HeightfieldTexture, offsetof(Material, m_HeightfieldTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, }, 
 { "ProgramPipeline", PIDX_ProgramPipeline, offsetof(Material, m_ProgramPipeline), 0, LXType_ProgramPipeline, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_ShaderFamily, false, LXType_None, 0, 0, 0, }, 
+{ "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_ShaderFamily, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
 };
 bool Material::Serialize(bool writing)
 {
