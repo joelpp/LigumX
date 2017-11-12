@@ -44,3 +44,7 @@ DiffuseTexture
 3945
 SpecularTexture
 14511
+HeightfieldTexture
+0
+ShaderFamily
+0

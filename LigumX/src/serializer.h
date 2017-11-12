@@ -23,6 +23,8 @@ public:
 		{
 			const ClassPropertyData& propertyData = object->g_Properties[i];
 
+			LXType lxType = propertyData.m_Type;
+
 			if (propertyData.m_PropertyFlags & PropertyFlags_Transient)
 			{
 				continue;
@@ -35,7 +37,7 @@ public:
 				ptr = *(char**)ptr;
 			}
 
-			if (propertyData.m_Type == LXType_stdvector)
+			if (lxType == LXType_stdvector)
 			{
 				std::vector<char*>* v = (std::vector<char*>*) ((char*)object + propertyData.m_Offset);
 
@@ -49,8 +51,13 @@ public:
 			}
 			else
 			{
+				if (propertyData.m_PropertyFlags & PropertyFlags_Enum)
+				{
+					lxType = LXType_int;
+				}
+
 				objectStream << propertyData.m_Name << std::endl;
-				SerializePropertyOut(ptr, propertyData.m_Name, propertyData.m_Type, objectStream);
+				SerializePropertyOut(ptr, propertyData.m_Name, lxType, objectStream);
 			}
 
 		}
@@ -108,8 +115,14 @@ public:
 					{
 						char* ptr = (char*)object + propertyData.m_Offset;;
 
-						LXType type = propertyData.m_Type;
-						SerializePropertyIn(ptr, type, propertyData.m_AssociatedType, objectStream);
+						LXType lxType = propertyData.m_Type;
+
+						if (propertyData.m_PropertyFlags & PropertyFlags_Enum)
+						{
+							lxType = LXType_int;
+						}
+
+						SerializePropertyIn(ptr, lxType, propertyData.m_AssociatedType, objectStream);
 						break;
 					}
 				}

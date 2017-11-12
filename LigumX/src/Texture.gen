@@ -3,5 +3,7 @@ class Texture
 {
 	std::string Filename;
 	bool IsCubeMap;
+
+	[transient]
 	GLuint HWObject;
 }
