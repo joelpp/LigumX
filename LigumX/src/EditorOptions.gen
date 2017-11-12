@@ -10,4 +10,5 @@ class EditorOptions
 	bool ShowObjectManager;
 	bool BackupDataOnSave;
 	bool DebugDisplay;
+	bool SaveDisabled;
 }

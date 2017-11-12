@@ -5,7 +5,7 @@ DisplayOptions
 UseSkyLighting
 0
 DrawTerrain
-0
+1
 DrawSky
 1
 WireframeRendering

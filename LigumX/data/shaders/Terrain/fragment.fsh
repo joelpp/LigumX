@@ -1,27 +1,25 @@
 #version 410 core
-in vec2 myTexCoord;
-//in float height;
-//uniform sampler2D sampler;
-//uniform sampler2D sampler1;
-out vec4 color;
-void main() {
-    //color=vec4(1.0,1.0,1.0,1.0);
-    //color = vec4(vec3(height/0.02),1.0);
-    //float lowBound = 0.0005;
-    //float highBound = /*0.011*/lowBound;
-    //float interval = highBound- lowBound;
-    //if (height > highBound) color = vec4(texture(sampler1, myTexCoord).xyz,1.0);
-    //else if (height < lowBound) color = vec4(texture(sampler, myTexCoord).xyz,1.0);
-    //else color = vec4(mix(texture(sampler1, myTexCoord).xyz, texture(sampler, myTexCoord).xyz, (highBound-height) / interval),1.0);
-    float outColor = 1.0f;//height;
-    color = vec4(outColor, 0, 0, 1.0);
-    //if (ID == 0.0)
-    //	color = vec4(texture(sampler1, myTexCoord).xyz,1.0);
-//
-    //if (ID == 1.0) 
-    //	color = vec4(texture(sampler, myTexCoord).xyz,1.0);
-//
-    //float c = ID+0.2;
-    //color = vec4(vec3(c),1.0);
+in float v_Height;
+in vec2 v_TexCoord;
+in vec3 v_Normal;
+in float v_maxHeight;
 
-    }
+
+
+out vec4 color;
+void main() 
+{
+
+	vec3 lightDirection = normalize(vec3(0.f, 0.f, 1.0f));
+    float lightPower = dot(v_Normal, lightDirection);
+
+	vec3 diffuse = vec3(1.0f, 1.0f, 1.0f);
+
+    color = vec4(diffuse * lightPower, 1.0);
+
+	
+    color = vec4(0.5f * (v_Normal + vec3(1,1,1)), 1.0);
+	//color = vec4(v_Normal, 1.0f);
+	//color.z = 0;
+   
+}

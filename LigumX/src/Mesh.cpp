@@ -68,7 +68,6 @@ void Mesh::createBuffers()
     LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.vertexPositions);
     // Renderer::createGLBuffer(m_VBOs.glidNormals,   m_buffers.m_vertexNormals);
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs,			m_buffers.m_vertexUVs);
-	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals, 	   m_buffers.m_vertexNormals);
 	
     glGenVertexArrays(1, &m_VAO);
 	glBindVertexArray(m_VAO);
@@ -81,9 +80,14 @@ void Mesh::createBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs);
     glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	if (m_buffers.m_vertexNormals.size() > 0)
+	{
+		LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals, m_buffers.m_vertexNormals);
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	}
+
 
     glGenBuffers(1, &m_VBOs.glidIndexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs.glidIndexBuffer);

@@ -40,6 +40,8 @@ const bool& GetBackupDataOnSave() { return m_BackupDataOnSave; };
 void SetBackupDataOnSave(bool value) { m_BackupDataOnSave = value; }; 
 const bool& GetDebugDisplay() { return m_DebugDisplay; }; 
 void SetDebugDisplay(bool value) { m_DebugDisplay = value; }; 
+const bool& GetSaveDisabled() { return m_SaveDisabled; }; 
+void SetSaveDisabled(bool value) { m_SaveDisabled = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -53,8 +55,9 @@ bool m_ShowTestGUI;
 bool m_ShowObjectManager;
 bool m_BackupDataOnSave;
 bool m_DebugDisplay;
+bool m_SaveDisabled;
 public:
-static const int g_PropertyCount = 12;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -71,6 +74,7 @@ PIDX_ShowTestGUI,
 PIDX_ShowObjectManager,
 PIDX_BackupDataOnSave,
 PIDX_DebugDisplay,
+PIDX_SaveDisabled,
 };
 bool Serialize(bool writing);
 

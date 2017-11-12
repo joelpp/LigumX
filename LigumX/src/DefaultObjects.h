@@ -13,6 +13,8 @@ public:
 	Mesh* DefaultSphereMesh;
 	Mesh* DefaultCubeMesh;
 
+	Mesh* DefaultTerrainMesh;
+
 	Mesh* GetMeshFromID(int id);
 
 	Material* DefaultRedMaterial;
@@ -25,6 +27,8 @@ public:
 	void InitializeDefaultCube();
 	void InitializeDefaultSphere();
 	void InitializeDefaultQuad();
+
+	void InitializeDefaultTerrainMesh();
 };
 
 extern DefaultObjects* g_DefaultObjects;

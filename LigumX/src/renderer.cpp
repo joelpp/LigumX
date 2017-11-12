@@ -454,8 +454,14 @@ void Renderer::SetMaterialUniforms(Material* material)
 		}
 		case ShaderFamily_Terrain:
 		{
-			SetVertexUniform(0, "heightfieldTexture");
-			Bind2DTexture(0, material->GetHeightfieldTexture()->GetHWObject());
+			//SetVertexUniform(0, "heightfieldTexture");
+			//Bind2DTexture(0, material->GetHeightfieldTexture()->GetHWObject());
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, material->GetHeightfieldTexture()->GetHWObject());
+
+			//SetFragmentUniform(0, "heightfieldTexture");
+			//Bind2DTexture(0, material->GetHeightfieldTexture()->GetHWObject());
 		}
 		default:
 		{
@@ -831,9 +837,8 @@ void Renderer::ShowProperty(std::map<int, char*>* map, const char* name)
 	ImGui::PopID();
 }
 
-#define SHOW_PROPERTY_PTR(type) \
-case LXType_##type : \
-{ \
+
+#define SHOW_PROPERTY_PTR_INTERNAL(type) \
 	if (*ptr == 0) \
 	{ \
 		ShowGUIText(name); \
@@ -848,9 +853,19 @@ case LXType_##type : \
 	{ \
 		ShowPropertyGridTemplate<##type>((##type *&) ptr, name); \
 	} \
-	break; \
-} \
 
+#define BEGIN_PROPERTY(type) \
+case LXType_##type: \
+{ 
+
+#define END_PROPERTY(type) \
+break; \
+}
+
+#define SHOW_PROPERTY_PTR(type) \
+BEGIN_PROPERTY(type) \
+SHOW_PROPERTY_PTR_INTERNAL(type) \
+END_PROPERTY(type)
 
 bool Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable)
 {
@@ -936,7 +951,7 @@ bool Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 		//	break;
 		//}
 
-		SHOW_PROPERTY_PTR(Texture);
+		SHOW_PROPERTY_PTR(Texture)
 		//case LXType_Texture:
 		//{
 		//	if (ptr)
@@ -947,6 +962,7 @@ bool Renderer::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& 
 
 		//	break;
 		//}
+
 		case LXType_Component:
 		{
 			if (ptr)
@@ -1219,13 +1235,27 @@ void Renderer::RenderImgui()
 			{
 				if (ImGui::MenuItem("Save renderer"))
 				{
-					BackupData();
-					Serialize(true);
+					if (!m_EditorOptions->GetSaveDisabled())
+					{
+						BackupData();
+						Serialize(true);
+					}
+					else
+					{
+						PRINTSTRING("Output serialization is currently disabled.")
+					}
 				}
 				if (ImGui::MenuItem("Save world"))
 				{
-					BackupData();
-					m_World->Serialize(true);
+					if (!m_EditorOptions->GetSaveDisabled())
+					{
+						BackupData();
+						m_World->Serialize(true);
+					}
+					else
+					{
+						PRINTSTRING("Output serialization is currently disabled.")
+					}
 				}
 
 				ImGui::EndMenu();
@@ -1310,6 +1340,7 @@ void Renderer::RenderImgui()
 		ShowProperty<Texture>(g_ObjectManager->GetObjects(LXType_Texture), "Textures");
 		ShowProperty<Mesh>(g_ObjectManager->GetObjects(LXType_Mesh), "Meshes");
 		ShowProperty<Material>(g_ObjectManager->GetObjects(LXType_Material), "Materials");
+		ShowProperty<Model>(g_ObjectManager->GetObjects(LXType_Model), "Models");
 
 		EndImGUIWindow();
 	}

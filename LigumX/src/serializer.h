@@ -107,7 +107,9 @@ public:
 					else
 					{
 						char* ptr = (char*)object + propertyData.m_Offset;;
-						SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, objectStream);
+
+						LXType type = propertyData.m_Type;
+						SerializePropertyIn(ptr, type, propertyData.m_AssociatedType, objectStream);
 						break;
 					}
 				}

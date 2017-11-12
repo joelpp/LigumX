@@ -134,6 +134,62 @@ void DefaultObjects::InitializeDefaultQuad()
 	g_ObjectManager->AddObject(LXType_Mesh, DefaultQuadMesh);
 }
 
+void DefaultObjects::InitializeDefaultTerrainMesh()
+{
+	DefaultTerrainMesh = new Mesh();
+
+	// todo try morgan's cube obj in here
+	std::vector<glm::vec3>& points = DefaultTerrainMesh->m_buffers.vertexPositions;
+	std::vector<glm::vec2>& UVs = DefaultTerrainMesh->m_buffers.m_vertexUVs;
+	std::vector<glm::vec3>& normals = DefaultTerrainMesh->m_buffers.m_vertexNormals;
+	std::vector<int>& indexBuffer = DefaultTerrainMesh->m_buffers.indexBuffer;
+
+	int iWidth = 512;
+
+	for (int i = 0; i < iWidth; i++)
+	{
+		for (int j = 0; j < iWidth; j++)
+		{
+			float last = iWidth - 1.f;
+			float x = (float)i / (float)last;
+			float y = (float)j / (float)last;
+			points.push_back(glm::vec3(x, y, 0));
+			UVs.push_back(glm::vec2(x, y));
+		}
+	}
+
+	// vertically
+	for (int i = 0; i < iWidth - 1; ++i)
+	{
+		//horizontally
+		for (int j = 0; j < iWidth - 1; ++j)
+		{
+			// bottom left
+			indexBuffer.push_back((i * iWidth) + j);
+			// bottom right
+			indexBuffer.push_back(((i + 1) * iWidth) + (j));
+			// top left
+			indexBuffer.push_back((i * iWidth) + (j + 1));
+
+			// bottom right
+			indexBuffer.push_back(((i + 1) * iWidth) + (j));
+			// top left
+			indexBuffer.push_back((i * iWidth) + (j + 1));
+			// top right
+			indexBuffer.push_back(((i + 1) * iWidth) + (j + 1));
+		}
+	}
+
+	DefaultTerrainMesh->createBuffers();
+	DefaultTerrainMesh->m_usesIndexBuffer = true;
+	DefaultTerrainMesh->m_renderingMode = GL_TRIANGLES;
+
+	DefaultTerrainMesh->SetName("Default Terrain Mesh");
+	DefaultTerrainMesh->SetObjectID(g_ObjectManager->DefaultTerrainMeshID);
+	g_ObjectManager->AddObject(LXType_Mesh, DefaultTerrainMesh);
+}
+
+
 void DefaultObjects::InitializeDefaultSphere()
 {
 	Model* testModel = new Model("sphere/sphere.obj");
@@ -150,6 +206,7 @@ DefaultObjects::DefaultObjects()
 	InitializeDefaultQuad();
 	InitializeDefaultSphere();
 	InitializeDefaultCube();
+	InitializeDefaultTerrainMesh();
 
 	InitializeManipulator();
 }
@@ -162,20 +219,7 @@ Mesh* DefaultObjects::GetMeshFromID(int id)
 		return nullptr;
 	}
 
-	if (id == g_ObjectManager->DefaultCubeMeshID)
-	{
-		return DefaultCubeMesh;
-	}
-	else if (id == g_ObjectManager->DefaultQuadMeshID)
-	{
-		return DefaultQuadMesh;
-	}
-	else if (id == g_ObjectManager->DefaultSphereMeshID)
-	{
-		return DefaultSphereMesh;
-	}
-
-	return nullptr;
+	return (Mesh*) (g_ObjectManager->FindObjectByID(id, LXType_Mesh, false));
 }
 
 void DefaultObjects::InitializeManipulator()

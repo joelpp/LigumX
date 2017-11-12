@@ -98,6 +98,7 @@ public:
 		ADD_PROPERTY(PropertyFlags_Transient)
 		ADD_PROPERTY(PropertyFlags_NonEditable)
 		ADD_PROPERTY(PropertyFlags_Adder)
+		ADD_PROPERTY(PropertyFlags_Enum)
 
 		if (toReturn.size() == 0)
 		{
