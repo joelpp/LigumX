@@ -32,11 +32,6 @@ const ClassPropertyData Renderer::g_Properties[] =
 { "Name", PIDX_Name, offsetof(Renderer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
 { "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
-{ "MouseClickPosition", PIDX_MouseClickPosition, offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "LastMousePosition", PIDX_LastMousePosition, offsetof(Renderer, m_LastMousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "MousePosition", PIDX_MousePosition, offsetof(Renderer, m_MousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "MouseButton1Down", PIDX_MouseButton1Down, offsetof(Renderer, m_MouseButton1Down), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "XYZMask", PIDX_XYZMask, offsetof(Renderer, m_XYZMask), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
 { "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_Camera, true, LXType_None, 0, 0, 0, }, 
 };
 bool Renderer::Serialize(bool writing)
@@ -75,7 +70,7 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
 	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
 
-	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", pickingBufferSize, pickingBufferSize, GL::PixelFormat_RGB, GL::PixelFormat_RGB, GL::PixelType_uByte);
+	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_Editor->GetPickingBufferSize(), g_Editor->GetPickingBufferSize(), GL::PixelFormat_RGB, GL::PixelFormat_RGB, GL::PixelType_uByte);
 	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_Picking]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_Picking]->Initialize();
@@ -1308,9 +1303,9 @@ void Renderer::RenderImgui()
 		ImGui::PushID("EntityWindow");
 
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
-		if (m_PickedEntity)
+		if (g_Editor->GetPickedEntity())
 		{
-			ShowPropertyGridObject<Entity>(m_PickedEntity, "Entity");
+			ShowPropertyGridObject<Entity>(g_Editor->GetPickedEntity(), "Entity");
 		}
 		else
 		{
@@ -1325,10 +1320,10 @@ void Renderer::RenderImgui()
 		ImGui::PushID("MaterialWindow");
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Materials");
 
-		if (m_PickedEntity)
+		if (g_Editor->GetPickedEntity())
 		{
 			int i = 0;
-			for (Material*& material : m_PickedEntity->GetModel()->GetMaterials())
+			for (Material*& material : g_Editor->GetPickedEntity()->GetModel()->GetMaterials())
 			{
 				ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
 			}
@@ -1481,59 +1476,18 @@ void Renderer::RenderHDRFramebuffer()
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-bool fuzzyEquals(float a, float b, float tolerance)
+float Renderer::GetPickedID(glm::vec2 mouseClickPosition)
 {
-	return fabs(a - b) < tolerance;
-}
-
-void Renderer::RenderPicking()
-{
-	GL::SetViewport(pickingBufferSize, pickingBufferSize);
-
-	SetPipeline(pPipelinePicking);
-
-	BindFramebuffer(FramebufferType_Picking);
-	GL::ClearColorAndDepthBuffers();
-
-	SetViewUniforms(m_DebugCamera);
-
-	for (Entity* entity : m_World->GetEntities())
-	{
-		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
-		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
-
-		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
-		{
-			DrawMesh(entity->GetModel()->m_meshes[i]);
-		}
-	}
-
-	if (g_Editor->GetOptions()->GetDebugDisplay())
-	{
-		for (Entity* entity : m_World->GetDebugEntities())
-		{
-			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
-			SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
-
-			for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
-			{
-				DrawMesh(entity->GetModel()->m_meshes[i]);
-			}
-		}
-	}
-
-	BindFramebuffer(FramebufferType_Default);
-
 	SetPipeline(pPipelinePickingCompute);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
 
 	SetComputeUniform(1, "g_PickingBuffer");
 	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
-	
-	
+
+
 	SetComputeUniform(glm::vec2(windowWidth, windowHeight), "g_WindowSize");
-	SetComputeUniform(m_MouseClickPosition, "g_MousePosition");
+	SetComputeUniform(mouseClickPosition, "g_MousePosition");
 
 	glDispatchCompute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -1549,61 +1503,140 @@ void Renderer::RenderPicking()
 
 	output = *ptr;
 
-	m_PickedColor[0] = output;
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
+	return output;
+}
 
-	manipulatorDragging &= m_MouseButton1Down;
-
-	if (manipulatorDragging)
+void Renderer::RenderPickingBuffer(bool debugEntities)
+{
+	int vpWidth = m_Framebuffers[FramebufferType_Picking]->GetWidth();
+	int vpHeight = m_Framebuffers[FramebufferType_Picking]->GetHeight();
+	GL::SetViewport(vpWidth, vpHeight);
+	
+	SetPipeline(pPipelinePicking);
+	
+	BindFramebuffer(FramebufferType_Picking);
+	GL::ClearColorAndDepthBuffers();
+	
+	SetViewUniforms(m_DebugCamera);
+	
+	for (Entity* entity : m_World->GetEntities())
 	{
-		glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
-
-		float distance = screenDistance.x / 10.f;
-		glm::vec3 toAdd = distance * m_XYZMask;
-		m_PickedEntity->AddToPosition(toAdd);
-	}
-	else
-	{
-		if (m_LastMouseClickPosition != m_MouseClickPosition)
+		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+	
+		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
 		{
-			for (Entity* entity : m_World->GetDebugEntities())
-			{
-				// todo : proper int rendertarget; how does depth work then? do we care?
-				if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
-				{
-					if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
-					{
-						manipulatorDragging = true;
-					}
-				}
-			}
+			DrawMesh(entity->GetModel()->m_meshes[i]);
+		}
+	}
+	
+	if (debugEntities)
+	{
+		for (Entity* entity : m_World->GetDebugEntities())
+		{
+			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+			SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
-			for (Entity* entity : m_World->GetEntities())
+			for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
 			{
-				// todo : proper int rendertarget; how does depth work then? do we care?
-				if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
-				{
-					m_PickedEntity = entity;
-					break;
-				}
+				DrawMesh(entity->GetModel()->m_meshes[i]);
 			}
 		}
-
 	}
-
-	// todo : this should be controlled by ManipulatorComponent
-	if (m_PickedEntity)
-	{
-		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
-	}
-
-	// Update last click position
-	m_LastMouseClickPosition = m_MouseClickPosition;
-	m_LastMousePosition = m_MousePosition;
-
-
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
+
+
+//
+//void Renderer::RenderPicking()
+//{
+
+//
+
+//
+//	BindFramebuffer(FramebufferType_Default);
+//
+//	SetPipeline(pPipelinePickingCompute);
+//
+//	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
+//
+//	SetComputeUniform(1, "g_PickingBuffer");
+//	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
+//	
+//	
+//	SetComputeUniform(glm::vec2(windowWidth, windowHeight), "g_WindowSize");
+//	SetComputeUniform(m_MouseClickPosition, "g_MousePosition");
+//
+//	glDispatchCompute(1, 1, 1);
+//	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+//
+//	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+//
+//
+//	glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
+//
+//	float output;
+//	GLfloat *ptr;
+//	ptr = (GLfloat *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+//
+//	output = *ptr;
+//
+//	m_PickedColor[0] = output;
+//
+//
+//	manipulatorDragging &= m_MouseButton1Down;
+//
+//	if (manipulatorDragging)
+//	{
+//		glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
+//
+//		float distance = screenDistance.x / 10.f;
+//		glm::vec3 toAdd = distance * m_XYZMask;
+//		m_PickedEntity->AddToPosition(toAdd);
+//	}
+//	else
+//	{
+//		if (m_LastMouseClickPosition != m_MouseClickPosition)
+//		{
+//			for (Entity* entity : m_World->GetDebugEntities())
+//			{
+//				// todo : proper int rendertarget; how does depth work then? do we care?
+//				if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+//				{
+//					if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
+//					{
+//						manipulatorDragging = true;
+//					}
+//				}
+//			}
+//
+//			for (Entity* entity : m_World->GetEntities())
+//			{
+//				// todo : proper int rendertarget; how does depth work then? do we care?
+//				if (fuzzyEquals(output, entity->GetPickingID(), 0.005f))
+//				{
+//					m_PickedEntity = entity;
+//					break;
+//				}
+//			}
+//		}
+//
+//	}
+//
+//	// todo : this should be controlled by ManipulatorComponent
+//	if (m_PickedEntity)
+//	{
+//		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
+//	}
+//
+//	// Update last click position
+//	m_LastMouseClickPosition = m_MouseClickPosition;
+//	m_LastMousePosition = m_MousePosition;
+//
+//
+//	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+//}
 
 void Renderer::BeginFrame(World* world)
 {
@@ -1738,8 +1771,6 @@ void Renderer::RenderPickedEntity()
 		DrawBoundingBox(bb);
 	}
 
-	//DrawManipulator(m_PickedEntity);
-
 }
 
 void Renderer::RenderEditor()
@@ -1760,7 +1791,7 @@ void Renderer::render(World* world)
 {
 	BeginFrame(world);
 
-	RenderPicking();
+	g_Editor->RenderPicking();
 
 	RenderShadowMap();
 

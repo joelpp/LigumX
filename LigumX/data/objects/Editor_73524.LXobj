@@ -4,3 +4,5 @@ Name
 LigumXEditor
 Options
 12466
+PickingBufferSize
+128

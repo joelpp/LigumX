@@ -83,7 +83,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 	if (action == GLFW_PRESS || action == GLFW_RELEASE)
 	{
 		float add = 2.f * (int)(action == GLFW_PRESS) - 1;
-		m_Renderer->AddToXYZMask(add * glm::vec3(key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z));
+		g_Editor->AddToXYZMask(add * glm::vec3(key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z));
 	}
 
 	m_Renderer->GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
@@ -104,12 +104,12 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 			{
 				if (action == GLFW_PRESS)
 				{
-					m_Renderer->SetMouseButton1Down(true);
-					m_Renderer->SetMouseClickPosition(glm::vec2(x, y));
+					g_Editor->SetMouseButton1Down(true);
+					g_Editor->SetMouseClickPosition(glm::vec2(x, y));
 				}
 				else if (action == GLFW_RELEASE)
 				{
-					m_Renderer->SetMouseButton1Down(false);
+					g_Editor->SetMouseButton1Down(false);
 				}
 			}
         }
@@ -132,11 +132,10 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 {
         if (true)
 		{
-
             double x; double y;
             glfwGetCursorPos(pWindow, &x, &y);
 
-			m_Renderer->SetMousePosition(glm::vec2(x, y));
+			g_Editor->SetMousePosition(glm::vec2(x, y));
         }
 
 		m_Renderer->GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);

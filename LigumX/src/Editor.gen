@@ -2,4 +2,23 @@
 class Editor
 {
 	EditorOptions* Options;
+
+	[transient]
+	glm::vec2 MouseClickPosition
+	[transient]
+	glm::vec2 LastMouseClickPosition
+	[transient]
+	glm::vec2 LastMousePosition
+	[transient]
+	glm::vec2 MousePosition
+	[transient]
+	bool MouseButton1Down
+	[transient, adder]
+	glm::vec3 XYZMask
+	[transient]
+	Entity* PickedEntity
+	[transient]
+	bool ManipulatorDragging
+
+	int PickingBufferSize;
 }

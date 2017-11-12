@@ -102,17 +102,6 @@ DisplayOptions*& GetDisplayOptions() { return m_DisplayOptions; };
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
 PostEffects*& GetPostEffects() { return m_PostEffects; }; 
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
-const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
-void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; }; 
-const glm::vec2& GetLastMousePosition() { return m_LastMousePosition; }; 
-void SetLastMousePosition(glm::vec2 value) { m_LastMousePosition = value; }; 
-const glm::vec2& GetMousePosition() { return m_MousePosition; }; 
-void SetMousePosition(glm::vec2 value) { m_MousePosition = value; }; 
-const bool& GetMouseButton1Down() { return m_MouseButton1Down; }; 
-void SetMouseButton1Down(bool value) { m_MouseButton1Down = value; }; 
-const glm::vec3& GetXYZMask() { return m_XYZMask; }; 
-void SetXYZMask(glm::vec3 value) { m_XYZMask = value; }; 
-void AddToXYZMask(glm::vec3 value) { m_XYZMask += value; };
 Camera*& GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
@@ -120,14 +109,9 @@ int m_ObjectID;
 std::string m_Name;
 DisplayOptions* m_DisplayOptions;
 PostEffects* m_PostEffects;
-glm::vec2 m_MouseClickPosition;
-glm::vec2 m_LastMousePosition;
-glm::vec2 m_MousePosition;
-bool m_MouseButton1Down;
-glm::vec3 m_XYZMask;
 Camera* m_DebugCamera;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
@@ -136,11 +120,6 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_DisplayOptions,
 PIDX_PostEffects,
-PIDX_MouseClickPosition,
-PIDX_LastMousePosition,
-PIDX_MousePosition,
-PIDX_MouseButton1Down,
-PIDX_XYZMask,
 PIDX_DebugCamera,
 };
 bool Serialize(bool writing);
@@ -192,7 +171,10 @@ public:
 	void RenderShadowMap();
 	void RenderOpaque();
 	void RenderTextureOverlay();
-	void RenderPicking();
+
+	void RenderPickingBuffer(bool debugEntities);
+	float GetPickedID(glm::vec2 mouseClickPosition);
+
 	void ApplyEmissiveGlow();
 
 	void RenderHDRFramebuffer();
@@ -479,10 +461,9 @@ private:
 	
 	// todo : i think it makes sense that all the stuff down there should go in "editor" class
 	// + the "editor options"
-	const int pickingBufferSize = 128;
+	//const int pickingBufferSize = 128;
 
 	glm::vec3 m_PickedColor;
-	glm::vec2 m_LastMouseClickPosition;
 
 	Entity* m_PickedEntity;
 
