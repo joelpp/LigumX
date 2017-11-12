@@ -5,7 +5,6 @@ in vec3 v_Normal;
 in float v_maxHeight;
 
 
-
 out vec4 o_PSOutput;
 void main() 
 {

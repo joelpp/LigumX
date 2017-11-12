@@ -41,6 +41,8 @@ static std::string GetTimeString(){
 
 #define PRINTVEC3VECTOR(v) { for (int _index_ = 0; _index_ < v.size(); _index_++) PRINTCLASSTIME << #v << "[" << _index_ << "]: x=" << v[_index_].x << " y=" << v[_index_].y  << v[_index_].z << "\n"; }
 
+#define PRINTVEC4(v) { PRINTCLASSTIME << #v << ": x=" << v.x << " y=" << v.y << " z=" << v.z << " w=" << v.w << "\n"; }
+
 #define PRINTINTVECTOR(v) { for (int _index_ = 0; _index_ < v.size(); _index_++) PRINTCLASSTIME << #v << "[" << _index_ << "]: x=" << v[_index_] << "\n"; }
 
 #define PRINT(f) { PRINTCLASSTIME << #f << ": " << f << "\n"; }

@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include "imgui_impl_glfw_gl3.h"
+#include "Logging.h"
 
 class Texture;
 
@@ -21,6 +22,8 @@ extern Editor* g_Editor;
 
 class Editor
 {
+REGISTERCLASS(Editor);
+
 #pragma region  HEADER Editor
 public:
 static const int ClassID = 1231601560;

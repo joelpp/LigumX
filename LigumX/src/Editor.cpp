@@ -76,7 +76,14 @@ void Editor::RenderPicking()
 	renderer->RenderPickingBuffer(m_Options->GetDebugDisplay());
 
 
-	float pickedID = renderer->GetPickedID(m_MousePosition);
+
+
+	glm::vec4 pickingData;
+	renderer->GetPickingData(m_MousePosition, pickingData);
+
+	float pickedID = pickingData[3];
+	glm::vec3 eyePos = glm::swizzle(pickingData, glm::R, glm::G, glm::B);
+
 
 	m_ManipulatorDragging &= m_MouseButton1Down;
 
@@ -90,6 +97,7 @@ void Editor::RenderPicking()
 	}
 	else
 	{
+
 		if (m_LastMouseClickPosition != m_MouseClickPosition)
 		{
 			for (Entity* entity : world->GetDebugEntities())
@@ -114,9 +122,16 @@ void Editor::RenderPicking()
 				}
 			}
 
+
+			Camera* camera = renderer->GetDebugCamera();
+
+
 			// Update last click position
 			m_LastMouseClickPosition = m_MouseClickPosition;
+
+			PRINTVEC4(pickingData);
 		}
+
 
 	}
 
@@ -762,10 +777,13 @@ void Editor::RenderImgui()
 		ImGui::PushID("WorldWindow");
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
 
-		ShowPropertyGridTemplate<PostEffects>(renderer->GetPostEffects(), "Post Effects");
-		ShowPropertyGridTemplate<Camera>(renderer->GetDebugCamera(), "Camera");
-		ShowPropertyGridTemplate<SunLight>(world->GetSunLight(), "SunLight");
-		ShowPropertyGridTemplate<World>(world, "World");
+		ShowPropertyGridTemplate(renderer->GetPostEffects(), "Post Effects");
+		ShowPropertyGridTemplate(renderer->GetDebugCamera(), "Camera");
+		ShowPropertyGridTemplate(world->GetSunLight(), "SunLight");
+		ShowPropertyGridTemplate(world, "World");
+
+		Editor* editor = this;
+		ShowPropertyGridTemplate(editor, "Editor");
 
 		// Menu
 		if (ImGui::BeginMenuBar())

@@ -70,7 +70,7 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
 	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
 
-	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_Editor->GetPickingBufferSize(), g_Editor->GetPickingBufferSize(), GL::PixelFormat_RGB, GL::PixelFormat_RGB, GL::PixelType_uByte);
+	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_Editor->GetPickingBufferSize(), g_Editor->GetPickingBufferSize(), GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GL::PixelType_Float);
 	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_Picking]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_Picking]->Initialize();
@@ -230,10 +230,6 @@ void Renderer::Initialize()
 	windowTitle = "LigumX";
 	fps = 300;
 	dt = 0.1;
-
-	// TODO : add default constructors D: and serialization for gen files...
-	//m_DisplayOptions = new DisplayOptions();
-	//m_DisplayOptions->SetObjectID(0);
 
 	m_ShadowCamera = new Camera();
 	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
@@ -737,7 +733,7 @@ void Renderer::RenderHDRFramebuffer()
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-float Renderer::GetPickedID(glm::vec2 mouseClickPosition)
+void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingData)
 {
 	SetPipeline(pPipelinePickingCompute);
 
@@ -745,6 +741,9 @@ float Renderer::GetPickedID(glm::vec2 mouseClickPosition)
 
 	SetComputeUniform(1, "g_PickingBuffer");
 	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
+
+	SetComputeUniform(2, "g_DepthBuffer");
+	Bind2DTexture(2, m_Framebuffers[FramebufferType_Picking]->GetDepthTexture());
 
 
 	SetComputeUniform(glm::vec2(windowWidth, windowHeight), "g_WindowSize");
@@ -762,11 +761,14 @@ float Renderer::GetPickedID(glm::vec2 mouseClickPosition)
 	GLfloat *ptr;
 	ptr = (GLfloat *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 
-	output = *ptr;
+	for (int i = 0; i < 4; ++i)
+	{
+		pickingData[i] = *ptr++;
+	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
-	return output;
+
 }
 
 void Renderer::RenderPickingBuffer(bool debugEntities)

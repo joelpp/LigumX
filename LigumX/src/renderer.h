@@ -172,7 +172,7 @@ public:
 	void RenderTextureOverlay();
 
 	void RenderPickingBuffer(bool debugEntities);
-	float GetPickedID(glm::vec2 mouseClickPosition);
+	void GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingData);
 	void RenderEntityBB(Entity* entity);
 
 	void ApplyEmissiveGlow();

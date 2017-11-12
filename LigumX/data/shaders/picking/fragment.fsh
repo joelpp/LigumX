@@ -1,18 +1,15 @@
 #version 410 core
 
-in vec2 myTexCoord;
-in vec3 vNormalWS;
-in vec4 vWorldPosition;
-in float height;
-in vec4 FragPosLightSpace;
-
+in vec3 vWorldPosition;
 
 #define PROVIDER_Picking
 // Include Providers Marker
 
-out vec3 FinalColor;
+out vec4 FinalColor;
 
 void main() 
 {
-	FinalColor = vec3(g_PickingID, 1.f - g_PickingID, 0.f);
+	vec2 windowSize = vec2(128.f, 128.f) / 2.f;
+
+	FinalColor = vec4(vWorldPosition.xyz, g_PickingID);
 }
