@@ -9,6 +9,7 @@
 #include "Component.h"
 #include "Entity.h"
 #include "Texture.h"
+#include "Editor.h"
 #include "Sunlight.h"
 #include "Mesh.h"
 #include "StringUtils.h"
@@ -87,6 +88,8 @@ void Serializer::SerializePropertyOut(const char* ptr, const char* name, const L
 		SERIALIZE_PTR_OUT(Model)
 		//SERIALIZE_PTR_OUT(Mesh)
 		SERIALIZE_PTR_OUT(Material)
+		SERIALIZE_PTR_OUT(Editor)
+
 
 		case LXType_Mesh:
 		{
@@ -330,6 +333,7 @@ void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXTyp
 		//SERIALIZE_PTR_IN(Texture)
 		SERIALIZE_PTR_IN(SunLight)
 		SERIALIZE_PTR_IN(Entity)
+		SERIALIZE_PTR_IN(Editor)
 		SERIALIZE_PTR_IN(EditorOptions)
 		SERIALIZE_PTR_IN(Texture)
 

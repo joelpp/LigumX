@@ -1,4 +1,5 @@
+[globalinstance]
 class Editor
 {
-	EditorOptions Options;
+	EditorOptions* Options;
 }

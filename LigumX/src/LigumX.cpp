@@ -13,6 +13,7 @@
 #include "World.h"
 #include "Sector.h"
 #include "Heightfield.h"
+#include "Editor.h"
 #include "EngineStats.h"
 #include "Mesh.h"
 #include "Serializer.h"
@@ -69,10 +70,10 @@ void LigumX::init()
 	//=============================================================================
 	// Load Default data.
 	//=============================================================================
-
-
 	g_Serializer = new Serializer();
 	g_ObjectManager = new ObjectManager();
+
+	g_Editor = new Editor(73524);
 
 	m_Renderer = new Renderer();
 	m_Renderer->SetObjectID(28763);

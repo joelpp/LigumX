@@ -2,7 +2,6 @@
 class Renderer
 {
 	DisplayOptions* DisplayOptions
-	EditorOptions* EditorOptions
 	PostEffects* PostEffects
 
 	[transient]

@@ -28,7 +28,6 @@
 
 class Renderer;
 class DisplayOptions;
-class EditorOptions;
 class PostEffects;
 class Camera;
 
@@ -101,8 +100,6 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 DisplayOptions*& GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
-EditorOptions*& GetEditorOptions() { return m_EditorOptions; }; 
-void SetEditorOptions(EditorOptions* value) { m_EditorOptions = value; }; 
 PostEffects*& GetPostEffects() { return m_PostEffects; }; 
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
 const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
@@ -122,7 +119,6 @@ private:
 int m_ObjectID;
 std::string m_Name;
 DisplayOptions* m_DisplayOptions;
-EditorOptions* m_EditorOptions;
 PostEffects* m_PostEffects;
 glm::vec2 m_MouseClickPosition;
 glm::vec2 m_LastMousePosition;
@@ -131,7 +127,7 @@ bool m_MouseButton1Down;
 glm::vec3 m_XYZMask;
 Camera* m_DebugCamera;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
@@ -139,7 +135,6 @@ enum g_RendererPIDX
 PIDX_ObjectID,
 PIDX_Name,
 PIDX_DisplayOptions,
-PIDX_EditorOptions,
 PIDX_PostEffects,
 PIDX_MouseClickPosition,
 PIDX_LastMousePosition,
@@ -413,6 +408,9 @@ private:
 	void RenderAABB(const AABB& aabb);
 	void RenderImgui();
 	bool m_RenderingMenu;
+
+	template <typename T>
+	void TrySaveObject(T* object);
 
 	template<typename T>
 	void EndShowPropertyGridObject(T*& object, const char* name);

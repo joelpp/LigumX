@@ -1,6 +1,7 @@
 #include "Editor.h"
 
 #pragma region  CLASS_SOURCE Editor
+Editor* g_Editor;
 
 #include "Editor.h"
 #include "serializer.h"
@@ -10,7 +11,7 @@ const ClassPropertyData Editor::g_Properties[] =
 {
 { "ObjectID", PIDX_ObjectID, offsetof(Editor, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Editor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, false, LXType_None, 0, 0, 0, }, 
+{ "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
 };
 bool Editor::Serialize(bool writing)
 {
@@ -19,3 +20,14 @@ bool Editor::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE Editor
+
+
+Editor::Editor()
+{
+}
+
+Editor::Editor(int objectID)
+{
+	SetObjectID(objectID);
+	Serialize(false);
+}

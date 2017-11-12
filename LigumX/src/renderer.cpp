@@ -9,6 +9,7 @@
 #include "Entity.h"
 #include "RenderDataManager.h"
 #include "DisplayOptions.h"
+#include "Editor.h"
 #include "EditorOptions.h"
 #include "Settings.h"
 #include "PostEffects.h"
@@ -30,7 +31,6 @@ const ClassPropertyData Renderer::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Renderer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, }, 
-{ "EditorOptions", PIDX_EditorOptions, offsetof(Renderer, m_EditorOptions), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
 { "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, }, 
 { "MouseClickPosition", PIDX_MouseClickPosition, offsetof(Renderer, m_MouseClickPosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "LastMousePosition", PIDX_LastMousePosition, offsetof(Renderer, m_LastMousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
@@ -1230,21 +1230,35 @@ void Renderer::ShowObjectCreator()
 
 void Renderer::BackupData()
 {
-	if (m_EditorOptions->GetBackupDataOnSave())
+	if (g_Editor->GetOptions()->GetBackupDataOnSave())
 	{
 		g_Serializer->BackupData();
+	}
+}
+
+template <typename T>
+void Renderer::TrySaveObject(T* object)
+{
+	if (!g_Editor->GetOptions()->GetSaveDisabled())
+	{
+		BackupData();
+		object->Serialize(true);
+	}
+	else
+	{
+		PRINTSTRING("Output serialization is currently disabled.")
 	}
 }
 
 void Renderer::RenderImgui()
 {
 	ImGui_ImplGlfwGL3_NewFrame();
-	if (m_EditorOptions->GetShowTestGUI())
+	if (g_Editor->GetOptions()->GetShowTestGUI())
 	{
 		ImGui::ShowTestWindow();
 	}
 
-	//if (m_EditorOptions->GetShowWorldWindow())
+	//if (g_Editor->GetOptions()->GetShowWorldWindow())
 	{
 		ImGui::PushID("WorldWindow");
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
@@ -1261,36 +1275,24 @@ void Renderer::RenderImgui()
 
 			if (ImGui::BeginMenu("Menu"))
 			{
+				if (ImGui::MenuItem("Save Editor"))
+				{
+					TrySaveObject(g_Editor);
+				}
 				if (ImGui::MenuItem("Save renderer"))
 				{
-					if (!m_EditorOptions->GetSaveDisabled())
-					{
-						BackupData();
-						Serialize(true);
-					}
-					else
-					{
-						PRINTSTRING("Output serialization is currently disabled.")
-					}
+					TrySaveObject(this);
 				}
 				if (ImGui::MenuItem("Save world"))
 				{
-					if (!m_EditorOptions->GetSaveDisabled())
-					{
-						BackupData();
-						m_World->Serialize(true);
-					}
-					else
-					{
-						PRINTSTRING("Output serialization is currently disabled.")
-					}
+					TrySaveObject(m_World);
 				}
 
 				ImGui::EndMenu();
 			}
 
 			ShowPropertyGridTemplate<DisplayOptions>(m_DisplayOptions, "Display options");
-			ShowPropertyGridTemplate<EditorOptions>(m_EditorOptions, "Editor options");
+			ShowPropertyGridTemplate<EditorOptions>(g_Editor->GetOptions(), "Editor options");
 
 			ImGui::EndMenuBar();
 
@@ -1301,7 +1303,7 @@ void Renderer::RenderImgui()
 
 	}
 	
-	if (m_EditorOptions->GetShowEntityWindow())
+	if (g_Editor->GetOptions()->GetShowEntityWindow())
 	{
 		ImGui::PushID("EntityWindow");
 
@@ -1318,7 +1320,7 @@ void Renderer::RenderImgui()
 		ImGui::PopID();
 	}
 
-	if (m_EditorOptions->GetShowMaterialWindow())
+	if (g_Editor->GetOptions()->GetShowMaterialWindow())
 	{
 		ImGui::PushID("MaterialWindow");
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Materials");
@@ -1340,7 +1342,7 @@ void Renderer::RenderImgui()
 		ImGui::PopID();
 	}
 
-	if (m_EditorOptions->GetShowObjectCreator())
+	if (g_Editor->GetOptions()->GetShowObjectCreator())
 	{
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Creator");
 
@@ -1352,7 +1354,7 @@ void Renderer::RenderImgui()
 		EndImGUIWindow();
 	}
 
-	if (m_EditorOptions->GetShowEngineStats())
+	if (g_Editor->GetOptions()->GetShowEngineStats())
 	{
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Engine Stats");
 
@@ -1361,7 +1363,7 @@ void Renderer::RenderImgui()
 		EndImGUIWindow();
 	}
 
-	if (m_EditorOptions->GetShowObjectManager())
+	if (g_Editor->GetOptions()->GetShowObjectManager())
 	{
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Manager");
 
@@ -1433,7 +1435,7 @@ void Renderer::RenderOpaque()
 
 	RenderEntities(ShaderFamily_Basic, m_World->GetEntities());
 
-	if (m_EditorOptions->GetDebugDisplay())
+	if (g_Editor->GetOptions()->GetDebugDisplay())
 	{
 		RenderEntities(ShaderFamily_Basic, m_World->GetDebugEntities());
 	}
@@ -1506,7 +1508,7 @@ void Renderer::RenderPicking()
 		}
 	}
 
-	if (m_EditorOptions->GetDebugDisplay())
+	if (g_Editor->GetOptions()->GetDebugDisplay())
 	{
 		for (Entity* entity : m_World->GetDebugEntities())
 		{
@@ -1742,7 +1744,7 @@ void Renderer::RenderPickedEntity()
 
 void Renderer::RenderEditor()
 {
-	if (!m_EditorOptions->GetEnabled())
+	if (!g_Editor->GetOptions()->GetEnabled())
 	{
 		return;
 	}

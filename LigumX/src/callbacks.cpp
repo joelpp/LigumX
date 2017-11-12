@@ -4,6 +4,7 @@
 #include "World.h"
 #include "SectorManager.h"
 #include "Renderer.h"
+#include "Editor.h"
 #include "EditorOptions.h"
 #include <string>
 #include <chrono>
@@ -50,7 +51,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
     if(action == GLFW_PRESS){
         if (key == GLFW_KEY_SPACE) 
 		{ 
-			m_Renderer->GetEditorOptions()->SetEnabled(!m_Renderer->GetEditorOptions()->GetEnabled());
+			g_Editor->GetOptions()->SetEnabled(!g_Editor->GetOptions()->GetEnabled());
 		}
         else if (key == GLFW_KEY_ESCAPE) 
 		{
