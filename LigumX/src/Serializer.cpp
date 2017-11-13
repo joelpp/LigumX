@@ -12,6 +12,7 @@
 #include "Editor.h"
 #include "Sunlight.h"
 #include "Mesh.h"
+#include "GL.h"
 #include "StringUtils.h"
 #include "glm/glm.hpp"
 

@@ -48,6 +48,13 @@ const std::string EnumValues_ShaderFamily[] =
 "Terrain",
 };
 
+const ShaderFamily Indirection_ShaderFamily[] =
+{
+	ShaderFamily_Basic,
+	ShaderFamily_SolidColor,
+	ShaderFamily_Envmap,
+	ShaderFamily_Terrain,
+};
 
 #pragma endregion  CLASS_SOURCE Material
 

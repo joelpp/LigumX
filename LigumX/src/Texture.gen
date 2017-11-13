@@ -14,6 +14,7 @@ class Texture
 	int InternalFormat;
 	int Format;
 
+	[enum]
 	GLPixelType PixelType;
 
 	glm::ivec2 Size;

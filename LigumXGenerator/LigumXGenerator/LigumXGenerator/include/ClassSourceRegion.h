@@ -189,6 +189,14 @@ public:
 			WriteLine("};");
 
 			WriteLine("");
+
+			WriteLine("const " + anEnum.m_Name + " Indirection_" + anEnum.m_Name + "[] =");
+			WriteLine("{");
+			for (std::string& name : anEnum.m_Values)
+			{
+				WriteLine("	" + anEnum.m_Name + "_" + name + ",");
+			}
+			WriteLine("};");
 		}
 	}
 

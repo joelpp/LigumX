@@ -21,6 +21,7 @@ NumItems_ShaderFamily
 };
 
 extern const std::string EnumValues_ShaderFamily[4];
+extern const ShaderFamily Indirection_ShaderFamily[4];
 const int g_ShaderFamilyEnumLength = 4;
 
 

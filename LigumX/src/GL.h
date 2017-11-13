@@ -32,7 +32,33 @@ NumItems_GLPixelType
 };
 
 extern const std::string EnumValues_GLPixelType[19];
+extern const GLPixelType Indirection_GLPixelType[19];
 const int g_GLPixelTypeEnumLength = 19;
+
+enum GLPixelFormat
+{
+GLPixelFormat_RED = GL_RED,
+GLPixelFormat_RG = GL_RG,
+GLPixelFormat_RGB = GL_RGB,
+GLPixelFormat_BGR = GL_BGR,
+GLPixelFormat_RGBA = GL_RGBA,
+GLPixelFormat_BGRA = GL_BGRA,
+GLPixelFormat_Ri = GL_RED_INTEGER,
+GLPixelFormat_RGi = GL_RG_INTEGER,
+GLPixelFormat_RGBi = GL_RGB_INTEGER,
+GLPixelFormat_BGRi = GL_BGR_INTEGER,
+GLPixelFormat_RGBAi = GL_RGBA_INTEGER,
+GLPixelFormat_BGRAi = GL_BGRA_INTEGER,
+GLPixelFormat_StencilIndex = GL_STENCIL_INDEX,
+GLPixelFormat_DepthComponent = GL_DEPTH_COMPONENT,
+GLPixelFormat_DepthStencil = GL_DEPTH_STENCIL,
+GLPixelFormat_RGBA16F = GL_RGBA16F,
+NumItems_GLPixelFormat
+};
+
+extern const std::string EnumValues_GLPixelFormat[16];
+extern const GLPixelFormat Indirection_GLPixelFormat[16];
+const int g_GLPixelFormatEnumLength = 16;
 
 
 #pragma endregion  FORWARD_DECLARATIONS GL
@@ -103,25 +129,6 @@ public:
 		ProgramPointSize		= GL_PROGRAM_POINT_SIZE,
 	};
 
-	enum PixelFormat
-	{
-		PixelFormat_R				= GL_RED,
-		PixelFormat_RG				= GL_RG,
-		PixelFormat_RGB				= GL_RGB,
-		PixelFormat_BGR				= GL_BGR,
-		PixelFormat_RGBA			= GL_RGBA,
-		PixelFormat_BGRA			= GL_BGRA,
-		PixelFormat_Ri				= GL_RED_INTEGER,
-		PixelFormat_RGi				= GL_RG_INTEGER,
-		PixelFormat_RGBi			= GL_RGB_INTEGER,
-		PixelFormat_BGRi			= GL_BGR_INTEGER,
-		PixelFormat_RGBAi			= GL_RGBA_INTEGER,
-		PixelFormat_BGRAi			= GL_BGRA_INTEGER,
-		PixelFormat_StencilIndex	= GL_STENCIL_INDEX,
-		PixelFormat_DepthComponent	= GL_DEPTH_COMPONENT,
-		PixelFormat_DepthStencil	= GL_DEPTH_STENCIL,
-		PixelFormat_RGBA16F			= GL_RGBA16F,
-	};
 
 
 
@@ -133,7 +140,7 @@ public:
 	static GLuint CreateTexture();
 	static void BindTexture(GLuint& hwTexture);
 
-	static void ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, GLPixelType pixelType);
+	static void ClearTexture(int width, int height, GLPixelFormat internalPixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType);
 
 	static void SetTextureParameter(GLuint param, GLuint value);
 

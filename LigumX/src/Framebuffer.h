@@ -35,10 +35,10 @@ const GLuint& GetColorTexture() { return m_ColorTexture; };
 void SetColorTexture(GLuint value) { m_ColorTexture = value; }; 
 const GLuint& GetDepthTexture() { return m_DepthTexture; }; 
 void SetDepthTexture(GLuint value) { m_DepthTexture = value; }; 
-const GL::PixelFormat& GetPixelFormat() { return m_PixelFormat; }; 
-void SetPixelFormat(GL::PixelFormat value) { m_PixelFormat = value; }; 
-const GL::PixelFormat& GetInternalPixelFormat() { return m_InternalPixelFormat; }; 
-void SetInternalPixelFormat(GL::PixelFormat value) { m_InternalPixelFormat = value; }; 
+const GLPixelFormat& GetPixelFormat() { return m_PixelFormat; }; 
+void SetPixelFormat(GLPixelFormat value) { m_PixelFormat = value; }; 
+const GLPixelFormat& GetInternalPixelFormat() { return m_InternalPixelFormat; }; 
+void SetInternalPixelFormat(GLPixelFormat value) { m_InternalPixelFormat = value; }; 
 const bool& GetHasDepth() { return m_HasDepth; }; 
 void SetHasDepth(bool value) { m_HasDepth = value; }; 
 const int& GetNumColorTargets() { return m_NumColorTargets; }; 
@@ -50,8 +50,8 @@ int m_Width;
 int m_Height;
 GLuint m_ColorTexture;
 GLuint m_DepthTexture;
-GL::PixelFormat m_PixelFormat;
-GL::PixelFormat m_InternalPixelFormat;
+GLPixelFormat m_PixelFormat;
+GLPixelFormat m_InternalPixelFormat;
 bool m_HasDepth;
 int m_NumColorTargets;
 public:
@@ -76,12 +76,12 @@ bool Serialize(bool writing);
 #pragma endregion  HEADER Framebuffer
 
 Framebuffer();
-Framebuffer(std::string name, int width, int height,  GL::PixelFormat internalpixelFormat, GL::PixelFormat pixelFormat, GLPixelType pixelType);
+Framebuffer(std::string name, int width, int height,  GLPixelFormat internalpixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType);
 
 void Initialize();
 
 GLuint GetHWObject() { return m_HWObject; }
-void InitAttachment(GLuint& texture, GLuint attachment, GL::PixelFormat internalPixelFormat, GL::PixelFormat pixelFormat, GLPixelType pixelType);
+void InitAttachment(GLuint& texture, GLuint attachment, GLPixelFormat internalPixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType);
 const GLuint& GetColorTexture(int i) { return m_ColorTextures[i]; };
 
 private:

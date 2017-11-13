@@ -436,7 +436,16 @@ case LXType_##type: \
 	ShowGUIText(name); \
 	int* intPtr = (int*)ptr; \
 	ImGui::SameLine(); \
-	if (ImGui::Button((EnumValues_##type)[*intPtr].c_str())) \
+	int index = *intPtr; \
+	for (int i = 0; i < index; ++i) \
+	{ \
+		if (Indirection_##type[i] == index) \
+		{ \
+			index = i; \
+			break; \
+		} \
+	} \
+	if (ImGui::Button((EnumValues_##type)[index].c_str())) \
 		ImGui::OpenPopup("select"); \
 	if (ImGui::BeginPopup("select")) \
 	{ \
@@ -446,10 +455,10 @@ case LXType_##type: \
 		{ \
 			if (ImGui::Selectable((EnumValues_##type)[i].c_str())) \
 			{ \
-				*intPtr = i; \
+				*intPtr = Indirection_##type[i]; \
 			} \
 		} \
-		ImGui::EndPopup(); \
+			ImGui::EndPopup(); \
 	} \
 	break; \
 }
@@ -613,7 +622,41 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 
 	SHOW_ENUM(ShaderFamily);
 	SHOW_ENUM(GLPixelType);
-/*
+	SHOW_ENUM(GLPixelFormat);
+
+	//case LXType_GLPixelType: \
+	//{ \
+	//ShowGUIText(name); \
+	//int* intPtr = (int*)ptr; \
+	//ImGui::SameLine(); \
+	//int index = *intPtr; \
+	//for (int i = 0; i < index; ++i)
+	//{
+	//	if (Indirection_GLPixelType[i] == index)
+	//	{
+	//		index = i;
+	//		break;
+	//	}
+	//}
+	//if (ImGui::Button((EnumValues_GLPixelType)[index].c_str())) \
+	//	ImGui::OpenPopup("select"); 
+	//if (ImGui::BeginPopup("select")) \
+	//{ \
+	//ImGui::Text("GLPixelType"); \
+	//ImGui::Separator(); \
+	//for (int i = 0; i < NumItems_GLPixelType; i++) \
+	//{ \
+	//if (ImGui::Selectable((EnumValues_GLPixelType)[i].c_str())) \
+	//{ \
+	//*intPtr = Indirection_GLPixelType[i]; \
+	//} \
+	//} \
+	//ImGui::EndPopup(); \
+	//} \
+	//break; \
+	//}
+
+	/*
 	case LXType_ShaderFamily:
 	{
 		ShowGUIText(name);

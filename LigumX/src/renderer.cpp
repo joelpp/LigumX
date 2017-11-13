@@ -60,27 +60,27 @@ Renderer::Renderer()
 
 void Renderer::InitFramebuffers()
 {
-	m_Framebuffers[FramebufferType_MainColorBuffer] = new Framebuffer("Main Color Buffer", windowWidth, windowHeight, GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_MainColorBuffer] = new Framebuffer("Main Color Buffer", windowWidth, windowHeight, GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_MainColorBuffer]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_MainColorBuffer]->SetNumColorTargets(2);
 	m_Framebuffers[FramebufferType_MainColorBuffer]->Initialize();
 
-	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GL::PixelFormat_DepthComponent, GL::PixelFormat_DepthComponent, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GLPixelFormat_DepthComponent, GLPixelFormat_DepthComponent, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_ShadowMap]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
 	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
 
-	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_Editor->GetPickingBufferSize(), g_Editor->GetPickingBufferSize(), GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_Editor->GetPickingBufferSize(), g_Editor->GetPickingBufferSize(), GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_Picking]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_Picking]->Initialize();
 
-	m_Framebuffers[FramebufferType_PingPong0] = new Framebuffer("Ping pong 0", windowWidth, windowHeight, GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_PingPong0] = new Framebuffer("Ping pong 0", windowWidth, windowHeight, GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_PingPong0]->SetHasDepth(false);
 	m_Framebuffers[FramebufferType_PingPong0]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_PingPong0]->Initialize();
 
-	m_Framebuffers[FramebufferType_PingPong1] = new Framebuffer("Ping pong 1", windowWidth, windowHeight, GL::PixelFormat_RGBA16F, GL::PixelFormat_RGBA, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_PingPong1] = new Framebuffer("Ping pong 1", windowWidth, windowHeight, GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_PingPong1]->SetHasDepth(false);
 	m_Framebuffers[FramebufferType_PingPong1]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_PingPong1]->Initialize();

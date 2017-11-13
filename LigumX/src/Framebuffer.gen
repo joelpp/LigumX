@@ -5,8 +5,8 @@ class Framebuffer
 	GLuint ColorTexture;
 	GLuint DepthTexture;
 
-	GL::PixelFormat PixelFormat;
-	GL::PixelFormat InternalPixelFormat;
+	GLPixelFormat PixelFormat;
+	GLPixelFormat InternalPixelFormat;
 
 
 	bool HasDepth;

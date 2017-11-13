@@ -21,7 +21,7 @@ const ClassPropertyData Texture::g_Properties[] =
 { "BitsPerPixel", PIDX_BitsPerPixel, offsetof(Texture, m_BitsPerPixel), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_GLPixelType, false, LXType_None, 0, 0, 0, }, 
+{ "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_GLPixelType, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
 { "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 };
 bool Texture::Serialize(bool writing)

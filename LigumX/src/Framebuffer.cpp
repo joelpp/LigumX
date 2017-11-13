@@ -37,7 +37,7 @@ Framebuffer::Framebuffer()
 
 }
 
-Framebuffer::Framebuffer(std::string name, int width, int height, GL::PixelFormat internalpixelFormat, GL::PixelFormat pixelFormat, GLPixelType pixelType)
+Framebuffer::Framebuffer(std::string name, int width, int height, GLPixelFormat internalpixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType)
 	:	m_Width(width),
 		m_Height(height),
 		m_Name(name),
@@ -49,7 +49,7 @@ Framebuffer::Framebuffer(std::string name, int width, int height, GL::PixelForma
 
 }
 
-void Framebuffer::InitAttachment(GLuint& texture, GLuint attachment, GL::PixelFormat internalPixelFormat, GL::PixelFormat pixelFormat, GLPixelType pixelType)
+void Framebuffer::InitAttachment(GLuint& texture, GLuint attachment, GLPixelFormat internalPixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType)
 {
 	texture = GL::CreateTexture();
 	GL::BindTexture(texture);
@@ -78,7 +78,7 @@ void Framebuffer::Initialize()
 
 	if (m_HasDepth)
 	{
-		InitAttachment(m_DepthTexture, GL_DEPTH_ATTACHMENT, GL::PixelFormat_DepthComponent, GL::PixelFormat_DepthComponent, GLPixelType_Float);
+		InitAttachment(m_DepthTexture, GL_DEPTH_ATTACHMENT, GLPixelFormat_DepthComponent, GLPixelFormat_DepthComponent, GLPixelType_Float);
 	}
 
 	for (int i = 0; i < m_NumColorTargets; ++i)

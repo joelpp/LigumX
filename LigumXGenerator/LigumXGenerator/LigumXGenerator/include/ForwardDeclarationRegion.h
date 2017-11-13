@@ -98,7 +98,9 @@ public:
 			WriteLine("};");
 			WriteLine("");
 
-			WriteLine("extern const std::string EnumValues_" + anEnum.m_Name + "[" + std::to_string(anEnum.m_Values.size()) + "];");
+			std::string sizeBrackets = "[" + std::to_string(anEnum.m_Values.size()) + "]";
+			WriteLine("extern const std::string EnumValues_" + anEnum.m_Name + sizeBrackets + ";");
+			WriteLine("extern const " + anEnum.m_Name + " Indirection_" + anEnum.m_Name + sizeBrackets + ";");
 			WriteLine("const int g_" + anEnum.m_Name + "EnumLength = " + std::to_string(anEnum.m_Values.size()) + ";");
 
 			WriteLine("");

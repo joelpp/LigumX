@@ -42,6 +42,67 @@ const std::string EnumValues_GLPixelType[] =
 "Int2101010Rev",
 };
 
+const GLPixelType Indirection_GLPixelType[] =
+{
+	GLPixelType_uByte,
+	GLPixelType_Byte,
+	GLPixelType_uShort,
+	GLPixelType_Short,
+	GLPixelType_uInt,
+	GLPixelType_Int,
+	GLPixelType_Float,
+	GLPixelType_uByte332,
+	GLPixelType_uByte233Rev,
+	GLPixelType_uShort565,
+	GLPixelType_uShort565Rev,
+	GLPixelType_uShort4444,
+	GLPixelType_uShort4444Rev,
+	GLPixelType_Short5551,
+	GLPixelType_uShort1555Rev,
+	GLPixelType_Int8888,
+	GLPixelType_Int8888Rev,
+	GLPixelType_Int1010102,
+	GLPixelType_Int2101010Rev,
+};
+const std::string EnumValues_GLPixelFormat[] = 
+{
+"RED",
+"RG",
+"RGB",
+"BGR",
+"RGBA",
+"BGRA",
+"Ri",
+"RGi",
+"RGBi",
+"BGRi",
+"RGBAi",
+"BGRAi",
+"StencilIndex",
+"DepthComponent",
+"DepthStencil",
+"RGBA16F",
+};
+
+const GLPixelFormat Indirection_GLPixelFormat[] =
+{
+	GLPixelFormat_RED,
+	GLPixelFormat_RG,
+	GLPixelFormat_RGB,
+	GLPixelFormat_BGR,
+	GLPixelFormat_RGBA,
+	GLPixelFormat_BGRA,
+	GLPixelFormat_Ri,
+	GLPixelFormat_RGi,
+	GLPixelFormat_RGBi,
+	GLPixelFormat_BGRi,
+	GLPixelFormat_RGBAi,
+	GLPixelFormat_BGRAi,
+	GLPixelFormat_StencilIndex,
+	GLPixelFormat_DepthComponent,
+	GLPixelFormat_DepthStencil,
+	GLPixelFormat_RGBA16F,
+};
 
 #pragma endregion  CLASS_SOURCE GL
 
@@ -104,7 +165,7 @@ void GL::SetTextureParameter(GLuint param, GLuint value)
 	glTexParameteri(GL_TEXTURE_2D, param, value);
 }
 
-void GL::ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, GLPixelType pixelType)
+void GL::ClearTexture(int width, int height, GLPixelFormat internalPixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType)
 {
 	glTexImage2D(GL_TEXTURE_2D, 0, internalPixelFormat, width, height, 0, pixelFormat, pixelType, 0);
 }
