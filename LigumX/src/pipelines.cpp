@@ -42,7 +42,7 @@ void Renderer::init_pipelines()
 	m_Pipelines.clear();
 	for (int i = 0; i < g_ShaderFamilyEnumLength; ++i)
 	{
-		m_Pipelines.push_back(new ProgramPipeline(g_ShaderFamilyEnumValues[i]));
+		m_Pipelines.push_back(new ProgramPipeline(EnumValues_ShaderFamily[i]));
 	}
 
 }

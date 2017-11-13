@@ -180,7 +180,7 @@ public:
 	{
 		for (LXEnum& anEnum : m_Class.m_Enums)
 		{
-			WriteLine("const std::string g_" + anEnum.m_Name + "EnumValues[] = ");
+			WriteLine("const std::string EnumValues_" + anEnum.m_Name + "[] = ");
 			WriteLine("{");
 			for (std::string& name : anEnum.m_Values)
 			{

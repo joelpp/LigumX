@@ -430,6 +430,31 @@ void Editor::ShowProperty(std::map<int, char*>* map, const char* name)
 }
 
 
+#define SHOW_ENUM(type) \
+case LXType_##type: \
+{ \
+	ShowGUIText(name); \
+	int* intPtr = (int*)ptr; \
+	ImGui::SameLine(); \
+	if (ImGui::Button((EnumValues_##type)[*intPtr].c_str())) \
+		ImGui::OpenPopup("select"); \
+	if (ImGui::BeginPopup("select")) \
+	{ \
+		ImGui::Text(#type); \
+		ImGui::Separator(); \
+		for (int i = 0; i < NumItems_##type; i++) \
+		{ \
+			if (ImGui::Selectable((EnumValues_##type)[i].c_str())) \
+			{ \
+				*intPtr = i; \
+			} \
+		} \
+		ImGui::EndPopup(); \
+	} \
+	break; \
+}
+
+
 #define SHOW_PROPERTY_PTR_INTERNAL(type) \
 	if (*ptr == 0) \
 	{ \
@@ -585,6 +610,10 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 		break;
 	}
 
+
+	SHOW_ENUM(ShaderFamily);
+	//SHOW_ENUM(GLPixelFormat);
+/*
 	case LXType_ShaderFamily:
 	{
 		ShowGUIText(name);
@@ -610,7 +639,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 
 
 		break;
-	}
+	}*/
 
 	default:
 	{

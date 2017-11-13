@@ -40,7 +40,7 @@ bool Material::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-const std::string g_ShaderFamilyEnumValues[] = 
+const std::string EnumValues_ShaderFamily[] = 
 {
 "Basic",
 "SolidColor",

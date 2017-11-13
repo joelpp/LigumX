@@ -85,11 +85,11 @@ public:
 			{
 				WriteLine(anEnum.m_Name + "_" + name + ",");
 			}
-			WriteLine("ShaderFamily_NumItems,");
+			WriteLine("NumItems_" + anEnum.m_Name);
 			WriteLine("};");
 			WriteLine("");
 
-			WriteLine("extern const std::string g_" + anEnum.m_Name + "EnumValues[" + std::to_string(anEnum.m_Values.size()) + "];");
+			WriteLine("extern const std::string EnumValues_" + anEnum.m_Name + "[" + std::to_string(anEnum.m_Values.size()) + "];");
 			WriteLine("const int g_" + anEnum.m_Name + "EnumLength = " + std::to_string(anEnum.m_Values.size()) + ";");
 
 			WriteLine("");

@@ -15,6 +15,7 @@ enum LXType
 	LXType_Entity,
 	LXType_Framebuffer,
 	LXType_GLPixelFormat,
+	LXType_GLPixelType,
 	LXType_GLuint,
 	LXType_Material,
 	LXType_Mesh,

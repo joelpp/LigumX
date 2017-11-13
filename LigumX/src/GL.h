@@ -2,8 +2,10 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-namespace GL
+class GL
 {
+public:
+
 	enum DepthFunction
 	{
 		Depth_Never		= GL_NEVER,
@@ -64,55 +66,57 @@ namespace GL
 
 	enum PixelType
 	{
-		PixelType_uByte = GL_UNSIGNED_BYTE, 
-		PixelType_Byte = GL_BYTE, 
-		PixelType_uShort = GL_UNSIGNED_SHORT, 
-		PixelType_Short = GL_SHORT, 
-		PixelType_uInt = GL_UNSIGNED_INT, 
-		PixelType_Int = GL_INT, 
-		PixelType_Float = GL_FLOAT, 
-		PixelType_uByte332 = GL_UNSIGNED_BYTE_3_3_2, 
-		PixelType_uByte233Rev = GL_UNSIGNED_BYTE_2_3_3_REV, 
-		PixelType_uShort565 = GL_UNSIGNED_SHORT_5_6_5, 
-		PixelType_uShort565Rev = GL_UNSIGNED_SHORT_5_6_5_REV, 
-		PixelType_uShort4444 = GL_UNSIGNED_SHORT_4_4_4_4, 
-		PixelType_uShort4444Rev = GL_UNSIGNED_SHORT_4_4_4_4_REV, 
-		PixelType_Short5551 = GL_UNSIGNED_SHORT_5_5_5_1, 
-		PixelType_uShort1555Rev = GL_UNSIGNED_SHORT_1_5_5_5_REV, 
-		PixelType_Int8888 = GL_UNSIGNED_INT_8_8_8_8, 
-		PixelType_Int8888Rev = GL_UNSIGNED_INT_8_8_8_8_REV, 
-		PixelType_Int1010102 = GL_UNSIGNED_INT_10_10_10_2, 
+		PixelType_uByte = GL_UNSIGNED_BYTE,
+		PixelType_Byte = GL_BYTE,
+		PixelType_uShort = GL_UNSIGNED_SHORT,
+		PixelType_Short = GL_SHORT,
+		PixelType_uInt = GL_UNSIGNED_INT,
+		PixelType_Int = GL_INT,
+		PixelType_Float = GL_FLOAT,
+		PixelType_uByte332 = GL_UNSIGNED_BYTE_3_3_2,
+		PixelType_uByte233Rev = GL_UNSIGNED_BYTE_2_3_3_REV,
+		PixelType_uShort565 = GL_UNSIGNED_SHORT_5_6_5,
+		PixelType_uShort565Rev = GL_UNSIGNED_SHORT_5_6_5_REV,
+		PixelType_uShort4444 = GL_UNSIGNED_SHORT_4_4_4_4,
+		PixelType_uShort4444Rev = GL_UNSIGNED_SHORT_4_4_4_4_REV,
+		PixelType_Short5551 = GL_UNSIGNED_SHORT_5_5_5_1,
+		PixelType_uShort1555Rev = GL_UNSIGNED_SHORT_1_5_5_5_REV,
+		PixelType_Int8888 = GL_UNSIGNED_INT_8_8_8_8,
+		PixelType_Int8888Rev = GL_UNSIGNED_INT_8_8_8_8_REV,
+		PixelType_Int1010102 = GL_UNSIGNED_INT_10_10_10_2,
 		PixelType_Int2101010Rev = GL_UNSIGNED_INT_2_10_10_10_REV
 	};
 
 
 
-	void SetDepthFunction(DepthFunction func);
-	void SetCapability(GL::Capabilities cap, bool enabled);
-	GLFWwindow* CreateGLWindow(int width, int height, const char* title);
-	GLuint CreateFrameBuffer();
-	GLuint CreateTexture();
-	void BindTexture(GLuint& hwTexture);
 
-	void ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, PixelType pixelType);
 
-	void SetTextureParameter(GLuint param, GLuint value);
+	static void SetDepthFunction(DepthFunction func);
+	static void SetCapability(GL::Capabilities cap, bool enabled);
+	static GLFWwindow* CreateGLWindow(int width, int height, const char* title);
+	static GLuint CreateFrameBuffer();
+	static GLuint CreateTexture();
+	static void BindTexture(GLuint& hwTexture);
 
-	void AttachTextureToFramebuffer(GLuint texture, GLuint slot);
+	static void ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, PixelType pixelType);
 
-	void BindFramebuffer(GLuint frameBuffer);
+	static void SetTextureParameter(GLuint param, GLuint value);
 
-	void ClearColorBuffer();
+	static void AttachTextureToFramebuffer(GLuint texture, GLuint slot);
 
-	void SetViewport(int bufferWidth, int bufferHeight);
+	static void BindFramebuffer(GLuint frameBuffer);
 
-	void ClearColorAndDepthBuffers();
+	static void ClearColorBuffer();
 
-	void ClearDepthBuffer();
+	static void SetViewport(int bufferWidth, int bufferHeight);
 
-	void DrawElements(GLuint primitiveType, int numIndices, GLuint indicesType, int firstIndex);
+	static void ClearColorAndDepthBuffers();
 
-	void OutputErrors();
+	static void ClearDepthBuffer();
 
-	extern bool g_CheckGLErrors;
-}
+	static void DrawElements(GLuint primitiveType, int numIndices, GLuint indicesType, int firstIndex);
+
+	static void OutputErrors();
+
+	static bool g_CheckGLErrors;
+};

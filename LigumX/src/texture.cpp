@@ -21,7 +21,7 @@ const ClassPropertyData Texture::g_Properties[] =
 { "BitsPerPixel", PIDX_BitsPerPixel, offsetof(Texture, m_BitsPerPixel), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_GLPixelType, false, LXType_None, 0, 0, 0, }, 
 { "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 };
 bool Texture::Serialize(bool writing)
@@ -185,7 +185,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 
 	GLuint internalFormat = GL_RGBA;
 	GLuint format = GL_BGRA;
-	GLuint type = GL_UNSIGNED_BYTE;
+	GL::PixelType type = GL::PixelType_uByte;
 	
 	if (m_ObjectID == 23389)
 	{
@@ -196,7 +196,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 
 		internalFormat = GL_R32F;
 		format = GL_RED;
-		type = GL_FLOAT;
+		type = GL::PixelType_Float;
 	}
 
 	SetSize(glm::ivec2(width, height));

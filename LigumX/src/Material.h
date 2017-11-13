@@ -17,10 +17,10 @@ ShaderFamily_Basic,
 ShaderFamily_SolidColor,
 ShaderFamily_Envmap,
 ShaderFamily_Terrain,
-ShaderFamily_NumItems,
+NumItems_ShaderFamily
 };
 
-extern const std::string g_ShaderFamilyEnumValues[4];
+extern const std::string EnumValues_ShaderFamily[4];
 const int g_ShaderFamilyEnumLength = 4;
 
 

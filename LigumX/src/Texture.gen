@@ -13,7 +13,8 @@ class Texture
 
 	int InternalFormat;
 	int Format;
-	int PixelType;
+
+	GL::PixelType PixelType;
 
 	glm::ivec2 Size;
 }

@@ -20,12 +20,13 @@ struct GeneratorFile
 };
 
 std::map<std::string, int> g_FoundTypes;
+std::map<std::string, int> g_AdditionalEnums;
 
-void AddToFoundTypesMap(std::string type)
+void AddToTypesMap(std::map<std::string, int>& map, std::string type)
 {
 	StringList toRemoveFromFoundTypes = { "::" };
 	std::string entryKey = RemoveSubstrings(type, toRemoveFromFoundTypes);
-	g_FoundTypes[entryKey] = 1;
+	map[entryKey] = 1;
 }
 
 FileType GetTypeFromHeader(std::string fileType)
@@ -136,7 +137,15 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			{
 				if (generatingClass)
 				{
-					AddToFoundTypesMap(currentClass.m_Name);
+					AddToTypesMap(g_FoundTypes, currentClass.m_Name);
+
+					//for (Variable& var : currentClass.m_Members)
+					//{
+					//	if (var.m_PropertyFlags & PropertyFlags_Enum)
+					//	{
+					//		AddToTypesMap(g_AdditionalEnums, var.m_Type);
+					//	}
+					//}
 
 					classes.push_back(currentClass);
 					currentClass = LXClass();
@@ -181,7 +190,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 				variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
 
-				AddToFoundTypesMap(variable.m_Type);
+				AddToTypesMap(g_FoundTypes, variable.m_Type);
 
 				variable.m_PropertyFlags = varPropertyFlags;
 
@@ -261,6 +270,7 @@ void InitializeGenerator()
 	g_PropertyFlagsStringMap.emplace("transient", PropertyFlags_Transient);
 	g_PropertyFlagsStringMap.emplace("noneditable", PropertyFlags_NonEditable);
 	g_PropertyFlagsStringMap.emplace("adder", PropertyFlags_Adder);
+	g_PropertyFlagsStringMap.emplace("enum", PropertyFlags_Enum);
 
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden);
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly);
@@ -311,6 +321,15 @@ void GeneratePropertyFile()
 
 			WriteLineToFile(propertyFile, "	" + typeName + ",");
 		}
+
+		//for (auto& it = g_AdditionalEnums.begin(); it != g_AdditionalEnums.end(); ++it)
+		//{
+		//	std::string typeName = "LXType_";
+		//	typeName += it->first;
+
+		//	WriteLineToFile(propertyFile, "	" + typeName + ",");
+		//}
+
 
 		auto it = g_FoundTypes.find("LXType_char");
 		if (it == g_FoundTypes.end())
