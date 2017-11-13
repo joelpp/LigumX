@@ -19,8 +19,8 @@ const ClassPropertyData Texture::g_Properties[] =
 { "HWObject", PIDX_HWObject, offsetof(Texture, m_HWObject), 0, LXType_GLuint, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "NumChannels", PIDX_NumChannels, offsetof(Texture, m_NumChannels), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "BitsPerPixel", PIDX_BitsPerPixel, offsetof(Texture, m_BitsPerPixel), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_GLPixelFormat, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
+{ "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_GLPixelFormat, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
 { "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_GLPixelType, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
 { "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 };
@@ -183,8 +183,8 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	unsigned int width = FreeImage_GetWidth(bitmap);
 	unsigned int height = FreeImage_GetHeight(bitmap);
 
-	GLuint internalFormat = GL_RGBA;
-	GLuint format = GL_BGRA;
+	GLPixelFormat internalFormat = GLPixelFormat_RGBA;
+	GLPixelFormat format = GLPixelFormat_BGRA;
 	GLPixelType type = GLPixelType_uByte;
 	
 	if (m_ObjectID == 23389)
@@ -194,8 +194,8 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 
 		bits = FreeImage_GetBits(bitmap32);
 
-		internalFormat = GL_R32F;
-		format = GL_RED;
+		internalFormat = GLPixelFormat_R32F;
+		format = GLPixelFormat_RED;
 		type = GLPixelType_Float;
 	}
 

@@ -82,6 +82,7 @@ const std::string EnumValues_GLPixelFormat[] =
 "DepthComponent",
 "DepthStencil",
 "RGBA16F",
+"R32F",
 };
 
 const GLPixelFormat Indirection_GLPixelFormat[] =
@@ -102,6 +103,7 @@ const GLPixelFormat Indirection_GLPixelFormat[] =
 	GLPixelFormat_DepthComponent,
 	GLPixelFormat_DepthStencil,
 	GLPixelFormat_RGBA16F,
+	GLPixelFormat_R32F,
 };
 
 #pragma endregion  CLASS_SOURCE GL

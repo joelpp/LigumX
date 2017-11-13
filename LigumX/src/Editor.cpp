@@ -446,19 +446,20 @@ case LXType_##type: \
 		} \
 	} \
 	if (ImGui::Button((EnumValues_##type)[index].c_str())) \
-		ImGui::OpenPopup("select"); \
-	if (ImGui::BeginPopup("select")) \
+		ImGui::OpenPopup(name); \
+	if (ImGui::BeginPopup(name)) \
 	{ \
 		ImGui::Text(#type); \
 		ImGui::Separator(); \
-		for (int i = 0; i < NumItems_##type; i++) \
+		for (int i = 0; i < EnumLength_##type; i++) \
 		{ \
 			if (ImGui::Selectable((EnumValues_##type)[i].c_str())) \
 			{ \
 				*intPtr = Indirection_##type[i]; \
+				break; \
 			} \
 		} \
-			ImGui::EndPopup(); \
+		ImGui::EndPopup(); \
 	} \
 	break; \
 }
@@ -639,12 +640,12 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	//	}
 	//}
 	//if (ImGui::Button((EnumValues_GLPixelType)[index].c_str())) \
-	//	ImGui::OpenPopup("select"); 
+	//	ImGui::OpenPopup("select"); \
 	//if (ImGui::BeginPopup("select")) \
 	//{ \
 	//ImGui::Text("GLPixelType"); \
 	//ImGui::Separator(); \
-	//for (int i = 0; i < NumItems_GLPixelType; i++) \
+	//for (int i = 0; i < g_GLPixelTypeEnumLength; i++) \
 	//{ \
 	//if (ImGui::Selectable((EnumValues_GLPixelType)[i].c_str())) \
 	//{ \

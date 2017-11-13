@@ -11,8 +11,11 @@ class Texture
 
 	int BitsPerPixel;
 
-	int InternalFormat;
-	int Format;
+	[enum]
+	GLPixelFormat InternalFormat;
+
+	[enum]
+	GLPixelFormat Format;
 
 	[enum]
 	GLPixelType PixelType;

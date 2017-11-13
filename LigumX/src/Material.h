@@ -17,12 +17,11 @@ ShaderFamily_Basic,
 ShaderFamily_SolidColor,
 ShaderFamily_Envmap,
 ShaderFamily_Terrain,
-NumItems_ShaderFamily
 };
 
 extern const std::string EnumValues_ShaderFamily[4];
 extern const ShaderFamily Indirection_ShaderFamily[4];
-const int g_ShaderFamilyEnumLength = 4;
+const int EnumLength_ShaderFamily = 4;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Material

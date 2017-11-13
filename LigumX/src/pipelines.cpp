@@ -40,7 +40,7 @@ void Renderer::init_pipelines()
 	Renderer::outputGLError(__func__, __LINE__);
 
 	m_Pipelines.clear();
-	for (int i = 0; i < g_ShaderFamilyEnumLength; ++i)
+	for (int i = 0; i < EnumLength_ShaderFamily; ++i)
 	{
 		m_Pipelines.push_back(new ProgramPipeline(EnumValues_ShaderFamily[i]));
 	}

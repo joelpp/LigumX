@@ -28,12 +28,11 @@ GLPixelType_Int8888 = GL_UNSIGNED_INT_8_8_8_8,
 GLPixelType_Int8888Rev = GL_UNSIGNED_INT_8_8_8_8_REV,
 GLPixelType_Int1010102 = GL_UNSIGNED_INT_10_10_10_2,
 GLPixelType_Int2101010Rev = GL_UNSIGNED_INT_2_10_10_10_REV,
-NumItems_GLPixelType
 };
 
 extern const std::string EnumValues_GLPixelType[19];
 extern const GLPixelType Indirection_GLPixelType[19];
-const int g_GLPixelTypeEnumLength = 19;
+const int EnumLength_GLPixelType = 19;
 
 enum GLPixelFormat
 {
@@ -53,12 +52,12 @@ GLPixelFormat_StencilIndex = GL_STENCIL_INDEX,
 GLPixelFormat_DepthComponent = GL_DEPTH_COMPONENT,
 GLPixelFormat_DepthStencil = GL_DEPTH_STENCIL,
 GLPixelFormat_RGBA16F = GL_RGBA16F,
-NumItems_GLPixelFormat
+GLPixelFormat_R32F = GL_R32F,
 };
 
-extern const std::string EnumValues_GLPixelFormat[16];
-extern const GLPixelFormat Indirection_GLPixelFormat[16];
-const int g_GLPixelFormatEnumLength = 16;
+extern const std::string EnumValues_GLPixelFormat[17];
+extern const GLPixelFormat Indirection_GLPixelFormat[17];
+const int EnumLength_GLPixelFormat = 17;
 
 
 #pragma endregion  FORWARD_DECLARATIONS GL

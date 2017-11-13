@@ -94,14 +94,13 @@ public:
 				WriteLine(",");
 				i++;
 			}
-			WriteLine("NumItems_" + anEnum.m_Name);
 			WriteLine("};");
 			WriteLine("");
 
 			std::string sizeBrackets = "[" + std::to_string(anEnum.m_Values.size()) + "]";
 			WriteLine("extern const std::string EnumValues_" + anEnum.m_Name + sizeBrackets + ";");
 			WriteLine("extern const " + anEnum.m_Name + " Indirection_" + anEnum.m_Name + sizeBrackets + ";");
-			WriteLine("const int g_" + anEnum.m_Name + "EnumLength = " + std::to_string(anEnum.m_Values.size()) + ";");
+			WriteLine("const int EnumLength_" + anEnum.m_Name + " = " + std::to_string(anEnum.m_Values.size()) + ";");
 
 			WriteLine("");
 		}
