@@ -33,7 +33,7 @@ vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 		offsets.x = 0;
 	}
 	offsets.y = 0;
-	float heightLeft =		textureLod(heightfieldTexture, texCoord - offsets, 0.f).r;
+	float heightLeft = textureLod(heightfieldTexture, texCoord - offsets, 0.f).r;
 	
 	offsets = vec2(resolution);
 	if (texCoord.x >= (1.f - resolution - 0.001f))

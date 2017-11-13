@@ -113,12 +113,18 @@ void Editor::RenderPicking()
 
 			PRINTVEC3(normalized);
 
-			int width = m_TerrainBrushSize;
+			float width = m_TerrainBrushSize;
 			glm::ivec2 offset = m_PickedTexelOffset;
+			glm::vec2 clickedUV = glm::vec2(offset) / glm::vec2(width);
 
-			std::vector<char> values(width * width * 4);
-			char* val = values.data();
-			float maxVal = std::max(-screenDistance.y, 0.f);
+			std::vector<float> values(width * width );
+			float* val = values.data();
+			double maxVal = std::max(-screenDistance.y / 100, 0.f);
+
+			glm::vec2 center = glm::vec2(0.5f, 0.5f);
+
+			double maxHeight = maxVal * glm::length(center);
+			double radius = 0.5f;
 
 			for (int i = 0; i < width; ++i)
 			{
@@ -126,15 +132,27 @@ void Editor::RenderPicking()
 				{
 					glm::vec2 localUV = glm::vec2(i, j) / glm::vec2(width);
 
-					glm::vec2 centerOffset = localUV - glm::vec2(0.5f, 0.5f);
-					float height = maxVal * sqrt(1.f - glm::dot(centerOffset, centerOffset));
-					val[4* (i * width + j)] = (char)(height);
+					glm::vec2 centeredUV = localUV - center;
+					double horizDist = glm::length(centeredUV);;
+
+					double height = 0;
+
+					if (horizDist < radius)
+					{
+						height = maxVal * sqrt(pow(radius,2) - pow(horizDist, 2));
+						//height = maxHeight - height;
+					}
+
+					val[(int)(i * width + j)] = (float)height;
 				}
 			}
 
 			Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
 			renderer->Bind2DTexture(0, tex->GetHWObject());
-			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, GL_RGBA, GL_UNSIGNED_BYTE, values.data());
+			GLuint format = GL_RED;
+			GLuint type = GL_FLOAT;
+
+			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, format, type, values.data());
 
 			PRINTVEC2(offset);
 			PRINT(width);

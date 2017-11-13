@@ -35,6 +35,7 @@ enum LXType
 	LXType_int,
 	LXType_stdstring,
 	LXType_stdvector,
+	LXType_char,
 	LXType_None,
 };
 

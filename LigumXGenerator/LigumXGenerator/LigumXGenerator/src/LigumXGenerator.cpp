@@ -311,6 +311,13 @@ void GeneratePropertyFile()
 
 			WriteLineToFile(propertyFile, "	" + typeName + ",");
 		}
+
+		auto it = g_FoundTypes.find("LXType_char");
+		if (it == g_FoundTypes.end())
+		{
+			WriteLineToFile(propertyFile, "	LXType_char,");
+		}
+
 		WriteLineToFile(propertyFile, "	LXType_None,");
 		WriteLineToFile(propertyFile, "};");
 		WriteLineToFile(propertyFile, "");

@@ -34,6 +34,16 @@ const bool& GetIsCubeMap() { return m_IsCubeMap; };
 void SetIsCubeMap(bool value) { m_IsCubeMap = value; }; 
 const GLuint& GetHWObject() { return m_HWObject; }; 
 void SetHWObject(GLuint value) { m_HWObject = value; }; 
+const int& GetNumChannels() { return m_NumChannels; }; 
+void SetNumChannels(int value) { m_NumChannels = value; }; 
+const int& GetBitsPerPixel() { return m_BitsPerPixel; }; 
+void SetBitsPerPixel(int value) { m_BitsPerPixel = value; }; 
+const int& GetInternalFormat() { return m_InternalFormat; }; 
+void SetInternalFormat(int value) { m_InternalFormat = value; }; 
+const int& GetFormat() { return m_Format; }; 
+void SetFormat(int value) { m_Format = value; }; 
+const int& GetPixelType() { return m_PixelType; }; 
+void SetPixelType(int value) { m_PixelType = value; }; 
 const glm::ivec2& GetSize() { return m_Size; }; 
 void SetSize(glm::ivec2 value) { m_Size = value; }; 
 private:
@@ -42,9 +52,14 @@ std::string m_Name;
 std::string m_Filename;
 bool m_IsCubeMap;
 GLuint m_HWObject;
+int m_NumChannels;
+int m_BitsPerPixel;
+int m_InternalFormat;
+int m_Format;
+int m_PixelType;
 glm::ivec2 m_Size;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_TexturePIDX
@@ -54,6 +69,11 @@ PIDX_Name,
 PIDX_Filename,
 PIDX_IsCubeMap,
 PIDX_HWObject,
+PIDX_NumChannels,
+PIDX_BitsPerPixel,
+PIDX_InternalFormat,
+PIDX_Format,
+PIDX_PixelType,
 PIDX_Size,
 };
 bool Serialize(bool writing);

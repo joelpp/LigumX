@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "Renderer.h"
 #include "texture.h"
 #include <vector>
 
@@ -16,6 +17,11 @@ const ClassPropertyData Texture::g_Properties[] =
 { "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "IsCubeMap", PIDX_IsCubeMap, offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HWObject", PIDX_HWObject, offsetof(Texture, m_HWObject), 0, LXType_GLuint, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "NumChannels", PIDX_NumChannels, offsetof(Texture, m_NumChannels), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "BitsPerPixel", PIDX_BitsPerPixel, offsetof(Texture, m_BitsPerPixel), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 };
 bool Texture::Serialize(bool writing)
@@ -177,18 +183,31 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	unsigned int width = FreeImage_GetWidth(bitmap);
 	unsigned int height = FreeImage_GetHeight(bitmap);
 
+	GLuint internalFormat = GL_RGBA;
+	GLuint format = GL_BGRA;
+	GLuint type = GL_UNSIGNED_BYTE;
+	
+	if (m_ObjectID == 23389)
+	{
+		FIBITMAP* bitmapRF;
+		bitmap32 = FreeImage_ConvertToFloat(bitmap32);
+
+		bits = FreeImage_GetBits(bitmap32);
+
+		internalFormat = GL_R32F;
+		format = GL_RED;
+		type = GL_FLOAT;
+	}
+
 	SetSize(glm::ivec2(width, height));
+	SetBitsPerPixel(bitsPerPixel);
 
-	if (m_IsCubeMap)
-	{
-		glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
+	SetInternalFormat(internalFormat);
+	SetFormat(format);
+	SetPixelType(type);
 
-	}
-	else
-	{
-		glTexImage2D(target, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bits);
-
-	}
+	glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, bits);
+	Renderer::outputGLError(__func__, __LINE__);
 
 	FreeImage_Unload(bitmap32);
 

@@ -7,5 +7,13 @@ class Texture
 	[transient]
 	GLuint HWObject;
 
+	int NumChannels;
+
+	int BitsPerPixel;
+
+	int InternalFormat;
+	int Format;
+	int PixelType;
+
 	glm::ivec2 Size;
 }
