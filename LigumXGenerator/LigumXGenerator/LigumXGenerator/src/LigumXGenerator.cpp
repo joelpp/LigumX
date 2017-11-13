@@ -166,6 +166,9 @@ ClassList createLXClass(std::vector<std::string>& lines)
 			if (generatingEnum)
 			{
 				currentEnum.m_Values.push_back(tokens[0]);
+
+				std::string defaultValue = tokens.size() == 3 ? tokens[2] : "";
+				currentEnum.m_DefaultValues.push_back(defaultValue);
 			}
 			else
 			{

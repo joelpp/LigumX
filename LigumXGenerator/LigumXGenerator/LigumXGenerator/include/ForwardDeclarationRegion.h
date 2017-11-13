@@ -81,9 +81,18 @@ public:
 			WriteLine("enum " + anEnum.m_Name);
 			WriteLine("{");
 
+			int i = 0;
 			for (std::string& name : anEnum.m_Values)
 			{
-				WriteLine(anEnum.m_Name + "_" + name + ",");
+				Write(anEnum.m_Name + "_" + name);
+
+				if (anEnum.m_DefaultValues[i] != "")
+				{
+					Write(" = " + anEnum.m_DefaultValues[i]);
+				}
+
+				WriteLine(",");
+				i++;
 			}
 			WriteLine("NumItems_" + anEnum.m_Name);
 			WriteLine("};");

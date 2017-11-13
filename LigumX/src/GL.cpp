@@ -3,6 +3,47 @@
 #include <string>
 #include <sstream>
 
+#pragma region  CLASS_SOURCE GL
+
+#include "GL.h"
+#include "serializer.h"
+#include <cstddef>
+#include "ObjectManager.h"
+const ClassPropertyData GL::g_Properties[] = 
+{
+{ "ObjectID", PIDX_ObjectID, offsetof(GL, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(GL, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+};
+bool GL::Serialize(bool writing)
+{
+	bool success = g_Serializer->SerializeObject(this, writing); 
+	return success;
+}
+const std::string EnumValues_GLPixelType[] = 
+{
+"uByte",
+"Byte",
+"uShort",
+"Short",
+"uInt",
+"Int",
+"Float",
+"uByte332",
+"uByte233Rev",
+"uShort565",
+"uShort565Rev",
+"uShort4444",
+"uShort4444Rev",
+"Short5551",
+"uShort1555Rev",
+"Int8888",
+"Int8888Rev",
+"Int1010102",
+"Int2101010Rev",
+};
+
+
+#pragma endregion  CLASS_SOURCE GL
 
 bool GL::g_CheckGLErrors = false;
 
@@ -63,9 +104,8 @@ void GL::SetTextureParameter(GLuint param, GLuint value)
 	glTexParameteri(GL_TEXTURE_2D, param, value);
 }
 
-void GL::ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, PixelType pixelType)
+void GL::ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, GLPixelType pixelType)
 {
-	// todo problem : assuming all parameters
 	glTexImage2D(GL_TEXTURE_2D, 0, internalPixelFormat, width, height, 0, pixelFormat, pixelType, 0);
 }
 

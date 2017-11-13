@@ -2,8 +2,67 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#pragma region  FORWARD_DECLARATIONS GL
+#include "property.h"
+
+class GL;
+
+enum GLPixelType
+{
+GLPixelType_uByte = GL_UNSIGNED_BYTE,
+GLPixelType_Byte = GL_BYTE,
+GLPixelType_uShort = GL_UNSIGNED_SHORT,
+GLPixelType_Short = GL_SHORT,
+GLPixelType_uInt = GL_UNSIGNED_INT,
+GLPixelType_Int = GL_INT,
+GLPixelType_Float = GL_FLOAT,
+GLPixelType_uByte332 = GL_UNSIGNED_BYTE_3_3_2,
+GLPixelType_uByte233Rev = GL_UNSIGNED_BYTE_2_3_3_REV,
+GLPixelType_uShort565 = GL_UNSIGNED_SHORT_5_6_5,
+GLPixelType_uShort565Rev = GL_UNSIGNED_SHORT_5_6_5_REV,
+GLPixelType_uShort4444 = GL_UNSIGNED_SHORT_4_4_4_4,
+GLPixelType_uShort4444Rev = GL_UNSIGNED_SHORT_4_4_4_4_REV,
+GLPixelType_Short5551 = GL_UNSIGNED_SHORT_5_5_5_1,
+GLPixelType_uShort1555Rev = GL_UNSIGNED_SHORT_1_5_5_5_REV,
+GLPixelType_Int8888 = GL_UNSIGNED_INT_8_8_8_8,
+GLPixelType_Int8888Rev = GL_UNSIGNED_INT_8_8_8_8_REV,
+GLPixelType_Int1010102 = GL_UNSIGNED_INT_10_10_10_2,
+GLPixelType_Int2101010Rev = GL_UNSIGNED_INT_2_10_10_10_REV,
+NumItems_GLPixelType
+};
+
+extern const std::string EnumValues_GLPixelType[19];
+const int g_GLPixelTypeEnumLength = 19;
+
+
+#pragma endregion  FORWARD_DECLARATIONS GL
 class GL
 {
+#pragma region  HEADER GL
+public:
+static const int ClassID = 1657862494;
+static const LXType Type = LXType_GL;
+static constexpr const char* ClassName = "GL";
+
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
+private:
+int m_ObjectID;
+std::string m_Name;
+public:
+static const int g_PropertyCount = 2;
+static const ClassPropertyData g_Properties[g_PropertyCount];
+
+enum g_GLPIDX
+{
+PIDX_ObjectID,
+PIDX_Name,
+};
+bool Serialize(bool writing);
+
+#pragma endregion  HEADER GL
 public:
 
 	enum DepthFunction
@@ -64,30 +123,6 @@ public:
 		PixelFormat_RGBA16F			= GL_RGBA16F,
 	};
 
-	enum PixelType
-	{
-		PixelType_uByte = GL_UNSIGNED_BYTE,
-		PixelType_Byte = GL_BYTE,
-		PixelType_uShort = GL_UNSIGNED_SHORT,
-		PixelType_Short = GL_SHORT,
-		PixelType_uInt = GL_UNSIGNED_INT,
-		PixelType_Int = GL_INT,
-		PixelType_Float = GL_FLOAT,
-		PixelType_uByte332 = GL_UNSIGNED_BYTE_3_3_2,
-		PixelType_uByte233Rev = GL_UNSIGNED_BYTE_2_3_3_REV,
-		PixelType_uShort565 = GL_UNSIGNED_SHORT_5_6_5,
-		PixelType_uShort565Rev = GL_UNSIGNED_SHORT_5_6_5_REV,
-		PixelType_uShort4444 = GL_UNSIGNED_SHORT_4_4_4_4,
-		PixelType_uShort4444Rev = GL_UNSIGNED_SHORT_4_4_4_4_REV,
-		PixelType_Short5551 = GL_UNSIGNED_SHORT_5_5_5_1,
-		PixelType_uShort1555Rev = GL_UNSIGNED_SHORT_1_5_5_5_REV,
-		PixelType_Int8888 = GL_UNSIGNED_INT_8_8_8_8,
-		PixelType_Int8888Rev = GL_UNSIGNED_INT_8_8_8_8_REV,
-		PixelType_Int1010102 = GL_UNSIGNED_INT_10_10_10_2,
-		PixelType_Int2101010Rev = GL_UNSIGNED_INT_2_10_10_10_REV
-	};
-
-
 
 
 
@@ -98,7 +133,7 @@ public:
 	static GLuint CreateTexture();
 	static void BindTexture(GLuint& hwTexture);
 
-	static void ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, PixelType pixelType);
+	static void ClearTexture(int width, int height, PixelFormat internalPixelFormat, PixelFormat pixelFormat, GLPixelType pixelType);
 
 	static void SetTextureParameter(GLuint param, GLuint value);
 

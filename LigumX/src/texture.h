@@ -42,8 +42,8 @@ const int& GetInternalFormat() { return m_InternalFormat; };
 void SetInternalFormat(int value) { m_InternalFormat = value; }; 
 const int& GetFormat() { return m_Format; }; 
 void SetFormat(int value) { m_Format = value; }; 
-const GL::PixelType& GetPixelType() { return m_PixelType; }; 
-void SetPixelType(GL::PixelType value) { m_PixelType = value; }; 
+const GLPixelType& GetPixelType() { return m_PixelType; }; 
+void SetPixelType(GLPixelType value) { m_PixelType = value; }; 
 const glm::ivec2& GetSize() { return m_Size; }; 
 void SetSize(glm::ivec2 value) { m_Size = value; }; 
 private:
@@ -56,7 +56,7 @@ int m_NumChannels;
 int m_BitsPerPixel;
 int m_InternalFormat;
 int m_Format;
-GL::PixelType m_PixelType;
+GLPixelType m_PixelType;
 glm::ivec2 m_Size;
 public:
 static const int g_PropertyCount = 11;

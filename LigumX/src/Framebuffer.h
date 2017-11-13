@@ -76,12 +76,12 @@ bool Serialize(bool writing);
 #pragma endregion  HEADER Framebuffer
 
 Framebuffer();
-Framebuffer(std::string name, int width, int height,  GL::PixelFormat internalpixelFormat, GL::PixelFormat pixelFormat, GL::PixelType pixelType);
+Framebuffer(std::string name, int width, int height,  GL::PixelFormat internalpixelFormat, GL::PixelFormat pixelFormat, GLPixelType pixelType);
 
 void Initialize();
 
 GLuint GetHWObject() { return m_HWObject; }
-void InitAttachment(GLuint& texture, GLuint attachment, GL::PixelFormat internalPixelFormat, GL::PixelFormat pixelFormat, GL::PixelType pixelType);
+void InitAttachment(GLuint& texture, GLuint attachment, GL::PixelFormat internalPixelFormat, GL::PixelFormat pixelFormat, GLPixelType pixelType);
 const GLuint& GetColorTexture(int i) { return m_ColorTextures[i]; };
 
 private:
@@ -92,7 +92,7 @@ std::vector<GLuint> m_ColorTextures;
 
 
 public:
-	GL::PixelType m_PixelType;
+	GLPixelType m_PixelType;
 	
 	// todo : we should have a list of textures and their corresponding attachments rather than a single one
 	GLuint m_Attachment;

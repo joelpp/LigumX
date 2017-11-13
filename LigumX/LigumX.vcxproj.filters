@@ -472,5 +472,6 @@
     <None Include="src\EditorOptions.gen" />
     <None Include="src\EngineStats.gen" />
     <None Include="src\Editor.gen" />
+    <None Include="src\GL.gen" />
   </ItemGroup>
 </Project>

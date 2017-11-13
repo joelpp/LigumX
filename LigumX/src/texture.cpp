@@ -185,7 +185,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 
 	GLuint internalFormat = GL_RGBA;
 	GLuint format = GL_BGRA;
-	GL::PixelType type = GL::PixelType_uByte;
+	GLPixelType type = GLPixelType_uByte;
 	
 	if (m_ObjectID == 23389)
 	{
@@ -196,7 +196,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 
 		internalFormat = GL_R32F;
 		format = GL_RED;
-		type = GL::PixelType_Float;
+		type = GLPixelType_Float;
 	}
 
 	SetSize(glm::ivec2(width, height));

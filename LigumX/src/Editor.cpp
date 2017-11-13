@@ -612,7 +612,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 
 
 	SHOW_ENUM(ShaderFamily);
-	//SHOW_ENUM(GLPixelFormat);
+	SHOW_ENUM(GLPixelType);
 /*
 	case LXType_ShaderFamily:
 	{
