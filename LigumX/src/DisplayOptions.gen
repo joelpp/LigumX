@@ -1,7 +1,7 @@
 class DisplayOptions
 {
 	bool UseSkyLighting;
-	bool DrawTerrain;
+	bool RenderTerrain;
 	bool DrawSky;
 	bool WireframeRendering;
 	bool UseLighting;

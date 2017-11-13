@@ -179,6 +179,8 @@ void ShowProperty(std::map<int, char *>* map, const char* name);
 bool ShowEditableProperty(int* value, const char* name);
 void BackupData();
 
+Texture* m_SplatMapTexture;
+
 private:
 	bool m_RenderingMenu;
 };

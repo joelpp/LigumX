@@ -4,6 +4,8 @@ in vec2 v_TexCoord;
 in vec3 v_Normal;
 in float v_maxHeight;
 
+//uniform sampler2D g_SplatMapTexture;
+
 
 out vec4 o_PSOutput;
 void main() 

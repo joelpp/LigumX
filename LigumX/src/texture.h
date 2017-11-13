@@ -83,14 +83,20 @@ void PostSerialization(bool writing);
 
 public:
 	Texture::Texture();
+	Texture::Texture(int objectID);
 
 
 	void LoadFromFile(GLuint target, std::string filename);
+	void SaveToFile(std::string fileName);
 	void Initialize();
+
+	BYTE* GetTextureData() { return m_TextureData; };
 
 
 public:
     Texture(std::string filename, bool isCubeMap = false);
+
+	BYTE* m_TextureData;
 };
 
 #endif // TEXTURE_H

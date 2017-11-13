@@ -62,6 +62,8 @@ void Editor::Initialize()
 
 	// Init Imgui
 	ImGui_ImplGlfwGL3_Init(renderer->pWindow, true);
+
+	m_SplatMapTexture = new Texture(48463);
 }
 
 
@@ -117,8 +119,12 @@ void Editor::RenderPicking()
 			glm::ivec2 offset = m_PickedTexelOffset;
 			glm::vec2 clickedUV = glm::vec2(offset) / glm::vec2(width);
 
-			std::vector<float> values(width * width );
-			float* val = values.data();
+			//std::vector<float> values(width * width );
+			Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
+			float* val = (float*) (tex->GetTextureData());
+
+			val += offset.x * tex->GetSize().y + offset.y;
+
 			double maxVal = std::max(-screenDistance.y / 100, 0.f);
 
 			glm::vec2 center = glm::vec2(0.5f, 0.5f);
@@ -143,21 +149,24 @@ void Editor::RenderPicking()
 						//height = maxHeight - height;
 					}
 
-					val[(int)(i * width + j)] = (float)height;
+					height = std::max(height, 0.);
+
+					val[(int)(i * width + j)] += (float)height / 100.f;
 				}
 			}
 
-			Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
 			renderer->Bind2DTexture(0, tex->GetHWObject());
 			GLuint format = GL_RED;
 			GLuint type = GL_FLOAT;
 
-			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, format, type, values.data());
+			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, format, type, val);
+			tex->SaveToFile("C:\\temp\\output.png");
 
 			PRINTVEC2(offset);
 			PRINT(width);
 
 			renderer->Bind2DTexture(0, 0);
+
 		}
 	}
 	else

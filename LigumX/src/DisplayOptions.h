@@ -25,8 +25,8 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const bool& GetUseSkyLighting() { return m_UseSkyLighting; }; 
 void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 
-const bool& GetDrawTerrain() { return m_DrawTerrain; }; 
-void SetDrawTerrain(bool value) { m_DrawTerrain = value; }; 
+const bool& GetRenderTerrain() { return m_RenderTerrain; }; 
+void SetRenderTerrain(bool value) { m_RenderTerrain = value; }; 
 const bool& GetDrawSky() { return m_DrawSky; }; 
 void SetDrawSky(bool value) { m_DrawSky = value; }; 
 const bool& GetWireframeRendering() { return m_WireframeRendering; }; 
@@ -61,7 +61,7 @@ private:
 int m_ObjectID;
 std::string m_Name;
 bool m_UseSkyLighting;
-bool m_DrawTerrain;
+bool m_RenderTerrain;
 bool m_DrawSky;
 bool m_WireframeRendering;
 bool m_UseLighting;
@@ -86,7 +86,7 @@ enum g_DisplayOptionsPIDX
 PIDX_ObjectID,
 PIDX_Name,
 PIDX_UseSkyLighting,
-PIDX_DrawTerrain,
+PIDX_RenderTerrain,
 PIDX_DrawSky,
 PIDX_WireframeRendering,
 PIDX_UseLighting,

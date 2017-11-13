@@ -12,7 +12,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(DisplayOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(DisplayOptions, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "UseSkyLighting", PIDX_UseSkyLighting, offsetof(DisplayOptions, m_UseSkyLighting), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "DrawTerrain", PIDX_DrawTerrain, offsetof(DisplayOptions, m_DrawTerrain), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "RenderTerrain", PIDX_RenderTerrain, offsetof(DisplayOptions, m_RenderTerrain), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DrawSky", PIDX_DrawSky, offsetof(DisplayOptions, m_DrawSky), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "WireframeRendering", PIDX_WireframeRendering, offsetof(DisplayOptions, m_WireframeRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "UseLighting", PIDX_UseLighting, offsetof(DisplayOptions, m_UseLighting), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
@@ -55,13 +55,13 @@ DisplayOptions::DisplayOptions()
 //		if (writing)
 //		{
 //			objectStream << m_UseSkyLighting << std::endl;
-//			objectStream << m_DrawTerrain << std::endl;
+//			objectStream << m_RenderTerrain << std::endl;
 //			objectStream << m_DrawSky << std::endl;
 //		}
 //		else
 //		{
 //			objectStream >> m_UseSkyLighting;
-//			objectStream >> m_DrawTerrain;
+//			objectStream >> m_RenderTerrain;
 //			objectStream >> m_DrawSky;
 //		}
 //	}

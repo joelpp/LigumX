@@ -39,6 +39,13 @@ Texture::Texture()
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
+Texture::Texture(int objectID)
+{
+	SetObjectID(objectID);
+	Serialize(false);
+}
+
+
 
 // create texture from file.
 Texture::Texture(string filename, bool isCubeMap)
@@ -199,6 +206,8 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 		type = GLPixelType_Float;
 	}
 
+	m_TextureData = bits;
+
 	SetSize(glm::ivec2(width, height));
 	SetBitsPerPixel(bitsPerPixel);
 
@@ -209,7 +218,15 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, bits);
 	Renderer::outputGLError(__func__, __LINE__);
 
-	FreeImage_Unload(bitmap32);
+	if (m_ObjectID == 23389)
+	{
+		m_TextureData = bits;
+	}
+	else
+	{
+		m_TextureData = nullptr;
+		FreeImage_Unload(bitmap32);
+	}
 
 	// If we had to do a conversion to 32-bit colour, then unload the original
 	// non-32-bit-colour version of the image data too. Otherwise, bitmap32 and
@@ -221,3 +238,29 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	}
 }
 
+void Texture::SaveToFile(std::string fileName)
+{
+	//std::vector<GLubyte> pixels(4 * m_Size.x * m_Size.y);
+	//glReadPixels(0, 0, m_Size.x, m_Size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+	//glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+	//std::vector<float> floats(m_Size.x * m_Size.y);
+	//float* data = (float*) m_TextureData;
+
+	//for (int i = 0; i < m_Size.x; ++i)
+	//{
+	//	for (int j = 0; j < m_Size.y; ++j)
+	//	{
+	//		float& val = floats[i * m_Size.y + j];
+	//		val = data[i * m_Size.y + j] == 0.f ? 0.f : (~(0));
+	//	}
+	//}
+
+	FIBITMAP* image = FreeImage_ConvertFromRawBits(m_TextureData, m_Size.x, m_Size.y, 4 * m_Size.y, 32, 0x000000, 0x000000, 0x000000, false);
+
+	if(FreeImage_Save(FIF_PNG, image, fileName.c_str(), 0)) {
+		std::cout << "Save successful." << std::endl;
+	} else {
+		std::cout << "Save failed." << std::endl;
+	}
+	FreeImage_Unload(image);
+}

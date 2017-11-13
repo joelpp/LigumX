@@ -507,6 +507,7 @@ void Renderer::SetDebugUniforms()
 	SetFragmentUniform(normalsEnabled,	"g_DebugNormalsEnabled");
 	SetFragmentUniform(linearizeDepth, "g_DebugLinearizeDepth");
 	//SetFragmentUniform(gammaCorrection, "g_GammaCorrection");
+
 }
 
 void Renderer::DrawModel(Entity* entity, Model* model)
@@ -606,9 +607,9 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
   //FreeBoundTexture();
 }
 
-void Renderer::DrawTerrain()
+void Renderer::RenderTerrain()
 {
-	if (!m_DisplayOptions->GetDrawTerrain())
+	if (!m_DisplayOptions->GetRenderTerrain())
 	{
 		return;
 	}
@@ -624,10 +625,17 @@ void Renderer::DrawTerrain()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
+	//SetFragmentUniform(1, "g_SplatMapTexture");
+	//Bind2DTexture(1, g_Editor->m_SplatMapTexture->GetObjectID());
+
+
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
 	RenderEntities(ShaderFamily_Terrain, m_World->GetEntities());
+
+	//Bind2DTexture(0, 0);
+	//Bind2DTexture(1, 0);
 }
 
 void Renderer::RenderShadowMap()
@@ -975,7 +983,7 @@ void Renderer::render(World* world)
 
 	RenderOpaque();
 
-	DrawTerrain();
+	RenderTerrain();
 
 	AfterWorldRender();
 

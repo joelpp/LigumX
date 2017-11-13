@@ -157,7 +157,7 @@ public:
     static void outputGLError(std::string func, int line);
     void RenderSky();
     void RenderFPS();
-    void DrawTerrain();
+    void RenderTerrain();
 	void RenderEntities(ShaderFamily family, std::vector<Entity*> entities);
 	void RenderEntities(std::vector<Entity*> entities);
 
