@@ -625,8 +625,8 @@ void Renderer::RenderTerrain()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	//SetFragmentUniform(1, "g_SplatMapTexture");
-	//Bind2DTexture(1, g_Editor->m_SplatMapTexture->GetObjectID());
+	SetFragmentUniform(1, "g_SplatMapTexture");
+	Bind2DTexture(1, g_Editor->m_SplatMapTexture->GetHWObject());
 
 
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };

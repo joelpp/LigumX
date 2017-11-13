@@ -115,15 +115,22 @@ void Editor::RenderPicking()
 
 			PRINTVEC3(normalized);
 
-			float width = m_TerrainBrushSize;
-			glm::ivec2 offset = m_PickedTexelOffset;
+			glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
+
+			int width = m_TerrainBrushSize;
+
+			glm::ivec2 offset = glm::ivec2(xyCoords * glm::vec2(450, 450)) - glm::ivec2(width) / 2;
+
+			//glm::ivec2 offset = m_PickedTexelOffset;
 			glm::vec2 clickedUV = glm::vec2(offset) / glm::vec2(width);
 
-			//std::vector<float> values(width * width );
-			Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
-			float* val = (float*) (tex->GetTextureData());
+			std::vector<float> values(width * width);
+			//Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
+			Texture* tex = m_SplatMapTexture;
+			//float* val = (float*)(tex->GetTextureData());
+			float* val = values.data();
 
-			val += offset.x * tex->GetSize().y + offset.y;
+			//val += offset.x * tex->GetSize().y + offset.y;
 
 			double maxVal = std::max(-screenDistance.y / 100, 0.f);
 
@@ -141,17 +148,17 @@ void Editor::RenderPicking()
 					glm::vec2 centeredUV = localUV - center;
 					double horizDist = glm::length(centeredUV);;
 
-					double height = 0;
+					float height = 0;
 
 					if (horizDist < radius)
 					{
-						height = maxVal * sqrt(pow(radius,2) - pow(horizDist, 2));
+						//height = maxVal * sqrt(pow(radius,2) - pow(horizDist, 2));
 						//height = maxHeight - height;
+						height = (~(0));
 					}
-
-					height = std::max(height, 0.);
-
-					val[(int)(i * width + j)] += (float)height / 100.f;
+					
+					//val[(int)(i * width + j)] += (float)height / 100.f;
+					val[(int)(i * width + j)] = 0xFFFFFFF;
 				}
 			}
 
@@ -160,7 +167,7 @@ void Editor::RenderPicking()
 			GLuint type = GL_FLOAT;
 
 			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, format, type, val);
-			tex->SaveToFile("C:\\temp\\output.png");
+			//tex->SaveToFile("C:\\temp\\output.png");
 
 			PRINTVEC2(offset);
 			PRINT(width);

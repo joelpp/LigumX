@@ -4,18 +4,24 @@ in vec2 v_TexCoord;
 in vec3 v_Normal;
 in float v_maxHeight;
 
-//uniform sampler2D g_SplatMapTexture;
+uniform sampler2D g_SplatMapTexture;
 
 
 out vec4 o_PSOutput;
 void main() 
 {
 
+	vec4 splatMap = textureLod(g_SplatMapTexture, v_TexCoord, 0.0f);
 	vec3 lightDirection = normalize(vec3(0.5f, 0.5f, 1.0f));
     float lightPower = 0.4f *  dot(v_Normal, lightDirection);
 
 	vec3 ambient = vec3(0.1f);
 	vec3 diffuse = vec3(0.1f, 0.8f, 0.1f);
+
+	if (splatMap.r > 0)
+	{
+		diffuse = vec3(0.8f, 0.1f, 0.1f);
+	} 
 
 	vec3 finalColor = diffuse * (ambient + lightPower);
 
