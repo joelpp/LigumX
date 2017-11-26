@@ -18,6 +18,8 @@ using namespace glm;
 
 Renderer* LigumX::m_Renderer;
 
+bool g_IsShiftHeld = false;
+
 void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 {
     LigumX::GetInstance().Shutdown();
@@ -81,8 +83,21 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 	if (action == GLFW_PRESS || action == GLFW_RELEASE)
 	{
-		float add = 2.f * (int)(action == GLFW_PRESS) - 1;
-		g_Editor->AddToXYZMask(add * glm::vec3(key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z));
+		bool isShift = (key == GLFW_KEY_LEFT_SHIFT);
+		bool isXYZ[3] = { key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z };
+
+		if (isShift)
+		{
+			g_IsShiftHeld = (action == GLFW_PRESS) ? true : false;
+		}
+		else
+		{
+			float add = 2.f * (int)(action == GLFW_PRESS) - 1;
+			add *= g_IsShiftHeld ? -1 : 1;
+
+			g_Editor->AddToXYZMask(add * glm::vec3(key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z));
+		}
+
 	}
 
 	m_Renderer->GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);

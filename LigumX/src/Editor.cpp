@@ -170,8 +170,6 @@ void Editor::RenderPicking()
 
 					if (horizDist < radius)
 					{
-						//height = maxVal * sqrt(pow(radius,2) - pow(horizDist, 2));
-						//height = maxHeight - height;
 						height = (~(0));
 					}
 
@@ -180,9 +178,7 @@ void Editor::RenderPicking()
 						continue;
 					}
 
-					//val[(int)(i * width + j)] += (float)height / 100.f;
-					//val[(int)(i * width + j)] = 0xFFFFFFF;
-					glm::ivec4 increment = glm::ivec4(0,0,1,0);
+					glm::ivec4 increment = glm::ivec4(m_XYZMask, 0);
 
 					for (int c = 0; c < 4; ++c)
 					{
