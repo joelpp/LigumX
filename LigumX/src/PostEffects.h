@@ -30,14 +30,17 @@ const float& GetGammaExponent() { return m_GammaExponent; };
 void SetGammaExponent(float value) { m_GammaExponent = value; }; 
 const bool& GetToneMappingEnabled() { return m_ToneMappingEnabled; }; 
 void SetToneMappingEnabled(bool value) { m_ToneMappingEnabled = value; }; 
+const bool& GetEmissiveGlowEnabled() { return m_EmissiveGlowEnabled; }; 
+void SetEmissiveGlowEnabled(bool value) { m_EmissiveGlowEnabled = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 bool m_GammaCorrectionEnabled;
 float m_GammaExponent;
 bool m_ToneMappingEnabled;
+bool m_EmissiveGlowEnabled;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_PostEffectsPIDX
@@ -47,6 +50,7 @@ PIDX_Name,
 PIDX_GammaCorrectionEnabled,
 PIDX_GammaExponent,
 PIDX_ToneMappingEnabled,
+PIDX_EmissiveGlowEnabled,
 };
 bool Serialize(bool writing);
 

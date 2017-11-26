@@ -20,7 +20,7 @@ void main()
 
 	if (splatMap.r > 0)
 	{
-		diffuse = vec3(0.8f, 0.1f, 0.1f);
+		diffuse = splatMap.rgb;
 	} 
 
 	vec3 finalColor = diffuse * (ambient + lightPower);

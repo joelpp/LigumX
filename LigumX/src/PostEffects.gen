@@ -3,4 +3,5 @@ class PostEffects
 	bool GammaCorrectionEnabled;
 	float GammaExponent;
 	bool ToneMappingEnabled;
+	bool EmissiveGlowEnabled;
 }

@@ -124,13 +124,15 @@ void Editor::RenderPicking()
 			//glm::ivec2 offset = m_PickedTexelOffset;
 			glm::vec2 clickedUV = glm::vec2(offset) / glm::vec2(width);
 
-			std::vector<float> values(width * width);
+			std::vector<float> data(width * width);
 			//Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
 			Texture* tex = m_SplatMapTexture;
-			//float* val = (float*)(tex->GetTextureData());
-			float* val = values.data();
 
-			//val += offset.x * tex->GetSize().y + offset.y;
+			float* val = data.data();
+			//float* val = (float*)(tex->GetTextureData());
+			//char* val = (char*) m_SplatMapTexture->GetTextureData();
+
+			//val += 4 * (offset.x * tex->GetSize().y + offset.y);
 
 			double maxVal = std::max(-screenDistance.y / 100, 0.f);
 
@@ -138,6 +140,8 @@ void Editor::RenderPicking()
 
 			double maxHeight = maxVal * glm::length(center);
 			double radius = 0.5f;
+
+			int stride = 1;
 
 			for (int i = 0; i < width; ++i)
 			{
@@ -156,15 +160,20 @@ void Editor::RenderPicking()
 						//height = maxHeight - height;
 						height = (~(0));
 					}
-					
+					int index = (int) (stride * (i * width + j));
+
 					//val[(int)(i * width + j)] += (float)height / 100.f;
-					val[(int)(i * width + j)] = 0xFFFFFFF;
+					//val[(int)(i * width + j)] = 0xFFFFFFF;
+					val[index + 0] += 1.f;
+					//val[index + 1] += 2;
+					//val[index + 2] += 3;
+					//val[index + 3] += 4;
 				}
 			}
 
 			renderer->Bind2DTexture(0, tex->GetHWObject());
-			GLuint format = GL_RED;
-			GLuint type = GL_FLOAT;
+			GLuint format = tex->GetFormat();
+			GLuint type = tex->GetPixelType();
 
 			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, format, type, val);
 			//tex->SaveToFile("C:\\temp\\output.png");

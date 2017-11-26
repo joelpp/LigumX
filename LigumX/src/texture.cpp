@@ -196,7 +196,6 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	
 	if (m_ObjectID == 23389)
 	{
-		FIBITMAP* bitmapRF;
 		bitmap32 = FreeImage_ConvertToFloat(bitmap32);
 
 		bits = FreeImage_GetBits(bitmap32);
@@ -206,7 +205,12 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 		type = GLPixelType_Float;
 	}
 
-	m_TextureData = bits;
+	//if (m_ObjectID == 48463)
+	//{
+	//	internalFormat = GLPixelFormat_RGBi;
+	//	format = GLPixelFormat_BGRAi;
+	//	type = GLPixelType_Int;
+	//}
 
 	SetSize(glm::ivec2(width, height));
 	SetBitsPerPixel(bitsPerPixel);
@@ -218,7 +222,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, bits);
 	Renderer::outputGLError(__func__, __LINE__);
 
-	if (m_ObjectID == 23389)
+	if (m_ObjectID == 48463)
 	{
 		m_TextureData = bits;
 	}

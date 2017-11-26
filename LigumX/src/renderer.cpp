@@ -848,6 +848,11 @@ void Renderer::BeginFrame(World* world)
 
 void Renderer::ApplyEmissiveGlow()
 {
+	if (!m_PostEffects->GetEmissiveGlowEnabled())
+	{
+		return;
+	}
+
 	SetPipeline(pPipelineBlur);
 
 
