@@ -8,6 +8,7 @@ enum LXType
 	LXType_BoundingBoxComponent,
 	LXType_Camera,
 	LXType_Component,
+	LXType_CurlRequest,
 	LXType_DisplayOptions,
 	LXType_Editor,
 	LXType_EditorOptions,

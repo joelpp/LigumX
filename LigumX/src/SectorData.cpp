@@ -36,12 +36,12 @@ SectorData::SectorData(glm::vec2 pos)
 
 void SectorData::downloadData(std::string path)
 {
-    string s = downloadSectorData(m_pos);
+    //string s = downloadSectorData(m_pos);
 
-    std::ofstream out(path);
+    //std::ofstream out(path);
 
-    out << s;
-    out.close();
+    //out << s;
+    //out.close();
 }
 
 void SectorData::loadData(EOSMDataType dataType)
@@ -52,17 +52,17 @@ void SectorData::loadData(EOSMDataType dataType)
 
     std::string path = BuildXMLPath(dataType, m_pos);
 
-    if (!file_exists(path)) 
-    {
-        if (dataType == MAP)
-        {
-            downloadData(path);
-        }
-        else if (dataType == CONTOUR)
-        {
-            downloadContourData(m_pos, path);
-        }
-    }
+    //if (!file_exists(path)) 
+    //{
+    //    if (dataType == MAP)
+    //    {
+    //        downloadData(path);
+    //    }
+    //    else if (dataType == CONTOUR)
+    //    {
+    //        downloadContourData(m_pos, path);
+    //    }
+    //}
 
     doc.LoadFile(path.c_str());
 

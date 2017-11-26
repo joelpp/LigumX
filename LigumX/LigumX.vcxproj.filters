@@ -177,6 +177,9 @@
     <ClCompile Include="src\Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\CurlRequest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -470,5 +473,6 @@
     <None Include="src\EngineStats.gen" />
     <None Include="src\Editor.gen" />
     <None Include="src\GL.gen" />
+    <None Include="src\CurlRequest.gen" />
   </ItemGroup>
 </Project>

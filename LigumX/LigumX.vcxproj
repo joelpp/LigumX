@@ -109,7 +109,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(ProjectDir)libs\win32\AntTweakBar\lib\AntTweakBar64.lib;$(ProjectDir)libs\win32\glfw\glfw3.lib;$(ProjectDir)libs\win32\freetype\freetyped.lib;$(ProjectDir)libs\win32\curl\libcurl_imp.lib;$(ProjectDir)libs\win32\FreeImage\dist\x64\freeimaged.lib;$(ProjectDir)libs\win32\assimp\assimp-vc140-mt.lib;$(ProjectDir)libs\win32\glad\glad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)libs\win32\AntTweakBar\lib\AntTweakBar64.lib;$(ProjectDir)libs\win32\glfw\glfw3.lib;$(ProjectDir)libs\win32\freetype\freetyped.lib;$(ProjectDir)libs\win32\curl\libcurl-d_imp.lib;$(ProjectDir)libs\win32\FreeImage\dist\x64\freeimaged.lib;$(ProjectDir)libs\win32\assimp\assimp-vc140-mt.lib;$(ProjectDir)libs\win32\glad\glad.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,7 +138,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE ;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32\curl;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(ProjectDir)libs\win32\AntTweakBar\lib\AntTweakBar64.lib;$(ProjectDir)libs\win32\glfw\glfw3.lib;$(ProjectDir)libs\win32\freetype\freetyped.lib;$(ProjectDir)libs\win32\curl\libcurl_imp.lib;$(ProjectDir)libs\win32\FreeImage\dist\x64\freeimaged.lib;$(ProjectDir)libs\win32\assimp\assimp-vc140-mt.lib;$(ProjectDir)libs\win32\glad\glad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)libs\win32\AntTweakBar\lib\AntTweakBar64.lib;$(ProjectDir)libs\win32\glfw\glfw3.lib;$(ProjectDir)libs\win32\freetype\freetyped.lib;$(ProjectDir)libs\win32\curl\libcurl-d_imp.lib;$(ProjectDir)libs\win32\FreeImage\dist\x64\freeimaged.lib;$(ProjectDir)libs\win32\assimp\assimp-vc140-mt.lib;$(ProjectDir)libs\win32\glad\glad.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -160,6 +160,7 @@
     <ClCompile Include="src\callbacks.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\Component.cpp" />
+    <ClCompile Include="src\CurlRequest.cpp" />
     <ClCompile Include="src\DefaultObjects.cpp" />
     <ClCompile Include="src\DisplayOptions.cpp" />
     <ClCompile Include="src\Editor.cpp" />
@@ -308,6 +309,7 @@
     <None Include="src\BoundingBoxComponent.gen" />
     <None Include="src\Camera.gen" />
     <None Include="src\Component.gen" />
+    <None Include="src\CurlRequest.gen" />
     <None Include="src\DisplayOptions.gen" />
     <None Include="src\Editor.gen" />
     <None Include="src\EditorOptions.gen" />

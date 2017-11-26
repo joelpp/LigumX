@@ -8,6 +8,7 @@
 #include "EngineStats.h"
 #include "BoundingBoxComponent.h"
 #include "PostEffects.h"
+#include "CurlRequest.h"
 #include "Mesh.h"
 #include "Texture.h"
 
@@ -192,9 +193,9 @@ void Editor::RenderPicking()
 						{
 							value += (value == 255) ? 0 : (char) toAdd;
 						}
-						else if (m_XYZMask.w == 1) // adding 
+						else if (m_XYZMask.w == 1) // subtracting
 						{
-							value -= (value == 0) ? 0 : (char)toAdd;
+							value -= (value == 0) ? 0 : (char) toAdd;
 						}
 
 					}
@@ -1050,6 +1051,20 @@ void Editor::RenderImgui()
 
 			ShowPropertyGridTemplate<DisplayOptions>(renderer->GetDisplayOptions(), "Display options");
 			ShowPropertyGridTemplate<EditorOptions>(GetOptions(), "Editor options");
+
+			if (ImGui::Button("Test CurlRequest"))
+			{
+				//Latitude: 48.092012 | Longitude: -78.931661
+				//Latitude: 48.103362 | Longitude : -78.951573
+
+				glm::vec2 startCoords = glm::vec2(48.092012, -78.931661);
+				glm::vec2 endCoords = glm::vec2(48.103362, -78.951573);
+
+				glm::vec2 extent = endCoords - startCoords;
+				CurlRequest request(startCoords, extent);
+
+				request.Execute();
+			}
 
 			ImGui::EndMenuBar();
 

@@ -1,0 +1,7 @@
+class CurlRequest
+{
+	bool Finished;
+	glm::vec2 Coords;
+	glm::vec2 Extent;
+	std::string Result;
+}
