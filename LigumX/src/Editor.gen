@@ -27,6 +27,9 @@ class Editor
 	glm::ivec2 PickedTexelOffset;
 
 	[transient]
+	glm::ivec2 SectorLoadingOffset;
+
+	[transient]
 	bool TerrainErasureMode;
 
 	[adder]

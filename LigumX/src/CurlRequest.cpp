@@ -150,11 +150,9 @@ std::string BuildXMLPath(int dataType, glm::vec2 pos) {
 	case 1:       savePath << "OSMData/";
 	}
 
-	// todo: call instance of sector manager or something
-	//int index = SectorManager::IDFromPos(pos);
 	int index = 1;
-	// savePath << m_pos.x * 1000 << "x" << m_pos.y * 1000;
-	savePath << index;
+
+	savePath << (int) (pos.x * 1000) << "x" << (int)(pos.y * 1000);
 	savePath << ".xml";
 
 	return savePath.str();

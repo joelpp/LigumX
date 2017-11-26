@@ -61,6 +61,8 @@ const glm::vec2& GetMouseDragDistance() { return m_MouseDragDistance; };
 void SetMouseDragDistance(glm::vec2 value) { m_MouseDragDistance = value; }; 
 const glm::ivec2& GetPickedTexelOffset() { return m_PickedTexelOffset; }; 
 void SetPickedTexelOffset(glm::ivec2 value) { m_PickedTexelOffset = value; }; 
+const glm::ivec2& GetSectorLoadingOffset() { return m_SectorLoadingOffset; }; 
+void SetSectorLoadingOffset(glm::ivec2 value) { m_SectorLoadingOffset = value; }; 
 const bool& GetTerrainErasureMode() { return m_TerrainErasureMode; }; 
 void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; }; 
 const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
@@ -83,11 +85,12 @@ glm::vec3 m_PickedWorldPosition;
 bool m_ManipulatorDragging;
 glm::vec2 m_MouseDragDistance;
 glm::ivec2 m_PickedTexelOffset;
+glm::ivec2 m_SectorLoadingOffset;
 bool m_TerrainErasureMode;
 float m_TerrainBrushSize;
 int m_PickingBufferSize;
 public:
-static const int g_PropertyCount = 17;
+static const int g_PropertyCount = 18;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -106,6 +109,7 @@ PIDX_PickedWorldPosition,
 PIDX_ManipulatorDragging,
 PIDX_MouseDragDistance,
 PIDX_PickedTexelOffset,
+PIDX_SectorLoadingOffset,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_PickingBufferSize,

@@ -144,7 +144,7 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 	std::vector<glm::vec3>& normals = DefaultTerrainMesh->m_buffers.m_vertexNormals;
 	std::vector<int>& indexBuffer = DefaultTerrainMesh->m_buffers.indexBuffer;
 
-	int iWidth = 512;
+	int iWidth = 64;
 
 	for (int i = 0; i < iWidth; i++)
 	{

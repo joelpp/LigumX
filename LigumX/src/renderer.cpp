@@ -632,10 +632,26 @@ void Renderer::RenderTerrain()
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	RenderEntities(ShaderFamily_Terrain, m_World->GetEntities());
+	Material* terrainMaterial;
+	Entity* terrainEntity;
+	for (Entity* entity : m_World->GetEntities())
+	{
+		// todo : fix this awful hack to get terrain material
 
-	//Bind2DTexture(0, 0);
-	//Bind2DTexture(1, 0);
+		Material* cmpMaterial = entity->GetModel()->GetMaterials()[0];
+		if (cmpMaterial && cmpMaterial->GetShaderFamily() == ShaderFamily_Terrain)
+		{
+			terrainEntity = entity;
+			terrainMaterial = cmpMaterial;
+			break;
+		}
+	}
+
+	//RenderEntities(ShaderFamily_Terrain, m_World->GetEntities());
+
+	SetVertexUniform(terrainEntity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+
+	DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 }
 
 void Renderer::RenderShadowMap()

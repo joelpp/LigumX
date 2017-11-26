@@ -37,6 +37,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "MouseDragDistance", PIDX_MouseDragDistance, offsetof(Editor, m_MouseDragDistance), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickedTexelOffset", PIDX_PickedTexelOffset, offsetof(Editor, m_PickedTexelOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "SectorLoadingOffset", PIDX_SectorLoadingOffset, offsetof(Editor, m_SectorLoadingOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -1031,12 +1032,10 @@ void Editor::RenderImgui()
 
 		if (ImGui::Button("Test CurlRequest") && m_Request.Ready())
 		{
-			glm::vec2 startCoords = glm::vec2(-78.951573, 48.092012);
-
-			//glm::vec2 endCoords = glm::vec2(48.103362, -78.931661);
-
-			// todo : found empirically, not the best probably
+			glm::vec2 startCoords = glm::vec2(-78.946208, 48.092901);
 			glm::vec2 extent = glm::vec2(0.01135);
+
+			startCoords.y += extent.y * (float)world->sectors.size();
 
 			m_Request = CurlRequest(startCoords, extent);
 			m_Request.Initialize();
@@ -1049,17 +1048,20 @@ void Editor::RenderImgui()
 		{
 			curlThread.join();
 
-			m_Sector = new Sector(&m_Request);
-			m_Sector->loadData(SectorData::EOSMDataType::MAP);
+			Sector* sector = new Sector(&m_Request);
 
-			RenderDataManager::InitializeSector(m_Sector);
+			sector->loadData(SectorData::EOSMDataType::MAP);
 
+			RenderDataManager::InitializeSector(sector);
+
+			world->sectors.push_back(sector);
+			
 			m_Request.Reset();
 		}
 
-		if (ImGui::Button("Load ways") && m_Sector != nullptr)
+		if (ImGui::Button("Load ways") && world->sectors.size() > 0)
 		{
-			RenderDataManager::CreateWaysLines(m_Sector);
+			RenderDataManager::CreateWaysLines(world->sectors.back());
 		}
 
 
