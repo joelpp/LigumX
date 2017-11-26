@@ -180,7 +180,7 @@ bool ShowEditableProperty(int* value, const char* name);
 void BackupData();
 
 Texture* m_SplatMapTexture;
-
+std::vector<char> m_SplatMapData;
 private:
 	bool m_RenderingMenu;
 };

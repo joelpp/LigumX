@@ -97,7 +97,7 @@ void Editor::RenderPicking()
 	if (editingTerrain || m_ManipulatorDragging)
 	{
 
-		if (m_ManipulatorDragging)
+		if (m_ManipulatorDragging && (m_XYZMask != glm::vec3(0,0,0)) )
 		{
 			glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
 			float distance = screenDistance.x / 10.f;
@@ -107,32 +107,38 @@ void Editor::RenderPicking()
 		}
 		else
 		{
+			Texture* tex = m_SplatMapTexture;
+			glm::ivec2 texSize = tex->GetSize();
+			int numTexels = texSize.x * texSize.y;
+			int stride = 4;
+			int numBytes = stride * numTexels;
+
+			int brushWidth = m_TerrainBrushSize;
+			int brushWidthSq = brushWidth * brushWidth;
+			if (m_SplatMapData.size() != numBytes)
+			{
+				m_SplatMapData.resize(numBytes);
+			}
+			
+
 			glm::vec2 screenDistance = m_MousePosition - m_LastMouseClickPosition;
 			screenDistance.y *= -1;
 
 			glm::vec3 scale = m_PickedEntity->GetScale();
 			glm::vec3 normalized = worldPosition / scale;
 
-			PRINTVEC3(normalized);
 
 			glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
 
-			int width = m_TerrainBrushSize;
+			glm::ivec2 clickedTexel = glm::ivec2(xyCoords * glm::vec2(tex->GetSize()));
+			glm::ivec2 startTexel = clickedTexel - glm::ivec2(brushWidth) / 2;
+			startTexel = glm::max(startTexel, glm::ivec2(0, 0));
+			startTexel = glm::min(startTexel, texSize - glm::ivec2(brushWidth));
 
-			glm::ivec2 offset = glm::ivec2(xyCoords * glm::vec2(450, 450)) - glm::ivec2(width) / 2;
+			char* val = m_SplatMapData.data();
 
-			//glm::ivec2 offset = m_PickedTexelOffset;
-			glm::vec2 clickedUV = glm::vec2(offset) / glm::vec2(width);
-
-			std::vector<float> data(width * width);
-			//Texture* tex = m_PickedEntity->GetModel()->GetMaterials()[0]->GetHeightfieldTexture();
-			Texture* tex = m_SplatMapTexture;
-
-			float* val = data.data();
-			//float* val = (float*)(tex->GetTextureData());
-			//char* val = (char*) m_SplatMapTexture->GetTextureData();
-
-			//val += 4 * (offset.x * tex->GetSize().y + offset.y);
+			int dataOffset = stride * (startTexel.y * tex->GetSize().x + startTexel.x);
+			val += dataOffset;
 
 			double maxVal = std::max(-screenDistance.y / 100, 0.f);
 
@@ -141,13 +147,21 @@ void Editor::RenderPicking()
 			double maxHeight = maxVal * glm::length(center);
 			double radius = 0.5f;
 
-			int stride = 1;
+			PRINTSTRING("--- new frame ---");
+			PRINTVEC3(worldPosition);
+			PRINTVEC3(normalized);
+			PRINTVEC2(xyCoords);
+			PRINTVEC2(startTexel);
+			PRINTINT(dataOffset);
+			PRINTINT((int)val);
 
-			for (int i = 0; i < width; ++i)
+			for (int i = 0; i < brushWidth; ++i)
 			{
-				for (int j = 0; j < width; ++j)
+				for (int j = 0; j < brushWidth; ++j)
 				{
-					glm::vec2 localUV = glm::vec2(i, j) / glm::vec2(width);
+					int index = (int)(stride * (j * texSize.y + i));
+
+					glm::vec2 localUV = glm::vec2(i, j) / glm::vec2(brushWidth);
 
 					glm::vec2 centeredUV = localUV - center;
 					double horizDist = glm::length(centeredUV);;
@@ -160,14 +174,20 @@ void Editor::RenderPicking()
 						//height = maxHeight - height;
 						height = (~(0));
 					}
-					int index = (int) (stride * (i * width + j));
+
+					if (index < 0 || index > numBytes)
+					{
+						continue;
+					}
 
 					//val[(int)(i * width + j)] += (float)height / 100.f;
 					//val[(int)(i * width + j)] = 0xFFFFFFF;
-					val[index + 0] += 1.f;
-					//val[index + 1] += 2;
-					//val[index + 2] += 3;
-					//val[index + 3] += 4;
+					glm::ivec4 increment = glm::ivec4(0,0,1,0);
+
+					for (int c = 0; c < 4; ++c)
+					{
+						val[index + c] += (char) increment[c];
+					}
 				}
 			}
 
@@ -175,11 +195,11 @@ void Editor::RenderPicking()
 			GLuint format = tex->GetFormat();
 			GLuint type = tex->GetPixelType();
 
-			glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, width, width, format, type, val);
+			//glTexSubImage2D(GL_TEXTURE_2D, 0, startTexel.x, startTexel.y, brushWidth, brushWidth, format, type, val);
+			int startPoint = 0;
+			glTexSubImage2D(GL_TEXTURE_2D, 0, startPoint, startPoint, texSize.x, texSize.y, format, type, m_SplatMapData.data());
 			//tex->SaveToFile("C:\\temp\\output.png");
 
-			PRINTVEC2(offset);
-			PRINT(width);
 
 			renderer->Bind2DTexture(0, 0);
 

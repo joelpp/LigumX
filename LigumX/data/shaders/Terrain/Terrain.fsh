@@ -18,12 +18,12 @@ void main()
 	vec3 ambient = vec3(0.1f);
 	vec3 diffuse = vec3(0.1f, 0.8f, 0.1f);
 
-	if (splatMap.r > 0)
+	if ( any(greaterThan( splatMap.rgb, vec3(0,0,0) )) )
 	{
 		diffuse = splatMap.rgb;
 	} 
 
-	vec3 finalColor = diffuse * (ambient + lightPower);
+	vec3 finalColor = diffuse /** (ambient + lightPower)*/;
 
     o_PSOutput = vec4(finalColor, 1.0);
 

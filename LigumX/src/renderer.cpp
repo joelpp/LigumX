@@ -1173,9 +1173,11 @@ void Renderer::RenderText(Text t)
 
 void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)
 {
-   glEnable(GL_CULL_FACE);
-   glEnable(GL_BLEND);
+	GL::SetCapability(GL::Capabilities::Blend,		true);
+	GL::SetCapability(GL::Capabilities::CullFace,	true);
+
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
    // Activate corresponding render state
    pPipelineText->usePipeline();
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
@@ -1233,11 +1235,12 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
        x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
    }
-   glBindVertexArray(0);
-   glBindTexture(GL_TEXTURE_2D, 0);
 
-   glDisable(GL_BLEND);
-   glDisable(GL_CULL_FACE);
+   glBindVertexArray(0);
+   FreeBoundTexture();
+
+   GL::SetCapability(GL::Capabilities::Blend,		false);
+   GL::SetCapability(GL::Capabilities::CullFace,	false);
 
 }
 
