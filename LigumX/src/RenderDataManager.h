@@ -49,10 +49,12 @@ public:
     RenderDataManager();
 
     void fillBuffers(Sector* newSector);
-    void initializeSector(Sector* sector);
+    static void InitializeSector(Sector* sector);
+	static void AddDebugModel(std::vector<glm::vec3>& line);
 
 	void addToTerrainBuffer(Sector* newSector);
     Mesh* terrainMesh();
+	static void CreateWaysLines(Sector* sector);
 
     std::vector<TerrainRenderingJob> terrainRenderingJobs;
 private:

@@ -89,7 +89,4 @@ public:
 
 	void CreateHWBuffers();
 
-
-private:
-	REGISTERCLASS(Model);
 };

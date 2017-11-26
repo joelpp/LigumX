@@ -5,6 +5,7 @@
 class SectorData;
 class Heightfield;
 class vec2i;
+class CurlRequest;
 typedef std::pair<int, int> IntPair;
 
 
@@ -27,14 +28,16 @@ public:
 
     Sector();
     Sector(glm::vec2 pos, float size, int ID);
-    Sector(vec2i pos, float size);
+	Sector(vec2i pos, float size);
+	Sector(CurlRequest* curlRequest);
     void loadData(SectorData::EOSMDataType type);
     bool createHeightfield();
 
-	SectorData *m_data;
+	SectorData *m_Data;
+
     Heightfield *m_heightfield;
-    glm::vec2 m_pos;
-    glm::vec2 m_size;
+    glm::vec2 m_Pos;
+    glm::vec2 m_Size;
 
     EInitializationLevel m_initializationLevel;
     bool m_initialized;

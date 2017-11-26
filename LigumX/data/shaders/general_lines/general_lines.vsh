@@ -1,13 +1,24 @@
 #version 410 core
 layout(location=0) in vec3 pos;
-//layout(location=1) in vec3 color;
+
 uniform vec3 lineColor;
+
 uniform mat4 vpMat;
-out gl_PerVertex {
+uniform mat4 g_ModelToWorldMatrix;
+uniform mat4 g_WorldToViewMatrix;
+uniform mat4 g_ProjectionMatrix;
+
+out gl_PerVertex 
+{
     vec4 gl_Position;
 };
+
 out vec3 vColor;
-void main() {
-    gl_Position = vpMat * vec4(pos, 1);
+
+void main() 
+{
+	vec4 vWorldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
+	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * vec4(pos, 1);
+
     vColor = lineColor;
 }

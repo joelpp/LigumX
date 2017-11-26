@@ -885,8 +885,32 @@ void Renderer::BeforeWorldRender()
 	GL::ClearColorAndDepthBuffers();
 }
 
+void Renderer::RenderDebugModels()
+{
+	SetPipeline(pPipelineLines);
+
+	for (Model* model : m_DebugModels)
+	{
+		for (int i = 0; i < model->m_meshes.size(); ++i)
+		{
+			SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
+
+			SetVertexUniform(glm::vec3(1.f, 0.f, 0.f), "lineColor");
+
+			Material* material = model->GetMaterials()[i];
+
+			SetViewUniforms(m_DebugCamera);
+
+			DrawMesh(model->m_meshes[i], material);
+		}
+	}
+}
+
+
 void Renderer::AfterWorldRender()
 {
+	RenderDebugModels();
+
 	ApplyEmissiveGlow();
 }
 

@@ -29,4 +29,6 @@ namespace StringUtils
 	std::string GetSubstringBetweenCharacters(const std::string& str, char c0, char c1);
 
 	std::string GetTimestamp();
+
+	bool DumpToFile(std::string& path, std::string& data);
 }

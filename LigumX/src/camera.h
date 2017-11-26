@@ -157,8 +157,6 @@ public:
             GLFWwindow *pWindow, int key, int scancode, int action, int mods);
     void qweasdzxcKeyHoldPreset(GLFWwindow* pWindow);
     void viewArrowsPreset(GLFWwindow* pWindow);
-private:
-    REGISTERCLASS(Camera);
 };
 
 #endif // CAMERA_H

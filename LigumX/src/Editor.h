@@ -4,10 +4,14 @@
 #include "glm/glm.hpp"
 #include <map>
 #include <vector>
+#include <thread>
 #include "imgui_impl_glfw_gl3.h"
 #include "Logging.h"
+#include "CurlRequest.h"
 
 class Texture;
+class SectorData;
+class Sector;
 
 #pragma region  FORWARD_DECLARATIONS Editor
 #include "property.h"
@@ -22,8 +26,6 @@ extern Editor* g_Editor;
 
 class Editor
 {
-REGISTERCLASS(Editor);
-
 #pragma region  HEADER Editor
 public:
 static const int ClassID = 1231601560;
@@ -188,4 +190,13 @@ Texture* m_SplatMapTexture;
 std::vector<unsigned char> m_SplatMapData;
 private:
 	bool m_RenderingMenu;
+	bool m_LoadingCurlRequest;
+
+	// this is for r&d
+	CurlRequest m_Request;
+	SectorData* m_SectorData;
+	Sector* m_Sector;
+
+	std::thread curlThread;
+
 };

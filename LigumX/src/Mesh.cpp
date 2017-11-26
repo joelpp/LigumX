@@ -88,11 +88,13 @@ void Mesh::createBuffers()
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	}
 
-
-    glGenBuffers(1, &m_VBOs.glidIndexBuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs.glidIndexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_buffers.indexBuffer.size() * sizeof(int), m_buffers.indexBuffer.data(), GL_DYNAMIC_DRAW); 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	if (m_buffers.indexBuffer.size() > 0)
+	{
+		glGenBuffers(1, &m_VBOs.glidIndexBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs.glidIndexBuffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_buffers.indexBuffer.size() * sizeof(int), m_buffers.indexBuffer.data(), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
 
 
 }

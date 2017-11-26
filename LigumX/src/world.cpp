@@ -111,7 +111,7 @@ SectorList* World::updateSectorsAroundPoint(Coord2 point, int ringSize)
 	//    {
 	//        if (sector->m_initializationLevel == Sector::ContourLoaded)
 	//        {
-	//            renderData->initializeSector(sector);
+	//            renderData->InitializeSector(sector);
 	//        }
 
 	//        if (sector->m_initializationLevel == Sector::DataLoaded)
@@ -247,7 +247,7 @@ std::vector<Way*> World::getAllContourLines(SectorList* sectors)
 	for (auto sectorIt = sectors->begin(); sectorIt != sectors->end(); ++sectorIt)
 	{
 		Sector* sector = *sectorIt;
-		for (auto wayIt = sector->m_data->ways.begin(); wayIt != sector->m_data->ways.end(); ++wayIt)
+		for (auto wayIt = sector->m_Data->ways.begin(); wayIt != sector->m_Data->ways.end(); ++wayIt)
 		{
 			contours.push_back(wayIt->second);
 

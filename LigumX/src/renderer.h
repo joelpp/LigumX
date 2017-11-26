@@ -160,6 +160,7 @@ public:
     void RenderTerrain();
 	void RenderEntities(ShaderFamily family, std::vector<Entity*> entities);
 	void RenderEntities(std::vector<Entity*> entities);
+	void RenderDebugModels();
 
 	void BeforeWorldRender();
 	void AfterWorldRender();
@@ -265,7 +266,7 @@ public:
     ProgramPipeline::ShaderProgram* pFragmentShader2;
     ProgramPipeline::ShaderProgram* pFragmentShader3;
 
-    std::vector<Model*> m_debugModels;
+    std::vector<Model*> m_DebugModels;
 
     // VBOs
     GLuint glidNodesPositions;
@@ -378,8 +379,6 @@ public:
 
 
 private:
-    REGISTERCLASS(Renderer);
-
 	void DrawBoundingBox(BoundingBoxComponent* bb);
 	void DrawManipulator(Entity* entity);
 

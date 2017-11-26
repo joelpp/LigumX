@@ -90,9 +90,6 @@ void PostSerialization(bool writing);
 
 #pragma endregion  HEADER World
 
-private:
-    REGISTERCLASS(World);
-    
 public:
 
     World();

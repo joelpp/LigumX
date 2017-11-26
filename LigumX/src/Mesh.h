@@ -90,6 +90,4 @@ public:
 	bool m_pointRendering;
 	GLenum m_renderingMode;
 	
-private:
-	REGISTERCLASS(Mesh);
 };

@@ -111,3 +111,19 @@ std::string StringUtils::GetTimestamp()
 
 	return oss.str();
 }
+
+
+bool StringUtils::DumpToFile(std::string& path, std::string& data)
+{
+	std::ofstream out(path);
+
+	if (out.is_open())
+	{
+		out << data;
+		out.close();
+
+		return true;
+	}
+
+	return false;
+}

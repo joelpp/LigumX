@@ -131,7 +131,7 @@ void LigumX::updateWorld(int loadingRingSize)
  //       {
  //           if (sector->m_initializationLevel == Sector::ContourLoaded)
  //           {
- //               renderData->initializeSector(sector);
+ //               renderData->InitializeSector(sector);
  //           }
 
  //           if (sector->m_initializationLevel == Sector::DataLoaded)

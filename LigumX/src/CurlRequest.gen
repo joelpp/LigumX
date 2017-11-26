@@ -1,7 +1,8 @@
 class CurlRequest
 {
-	bool Finished;
+	int State;
 	glm::vec2 Coords;
 	glm::vec2 Extent;
 	std::string Result;
+	std::string Filename;
 }

@@ -34,6 +34,12 @@ SectorData::SectorData(glm::vec2 pos)
     m_pos = pos;
 }
 
+SectorData::SectorData(CurlRequest* request)
+{
+	m_CurlRequest = request;
+}
+
+
 void SectorData::downloadData(std::string path)
 {
     //string s = downloadSectorData(m_pos);
@@ -50,83 +56,52 @@ void SectorData::loadData(EOSMDataType dataType)
     glm::vec2 coordinateShifting = Settings::GetInstance().f2("coordinateShifting");
     tinyxml2::XMLDocument doc;
 
-    std::string path = BuildXMLPath(dataType, m_pos);
-
-    //if (!file_exists(path)) 
-    //{
-    //    if (dataType == MAP)
-    //    {
-    //        downloadData(path);
-    //    }
-    //    else if (dataType == CONTOUR)
-    //    {
-    //        downloadContourData(m_pos, path);
-    //    }
-    //}
+	const std::string& path = m_CurlRequest->GetFilename();
 
     doc.LoadFile(path.c_str());
 
     tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
-    // std::unordered_map<std::string id, Way*>* wayVector = 0;
-    // if (dataType == CONTOUR)
-    // {
-    //      wayVector = &contourWays;
-    // }
-    // else
-    // {
-    //      wayVector = &ways;
-    // }
 
-    // TODO: This could be part of a test?
-    // cout << docRoot->Value() << "\n";
-    
-    int i = 0;
     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
-        if (string(child->Value()).compare("bound") == 0){
+        if (string(child->Value()).compare("bound") == 0)
+		{
 
         }
-        if (string(child->Value()).compare("node") == 0){
-//            cout << "Looking at a node \n";
-//            cout << child->ToElement()->FindAttribute("id")->Value() << "\n";
 
+        else if (string(child->Value()).compare("node") == 0)
+		{
             string id = child->ToElement()->FindAttribute("id")->Value();
             float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) + coordinateShifting.x;
             float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) + coordinateShifting.y;
-            //double latitude = strtod(child->ToElement()->FindAttribute("lat")->Value(), NULL);
-            //double longitude = strtod(child->ToElement()->FindAttribute("lon")->Value(), NULL);
 
             Node* node = new Node(id, longitude, latitude);
             node->elevation = 0;
-           // if (path.compare("/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/result.xml") == 0) node->elevation = contourLineInterpolate(vec2(node->longitude, node->latitude)) * 1.0001;
-            for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement()){
+
+            for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
+			{
                 string key = tag->ToElement()->FindAttribute("k")->Value();
                 string value = tag->ToElement()->FindAttribute("v")->Value();
                 node -> addTag(key, value);
             }
-            
-            // /** UGLY 8*/
-            // Sector* sl = world->sectorsAroundPoint((glm::vec2(longitude, latitude)), 0)->at(0);
-            // PRINTINT(sl);
-            // PRINTINT(sl->m_data);
-            // sl->m_data->
+
             nodes.emplace(id, node);
-            // theNodes.emplace(id, node);
-            // addPoint(spatialIndex, longitude, latitude, atoi(id.c_str()));
-            // i++;
         }
 
-        else if (string(child->Value()).compare("way") == 0){
-//            cout << "Looking at a way \n";
+        else if (string(child->Value()).compare("way") == 0)
+		{
             string id = child->ToElement()->FindAttribute("id")->Value();
             Way* way = new Way(id);
             way->eType = OSMElement::NOT_IMPLEMENTED;
-            for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement()){
-                if (string(way_child->Value()).compare("nd") == 0){
+            for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
+			{
+                if (string(way_child->Value()).compare("nd") == 0)
+				{
                     string ref = way_child->ToElement()->FindAttribute("ref")->Value();
                     way -> addRef(nodes[ref]);
                 }
-                else if (string(way_child->Value()).compare("tag") == 0){
+                else if (string(way_child->Value()).compare("tag") == 0)
+				{
                     string key = way_child->ToElement()->FindAttribute("k")->Value();
                     string value = way_child->ToElement()->FindAttribute("v")->Value();
                     way -> addTag(key, value);
@@ -146,42 +121,10 @@ void SectorData::loadData(EOSMDataType dataType)
                     node->elevation = elevation;
                 }
             }
+
             ways.emplace(id, way);
-            // theWays.emplace(id, way);
-            // waysTypeMap[way->eType].emplace(id,way);
         }
-//         else if (string(child->Value()).compare("relation") == 0){
-//             string id = child->ToElement()->FindAttribute("id")->Value();
-//             Relation *relation = new Relation(id);
-
-//             for (tinyxml2::XMLNode* relation_child = child->FirstChildElement(); relation_child != NULL; relation_child = relation_child->NextSiblingElement()){
-//                 if (string(relation_child->Value()).compare("member") == 0){
-//                     string type = relation_child->ToElement()->FindAttribute("type")->Value();
-//                     string elementId = relation_child->ToElement()->FindAttribute("ref")->Value();
-// //                    PRINT(type);
-// //                    PRINT(elementId);
-//                     //Odd. Ucommenting this crashes the program when trying to fill the buffers.
-//                     try{
-//                         if (type.compare("node") == 0) relation->addMember(theNodes.at(elementId));
-//                         else if (type.compare("way") == 0) relation->addMember(theWays.at(elementId));
-//                         else if (type.compare("relation") == 0) relation->addMember(theRelations.at(elementId));
-//                     }
-//                     catch(...){
-
-//                     }
-//                 }
-//                 else if (string(relation_child->Value()).compare("tag") == 0){
-//                     string key = relation_child->ToElement()->FindAttribute("k")->Value();
-//                     string value = relation_child->ToElement()->FindAttribute("v")->Value();
-//                     relation->addTag(key, value);
-//                 }
-//             }
-//             theRelations.emplace(id, relation);
-//         }
-
     }
-
-
 }
 
 void SectorData::elevateNodes(Heightfield* heightfield)

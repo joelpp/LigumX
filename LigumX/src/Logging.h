@@ -21,11 +21,11 @@ static std::string GetTimeString(){
     return toReturn;
 }
 
-#define REGISTERCLASS(c) static constexpr const char* _ClassName = #c;
+#define REGISTERCLASS(c) static constexpr const char* ClassName = #c;
 
-#define PRINTCLASSNAME std::cout << "[" << _ClassName << "::" << __func__ << "] "
+#define PRINTCLASSNAME std::cout << "[" << ClassName << "::" << __func__ << "] "
 
-#define PRINTCLASSTIME std::cout << GetTimeString() << " : [" <<_ClassName<< "::" << __func__ << " (" << __LINE__ << ") ] "
+#define PRINTCLASSTIME std::cout << GetTimeString() << " : [" << ClassName << "::" << __func__ << " (" << __LINE__ << ") ] "
 
 #define OUTPUT_STRING(s) std::cout << GetTimeString() << " : " << s;
 

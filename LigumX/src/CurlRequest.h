@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include "glm/glm.hpp"
-#include "curl/curl.h"
 #include "Settings.h"
 #include "Logging.h"
 
@@ -29,40 +28,53 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const bool& GetFinished() { return m_Finished; }; 
-void SetFinished(bool value) { m_Finished = value; }; 
+const int& GetState() { return m_State; }; 
+void SetState(int value) { m_State = value; }; 
 const glm::vec2& GetCoords() { return m_Coords; }; 
 void SetCoords(glm::vec2 value) { m_Coords = value; }; 
 const glm::vec2& GetExtent() { return m_Extent; }; 
 void SetExtent(glm::vec2 value) { m_Extent = value; }; 
 const std::string& GetResult() { return m_Result; }; 
 void SetResult(std::string value) { m_Result = value; }; 
+const std::string& GetFilename() { return m_Filename; }; 
+void SetFilename(std::string value) { m_Filename = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
-bool m_Finished;
+int m_State;
 glm::vec2 m_Coords;
 glm::vec2 m_Extent;
 std::string m_Result;
+std::string m_Filename;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CurlRequestPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
-PIDX_Finished,
+PIDX_State,
 PIDX_Coords,
 PIDX_Extent,
 PIDX_Result,
+PIDX_Filename,
 };
 bool Serialize(bool writing);
 
 #pragma endregion  HEADER CurlRequest
 
-	CurlRequest(glm::vec2 coords, glm::vec2 extent);
+CurlRequest();
+CurlRequest(glm::vec2 coords, glm::vec2 extent);
 
-	void Execute();
+void Execute();
+
+bool Ready() { return m_State == 0; }
+bool Finished() { return m_State == 2; }
+void Reset() { m_State = 0; };
+void Initialize() { m_State = 1; };
+
+
+private:
 
 };

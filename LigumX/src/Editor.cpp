@@ -8,9 +8,11 @@
 #include "EngineStats.h"
 #include "BoundingBoxComponent.h"
 #include "PostEffects.h"
-#include "CurlRequest.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "SectorData.h"
+#include "RenderDataManager.h"
+#include "Sector.h"
 
 #pragma region  CLASS_SOURCE Editor
 Editor* g_Editor;
@@ -1026,6 +1028,41 @@ void Editor::RenderImgui()
 		Editor* editor = this;
 		ShowPropertyGridTemplate(editor, "Editor");
 
+
+		if (ImGui::Button("Test CurlRequest") && m_Request.Ready())
+		{
+			glm::vec2 startCoords = glm::vec2(48.092012, -78.951573);
+
+			//glm::vec2 endCoords = glm::vec2(48.103362, -78.931661);
+
+			// todo : found empirically, not the best probably
+			glm::vec2 extent = glm::vec2(0.01135);
+
+			m_Request = CurlRequest(startCoords, extent);
+			m_Request.Initialize();
+
+			curlThread = std::thread(&CurlRequest::Execute, &m_Request);
+
+		}
+
+		if (m_Request.Finished())
+		{
+			curlThread.join();
+
+			m_Sector = new Sector(&m_Request);
+			m_Sector->loadData(SectorData::EOSMDataType::MAP);
+
+			RenderDataManager::InitializeSector(m_Sector);
+
+			m_Request.Reset();
+		}
+
+		if (ImGui::Button("Load ways") && m_Sector != nullptr)
+		{
+			RenderDataManager::CreateWaysLines(m_Sector);
+		}
+
+
 		// Menu
 		if (ImGui::BeginMenuBar())
 		{
@@ -1052,19 +1089,6 @@ void Editor::RenderImgui()
 			ShowPropertyGridTemplate<DisplayOptions>(renderer->GetDisplayOptions(), "Display options");
 			ShowPropertyGridTemplate<EditorOptions>(GetOptions(), "Editor options");
 
-			if (ImGui::Button("Test CurlRequest"))
-			{
-				//Latitude: 48.092012 | Longitude: -78.931661
-				//Latitude: 48.103362 | Longitude : -78.951573
-
-				glm::vec2 startCoords = glm::vec2(48.092012, -78.931661);
-				glm::vec2 endCoords = glm::vec2(48.103362, -78.951573);
-
-				glm::vec2 extent = endCoords - startCoords;
-				CurlRequest request(startCoords, extent);
-
-				request.Execute();
-			}
 
 			ImGui::EndMenuBar();
 

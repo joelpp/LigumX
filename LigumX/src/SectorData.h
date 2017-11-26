@@ -11,6 +11,7 @@
 #include "Logging.h"
 #include <string>
 #include "OSM_Element.h"
+#include "CurlRequest.h"
 // class OSMElement;
 class Way;
 class Node;
@@ -66,7 +67,8 @@ public:
   	 *  Constructor / Destructor
   	 */
   	SectorData();
-  	SectorData(glm::vec2 pos);
+	SectorData(glm::vec2 pos);
+	SectorData(CurlRequest* request);
 
   	void loadData(EOSMDataType dataType);
 
@@ -95,9 +97,13 @@ public:
     void downloadData(std::string path);
     //TODO: Implement this (in the right place)
     // std::vector<Way*> getNearestWays(OSMElement::ElementType type,double lon,double lat,double maxResults);
+
+	
 private:
 
-  REGISTERCLASS(SectorData);
+	CurlRequest* m_CurlRequest;
+
+	REGISTERCLASS(SectorData);
 
 };
 

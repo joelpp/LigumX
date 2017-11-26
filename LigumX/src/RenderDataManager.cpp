@@ -106,6 +106,53 @@ Mesh* RenderDataManager::terrainMesh()
     return Heightfield::hfBaseMesh;
 }
 
+
+void RenderDataManager::AddDebugModel(std::vector<glm::vec3>& line)
+{
+	Renderer& renderer = Renderer::GetInstance();
+
+	Mesh* linesMesh = new Mesh(line, GL_LINES);
+
+	Model* linesModel = new Model();
+	linesModel->addMesh(linesMesh, new Material(renderer.pPipelineLines, glm::vec3(1, 0, 0)));
+	linesModel->SetName("Sector_lines_");
+
+	renderer.m_DebugModels.push_back(linesModel);
+}
+
+void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
+{
+	if (points.size() > 1)
+	{
+		points.push_back(points.back());
+	}
+
+	points.push_back(point);
+}
+
+void RenderDataManager::CreateWaysLines(Sector* sector)
+{
+	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
+	{
+		std::vector<glm::vec3> line;
+		Way* way = it->second;
+
+		for (auto nodeIt = way->nodes.begin(); nodeIt != way->nodes.end(); ++nodeIt)
+		{
+			Node* node = *nodeIt;
+
+			glm::vec3 pos = node->getLatLongEle();
+			pos -= glm::vec3(-78.951573, 48.092012, 0);
+			pos *= 10.f;
+			pos.z = 1.f;
+
+			AddPoint(line, pos);
+		}
+
+		AddDebugModel(line);
+	}
+}
+
 void RenderDataManager::fillBuffers(Sector* sector)
 {
     LigumX& game = LigumX::GetInstance();
@@ -121,7 +168,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
 
     GLint firstVertexForThisRoad = 0;
 
-    for ( auto it = sector->m_data->ways.begin(); it != sector->m_data->ways.end(); ++it )
+    for ( auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it )
     {
 
         first = true;
@@ -252,7 +299,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
     }
 
     waysModel->SetName("Ways");
-    renderer.m_debugModels.push_back(waysModel);
+    renderer.m_DebugModels.push_back(waysModel);
     
     // Model* nodesModel = new Model();
 
@@ -263,36 +310,23 @@ void RenderDataManager::fillBuffers(Sector* sector)
     // renderer.m_debugModels.push_back(nodesModel);
 }
 
-void RenderDataManager::initializeSector(Sector* sector)
+
+void RenderDataManager::InitializeSector(Sector* sector)
 {
 
-    Renderer& renderer = Renderer::GetInstance();
-    Model* linesModel = new Model();
 
-    std::vector<glm::vec3> points;
+    //glm::vec3 base = glm::vec3(sector->m_Pos, 0);
+    //float offset = sector->m_Size.x;
 
-    glm::vec3 base = glm::vec3(sector->m_pos, 0);
-    float offset = sector->m_size.x;
+	glm::vec3 base = glm::vec3(0.f, 0.f, 1.f);
+	float offset = 20.f;
 
-    points.push_back( base );
-    points.push_back( base + glm::vec3(offset, 0, 0));
-    points.push_back( base + glm::vec3(offset, 0, 0));
-    points.push_back( base + glm::vec3(offset, offset, 0));
-    points.push_back( base + glm::vec3(offset, offset, 0));
-    points.push_back( base + glm::vec3(0, offset, 0));
-    points.push_back( base + glm::vec3(0, offset, 0));
-    points.push_back( base );
+	std::vector<glm::vec3> points;
+	AddPoint(points, base);
+    AddPoint(points, base + glm::vec3(offset, 0, 0));
+    AddPoint(points, base + glm::vec3(offset, offset, 0));
+    AddPoint(points, base + glm::vec3(0, offset, 0));
+    AddPoint(points, base);
 
-    Mesh* linesMesh = new Mesh(points, GL_LINES);
-
-    linesModel->addMesh( linesMesh, new Material(renderer.pPipelineLines, glm::vec3(1,0,0)) );
-    linesModel->SetName("Sector_lines_");
-    renderer.m_debugModels.push_back(linesModel);
-
-    Text t;
-    t.text = std::to_string(sector->m_ID);
-    t.position = glm::vec3(sector->m_pos + sector->m_size / 2.f, 0.001f);
-    t.projected = true;
-    t.scale = 0.00001f;
-    renderer.texts.push_back(t);
+	AddDebugModel(points);
 }
