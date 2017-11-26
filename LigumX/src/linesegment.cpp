@@ -21,8 +21,8 @@ LineSegment::LineSegment(Node* n0, Node* n1){
 }
 
 LineSegment::LineSegment(Way* way){
-    this->p0 = way->nodes[0]->getLatLong();
-    this->p1 = way->nodes[1]->getLatLong();
+    this->p0 = way->GetNodes()[0]->getLatLong();
+    this->p1 = way->GetNodes()[1]->getLatLong();
 }
 
 

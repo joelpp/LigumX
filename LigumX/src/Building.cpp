@@ -22,8 +22,8 @@ bool Building::GenerateModel()
 {
 
 	Way* way = m_Way;
-	auto first = m_Way->nodes.front();
-	auto last = m_Way->nodes.back();
+	auto first = m_Way->GetNodes().front();
+	auto last = m_Way->GetNodes().back();
 	int LiftableWalls = OSMElement::BUILDING_UNMARKED;
 	int nbFailedLoops = 0;
 	int nbSuccessLoops = 0;
@@ -55,7 +55,7 @@ bool Building::GenerateModel()
 	    std::vector<Node*> loopNodes;
 	    float distance = 0;
 	        
-	    for(auto n = way->nodes.begin(); n != way->nodes.end()-1; ++n) 
+	    for(auto n = way->GetNodes().begin(); n != way->GetNodes().end()-1; ++n)
 	    {
 	        loopNodes.push_back(*n);
 	        

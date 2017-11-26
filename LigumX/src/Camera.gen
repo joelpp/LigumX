@@ -20,4 +20,7 @@ class Camera
 	int ProjectionType
 	float OrthoBorders
 	float ViewSize
+
+	[min=0, max=20]
+	float MovementSpeed;
 }

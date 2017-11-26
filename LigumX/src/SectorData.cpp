@@ -53,7 +53,6 @@ void SectorData::downloadData(std::string path)
 void SectorData::loadData(EOSMDataType dataType)
 {
     World *world = LigumX::GetInstance().world;
-    glm::vec2 coordinateShifting = Settings::GetInstance().f2("coordinateShifting");
     tinyxml2::XMLDocument doc;
 
 	const std::string& path = m_CurlRequest->GetFilename();
@@ -64,16 +63,17 @@ void SectorData::loadData(EOSMDataType dataType)
 
     for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
     {
-        if (string(child->Value()).compare("bound") == 0)
+		std::string childValue = std::string(child->Value());
+        if (childValue == "bound")
 		{
 
         }
 
-        else if (string(child->Value()).compare("node") == 0)
+        else if (childValue == "node")
 		{
             string id = child->ToElement()->FindAttribute("id")->Value();
-            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value()) + coordinateShifting.x;
-            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value()) + coordinateShifting.y;
+            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value());
+            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value());
 
             Node* node = new Node(id, longitude, latitude);
             node->elevation = 0;
@@ -88,7 +88,7 @@ void SectorData::loadData(EOSMDataType dataType)
             nodes.emplace(id, node);
         }
 
-        else if (string(child->Value()).compare("way") == 0)
+        else if (childValue == "way")
 		{
             string id = child->ToElement()->FindAttribute("id")->Value();
             Way* way = new Way(id);
@@ -98,7 +98,7 @@ void SectorData::loadData(EOSMDataType dataType)
                 if (string(way_child->Value()).compare("nd") == 0)
 				{
                     string ref = way_child->ToElement()->FindAttribute("ref")->Value();
-                    way -> addRef(nodes[ref]);
+                    way->AddNode(nodes[ref]);
                 }
                 else if (string(way_child->Value()).compare("tag") == 0)
 				{
@@ -115,7 +115,7 @@ void SectorData::loadData(EOSMDataType dataType)
             if (dataType == CONTOUR)
             {
                 float elevation = atof(way->tags["ele"].c_str()) / 15000 + 0.000001;
-                for (auto it = way->nodes.begin(); it != way->nodes.end(); ++it)
+                for (auto it = way->GetNodes().begin(); it != way->GetNodes().end(); ++it)
                 {
                     Node* node = *it;
                     node->elevation = elevation;
@@ -133,7 +133,7 @@ void SectorData::elevateNodes(Heightfield* heightfield)
     {
         Way* way = it->second;
 
-        for (auto nodeIt = way->nodes.begin(); nodeIt != way->nodes.end(); ++nodeIt)
+        for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
         {
             Node* node = *nodeIt;
             double elevation = heightfield->getHeight(node->getLatLong());
@@ -241,7 +241,7 @@ std::vector<Way*> SectorData::findNClosestWays(int n, glm::vec2 xy, int filter, 
         std::pair<Node*, Node*> aPair;
 
         //Look at all this way's nodes
-        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
+        for (auto nodeIt = way->GetNodes().begin() ; nodeIt != way->GetNodes().end(); ++nodeIt){
 
             // Keep first node and continue
             if (first){

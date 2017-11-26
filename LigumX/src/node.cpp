@@ -1,27 +1,48 @@
 #include "stdafx.h"
-
 #include "node.h"
 
-Node::Node(){
-    this->elevation = 0;
+#pragma region  CLASS_SOURCE Node
 
+#include "Node.h"
+#include "serializer.h"
+#include <cstddef>
+#include "ObjectManager.h"
+const ClassPropertyData Node::g_Properties[] = 
+{
+{ "ObjectID", PIDX_ObjectID, offsetof(Node, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Node, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "OSMId", PIDX_OSMId, offsetof(Node, m_OSMId), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "LongLat", PIDX_LongLat, offsetof(Node, m_LongLat), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
+{ "Elevation", PIDX_Elevation, offsetof(Node, m_Elevation), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+};
+bool Node::Serialize(bool writing)
+{
+	bool success = g_Serializer->SerializeObject(this, writing); 
+	return success;
 }
 
-Node::Node(glm::vec2 latLong){
+#pragma endregion  CLASS_SOURCE Node
+Node::Node()
+{
     this->elevation = 0;
-
 }
 
-Node::Node(std::string _id, float _longitude, float _latitude){
+Node::Node(glm::vec2 latLong)
+{
+    this->elevation = 0;
+}
+
+Node::Node(std::string _id, float _longitude, float _latitude)
+{
     this->id = _id;
     this->latitude = _latitude;
     this->longitude = _longitude;
     this->elevation = 0;
-//    this->tags = unordered_map<std::string, std::string>();
 }
 
 
-std::string Node::toString(){
+std::string Node::toString()
+{
     char str[200];
     sprintf(str, "Node ID=%s lat=%f lon=%f", this->id.c_str(), this->latitude, this->longitude);
     std::string toReturn = std::string(str);
@@ -34,11 +55,12 @@ std::string Node::toString(){
     return toReturn;
 }
 
-
-glm::vec2 Node::getLatLong(){
+glm::vec2 Node::getLatLong()
+{
     return glm::vec2(longitude, latitude);
 }
 
-glm::vec3 Node::getLatLongEle(){
+glm::vec3 Node::getLatLongEle()
+{
     return glm::vec3(longitude, latitude, elevation);
 }

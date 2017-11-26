@@ -59,6 +59,8 @@ const float& GetOrthoBorders() { return m_OrthoBorders; };
 void SetOrthoBorders(float value) { m_OrthoBorders = value; }; 
 const float& GetViewSize() { return m_ViewSize; }; 
 void SetViewSize(float value) { m_ViewSize = value; }; 
+const float& GetMovementSpeed() { return m_MovementSpeed; }; 
+void SetMovementSpeed(float value) { m_MovementSpeed = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -74,8 +76,9 @@ float m_FarPlane;
 int m_ProjectionType;
 float m_OrthoBorders;
 float m_ViewSize;
+float m_MovementSpeed;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -94,6 +97,7 @@ PIDX_FarPlane,
 PIDX_ProjectionType,
 PIDX_OrthoBorders,
 PIDX_ViewSize,
+PIDX_MovementSpeed,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing);

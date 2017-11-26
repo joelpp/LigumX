@@ -170,7 +170,7 @@ void CurlRequest::Execute()
 
 	if (!fileAlreadyPresent)
 	{
-		m_Result = queryBoundingBox(m_Coords.y, m_Coords.x, m_Coords.y + m_Extent.y, m_Coords.x + m_Extent.x);
+		m_Result = queryBoundingBox(m_Coords.x, m_Coords.y, m_Coords.x + m_Extent.x, m_Coords.y + m_Extent.y);
 		StringUtils::DumpToFile(m_Filename, m_Result);
 	}
 

@@ -895,8 +895,6 @@ void Renderer::RenderDebugModels()
 		{
 			SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
 
-			SetVertexUniform(glm::vec3(1.f, 0.f, 0.f), "lineColor");
-
 			Material* material = model->GetMaterials()[i];
 
 			SetViewUniforms(m_DebugCamera);

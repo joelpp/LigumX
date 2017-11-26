@@ -1,0 +1,5 @@
+class Way
+{
+	int OSMId;
+	std::vector<Node> Nodes;
+}

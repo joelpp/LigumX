@@ -50,7 +50,7 @@ public:
 
     void fillBuffers(Sector* newSector);
     static void InitializeSector(Sector* sector);
-	static void AddDebugModel(std::vector<glm::vec3>& line);
+	static void AddDebugModel(std::vector<glm::vec3>& line, glm::vec3 color);
 
 	void addToTerrainBuffer(Sector* newSector);
     Mesh* terrainMesh();

@@ -1,32 +1,57 @@
 #include "stdafx.h"
-
 #include "way.h"
 #include "node.h"
 #include "osm_element.h"
 #include "linesegment.h"
 
-Way::Way(){
+#pragma region  CLASS_SOURCE Way
+
+#include "Way.h"
+#include "serializer.h"
+#include <cstddef>
+#include "ObjectManager.h"
+const ClassPropertyData Way::g_Properties[] = 
+{
+{ "ObjectID", PIDX_ObjectID, offsetof(Way, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Way, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Nodes", PIDX_Nodes, offsetof(Way, m_Nodes), 0, LXType_stdvector, false, LXType_Node, 0, 0, 0, }, 
+};
+bool Way::Serialize(bool writing)
+{
+	bool success = g_Serializer->SerializeObject(this, writing); 
+	return success;
+}
+
+#pragma endregion  CLASS_SOURCE Way
+Way::Way()
+{
 
 }
 
-Way::Way(std::string id){
+Way::Way(std::string id)
+{
     this->id = id;
 }
 
-Way::Way(std::string _id, LineSegment ls, int type){
+Way::Way(std::string _id, LineSegment ls, int type)
+{
     this->id = _id;
 
-    addRef(new Node("n0", ls.p0.x, ls.p0.y));
-    addRef(new Node("n1", ls.p1.x, ls.p1.y));
+    AddNode(new Node("n0", ls.p0.x, ls.p0.y));
+	AddNode(new Node("n1", ls.p1.x, ls.p1.y));
     eType = (OSMElement::ElementType) type;
 }
 
-void Way::addRef(Node* ref){
-    nodes.push_back(ref);
+void Way::AddNode(Node* ref)
+{
+    m_Nodes.push_back(ref);
 }
-std::string Way::toString(){
+
+std::string Way::toString()
+{
     char str[200];
-    sprintf(str, "Way ID=%s, %lu nodes, eType: %d, ", this->id.c_str(), nodes.size(), this->eType);
+    sprintf(str, "Way ID=%s, %lu nodes, eType: %d, ", this->id.c_str(), m_Nodes.size(), this->eType);
     std::string toReturn = std::string(str);
     for ( auto it = this->tags.begin(); it != this->tags.end(); ++it ){
         char tagstr[200];
@@ -35,7 +60,8 @@ std::string Way::toString(){
     }
     return toReturn;
 }
-bool Way::hasPointInside(glm::vec2 xy){
+bool Way::hasPointInside(glm::vec2 xy)
+{
 
     //If this way doesn't form a closed loop the concept of "being inside" it is meaningless. MEANINGLESS!!
 //    if(!loops()) return false;
@@ -50,7 +76,7 @@ bool Way::hasPointInside(glm::vec2 xy){
     Node* node2 = NULL;
 
     // Loop over all this way's nodes
-    for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it){
+    for (auto it = this->m_Nodes.begin(); it != this->m_Nodes.end(); ++it){
         // On first pass set first node and carry on
         if (first){
             node1 = *it;
@@ -76,20 +102,25 @@ bool Way::hasPointInside(glm::vec2 xy){
     return ((numIntersections % 2) == 1);
 }
 
-bool Way::loops(){
-    auto it = this->nodes.begin();
-    auto it2 = this->nodes.end();
+bool Way::loops()
+{
+    auto it = this->m_Nodes.begin();
+    auto it2 = this->m_Nodes.end();
 
     return (it == it2);
 }
 
 
 
-WayPair Way::findCommon(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays){
-    for (int i = 0; i < firstNodeWays.size(); i++){
-        for (int j = 0; j < secondNodeWays.size(); j++){
+WayPair Way::findCommon(std::vector<Way*> firstNodeWays, std::vector<Way*> secondNodeWays)
+{
+    for (int i = 0; i < firstNodeWays.size(); i++)
+	{
+        for (int j = 0; j < secondNodeWays.size(); j++)
+		{
             if (firstNodeWays[i]->id.compare(secondNodeWays[j]->id) == 0) return std::pair<int, int>(i,j);
         }
     }
+
     return WayPair(-1,-1);
 }

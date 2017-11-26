@@ -37,7 +37,8 @@ public:
 
     Heightfield *m_heightfield;
     glm::vec2 m_Pos;
-    glm::vec2 m_Size;
+	glm::vec2 m_LifeSize;
+	glm::vec2 m_Size;
 
     EInitializationLevel m_initializationLevel;
     bool m_initialized;

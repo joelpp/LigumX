@@ -1,10 +1,13 @@
 #version 410 core
-in vec3 vColor;
+
+#define PROVIDER_Material
+
+// Include Providers Marker
 
 out vec3 color;
 
 
 void main()
 {
-    color = vColor;
+    color = g_Material.m_DiffuseColor;
 }

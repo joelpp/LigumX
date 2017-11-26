@@ -1,0 +1,6 @@
+class Node
+{
+	int OSMId;
+	glm::vec2 LongLat;
+	float Elevation;
+}

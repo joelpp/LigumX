@@ -107,14 +107,14 @@ Mesh* RenderDataManager::terrainMesh()
 }
 
 
-void RenderDataManager::AddDebugModel(std::vector<glm::vec3>& line)
+void RenderDataManager::AddDebugModel(std::vector<glm::vec3>& line, glm::vec3 color)
 {
 	Renderer& renderer = Renderer::GetInstance();
 
 	Mesh* linesMesh = new Mesh(line, GL_LINES);
 
 	Model* linesModel = new Model();
-	linesModel->addMesh(linesMesh, new Material(renderer.pPipelineLines, glm::vec3(1, 0, 0)));
+	linesModel->addMesh(linesMesh, new Material(renderer.pPipelineLines, color));
 	linesModel->SetName("Sector_lines_");
 
 	renderer.m_DebugModels.push_back(linesModel);
@@ -132,24 +132,39 @@ void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
 
 void RenderDataManager::CreateWaysLines(Sector* sector)
 {
+	float latMid = sector->m_Pos.x;
+
+	glm::vec2 degreesToMeters;
+	degreesToMeters.x = 111132.954 * cos(latMid);
+	degreesToMeters.y = 111132.954 - 559.822 * cos(2 * latMid) + 1.175 * cos(4 * latMid);
+
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		std::vector<glm::vec3> line;
 		Way* way = it->second;
 
-		for (auto nodeIt = way->nodes.begin(); nodeIt != way->nodes.end(); ++nodeIt)
+		for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
 		{
 			Node* node = *nodeIt;
 
 			glm::vec3 pos = node->getLatLongEle();
-			pos -= glm::vec3(-78.951573, 48.092012, 0);
-			pos *= 10.f;
+
+			// offset between 0 and extent
+			pos -= glm::vec3(sector->m_Pos, 0.f);
+
+			// scale between 0 and 1
+			pos /= glm::vec3(sector->m_LifeSize, 1.f);
+
+			pos *= 1500.f;
+
 			pos.z = 1.f;
 
 			AddPoint(line, pos);
 		}
 
-		AddDebugModel(line);
+		Renderer& renderer = Renderer::GetInstance();
+		glm::vec3 color = renderer.typeColorMap[way->eType];
+		AddDebugModel(line, color);
 	}
 }
 
@@ -189,7 +204,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
             continue;
         }
 
-        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt)
+        for (auto nodeIt = way->GetNodes().begin() ; nodeIt != way->GetNodes().end(); ++nodeIt)
         {
             
             Node* node = *nodeIt;
@@ -267,9 +282,9 @@ void RenderDataManager::fillBuffers(Sector* sector)
 
         // triangulate building loops
         // PRINTELEMENTPTR(way);
-        Node first(*(way->nodes.front()));
-        Node last(*(way->nodes.back()));
-        if((way->eType==OSMElement::BUILDING_UNMARKED||way->eType == OSMElement::LEISURE_PARK)&&way->nodes.size() >= 3 && first == last) 
+        Node first(*(way->GetNodes().front()));
+        Node last(*(way->GetNodes().back()));
+        if((way->eType==OSMElement::BUILDING_UNMARKED||way->eType == OSMElement::LEISURE_PARK)&&way->GetNodes().size() >= 3 && first == last)
         {
             Building* building = new Building(way);
             // building->GenerateModel();
@@ -313,8 +328,6 @@ void RenderDataManager::fillBuffers(Sector* sector)
 
 void RenderDataManager::InitializeSector(Sector* sector)
 {
-
-
     //glm::vec3 base = glm::vec3(sector->m_Pos, 0);
     //float offset = sector->m_Size.x;
 
@@ -328,5 +341,5 @@ void RenderDataManager::InitializeSector(Sector* sector)
     AddPoint(points, base + glm::vec3(0, offset, 0));
     AddPoint(points, base);
 
-	AddDebugModel(points);
+	AddDebugModel(points, glm::vec3(1,0,0));
 }

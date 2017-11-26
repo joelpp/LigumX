@@ -17,7 +17,7 @@ Sector::Sector(vec2 pos, float size, int ID)
 	//PRINT("CONSTRUCTING NEW SECTOR AT")
 	//PRINTVEC2(pos);
     this->m_Pos = pos;
-    this->m_Size = glm::vec2(size);
+    this->m_LifeSize = glm::vec2(size);
 
 	m_Data = 0;
    	m_heightfield = 0;
@@ -34,7 +34,7 @@ Sector::Sector(CurlRequest* curlRequest)
 	m_Data = new SectorData(curlRequest);
 
 	m_Pos = curlRequest->GetCoords();
-	m_Size = curlRequest->GetExtent();
+	m_LifeSize = curlRequest->GetExtent();
 }
 
 

@@ -1,29 +1,66 @@
-#ifndef WAY_H
-#define WAY_H
-
+#pragma once
 #include "osm_element.h"
 #include <vector>
 #include "glm/glm.hpp"
 #include <string>
 #include <iostream>
 
+#pragma region  FORWARD_DECLARATIONS Way
+#include "property.h"
+
+class Way;
+class Node;
+
+
+#pragma endregion  FORWARD_DECLARATIONS Way
 class LineSegment;
 class OSMElement;
 class Node;
 typedef std::pair<int, int> WayPair;
 
-class Way : public OSMElement{
+class Way : public OSMElement
+{
+#pragma region  HEADER Way
+public:
+static const int ClassID = 2137978372;
+static const LXType Type = LXType_Way;
+static constexpr const char* ClassName = "Way";
+
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
+const int& GetOSMId() { return m_OSMId; }; 
+void SetOSMId(int value) { m_OSMId = value; }; 
+std::vector<Node*>& GetNodes() { return m_Nodes; }; 
+void SetNodes(std::vector<Node*> value) { m_Nodes = value; }; 
 private:
+int m_ObjectID;
+std::string m_Name;
+int m_OSMId;
+std::vector<Node*> m_Nodes;
+public:
+static const int g_PropertyCount = 4;
+static const ClassPropertyData g_Properties[g_PropertyCount];
+
+enum g_WayPIDX
+{
+PIDX_ObjectID,
+PIDX_Name,
+PIDX_OSMId,
+PIDX_Nodes,
+};
+bool Serialize(bool writing);
+
+#pragma endregion  HEADER Way
 
 public:
     Way();
     Way(std::string id);
     Way(std::string id, LineSegment ls, int type);
-    void addRef(Node* ref);
 
+	void AddNode(Node* node);
 
-
-    std::vector<Node*> nodes;
     std::string toString();
 
     bool selectable;
@@ -32,6 +69,4 @@ public:
 
     static WayPair findCommon(const std::vector<Way*> firstNodeWays, const std::vector<Way*> secondNodeWays);
 };
-
-#endif // WAY
 

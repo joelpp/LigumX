@@ -240,7 +240,7 @@ int Heightfield::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> 
         bool intersects = false;
         bool first = true;
         // Loop on all nodes on the best contour
-        for (auto nodeIt = ways[0]->nodes.begin() ; nodeIt != ways[0]->nodes.end(); ++nodeIt)
+        for (auto nodeIt = ways[0]->GetNodes().begin() ; nodeIt != ways[0]->GetNodes().end(); ++nodeIt)
         {
             if (first)
             {

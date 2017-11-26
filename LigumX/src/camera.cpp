@@ -29,6 +29,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, false, LXType_None, 0, 0, 20, }, 
 };
 bool Camera::Serialize(bool writing)
 {
@@ -68,9 +69,7 @@ Camera::Camera()
     lookAtTargetPos = m_Position + m_FrontVector;
     defaultViewMovementSpeed = 0.1f;
     viewMovementSpeed = defaultViewMovementSpeed;
-    defaultKeyMovementSpeed = 0.05f;
-	minimumSpeed = 0.01f;
-	maximumSpeed = 0.15f;
+    defaultKeyMovementSpeed = m_MovementSpeed * 0.05f;
 
     keyMovementSpeed = defaultKeyMovementSpeed;
     keyMovementSpeedIncreaseFactor = 1.5f;
@@ -325,13 +324,13 @@ void Camera::qweasdzxcKeyPreset(
         switch(key) 
 		{
         case GLFW_KEY_LEFT_SHIFT:
-            keyMovementSpeed /= keyMovementSpeedIncreaseFactor;
+            keyMovementSpeedIncreaseFactor *= 2.f;
             break;
         case GLFW_KEY_X:
-            keyMovementSpeed = defaultKeyMovementSpeed;
+			keyMovementSpeedIncreaseFactor = 0.05f;
             break;
         case GLFW_KEY_LEFT_CONTROL:
-            keyMovementSpeed *= keyMovementSpeedIncreaseFactor;
+			keyMovementSpeedIncreaseFactor /= 2.f;
             break;
         }
     }
@@ -341,11 +340,11 @@ void Camera::qweasdzxcKeyPreset(
 		switch (key)
 		{
 		case GLFW_KEY_LEFT_SHIFT:
-			keyMovementSpeed *= keyMovementSpeedIncreaseFactor;
+			keyMovementSpeedIncreaseFactor /= 2.f;
 			break;
 
 		case GLFW_KEY_LEFT_CONTROL:
-			keyMovementSpeed /= keyMovementSpeedIncreaseFactor;
+			keyMovementSpeedIncreaseFactor *= 2.f;
 			break;
 		}
 	}
@@ -494,32 +493,43 @@ void Camera::continuousMousePresetCursorPos(
 
 void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
 {
-    if(cameraType == CameraType::AROUND_TARGET) {
-        if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
+	keyMovementSpeed = m_MovementSpeed * keyMovementSpeedIncreaseFactor;
+    if(cameraType == CameraType::AROUND_TARGET) 
+	{
+        if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) 
+		{
 			m_Position -= keyMovementSpeed * m_FrontVector;
             distanceReference = max(distanceReference - keyMovementSpeed, 0.0f);
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) 
+		{
 			m_Position += keyMovementSpeed * m_FrontVector;
             distanceReference = max(distanceReference + keyMovementSpeed, 0.0f);
         }
-    } else if(cameraType == CameraType::TOP_3D) {
+    } 
+	else if(cameraType == CameraType::TOP_3D) 
+	{
         m_FrontVector = vec3(0,0,1);
 		m_UpVector = vec3(0,1,0);
 		m_RightVector = vec3(1,0,0);
-        if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) 
+		{
 			m_Position += keyMovementSpeed * m_UpVector;
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_S) == GLFW_PRESS) 
+		{
 			m_Position -= keyMovementSpeed * m_UpVector;
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_A) == GLFW_PRESS) 
+		{
 			m_Position -= keyMovementSpeed * m_RightVector;
         }
-        if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) {
+        if(glfwGetKey(pWindow, GLFW_KEY_D) == GLFW_PRESS) 
+		{
 			m_Position += keyMovementSpeed * m_RightVector;
         }
-    } else 
+    } 
+	else 
 	{
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) 
 		{

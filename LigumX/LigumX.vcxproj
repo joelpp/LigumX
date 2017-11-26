@@ -320,10 +320,12 @@
     <None Include="src\Material.gen" />
     <None Include="src\Mesh.gen" />
     <None Include="src\Model.gen" />
+    <None Include="src\Node.gen" />
     <None Include="src\PostEffects.gen" />
     <None Include="src\renderer.gen" />
     <None Include="src\SunLight.gen" />
     <None Include="src\Texture.gen" />
+    <None Include="src\Way.gen" />
     <None Include="src\World.gen" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

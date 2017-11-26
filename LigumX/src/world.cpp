@@ -177,7 +177,7 @@ std::vector<Way*> World::findNClosestWays(int n, glm::vec2 xy,
         std::pair<Node*, Node*> aPair;
 
         //Look at all this way's nodes
-        for (auto nodeIt = way->nodes.begin() ; nodeIt != way->nodes.end(); ++nodeIt){
+        for (auto nodeIt = way->GetNodes().begin() ; nodeIt != way->GetNodes().end(); ++nodeIt){
 
             // Keep first node and continue
             if (first){

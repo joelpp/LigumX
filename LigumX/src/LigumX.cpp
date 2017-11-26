@@ -208,6 +208,8 @@ string LigumX::labelFromType(OSMElement::ElementType type)
 
 
 void LigumX::populateTypeColorArray(){
+
+	// todo : this shouldnt really be in renderer
     Renderer& renderer = Renderer::GetInstance();
     renderer.typeColorMap.emplace(OSMElement::HIGHWAY_TRUNK, vec3(1,1,1));
     renderer.typeColorMap.emplace(OSMElement::HIGHWAY_PRIMARY, vec3(0.9,0.9,0.9));
