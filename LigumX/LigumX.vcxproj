@@ -190,7 +190,6 @@
     <ClCompile Include="src\RenderDataManager.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\roads.cpp" />
-    <ClCompile Include="src\screen_quad.cpp" />
     <ClCompile Include="src\sector.cpp" />
     <ClCompile Include="src\SectorData.cpp" />
     <ClCompile Include="src\SectorManager.cpp" />

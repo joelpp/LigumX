@@ -13,14 +13,6 @@ void Renderer::init_pipelines()
 //	std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
 //    std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
     init_pipelines_text();
-    //init_pipelines_buildingSides();
-	Renderer::outputGLError(__func__, __LINE__);
-	//init_pipelines_filledBuildings();
-	Renderer::outputGLError(__func__, __LINE__);
-	//init_pipelines_roads();
-	Renderer::outputGLError(__func__, __LINE__);
-	init_pipelines_screenQuad();
-
 	Renderer::outputGLError(__func__, __LINE__);
 
 

@@ -239,7 +239,6 @@ public:
     // shaders
     ProgramPipeline* pPipelineLines;
     ProgramPipeline* pPipelineRoads;
-    ProgramPipeline* pPipelineScreenQuad;
     ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
     ProgramPipeline* pPipelineGround;

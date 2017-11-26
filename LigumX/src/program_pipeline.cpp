@@ -298,13 +298,13 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
     
 	if (isCompute)
 	{
-		useComputeShader(new ProgramPipeline::ShaderProgram(GL_COMPUTE_SHADER, path.str() + "compute.csh", false));
+		useComputeShader(new ProgramPipeline::ShaderProgram(GL_COMPUTE_SHADER, path.str() + name + ".csh", false));
 
 	}
 	else
 	{
-		useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + "vertex.vsh", false));
-		useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + "fragment.fsh", false));
+		useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + name + ".vsh", false));
+		useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + name + ".fsh", false));
 	}
 
 	//useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
