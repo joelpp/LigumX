@@ -28,12 +28,13 @@ const ClassPropertyData Editor::g_Properties[] =
 { "LastMousePosition", PIDX_LastMousePosition, offsetof(Editor, m_LastMousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "MousePosition", PIDX_MousePosition, offsetof(Editor, m_MousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "MouseButton1Down", PIDX_MouseButton1Down, offsetof(Editor, m_MouseButton1Down), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
+{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
 { "PickedEntity", PIDX_PickedEntity, offsetof(Editor, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickedWorldPosition", PIDX_PickedWorldPosition, offsetof(Editor, m_PickedWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "MouseDragDistance", PIDX_MouseDragDistance, offsetof(Editor, m_MouseDragDistance), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickedTexelOffset", PIDX_PickedTexelOffset, offsetof(Editor, m_PickedTexelOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
@@ -97,11 +98,11 @@ void Editor::RenderPicking()
 	if (editingTerrain || m_ManipulatorDragging)
 	{
 
-		if (m_ManipulatorDragging && (m_XYZMask != glm::vec3(0,0,0)) )
+		if (m_ManipulatorDragging && (m_XYZMask != glm::vec4(0,0,0,0)) )
 		{
 			glm::vec2 screenDistance = m_MousePosition - m_LastMousePosition;
 			float distance = screenDistance.x / 10.f;
-			glm::vec3 toAdd = distance * m_XYZMask;
+			glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
 
 			m_PickedEntity->AddToPosition(toAdd);
 		}
@@ -135,7 +136,7 @@ void Editor::RenderPicking()
 			startTexel = glm::max(startTexel, glm::ivec2(0, 0));
 			startTexel = glm::min(startTexel, texSize - glm::ivec2(brushWidth));
 
-			char* val = m_SplatMapData.data();
+			unsigned char* val = m_SplatMapData.data();
 
 			int dataOffset = stride * (startTexel.y * tex->GetSize().x + startTexel.x);
 			val += dataOffset;
@@ -178,11 +179,24 @@ void Editor::RenderPicking()
 						continue;
 					}
 
-					glm::ivec4 increment = glm::ivec4(m_XYZMask, 0);
-
 					for (int c = 0; c < 4; ++c)
 					{
-						val[index + c] += (char) increment[c];
+						unsigned char& value = val[index + c];
+						int toAdd = (int) m_XYZMask[c];
+
+						if (GetTerrainErasureMode() && toAdd != 0)
+						{
+							value = 0;
+						}
+						else if (m_XYZMask.w == 0) // adding 
+						{
+							value += (value == 255) ? 0 : (char) toAdd;
+						}
+						else if (m_XYZMask.w == 1) // adding 
+						{
+							value -= (value == 0) ? 0 : (char)toAdd;
+						}
+
 					}
 				}
 			}
@@ -418,6 +432,18 @@ void Editor::ShowProperty(glm::vec3* value, const char* name, float min, float m
 	}
 }
 
+void Editor::ShowProperty(glm::vec4* value, const char* name, float min, float max)
+{
+	if (min == 0 && max == 0)
+	{
+		ImGui::DragFloat4(name, (float*)value);
+	}
+	else
+	{
+		ImGui::SliderFloat4(name, (float*)value, min, max);
+	}
+}
+
 void Editor::ShowProperty(glm::ivec2* value, const char* name, float min, float max)
 {
 	if (min == 0 && max == 0)
@@ -571,6 +597,11 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	case LXType_glmvec3:
 	{
 		ShowProperty((glm::vec3*) ptr, name, min, max);
+		break;
+	}
+	case LXType_glmvec4:
+	{
+		ShowProperty((glm::vec4*) ptr, name, min, max);
 		break;
 	}
 	case LXType_glmivec2:

@@ -46,9 +46,9 @@ const glm::vec2& GetMousePosition() { return m_MousePosition; };
 void SetMousePosition(glm::vec2 value) { m_MousePosition = value; }; 
 const bool& GetMouseButton1Down() { return m_MouseButton1Down; }; 
 void SetMouseButton1Down(bool value) { m_MouseButton1Down = value; }; 
-const glm::vec3& GetXYZMask() { return m_XYZMask; }; 
-void SetXYZMask(glm::vec3 value) { m_XYZMask = value; }; 
-void AddToXYZMask(glm::vec3 value) { m_XYZMask += value; };
+const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
+void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
+void AddToXYZMask(glm::vec4 value) { m_XYZMask += value; };
 Entity*& GetPickedEntity() { return m_PickedEntity; }; 
 void SetPickedEntity(Entity* value) { m_PickedEntity = value; }; 
 const glm::vec3& GetPickedWorldPosition() { return m_PickedWorldPosition; }; 
@@ -59,6 +59,8 @@ const glm::vec2& GetMouseDragDistance() { return m_MouseDragDistance; };
 void SetMouseDragDistance(glm::vec2 value) { m_MouseDragDistance = value; }; 
 const glm::ivec2& GetPickedTexelOffset() { return m_PickedTexelOffset; }; 
 void SetPickedTexelOffset(glm::ivec2 value) { m_PickedTexelOffset = value; }; 
+const bool& GetTerrainErasureMode() { return m_TerrainErasureMode; }; 
+void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; }; 
 const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
 void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; }; 
 void AddToTerrainBrushSize(float value) { m_TerrainBrushSize += value; };
@@ -73,16 +75,17 @@ glm::vec2 m_LastMouseClickPosition;
 glm::vec2 m_LastMousePosition;
 glm::vec2 m_MousePosition;
 bool m_MouseButton1Down;
-glm::vec3 m_XYZMask;
+glm::vec4 m_XYZMask;
 Entity* m_PickedEntity;
 glm::vec3 m_PickedWorldPosition;
 bool m_ManipulatorDragging;
 glm::vec2 m_MouseDragDistance;
 glm::ivec2 m_PickedTexelOffset;
+bool m_TerrainErasureMode;
 float m_TerrainBrushSize;
 int m_PickingBufferSize;
 public:
-static const int g_PropertyCount = 16;
+static const int g_PropertyCount = 17;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -101,6 +104,7 @@ PIDX_PickedWorldPosition,
 PIDX_ManipulatorDragging,
 PIDX_MouseDragDistance,
 PIDX_PickedTexelOffset,
+PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_PickingBufferSize,
 };
@@ -169,6 +173,7 @@ void ShowGUIText(const std::string& text, const char* variableName);
 void ShowProperty(int* value, const char* name);
 void ShowProperty(bool* value, const char* name);
 void ShowProperty(float* value, const char* name, float min, float max);
+void ShowProperty(glm::vec4* value, const char* name, float min, float max);
 void ShowProperty(glm::vec3* value, const char* name, float min, float max);
 void ShowProperty(glm::ivec2* value, const char* name, float min, float max);
 void ShowProperty(std::string* value, const char* name);
@@ -180,7 +185,7 @@ bool ShowEditableProperty(int* value, const char* name);
 void BackupData();
 
 Texture* m_SplatMapTexture;
-std::vector<char> m_SplatMapData;
+std::vector<unsigned char> m_SplatMapData;
 private:
 	bool m_RenderingMenu;
 };

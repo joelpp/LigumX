@@ -19,6 +19,7 @@ using namespace glm;
 Renderer* LigumX::m_Renderer;
 
 bool g_IsShiftHeld = false;
+bool g_IsCtrlHeld = false;
 
 void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 {
@@ -83,19 +84,35 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 	if (action == GLFW_PRESS || action == GLFW_RELEASE)
 	{
+		bool isPress = (action == GLFW_PRESS);
 		bool isShift = (key == GLFW_KEY_LEFT_SHIFT);
+		bool isCtrl =  (key == GLFW_KEY_LEFT_CONTROL);
 		bool isXYZ[3] = { key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z };
 
 		if (isShift)
 		{
-			g_IsShiftHeld = (action == GLFW_PRESS) ? true : false;
+			g_IsShiftHeld = isPress ? true : false;
 		}
-		else
+		else if (isCtrl)
 		{
-			float add = 2.f * (int)(action == GLFW_PRESS) - 1;
-			add *= g_IsShiftHeld ? -1 : 1;
+			g_IsCtrlHeld = isPress ? true : false;
 
-			g_Editor->AddToXYZMask(add * glm::vec3(key == GLFW_KEY_X, key == GLFW_KEY_Y, key == GLFW_KEY_Z));
+			g_Editor->SetTerrainErasureMode(g_IsCtrlHeld);
+		}
+
+		bool maskModified = isXYZ[0] || isXYZ[1] || isXYZ[2] || isShift;
+
+		if (maskModified)
+		{
+			float add = isPress ? 1 : -1;
+
+			glm::vec3 newMask = glm::vec3(g_Editor->GetXYZMask());
+
+			newMask = add * glm::vec3(isXYZ[0], isXYZ[1], isXYZ[2]) + newMask;
+			newMask = glm::max(newMask, glm::vec3(-1, -1, -1));
+			newMask = glm::min(newMask, glm::vec3(1, 1, 1));
+
+			g_Editor->SetXYZMask(glm::vec4(newMask, g_IsShiftHeld));
 		}
 
 	}

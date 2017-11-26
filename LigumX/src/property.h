@@ -34,6 +34,7 @@ enum LXType
 	LXType_glmmat4,
 	LXType_glmvec2,
 	LXType_glmvec3,
+	LXType_glmvec4,
 	LXType_int,
 	LXType_stdstring,
 	LXType_stdvector,

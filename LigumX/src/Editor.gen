@@ -14,7 +14,7 @@ class Editor
 	[transient]
 	bool MouseButton1Down
 	[transient, adder]
-	glm::vec3 XYZMask
+	glm::vec4 XYZMask
 	[transient]
 	Entity* PickedEntity
 	[transient]
@@ -25,6 +25,9 @@ class Editor
 	glm::vec2 MouseDragDistance;
 	[transient]
 	glm::ivec2 PickedTexelOffset;
+
+	[transient]
+	bool TerrainErasureMode;
 
 	[adder]
 	float TerrainBrushSize;
