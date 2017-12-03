@@ -14,6 +14,7 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Material.h"
+#include "Editor.h"
 #include "Building.h"
 #include "glm/gtx/transform.hpp"
 
@@ -159,9 +160,9 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 			World* world = LigumX::GetInstance().getWorld();
 			
-			// -1 cause the sector has already been added to the array
-			int sectorIndex = world->sectors.size() - 1;
-			pos.y += sectorIndex * 200.f;
+			const glm::ivec2& baseOffset = g_Editor->GetSectorLoadingOffset();
+
+			pos += glm::vec3(glm::vec2(baseOffset) * 200.f, 0);
 
 			pos.z = 1.f;
 
@@ -336,12 +337,11 @@ void RenderDataManager::InitializeSector(Sector* sector)
 {
     //glm::vec3 base = glm::vec3(sector->m_Pos, 0);
     //float offset = sector->m_Size.x;
-	World* world = LigumX::GetInstance().getWorld();
 
-	int numSectors = world->sectors.size();
+	const glm::ivec2& baseOffset = g_Editor->GetSectorLoadingOffset();
 
 	float offset = 200.f;
-	glm::vec3 base = glm::vec3(0.f, offset * numSectors, 1.f);
+	glm::vec3 base = glm::vec3(offset * baseOffset.x, offset * baseOffset.y, 1.f);
 
 	std::vector<glm::vec3> points;
 	AddPoint(points, base);

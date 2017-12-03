@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <sstream>
 
+#pragma warning(disable : 4996) // deprecated std::localtime
+
 std::vector<std::string> StringUtils::ReadFileLines(const char* fileName)
 {
 	std::vector<std::string> values;
@@ -104,10 +106,10 @@ std::string StringUtils::GetSubstringBetweenCharacters(const std::string& str, c
 std::string StringUtils::GetTimestamp()
 {
 	auto t = std::time(nullptr);	
-	auto tm = *std::localtime(&t);
+	auto tm = std::localtime(&t);
 
 	std::ostringstream oss;
-	oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+	oss << std::put_time(tm, "%d-%m-%Y %H-%M-%S");
 
 	return oss.str();
 }

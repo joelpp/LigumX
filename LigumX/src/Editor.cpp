@@ -1032,10 +1032,11 @@ void Editor::RenderImgui()
 
 		if (ImGui::Button("Test CurlRequest") && m_Request.Ready())
 		{
-			glm::vec2 startCoords = glm::vec2(-78.946208, 48.092901);
+			//glm::vec2 startCoords = glm::vec2(-78.946208, 48.092901);
+			glm::vec2 startCoords = glm::vec2(-79.007535, 48.228932);
 			glm::vec2 extent = glm::vec2(0.01135);
 
-			startCoords.y += extent.y * (float)world->sectors.size();
+			startCoords += extent * glm::vec2(m_SectorLoadingOffset);
 
 			m_Request = CurlRequest(startCoords, extent);
 			m_Request.Initialize();

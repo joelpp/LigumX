@@ -317,6 +317,7 @@
     <None Include="src\Entity.gen" />
     <None Include="src\Framebuffer.gen" />
     <None Include="src\GL.gen" />
+    <None Include="src\InputHandler.gen" />
     <None Include="src\Material.gen" />
     <None Include="src\Mesh.gen" />
     <None Include="src\Model.gen" />

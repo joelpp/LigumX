@@ -632,8 +632,8 @@ void Renderer::RenderTerrain()
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	Material* terrainMaterial;
-	Entity* terrainEntity;
+	Material* terrainMaterial = nullptr;
+	Entity* terrainEntity = nullptr;
 	for (Entity* entity : m_World->GetEntities())
 	{
 		// todo : fix this awful hack to get terrain material

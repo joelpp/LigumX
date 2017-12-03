@@ -476,5 +476,6 @@
     <None Include="src\CurlRequest.gen" />
     <None Include="src\Way.gen" />
     <None Include="src\Node.gen" />
+    <None Include="src\InputHandler.gen" />
   </ItemGroup>
 </Project>
