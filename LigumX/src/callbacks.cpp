@@ -6,8 +6,10 @@
 #include "Renderer.h"
 #include "Editor.h"
 #include "EditorOptions.h"
+#include "InputHandler.h"
 #include <string>
 #include <chrono>
+
 
 using std::cout;
 using std::endl;
@@ -124,28 +126,31 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
-	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow();
-        // Left-click
-        if (button == GLFW_MOUSE_BUTTON_1)
-		{
-			double x, y;
-			glfwGetCursorPos(pWindow, &x, &y);
 
-			if (!caughtByImgui)
-			{
-				if (action == GLFW_PRESS)
-				{
-					g_Editor->SetMouseButton1Down(true);
-					g_Editor->SetMouseClickPosition(glm::vec2(x, y));
-				}
-				else if (action == GLFW_RELEASE)
-				{
-					g_Editor->SetMouseButton1Down(false);
-				}
-			}
-        }
-        //Right Click
-        else if (button == GLFW_MOUSE_BUTTON_2){
+	g_InputHandler->HandleInput(pWindow, button, action, mods);
+
+	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow();
+  //      // Left-click
+  //      if (button == GLFW_MOUSE_BUTTON_1)
+		//{
+		//	double x, y;
+		//	glfwGetCursorPos(pWindow, &x, &y);
+
+		//	if (!caughtByImgui)
+		//	{
+		//		if (action == GLFW_PRESS)
+		//		{
+		//			g_InputHandler->SetMouse1Pressed(true);
+		//			g_Editor->SetMouseClickPosition(glm::vec2(x, y));
+		//		}
+		//		else if (action == GLFW_RELEASE)
+		//		{
+		//			g_Editor->SetMouseButton1Down(false);
+		//		}
+		//	}
+  //      }
+  //      //Right Click
+  //      else if (button == GLFW_MOUSE_BUTTON_2){
             if (action == GLFW_PRESS)
 			{
 				glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -154,7 +159,7 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 			{
 				glfwSetInputMode(pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
-        }
+        //}
 
 		m_Renderer->GetDebugCamera()->handlePresetMouseButton(pWindow, button, action, mods);
 }
@@ -166,7 +171,7 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
             double x; double y;
             glfwGetCursorPos(pWindow, &x, &y);
 
-			g_Editor->SetMousePosition(glm::vec2(x, y));
+			g_InputHandler->SetMousePosition(glm::vec2(x, y));
         }
 
 		m_Renderer->GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);

@@ -46,7 +46,7 @@ public:
 	static Renderer* GetRenderer() { return m_Renderer; };
 	static Renderer* m_Renderer;
     // general state and functions
-    void init();
+    void Initialize();
     bool running;
     void mainLoop();
 

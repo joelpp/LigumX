@@ -19,6 +19,7 @@ enum LXType
 	LXType_GLPixelFormat,
 	LXType_GLPixelType,
 	LXType_GLuint,
+	LXType_InputHandler,
 	LXType_Material,
 	LXType_Mesh,
 	LXType_Model,

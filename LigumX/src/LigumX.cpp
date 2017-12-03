@@ -17,6 +17,7 @@
 #include "EngineStats.h"
 #include "Mesh.h"
 #include "Serializer.h"
+#include "InputHandler.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
 
     LigumX& game = LigumX::GetInstance();
 	
-    game.init();
+    game.Initialize();
 
 	game.running = true;
     while(game.running) 
@@ -57,6 +58,8 @@ void LigumX::mainLoop()
 
     physic_accumulator += dt;
 
+	g_InputHandler->FrameUpdate();
+
     if (Settings::GetInstance().i("loadNewSectors"))
     {
         updateWorld(10);
@@ -65,11 +68,12 @@ void LigumX::mainLoop()
 	m_Renderer->render(world);
 }
 
-void LigumX::init()
+void LigumX::Initialize()
 {
 	//=============================================================================
 	// Load Default data.
 	//=============================================================================
+	g_InputHandler = new InputHandler();
 	g_Serializer = new Serializer();
 	g_ObjectManager = new ObjectManager();
 

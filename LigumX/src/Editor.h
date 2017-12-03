@@ -38,16 +38,6 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 EditorOptions*& GetOptions() { return m_Options; }; 
 void SetOptions(EditorOptions* value) { m_Options = value; }; 
-const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
-void SetMouseClickPosition(glm::vec2 value) { m_MouseClickPosition = value; }; 
-const glm::vec2& GetLastMouseClickPosition() { return m_LastMouseClickPosition; }; 
-void SetLastMouseClickPosition(glm::vec2 value) { m_LastMouseClickPosition = value; }; 
-const glm::vec2& GetLastMousePosition() { return m_LastMousePosition; }; 
-void SetLastMousePosition(glm::vec2 value) { m_LastMousePosition = value; }; 
-const glm::vec2& GetMousePosition() { return m_MousePosition; }; 
-void SetMousePosition(glm::vec2 value) { m_MousePosition = value; }; 
-const bool& GetMouseButton1Down() { return m_MouseButton1Down; }; 
-void SetMouseButton1Down(bool value) { m_MouseButton1Down = value; }; 
 const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
 void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
 void AddToXYZMask(glm::vec4 value) { m_XYZMask += value; };
@@ -57,12 +47,16 @@ const glm::vec3& GetPickedWorldPosition() { return m_PickedWorldPosition; };
 void SetPickedWorldPosition(glm::vec3 value) { m_PickedWorldPosition = value; }; 
 const bool& GetManipulatorDragging() { return m_ManipulatorDragging; }; 
 void SetManipulatorDragging(bool value) { m_ManipulatorDragging = value; }; 
-const glm::vec2& GetMouseDragDistance() { return m_MouseDragDistance; }; 
-void SetMouseDragDistance(glm::vec2 value) { m_MouseDragDistance = value; }; 
+const glm::vec3& GetManipulatorStartPosition() { return m_ManipulatorStartPosition; }; 
+void SetManipulatorStartPosition(glm::vec3 value) { m_ManipulatorStartPosition = value; }; 
 const glm::ivec2& GetPickedTexelOffset() { return m_PickedTexelOffset; }; 
 void SetPickedTexelOffset(glm::ivec2 value) { m_PickedTexelOffset = value; }; 
 const glm::ivec2& GetSectorLoadingOffset() { return m_SectorLoadingOffset; }; 
 void SetSectorLoadingOffset(glm::ivec2 value) { m_SectorLoadingOffset = value; }; 
+const glm::vec4& GetPickingData() { return m_PickingData; }; 
+void SetPickingData(glm::vec4 value) { m_PickingData = value; }; 
+const bool& GetEditingTerrain() { return m_EditingTerrain; }; 
+void SetEditingTerrain(bool value) { m_EditingTerrain = value; }; 
 const bool& GetTerrainErasureMode() { return m_TerrainErasureMode; }; 
 void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; }; 
 const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
@@ -74,23 +68,20 @@ private:
 int m_ObjectID;
 std::string m_Name;
 EditorOptions* m_Options;
-glm::vec2 m_MouseClickPosition;
-glm::vec2 m_LastMouseClickPosition;
-glm::vec2 m_LastMousePosition;
-glm::vec2 m_MousePosition;
-bool m_MouseButton1Down;
 glm::vec4 m_XYZMask;
 Entity* m_PickedEntity;
 glm::vec3 m_PickedWorldPosition;
 bool m_ManipulatorDragging;
-glm::vec2 m_MouseDragDistance;
+glm::vec3 m_ManipulatorStartPosition;
 glm::ivec2 m_PickedTexelOffset;
 glm::ivec2 m_SectorLoadingOffset;
+glm::vec4 m_PickingData;
+bool m_EditingTerrain;
 bool m_TerrainErasureMode;
 float m_TerrainBrushSize;
 int m_PickingBufferSize;
 public:
-static const int g_PropertyCount = 18;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -98,18 +89,15 @@ enum g_EditorPIDX
 PIDX_ObjectID,
 PIDX_Name,
 PIDX_Options,
-PIDX_MouseClickPosition,
-PIDX_LastMouseClickPosition,
-PIDX_LastMousePosition,
-PIDX_MousePosition,
-PIDX_MouseButton1Down,
 PIDX_XYZMask,
 PIDX_PickedEntity,
 PIDX_PickedWorldPosition,
 PIDX_ManipulatorDragging,
-PIDX_MouseDragDistance,
+PIDX_ManipulatorStartPosition,
 PIDX_PickedTexelOffset,
 PIDX_SectorLoadingOffset,
+PIDX_PickingData,
+PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_PickingBufferSize,
@@ -124,6 +112,10 @@ Editor(int ObjectID);
 void Initialize();
 
 void RenderPicking();
+
+void UpdateManipulator(glm::vec2& dragDistance);
+void UpdateTerrainEditor(glm::vec2& dragDistance, glm::vec3& worldPosition);
+void UpdateToolState(float pickedID, glm::vec3& worldPosition);
 
 void Render();
 
@@ -181,6 +173,7 @@ void ShowProperty(bool* value, const char* name);
 void ShowProperty(float* value, const char* name, float min, float max);
 void ShowProperty(glm::vec4* value, const char* name, float min, float max);
 void ShowProperty(glm::vec3* value, const char* name, float min, float max);
+void ShowProperty(glm::vec2* value, const char* name, float min, float max);
 void ShowProperty(glm::ivec2* value, const char* name, float min, float max);
 void ShowProperty(std::string* value, const char* name);
 

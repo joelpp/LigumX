@@ -3,16 +3,6 @@ class Editor
 {
 	EditorOptions* Options;
 
-	[transient]
-	glm::vec2 MouseClickPosition
-	[transient]
-	glm::vec2 LastMouseClickPosition
-	[transient]
-	glm::vec2 LastMousePosition
-	[transient]
-	glm::vec2 MousePosition
-	[transient]
-	bool MouseButton1Down
 	[transient, adder]
 	glm::vec4 XYZMask
 	[transient]
@@ -22,12 +12,19 @@ class Editor
 	[transient]
 	bool ManipulatorDragging
 	[transient]
-	glm::vec2 MouseDragDistance;
+	glm::vec3 ManipulatorStartPosition;
+
 	[transient]
 	glm::ivec2 PickedTexelOffset;
 
 	[transient]
 	glm::ivec2 SectorLoadingOffset;
+
+	[transient]
+	glm::vec4 PickingData;
+
+	[transient]
+	bool EditingTerrain;
 
 	[transient]
 	bool TerrainErasureMode;
