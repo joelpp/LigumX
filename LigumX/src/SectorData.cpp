@@ -95,30 +95,30 @@ void SectorData::loadData(EOSMDataType dataType)
 			glm::vec2 sectorIndex = glm::floor(lonLat);
 			glm::vec2 startPos = g_EngineSettings->GetStartLonLat() + sectorIndex * g_EngineSettings->GetExtent();
 
-			if (sectorIndex == glm::vec2(0, 0))
-			{
-			}
-			else
-			{
-				Sector* sector = world->GetSector(startPos);
+			//if (sectorIndex == glm::vec2(0, 0))
+			//{
+			//}
+			//else
+			//{
+			//	Sector* sector = world->GetSector(startPos);
 
-				if (sector)
-				{
+			//	if (sector)
+			//	{
 
-				}
-				else
-				{
-					sector = new Sector(startPos);
-					PRINTVEC2(sectorIndex);
-					sector->SetOffsetIndex(sectorIndex);
+			//	}
+			//	else
+			//	{
+			//		sector = new Sector(startPos);
+			//		PRINTVEC2(sectorIndex);
+			//		sector->SetOffsetIndex(sectorIndex);
 
-					//RenderDataManager::InitializeSector(sector);
+			//		//RenderDataManager::InitializeSector(sector);
 
-					world->sectors.push_back(sector);
-				}
+			//		world->sectors.push_back(sector);
+			//	}
 
-				//sector->nodes.emplace(id, node);
-			}
+			//	//sector->nodes.emplace(id, node);
+			//}
 
 			nodes.emplace(id, node);
 		}

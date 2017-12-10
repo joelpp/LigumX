@@ -952,8 +952,15 @@ void Renderer::RenderDebugModels()
 		//bb.SetOffset(glm::vec3(0, 0, 0));
 
 		bb.SetScale(glm::vec3(worldScale,  worldScale, 1));
+		
+		glm::vec3 color = glm::vec3(1, 0, 0);
 
-		RenderAABB(bb);
+		if (sector->GetDataLoaded())
+		{
+			color = glm::vec3(1, 1, 0);
+		}
+
+		RenderAABB(bb, color);
 	}
 }
 
@@ -974,7 +981,14 @@ void Renderer::FinishFrame()
 
 void Renderer::RenderAABB(AABB& aabb)
 {
+	glm::vec3 color(1, 1, 1);
+	RenderAABB(aabb, color);
+}
+
+void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
+{
 	GL::SetCapability(GL::Capabilities::Blend, true);
+
 	SetPipeline(pPipelineUVEdges);
 
 	glm::mat4 modelToWorldMatrix = mat4(1.0f);
@@ -984,11 +998,13 @@ void Renderer::RenderAABB(AABB& aabb)
 	modelToWorldMatrix = glm::scale(modelToWorldMatrix, aabb.GetScale());
 
 	SetVertexUniform(modelToWorldMatrix, "g_ModelToWorldMatrix");
-	
+	SetFragmentUniform(color, "g_Color");
+
 	SetViewUniforms(m_DebugCamera);
 
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
+
 	GL::SetCapability(GL::Capabilities::Blend, false);
 }
 

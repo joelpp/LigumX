@@ -5,6 +5,8 @@ in vec3 vNormalWS;
 in vec4 vWorldPosition;
 in float height;
 
+uniform vec3 g_Color;
+
 layout (location = 0) out vec4 FinalColor;
 
 
@@ -20,7 +22,8 @@ void main()
 		alpha = 0.f;
 	}
 
-	FinalColor = vec4(1, 1, 0, alpha);
+
+	FinalColor = vec4(g_Color, alpha);
 	//vec3 fNormalWS = normalize(vNormalWS);
 	//vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 	
