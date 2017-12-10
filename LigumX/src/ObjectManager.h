@@ -40,6 +40,7 @@ public:
 	ObjectID DefaultQuadMeshID;
 	ObjectID DefaultCubeMeshID;
 	ObjectID DefaultTerrainMeshID;
+	ObjectID DefaultLineMeshID;
 
 	ObjectID DefaultManipulatorEntityID;
 	ObjectID DefaultCubeModelID;

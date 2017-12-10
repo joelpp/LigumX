@@ -14,6 +14,7 @@
 #include "RenderDataManager.h"
 #include "Sector.h"
 #include "InputHandler.h"
+#include "EngineSettings.h"
 
 #pragma region  CLASS_SOURCE Editor
 Editor* g_Editor;
@@ -27,12 +28,12 @@ const ClassPropertyData Editor::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(Editor, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Editor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
-{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
-{ "PickedEntity", PIDX_PickedEntity, offsetof(Editor, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_EditorTool, false, LXType_None, PropertyFlags_Transient | PropertyFlags_Enum, 0, 0, }, 
+{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
+{ "PickedEntity", PIDX_PickedEntity, offsetof(Editor, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "PickedWorldPosition", PIDX_PickedWorldPosition, offsetof(Editor, m_PickedWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "PickedTexelOffset", PIDX_PickedTexelOffset, offsetof(Editor, m_PickedTexelOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "SectorLoadingOffset", PIDX_SectorLoadingOffset, offsetof(Editor, m_SectorLoadingOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickingData", PIDX_PickingData, offsetof(Editor, m_PickingData), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
@@ -45,14 +46,34 @@ bool Editor::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+const std::string EnumValues_EditorTool[] = 
+{
+"None",
+"TerrainHeight",
+"TerrainSplatMap",
+"EntityManipulator",
+"SectorLoader",
+};
+
+const EditorTool Indirection_EditorTool[] =
+{
+	EditorTool_None,
+	EditorTool_TerrainHeight,
+	EditorTool_TerrainSplatMap,
+	EditorTool_EntityManipulator,
+	EditorTool_SectorLoader,
+};
 
 #pragma endregion  CLASS_SOURCE Editor
 
 Editor::Editor()
+	: m_SectorLoadingOffset(glm::ivec2(0, 0))
 {
+	
 }
 
 Editor::Editor(int objectID)
+	: m_SectorLoadingOffset(glm::ivec2(0, 0))
 {
 	SetObjectID(objectID);
 	Serialize(false);
@@ -76,72 +97,80 @@ bool fuzzyEquals(float a, float b, float tolerance)
 	return fabs(a - b) < tolerance;
 }
 
-
-void Editor::UpdateManipulator(glm::vec2& dragDistance)
+bool fuzzyEquals(glm::vec2 a, glm::vec2 b, float tolerance)
 {
+	return (fabs(a.x - b.x) < tolerance) && (fabs(a.y - b.y) < tolerance);
+}
+
+
+void Editor::UpdateManipulator()
+{
+	World* world = LigumX::GetInstance().getWorld();
+	glm::vec3 worldPosition = glm::swizzle(m_PickingData, glm::R, glm::G, glm::B);
+	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
+	glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
+
+	if (!mouseButton1Down)
+	{
+		return;
+	}
+
 	if (!m_ManipulatorDragging || (m_XYZMask == glm::vec4(0, 0, 0, 0)))
 	{
-		return;
-	}
+		float pickedID = m_PickingData[3];
 
-	World* world = LigumX::GetInstance().getWorld();
-
-	float distance = dragDistance.x / 10.f;
-	glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
-
-	m_PickedEntity->AddToPosition(toAdd);
-}
-
-void Editor::UpdateToolState(float pickedID, glm::vec3& worldPosition)
-{
-	World* world = LigumX::GetInstance().getWorld();
-
-	for (Entity* entity : world->GetDebugEntities())
-	{
-		// todo : proper int rendertarget; how does depth work then? do we care?
-		if (fuzzyEquals(pickedID, entity->GetPickingID(), 0.005f))
+		for (Entity* entity : world->GetDebugEntities())
 		{
-			if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
+			// todo : proper int rendertarget; how does depth work then? do we care?
+			if (fuzzyEquals(pickedID, entity->GetPickingID(), 0.005f))
 			{
-				m_ManipulatorDragging = true;
-				m_ManipulatorStartPosition = worldPosition;
+				if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
+				{
+					m_ManipulatorDragging = true;
+					m_ManipulatorStartPosition = worldPosition;
+				}
+			}
+		}
+
+		for (Entity* entity : world->GetEntities())
+		{
+			// todo : proper int rendertarget; how does depth work then? do we care?
+			if (fuzzyEquals(pickedID, entity->GetPickingID(), 0.005f))
+			{
+				m_PickedEntity = entity;
+
+
+				g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
+
+				// todo : ressuscitate this!
+				//Renderer* renderer = LigumX::GetRenderer();
+				//renderer->RenderEntityBB(m_PickedEntity);
+
+				break;
 			}
 		}
 	}
-
-	for (Entity* entity : world->GetEntities())
+	else
 	{
-		// todo : proper int rendertarget; how does depth work then? do we care?
-		if (fuzzyEquals(pickedID, entity->GetPickingID(), 0.005f))
-		{
-			m_PickedEntity = entity;
+		World* world = LigumX::GetInstance().getWorld();
 
-			if (fuzzyEquals(9895.f, entity->GetObjectID(), 0.005f))
-			{
-				m_EditingTerrain = true;
+		float distance = dragDistance.x / 10.f;
+		glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
 
-				glm::vec3 scale = m_PickedEntity->GetScale();
-				glm::vec3 normalized = worldPosition / scale;
-
-				glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
-
-				int width = m_TerrainBrushSize;
-
-				glm::ivec2 offset = glm::ivec2(xyCoords * glm::vec2(450, 450)) - glm::ivec2(width) / 2;
-				SetPickedTexelOffset(offset);
-			}
-
-			break;
-		}
+		m_PickedEntity->AddToPosition(toAdd);
 	}
 }
 
-void Editor::UpdateTerrainEditor(glm::vec2& dragDistance, glm::vec3& worldPosition)
+void Editor::UpdateTerrainEditor()
 {
-	if (!m_EditingTerrain)
+	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
+	if (!mouseButton1Down)
 	{
 		return;
 	}
+
+	glm::vec3 worldPosition = glm::swizzle(m_PickingData, glm::R, glm::G, glm::B);
+	glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
 
 	Texture* tex = m_SplatMapTexture;
 	glm::ivec2 texSize = tex->GetSize();
@@ -161,7 +190,6 @@ void Editor::UpdateTerrainEditor(glm::vec2& dragDistance, glm::vec3& worldPositi
 
 	glm::vec3 scale = m_PickedEntity->GetScale();
 	glm::vec3 normalized = worldPosition / scale;
-
 
 	glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
 
@@ -241,6 +269,124 @@ void Editor::UpdateTerrainEditor(glm::vec2& dragDistance, glm::vec3& worldPositi
 
 }
 
+void Editor::UpdateSectorLoader()
+{
+	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
+
+	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
+	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
+
+	Renderer* renderer = LigumX::GetInstance().GetRenderer();
+	glm::vec2 windowSize = glm::vec2(renderer->windowWidth, renderer->windowHeight);
+
+	const glm::vec2 mouseNDC = mousePosition / windowSize;
+	const glm::vec2 mouseScreen = mouseNDC * 2.f - glm::vec2(1, 1);
+
+	const glm::vec4 screenSpaceRay = glm::normalize(glm::vec4(mouseScreen, 1.f, 0.f));
+
+	const glm::mat4 cameraInverse = glm::inverse(renderer->GetDebugCamera()->GetViewProjectionMatrix());
+	const glm::vec4 worldSpaceRay = glm::normalize(glm::mul(cameraInverse, screenSpaceRay));
+
+	if (mouseButton1Down && dragDistance != glm::vec2(0,0))
+	{
+		PRINTVEC2(mouseNDC);
+		PRINTVEC2(mouseScreen);
+
+		PRINTVEC4(worldSpaceRay);
+	}
+
+	const glm::vec3 cameraPosition = renderer->GetDebugCamera()->GetPosition();
+	const glm::vec3 cameraFront = renderer->GetDebugCamera()->GetFrontVector();
+
+	const glm::vec3 planeNormal = glm::vec3(0, 0, 1);
+	const glm::vec3 pointOnPlane = glm::vec3(0, 0, 0);
+
+	float t = glm::dot(pointOnPlane - cameraPosition, planeNormal) / glm::dot(cameraFront, planeNormal);
+
+	glm::vec3 worldPosition = cameraPosition + t * cameraFront;
+
+	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
+
+
+
+	World* world = LigumX::GetInstance().getWorld();
+
+	if (m_Request.Finished())
+	{
+		curlThread.join();
+
+		Sector* sector = new Sector(&m_Request);
+		sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
+		sector->loadData(SectorData::EOSMDataType::MAP);
+
+		world->sectors.push_back(sector);
+
+		RenderDataManager::CreateWaysLines(world->sectors.back());
+
+		m_Request.Reset();
+	}
+	else if (mouseButton1Down && m_Request.Ready())
+	{
+		//glm::ivec2 cornerIndex = g_EngineSettings->GetStartLonLat * 1e7;
+
+		glm::vec2 startCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
+		glm::vec2 extent = glm::vec2(g_EngineSettings->GetExtent());
+		glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
+
+		bool sectorAlreadyLoaded = false;
+
+		for (Sector* sector : world->sectors)
+		{
+			if (fuzzyEquals(sector->GetPosition(), startCoords, 1e-2))
+			{
+				sectorAlreadyLoaded = sector->GetDataLoaded();
+				break;
+			}
+		}
+
+		if (!sectorAlreadyLoaded)
+		{
+			m_Request = CurlRequest(startCoords, extent);
+			m_Request.Initialize();
+
+			PRINTVEC2(normalizedSectorIndex);
+
+			SetSectorLoadingOffset(glm::ivec2(normalizedSectorIndex));
+
+			curlThread = std::thread(&CurlRequest::Execute, &m_Request);
+		}
+	}
+
+
+}
+
+void Editor::ApplyTool()
+{
+	switch (m_ActiveTool)
+	{
+		case EditorTool_EntityManipulator:
+		{
+			UpdateManipulator();
+			break;
+		}
+		case EditorTool_TerrainSplatMap:
+		{
+			UpdateTerrainEditor();
+			break;
+		}
+		case EditorTool_SectorLoader:
+		{
+			UpdateSectorLoader();
+			break;
+		}
+		case EditorTool_None:
+		default:
+		{
+			break;
+		}
+	}
+}
+
 void Editor::RenderPicking()
 {
 	Renderer* renderer = LigumX::GetRenderer();
@@ -249,40 +395,8 @@ void Editor::RenderPicking()
 	renderer->RenderPickingBuffer(m_Options->GetDebugDisplay());
 
 	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
-	const glm::vec2& lastMousePosition = g_InputHandler->GetLastMousePosition();
-	const glm::vec2& mouseClickPosition = g_InputHandler->GetMouseClickPosition();
-	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
-	glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
 
 	renderer->GetPickingData(mousePosition, m_PickingData);
-
-	float pickedID = m_PickingData[3];
-	glm::vec3 worldPosition = glm::swizzle(m_PickingData, glm::R, glm::G, glm::B);
-
-	m_ManipulatorDragging &= mouseButton1Down;
-	m_EditingTerrain &= mouseButton1Down;
-
-	if (mouseButton1Down)
-	{
-		if (!m_EditingTerrain && !m_ManipulatorDragging)
-		{
-			UpdateToolState(pickedID, worldPosition);
-		}
-		else
-		{
-			UpdateManipulator(dragDistance);
-			UpdateTerrainEditor(dragDistance, worldPosition);
-		}
-	}
-
-
-	// todo : this should be controlled by ManipulatorComponent
-	if (m_PickedEntity)
-	{
-		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
-	}
-
-	renderer->RenderEntityBB(m_PickedEntity);
 }
 
 
@@ -679,6 +793,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 		//}
 
 		SHOW_PROPERTY_PTR(Texture)
+		SHOW_PROPERTY_PTR(Sector)
 
 		//{
 		//	BEGIN_PROPERTY(Texture);
@@ -718,6 +833,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_ENUM(ShaderFamily);
 	SHOW_ENUM(GLPixelType);
 	SHOW_ENUM(GLPixelFormat);
+	SHOW_ENUM(EditorTool);
 
 	//case LXType_GLPixelType: \
 	//{ \
@@ -1048,43 +1164,6 @@ void Editor::RenderImgui()
 		Editor* editor = this;
 		ShowPropertyGridTemplate(editor, "Editor");
 
-
-		if (ImGui::Button("Test CurlRequest") && m_Request.Ready())
-		{
-			//glm::vec2 startCoords = glm::vec2(-78.946208, 48.092901);
-			glm::vec2 startCoords = glm::vec2(-79.007535, 48.228932);
-			glm::vec2 extent = glm::vec2(0.01135);
-
-			startCoords += extent * glm::vec2(m_SectorLoadingOffset);
-
-			m_Request = CurlRequest(startCoords, extent);
-			m_Request.Initialize();
-
-			curlThread = std::thread(&CurlRequest::Execute, &m_Request);
-
-		}
-
-		if (m_Request.Finished())
-		{
-			curlThread.join();
-
-			Sector* sector = new Sector(&m_Request);
-
-			sector->loadData(SectorData::EOSMDataType::MAP);
-
-			RenderDataManager::InitializeSector(sector);
-
-			world->sectors.push_back(sector);
-			
-			m_Request.Reset();
-		}
-
-		if (ImGui::Button("Load ways") && world->sectors.size() > 0)
-		{
-			RenderDataManager::CreateWaysLines(world->sectors.back());
-		}
-
-
 		// Menu
 		if (ImGui::BeginMenuBar())
 		{
@@ -1205,4 +1284,6 @@ void Editor::Render()
 	RenderPicking();
 
 	RenderImgui();
+
+	ApplyTool();
 }

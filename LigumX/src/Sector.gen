@@ -1,0 +1,15 @@
+class Sector
+{
+	glm::vec2 Position;
+
+	glm::vec2 WorldPosition;
+	glm::vec2 EarthPosition;
+
+	glm::ivec2 QuantizedPosition;
+
+	glm::vec2 OffsetIndex;
+
+	glm::ivec2 Index;
+
+	bool DataLoaded;
+}

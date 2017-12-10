@@ -15,6 +15,8 @@ public:
 
 	Mesh* DefaultTerrainMesh;
 
+	Mesh* DefaultLineMesh;
+
 	Mesh* GetMeshFromID(int id);
 
 	Material* DefaultRedMaterial;
@@ -27,6 +29,7 @@ public:
 	void InitializeDefaultCube();
 	void InitializeDefaultSphere();
 	void InitializeDefaultQuad();
+	void InitializeDefaultLine();
 
 	void InitializeDefaultTerrainMesh();
 };

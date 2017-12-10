@@ -127,9 +127,13 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
 
-	g_InputHandler->HandleInput(pWindow, button, action, mods);
+	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow() && !g_InputHandler->GetDragging();
 
-	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow();
+	if (!caughtByImgui)
+	{
+		g_InputHandler->HandleInput(pWindow, button, action, mods);
+	}
+
   //      // Left-click
   //      if (button == GLFW_MOUSE_BUTTON_1)
 		//{

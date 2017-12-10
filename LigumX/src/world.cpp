@@ -30,6 +30,7 @@ const ClassPropertyData World::g_Properties[] =
 { "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_SunLight, true, LXType_None, 0, 0, 0, }, 
 { "Entities", PIDX_Entities, offsetof(World, m_Entities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
 { "DebugEntities", PIDX_DebugEntities, offsetof(World, m_DebugEntities), 0, LXType_stdvector, false, LXType_Entity, PropertyFlags_Transient, 0, 0, }, 
+{ "Sectors", PIDX_Sectors, offsetof(World, m_Sectors), 0, LXType_stdvector, false, LXType_Sector, PropertyFlags_Transient, 0, 0, }, 
 };
 bool World::Serialize(bool writing)
 {
@@ -267,4 +268,24 @@ void World::Update()
 	{
 		entity->Update(0);
 	}
+}
+
+
+bool fuzzyEquals2(glm::vec2 a, glm::vec2 b, float tolerance)
+{
+	return (fabs(a.x - b.x) < tolerance) && (fabs(a.y - b.y) < tolerance);
+}
+
+Sector* World::GetSector(Coord2 longLat)
+{
+	Sector* toReturn = nullptr;
+	for (Sector* sector : sectors)
+	{
+		if (fuzzyEquals2(sector->GetPosition(), longLat, 1e-2))
+		{
+			return sector;
+		}
+	}
+
+	return nullptr;
 }

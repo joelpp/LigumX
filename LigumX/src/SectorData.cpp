@@ -8,6 +8,7 @@
 #include "Sector.h"
 #include "Settings.h"
 #include "SectorData.h"
+#include "EngineSettings.h"
 #include "SectorManager.h"
 #include "RenderDataManager.h"
 #include "way.h"
@@ -85,8 +86,42 @@ void SectorData::loadData(EOSMDataType dataType)
                 node -> addTag(key, value);
             }
 
-            nodes.emplace(id, node);
-        }
+			glm::vec2 lonLat = glm::vec2(longitude, latitude);
+
+			lonLat -= g_EngineSettings->GetStartLonLat();
+			lonLat /= g_EngineSettings->GetExtent();
+
+
+			glm::vec2 sectorIndex = glm::floor(lonLat);
+			glm::vec2 startPos = g_EngineSettings->GetStartLonLat() + sectorIndex * g_EngineSettings->GetExtent();
+
+			if (sectorIndex == glm::vec2(0, 0))
+			{
+			}
+			else
+			{
+				Sector* sector = world->GetSector(startPos);
+
+				if (sector)
+				{
+
+				}
+				else
+				{
+					sector = new Sector(startPos);
+					PRINTVEC2(sectorIndex);
+					sector->SetOffsetIndex(sectorIndex);
+
+					//RenderDataManager::InitializeSector(sector);
+
+					world->sectors.push_back(sector);
+				}
+
+				//sector->nodes.emplace(id, node);
+			}
+
+			nodes.emplace(id, node);
+		}
 
         else if (childValue == "way")
 		{

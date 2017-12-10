@@ -133,7 +133,7 @@ void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
 
 void RenderDataManager::CreateWaysLines(Sector* sector)
 {
-	float latMid = sector->m_Pos.x;
+	float latMid = sector->GetPosition().x;
 
 	glm::vec2 degreesToMeters;
 	degreesToMeters.x = 111132.954 * cos(latMid);
@@ -151,7 +151,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			glm::vec3 pos = node->getLatLongEle();
 
 			// offset between 0 and extent
-			pos -= glm::vec3(sector->m_Pos, 0.f);
+			pos -= glm::vec3(sector->GetPosition(), 0.f);
 
 			// scale between 0 and 1
 			pos /= glm::vec3(sector->m_LifeSize, 1.f);
@@ -161,6 +161,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			World* world = LigumX::GetInstance().getWorld();
 			
 			const glm::ivec2& baseOffset = g_Editor->GetSectorLoadingOffset();
+			//const glm::ivec2& baseOffset = glm::ivec2(0, 0);
 
 			pos += glm::vec3(glm::vec2(baseOffset) * 200.f, 0);
 
@@ -335,10 +336,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
 
 void RenderDataManager::InitializeSector(Sector* sector)
 {
-    //glm::vec3 base = glm::vec3(sector->m_Pos, 0);
-    //float offset = sector->m_Size.x;
-
-	const glm::ivec2& baseOffset = g_Editor->GetSectorLoadingOffset();
+	const glm::vec2& baseOffset = sector->GetOffsetIndex();
 
 	float offset = 200.f;
 	glm::vec3 base = glm::vec3(offset * baseOffset.x, offset * baseOffset.y, 1.f);
@@ -350,5 +348,16 @@ void RenderDataManager::InitializeSector(Sector* sector)
     AddPoint(points, base + glm::vec3(0,		offset, 0));
     AddPoint(points, base);
 
-	AddDebugModel(points, glm::vec3(1,0,0));
+	glm::vec3 color;
+
+	if (sector->GetDataLoaded())
+	{
+		color = glm::vec3(1, 0, 0);
+	}
+	else
+	{
+		color = glm::vec3(0, 1, 0);
+	}
+
+	AddDebugModel(points, color);
 }

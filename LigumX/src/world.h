@@ -16,6 +16,7 @@
 class World;
 class SunLight;
 class Entity;
+class Sector;
 
 
 #pragma endregion  FORWARD_DECLARATIONS World
@@ -67,14 +68,17 @@ std::vector<Entity*>& GetEntities() { return m_Entities; };
 void SetEntities(std::vector<Entity*> value) { m_Entities = value; }; 
 std::vector<Entity*>& GetDebugEntities() { return m_DebugEntities; }; 
 void SetDebugEntities(std::vector<Entity*> value) { m_DebugEntities = value; }; 
+std::vector<Sector*>& GetSectors() { return m_Sectors; }; 
+void SetSectors(std::vector<Sector*> value) { m_Sectors = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 SunLight* m_SunLight;
 std::vector<Entity*> m_Entities;
 std::vector<Entity*> m_DebugEntities;
+std::vector<Sector*> m_Sectors;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WorldPIDX
@@ -84,6 +88,7 @@ PIDX_Name,
 PIDX_SunLight,
 PIDX_Entities,
 PIDX_DebugEntities,
+PIDX_Sectors,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing);
@@ -122,7 +127,8 @@ public:
      * @return     [A pointer to the sector.]
      */
     Sector* GetOrCreateSectorContainingXY(Coord2 longLat);
-    Sector* GetOrCreateSectorAtXY(Coord2 longLat, SectorList* newSectors);
+	Sector* GetOrCreateSectorAtXY(Coord2 longLat, SectorList* newSectors);
+	Sector* GetSector(Coord2 longLat);
 
     SectorList* updateSectorsAroundPoint(Coord2 point, int ringSize);
     SectorList* sectorsAroundPoint(Coord2 point, int ringSize);

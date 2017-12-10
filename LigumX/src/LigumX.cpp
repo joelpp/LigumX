@@ -18,6 +18,7 @@
 #include "Mesh.h"
 #include "Serializer.h"
 #include "InputHandler.h"
+#include "EngineSettings.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -78,6 +79,8 @@ void LigumX::Initialize()
 	g_ObjectManager = new ObjectManager();
 
 	g_Editor = new Editor(73524);
+
+	g_EngineSettings = new EngineSettings(89373);
 
 	m_Renderer = new Renderer();
 	m_Renderer->SetObjectID(28763);

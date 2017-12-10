@@ -1,11 +1,24 @@
+enum EditorTool
+{
+	None,
+	TerrainHeight,
+	TerrainSplatMap,
+	EntityManipulator,
+	SectorLoader,
+}
+
 [globalinstance]
 class Editor
 {
 	EditorOptions* Options;
 
-	[transient, adder]
-	glm::vec4 XYZMask
+	
 	[transient]
+	EditorTool ActiveTool;
+
+	[transient, adder, hidden]
+	glm::vec4 XYZMask
+	[transient, hidden]
 	Entity* PickedEntity
 	[transient]
 	glm::vec3 PickedWorldPosition
@@ -13,9 +26,6 @@ class Editor
 	bool ManipulatorDragging
 	[transient]
 	glm::vec3 ManipulatorStartPosition;
-
-	[transient]
-	glm::ivec2 PickedTexelOffset;
 
 	[transient]
 	glm::ivec2 SectorLoadingOffset;
@@ -28,9 +38,10 @@ class Editor
 
 	[transient]
 	bool TerrainErasureMode;
-
+	
 	[adder]
 	float TerrainBrushSize;
+
 
 	int PickingBufferSize;
 }

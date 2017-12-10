@@ -918,6 +918,14 @@ void Renderer::RenderDebugModels()
 			DrawMesh(model->m_meshes[i], material);
 		}
 	}
+
+	//SetPipeline(pPipelineUVEdges);
+	//for (Sector* sector : m_World->sectors)
+	//{
+
+	//	SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
+
+	//}
 }
 
 

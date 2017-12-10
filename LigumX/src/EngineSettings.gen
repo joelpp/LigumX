@@ -1,0 +1,9 @@
+[globalinstance]
+class EngineSettings
+{
+	float WorldScale;
+
+	glm::vec2 StartLonLat;
+
+	float Extent;
+}

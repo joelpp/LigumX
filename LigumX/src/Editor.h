@@ -21,6 +21,19 @@ class EditorOptions;
 class Entity;
 
 extern Editor* g_Editor;
+enum EditorTool
+{
+EditorTool_None,
+EditorTool_TerrainHeight,
+EditorTool_TerrainSplatMap,
+EditorTool_EntityManipulator,
+EditorTool_SectorLoader,
+};
+
+extern const std::string EnumValues_EditorTool[5];
+extern const EditorTool Indirection_EditorTool[5];
+const int EnumLength_EditorTool = 5;
+
 
 #pragma endregion  FORWARD_DECLARATIONS Editor
 
@@ -38,6 +51,8 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 EditorOptions*& GetOptions() { return m_Options; }; 
 void SetOptions(EditorOptions* value) { m_Options = value; }; 
+const EditorTool& GetActiveTool() { return m_ActiveTool; }; 
+void SetActiveTool(EditorTool value) { m_ActiveTool = value; }; 
 const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
 void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
 void AddToXYZMask(glm::vec4 value) { m_XYZMask += value; };
@@ -49,8 +64,6 @@ const bool& GetManipulatorDragging() { return m_ManipulatorDragging; };
 void SetManipulatorDragging(bool value) { m_ManipulatorDragging = value; }; 
 const glm::vec3& GetManipulatorStartPosition() { return m_ManipulatorStartPosition; }; 
 void SetManipulatorStartPosition(glm::vec3 value) { m_ManipulatorStartPosition = value; }; 
-const glm::ivec2& GetPickedTexelOffset() { return m_PickedTexelOffset; }; 
-void SetPickedTexelOffset(glm::ivec2 value) { m_PickedTexelOffset = value; }; 
 const glm::ivec2& GetSectorLoadingOffset() { return m_SectorLoadingOffset; }; 
 void SetSectorLoadingOffset(glm::ivec2 value) { m_SectorLoadingOffset = value; }; 
 const glm::vec4& GetPickingData() { return m_PickingData; }; 
@@ -68,12 +81,12 @@ private:
 int m_ObjectID;
 std::string m_Name;
 EditorOptions* m_Options;
+EditorTool m_ActiveTool;
 glm::vec4 m_XYZMask;
 Entity* m_PickedEntity;
 glm::vec3 m_PickedWorldPosition;
 bool m_ManipulatorDragging;
 glm::vec3 m_ManipulatorStartPosition;
-glm::ivec2 m_PickedTexelOffset;
 glm::ivec2 m_SectorLoadingOffset;
 glm::vec4 m_PickingData;
 bool m_EditingTerrain;
@@ -89,12 +102,12 @@ enum g_EditorPIDX
 PIDX_ObjectID,
 PIDX_Name,
 PIDX_Options,
+PIDX_ActiveTool,
 PIDX_XYZMask,
 PIDX_PickedEntity,
 PIDX_PickedWorldPosition,
 PIDX_ManipulatorDragging,
 PIDX_ManipulatorStartPosition,
-PIDX_PickedTexelOffset,
 PIDX_SectorLoadingOffset,
 PIDX_PickingData,
 PIDX_EditingTerrain,
@@ -112,10 +125,11 @@ Editor(int ObjectID);
 void Initialize();
 
 void RenderPicking();
+void ApplyTool();
 
-void UpdateManipulator(glm::vec2& dragDistance);
-void UpdateTerrainEditor(glm::vec2& dragDistance, glm::vec3& worldPosition);
-void UpdateToolState(float pickedID, glm::vec3& worldPosition);
+void UpdateManipulator();
+void UpdateTerrainEditor();
+void UpdateSectorLoader();
 
 void Render();
 

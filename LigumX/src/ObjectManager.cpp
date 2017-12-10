@@ -32,6 +32,7 @@ ObjectManager::ObjectManager()
 	DefaultQuadMeshID			= m_NextHardcodedID++;
 	DefaultCubeMeshID			= m_NextHardcodedID++;
 	DefaultTerrainMeshID		= m_NextHardcodedID++;
+	DefaultLineMeshID			= m_NextHardcodedID++;
 
 	DefaultRedMaterialID		= m_NextHardcodedID++;
 

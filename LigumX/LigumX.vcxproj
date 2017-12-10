@@ -165,6 +165,7 @@
     <ClCompile Include="src\DisplayOptions.cpp" />
     <ClCompile Include="src\Editor.cpp" />
     <ClCompile Include="src\EditorOptions.cpp" />
+    <ClCompile Include="src\EngineSettings.cpp" />
     <ClCompile Include="src\EngineStats.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\filled_buildings.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="src\DisplayOptions.h" />
     <ClInclude Include="src\Editor.h" />
     <ClInclude Include="src\EditorOptions.h" />
+    <ClInclude Include="src\EngineSettings.h" />
     <ClInclude Include="src\EngineStats.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\Framebuffer.h" />
@@ -304,6 +306,7 @@
     <ClInclude Include="src\world.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\Sector.gen" />
     <None Include="data\settings.dat" />
     <None Include="data\shaders\BasicUV\control.tcs" />
     <None Include="data\shaders\BasicUV\evaluation.tes" />
@@ -315,6 +318,7 @@
     <None Include="src\DisplayOptions.gen" />
     <None Include="src\Editor.gen" />
     <None Include="src\EditorOptions.gen" />
+    <None Include="src\EngineSettings.gen" />
     <None Include="src\EngineStats.gen" />
     <None Include="src\Entity.gen" />
     <None Include="src\Framebuffer.gen" />
