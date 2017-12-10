@@ -20,7 +20,7 @@ void main()
 		alpha = 0.f;
 	}
 
-	FinalColor = vec4(0, 1, 0, alpha);
+	FinalColor = vec4(1, 1, 0, alpha);
 	//vec3 fNormalWS = normalize(vNormalWS);
 	//vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 	

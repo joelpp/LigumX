@@ -384,7 +384,8 @@ private:
 
 
 	void RenderEditor();
-	void RenderAABB(const AABB& aabb);
+	void RenderAABB(AABB& aabb);
+	void RenderSquare(const glm::vec3& position, const glm::vec3& size, const glm::vec3& color);
 
 	void HandleScreenshot();
 	// C++ 11

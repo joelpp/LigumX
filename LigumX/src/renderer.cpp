@@ -17,8 +17,10 @@
 #include "DefaultObjects.h"
 #include "GL.h"
 #include "Framebuffer.h"
+#include "Sector.h"
 #include "BoundingBoxComponent.h"
 #include "EngineStats.h"
+#include "EngineSettings.h"
 
 #pragma region  CLASS_SOURCE Renderer
 
@@ -900,6 +902,26 @@ void Renderer::BeforeWorldRender()
 	GL::SetViewport(windowWidth, windowHeight);
 	GL::ClearColorAndDepthBuffers();
 }
+//
+//void Renderer::RenderSquare(const glm::vec3& position, const glm::vec3& size, const glm::vec3& color)
+//{
+//	SetPipeline(pP);
+//
+//	for (Model* model : m_DebugModels)
+//	{
+//		for (int i = 0; i < model->m_meshes.size(); ++i)
+//		{
+//			SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
+//
+//			Material* material = model->GetMaterials()[i];
+//
+//			SetViewUniforms(m_DebugCamera);
+//
+//			DrawMesh(model->m_meshes[i], material);
+//		}
+//	}
+//
+//}
 
 void Renderer::RenderDebugModels()
 {
@@ -919,13 +941,20 @@ void Renderer::RenderDebugModels()
 		}
 	}
 
-	//SetPipeline(pPipelineUVEdges);
-	//for (Sector* sector : m_World->sectors)
-	//{
+	for (Sector* sector : m_World->sectors)
+	{
+		AABB bb;
+		const float& worldScale = g_EngineSettings->GetWorldScale();
 
-	//	SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
+		const glm::vec2& cornerPos = sector->GetWorldPosition();
+		glm::vec2 centerPos = cornerPos + glm::vec2(worldScale) / 2.f;
+		bb.SetOffset(glm::vec3(centerPos, 0));
+		//bb.SetOffset(glm::vec3(0, 0, 0));
 
-	//}
+		bb.SetScale(glm::vec3(worldScale,  worldScale, 1));
+
+		RenderAABB(bb);
+	}
 }
 
 
@@ -943,14 +972,24 @@ void Renderer::FinishFrame()
 	glfwSwapBuffers(pWindow);
 }
 
-void Renderer::RenderAABB(const AABB& aabb)
+void Renderer::RenderAABB(AABB& aabb)
 {
+	GL::SetCapability(GL::Capabilities::Blend, true);
 	SetPipeline(pPipelineUVEdges);
+
+	glm::mat4 modelToWorldMatrix = mat4(1.0f);
+
+	glm::vec3 translation = aabb.GetOffset();
+	modelToWorldMatrix = glm::translate(modelToWorldMatrix, translation);
+	modelToWorldMatrix = glm::scale(modelToWorldMatrix, aabb.GetScale());
+
+	SetVertexUniform(modelToWorldMatrix, "g_ModelToWorldMatrix");
 	
 	SetViewUniforms(m_DebugCamera);
 
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
+	GL::SetCapability(GL::Capabilities::Blend, false);
 }
 
 void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)

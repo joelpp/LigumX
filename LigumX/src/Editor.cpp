@@ -319,6 +319,7 @@ void Editor::UpdateSectorLoader()
 		sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
 		sector->loadData(SectorData::EOSMDataType::MAP);
 
+		world->GetSectors().push_back(sector);
 		world->sectors.push_back(sector);
 
 		RenderDataManager::CreateWaysLines(world->sectors.back());
@@ -783,17 +784,35 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	}
 
 	SHOW_PROPERTY_PTR(Material)
-		SHOW_PROPERTY_PTR(AABB)
-		SHOW_PROPERTY_PTR(Entity)
-		SHOW_PROPERTY_PTR(SunLight)
+	SHOW_PROPERTY_PTR(AABB)
+	SHOW_PROPERTY_PTR(Entity)
+	SHOW_PROPERTY_PTR(SunLight)
 		//case LXType_Model:
 		//{
 		//	ShowPropertyGridTemplate<Model>((Model*) ptr, name);
 		//	break;
 		//}
 
-		SHOW_PROPERTY_PTR(Texture)
-		SHOW_PROPERTY_PTR(Sector)
+	SHOW_PROPERTY_PTR(Texture)
+	//SHOW_PROPERTY_PTR(Sector)
+		BEGIN_PROPERTY(Sector)
+
+		if ((int)ptr == 0) 
+		{ 
+			ShowGUIText(name); 
+			ImGui::SameLine(); 
+			if (ImGui::Button("New")) 
+			{ 
+				Sector* dptr = new Sector();
+				*(char**)ptr = (char*)dptr; 
+			} 
+		} 
+		else 
+			{ 
+			ShowPropertyGridTemplate<Sector>((Sector *&) ptr, name);
+		} 
+
+		END_PROPERTY(Sector)
 
 		//{
 		//	BEGIN_PROPERTY(Texture);

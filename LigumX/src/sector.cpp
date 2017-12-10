@@ -71,31 +71,47 @@ Sector::Sector(vec2 pos, float size, int ID)
 	m_Data = new SectorData(m_Position);
 }
 
-glm::ivec2 EarthToQuantizedPosition(const glm::vec2& earthPosition)
+glm::ivec2 EarthToQuantized(const glm::vec2& earthPosition)
 {
 	return (glm::ivec2) (earthPosition * OSM_QUANTIZATION_SCALE);
+}
+
+int EarthToQuantized(const float& earthPosition)
+{
+	return (int) (earthPosition * OSM_QUANTIZATION_SCALE);
+}
+
+glm::vec2 EarthToWorld(const glm::vec2& earthPosition)
+{
+	const float& worldScale = g_EngineSettings->GetWorldScale();
+	const glm::vec2& startEarthPosition = g_EngineSettings->GetStartLonLat();
+
+	glm::ivec2 quantizedPosition = EarthToQuantized(earthPosition);
+	glm::ivec2 startQuantizedPosition = EarthToQuantized(startEarthPosition);
+
+	glm::ivec2 adjustedQuantizedPosition = quantizedPosition - startQuantizedPosition;
+
+	float quantizedExtentF = EarthToQuantized(g_EngineSettings->GetExtent());
+
+	glm::vec2 worldPosition = worldScale * (glm::vec2)adjustedQuantizedPosition / quantizedExtentF;
+
+	return worldPosition;
 }
 
 Sector::Sector(CurlRequest* curlRequest)
 	: m_DataLoaded(false)
 {
+	m_ObjectID = g_ObjectManager->GetTransientID();
+
 	m_Data = new SectorData(curlRequest);
 
 	m_Position = curlRequest->GetCoords();
 	m_LifeSize = curlRequest->GetExtent();
 
 	SetEarthPosition(curlRequest->GetCoords());
-	SetQuantizedPosition(EarthToQuantizedPosition(m_EarthPosition));
+	SetQuantizedPosition(EarthToQuantized(m_EarthPosition));
 
-	const glm::vec2& startEarthPosition = g_EngineSettings->GetStartLonLat();
-	glm::ivec2 startQuantizedPosition = EarthToQuantizedPosition(startEarthPosition);
-
-	glm::ivec2 adjustedQuantizedPosition = m_QuantizedPosition - startQuantizedPosition;
-
-	float quantizedExtentF = g_EngineSettings->GetExtent() * OSM_QUANTIZATION_SCALE;
-
-	glm::vec2 worldPosition = (glm::vec2)adjustedQuantizedPosition / quantizedExtentF;
-	SetWorldPosition(worldPosition);
+	SetWorldPosition(EarthToWorld(m_EarthPosition));
 }
 
 
@@ -112,7 +128,6 @@ glm::vec2 Sector::GetStartPosition(glm::vec2 position)
 {
 	glm::vec2 startCoords = g_EngineSettings->GetStartLonLat();
 	glm::vec2 extent = glm::vec2(g_EngineSettings->GetExtent());
-	startCoords -= extent / 2.f;
 
 	glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(position);
 	startCoords += extent * normalizedSectorIndex;
