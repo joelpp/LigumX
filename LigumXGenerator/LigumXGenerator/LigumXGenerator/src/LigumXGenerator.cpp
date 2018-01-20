@@ -54,6 +54,29 @@ FileType GetTypeFromHeader(std::string fileType)
 	}
 }
 
+#define ELSE_RETURN_DEFAULT(typeName, defaultValue) \
+if (type == typeName) \
+{ \
+return defaultValue; \
+} \
+
+std::string DefaultValueForType(const std::string& type)
+{
+	if (type == "")
+	{
+
+	}
+	ELSE_RETURN_DEFAULT("bool",			"false")
+	ELSE_RETURN_DEFAULT("int",			"0")
+	ELSE_RETURN_DEFAULT("float",		"0.f")
+	ELSE_RETURN_DEFAULT("glm::vec2",	"glm::vec2(0, 0)")
+	ELSE_RETURN_DEFAULT("glm::vec3",	"glm::vec3(0, 0, 0)")
+	else
+	{
+		return "";
+	}
+}
+
 ClassList createLXClass(std::vector<std::string>& lines)
 {
 	ClassList classes;
@@ -184,8 +207,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				std::string& varType = tokens[0];
 				variable.SetType(varType);
 
-				variable.m_Name = tokens[1];;
-
+				variable.m_Name = tokens[1];
 
 				variable.m_IsPtr = stringContains(variable.m_Type, '*');
 
@@ -197,7 +219,19 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 				variable.m_PropertyFlags = varPropertyFlags;
 
+				unsigned int sizeWithDefautValue = 4;
+				unsigned int defaultValueTokenIndex = 3;
+				variable.m_DefaultValue = tokens.size() == sizeWithDefautValue ? 
+														   tokens[defaultValueTokenIndex] : 
+														   "";
+
+				if (variable.m_DefaultValue.empty())
+				{
+					variable.m_DefaultValue = DefaultValueForType(variable.m_Type);
+				}
+
 				currentClass.m_Members.push_back(variable);
+
 				variable = Variable();
 
 				// reset property flags

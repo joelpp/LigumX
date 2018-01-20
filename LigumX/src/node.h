@@ -32,9 +32,9 @@ void SetElevation(float value) { m_Elevation = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-int m_OSMId;
-glm::vec2 m_LongLat;
-float m_Elevation;
+int m_OSMId = 0;
+glm::vec2 m_LongLat = glm::vec2(0, 0);
+float m_Elevation = 0.f;
 public:
 static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];

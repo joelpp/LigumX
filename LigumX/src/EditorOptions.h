@@ -45,17 +45,17 @@ void SetSaveDisabled(bool value) { m_SaveDisabled = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-bool m_Enabled;
-bool m_ShowWorldWindow;
-bool m_ShowMaterialWindow;
-bool m_ShowEntityWindow;
-bool m_ShowObjectCreator;
-bool m_ShowEngineStats;
-bool m_ShowTestGUI;
-bool m_ShowObjectManager;
-bool m_BackupDataOnSave;
-bool m_DebugDisplay;
-bool m_SaveDisabled;
+bool m_Enabled = false;
+bool m_ShowWorldWindow = false;
+bool m_ShowMaterialWindow = false;
+bool m_ShowEntityWindow = false;
+bool m_ShowObjectCreator = false;
+bool m_ShowEngineStats = false;
+bool m_ShowTestGUI = false;
+bool m_ShowObjectManager = false;
+bool m_BackupDataOnSave = false;
+bool m_DebugDisplay = false;
+bool m_SaveDisabled = false;
 public:
 static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -28,9 +28,14 @@ std::unordered_map<std::string, ClassPropertyFlags> g_ClassPropertyFlagsStringMa
 
 struct Variable
 {
-	bool IsAPointer()
+	bool IsAPointer() const
 	{
 		return m_IsPtr;
+	}
+
+	bool HasDefaultValue() const
+	{
+		return !(m_DefaultValue.empty());
 	}
 
 	void SetType(std::string fullTypeName)
@@ -72,6 +77,8 @@ struct Variable
 
 	std::string m_MinValue;
 	std::string m_MaxValue;
+
+	std::string m_DefaultValue;
 };
 typedef std::vector<Variable> VariableList;
 typedef std::vector<LXEnum> EnumList;

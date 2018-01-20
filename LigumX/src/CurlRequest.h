@@ -41,9 +41,9 @@ void SetFilename(std::string value) { m_Filename = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-int m_State;
-glm::vec2 m_Coords;
-glm::vec2 m_Extent;
+int m_State = 0;
+glm::vec2 m_Coords = glm::vec2(0, 0);
+glm::vec2 m_Extent = glm::vec2(0, 0);
 std::string m_Result;
 std::string m_Filename;
 public:

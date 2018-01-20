@@ -45,13 +45,13 @@ void SetDataLoaded(bool value) { m_DataLoaded = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-glm::vec2 m_Position;
-glm::vec2 m_WorldPosition;
-glm::vec2 m_EarthPosition;
+glm::vec2 m_Position = glm::vec2(0, 0);
+glm::vec2 m_WorldPosition = glm::vec2(0, 0);
+glm::vec2 m_EarthPosition = glm::vec2(0, 0);
 glm::ivec2 m_QuantizedPosition;
-glm::vec2 m_OffsetIndex;
+glm::vec2 m_OffsetIndex = glm::vec2(0, 0);
 glm::ivec2 m_Index;
-bool m_DataLoaded;
+bool m_DataLoaded = false;
 public:
 static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];

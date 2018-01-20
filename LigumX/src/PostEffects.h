@@ -35,10 +35,10 @@ void SetEmissiveGlowEnabled(bool value) { m_EmissiveGlowEnabled = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-bool m_GammaCorrectionEnabled;
-float m_GammaExponent;
-bool m_ToneMappingEnabled;
-bool m_EmissiveGlowEnabled;
+bool m_GammaCorrectionEnabled = false;
+float m_GammaExponent = 0.f;
+bool m_ToneMappingEnabled = false;
+bool m_EmissiveGlowEnabled = false;
 public:
 static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];

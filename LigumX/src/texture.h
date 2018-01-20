@@ -50,10 +50,10 @@ private:
 int m_ObjectID;
 std::string m_Name;
 std::string m_Filename;
-bool m_IsCubeMap;
+bool m_IsCubeMap = false;
 GLuint m_HWObject;
-int m_NumChannels;
-int m_BitsPerPixel;
+int m_NumChannels = 0;
+int m_BitsPerPixel = 0;
 GLPixelFormat m_InternalFormat;
 GLPixelFormat m_Format;
 GLPixelType m_PixelType;

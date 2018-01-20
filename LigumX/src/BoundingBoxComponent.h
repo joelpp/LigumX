@@ -34,7 +34,7 @@ private:
 int m_ObjectID;
 std::string m_Name;
 AABB m_BoundingBox;
-bool m_UpdatesWithEntity;
+bool m_UpdatesWithEntity = false;
 glm::mat4 m_ModelToWorldMatrix;
 public:
 static const int g_PropertyCount = 5;

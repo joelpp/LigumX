@@ -11,9 +11,7 @@ enum EditorTool
 class Editor
 {
 	EditorOptions* Options;
-
 	
-	[transient]
 	EditorTool ActiveTool;
 
 	[transient, adder, hidden]

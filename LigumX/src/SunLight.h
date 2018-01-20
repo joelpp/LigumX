@@ -38,11 +38,11 @@ void SetSkybox(Texture* value) { m_Skybox = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-bool m_UseShadowMap;
-float m_Time;
-float m_Orientation;
-float m_Speed;
-bool m_UseSkybox;
+bool m_UseShadowMap = false;
+float m_Time = 0.f;
+float m_Orientation = 0.f;
+float m_Speed = 0.f;
+bool m_UseSkybox = false;
 Texture* m_Skybox;
 public:
 static const int g_PropertyCount = 8;

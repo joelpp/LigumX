@@ -81,7 +81,6 @@ public:
 
 		if (lines.size() == 0)
 		{
-
 			headerFile << GetFinalOutput();
 			headerFile << std::endl;
 		}

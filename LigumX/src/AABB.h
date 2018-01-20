@@ -33,8 +33,8 @@ void SetScale(glm::vec3 value) { m_Scale = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-glm::vec3 m_Offset;
-glm::vec3 m_Scale;
+glm::vec3 m_Offset = glm::vec3(0, 0, 0);
+glm::vec3 m_Scale = glm::vec3(0, 0, 0);
 public:
 static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];

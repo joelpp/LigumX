@@ -57,14 +57,14 @@ void SetComponents(std::vector<Component*> value) { m_Components = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-bool m_Visible;
-glm::vec3 m_Position;
-float m_RotationAngle;
-glm::vec3 m_RotationAxis;
-glm::vec3 m_Scale;
-float m_PickingID;
+bool m_Visible = false;
+glm::vec3 m_Position = glm::vec3(0, 0, 0);
+float m_RotationAngle = 0.f;
+glm::vec3 m_RotationAxis = glm::vec3(0, 0, 0);
+glm::vec3 m_Scale = glm::vec3(0, 0, 0);
+float m_PickingID = 0.f;
 Model* m_Model;
-bool m_IsLight;
+bool m_IsLight = false;
 std::vector<Component*> m_Components;
 public:
 static const int g_PropertyCount = 11;
