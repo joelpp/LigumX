@@ -179,6 +179,7 @@
     <ClCompile Include="src\InputHandler.cpp" />
     <ClCompile Include="src\LigumX.cpp" />
     <ClCompile Include="src\linesegment.cpp" />
+    <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="src\LigumX.h" />
     <ClInclude Include="src\linesegment.h" />
     <ClInclude Include="src\Logging.h" />
+    <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\Mesh.h" />
@@ -324,6 +326,7 @@
     <None Include="src\Framebuffer.gen" />
     <None Include="src\GL.gen" />
     <None Include="src\InputHandler.gen" />
+    <None Include="src\MainWindow.gen" />
     <None Include="src\Material.gen" />
     <None Include="src\Mesh.gen" />
     <None Include="src\Model.gen" />
