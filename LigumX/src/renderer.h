@@ -376,7 +376,8 @@ public:
 	bool m_ShowTestGUI = false;
 	bool m_ShowGUI = true;
 
-
+	void RenderAABB(AABB& aabb);
+	void RenderAABB(AABB& aabb, const glm::vec3& color);
 
 private:
 	void DrawBoundingBox(BoundingBoxComponent* bb);
@@ -384,8 +385,7 @@ private:
 
 
 	void RenderEditor();
-	void RenderAABB(AABB& aabb);
-	void RenderAABB(AABB& aabb, const glm::vec3& color);
+
 
 	void RenderSquare(const glm::vec3& position, const glm::vec3& size, const glm::vec3& color);
 

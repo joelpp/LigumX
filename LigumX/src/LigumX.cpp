@@ -85,7 +85,7 @@ void LigumX::Initialize()
 	m_Renderer = new Renderer();
 	m_Renderer->SetObjectID(28763);
 	m_Renderer->Serialize(false);
-
+	
 	g_DefaultObjects = new DefaultObjects();
 	g_EngineStats = new EngineStats();
 

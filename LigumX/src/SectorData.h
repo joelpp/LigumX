@@ -68,9 +68,8 @@ public:
   	 */
   	SectorData();
 	SectorData(glm::vec2 pos);
-	SectorData(CurlRequest* request);
 
-  	void loadData(EOSMDataType dataType);
+  	void loadData(CurlRequest* request, EOSMDataType dataType);
 
   	/**
   	 * [BuildXMLPath Build the OSM data path.]

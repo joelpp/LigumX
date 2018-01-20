@@ -207,7 +207,9 @@ private:
 	CurlRequest m_Request;
 	SectorData* m_SectorData;
 	Sector* m_Sector;
+	Sector* m_LoadingSector;
 
 	std::thread curlThread;
+
 
 };

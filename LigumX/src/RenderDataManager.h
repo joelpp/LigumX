@@ -10,6 +10,8 @@
 //include only for gluint.
 #include "Renderer.h"
 
+extern RenderDataManager* g_RenderDataManager;
+
 class LigumX;
 class Renderer;
 class Sector;
@@ -57,6 +59,12 @@ public:
 	static void CreateWaysLines(Sector* sector);
 
     std::vector<TerrainRenderingJob> terrainRenderingJobs;
+
+	void AddAABBJob(AABB aabb);
+	std::vector<AABB>& GetAABBJobs();
+	void ClearAABBJobs();
+
+	std::vector<AABB> m_AABBJobs;
 private:
 	REGISTERCLASS(RenderDataManager);
     

@@ -959,9 +959,14 @@ void Renderer::RenderDebugModels()
 		{
 			color = glm::vec3(1, 1, 0);
 		}
-
-		RenderAABB(bb, color);
+		RenderAABB(bb);
 	}
+
+	for (AABB& aabb : renderData->GetAABBJobs())
+	{
+		RenderAABB(aabb);
+	}
+	renderData->ClearAABBJobs();
 }
 
 

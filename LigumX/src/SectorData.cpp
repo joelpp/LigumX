@@ -35,12 +35,6 @@ SectorData::SectorData(glm::vec2 pos)
     m_pos = pos;
 }
 
-SectorData::SectorData(CurlRequest* request)
-{
-	m_CurlRequest = request;
-}
-
-
 void SectorData::downloadData(std::string path)
 {
     //string s = downloadSectorData(m_pos);
@@ -51,12 +45,12 @@ void SectorData::downloadData(std::string path)
     //out.close();
 }
 
-void SectorData::loadData(EOSMDataType dataType)
+void SectorData::loadData(CurlRequest* request, EOSMDataType dataType)
 {
     World *world = LigumX::GetInstance().world;
     tinyxml2::XMLDocument doc;
 
-	const std::string& path = m_CurlRequest->GetFilename();
+	const std::string& path = request->GetFilename();
 
     doc.LoadFile(path.c_str());
 

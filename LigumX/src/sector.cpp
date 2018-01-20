@@ -103,7 +103,7 @@ Sector::Sector(CurlRequest* curlRequest)
 {
 	m_ObjectID = g_ObjectManager->GetTransientID();
 
-	m_Data = new SectorData(curlRequest);
+	m_Data = new SectorData();
 
 	m_Position = curlRequest->GetCoords();
 	m_LifeSize = curlRequest->GetExtent();
@@ -135,9 +135,9 @@ glm::vec2 Sector::GetStartPosition(glm::vec2 position)
 	return startCoords;
 }
 
-void Sector::loadData(SectorData::EOSMDataType type)
+void Sector::loadData(CurlRequest* request, SectorData::EOSMDataType type)
 {
-	m_Data->loadData(type);
+	m_Data->loadData(request, type);
 
 	m_DataLoaded = true;
 }

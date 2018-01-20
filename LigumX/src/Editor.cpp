@@ -305,7 +305,19 @@ void Editor::UpdateSectorLoader()
 
 	glm::vec3 worldPosition = cameraPosition + t * cameraFront;
 
-	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
+	{
+		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
+
+		glm::vec2 startPosition = (glm::vec2)worldPosition;
+		float scale = g_EngineSettings->GetWorldScale() / 20.f;
+
+		AABB aabb;
+		aabb.SetOffset(glm::vec3(startPosition - glm::vec2(scale) / 2.f, 0));
+
+		aabb.SetScale(glm::vec3(scale, scale, 1.f));
+
+		LigumX::GetInstance().renderData->AddAABBJob(aabb);
+	}
 
 
 
@@ -315,12 +327,8 @@ void Editor::UpdateSectorLoader()
 	{
 		curlThread.join();
 
-		Sector* sector = new Sector(&m_Request);
-		sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
-		sector->loadData(SectorData::EOSMDataType::MAP);
 
-		world->GetSectors().push_back(sector);
-		world->sectors.push_back(sector);
+		m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
 
 		RenderDataManager::CreateWaysLines(world->sectors.back());
 
@@ -334,18 +342,18 @@ void Editor::UpdateSectorLoader()
 		glm::vec2 extent = glm::vec2(g_EngineSettings->GetExtent());
 		glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
 
-		bool sectorAlreadyLoaded = false;
+		//bool sectorAlreadyLoaded = false;
 
-		for (Sector* sector : world->sectors)
-		{
-			if (fuzzyEquals(sector->GetPosition(), startCoords, 1e-2))
-			{
-				sectorAlreadyLoaded = sector->GetDataLoaded();
-				break;
-			}
-		}
+		//for (Sector* sector : world->sectors)
+		//{
+		//	if (fuzzyEquals(sector->GetPosition(), startCoords, 1e-2))
+		//	{
+		//		sectorAlreadyLoaded = sector->GetDataLoaded();
+		//		break;
+		//	}
+		//}
 
-		if (!sectorAlreadyLoaded)
+		//if (!sectorAlreadyLoaded)
 		{
 			m_Request = CurlRequest(startCoords, extent);
 			m_Request.Initialize();
@@ -353,6 +361,13 @@ void Editor::UpdateSectorLoader()
 			PRINTVEC2(normalizedSectorIndex);
 
 			SetSectorLoadingOffset(glm::ivec2(normalizedSectorIndex));
+
+			Sector* sector = new Sector(&m_Request);
+			sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
+			m_LoadingSector = sector;
+
+			world->GetSectors().push_back(m_LoadingSector);
+			world->sectors.push_back(m_LoadingSector);
 
 			curlThread = std::thread(&CurlRequest::Execute, &m_Request);
 		}

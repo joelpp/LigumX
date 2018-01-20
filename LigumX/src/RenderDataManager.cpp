@@ -18,6 +18,8 @@
 #include "Building.h"
 #include "glm/gtx/transform.hpp"
 
+RenderDataManager* g_RenderDataManager;
+
 using namespace std;
 using namespace glm;
 
@@ -360,4 +362,17 @@ void RenderDataManager::InitializeSector(Sector* sector)
 	}
 
 	AddDebugModel(points, color);
+}
+
+void RenderDataManager::AddAABBJob(AABB aabb)
+{
+	m_AABBJobs.push_back(aabb);
+}
+std::vector<AABB>& RenderDataManager::GetAABBJobs()
+{
+	return m_AABBJobs;
+}
+void RenderDataManager::ClearAABBJobs()
+{
+	m_AABBJobs.clear();
 }
