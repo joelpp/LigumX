@@ -267,16 +267,6 @@ void InitializeGenerator()
 	g_AllowedTypesForGUI.push_back("bool");
 	g_AllowedTypesForGUI.push_back("glm::vec3");
 
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Hidden);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_ReadOnly);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_SetCallback);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_MinValue);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_MaxValue);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Transient);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_NonEditable);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Adder);
-	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Enum);
-
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden,			"hidden");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly,		"readonly");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_SetCallback,	"setcallback");
