@@ -250,7 +250,9 @@ void SystemPause()
 	system("pause");
 }
 
-#define EMPLACE_PROPERTY_FLAG(flag) g_PropertyFlagsNames.emplace(flag, #flag);
+#define EMPLACE_PROPERTY_FLAG(flag, name) \
+g_PropertyFlagsNames.emplace(flag, #flag); \
+g_PropertyFlagsStringMap.emplace(name, flag);
 
 void InitializeGenerator()
 {
@@ -265,25 +267,25 @@ void InitializeGenerator()
 	g_AllowedTypesForGUI.push_back("bool");
 	g_AllowedTypesForGUI.push_back("glm::vec3");
 
-	g_PropertyFlagsStringMap.emplace("hidden", PropertyFlags_Hidden);
-	g_PropertyFlagsStringMap.emplace("readonly", PropertyFlags_ReadOnly);
-	g_PropertyFlagsStringMap.emplace("setcallback", PropertyFlags_SetCallback);
-	g_PropertyFlagsStringMap.emplace("min", PropertyFlags_MinValue);
-	g_PropertyFlagsStringMap.emplace("max", PropertyFlags_MaxValue);
-	g_PropertyFlagsStringMap.emplace("transient", PropertyFlags_Transient);
-	g_PropertyFlagsStringMap.emplace("noneditable", PropertyFlags_NonEditable);
-	g_PropertyFlagsStringMap.emplace("adder", PropertyFlags_Adder);
-	g_PropertyFlagsStringMap.emplace("enum", PropertyFlags_Enum);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Hidden);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_ReadOnly);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_SetCallback);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_MinValue);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_MaxValue);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Transient);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_NonEditable);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Adder);
+	//g_PropertyFlagsStringMap.emplace(, PropertyFlags_Enum);
 
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_SetCallback);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_MinValue);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_MaxValue);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Transient);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_NonEditable);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Adder);
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Enum);
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden,			"hidden");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly,		"readonly");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_SetCallback,	"setcallback");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_MinValue,		"min");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_MaxValue,		"max");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Transient,		"transient");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_NonEditable,	"noneditable");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Adder,			"adder");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Enum,			"enum");
 
 	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
 	g_ClassPropertyFlagsStringMap.emplace("globalinstance", ClassPropertyFlags_GlobalInstance);
