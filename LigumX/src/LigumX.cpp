@@ -21,6 +21,7 @@
 #include "EngineSettings.h"
 #include "MainWindow.h"
 #include "GUI.h"
+#include "SectorManager.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -132,6 +133,8 @@ void LigumX::InitializeGlobalObjects()
 
 	g_DefaultObjects = new DefaultObjects();
 	g_EngineStats = new EngineStats();
+	
+	g_SectorManager = new SectorManager();
 
 }
 

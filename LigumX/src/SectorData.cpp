@@ -111,7 +111,7 @@ void SectorData::loadData(CurlRequest* request, EOSMDataType dataType)
                     string value = way_child->ToElement()->FindAttribute("v")->Value();
                     way -> addTag(key, value);
 
-                    OSMElement::ElementType _eType = typeFromStrings(key, value);
+                    OSMElement::ElementType _eType = OSMElement::typeFromStrings(key, value);
                     if (_eType == OSMElement::NOT_IMPLEMENTED) continue;
                     else way->eType = _eType;
                 }

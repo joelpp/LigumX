@@ -18,6 +18,7 @@ const ClassPropertyData CurlRequest::g_Properties[] =
 { "Extent", PIDX_Extent, offsetof(CurlRequest, m_Extent), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "Result", PIDX_Result, offsetof(CurlRequest, m_Result), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Filename", PIDX_Filename, offsetof(CurlRequest, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "Sector", PIDX_Sector, offsetof(CurlRequest, m_Sector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
 };
 bool CurlRequest::Serialize(bool writing)
 {

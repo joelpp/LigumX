@@ -5,14 +5,22 @@
 #include <vector>
 #include "glm/glm.hpp"
 #include "Logging.h"
+#include "SectorData.h"
 
+
+
+
+class SectorData;
 class Sector;
+class World;
+class CurlRequest;
+class SectorManager;
 
+extern SectorManager* g_SectorManager;
 
 typedef std::pair<int, int> IntPair;
 typedef glm::vec2 Coord2;
 typedef std::vector<Sector*> SectorList;
-
 
 class SectorManager
 {
@@ -31,6 +39,7 @@ public:
 	Sector* createSector(int ID);
     Sector* createSector(Coord2 pos);
 	SectorList GetAllSectors();
+
 
     /**
      * [Normalized Takes in a World-Space point and returns the coordinates (on a normalized grid) of the sector holding it]
@@ -71,6 +80,10 @@ public:
 	void setLoadNewSectors(bool state) { bLoadNewSectors = state; }
 	bool getLoadNewSectors() { return bLoadNewSectors; }
 
+	void LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType);
+	void LoadRequest(CurlRequest* request, SectorData* sectorData, SectorData::EOSMDataType dataType);
+
+
 private:
 	REGISTERCLASS(SectorManager);
 	bool bLoadNewSectors;
@@ -78,4 +91,7 @@ private:
     int iStartX, iStartY;
     int iNumSectorsX, iNumSectorsY;
     int iSizeX, iSizeY;
+
+	World* m_World;
+
 };

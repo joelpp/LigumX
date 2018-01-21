@@ -5,4 +5,5 @@ class CurlRequest
 	glm::vec2 Extent;
 	std::string Result;
 	std::string Filename;
+	Sector* Sector;
 }

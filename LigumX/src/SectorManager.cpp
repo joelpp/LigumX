@@ -2,6 +2,15 @@
 
 #include "SectorManager.h"
 #include "Sector.h"
+#include "LigumX.h"
+#include "CurlRequest.h"
+#include "SectorData.h"
+#include "Node.h"
+#include "Way.h"
+#include "EngineSettings.h"
+
+SectorManager* g_SectorManager;
+
 
 SectorManager::SectorManager()
 {
@@ -212,4 +221,96 @@ SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initia
 		}
 	}
 	return sectors;
+}
+
+//void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType)
+void SectorManager::LoadRequest(CurlRequest* request, SectorData* sectorData, SectorData::EOSMDataType dataType)
+{
+	World *world = LigumX::GetInstance().world;
+	tinyxml2::XMLDocument doc;
+
+	const std::string& path = request->GetFilename();
+
+	doc.LoadFile(path.c_str());
+
+	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
+
+	std::unordered_map<std::string, Node*>& nodes = sectorData->nodes;
+	std::unordered_map<std::string, Way*>& ways = sectorData->ways;
+
+
+	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+	{
+		std::string childValue = std::string(child->Value());
+		if (childValue == "bound")
+		{
+
+		}
+
+		else if (childValue == "node")
+		{
+			std::string id = child->ToElement()->FindAttribute("id")->Value();
+			float longitude = (float)atof(child->ToElement()->FindAttribute("lon")->Value());
+			float latitude = (float)atof(child->ToElement()->FindAttribute("lat")->Value());
+
+			Node* node = new Node(id, longitude, latitude);
+			node->elevation = 0;
+
+			for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
+			{
+				std::string key = tag->ToElement()->FindAttribute("k")->Value();
+				std::string value = tag->ToElement()->FindAttribute("v")->Value();
+				node->addTag(key, value);
+			}
+
+			glm::vec2 lonLat = glm::vec2(longitude, latitude);
+
+			lonLat -= g_EngineSettings->GetStartLonLat();
+			lonLat /= g_EngineSettings->GetExtent();
+
+
+			glm::vec2 sectorIndex = glm::floor(lonLat);
+			glm::vec2 startPos = g_EngineSettings->GetStartLonLat() + sectorIndex * g_EngineSettings->GetExtent();
+
+
+			nodes.emplace(id, node);
+		}
+
+		else if (childValue == "way")
+		{
+			std::string id = child->ToElement()->FindAttribute("id")->Value();
+			Way* way = new Way(id);
+			way->eType = OSMElement::NOT_IMPLEMENTED;
+			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
+			{
+				if (std::string(way_child->Value()).compare("nd") == 0)
+				{
+					std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
+					way->AddNode(nodes[ref]);
+				}
+				else if (std::string(way_child->Value()).compare("tag") == 0)
+				{
+					std::string key = way_child->ToElement()->FindAttribute("k")->Value();
+					std::string value = way_child->ToElement()->FindAttribute("v")->Value();
+					way->addTag(key, value);
+
+					OSMElement::ElementType _eType = OSMElement::typeFromStrings(key, value);
+					if (_eType == OSMElement::NOT_IMPLEMENTED) continue;
+					else way->eType = _eType;
+				}
+			}
+
+			if (dataType == SectorData::CONTOUR)
+			{
+				float elevation = (float)atof(way->tags["ele"].c_str()) / 15000 + 0.000001f;
+				for (auto it = way->GetNodes().begin(); it != way->GetNodes().end(); ++it)
+				{
+					Node* node = *it;
+					node->elevation = elevation;
+				}
+			}
+
+			ways.emplace(id, way);
+		}
+	}
 }

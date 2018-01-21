@@ -12,6 +12,7 @@
 #include "property.h"
 
 class CurlRequest;
+class Sector;
 
 
 #pragma endregion  FORWARD_DECLARATIONS CurlRequest
@@ -39,6 +40,8 @@ const std::string& GetResult() { return m_Result; };
 void SetResult(std::string value) { m_Result = value; }; 
 const std::string& GetFilename() { return m_Filename; }; 
 void SetFilename(std::string value) { m_Filename = value; }; 
+Sector*& GetSector() { return m_Sector; }; 
+void SetSector(Sector* value) { m_Sector = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -47,8 +50,9 @@ glm::vec2 m_Coords = glm::vec2(0, 0);
 glm::vec2 m_Extent = glm::vec2(0, 0);
 std::string m_Result;
 std::string m_Filename;
+Sector* m_Sector;
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CurlRequestPIDX
@@ -60,6 +64,7 @@ PIDX_Coords,
 PIDX_Extent,
 PIDX_Result,
 PIDX_Filename,
+PIDX_Sector,
 };
 bool Serialize(bool writing);
 

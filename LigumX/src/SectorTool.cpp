@@ -4,6 +4,7 @@
 #include "MainWindow.h"
 #include "EngineSettings.h"
 #include "RenderDataManager.h"
+#include "SectorManager.h"
 #include "Sector.h"
 #include "SectorData.h"
 #include "World.h"
@@ -102,10 +103,11 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 		Sector* sector = new Sector(&m_Request);
 		sector->SetOffsetIndex(GetSectorLoadingOffset());
-		m_LoadingSector = sector;
 
-		world->GetSectors().push_back(m_LoadingSector);
-		world->sectors.push_back(m_LoadingSector);
+		m_Request.SetSector(sector);
+
+		world->GetSectors().push_back(sector);
+		world->sectors.push_back(sector);
 
 		m_Request.Start();
 	}
@@ -113,9 +115,10 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	{
 		m_Request.End();
 
-		m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
+		//m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
+		g_SectorManager->LoadRequest(&m_Request, m_Request.GetSector()->m_Data, SectorData::EOSMDataType::MAP);
 
-		RenderDataManager::CreateWaysLines(world->sectors.back());
+		RenderDataManager::CreateWaysLines(m_Request.GetSector());
 
 		m_Request.Reset();
 	}
