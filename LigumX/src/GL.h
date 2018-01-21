@@ -152,6 +152,7 @@ public:
 
 	static void SetViewport(int bufferWidth, int bufferHeight);
 	static void SetViewport(glm::vec2 size);
+	static void SetViewport(glm::ivec2 size);
 
 	static void ClearColorAndDepthBuffers();
 

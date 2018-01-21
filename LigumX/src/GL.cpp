@@ -188,6 +188,11 @@ void GL::SetViewport(glm::vec2 size)
 	glViewport(0, 0, size.x, size.y);
 }
 
+void GL::SetViewport(glm::ivec2 size)
+{
+	glViewport(0, 0, (float) size.x, (float) size.y);
+}
+
 
 void GL::SetViewport(int bufferWidth, int bufferHeight)
 {

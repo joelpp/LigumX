@@ -770,7 +770,7 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_Picking]->GetDepthTexture());
 
 
-	SetComputeUniform(m_Window->GetSize(), "g_WindowSize");
+	SetComputeUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
 	SetComputeUniform(mouseClickPosition, "g_MousePosition");
 
 	glDispatchCompute(1, 1, 1);
@@ -1194,7 +1194,8 @@ void Renderer::RenderSky()
 	glm::vec2 viewAngles = glm::vec2(m_DebugCamera->totalViewAngleY*pi, m_DebugCamera->aspectRatio*m_DebugCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");
 
-	SetFragmentUniform(2.f * m_Window->GetSize(), "windowSize");
+	glm::vec2 windowSize = glm::vec2(m_Window->GetSize());
+	SetFragmentUniform(2.f * windowSize, "windowSize");
 
 	SetSkyUniforms(0);
 

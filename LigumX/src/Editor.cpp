@@ -278,7 +278,7 @@ void Editor::UpdateSectorLoader()
 	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
 
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
-	const glm::vec2& windowSize = renderer->m_Window->GetSize();
+	const glm::vec2& windowSize = glm::vec2(renderer->m_Window->GetSize());
 
 	const glm::vec2 mouseNDC = mousePosition / windowSize;
 	const glm::vec2 mouseScreen = mouseNDC * 2.f - glm::vec2(1, 1);

@@ -26,8 +26,8 @@ const bool& GetInFocus() { return m_InFocus; };
 void SetInFocus(bool value) { m_InFocus = value; }; 
 const glm::vec2& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec2 value) { m_Position = value; }; 
-const glm::vec2& GetSize() { return m_Size; }; 
-void SetSize(glm::vec2 value) { m_Size = value; }; 
+const glm::ivec2& GetSize() { return m_Size; }; 
+void SetSize(glm::ivec2 value) { m_Size = value; }; 
 const std::string& GetTitle() { return m_Title; }; 
 void SetTitle(std::string value) { m_Title = value; }; 
 private:
@@ -35,7 +35,7 @@ int m_ObjectID;
 std::string m_Name;
 bool m_InFocus = false;
 glm::vec2 m_Position = glm::vec2(0, 0);
-glm::vec2 m_Size = glm::vec2(0, 0);
+glm::ivec2 m_Size;
 std::string m_Title;
 public:
 static const int g_PropertyCount = 6;

@@ -4,7 +4,7 @@ class MainWindow
 
 	glm::vec2 Position;
 
-	glm::vec2 Size;
+	glm::ivec2 Size;
 
 	std::string Title;
 }
