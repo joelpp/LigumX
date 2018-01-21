@@ -39,16 +39,16 @@ typedef std::vector<Sector*> SectorList;
 //};
 
 //Specialize std::hash for vec2s
-namespace std {
-    template <>
-        class hash<glm::vec2>{
-        public :
-            size_t operator()(const glm::vec2 &vec ) const
-            {
-                return hash<int>()(roundf(vec.x)) ^ hash<int>()(roundf(vec.y));
-            }
-    };
-};
+//namespace std {
+//    template <>
+//        class hash<glm::vec2>{
+//        public :
+//            size_t operator()(const glm::vec2 &vec ) const
+//            {
+//                return hash<int>()(roundf(vec.x)) ^ hash<int>()(roundf(vec.y));
+//            }
+//    };
+//};
 
 class World
 {
@@ -144,7 +144,6 @@ public:
     
     float m_sectorSize;
     float m_invSectorSize;
-    std::unordered_map<Coord2, Sector*> m_sectors;
     std::vector<Sector*> sectors;
     SectorManager* m_sectorManager;
     float m_globalTime;

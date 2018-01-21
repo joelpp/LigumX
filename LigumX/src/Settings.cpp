@@ -76,9 +76,9 @@ glm::vec3 Settings::f3(std::string key)
 	StringVector v{ explode(m_settings[key], ' ') };
 
 	glm::vec3 vValue;
-	vValue.x = std::atof(v[0].c_str());
-	vValue.y = std::atof(v[1].c_str());
-	vValue.z = std::atof(v[2].c_str());
+	vValue.x = (float) std::atof(v[0].c_str());
+	vValue.y = (float) std::atof(v[1].c_str());
+	vValue.z = (float) std::atof(v[2].c_str());
 
 	return vValue;
 }
@@ -88,8 +88,8 @@ glm::vec2 Settings::f2(std::string key)
 	StringVector v{ explode(m_settings[key], ' ') };
 
 	glm::vec2 vValue;
-	vValue.x = std::atof(v[0].c_str());
-	vValue.y = std::atof(v[1].c_str());
+	vValue.x = (float) std::atof(v[0].c_str());
+	vValue.y = (float) std::atof(v[1].c_str());
 
 	return vValue;
 }
@@ -111,7 +111,7 @@ std::string Settings::s(std::string key){
 }
 
 float Settings::f(std::string key){
-	return std::atof(m_settings[key].c_str());
+	return (float) std::atof(m_settings[key].c_str());
 }
 
 int Settings::i(std::string key){
@@ -122,8 +122,8 @@ glm::vec2 Settings::i2(std::string key){
 	StringVector v{ explode(m_settings[key], ' ') };
 
 	glm::vec2 vValue;
-	vValue.x = std::atoi(v[0].c_str());
-	vValue.y = std::atoi(v[1].c_str());
+	vValue.x = (float) std::atoi(v[0].c_str());
+	vValue.y = (float) std::atoi(v[1].c_str());
 
 	return vValue;
 }

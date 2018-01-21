@@ -138,8 +138,8 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	float latMid = sector->GetPosition().x;
 
 	glm::vec2 degreesToMeters;
-	degreesToMeters.x = 111132.954 * cos(latMid);
-	degreesToMeters.y = 111132.954 - 559.822 * cos(2 * latMid) + 1.175 * cos(4 * latMid);
+	degreesToMeters.x = 111132.954f * cos(latMid);
+	degreesToMeters.y = 111132.954f - 559.822f * cos(2.f * latMid) + 1.175f * cos(4.f * latMid);
 
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
@@ -301,9 +301,9 @@ void RenderDataManager::fillBuffers(Sector* sector)
         }
     }
 
-    renderer.nbWaysVertices = waysNodesPositions.size();
-    renderer.nbBuildingTriangles = buildingTrianglePositions.size();
-    renderer.nbBuildingLines = buildingSides.size();
+    renderer.nbWaysVertices = (int) waysNodesPositions.size();
+    renderer.nbBuildingTriangles = (int) buildingTrianglePositions.size();
+    renderer.nbBuildingLines = (int) buildingSides.size();
     renderer.nbRoads = nbRoads;
 
     // Renderer::createGLBuffer(renderer.glidNodesPositions, nodesPositions);

@@ -169,7 +169,7 @@ void LigumX::loadSettings(){
 
     glm::vec2 coordinateShift = trunc(Settings::GetInstance().f2("cameraPosition"));
     s.add("coordinateShifting", -coordinateShift);
-    buildingHeight = s.i("buildingHeight");
+    buildingHeight = (float) s.i("buildingHeight");
     buildingSideScaleFactor = 1;
 
 	Renderer& renderer = Renderer::GetInstance();

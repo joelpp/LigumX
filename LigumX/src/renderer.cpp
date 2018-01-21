@@ -194,15 +194,12 @@ void Renderer::InitFreetype()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		// Now store character for later use
-		Character character = {
+		Character character = 
+		{
 			texture,
 			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-#ifdef __APPLE__
 			static_cast<GLuint>(face->glyph->advance.x)
-#else
-			face->glyph->advance.x
-#endif
 		};
 		Characters.insert(std::pair<GLchar, Character>(c, character));
 	}
@@ -222,14 +219,14 @@ void Renderer::PostSerialization(bool writing)
 void Renderer::Initialize()
 {
 
-	fps = 300;
-	dt = 0.1;
+	fps = 300.f;
+	dt = 0.1f;
 
 	m_ShadowCamera = new Camera();
 	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
-	m_ShadowCamera->SetPosition(glm::vec3(-16.13, -5.9, 20.2));
-	m_ShadowCamera->SetFrontVector(glm::vec3(-0.47, -0.81, 0.34));
-	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->GetFrontVector())));
+	m_ShadowCamera->SetPosition(glm::vec3(-16.13f, -5.9f, 20.2f));
+	m_ShadowCamera->SetFrontVector(glm::vec3(-0.47f, -0.81f, 0.34f));
+	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0.f, 0.f, 1.f), m_ShadowCamera->GetFrontVector())));
 	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
 	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->GetFrontVector() * 10.f);
 	m_ShadowCamera->updateVPMatrix();
@@ -269,6 +266,13 @@ void Renderer::SetUniform(const glm::vec2& value, const char* name, GLuint locat
 	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
 	glProgramUniform2f(prog, glGetUniformLocation(prog, name), value.x, value.y);
 }
+
+void Renderer::SetUniform(const glm::ivec2& value, const char* name, GLuint location)
+{
+	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
+	glProgramUniform2i(prog, glGetUniformLocation(prog, name), value.x, value.y);
+}
+
 
 void Renderer::SetUniform(glm::vec2& value, const char* name, GLuint location)
 {
@@ -564,11 +568,11 @@ void Renderer::DrawMesh(Mesh* mesh)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
 
-		GL::DrawElements(GL_TRIANGLES, mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+		GL::DrawElements(GL_TRIANGLES, (int) mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
-		glDrawArrays(mesh->m_renderingMode, 0, mesh->m_buffers.vertexPositions.size());
+		glDrawArrays(mesh->m_renderingMode, 0, (int) mesh->m_buffers.vertexPositions.size());
 		FLUSH_ERRORS();
 	}
 
@@ -781,7 +785,6 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
 
-	float output;
 	GLfloat *ptr;
 	ptr = (GLfloat *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
 
@@ -873,7 +876,7 @@ void Renderer::ApplyEmissiveGlow()
 
 
 	bool horizontal = true;
-	int amount = 10;
+	unsigned int amount = 10;
 	for (unsigned int i = 0; i < amount; i++)
 	{
 		FramebufferType fb = horizontal ? FramebufferType_PingPong0 : FramebufferType_PingPong1;
@@ -1169,13 +1172,13 @@ void Renderer::RenderFPS()
 	}
 
 	std::stringstream fpsString;
-	float smoothing = 0.99; // larger=more smoothing
-	fps = (fps * smoothing) + (1.f/dt * (1.0-smoothing));
+	float smoothing = 0.99f; // larger=more smoothing
+	fps = (fps * smoothing) + (1.f / dt * (1.f - smoothing));
 	fpsString << 1.f / (fps / 1000.f);
 	fpsString << " ms/frame";
 	RenderText(fpsString.str(), 695.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
 
-	float new_time = glfwGetTime();
+	float new_time = (float) glfwGetTime();
 	dt = new_time - curr_time;
 	curr_time = new_time;
 }
@@ -1194,8 +1197,7 @@ void Renderer::RenderSky()
 	glm::vec2 viewAngles = glm::vec2(m_DebugCamera->totalViewAngleY*pi, m_DebugCamera->aspectRatio*m_DebugCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");
 
-	glm::vec2 windowSize = glm::vec2(m_Window->GetSize());
-	SetFragmentUniform(2.f * windowSize, "windowSize");
+	SetFragmentUniform(2.f * (glm::vec2) m_Window->GetSize(), "windowSize");
 
 	SetSkyUniforms(0);
 

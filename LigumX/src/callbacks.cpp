@@ -36,7 +36,7 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* pWindow, double xOffset, double
 
 	if (!caughtByImgui)
 	{
-		g_Editor->AddToTerrainBrushSize(yOffset);
+		g_Editor->AddToTerrainBrushSize((float) yOffset);
 	}
 
 }
@@ -106,7 +106,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 		if (maskModified)
 		{
-			float add = isPress ? 1 : -1;
+			float add = isPress ? 1.f : -1.f;
 
 			glm::vec3 newMask = glm::vec3(g_Editor->GetXYZMask());
 

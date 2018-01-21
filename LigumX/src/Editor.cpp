@@ -179,7 +179,7 @@ void Editor::UpdateTerrainEditor()
 	int stride = 4;
 	int numBytes = stride * numTexels;
 
-	int brushWidth = m_TerrainBrushSize;
+	int brushWidth = (int) m_TerrainBrushSize;
 	int brushWidthSq = brushWidth * brushWidth;
 	if (m_SplatMapData.size() != numBytes)
 	{
@@ -419,7 +419,7 @@ void Editor::RenderPicking()
 
 void Editor::BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name)
 {
-	ImGui::SetNextWindowSize(ImVec2(xSize, ySize), ImGuiSetCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2((float) xSize, (float) ySize), ImGuiSetCond_FirstUseEver);
 
 	if (!ImGui::Begin(name, &open, flags))
 	{
@@ -600,7 +600,7 @@ void Editor::ShowProperty(glm::ivec2* value, const char* name, float min, float 
 	}
 	else
 	{
-		ImGui::SliderInt2(name, (int*)value, min, max);
+		ImGui::SliderInt2(name, (int*)value, (int) min, (int) max);
 	}
 }
 
@@ -813,7 +813,8 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	//SHOW_PROPERTY_PTR(Sector)
 		BEGIN_PROPERTY(Sector)
 
-		if ((int)ptr == 0) 
+		// TODO : not entirely sure this comparison is good
+		if (ptr == (char*) 0) 
 		{ 
 			ShowGUIText(name); 
 			ImGui::SameLine(); 
@@ -957,7 +958,7 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 
 	float min = propertyData.m_MinValue;
 	float max = propertyData.m_MaxValue;
-	bool noneditable = propertyData.m_PropertyFlags & PropertyFlags_NonEditable;
+	bool noneditable = (propertyData.m_PropertyFlags & PropertyFlags_NonEditable) != 0;
 
 	if (propertyData.m_Type == LXType_stdvector)
 	{
@@ -996,7 +997,9 @@ void Editor::EndShowPropertyGridObject(T*& object, const char* name)
 
 void Editor::EndShowPropertyGridObject(Texture*& object, const char* name)
 {
+#pragma warning(disable:4312) // TODO : figure out what to do here
 	ImGui::Image((ImTextureID)object->GetHWObject(), ImVec2(50, 50));
+#pragma warning(default:4312)
 }
 
 

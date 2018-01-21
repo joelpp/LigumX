@@ -19,7 +19,7 @@ unsigned int rand_interval(unsigned int min, unsigned int max)
 	do
 	{
 		r = rand();
-	} while (r >= limit);
+	} while ((unsigned int) r >= limit);
 
 	return min + (r / buckets);
 }

@@ -91,7 +91,7 @@ glm::vec2 EarthToWorld(const glm::vec2& earthPosition)
 
 	glm::ivec2 adjustedQuantizedPosition = quantizedPosition - startQuantizedPosition;
 
-	float quantizedExtentF = EarthToQuantized(g_EngineSettings->GetExtent());
+	float quantizedExtentF = (float) EarthToQuantized(g_EngineSettings->GetExtent());
 
 	glm::vec2 worldPosition = worldScale * (glm::vec2)adjustedQuantizedPosition / quantizedExtentF;
 

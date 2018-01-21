@@ -67,8 +67,8 @@ void SectorData::loadData(CurlRequest* request, EOSMDataType dataType)
         else if (childValue == "node")
 		{
             string id = child->ToElement()->FindAttribute("id")->Value();
-            float longitude = atof(child->ToElement()->FindAttribute("lon")->Value());
-            float latitude = atof(child->ToElement()->FindAttribute("lat")->Value());
+            float longitude = (float) atof(child->ToElement()->FindAttribute("lon")->Value());
+            float latitude =  (float) atof(child->ToElement()->FindAttribute("lat")->Value());
 
             Node* node = new Node(id, longitude, latitude);
             node->elevation = 0;
@@ -143,7 +143,7 @@ void SectorData::loadData(CurlRequest* request, EOSMDataType dataType)
 
             if (dataType == CONTOUR)
             {
-                float elevation = atof(way->tags["ele"].c_str()) / 15000 + 0.000001;
+                float elevation = (float) atof(way->tags["ele"].c_str()) / 15000 + 0.000001f;
                 for (auto it = way->GetNodes().begin(); it != way->GetNodes().end(); ++it)
                 {
                     Node* node = *it;

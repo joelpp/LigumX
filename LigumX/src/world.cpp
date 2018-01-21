@@ -281,7 +281,7 @@ Sector* World::GetSector(Coord2 longLat)
 	Sector* toReturn = nullptr;
 	for (Sector* sector : sectors)
 	{
-		if (fuzzyEquals2(sector->GetPosition(), longLat, 1e-2))
+		if (fuzzyEquals2(sector->GetPosition(), longLat, 1e-2f))
 		{
 			return sector;
 		}

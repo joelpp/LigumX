@@ -23,11 +23,11 @@ PerlinNoise* Heightfield::pNoise;
 Heightfield::Heightfield(){
 
 }
-Heightfield::Heightfield(vec2 startPoint, double sideLength){
+Heightfield::Heightfield(vec2 startPoint, float sideLength){
     this->sideLength = sideLength;
     this->startPoint = startPoint;
     this->step = Settings::GetInstance().f("HeightfieldResolution");
-    this->iWidth = 1 + (sideLength / step);
+    this->iWidth = 1 + (int) (sideLength / step);
     m_mesh = 0;
     
     if (!hfBaseMesh)
@@ -51,7 +51,7 @@ void Heightfield::generateBaseMesh()
     {
         for (int j = 0; j < iWidth; j++)
         {
-            float last = iWidth - 1;
+            float last = (float) (iWidth - 1);
             float x = (float)i / (float)last;
             float y = (float)j / (float)last;
             vec3 point = vec3(x, y, 0);
@@ -98,7 +98,7 @@ bool Heightfield::generate(){
         for (int j = 0; j < iWidth; j++)
         {
 			//float z = pNoise->GetHeight(lon, lat);
-			float z = 0.1 * (sin(lon) + sin(lat));
+			float z = 0.1f * (sin(lon) + sin(lat));
 
             data.push_back(z);
             lon += step;
@@ -142,8 +142,8 @@ double Heightfield::getHeight(glm::vec2 xy)
     glm::vec2 unNormalized = normalized * glm::vec2(iWidth, iWidth);
     // PRINTVEC2(unNormalized);
 
-    int xIndex = trunc(unNormalized.x);
-    int yIndex = trunc(unNormalized.y);
+    int xIndex = (int) trunc(unNormalized.x);
+    int yIndex = (int) trunc(unNormalized.y);
 
     glm::vec3 corners[4];
     

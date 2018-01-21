@@ -20,19 +20,17 @@ SectorManager::SectorManager(float sectorSize)
     iSizeX = 360;
     iSizeY = 180;
     
-    iNumSectorsX = iSizeX / m_sectorSize;
-    iNumSectorsY = iSizeY / m_sectorSize;
+    iNumSectorsX = iSizeX / (int) m_sectorSize;
+    iNumSectorsY = iSizeY / (int) m_sectorSize;
 }
 
 int SectorManager::getSectorIndex(float x, float y)
 {
-
-
 	float a = x / m_sectorSize;
 	float b = y / m_sectorSize;
 
-	int sectorX = floor(a);
-	int sectorY = floor(b);
+	int sectorX = (int) floor(a);
+	int sectorY = (int) floor(b);
 
 	sectorX -= iStartX;
 	sectorY -= iStartY;
@@ -67,8 +65,8 @@ IntPair SectorManager::intPairFromVec2(glm::vec2 pos)
 
 glm::vec2 SectorManager::posFromVec2(glm::vec2 pos)
 {
-	pos.x = roundf((pos.x+0.5)*100) / 100.f;
-	pos.y = roundf((pos.y+0.5)*100) / 100.f;
+	pos.x = roundf( (pos.x+0.5f) * 100 ) / 100.f;
+	pos.y = roundf( (pos.y+0.5f) * 100 ) / 100.f;
 
 	return pos;
 }
@@ -77,7 +75,7 @@ Sector* SectorManager::createSector(Coord2 pos)
 {
 
 	glm::vec2 sectorCoords = posFromVec2(pos);
-	int newSectorID = getSectorIndex((int) sectorCoords.x, (int) sectorCoords.y);
+	int newSectorID = getSectorIndex(trunc(sectorCoords.x), trunc(sectorCoords.y));
 	Sector* c = new Sector(sectorCoords, m_sectorSize, newSectorID);
 
     m_sectors.emplace(newSectorID, c);

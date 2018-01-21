@@ -22,6 +22,9 @@
 #include "AABB.h"
 #include "Material.h"
 
+class MainWindow;
+
+
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "property.h"
 
@@ -29,7 +32,7 @@ class Renderer;
 class DisplayOptions;
 class PostEffects;
 class Camera;
-class MainWindow;
+
 
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
@@ -197,6 +200,8 @@ public:
 
 	void SetUniform(glm::mat4x4& value, const char* name, GLuint location);
 	void SetUniform(const glm::mat4x4& value, const char* name, GLuint location);
+
+	void SetUniform(const glm::ivec2& value, const char* name, GLuint location);
 
 	void SetUniform(float value, const char* name, GLuint location);
 

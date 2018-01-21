@@ -54,7 +54,7 @@ void Mesh::padBuffer(EBufferType bufferType)
   int numToFill;
   if (bufferType == VERTEX_UVS)
   {
-    numToFill = m_buffers.vertexPositions.size() - m_buffers.m_vertexUVs.size();
+    numToFill = (int) (m_buffers.vertexPositions.size() - m_buffers.m_vertexUVs.size());
     for (int i = 0; i < numToFill; ++i)
     {
       m_buffers.m_vertexUVs.push_back(glm::vec2(0,0));

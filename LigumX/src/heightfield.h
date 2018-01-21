@@ -19,7 +19,7 @@ private:
 
 public:
     Heightfield();
-    Heightfield(glm::vec2 startPoint,double sideLength);
+    Heightfield(glm::vec2 startPoint, float sideLength);
 
     void generateBaseMesh();
     
@@ -31,8 +31,8 @@ public:
     Mesh* m_mesh;
     
     int iWidth;
-    double step;
-    double sideLength;
+    float step;
+    float sideLength;
     std::vector<Triangle* > triangles;
     std::vector<float> data;
     GLuint buffer;

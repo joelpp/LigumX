@@ -183,14 +183,9 @@ void GL::BindFramebuffer(GLuint frameBuffer)
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 }
 
-void GL::SetViewport(glm::vec2 size)
-{
-	glViewport(0, 0, size.x, size.y);
-}
-
 void GL::SetViewport(glm::ivec2 size)
 {
-	glViewport(0, 0, (float) size.x, (float) size.y);
+	glViewport(0, 0, (GLsizei) size.x, (GLsizei) size.y);
 }
 
 
@@ -216,7 +211,9 @@ void GL::ClearDepthBuffer()
 
 void GL::DrawElements(GLuint primitiveType, int numIndices, GLuint indicesType, int firstIndex)
 {
-	glDrawElements(primitiveType, numIndices, indicesType, (const GLvoid *)firstIndex);
+#pragma warning(disable:4312) // TODO : figure out how to handle this properly
+	glDrawElements(primitiveType, numIndices, indicesType, (const GLvoid *) firstIndex);
+#pragma warning(default:4312) 
 
 	if (g_CheckGLErrors)
 	{

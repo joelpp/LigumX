@@ -43,7 +43,7 @@ bool StringUtils::StringArrayContains(std::vector<std::string>& s, std::string& 
 std::vector<std::string> StringUtils::SplitString(const std::string &txt, char ch)
 {
 	std::vector<std::string> strs;
-	unsigned int pos = txt.find(ch);
+	unsigned int pos = (unsigned int) txt.find(ch);
 	unsigned int initialPos = 0;
 
 	// Decompose statement
@@ -51,7 +51,7 @@ std::vector<std::string> StringUtils::SplitString(const std::string &txt, char c
 		strs.push_back(txt.substr(initialPos, pos - initialPos));
 		initialPos = pos + 1;
 
-		pos = txt.find(ch, initialPos);
+		pos = (int) txt.find(ch, initialPos);
 	}
 
 	// Add the last one
@@ -98,8 +98,8 @@ std::string StringUtils::RemoveSubstrings(const std::string& baseString, StringL
 
 std::string StringUtils::GetSubstringBetweenCharacters(const std::string& str, char c0, char c1)
 {
-	unsigned first = str.find(c0);
-	unsigned last = str.find(c1);
+	unsigned int first = (unsigned int) str.find(c0);
+	unsigned int last = (unsigned int) str.find(c1);
 	return str.substr(first + 1, last - first - 1);
 }
 
