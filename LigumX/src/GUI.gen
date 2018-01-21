@@ -1,0 +1,7 @@
+[globalinstance]
+class GUI
+{
+	bool m_Enabled;
+
+	int NumActiveWindows;
+}

@@ -16,6 +16,7 @@
 #include "Sector.h"
 #include "InputHandler.h"
 #include "EngineSettings.h"
+#include "GUI.h"
 
 #pragma region  CLASS_SOURCE Editor
 Editor* g_Editor;
@@ -39,6 +40,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
+{ "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, 0, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool Editor::Serialize(bool writing)
@@ -80,12 +82,9 @@ Editor::Editor(int objectID)
 
 void Editor::Initialize()
 {
-	MainWindow* window = LigumX::GetRenderer()->m_Window;
-
-
-	ImGui_ImplGlfwGL3_Init(window->GetHWObject(), true);
-
 	m_SplatMapTexture = new Texture(48463);
+
+	m_SectorTool = new SectorTool();
 }
 
 
@@ -274,8 +273,9 @@ void Editor::UpdateSectorLoader()
 	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
 	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
 
-	m_SectorTool.Process(mouseButton1Down, mousePosition, dragDistance);
+	m_SectorTool->Process(mouseButton1Down, mousePosition, dragDistance);
 
+	
 }
 
 void Editor::ApplyTool()
@@ -318,21 +318,6 @@ void Editor::RenderPicking()
 }
 
 
-void Editor::BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name)
-{
-	ImGui::SetNextWindowSize(ImVec2((float) xSize, (float) ySize), ImGuiSetCond_FirstUseEver);
-
-	if (!ImGui::Begin(name, &open, flags))
-	{
-		// Early out if the window is collapsed, as an optimization.
-		ImGui::End();
-		return;
-	}
-}
-void Editor::EndImGUIWindow()
-{
-	ImGui::End();
-}
 
 //const char* toCharPtr(glm::vec3 value, const char* variableName)
 //{
@@ -1092,7 +1077,7 @@ void Editor::RenderImgui()
 	//if (g_Editor->GetOptions()->GetShowWorldWindow())
 	{
 		ImGui::PushID("WorldWindow");
-		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
+		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
 
 		ShowPropertyGridTemplate(g_InputHandler, "Input Handler");
 		ShowPropertyGridTemplate(renderer->GetPostEffects(), "Post Effects");
@@ -1134,7 +1119,7 @@ void Editor::RenderImgui()
 
 			m_RenderingMenu = false;
 		}
-		EndImGUIWindow();
+		g_GUI->EndWindow();
 		ImGui::PopID();
 
 	}
@@ -1143,7 +1128,7 @@ void Editor::RenderImgui()
 	{
 		ImGui::PushID("EntityWindow");
 
-		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
+		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
 
 		if (GetPickedEntity())
 		{
@@ -1154,14 +1139,14 @@ void Editor::RenderImgui()
 			ShowGUIText("No entity selected.");
 		}
 
-		EndImGUIWindow();
+		g_GUI->EndWindow();
 		ImGui::PopID();
 	}
 
 	if (GetOptions()->GetShowMaterialWindow())
 	{
 		ImGui::PushID("MaterialWindow");
-		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Materials");
+		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Materials");
 
 		if (GetPickedEntity())
 		{
@@ -1176,45 +1161,46 @@ void Editor::RenderImgui()
 			ShowGUIText("No entity selected.");
 		}
 
-		EndImGUIWindow();
+		g_GUI->EndWindow();
 		ImGui::PopID();
 	}
 
 	if (GetOptions()->GetShowObjectCreator())
 	{
-		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Creator");
+		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Creator");
 
 		ShowObjectCreator<Entity>();
 		ShowObjectCreator<Texture>();
 		ShowObjectCreator<Material>();
 		ShowObjectCreator<Model>();
 
-		EndImGUIWindow();
+		g_GUI->EndWindow();
 	}
 
 	if (GetOptions()->GetShowEngineStats())
 	{
-		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Engine Stats");
+		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Engine Stats");
 
 		ShowPropertyGridObject(g_EngineStats, "Engine Stats");
 
-		EndImGUIWindow();
+		g_GUI->EndWindow();
 	}
 
 	if (GetOptions()->GetShowObjectManager())
 	{
-		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Manager");
+		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Manager");
 
 		ShowProperty<Texture>(g_ObjectManager->GetObjects(LXType_Texture), "Textures");
 		ShowProperty<Mesh>(g_ObjectManager->GetObjects(LXType_Mesh), "Meshes");
 		ShowProperty<Material>(g_ObjectManager->GetObjects(LXType_Material), "Materials");
 		ShowProperty<Model>(g_ObjectManager->GetObjects(LXType_Model), "Models");
 
-		EndImGUIWindow();
+		g_GUI->EndWindow();
 	}
 
-	ImGui::Render();
+	//if 
 
+	ImGui::Render();
 
 }
 
@@ -1227,4 +1213,10 @@ void Editor::Render()
 	RenderImgui();
 
 	ApplyTool();
+}
+
+
+void Editor::DisplayActiveTool()
+{
+
 }

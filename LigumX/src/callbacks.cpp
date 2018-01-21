@@ -4,6 +4,7 @@
 #include "World.h"
 #include "SectorManager.h"
 #include "Renderer.h"
+#include "GUI.h"
 #include "Editor.h"
 #include "EditorOptions.h"
 #include "InputHandler.h"

@@ -81,7 +81,7 @@ int EarthToQuantized(const float& earthPosition)
 	return (int) (earthPosition * OSM_QUANTIZATION_SCALE);
 }
 
-glm::vec2 EarthToWorld(const glm::vec2& earthPosition)
+glm::vec2 Sector::EarthToWorld(const glm::vec2& earthPosition)
 {
 	const float& worldScale = g_EngineSettings->GetWorldScale();
 	const glm::vec2& startEarthPosition = g_EngineSettings->GetStartLonLat();

@@ -29,13 +29,19 @@ const bool& GetEnabled() { return m_Enabled; };
 void SetEnabled(bool value) { m_Enabled = value; }; 
 const glm::ivec2& GetSectorLoadingOffset() { return m_SectorLoadingOffset; }; 
 void SetSectorLoadingOffset(glm::ivec2 value) { m_SectorLoadingOffset = value; }; 
+const glm::vec3& GetHighlightedWorldCoordinates() { return m_HighlightedWorldCoordinates; }; 
+void SetHighlightedWorldCoordinates(glm::vec3 value) { m_HighlightedWorldCoordinates = value; }; 
+Sector*& GetHighlightedSector() { return m_HighlightedSector; }; 
+void SetHighlightedSector(Sector* value) { m_HighlightedSector = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = false;
 glm::ivec2 m_SectorLoadingOffset;
+glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
+Sector* m_HighlightedSector;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
@@ -44,6 +50,8 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_Enabled,
 PIDX_SectorLoadingOffset,
+PIDX_HighlightedWorldCoordinates,
+PIDX_HighlightedSector,
 };
 bool Serialize(bool writing);
 

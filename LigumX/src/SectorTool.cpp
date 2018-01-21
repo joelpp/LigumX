@@ -20,6 +20,8 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "Name", PIDX_Name, offsetof(SectorTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "SectorLoadingOffset", PIDX_SectorLoadingOffset, offsetof(SectorTool, m_SectorLoadingOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -61,21 +63,21 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	glm::vec3 worldPosition = cameraPosition + t * cameraFront;
 
-	{
-		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
+	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
+	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
+	glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
 
-		glm::vec2 startPosition = (glm::vec2)worldPosition;
-		float scale = g_EngineSettings->GetWorldScale() / 20.f;
+	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
 
-		AABB aabb;
-		aabb.SetOffset(glm::vec3(startPosition - glm::vec2(scale) / 2.f, 0));
+	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
 
-		aabb.SetScale(glm::vec3(scale, scale, 1.f));
+	float scale = g_EngineSettings->GetWorldScale();
 
-		LigumX::GetInstance().renderData->AddAABBJob(aabb);
-	}
+	AABB aabb;
+	aabb.SetScale(glm::vec3(scale, scale, 1.f));
+	aabb.SetMidPoint(glm::vec3(worldStartCoords, 0));
 
-
+	LigumX::GetInstance().renderData->AddAABBJob(aabb);
 
 	World* world = LigumX::GetInstance().getWorld();
 
@@ -92,41 +94,21 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	}
 	else if (mouseButton1Down && m_Request.Ready())
 	{
-		//glm::ivec2 cornerIndex = g_EngineSettings->GetStartLonLat * 1e7;
+		m_Request = CurlRequest(earthStartCoords, earthExtent);
+		m_Request.Initialize();
 
-		glm::vec2 startCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
-		glm::vec2 extent = glm::vec2(g_EngineSettings->GetExtent());
-		glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
+		PRINTVEC2(normalizedSectorIndex);
 
-		//bool sectorAlreadyLoaded = false;
+		SetSectorLoadingOffset(glm::ivec2(normalizedSectorIndex));
 
-		//for (Sector* sector : world->sectors)
-		//{
-		//	if (fuzzyEquals(sector->GetPosition(), startCoords, 1e-2))
-		//	{
-		//		sectorAlreadyLoaded = sector->GetDataLoaded();
-		//		break;
-		//	}
-		//}
+		Sector* sector = new Sector(&m_Request);
+		sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
+		m_LoadingSector = sector;
 
-		//if (!sectorAlreadyLoaded)
-		{
-			m_Request = CurlRequest(startCoords, extent);
-			m_Request.Initialize();
+		world->GetSectors().push_back(m_LoadingSector);
+		world->sectors.push_back(m_LoadingSector);
 
-			PRINTVEC2(normalizedSectorIndex);
-
-			SetSectorLoadingOffset(glm::ivec2(normalizedSectorIndex));
-
-			Sector* sector = new Sector(&m_Request);
-			sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
-			m_LoadingSector = sector;
-
-			world->GetSectors().push_back(m_LoadingSector);
-			world->sectors.push_back(m_LoadingSector);
-
-			curlThread = std::thread(&CurlRequest::Execute, &m_Request);
-		}
+		curlThread = std::thread(&CurlRequest::Execute, &m_Request);
 	}
 
 

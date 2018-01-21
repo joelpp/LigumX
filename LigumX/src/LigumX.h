@@ -47,6 +47,8 @@ public:
 	static Renderer* m_Renderer;
     // general state and functions
     void Initialize();
+	void InitializeGlobalObjects();
+
     bool running;
     void mainLoop();
 

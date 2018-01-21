@@ -25,3 +25,8 @@ AABB::AABB()
 {
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
+
+void AABB::SetMidPoint(const glm::vec3& midPoint)
+{
+	m_Offset = midPoint + (m_Scale / 2.f);
+}

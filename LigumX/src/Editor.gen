@@ -37,6 +37,6 @@ class Editor
 	[adder]
 	float TerrainBrushSize;
 
-
+	SectorTool* SectorTool;
 	int PickingBufferSize;
 }

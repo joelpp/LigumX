@@ -105,4 +105,7 @@ public:
     EInitializationLevel m_initializationLevel;
     bool m_initialized;
     int m_ID;
+
+	static glm::vec2 EarthToWorld(const glm::vec2& earthPosition);
+
 };

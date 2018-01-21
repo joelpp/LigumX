@@ -192,6 +192,9 @@
     <ClCompile Include="src\SectorTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -473,6 +476,9 @@
     <ClInclude Include="src\SectorTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\GUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -504,5 +510,6 @@
     <None Include="data\Sector.gen" />
     <None Include="src\EngineSettings.gen" />
     <None Include="src\MainWindow.gen" />
+    <None Include="src\GUI.gen" />
   </ItemGroup>
 </Project>

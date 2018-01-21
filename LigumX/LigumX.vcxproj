@@ -171,6 +171,7 @@
     <ClCompile Include="src\filled_buildings.cpp" />
     <ClCompile Include="src\Framebuffer.cpp" />
     <ClCompile Include="src\GL.cpp" />
+    <ClCompile Include="src\GUI.cpp" />
     <ClCompile Include="src\heightfield.cpp" />
     <ClCompile Include="src\imgui.cpp" />
     <ClCompile Include="src\imgui_demo.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\Framebuffer.h" />
     <ClInclude Include="src\GL.h" />
+    <ClInclude Include="src\GUI.h" />
     <ClInclude Include="src\heightfield.h" />
     <ClInclude Include="src\imconfig.h" />
     <ClInclude Include="src\imgui.h" />
@@ -327,6 +329,7 @@
     <None Include="src\Entity.gen" />
     <None Include="src\Framebuffer.gen" />
     <None Include="src\GL.gen" />
+    <None Include="src\GUI.gen" />
     <None Include="src\InputHandler.gen" />
     <None Include="src\MainWindow.gen" />
     <None Include="src\Material.gen" />

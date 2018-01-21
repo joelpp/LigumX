@@ -20,6 +20,7 @@
 #include "InputHandler.h"
 #include "EngineSettings.h"
 #include "MainWindow.h"
+#include "GUI.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -70,25 +71,13 @@ void LigumX::mainLoop()
 	m_Renderer->render(world);
 }
 
+
 void LigumX::Initialize()
 {
 	//=============================================================================
 	// Load Default data.
 	//=============================================================================
-	g_InputHandler = new InputHandler();
-	g_Serializer = new Serializer();
-	g_ObjectManager = new ObjectManager();
-
-	g_Editor = new Editor(73524);
-
-	g_EngineSettings = new EngineSettings(89373);
-
-	m_Renderer = new Renderer();
-	m_Renderer->SetObjectID(28763);
-	m_Renderer->Serialize(false);
-	
-	g_DefaultObjects = new DefaultObjects();
-	g_EngineStats = new EngineStats();
+	InitializeGlobalObjects();
 
 	SetCallbacks();
 
@@ -121,6 +110,28 @@ void LigumX::Initialize()
     //init_tweakBar();
 
     // updateWorld(3);
+
+}
+
+
+void LigumX::InitializeGlobalObjects()
+{
+	g_InputHandler = new InputHandler();
+	g_Serializer = new Serializer();
+	g_ObjectManager = new ObjectManager();
+
+	g_Editor = new Editor(73524);
+
+	g_EngineSettings = new EngineSettings(89373);
+
+	m_Renderer = new Renderer();
+	m_Renderer->SetObjectID(28763);
+	m_Renderer->Serialize(false);
+
+	g_GUI = new GUI();
+
+	g_DefaultObjects = new DefaultObjects();
+	g_EngineStats = new EngineStats();
 
 }
 

@@ -4,7 +4,6 @@
 #include "glm/glm.hpp"
 #include <map>
 #include <vector>
-#include "imgui_impl_glfw_gl3.h"
 #include "Logging.h"
 #include "CurlRequest.h"
 #include "SectorTool.h"
@@ -19,6 +18,7 @@ class Sector;
 class Editor;
 class EditorOptions;
 class Entity;
+class SectorTool;
 
 extern Editor* g_Editor;
 enum EditorTool
@@ -73,6 +73,8 @@ void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; };
 const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
 void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; }; 
 void AddToTerrainBrushSize(float value) { m_TerrainBrushSize += value; };
+SectorTool*& GetSectorTool() { return m_SectorTool; }; 
+void SetSectorTool(SectorTool* value) { m_SectorTool = value; }; 
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 private:
@@ -89,9 +91,10 @@ glm::vec4 m_PickingData;
 bool m_EditingTerrain = false;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 0.f;
+SectorTool* m_SectorTool;
 int m_PickingBufferSize = 0;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -109,6 +112,7 @@ PIDX_PickingData,
 PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
+PIDX_SectorTool,
 PIDX_PickingBufferSize,
 };
 bool Serialize(bool writing);
@@ -164,9 +168,6 @@ void SaveObjectFromCreator(T* object);
 
 void ShowAddButton(std::vector<char*>* vectorPtr, const LXType& type);
 
-void BeginImGUIWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name);
-void EndImGUIWindow();
-
 void ShowVariableAsText(glm::vec3 variable, const char* variableName);
 void ShowVariableAsText(glm::vec3* variable, const char* variableName);
 void ShowVariableAsText(float variable, const char* variableName);
@@ -196,7 +197,7 @@ void BackupData();
 Texture* m_SplatMapTexture;
 std::vector<unsigned char> m_SplatMapData;
 
-SectorTool& GetSectorTool() { return m_SectorTool; }
+void DisplayActiveTool();
 
 private:
 	bool m_RenderingMenu;
@@ -205,9 +206,5 @@ private:
 	// this is for r&d
 	SectorData* m_SectorData;
 	Sector* m_Sector;
-
-	SectorTool m_SectorTool;
-
-
 
 };
