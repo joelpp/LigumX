@@ -1198,7 +1198,14 @@ void Editor::RenderImgui()
 		g_GUI->EndWindow();
 	}
 
-	//if 
+	if (m_ActiveTool == EditorTool_SectorLoader)
+	{
+		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
+
+		ShowPropertyGridObject(m_SectorTool, "Sector Tool");
+
+		g_GUI->EndWindow();
+	}
 
 	ImGui::Render();
 

@@ -7,6 +7,7 @@
 #include "Sector.h"
 #include "SectorData.h"
 #include "World.h"
+#include "GUI.h"
 
 #pragma region  CLASS_SOURCE SectorTool
 
@@ -113,4 +114,14 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 
 	return true;
+}
+
+
+void SectorTool::Display()
+{
+	//g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
+
+
+
+	//g_GUI->EndWindow();
 }

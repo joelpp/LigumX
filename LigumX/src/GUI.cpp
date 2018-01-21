@@ -30,7 +30,6 @@ GUI::GUI()
 	MainWindow* window = LigumX::GetRenderer()->m_Window;
 	m_WindowHWPtr = window->GetHWObject();
 
-
 	ImGui_ImplGlfwGL3_Init(m_WindowHWPtr, true);
 
 }

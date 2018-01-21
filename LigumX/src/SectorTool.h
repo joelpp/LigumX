@@ -65,5 +65,6 @@ std::thread curlThread;
 
 Sector* m_LoadingSector;
 
+void Display();
 
 };

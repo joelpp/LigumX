@@ -37,7 +37,6 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* pWindow, double xOffset, double
 	{
 		g_Editor->AddToTerrainBrushSize((float) yOffset);
 	}
-
 }
 
 void flipBool(bool& value)
