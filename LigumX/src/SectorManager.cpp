@@ -20,7 +20,6 @@ SectorManager::SectorManager()
 SectorManager::SectorManager(float sectorSize)
 {
 	m_sectorSize = sectorSize;
-	bLoadNewSectors = true;
     
     iStartX = -180;
     iStartY = -90;
@@ -212,7 +211,7 @@ SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initia
             Sector* sector = getSector(sectorIndex);
 			sectors->push_back(sector);
 
-			if (bLoadNewSectors && initialization && (sector->m_initializationLevel < Sector::FullyInitialized))
+			if (initialization && (sector->m_initializationLevel < Sector::FullyInitialized))
 			{
 				keepInitializing(sector, manhattanDistance);
 			}
@@ -262,6 +261,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 		else if (childValue == "node")
 		{
 			std::string id = child->ToElement()->FindAttribute("id")->Value();
+
+			if (m_AllNodes.find(id) != m_AllNodes.end())
+			{
+				continue;
+			}
+
 			float longitude = (float)atof(child->ToElement()->FindAttribute("lon")->Value());
 			float latitude = (float)atof(child->ToElement()->FindAttribute("lat")->Value());
 
@@ -284,7 +289,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			}
 
 			std::unordered_map<std::string, Node*>& nodes = sector->m_Data->nodes;
-			std::unordered_map<std::string, Way*>& ways = sector->m_Data->ways;
+			//std::unordered_map<std::string, Way*>& ways = sector->m_Data->ways;
 
 			nodes.emplace(id, node);
 
@@ -294,6 +299,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 		else if (childValue == "way")
 		{
 			std::string id = child->ToElement()->FindAttribute("id")->Value();
+
+			if (m_AllWays.find(id) != m_AllWays.end())
+			{
+				continue;
+			}
+
 			Way* way = new Way(id);
 			way->eType = OSMElement::NOT_IMPLEMENTED;
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
@@ -332,6 +343,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			}
 
 			ways.emplace(id, way);
+			m_AllWays.emplace(id, way);
 		}
 	}
 }

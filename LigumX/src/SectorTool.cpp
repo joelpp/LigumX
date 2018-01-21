@@ -23,9 +23,6 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
-{ "ColorNullSector", PIDX_ColorNullSector, offsetof(SectorTool, m_ColorNullSector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
-{ "ColorUnloadedSector", PIDX_ColorUnloadedSector, offsetof(SectorTool, m_ColorUnloadedSector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
-{ "ColorLoadedSector", PIDX_ColorLoadedSector, offsetof(SectorTool, m_ColorLoadedSector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -72,6 +69,10 @@ glm::vec3 SectorTool::GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPo
 
 glm::vec3 SectorTool::GetHighlightColor(Sector* sector)
 {
+	static glm::vec3 m_ColorNullSector	= glm::vec3(0, 1, 0);
+	static glm::vec3 m_ColorUnloadedSector = glm::vec3(0, 1, 1);
+	static glm::vec3 m_ColorLoadedSector = glm::vec3(0, 0, 1);
+
 	glm::vec3 color;
 	if (sector == nullptr)
 	{
@@ -114,19 +115,25 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
 	
-	
-
 		
 	LigumX::GetInstance().renderData->AddAABBJob(aabb, aabbColor);
 
-	bool canSendRequest = mouseButton1Down && m_Request.Ready() && !m_HighlightedSector ;
+	bool canSendRequest = mouseButton1Down && m_Request.Ready() && (!m_HighlightedSector || !m_HighlightedSector->GetDataLoaded());
 	if (canSendRequest)
 	{
 		m_Request = CurlRequest(earthStartCoords, glm::vec2(g_EngineSettings->GetExtent()));
 		m_Request.SetSectorIndex(normalizedSectorIndex);
 		m_Request.Initialize();
 
-		Sector* newSector = g_SectorManager->CreateSector(&m_Request);
+		Sector* sector = m_HighlightedSector;
+		if (sector == nullptr)
+		{
+			sector = g_SectorManager->CreateSector(&m_Request);
+		}
+		else
+		{
+			m_Request.SetSector(sector);
+		}
 
 		m_Request.Start();
 	}

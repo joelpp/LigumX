@@ -77,9 +77,6 @@ public:
 
 	float m_sectorSize;
 
-	void setLoadNewSectors(bool state) { bLoadNewSectors = state; }
-	bool getLoadNewSectors() { return bLoadNewSectors; }
-
 	Sector* CreateSector(CurlRequest* request);
 	Sector* CreateSector(const glm::ivec2& sectorIndex);
 
@@ -90,10 +87,10 @@ public:
 
 
 	std::unordered_map<std::string, Node*> m_AllNodes;
+	std::unordered_map<std::string, Way*> m_AllWays;
 
 private:
 	REGISTERCLASS(SectorManager);
-	bool bLoadNewSectors;
     
     int iStartX, iStartY;
     int iNumSectorsX, iNumSectorsY;

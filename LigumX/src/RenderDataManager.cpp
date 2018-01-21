@@ -135,12 +135,6 @@ void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
 
 void RenderDataManager::CreateWaysLines(Sector* sector)
 {
-	float latMid = sector->GetPosition().x;
-
-	glm::vec2 degreesToMeters;
-	degreesToMeters.x = 111132.954f * cos(latMid);
-	degreesToMeters.y = 111132.954f - 559.822f * cos(2.f * latMid) + 1.175f * cos(4.f * latMid);
-
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		std::vector<glm::vec3> line;
@@ -150,23 +144,8 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		{
 			Node* node = *nodeIt;
 
-			glm::vec3 pos = node->getLatLongEle();
-
-			// offset between 0 and extent
-			pos -= glm::vec3(sector->GetPosition(), 0.f);
-
-			// scale between 0 and 1
-			pos /= glm::vec3(sector->m_LifeSize, 1.f);
-
-			pos *= 200.f;
-
-			World* world = LigumX::GetInstance().getWorld();
-			
-			const glm::ivec2& baseOffset = sector->GetOffsetIndex();
-
-			pos += glm::vec3(glm::vec2(baseOffset) * 200.f, 0);
-
-			pos.z = 1.f;
+			glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
+			glm::vec3 pos = glm::vec3(worldPos, 0);
 
 			AddPoint(line, pos);
 		}

@@ -76,10 +76,6 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		else if(key == GLFW_KEY_F4)
 		{
         }
-		else if (key == GLFW_KEY_L)
-		{
-			game.world->m_sectorManager->setLoadNewSectors(game.world->m_sectorManager->getLoadNewSectors());
-		}
     }
 
 	if (action == GLFW_PRESS || action == GLFW_RELEASE)
