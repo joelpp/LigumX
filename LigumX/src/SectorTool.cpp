@@ -99,7 +99,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 		PRINTVEC2(normalizedSectorIndex);
 
-		SetSectorLoadingOffset(glm::ivec2(normalizedSectorIndex));
+		SetSectorLoadingOffset(normalizedSectorIndex);
 
 		Sector* sector = new Sector(&m_Request);
 		sector->SetOffsetIndex(GetSectorLoadingOffset());
@@ -107,7 +107,6 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		m_Request.SetSector(sector);
 
 		world->GetSectors().push_back(sector);
-		world->sectors.push_back(sector);
 
 		m_Request.Start();
 	}

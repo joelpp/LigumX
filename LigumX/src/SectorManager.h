@@ -73,7 +73,7 @@ public:
 	void keepInitializing(Sector* sector, int manhattanDistance);
 
 
-	std::unordered_map<int, Sector*> m_sectors;
+	std::unordered_map<int, Sector*> m_Sectors;
 
 	float m_sectorSize;
 

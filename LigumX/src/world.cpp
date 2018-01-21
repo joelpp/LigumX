@@ -279,7 +279,7 @@ bool fuzzyEquals2(glm::vec2 a, glm::vec2 b, float tolerance)
 Sector* World::GetSector(Coord2 longLat)
 {
 	Sector* toReturn = nullptr;
-	for (Sector* sector : sectors)
+	for (Sector* sector : m_Sectors)
 	{
 		if (fuzzyEquals2(sector->GetPosition(), longLat, 1e-2f))
 		{

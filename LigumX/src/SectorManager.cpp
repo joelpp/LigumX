@@ -87,7 +87,7 @@ Sector* SectorManager::createSector(Coord2 pos)
 	int newSectorID = getSectorIndex(trunc(sectorCoords.x), trunc(sectorCoords.y));
 	Sector* c = new Sector(sectorCoords, m_sectorSize, newSectorID);
 
-    m_sectors.emplace(newSectorID, c);
+	m_Sectors.emplace(newSectorID, c);
 
     return c;
 }
@@ -96,7 +96,7 @@ Sector* SectorManager::createSector(int ID)
 	glm::vec2 sectorCoords = posFromID(ID);
 	Sector* c = new Sector( sectorCoords, m_sectorSize, ID);
 
-    m_sectors.emplace(ID, c);
+	m_Sectors.emplace(ID, c);
 
     return c;
 }
@@ -111,22 +111,23 @@ Sector* SectorManager::createSector(int ID)
 // 	return normalized * m_sectorSize;
 // }
 
-Sector* SectorManager::sectorContaining(Coord2 longLat){
+Sector* SectorManager::sectorContaining(Coord2 longLat)
+{
 	Sector* sector;
 	int ID = IDFromPos(longLat);
-	auto found = m_sectors.find(ID);
+	auto found = m_Sectors.find(ID);
 
-	if (found != m_sectors.end())
+	if (found != m_Sectors.end())
 	{
-		sector = m_sectors.at(ID);
+		sector = m_Sectors.at(ID);
 	}
 	else
 	{
 		// PRINT("Creating sector at ");
 		// PRINTVEC2(longLat);
 		sector = createSector(ID);
-    	m_sectors.emplace(ID, sector);
-		PRINTINT(m_sectors.size());
+		m_Sectors.emplace(ID, sector);
+		PRINTINT(m_Sectors.size());
 
 	}
 
@@ -137,22 +138,17 @@ Sector* SectorManager::sectorContaining(Coord2 longLat){
 Sector* SectorManager::getSector(int ID)
 {
     Sector* sector;
-    auto found = m_sectors.find(ID);
+	auto found = m_Sectors.find(ID);
     
-    if (found != m_sectors.end())
+    if (found != m_Sectors.end())
     {
-        sector = m_sectors.at(ID);
+        sector = m_Sectors.at(ID);
     }
     else
     {
-        // PRINT("Creating sector at ");
-        // PRINTVEC2(longLat);
         sector = createSector(ID);
-        m_sectors.emplace(ID, sector);
-        //PRINTINT(m_sectors.size());
-        
+		m_Sectors.emplace(ID, sector);
     }
-    
     
     return sector;
 }
@@ -200,7 +196,8 @@ void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 	}
 }
 
-SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initialization){
+SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initialization)
+{
 	SectorList* sectors = new SectorList();
     int ringCenterIndex = IDFromPos(point);
     

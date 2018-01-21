@@ -147,7 +147,6 @@ public:
     
     float m_sectorSize;
     float m_invSectorSize;
-    std::vector<Sector*> sectors;
     SectorManager* m_sectorManager;
     float m_globalTime;
 

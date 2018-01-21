@@ -944,7 +944,7 @@ void Renderer::RenderDebugModels()
 		}
 	}
 
-	for (Sector* sector : m_World->sectors)
+	for (Sector* sector : m_World->GetSectors())
 	{
 		AABB bb;
 		const float& worldScale = g_EngineSettings->GetWorldScale();
