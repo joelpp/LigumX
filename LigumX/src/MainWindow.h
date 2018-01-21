@@ -1,5 +1,6 @@
 #pragma once
 #include "glm\glm.hpp"
+#include "GL.h"
 
 #pragma region  FORWARD_DECLARATIONS MainWindow
 #include "property.h"
@@ -27,14 +28,17 @@ const glm::vec2& GetPosition() { return m_Position; };
 void SetPosition(glm::vec2 value) { m_Position = value; }; 
 const glm::vec2& GetSize() { return m_Size; }; 
 void SetSize(glm::vec2 value) { m_Size = value; }; 
+const std::string& GetTitle() { return m_Title; }; 
+void SetTitle(std::string value) { m_Title = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 bool m_InFocus = false;
 glm::vec2 m_Position = glm::vec2(0, 0);
 glm::vec2 m_Size = glm::vec2(0, 0);
+std::string m_Title;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MainWindowPIDX
@@ -44,9 +48,17 @@ PIDX_Name,
 PIDX_InFocus,
 PIDX_Position,
 PIDX_Size,
+PIDX_Title,
 };
 bool Serialize(bool writing);
 
 #pragma endregion  HEADER MainWindow
+
+MainWindow();
+
+GLFWwindow* GetHWObject() { return pWindow; }
+
+GLFWwindow* pWindow;
+
 
 };

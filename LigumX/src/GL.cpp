@@ -183,6 +183,12 @@ void GL::BindFramebuffer(GLuint frameBuffer)
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 }
 
+void GL::SetViewport(glm::vec2 size)
+{
+	glViewport(0, 0, size.x, size.y);
+}
+
+
 void GL::SetViewport(int bufferWidth, int bufferHeight)
 {
 	glViewport(0, 0, bufferWidth, bufferHeight);

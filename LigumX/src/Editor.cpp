@@ -2,6 +2,7 @@
 #include "LigumX.h"
 #include "GL.h"
 #include "Renderer.h"
+#include "MainWindow.h"
 #include "World.h"
 #include "SunLight.h"
 #include "Model.h"
@@ -82,10 +83,10 @@ Editor::Editor(int objectID)
 
 void Editor::Initialize()
 {
-	Renderer* renderer = LigumX::GetRenderer();
+	MainWindow* window = LigumX::GetRenderer()->m_Window;
 
-	// Init Imgui
-	ImGui_ImplGlfwGL3_Init(renderer->pWindow, true);
+
+	ImGui_ImplGlfwGL3_Init(window->GetHWObject(), true);
 
 	m_SplatMapTexture = new Texture(48463);
 }
@@ -277,7 +278,7 @@ void Editor::UpdateSectorLoader()
 	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
 
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
-	glm::vec2 windowSize = glm::vec2(renderer->windowWidth, renderer->windowHeight);
+	const glm::vec2& windowSize = renderer->m_Window->GetSize();
 
 	const glm::vec2 mouseNDC = mousePosition / windowSize;
 	const glm::vec2 mouseScreen = mouseNDC * 2.f - glm::vec2(1, 1);

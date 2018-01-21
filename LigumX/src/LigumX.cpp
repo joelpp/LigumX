@@ -19,6 +19,7 @@
 #include "Serializer.h"
 #include "InputHandler.h"
 #include "EngineSettings.h"
+#include "MainWindow.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -272,19 +273,21 @@ static void test_error_cb (int error, const char *description)
 
 void LigumX::SetCallbacks(){
     Renderer& renderer = Renderer::GetInstance();
-    glfwSetMouseButtonCallback( renderer.pWindow, glfwMouseButtonCallback );
-    glfwSetKeyCallback( renderer.pWindow, HandleKeyboardInput);
+
+	GLFWwindow* window = renderer.m_Window->pWindow;
+    glfwSetMouseButtonCallback(window, glfwMouseButtonCallback );
+    glfwSetKeyCallback(window, HandleKeyboardInput);
     //glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
-    glfwSetCursorPosCallback( renderer.pWindow, glfwMousePositionCallback );
-    glfwSetCursorEnterCallback( renderer.pWindow, glfwMouseEntersCallback );
-    glfwSetScrollCallback( renderer.pWindow, glfwMouseScrollCallback );
-    glfwSetWindowPosCallback( renderer.pWindow, glfwWindowPositionCallback );
-    glfwSetWindowSizeCallback( renderer.pWindow, glfwWindowSizeCallback );
-    glfwSetWindowCloseCallback( renderer.pWindow, glfwWindowClosedCallback );
-    glfwSetWindowRefreshCallback( renderer.pWindow, glfwWindowRefreshCallback );
-    glfwSetWindowFocusCallback( renderer.pWindow, glfwWindowFocusCallback );
-    glfwSetWindowIconifyCallback( renderer.pWindow, glfwWindowIconifyCallback );
-    glfwSetFramebufferSizeCallback( renderer.pWindow, glfwWindowFramebufferSizeCallback );
+    glfwSetCursorPosCallback(window, glfwMousePositionCallback );
+    glfwSetCursorEnterCallback(window, glfwMouseEntersCallback );
+    glfwSetScrollCallback(window, glfwMouseScrollCallback );
+    glfwSetWindowPosCallback(window, glfwWindowPositionCallback );
+    glfwSetWindowSizeCallback(window, glfwWindowSizeCallback );
+    glfwSetWindowCloseCallback(window, glfwWindowClosedCallback );
+    glfwSetWindowRefreshCallback(window, glfwWindowRefreshCallback );
+    glfwSetWindowFocusCallback(window, glfwWindowFocusCallback );
+    glfwSetWindowIconifyCallback(window, glfwWindowIconifyCallback );
+    glfwSetFramebufferSizeCallback(window, glfwWindowFramebufferSizeCallback );
 }
 
 void LigumX::Shutdown()

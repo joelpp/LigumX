@@ -20,6 +20,7 @@
 #include "Sector.h"
 #include "BoundingBoxComponent.h"
 #include "EngineStats.h"
+#include "MainWindow.h"
 #include "EngineSettings.h"
 
 #pragma region  CLASS_SOURCE Renderer
@@ -62,6 +63,9 @@ Renderer::Renderer()
 
 void Renderer::InitFramebuffers()
 {
+	int windowWidth = m_Window->GetSize().x;
+	int windowHeight = m_Window->GetSize().y;
+
 	m_Framebuffers[FramebufferType_MainColorBuffer] = new Framebuffer("Main Color Buffer", windowWidth, windowHeight, GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_MainColorBuffer]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_MainColorBuffer]->SetNumColorTargets(2);
@@ -102,17 +106,7 @@ void Renderer::InitGL()
 		PRINT("Initialized GLFW.");
 	}
 
-	// Create GLFW window
-	pWindow = GL::CreateGLWindow(windowWidth, windowHeight, windowTitle.c_str());
-
-	glfwSetWindowPos(pWindow, -1180, 50);
-	glfwMakeContextCurrent(pWindow);
-	if (pWindow == NULL)
-	{
-		cerr << "Failed to open GLFW window.\n";
-		glfwTerminate();
-		return;
-	}
+	m_Window = new MainWindow();
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -227,9 +221,7 @@ void Renderer::PostSerialization(bool writing)
 
 void Renderer::Initialize()
 {
-	windowWidth = 1100;
-	windowHeight = 880;
-	windowTitle = "LigumX";
+
 	fps = 300;
 	dt = 0.1;
 
@@ -272,6 +264,12 @@ void Renderer::SetUniform(glm::vec3& value, const char* name, GLuint location)
 	glProgramUniform3f(prog, glGetUniformLocation(prog, name), value.x, value.y, value.z);
 }
 
+void Renderer::SetUniform(const glm::vec2& value, const char* name, GLuint location)
+{
+	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
+	glProgramUniform2f(prog, glGetUniformLocation(prog, name), value.x, value.y);
+}
+
 void Renderer::SetUniform(glm::vec2& value, const char* name, GLuint location)
 {
 	GLuint prog = activePipeline->getShader(location)->glidShaderProgram;
@@ -307,7 +305,7 @@ void Renderer::SetFragmentUniform(T& value, const char* name)
 }
 
 template<typename T>
-void Renderer::SetComputeUniform(T& value, const char* name)
+void Renderer::SetComputeUniform(const T& value, const char* name)
 {
 	SetUniform(value, name, GL_COMPUTE_SHADER);
 }
@@ -743,7 +741,7 @@ void Renderer::RenderTextureOverlay()
 void Renderer::RenderHDRFramebuffer()
 {
 	BindFramebuffer(FramebufferType_Default);
-	GL::SetViewport(windowWidth, windowHeight);
+	GL::SetViewport(m_Window->GetSize());
 	GL::ClearColorAndDepthBuffers();
 
 	SetPipeline(pPipelineScreenSpaceTexture);
@@ -772,7 +770,7 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_Picking]->GetDepthTexture());
 
 
-	SetComputeUniform(glm::vec2(windowWidth, windowHeight), "g_WindowSize");
+	SetComputeUniform(m_Window->GetSize(), "g_WindowSize");
 	SetComputeUniform(mouseClickPosition, "g_MousePosition");
 
 	glDispatchCompute(1, 1, 1);
@@ -845,7 +843,7 @@ void Renderer::BeginFrame(World* world)
 	m_World = world;
 	GL::g_CheckGLErrors = m_DisplayOptions->GetOutputGLErrors();
 
-	m_DebugCamera->handlePresetNewFrame(pWindow);
+	m_DebugCamera->handlePresetNewFrame(m_Window->pWindow);
 
 	m_NumLights = 0;
 
@@ -899,7 +897,9 @@ void Renderer::ApplyEmissiveGlow()
 void Renderer::BeforeWorldRender()
 {
 	BindFramebuffer(FramebufferType_MainColorBuffer);
-	GL::SetViewport(windowWidth, windowHeight);
+
+	GL::SetViewport(m_Window->GetSize());
+
 	GL::ClearColorAndDepthBuffers();
 }
 //
@@ -981,7 +981,7 @@ void Renderer::FinishFrame()
 {
 	HandleScreenshot();
 	
-	glfwSwapBuffers(pWindow);
+	glfwSwapBuffers(m_Window->GetHWObject());
 }
 
 void Renderer::RenderAABB(AABB& aabb)
@@ -1071,7 +1071,7 @@ void Renderer::RenderEditor()
 
 	g_Editor->Render();
 
-	GL::SetViewport(windowWidth, windowHeight);
+	GL::SetViewport(m_Window->GetSize());
 
 	//RenderImgui();
 
@@ -1194,7 +1194,7 @@ void Renderer::RenderSky()
 	glm::vec2 viewAngles = glm::vec2(m_DebugCamera->totalViewAngleY*pi, m_DebugCamera->aspectRatio*m_DebugCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");
 
-	SetFragmentUniform(2.f * glm::vec2(windowWidth, windowHeight), "windowSize");
+	SetFragmentUniform(2.f * m_Window->GetSize(), "windowSize");
 
 	SetSkyUniforms(0);
 

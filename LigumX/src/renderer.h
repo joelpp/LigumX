@@ -29,7 +29,7 @@ class Renderer;
 class DisplayOptions;
 class PostEffects;
 class Camera;
-
+class MainWindow;
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 
@@ -187,18 +187,24 @@ public:
 	void FreeBoundTexture();
 
 	void SetUniform(int value, const char* name, GLuint location);
+
 	void SetUniform(glm::vec3& value, const char* name, GLuint location);
 	void SetUniform(const glm::vec3& value, const char* name, GLuint location);
+
 	void SetUniform(glm::vec2& value, const char* name, GLuint location);
+	void SetUniform(const glm::vec2& value, const char* name, GLuint location);
+
 	void SetUniform(glm::mat4x4& value, const char* name, GLuint location);
 	void SetUniform(const glm::mat4x4& value, const char* name, GLuint location);
+
 	void SetUniform(float value, const char* name, GLuint location);
+
 	void SetVertexUniform(int value, const char* name);
 	void SetFragmentUniform(int value, const char* name);
 	void SetComputeUniform(int value, const char* name);
 
 	template<typename T>
-	void SetComputeUniform(T& value, const char* name);
+	void SetComputeUniform(const T& value, const char* name);
 
 	//void SetVertexUniform(glm::vec3& value, const char* name);
 	template<typename T>
@@ -225,10 +231,7 @@ public:
     float dt, curr_time, fps;
 
     // window params
-    unsigned int windowWidth;
-    unsigned int windowHeight;
-    std::string windowTitle;
-    GLFWwindow* pWindow;
+	MainWindow* m_Window;
 
 	Framebuffer* m_Framebuffers[NBFramebuffers];
 

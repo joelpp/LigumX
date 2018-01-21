@@ -1,6 +1,7 @@
 #pragma once
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
 
 #pragma region  FORWARD_DECLARATIONS GL
 #include "property.h"
@@ -150,6 +151,7 @@ public:
 	static void ClearColorBuffer();
 
 	static void SetViewport(int bufferWidth, int bufferHeight);
+	static void SetViewport(glm::vec2 size);
 
 	static void ClearColorAndDepthBuffers();
 
