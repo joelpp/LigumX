@@ -26,14 +26,14 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const glm::vec3& GetOffset() { return m_Offset; }; 
-void SetOffset(glm::vec3 value) { m_Offset = value; }; 
+const glm::vec3& GetStartPoint() { return m_StartPoint; }; 
+void SetStartPoint(glm::vec3 value) { m_StartPoint = value; }; 
 const glm::vec3& GetScale() { return m_Scale; }; 
 void SetScale(glm::vec3 value) { m_Scale = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
-glm::vec3 m_Offset = glm::vec3(0, 0, 0);
+glm::vec3 m_StartPoint = glm::vec3(0, 0, 0);
 glm::vec3 m_Scale = glm::vec3(0, 0, 0);
 public:
 static const int g_PropertyCount = 4;
@@ -43,7 +43,7 @@ enum g_AABBPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
-PIDX_Offset,
+PIDX_StartPoint,
 PIDX_Scale,
 };
 bool Serialize(bool writing);
@@ -52,9 +52,10 @@ bool Serialize(bool writing);
 
 AABB::AABB();
 
-static AABB AABB::BuildFromMidpointAndScale(const glm::vec3& worldSpacePoint, const glm::vec3& scale);
+static AABB AABB::BuildFromStartPointAndScale(const glm::vec2& startPoint, float scale);
+static AABB AABB::BuildFromStartPointAndScale(const glm::vec2& startPoint, const glm::vec3& scale);
+static AABB AABB::BuildFromStartPointAndScale(const glm::vec3& startPoint, float scale);
+static AABB AABB::BuildFromStartPointAndScale(const glm::vec3& startPoint, const glm::vec3& scale);
 
-
-void SetMidPoint(const glm::vec3& midPoint);
 
 };

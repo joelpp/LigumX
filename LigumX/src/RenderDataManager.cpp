@@ -353,7 +353,7 @@ void RenderDataManager::InitializeSector(Sector* sector)
 
 	if (sector->GetDataLoaded())
 	{
-		color = glm::vec3(1, 0, 0);
+		color = glm::vec3(0, 0, 1);
 	}
 	else
 	{

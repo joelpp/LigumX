@@ -80,8 +80,16 @@ public:
 	void setLoadNewSectors(bool state) { bLoadNewSectors = state; }
 	bool getLoadNewSectors() { return bLoadNewSectors; }
 
+	Sector* CreateSector(CurlRequest* request);
+	Sector* CreateSector(const glm::ivec2& sectorIndex);
+
+
 	void LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType);
 
+	void ProcessXMLResult(tinyxml2::XMLNode* docRoot);
+
+
+	std::unordered_map<std::string, Node*> m_AllNodes;
 
 private:
 	REGISTERCLASS(SectorManager);
@@ -92,5 +100,6 @@ private:
     int iSizeX, iSizeY;
 
 	World* m_World;
+
 
 };

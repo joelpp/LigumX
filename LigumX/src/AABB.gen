@@ -1,6 +1,6 @@
 
 class AABB
 {
-	glm::vec3 Offset;
+	glm::vec3 StartPoint;
 	glm::vec3 Scale;
 }

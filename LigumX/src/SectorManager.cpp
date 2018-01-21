@@ -7,6 +7,7 @@
 #include "SectorData.h"
 #include "Node.h"
 #include "Way.h"
+#include "World.h"
 #include "EngineSettings.h"
 
 SectorManager* g_SectorManager;
@@ -220,6 +221,21 @@ SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initia
 	return sectors;
 }
 
+void SectorManager::ProcessXMLResult(tinyxml2::XMLNode* docRoot)
+{
+}
+
+glm::ivec2 GetSectorIndexFromEarthLonLat(const glm::vec2& earthLonLat)
+{
+	glm::vec2 lonLat = earthLonLat;
+	lonLat -= g_EngineSettings->GetStartLonLat();
+	lonLat /= g_EngineSettings->GetExtent();
+
+	glm::ivec2 sectorIndex = (glm::ivec2) glm::floor(lonLat);
+
+	return sectorIndex;
+}
+
 void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType)
 {
 	World *world = LigumX::GetInstance().world;
@@ -233,7 +249,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 	SectorData* sectorData = request->GetSector()->m_Data;
 
-	std::unordered_map<std::string, Node*>& nodes = sectorData->nodes;
 	std::unordered_map<std::string, Way*>& ways = sectorData->ways;
 
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
@@ -251,7 +266,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			float latitude = (float)atof(child->ToElement()->FindAttribute("lat")->Value());
 
 			Node* node = new Node(id, longitude, latitude);
-			node->elevation = 0;
 
 			for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
 			{
@@ -260,17 +274,21 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				node->addTag(key, value);
 			}
 
-			glm::vec2 lonLat = glm::vec2(longitude, latitude);
+			glm::ivec2 sectorIndex = GetSectorIndexFromEarthLonLat(glm::vec2(longitude, latitude));
 
-			lonLat -= g_EngineSettings->GetStartLonLat();
-			lonLat /= g_EngineSettings->GetExtent();
+			Sector* sector = world->GetSectorByIndex(sectorIndex);
 
+			if (sector == nullptr)
+			{
+				sector = CreateSector(sectorIndex);
+			}
 
-			glm::vec2 sectorIndex = glm::floor(lonLat);
-			glm::vec2 startPos = g_EngineSettings->GetStartLonLat() + sectorIndex * g_EngineSettings->GetExtent();
-
+			std::unordered_map<std::string, Node*>& nodes = sector->m_Data->nodes;
+			std::unordered_map<std::string, Way*>& ways = sector->m_Data->ways;
 
 			nodes.emplace(id, node);
+
+			m_AllNodes.emplace(id, node);
 		}
 
 		else if (childValue == "way")
@@ -283,7 +301,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				if (std::string(way_child->Value()).compare("nd") == 0)
 				{
 					std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
-					way->AddNode(nodes[ref]);
+					way->AddNode(m_AllNodes[ref]);
 				}
 				else if (std::string(way_child->Value()).compare("tag") == 0)
 				{
@@ -292,8 +310,14 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 					way->addTag(key, value);
 
 					OSMElement::ElementType _eType = OSMElement::typeFromStrings(key, value);
-					if (_eType == OSMElement::NOT_IMPLEMENTED) continue;
-					else way->eType = _eType;
+					if (_eType == OSMElement::NOT_IMPLEMENTED)
+					{
+						continue;
+					}
+					else
+					{
+						way->eType = _eType;
+					}
 				}
 			}
 
@@ -310,4 +334,24 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			ways.emplace(id, way);
 		}
 	}
+}
+
+Sector* SectorManager::CreateSector(CurlRequest* request)
+{
+	Sector* sector = new Sector(request);
+
+	LigumX::GetInstance().world->GetSectors().push_back(sector);
+
+	request->SetSector(sector);
+
+	return sector;
+}
+
+Sector* SectorManager::CreateSector(const glm::ivec2& sectorIndex)
+{
+	Sector* sector = new Sector(sectorIndex);
+
+	LigumX::GetInstance().world->GetSectors().push_back(sector);
+
+	return sector;
 }

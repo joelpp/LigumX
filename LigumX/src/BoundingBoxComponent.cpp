@@ -36,7 +36,7 @@ void BoundingBoxComponent::Update()
 	{
 		position = GetParentEntity()->GetPosition();
 	}
-	position += m_BoundingBox.GetOffset();
+	position += m_BoundingBox.GetStartPoint();
 
 	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), position);
 	toWorld = glm::scale(toWorld, m_BoundingBox.GetScale());

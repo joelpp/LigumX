@@ -56,7 +56,7 @@ bool Serialize(bool writing);
 
 public:
     Way();
-    Way(std::string id);
+    Way(const std::string& id);
     Way(std::string id, LineSegment ls, int type);
 
 	void AddNode(Node* node);

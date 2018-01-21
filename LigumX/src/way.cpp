@@ -29,7 +29,7 @@ Way::Way()
 
 }
 
-Way::Way(std::string id)
+Way::Way(const std::string& id)
 {
     this->id = id;
 }

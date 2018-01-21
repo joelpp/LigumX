@@ -946,24 +946,20 @@ void Renderer::RenderDebugModels()
 
 	for (Sector* sector : m_World->GetSectors())
 	{
-		AABB bb;
-		const float& worldScale = g_EngineSettings->GetWorldScale();
-
-		const glm::vec2& cornerPos = sector->GetWorldPosition();
-		glm::vec2 centerPos = cornerPos + glm::vec2(worldScale) / 2.f;
-		bb.SetOffset(glm::vec3(centerPos, 0));
-		//bb.SetOffset(glm::vec3(0, 0, 0));
-
-		bb.SetScale(glm::vec3(worldScale,  worldScale, 1));
+		const float& worldScale = g_EngineSettings->GetWorldScale() * 0.99f;
+		AABB bb = AABB::BuildFromStartPointAndScale(sector->GetWorldPosition(), glm::vec3(worldScale, worldScale, 3.f));
 		
-		glm::vec3 color = glm::vec3(1, 0, 0);
-
+		glm::vec3 color(0.863f, 0.078f, 0.235f);
 		if (sector->GetDataLoaded())
 		{
-			color = glm::vec3(1, 1, 0);
+			color = glm::vec3(0.255, 0.412, 0.882);
 		}
 
-		RenderAABB(bb);
+		AABBJob job;
+		job.m_AABB = bb;
+		job.m_Color = color;
+
+		renderData->GetAABBJobs().push_back(job);
 	}
 
 	for (AABBJob& aabb : renderData->GetAABBJobs())
@@ -1003,7 +999,7 @@ void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 
 	glm::mat4 modelToWorldMatrix = mat4(1.0f);
 
-	glm::vec3 translation = aabb.GetOffset();
+	glm::vec3 translation = aabb.GetStartPoint() + aabb.GetScale() / 2.f;
 	modelToWorldMatrix = glm::translate(modelToWorldMatrix, translation);
 	modelToWorldMatrix = glm::scale(modelToWorldMatrix, aabb.GetScale());
 

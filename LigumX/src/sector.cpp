@@ -112,6 +112,31 @@ Sector::Sector(CurlRequest* curlRequest)
 	SetQuantizedPosition(EarthToQuantized(m_EarthPosition));
 
 	SetWorldPosition(EarthToWorld(m_EarthPosition));
+
+	SetOffsetIndex(curlRequest->GetSectorIndex());
+}
+
+Sector::Sector(const glm::ivec2& index)
+{
+	m_ObjectID = g_ObjectManager->GetTransientID();
+
+	m_Data = new SectorData();
+
+	glm::vec2 start = glm::vec2(0, 0);
+
+	m_OffsetIndex = index;
+	m_WorldPosition = OffsetIndexToWorldPosition(m_OffsetIndex);
+
+
+	m_LifeSize = glm::vec2(g_EngineSettings->GetExtent());
+}
+
+
+glm::vec2 Sector::OffsetIndexToWorldPosition(const glm::ivec2& sectorIndex)
+{
+	glm::vec2 worldPosition = (glm::vec2) sectorIndex * g_EngineSettings->GetWorldScale();
+
+	return worldPosition;
 }
 
 

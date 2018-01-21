@@ -89,9 +89,11 @@ public:
     Sector(glm::vec2 pos, float size, int ID);
 	Sector(vec2i pos, float size);
 	Sector(CurlRequest* curlRequest);
+	Sector(const glm::ivec2& index);
 	Sector(glm::vec2 startPos);
     bool createHeightfield();
 
+	static glm::vec2 OffsetIndexToWorldPosition(const glm::ivec2& sectorIndex);
 	static glm::ivec2 GetNormalizedSectorIndex(const glm::vec2& position);
 	static glm::vec2 GetStartPosition(glm::vec2 position);
 
