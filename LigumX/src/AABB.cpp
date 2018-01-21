@@ -21,6 +21,16 @@ bool AABB::Serialize(bool writing)
 
 #pragma endregion  CLASS_SOURCE AABB
 
+AABB AABB::BuildFromMidpointAndScale(const glm::vec3& worldSpacePoint, const glm::vec3& scale)
+{
+	AABB aabb;
+	aabb.SetScale(scale);
+	aabb.SetMidPoint(worldSpacePoint);
+
+	return aabb;
+}
+
+
 AABB::AABB()
 {
 	m_ObjectID = g_ObjectManager->GetNewObjectID();

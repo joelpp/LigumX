@@ -81,9 +81,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	float scale = g_EngineSettings->GetWorldScale();
 
-	AABB aabb;
-	aabb.SetScale(glm::vec3(scale, scale, 1.f));
-	aabb.SetMidPoint(glm::vec3(worldStartCoords, 0));
+	AABB aabb = AABB::BuildFromMidpointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
 
 	LigumX::GetInstance().renderData->AddAABBJob(aabb);
 

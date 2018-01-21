@@ -52,6 +52,9 @@ bool Serialize(bool writing);
 
 AABB::AABB();
 
+static AABB AABB::BuildFromMidpointAndScale(const glm::vec3& worldSpacePoint, const glm::vec3& scale);
+
+
 void SetMidPoint(const glm::vec3& midPoint);
 
 };
