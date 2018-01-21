@@ -31,11 +31,9 @@ void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 
 void LigumX::glfwMouseScrollCallback(GLFWwindow* pWindow, double xOffset, double yOffset)
 {
-	ImGui_ImplGlfwGL3_ScrollCallback(pWindow, xOffset, yOffset);
+	bool caughtByGUI = g_GUI->ProcessMouseScroll((float) xOffset, (float) yOffset);
 
-	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow();
-
-	if (!caughtByImgui)
+	if (!caughtByGUI)
 	{
 		g_Editor->AddToTerrainBrushSize((float) yOffset);
 	}

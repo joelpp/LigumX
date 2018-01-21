@@ -28,7 +28,11 @@ bool GUI::Serialize(bool writing)
 GUI::GUI()
 {
 	MainWindow* window = LigumX::GetRenderer()->m_Window;
-	ImGui_ImplGlfwGL3_Init(window->GetHWObject(), true);
+	m_WindowHWPtr = window->GetHWObject();
+
+
+	ImGui_ImplGlfwGL3_Init(m_WindowHWPtr, true);
+
 }
 
 void GUI::BeginWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name)
@@ -57,4 +61,11 @@ void GUI::BeginFrame()
 void GUI::EndFrame()
 {
 
+}
+
+bool GUI::ProcessMouseScroll(float xOffset, float yOffset)
+{
+	ImGui_ImplGlfwGL3_ScrollCallback(m_WindowHWPtr, xOffset, yOffset);
+
+	return ImGui::IsMouseHoveringAnyWindow();
 }
