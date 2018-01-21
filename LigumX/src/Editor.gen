@@ -26,9 +26,6 @@ class Editor
 	glm::vec3 ManipulatorStartPosition;
 
 	[transient]
-	glm::ivec2 SectorLoadingOffset;
-
-	[transient]
 	glm::vec4 PickingData;
 
 	[transient]

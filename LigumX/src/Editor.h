@@ -4,10 +4,10 @@
 #include "glm/glm.hpp"
 #include <map>
 #include <vector>
-#include <thread>
 #include "imgui_impl_glfw_gl3.h"
 #include "Logging.h"
 #include "CurlRequest.h"
+#include "SectorTool.h"
 
 class Texture;
 class SectorData;
@@ -64,8 +64,6 @@ const bool& GetManipulatorDragging() { return m_ManipulatorDragging; };
 void SetManipulatorDragging(bool value) { m_ManipulatorDragging = value; }; 
 const glm::vec3& GetManipulatorStartPosition() { return m_ManipulatorStartPosition; }; 
 void SetManipulatorStartPosition(glm::vec3 value) { m_ManipulatorStartPosition = value; }; 
-const glm::ivec2& GetSectorLoadingOffset() { return m_SectorLoadingOffset; }; 
-void SetSectorLoadingOffset(glm::ivec2 value) { m_SectorLoadingOffset = value; }; 
 const glm::vec4& GetPickingData() { return m_PickingData; }; 
 void SetPickingData(glm::vec4 value) { m_PickingData = value; }; 
 const bool& GetEditingTerrain() { return m_EditingTerrain; }; 
@@ -87,14 +85,13 @@ Entity* m_PickedEntity;
 glm::vec3 m_PickedWorldPosition = glm::vec3(0, 0, 0);
 bool m_ManipulatorDragging = false;
 glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
-glm::ivec2 m_SectorLoadingOffset;
 glm::vec4 m_PickingData;
 bool m_EditingTerrain = false;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 0.f;
 int m_PickingBufferSize = 0;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -108,7 +105,6 @@ PIDX_PickedEntity,
 PIDX_PickedWorldPosition,
 PIDX_ManipulatorDragging,
 PIDX_ManipulatorStartPosition,
-PIDX_SectorLoadingOffset,
 PIDX_PickingData,
 PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
@@ -199,17 +195,19 @@ void BackupData();
 
 Texture* m_SplatMapTexture;
 std::vector<unsigned char> m_SplatMapData;
+
+SectorTool& GetSectorTool() { return m_SectorTool; }
+
 private:
 	bool m_RenderingMenu;
 	bool m_LoadingCurlRequest;
 
 	// this is for r&d
-	CurlRequest m_Request;
 	SectorData* m_SectorData;
 	Sector* m_Sector;
-	Sector* m_LoadingSector;
 
-	std::thread curlThread;
+	SectorTool m_SectorTool;
+
 
 
 };

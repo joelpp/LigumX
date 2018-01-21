@@ -34,7 +34,6 @@ class PostEffects;
 class Camera;
 
 
-
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 
 class Framebuffer;

@@ -1,0 +1,8 @@
+class SectorTool
+{
+	bool Enabled;
+
+	[transient]
+	glm::ivec2 SectorLoadingOffset;
+
+}

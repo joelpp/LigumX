@@ -31,6 +31,7 @@ enum LXType
 	LXType_ProgramPipeline,
 	LXType_Renderer,
 	LXType_Sector,
+	LXType_SectorTool,
 	LXType_ShaderFamily,
 	LXType_SunLight,
 	LXType_Texture,

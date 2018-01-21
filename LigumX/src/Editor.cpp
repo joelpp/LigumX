@@ -35,7 +35,6 @@ const ClassPropertyData Editor::g_Properties[] =
 { "PickedWorldPosition", PIDX_PickedWorldPosition, offsetof(Editor, m_PickedWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "SectorLoadingOffset", PIDX_SectorLoadingOffset, offsetof(Editor, m_SectorLoadingOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickingData", PIDX_PickingData, offsetof(Editor, m_PickingData), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
@@ -68,13 +67,11 @@ const EditorTool Indirection_EditorTool[] =
 #pragma endregion  CLASS_SOURCE Editor
 
 Editor::Editor()
-	: m_SectorLoadingOffset(glm::ivec2(0, 0))
 {
 	
 }
 
 Editor::Editor(int objectID)
-	: m_SectorLoadingOffset(glm::ivec2(0, 0))
 {
 	SetObjectID(objectID);
 	Serialize(false);
@@ -277,103 +274,7 @@ void Editor::UpdateSectorLoader()
 	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
 	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
 
-	Renderer* renderer = LigumX::GetInstance().GetRenderer();
-	const glm::vec2& windowSize = glm::vec2(renderer->m_Window->GetSize());
-
-	const glm::vec2 mouseNDC = mousePosition / windowSize;
-	const glm::vec2 mouseScreen = mouseNDC * 2.f - glm::vec2(1, 1);
-
-	const glm::vec4 screenSpaceRay = glm::normalize(glm::vec4(mouseScreen, 1.f, 0.f));
-
-	const glm::mat4 cameraInverse = glm::inverse(renderer->GetDebugCamera()->GetViewProjectionMatrix());
-	const glm::vec4 worldSpaceRay = glm::normalize(glm::mul(cameraInverse, screenSpaceRay));
-
-	if (mouseButton1Down && dragDistance != glm::vec2(0,0))
-	{
-		PRINTVEC2(mouseNDC);
-		PRINTVEC2(mouseScreen);
-
-		PRINTVEC4(worldSpaceRay);
-	}
-
-	const glm::vec3 cameraPosition = renderer->GetDebugCamera()->GetPosition();
-	const glm::vec3 cameraFront = renderer->GetDebugCamera()->GetFrontVector();
-
-	const glm::vec3 planeNormal = glm::vec3(0, 0, 1);
-	const glm::vec3 pointOnPlane = glm::vec3(0, 0, 0);
-
-	float t = glm::dot(pointOnPlane - cameraPosition, planeNormal) / glm::dot(cameraFront, planeNormal);
-
-	glm::vec3 worldPosition = cameraPosition + t * cameraFront;
-
-	{
-		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
-
-		glm::vec2 startPosition = (glm::vec2)worldPosition;
-		float scale = g_EngineSettings->GetWorldScale() / 20.f;
-
-		AABB aabb;
-		aabb.SetOffset(glm::vec3(startPosition - glm::vec2(scale) / 2.f, 0));
-
-		aabb.SetScale(glm::vec3(scale, scale, 1.f));
-
-		LigumX::GetInstance().renderData->AddAABBJob(aabb);
-	}
-
-
-
-	World* world = LigumX::GetInstance().getWorld();
-
-	if (m_Request.Finished())
-	{
-		curlThread.join();
-
-
-		m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
-
-		RenderDataManager::CreateWaysLines(world->sectors.back());
-
-		m_Request.Reset();
-	}
-	else if (mouseButton1Down && m_Request.Ready())
-	{
-		//glm::ivec2 cornerIndex = g_EngineSettings->GetStartLonLat * 1e7;
-
-		glm::vec2 startCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
-		glm::vec2 extent = glm::vec2(g_EngineSettings->GetExtent());
-		glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
-
-		//bool sectorAlreadyLoaded = false;
-
-		//for (Sector* sector : world->sectors)
-		//{
-		//	if (fuzzyEquals(sector->GetPosition(), startCoords, 1e-2))
-		//	{
-		//		sectorAlreadyLoaded = sector->GetDataLoaded();
-		//		break;
-		//	}
-		//}
-
-		//if (!sectorAlreadyLoaded)
-		{
-			m_Request = CurlRequest(startCoords, extent);
-			m_Request.Initialize();
-
-			PRINTVEC2(normalizedSectorIndex);
-
-			SetSectorLoadingOffset(glm::ivec2(normalizedSectorIndex));
-
-			Sector* sector = new Sector(&m_Request);
-			sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
-			m_LoadingSector = sector;
-
-			world->GetSectors().push_back(m_LoadingSector);
-			world->sectors.push_back(m_LoadingSector);
-
-			curlThread = std::thread(&CurlRequest::Execute, &m_Request);
-		}
-	}
-
+	m_SectorTool.Process(mouseButton1Down, mousePosition, dragDistance);
 
 }
 
@@ -1243,6 +1144,7 @@ void Editor::RenderImgui()
 		ImGui::PushID("EntityWindow");
 
 		BeginImGUIWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
+
 		if (GetPickedEntity())
 		{
 			ShowPropertyGridObject<Entity>(GetPickedEntity(), "Entity");
@@ -1251,6 +1153,7 @@ void Editor::RenderImgui()
 		{
 			ShowGUIText("No entity selected.");
 		}
+
 		EndImGUIWindow();
 		ImGui::PopID();
 	}
