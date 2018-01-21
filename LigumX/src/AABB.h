@@ -52,4 +52,6 @@ bool Serialize(bool writing);
 
 AABB::AABB();
 
+void SetMidPoint(const glm::vec3& midPoint);
+
 };
