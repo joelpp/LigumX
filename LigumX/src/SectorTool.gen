@@ -2,9 +2,6 @@ class SectorTool
 {
 	bool Enabled;
 
-	[transient]
-	glm::ivec2 SectorLoadingOffset;
-
 	glm::vec3 HighlightedWorldCoordinates;
 
 	Sector* HighlightedSector;

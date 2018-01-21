@@ -90,7 +90,6 @@ public:
 	Sector(vec2i pos, float size);
 	Sector(CurlRequest* curlRequest);
 	Sector(glm::vec2 startPos);
-    void loadData(CurlRequest* request, SectorData::EOSMDataType type);
     bool createHeightfield();
 
 	static glm::ivec2 GetNormalizedSectorIndex(const glm::vec2& position);

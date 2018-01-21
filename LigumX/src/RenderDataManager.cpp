@@ -162,7 +162,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 			World* world = LigumX::GetInstance().getWorld();
 			
-			const glm::ivec2& baseOffset = g_Editor->GetSectorTool()->GetSectorLoadingOffset();
+			const glm::ivec2& baseOffset = sector->GetOffsetIndex();
 
 			pos += glm::vec3(glm::vec2(baseOffset) * 200.f, 0);
 

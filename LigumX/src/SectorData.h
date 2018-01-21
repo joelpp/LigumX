@@ -12,6 +12,7 @@
 #include <string>
 #include "OSM_Element.h"
 #include "CurlRequest.h"
+
 // class OSMElement;
 class Way;
 class Node;
@@ -46,7 +47,9 @@ typedef std::unordered_map<OSMElement::ElementType, std::unordered_map<std::stri
 // }
 // 
 // 
-class SectorData{
+class SectorData 
+{
+
 public:
 
     enum EOSMDataType
@@ -68,8 +71,6 @@ public:
   	 */
   	SectorData();
 	SectorData(glm::vec2 pos);
-
-  	void loadData(CurlRequest* request, EOSMDataType dataType);
 
   	/**
   	 * [BuildXMLPath Build the OSM data path.]

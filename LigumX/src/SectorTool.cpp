@@ -21,7 +21,6 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(SectorTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(SectorTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "SectorLoadingOffset", PIDX_SectorLoadingOffset, offsetof(SectorTool, m_SectorLoadingOffset), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
 };
@@ -97,27 +96,21 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		m_Request = CurlRequest(earthStartCoords, earthExtent);
 		m_Request.Initialize();
 
-		PRINTVEC2(normalizedSectorIndex);
-
-		SetSectorLoadingOffset(normalizedSectorIndex);
-
 		Sector* sector = new Sector(&m_Request);
-		sector->SetOffsetIndex(GetSectorLoadingOffset());
+		sector->SetOffsetIndex(normalizedSectorIndex);
 
 		m_Request.SetSector(sector);
-
-		world->GetSectors().push_back(sector);
-
 		m_Request.Start();
 	}
 	else if (m_Request.Finished())
 	{
 		m_Request.End();
 
-		//m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
-		g_SectorManager->LoadRequest(&m_Request, m_Request.GetSector()->m_Data, SectorData::EOSMDataType::MAP);
+		g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
 
 		RenderDataManager::CreateWaysLines(m_Request.GetSector());
+
+		m_Request.GetSector()->SetDataLoaded(true);
 
 		m_Request.Reset();
 	}

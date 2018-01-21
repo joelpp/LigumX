@@ -135,13 +135,6 @@ glm::vec2 Sector::GetStartPosition(glm::vec2 position)
 	return startCoords;
 }
 
-void Sector::loadData(CurlRequest* request, SectorData::EOSMDataType type)
-{
-	m_Data->loadData(request, type);
-
-	m_DataLoaded = true;
-}
-
 bool Sector::createHeightfield()
 {
     if (!m_heightfield)

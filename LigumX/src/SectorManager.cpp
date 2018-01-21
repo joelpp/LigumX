@@ -220,8 +220,7 @@ SectorList* SectorManager::sectorsAround(Coord2 point, int ringSize, bool initia
 	return sectors;
 }
 
-//void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType)
-void SectorManager::LoadRequest(CurlRequest* request, SectorData* sectorData, SectorData::EOSMDataType dataType)
+void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType)
 {
 	World *world = LigumX::GetInstance().world;
 	tinyxml2::XMLDocument doc;
@@ -232,9 +231,10 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData* sectorData, Se
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
 
+	SectorData* sectorData = request->GetSector()->m_Data;
+
 	std::unordered_map<std::string, Node*>& nodes = sectorData->nodes;
 	std::unordered_map<std::string, Way*>& ways = sectorData->ways;
-
 
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{

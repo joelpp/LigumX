@@ -81,7 +81,6 @@ public:
 	bool getLoadNewSectors() { return bLoadNewSectors; }
 
 	void LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType);
-	void LoadRequest(CurlRequest* request, SectorData* sectorData, SectorData::EOSMDataType dataType);
 
 
 private:
