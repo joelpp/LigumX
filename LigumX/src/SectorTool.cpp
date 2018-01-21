@@ -73,7 +73,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
 	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
-	glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
+	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
 
 	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
 
@@ -81,13 +81,17 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	float scale = g_EngineSettings->GetWorldScale();
 
-	AABB aabb = AABB::BuildFromMidpointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
-
-	LigumX::GetInstance().renderData->AddAABBJob(aabb);
-
 	World* world = LigumX::GetInstance().getWorld();
 
-	if (mouseButton1Down && m_Request.Ready())
+	m_HighlightedSector = world->GetSectorByIndex(normalizedSectorIndex);
+	m_HighlightedWorldCoordinates = worldPosition;
+
+	AABB aabb = AABB::BuildFromMidpointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
+	glm::vec3 aabbColor = (m_HighlightedSector == nullptr ? glm::vec3(0, 1, 0) : glm::vec3(1, 1, 1));
+	LigumX::GetInstance().renderData->AddAABBJob(aabb, aabbColor);
+
+	bool canSendRequest = mouseButton1Down && m_Request.Ready() && !m_HighlightedSector;
+	if (canSendRequest)
 	{
 		m_Request = CurlRequest(earthStartCoords, earthExtent);
 		m_Request.Initialize();
@@ -97,17 +101,17 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		SetSectorLoadingOffset(glm::ivec2(normalizedSectorIndex));
 
 		Sector* sector = new Sector(&m_Request);
-		sector->SetOffsetIndex(glm::vec2(GetSectorLoadingOffset()));
+		sector->SetOffsetIndex(GetSectorLoadingOffset());
 		m_LoadingSector = sector;
 
 		world->GetSectors().push_back(m_LoadingSector);
 		world->sectors.push_back(m_LoadingSector);
 
-		curlThread = std::thread(&CurlRequest::Execute, &m_Request);
+		m_Request.Start();
 	}
 	else if (m_Request.Finished())
 	{
-		curlThread.join();
+		m_Request.End();
 
 		m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
 

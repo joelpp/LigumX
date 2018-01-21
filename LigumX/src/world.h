@@ -107,6 +107,9 @@ public:
     Sector* createSector(Coord2 pos);
 	SectorList* GetAllSectors();
 
+	Sector* GetSectorByIndex(const glm::ivec2& normalizedSectorIndex);
+
+
     /**
      * [Normalized Takes in a World-Space point and returns the coordinates (on a normalized grid) of the sector holding it]
      * @param  UnNormalized [The WS position to check against]
@@ -147,6 +150,7 @@ public:
     std::vector<Sector*> sectors;
     SectorManager* m_sectorManager;
     float m_globalTime;
+
 
 };
 #endif

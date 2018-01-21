@@ -36,8 +36,8 @@ const glm::vec2& GetEarthPosition() { return m_EarthPosition; };
 void SetEarthPosition(glm::vec2 value) { m_EarthPosition = value; }; 
 const glm::ivec2& GetQuantizedPosition() { return m_QuantizedPosition; }; 
 void SetQuantizedPosition(glm::ivec2 value) { m_QuantizedPosition = value; }; 
-const glm::vec2& GetOffsetIndex() { return m_OffsetIndex; }; 
-void SetOffsetIndex(glm::vec2 value) { m_OffsetIndex = value; }; 
+const glm::ivec2& GetOffsetIndex() { return m_OffsetIndex; }; 
+void SetOffsetIndex(glm::ivec2 value) { m_OffsetIndex = value; }; 
 const glm::ivec2& GetIndex() { return m_Index; }; 
 void SetIndex(glm::ivec2 value) { m_Index = value; }; 
 const bool& GetDataLoaded() { return m_DataLoaded; }; 
@@ -49,7 +49,7 @@ glm::vec2 m_Position = glm::vec2(0, 0);
 glm::vec2 m_WorldPosition = glm::vec2(0, 0);
 glm::vec2 m_EarthPosition = glm::vec2(0, 0);
 glm::ivec2 m_QuantizedPosition;
-glm::vec2 m_OffsetIndex = glm::vec2(0, 0);
+glm::ivec2 m_OffsetIndex;
 glm::ivec2 m_Index;
 bool m_DataLoaded = false;
 public:
@@ -93,7 +93,7 @@ public:
     void loadData(CurlRequest* request, SectorData::EOSMDataType type);
     bool createHeightfield();
 
-	static glm::vec2 GetNormalizedSectorIndex(glm::vec2 position);
+	static glm::ivec2 GetNormalizedSectorIndex(const glm::vec2& position);
 	static glm::vec2 GetStartPosition(glm::vec2 position);
 
 	SectorData *m_Data;

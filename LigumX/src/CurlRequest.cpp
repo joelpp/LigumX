@@ -177,3 +177,15 @@ void CurlRequest::Execute()
 }
 	 
 
+
+void CurlRequest::Start()
+{
+	m_JobThread = std::thread(&CurlRequest::Execute, this);
+
+	m_State = 1;
+}
+
+void CurlRequest::End()
+{
+	m_JobThread.join();
+}

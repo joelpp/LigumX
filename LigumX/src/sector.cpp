@@ -21,7 +21,7 @@ const ClassPropertyData Sector::g_Properties[] =
 { "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
-{ "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
+{ "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 { "Index", PIDX_Index, offsetof(Sector, m_Index), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 { "DataLoaded", PIDX_DataLoaded, offsetof(Sector, m_DataLoaded), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
@@ -115,11 +115,11 @@ Sector::Sector(CurlRequest* curlRequest)
 }
 
 
-glm::vec2 Sector::GetNormalizedSectorIndex(glm::vec2 position)
+glm::ivec2 Sector::GetNormalizedSectorIndex(const glm::vec2& position)
 {
 	glm::vec2 normalizedWorldPosition = position / g_EngineSettings->GetWorldScale();
 
-	glm::vec2 normalizedSectorIndex = glm::floor(normalizedWorldPosition);
+	glm::ivec2 normalizedSectorIndex = (glm::ivec2) glm::floor(normalizedWorldPosition);
 
 	return normalizedSectorIndex;
 }
@@ -129,8 +129,8 @@ glm::vec2 Sector::GetStartPosition(glm::vec2 position)
 	glm::vec2 startCoords = g_EngineSettings->GetStartLonLat();
 	glm::vec2 extent = glm::vec2(g_EngineSettings->GetExtent());
 
-	glm::vec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(position);
-	startCoords += extent * normalizedSectorIndex;
+	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(position);
+	startCoords += extent * (glm::vec2)normalizedSectorIndex;
 
 	return startCoords;
 }

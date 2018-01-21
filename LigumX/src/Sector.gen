@@ -7,7 +7,7 @@ class Sector
 
 	glm::ivec2 QuantizedPosition;
 
-	glm::vec2 OffsetIndex;
+	glm::ivec2 OffsetIndex;
 
 	glm::ivec2 Index;
 

@@ -24,6 +24,12 @@ struct TerrainRenderingJob
     GLuint buffer;
 };
 
+struct AABBJob
+{
+	AABB m_AABB;
+	glm::vec3 m_Color;
+};
+
 class RenderDataManager{
 
 public:
@@ -60,11 +66,12 @@ public:
 
     std::vector<TerrainRenderingJob> terrainRenderingJobs;
 
-	void AddAABBJob(AABB aabb);
-	std::vector<AABB>& GetAABBJobs();
+	void AddAABBJob(const AABB& aabb, const glm::vec3& color);
+
+	std::vector<AABBJob>& GetAABBJobs();
 	void ClearAABBJobs();
 
-	std::vector<AABB> m_AABBJobs;
+	std::vector<AABBJob> m_AABBJobs;
 private:
 	REGISTERCLASS(RenderDataManager);
     

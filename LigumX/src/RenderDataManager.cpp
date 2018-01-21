@@ -337,7 +337,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
 
 void RenderDataManager::InitializeSector(Sector* sector)
 {
-	const glm::vec2& baseOffset = sector->GetOffsetIndex();
+	const glm::ivec2& baseOffset = sector->GetOffsetIndex();
 
 	float offset = 200.f;
 	glm::vec3 base = glm::vec3(offset * baseOffset.x, offset * baseOffset.y, 1.f);
@@ -363,14 +363,20 @@ void RenderDataManager::InitializeSector(Sector* sector)
 	AddDebugModel(points, color);
 }
 
-void RenderDataManager::AddAABBJob(AABB aabb)
+void RenderDataManager::AddAABBJob(const AABB& aabb, const glm::vec3& color)
 {
-	m_AABBJobs.push_back(aabb);
+	AABBJob job;
+	job.m_AABB = aabb;
+	job.m_Color = color;
+
+	m_AABBJobs.push_back(job);
 }
-std::vector<AABB>& RenderDataManager::GetAABBJobs()
+
+std::vector<AABBJob>& RenderDataManager::GetAABBJobs()
 {
 	return m_AABBJobs;
 }
+
 void RenderDataManager::ClearAABBJobs()
 {
 	m_AABBJobs.clear();

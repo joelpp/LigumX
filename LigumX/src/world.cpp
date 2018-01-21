@@ -289,3 +289,16 @@ Sector* World::GetSector(Coord2 longLat)
 
 	return nullptr;
 }
+
+Sector* World::GetSectorByIndex(const glm::ivec2& normalizedSectorIndex)
+{
+	for (Sector* sector : m_Sectors)
+	{
+		if (sector->GetOffsetIndex() == normalizedSectorIndex)
+		{
+			return sector;
+		}
+	}
+
+	return nullptr;
+}

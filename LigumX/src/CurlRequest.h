@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sstream>
+#include <thread>
 #include <iostream>
 #include <fstream>
 #include "glm/glm.hpp"
@@ -74,7 +75,12 @@ bool Finished() { return m_State == 2; }
 void Reset() { m_State = 0; };
 void Initialize() { m_State = 1; };
 
-
+void Start();
+void End();
 private:
+
+	std::thread m_JobThread;
+
+
 
 };

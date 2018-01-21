@@ -4,6 +4,7 @@
 #include "CurlRequest.h"
 #include <thread>
 
+
 #pragma region  FORWARD_DECLARATIONS SectorTool
 #include "property.h"
 
@@ -59,13 +60,14 @@ bool Serialize(bool writing);
 
 bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
 
-CurlRequest m_Request;
 
-std::thread curlThread;
+CurlRequest m_Request;
 
 Sector* m_LoadingSector;
 
 void Display();
 
 glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPosition, bool printDebugInfo);
+
+
 };
