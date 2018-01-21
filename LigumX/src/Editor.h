@@ -27,7 +27,7 @@ EditorTool_None,
 EditorTool_TerrainHeight,
 EditorTool_TerrainSplatMap,
 EditorTool_EntityManipulator,
-EditorTool_SectorLoader,
+EditorTool_SectorTool,
 };
 
 extern const std::string EnumValues_EditorTool[5];

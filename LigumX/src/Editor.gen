@@ -4,7 +4,7 @@ enum EditorTool
 	TerrainHeight,
 	TerrainSplatMap,
 	EntityManipulator,
-	SectorLoader,
+	SectorTool,
 }
 
 [globalinstance]

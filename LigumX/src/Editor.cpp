@@ -54,7 +54,7 @@ const std::string EnumValues_EditorTool[] =
 "TerrainHeight",
 "TerrainSplatMap",
 "EntityManipulator",
-"SectorLoader",
+"SectorTool",
 };
 
 const EditorTool Indirection_EditorTool[] =
@@ -63,7 +63,7 @@ const EditorTool Indirection_EditorTool[] =
 	EditorTool_TerrainHeight,
 	EditorTool_TerrainSplatMap,
 	EditorTool_EntityManipulator,
-	EditorTool_SectorLoader,
+	EditorTool_SectorTool,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -292,7 +292,7 @@ void Editor::ApplyTool()
 			UpdateTerrainEditor();
 			break;
 		}
-		case EditorTool_SectorLoader:
+		case EditorTool_SectorTool:
 		{
 			UpdateSectorLoader();
 			break;
@@ -1198,7 +1198,7 @@ void Editor::RenderImgui()
 		g_GUI->EndWindow();
 	}
 
-	if (m_ActiveTool == EditorTool_SectorLoader)
+	if (m_ActiveTool == EditorTool_SectorTool)
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
 

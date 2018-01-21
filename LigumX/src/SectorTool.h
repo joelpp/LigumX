@@ -67,4 +67,5 @@ Sector* m_LoadingSector;
 
 void Display();
 
+glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPosition, bool printDebugInfo);
 };

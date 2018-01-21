@@ -32,13 +32,13 @@ bool SectorTool::Serialize(bool writing)
 
 #pragma endregion  CLASS_SOURCE SectorTool
 
-
-bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+glm::vec3 SectorTool::GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPosition, bool printDebugInfo)
 {
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
+
 	const glm::vec2& windowSize = glm::vec2(renderer->m_Window->GetSize());
 
-	const glm::vec2 mouseNDC = mousePosition / windowSize;
+	const glm::vec2 mouseNDC = mouseScreenPosition / windowSize;
 	const glm::vec2 mouseScreen = mouseNDC * 2.f - glm::vec2(1, 1);
 
 	const glm::vec4 screenSpaceRay = glm::normalize(glm::vec4(mouseScreen, 1.f, 0.f));
@@ -46,7 +46,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	const glm::mat4 cameraInverse = glm::inverse(renderer->GetDebugCamera()->GetViewProjectionMatrix());
 	const glm::vec4 worldSpaceRay = glm::normalize(glm::mul(cameraInverse, screenSpaceRay));
 
-	if (mouseButton1Down && dragDistance != glm::vec2(0, 0))
+	if (printDebugInfo)
 	{
 		PRINTVEC2(mouseNDC);
 		PRINTVEC2(mouseScreen);
@@ -63,6 +63,13 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	float t = glm::dot(pointOnPlane - cameraPosition, planeNormal) / glm::dot(cameraFront, planeNormal);
 
 	glm::vec3 worldPosition = cameraPosition + t * cameraFront;
+
+	return worldPosition;
+}
+
+bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+{
+	glm::vec3 worldPosition = GetAimingWorldSpacePosition(mousePosition, mouseButton1Down && dragDistance != glm::vec2(0, 0));
 
 	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
 	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
@@ -82,18 +89,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	World* world = LigumX::GetInstance().getWorld();
 
-	if (m_Request.Finished())
-	{
-		curlThread.join();
-
-
-		m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
-
-		RenderDataManager::CreateWaysLines(world->sectors.back());
-
-		m_Request.Reset();
-	}
-	else if (mouseButton1Down && m_Request.Ready())
+	if (mouseButton1Down && m_Request.Ready())
 	{
 		m_Request = CurlRequest(earthStartCoords, earthExtent);
 		m_Request.Initialize();
@@ -110,6 +106,16 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		world->sectors.push_back(m_LoadingSector);
 
 		curlThread = std::thread(&CurlRequest::Execute, &m_Request);
+	}
+	else if (m_Request.Finished())
+	{
+		curlThread.join();
+
+		m_LoadingSector->loadData(&m_Request, SectorData::EOSMDataType::MAP);
+
+		RenderDataManager::CreateWaysLines(world->sectors.back());
+
+		m_Request.Reset();
 	}
 
 
