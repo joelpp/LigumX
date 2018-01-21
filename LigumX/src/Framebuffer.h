@@ -44,16 +44,26 @@ void SetHasDepth(bool value) { m_HasDepth = value; };
 const int& GetNumColorTargets() { return m_NumColorTargets; }; 
 void SetNumColorTargets(int value) { m_NumColorTargets = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
-int m_Width = 0;
-int m_Height = 0;
-GLuint m_ColorTexture;
-GLuint m_DepthTexture;
-GLPixelFormat m_PixelFormat;
-GLPixelFormat m_InternalPixelFormat;
-bool m_HasDepth = false;
-int m_NumColorTargets = 0;
+int m_ObjectID
+;
+std::string m_Name
+;
+int m_Width
+ = 0;
+int m_Height
+ = 0;
+GLuint m_ColorTexture
+;
+GLuint m_DepthTexture
+;
+GLPixelFormat m_PixelFormat
+;
+GLPixelFormat m_InternalPixelFormat
+;
+bool m_HasDepth
+ = false;
+int m_NumColorTargets
+ = 0;
 public:
 static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -58,25 +58,44 @@ void SetRenderShadows(bool value) { m_RenderShadows = value; };
 const bool& GetOutputGLErrors() { return m_OutputGLErrors; }; 
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
-bool m_UseSkyLighting = false;
-bool m_RenderTerrain = false;
-bool m_DrawSky = false;
-bool m_WireframeRendering = false;
-bool m_UseLighting = false;
-bool m_ShowNormals = false;
-bool m_ShowSpecular = false;
-bool m_ShowDiffuse = false;
-bool m_ShowAmbient = false;
-bool m_ShowFPS = false;
-bool m_ShowDepth = false;
-bool m_LinearizeDepth = false;
-bool m_BlinnPhongShading = false;
-bool m_RenderTextureOverlay = false;
-bool m_RenderOpaque = false;
-bool m_RenderShadows = false;
-bool m_OutputGLErrors = false;
+int m_ObjectID
+;
+std::string m_Name
+;
+bool m_UseSkyLighting
+ = false;
+bool m_RenderTerrain
+ = false;
+bool m_DrawSky
+ = false;
+bool m_WireframeRendering
+ = false;
+bool m_UseLighting
+ = false;
+bool m_ShowNormals
+ = false;
+bool m_ShowSpecular
+ = false;
+bool m_ShowDiffuse
+ = false;
+bool m_ShowAmbient
+ = false;
+bool m_ShowFPS
+ = false;
+bool m_ShowDepth
+ = false;
+bool m_LinearizeDepth
+ = false;
+bool m_BlinnPhongShading
+ = false;
+bool m_RenderTextureOverlay
+ = false;
+bool m_RenderOpaque
+ = false;
+bool m_RenderShadows
+ = false;
+bool m_OutputGLErrors
+ = false;
 public:
 static const int g_PropertyCount = 19;
 static const ClassPropertyData g_Properties[g_PropertyCount];

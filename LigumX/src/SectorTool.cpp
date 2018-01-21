@@ -23,6 +23,9 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
+{ "ColorNullSector", PIDX_ColorNullSector, offsetof(SectorTool, m_ColorNullSector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "ColorUnloadedSector", PIDX_ColorUnloadedSector, offsetof(SectorTool, m_ColorUnloadedSector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "ColorLoadedSector", PIDX_ColorLoadedSector, offsetof(SectorTool, m_ColorLoadedSector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -67,12 +70,33 @@ glm::vec3 SectorTool::GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPo
 	return worldPosition;
 }
 
+glm::vec3 SectorTool::GetHighlightColor(Sector* sector)
+{
+	glm::vec3 color;
+	if (sector == nullptr)
+	{
+		color = m_ColorNullSector;
+	}
+	else
+	{
+		if (sector->GetDataLoaded())
+		{
+			color = m_ColorLoadedSector;
+		}
+		else
+		{
+			color = m_ColorUnloadedSector;
+		}
+	}
+
+	return color;
+}
+
 bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 	glm::vec3 worldPosition = GetAimingWorldSpacePosition(mousePosition, mouseButton1Down && dragDistance != glm::vec2(0, 0));
 
 	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
-	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
 	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
 
 	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
@@ -87,13 +111,18 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	m_HighlightedWorldCoordinates = worldPosition;
 
 	AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
-	glm::vec3 aabbColor = (m_HighlightedSector == nullptr ? glm::vec3(0, 1, 0) : glm::vec3(1, 1, 1));
+
+	glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
+	
+	
+
+		
 	LigumX::GetInstance().renderData->AddAABBJob(aabb, aabbColor);
 
 	bool canSendRequest = mouseButton1Down && m_Request.Ready() && !m_HighlightedSector ;
 	if (canSendRequest)
 	{
-		m_Request = CurlRequest(earthStartCoords, earthExtent);
+		m_Request = CurlRequest(earthStartCoords, glm::vec2(g_EngineSettings->GetExtent()));
 		m_Request.SetSectorIndex(normalizedSectorIndex);
 		m_Request.Initialize();
 

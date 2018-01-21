@@ -45,15 +45,24 @@ void SetSector(Sector* value) { m_Sector = value; };
 const glm::ivec2& GetSectorIndex() { return m_SectorIndex; }; 
 void SetSectorIndex(glm::ivec2 value) { m_SectorIndex = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
-int m_State = 0;
-glm::vec2 m_Coords = glm::vec2(0, 0);
-glm::vec2 m_Extent = glm::vec2(0, 0);
-std::string m_Result;
-std::string m_Filename;
-Sector* m_Sector;
-glm::ivec2 m_SectorIndex;
+int m_ObjectID
+;
+std::string m_Name
+;
+int m_State
+ = 0;
+glm::vec2 m_Coords
+ = glm::vec2(0, 0);
+glm::vec2 m_Extent
+ = glm::vec2(0, 0);
+std::string m_Result
+;
+std::string m_Filename
+;
+Sector* m_Sector
+;
+glm::ivec2 m_SectorIndex
+;
 public:
 static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];

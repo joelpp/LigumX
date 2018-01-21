@@ -75,8 +75,10 @@ void SetObjectID(int value) { m_ObjectID = value; };
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
+int m_ObjectID
+;
+std::string m_Name
+;
 public:
 static const int g_PropertyCount = 2;
 static const ClassPropertyData g_Properties[g_PropertyCount];

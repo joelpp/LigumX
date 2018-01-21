@@ -43,15 +43,24 @@ void SetIndex(glm::ivec2 value) { m_Index = value; };
 const bool& GetDataLoaded() { return m_DataLoaded; }; 
 void SetDataLoaded(bool value) { m_DataLoaded = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
-glm::vec2 m_Position = glm::vec2(0, 0);
-glm::vec2 m_WorldPosition = glm::vec2(0, 0);
-glm::vec2 m_EarthPosition = glm::vec2(0, 0);
-glm::ivec2 m_QuantizedPosition;
-glm::ivec2 m_OffsetIndex;
-glm::ivec2 m_Index;
-bool m_DataLoaded = false;
+int m_ObjectID
+;
+std::string m_Name
+;
+glm::vec2 m_Position
+ = glm::vec2(0, 0);
+glm::vec2 m_WorldPosition
+ = glm::vec2(0, 0);
+glm::vec2 m_EarthPosition
+ = glm::vec2(0, 0);
+glm::ivec2 m_QuantizedPosition
+;
+glm::ivec2 m_OffsetIndex
+;
+glm::ivec2 m_Index
+;
+bool m_DataLoaded
+ = false;
 public:
 static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];

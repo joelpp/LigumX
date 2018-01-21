@@ -179,6 +179,7 @@ public:
 	{
 		WriteClassVariableGettersAndSetters();
 
+		std::cout << m_Class.m_Name << std::endl;
 		m_Stream << "private:" << std::endl;
 		for (const Variable& var : m_Class.m_Members)
 		{
@@ -192,7 +193,7 @@ public:
 			}
 
 			m_Stream << (var.IsAPointer() ? "*" : "");
-			m_Stream << " m_" << var.m_Name;
+			m_Stream << " m_" << var.m_Name << std::endl;
 
 			if (var.HasDefaultValue())
 			{

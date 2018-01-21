@@ -1,6 +1,7 @@
 // LigumXGenerator.cpp : Defines the entry point for the console application.
 //
 #define NOMINMAX
+#include <intrin.h>
 #include "stdafx.h"
 #include "Common.h"
 #include "LXClass.h"
@@ -8,7 +9,6 @@
 #include "ClassSourceRegion.h"
 #include "ClassHeaderRegion.h"
 #include "ForwardDeclarationRegion.h"
-
 #define NAMESPACE_BEGIN namespace LigumXGenerator {
 #define NAMESPACE_END }
 
@@ -18,6 +18,8 @@ struct GeneratorFile
 	std::string m_Name;
 	std::vector<LXClass> m_Contained;
 };
+
+std::string g_DebugClassNameBreak;
 
 std::map<std::string, int> g_FoundTypes;
 std::map<std::string, int> g_AdditionalEnums;
@@ -119,11 +121,11 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				continue;
 			}
 
-			if (IsMethodDeclaration(tokens))
-			{
-				// todo implement
-				continue;
-			}
+			//if (IsMethodDeclaration(tokens))
+			//{
+			//	// todo implement
+			//	continue;
+			//}
 
 			if (IsEnumDeclaration(tokens))
 			{
@@ -152,6 +154,13 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				nameVar.m_Type = "std::string";
 				nameVar.m_PropertyFlags = 0;
 				currentClass.m_Members.push_back(nameVar);
+
+
+				//g_DebugClassNameBreak = "SectorTool";
+				if (g_DebugClassNameBreak == currentClass.m_Name)
+				{
+					__debugbreak();
+				}
 
 				continue;
 			}

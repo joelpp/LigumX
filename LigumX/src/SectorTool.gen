@@ -6,6 +6,8 @@ class SectorTool
 
 	Sector* HighlightedSector;
 
-
+	glm::vec3 ColorNullSector = glm::vec3(0,1,0);
+	glm::vec3 ColorUnloadedSector = glm::vec3(0,1,1);
+	glm::vec3 ColorLoadedSector = glm::vec3(0,0,1);
 
 }

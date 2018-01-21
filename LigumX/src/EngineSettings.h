@@ -29,11 +29,16 @@ void SetStartLonLat(glm::vec2 value) { m_StartLonLat = value; };
 const float& GetExtent() { return m_Extent; }; 
 void SetExtent(float value) { m_Extent = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
-float m_WorldScale = 0.f;
-glm::vec2 m_StartLonLat = glm::vec2(0, 0);
-float m_Extent = 0.f;
+int m_ObjectID
+;
+std::string m_Name
+;
+float m_WorldScale
+ = 0.f;
+glm::vec2 m_StartLonLat
+ = glm::vec2(0, 0);
+float m_Extent
+ = 0.f;
 public:
 static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -55,17 +55,28 @@ void SetIsLight(bool value) { m_IsLight = value; };
 std::vector<Component*>& GetComponents() { return m_Components; }; 
 void SetComponents(std::vector<Component*> value) { m_Components = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
-bool m_Visible = false;
-glm::vec3 m_Position = glm::vec3(0, 0, 0);
-float m_RotationAngle = 0.f;
-glm::vec3 m_RotationAxis = glm::vec3(0, 0, 0);
-glm::vec3 m_Scale = glm::vec3(0, 0, 0);
-float m_PickingID = 0.f;
-Model* m_Model;
-bool m_IsLight = false;
-std::vector<Component*> m_Components;
+int m_ObjectID
+;
+std::string m_Name
+;
+bool m_Visible
+ = false;
+glm::vec3 m_Position
+ = glm::vec3(0, 0, 0);
+float m_RotationAngle
+ = 0.f;
+glm::vec3 m_RotationAxis
+ = glm::vec3(0, 0, 0);
+glm::vec3 m_Scale
+ = glm::vec3(0, 0, 0);
+float m_PickingID
+ = 0.f;
+Model* m_Model
+;
+bool m_IsLight
+ = false;
+std::vector<Component*> m_Components
+;
 public:
 static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];

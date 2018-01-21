@@ -43,10 +43,14 @@ void SetFilename(std::string value) { m_Filename = value; };
 std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
-std::string m_Filename;
-std::vector<Material*> m_Materials;
+int m_ObjectID
+;
+std::string m_Name
+;
+std::string m_Filename
+;
+std::vector<Material*> m_Materials
+;
 public:
 static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
