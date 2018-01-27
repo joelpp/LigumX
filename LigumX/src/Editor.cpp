@@ -18,6 +18,7 @@
 #include "EngineSettings.h"
 #include "GUI.h"
 #include "LXError.h"
+#include "Logging.h"
 
 #pragma region  CLASS_SOURCE Editor
 Editor* g_Editor;
@@ -652,7 +653,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	}
 	case LXType_stdstring:
 	{
-		const int maxFileNameSize = 64;
+		const int maxFileNameSize = 512;
 		std::string sCopy = *((std::string*) ptr);
 
 		lxAssert(sCopy.size() <= maxFileNameSize);

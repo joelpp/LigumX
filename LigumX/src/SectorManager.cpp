@@ -303,7 +303,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			m_AllNodes.emplace(id, node);
 
 			int intID = StringUtils::ToInt(id);
-			m_AllNodesPtr[id] = node;
+			m_AllNodesPtr[intID] = node;
 		}
 
 		else if (childValue == "way")

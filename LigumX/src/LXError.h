@@ -2,7 +2,7 @@
 
 #if defined(_DEBUG)
 
-	#define lxAssert(condition) if (!condition) __debugbreak();
+	#define lxAssert(condition) if (!(condition)) __debugbreak();
 	#define lxAssert0() lxAssert(false);
 
 #else

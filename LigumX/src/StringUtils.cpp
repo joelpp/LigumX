@@ -153,7 +153,7 @@ int StringUtils::Count(const std::string& s, const char c)
 	return (int) std::count(s.begin(), s.end(), c);
 }
 
-int ToInt(const std::string& str)
+int StringUtils::ToInt(const std::string& str)
 {
 	return std::atoi(str.c_str());
 }
