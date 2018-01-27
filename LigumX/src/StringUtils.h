@@ -6,6 +6,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iostream>
+#include <regex>
 
 typedef std::vector<std::string> StringList;
 
@@ -23,9 +24,9 @@ namespace StringUtils
 
 	constexpr unsigned int Str2int(const char* str, int h = 0);
 
-	std::string RemoveSubstrings(const std::string& baseString, std::string substring);
+	std::string RemoveSubstrings(const std::string& baseString, const std::string& substring);
 
-	std::string RemoveSubstrings(const std::string& baseString, StringList& substrings);
+	std::string RemoveSubstrings(const std::string& baseString, const StringList& substrings);
 
 	std::string GetSubstringBetweenCharacters(const std::string& str, char c0, char c1);
 

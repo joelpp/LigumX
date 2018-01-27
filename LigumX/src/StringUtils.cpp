@@ -88,12 +88,8 @@ constexpr unsigned int StringUtils::Str2int(const char* str, int h)
 	return !str[h] ? 5381 : (Str2int(str, h + 1) * 33) ^ str[h];
 }
 
-std::string StringUtils::RemoveSubstrings(const std::string& baseString, std::string substring)
+std::string StringUtils::RemoveSubstrings(const std::string& baseString, const std::string& substring)
 {
-	//std::regex pattern(substring);
-
-	//return std::regex_replace(baseString, pattern, "");
-
 	std::string cleanString = baseString;
 
 	std::string::size_type n = substring.length();
@@ -106,11 +102,11 @@ std::string StringUtils::RemoveSubstrings(const std::string& baseString, std::st
 	return cleanString;
 }
 
-std::string StringUtils::RemoveSubstrings(const std::string& baseString, StringList& substrings)
+std::string StringUtils::RemoveSubstrings(const std::string& baseString, const StringList& substrings)
 {
 	std::string cleanString = baseString;
 
-	for (std::string& substring : substrings)
+	for (const std::string& substring : substrings)
 	{
 		cleanString = RemoveSubstrings(cleanString, substring);
 	}
@@ -154,5 +150,5 @@ bool StringUtils::DumpToFile(std::string& path, std::string& data)
 
 int StringUtils::Count(const std::string& s, const char c)
 {
-	return std::count(s.begin(), s.end(), c);
+	return (int) std::count(s.begin(), s.end(), c);
 }

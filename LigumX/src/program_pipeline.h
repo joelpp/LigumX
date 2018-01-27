@@ -24,7 +24,7 @@ public:
                       bool readSrcFilenamesAsSourceCode = false);
         ~ShaderProgram() {}
 
-		int m_NumLinesInInclude;
+		int m_NumLinesInInclude = 0;
 
     };
 

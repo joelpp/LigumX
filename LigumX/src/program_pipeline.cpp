@@ -14,6 +14,8 @@ const std::string g_ProviderIncludeMarker = "// Include Providers Marker";
 
 const std::string g_ProviderIncludeFilePath = g_PathShaders + "ProviderDefinitions.h";
 
+const std::string g_LineNumberRegex = "\\([0-9]+\\)";
+
 ProgramPipeline::ShaderProgram::ShaderProgram(
         GLenum shaderType,
         //initializer_list<string> srcFilenames,
@@ -80,7 +82,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 
     GLint result;
     int infoLength;
-    char* info;
+    char* info = nullptr;
 
     const GLuint shader = glCreateShader(shaderType);
 
@@ -96,11 +98,11 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
         info = new char[infoLength];
         glGetShaderInfoLog(shader, infoLength, NULL, info);
         cerr << "Compiler error in shader :" << endl;
-        cerr << info << endl;
 		hadError = true;
 	} 
 	else 
 	{
+
         glidShaderProgram = glCreateProgram();
         glProgramParameteri(glidShaderProgram, GL_PROGRAM_SEPARABLE, GL_TRUE);
         glAttachShader(glidShaderProgram, shader);
@@ -116,14 +118,37 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
             info = new char[infoLength];
             glGetProgramInfoLog(glidShaderProgram, infoLength, NULL, info);
             cerr << "Linker error in shader :" << endl;
-			cerr << info << endl;
 			hadError = true;
         }
     }
 
 	if (hadError)
 	{
-		cerr << m_NumLinesInInclude << endl;
+		cerr << info << endl;
+
+		cerr << "Line numbers (adjusted for provider include file) : " << endl;
+		std::string infoString(info);
+		std::regex lineNumberRegex(g_LineNumberRegex);
+
+		sregex_iterator it_end;
+		sregex_iterator it(infoString.begin(), infoString.end(), lineNumberRegex);
+		while (it != it_end) 
+		{
+			std::smatch match = *it;
+			std::string match_str = match.str();
+
+			const StringList parenthesisList = { "(", ")" };
+			match_str = StringUtils::RemoveSubstrings(match_str, parenthesisList);
+
+			int lineNumber = std::atoi(match_str.c_str()) - m_NumLinesInInclude;
+
+			std::cerr << "(" << lineNumber << ")" << std::endl;
+
+			++it;
+		}
+
+		std::cerr << "Number of lines in provider include file : " << m_NumLinesInInclude << std::endl;
+
 		lxAssert0();
 	}
 	
