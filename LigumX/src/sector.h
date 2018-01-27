@@ -40,6 +40,8 @@ const glm::ivec2& GetIndex() { return m_Index; };
 void SetIndex(glm::ivec2 value) { m_Index = value; }; 
 const bool& GetDataLoaded() { return m_DataLoaded; }; 
 void SetDataLoaded(bool value) { m_DataLoaded = value; }; 
+const std::string& GetOSMFilename() { return m_OSMFilename; }; 
+void SetOSMFilename(std::string value) { m_OSMFilename = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -49,8 +51,9 @@ glm::ivec2 m_QuantizedPosition;
 glm::ivec2 m_OffsetIndex;
 glm::ivec2 m_Index;
 bool m_DataLoaded = false;
+std::string m_OSMFilename;
 public:
-static const int g_PropertyCount = 8;
+static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorPIDX
@@ -63,6 +66,7 @@ PIDX_QuantizedPosition,
 PIDX_OffsetIndex,
 PIDX_Index,
 PIDX_DataLoaded,
+PIDX_OSMFilename,
 };
 bool Serialize(bool writing);
 
@@ -103,5 +107,8 @@ public:
     int m_ID;
 
 	static glm::vec2 EarthToWorld(const glm::vec2& earthPosition);
+
+	void InitializeFromRequest(CurlRequest* request);
+
 
 };

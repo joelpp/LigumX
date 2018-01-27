@@ -10,4 +10,6 @@ class Sector
 	glm::ivec2 Index;
 
 	bool DataLoaded;
+
+	std::string OSMFilename;
 }

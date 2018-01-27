@@ -10,6 +10,7 @@
 #include "World.h"
 #include "EngineSettings.h"
 #include "LXError.h"
+#include "StringUtils.h"
 
 SectorManager* g_SectorManager;
 
@@ -249,10 +250,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
 
-	SectorData* sectorData = request->GetSector()->m_Data;
-
-	std::unordered_map<std::string, Way*>& ways = sectorData->ways;
-
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
 		std::string childValue = std::string(child->Value());
@@ -286,17 +283,27 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			Sector* sector = world->GetSectorByIndex(sectorIndex);
 
-			if (sector == nullptr)
+			if (!sector)
 			{
 				sector = CreateSector(sectorIndex);
 			}
 
+			if (sector && sectorIndex == request->GetSectorIndex() && !sector->GetDataLoaded())
+			{
+				//sector->InitializeFromRequest(request);
+				std::string filename = std::string(request->GetFilename());
+				sector->SetOSMFilename(filename);
+				request->SetSector(sector);
+
+			}
+
 			std::unordered_map<std::string, Node*>& nodes = sector->m_Data->nodes;
-			//std::unordered_map<std::string, Way*>& ways = sector->m_Data->ways;
 
 			nodes.emplace(id, node);
-
 			m_AllNodes.emplace(id, node);
+
+			int intID = StringUtils::ToInt(id);
+			m_AllNodesPtr[id] = node;
 		}
 
 		else if (childValue == "way")
@@ -310,6 +317,9 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			Way* way = new Way(id);
 			way->eType = OSMElement::NOT_IMPLEMENTED;
+
+			Sector* sector = world->GetSectorByIndex(request->GetSectorIndex());
+
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
 			{
 				if (std::string(way_child->Value()).compare("nd") == 0)
@@ -345,7 +355,10 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				}
 			}
 
+
+			std::unordered_map<std::string, Way*>& ways = sector->m_Data->ways;
 			ways.emplace(id, way);
+
 			m_AllWays.emplace(id, way);
 		}
 	}

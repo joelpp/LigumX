@@ -115,8 +115,6 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
 
 	glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
-	
-		
 	LigumX::GetInstance().renderData->AddAABBJob(aabb, aabbColor);
 
 	bool canSendRequest = mouseButton1Down && m_Request.Ready() && (!m_HighlightedSector || !m_HighlightedSector->GetDataLoaded());
@@ -125,17 +123,6 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		m_Request = CurlRequest(earthStartCoords, glm::vec2(g_EngineSettings->GetExtent()));
 		m_Request.SetSectorIndex(normalizedSectorIndex);
 		m_Request.Initialize();
-
-		Sector* sector = m_HighlightedSector;
-		if (sector == nullptr)
-		{
-			sector = g_SectorManager->CreateSector(&m_Request);
-		}
-		else
-		{
-			m_Request.SetSector(sector);
-		}
-
 		m_Request.Start();
 	}
 	else if (m_Request.Finished())

@@ -36,4 +36,7 @@ namespace StringUtils
 
 	int Count(const std::string& s, const char c);
 
+	int ToInt(const std::string& str);
+
+
 }

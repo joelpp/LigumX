@@ -1,6 +1,7 @@
 #pragma once
 
 // #include <pair>
+#include <map>
 #include <unordered_map>
 #include <vector>
 #include "glm/glm.hpp"
@@ -95,7 +96,8 @@ public:
 
 
 	std::unordered_map<std::string, Node*> m_AllNodes;
-	std::unordered_map<std::string, Way*> m_AllWays;
+	std::unordered_map<int, Node*> m_AllNodesPtr;
+	std::map<std::string, Way*> m_AllWays;
 
 private:
 	REGISTERCLASS(SectorManager);

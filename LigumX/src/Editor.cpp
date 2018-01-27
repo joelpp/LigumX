@@ -17,6 +17,7 @@
 #include "InputHandler.h"
 #include "EngineSettings.h"
 #include "GUI.h"
+#include "LXError.h"
 
 #pragma region  CLASS_SOURCE Editor
 Editor* g_Editor;
@@ -651,13 +652,17 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	}
 	case LXType_stdstring:
 	{
+		const int maxFileNameSize = 64;
 		std::string sCopy = *((std::string*) ptr);
-		static char buf_stdstring[64] = "";
 
-		memset(buf_stdstring, 0, 64);
+		lxAssert(sCopy.size() <= maxFileNameSize);
+
+		static char buf_stdstring[maxFileNameSize] = "";
+
+		memset(buf_stdstring, 0, maxFileNameSize);
 		memcpy(buf_stdstring, sCopy.c_str(), sCopy.size() * sizeof(char));
 
-		if (ImGui::InputText(name, buf_stdstring, 64, ImGuiInputTextFlags_EnterReturnsTrue))
+		if (ImGui::InputText(name, buf_stdstring, maxFileNameSize, ImGuiInputTextFlags_EnterReturnsTrue))
 		{
 			*((std::string*) ptr) = std::string(buf_stdstring);
 		}
@@ -704,14 +709,14 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 		{ 
 			ShowGUIText(name); 
 			ImGui::SameLine(); 
-			if (ImGui::Button("New")) 
-			{ 
-				Sector* dptr = new Sector();
-				*(char**)ptr = (char*)dptr; 
-			} 
+			//if (ImGui::Button("New")) 
+			//{ 
+			//	Sector* dptr = new Sector();
+			//	*(char**)ptr = (char*)dptr; 
+			//} 
 		} 
 		else 
-			{ 
+		{ 
 			ShowPropertyGridTemplate<Sector>((Sector *&) ptr, name);
 		} 
 

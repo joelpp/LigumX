@@ -24,6 +24,7 @@ const ClassPropertyData Sector::g_Properties[] =
 { "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 { "Index", PIDX_Index, offsetof(Sector, m_Index), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 { "DataLoaded", PIDX_DataLoaded, offsetof(Sector, m_DataLoaded), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "OSMFilename", PIDX_OSMFilename, offsetof(Sector, m_OSMFilename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 };
 bool Sector::Serialize(bool writing)
 {
@@ -104,6 +105,8 @@ Sector::Sector(CurlRequest* curlRequest)
 
 	SetOffsetIndex(curlRequest->GetSectorIndex());
 
+	SetOSMFilename(curlRequest->GetFilename());
+
 	curlRequest->SetSector(this);
 }
 
@@ -114,8 +117,7 @@ Sector::Sector(const glm::ivec2& index)
 	m_Data = new SectorData();
 
 	m_OffsetIndex = index;
-	m_WorldPosition = SectorManager::OffsetIndexToWorldPosition(m_OffsetIndex);
-
+	m_WorldPosition = g_SectorManager->OffsetIndexToWorldPosition(m_OffsetIndex);
 
 	m_LifeSize = glm::vec2(g_EngineSettings->GetExtent());
 }
@@ -149,4 +151,22 @@ bool Sector::createHeightfield()
     }
 
     return m_heightfield->generate();
+}
+
+
+void Sector::InitializeFromRequest(CurlRequest* request)
+{
+	//m_LifeSize = request->GetExtent();
+
+	//SetEarthPosition(request->GetCoords());
+
+	//SetQuantizedPosition(g_SectorManager->EarthToQuantized(m_EarthPosition));
+
+	//SetWorldPosition(EarthToWorld(m_EarthPosition));
+
+	//SetOffsetIndex(request->GetSectorIndex());
+
+	//SetOSMFilename(request->GetFilename());
+
+	//request->SetSector(this);
 }

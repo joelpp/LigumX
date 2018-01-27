@@ -128,20 +128,8 @@ inline bool file_exists(const std::string& name)
 }
 
 
-CurlRequest::CurlRequest()
-	: m_State(0)
+std::string BuildXMLPath(int dataType, glm::vec2 pos)
 {
-}
-
-
-CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent)
-	:	m_Coords(coords),
-		m_Extent(extent),
-		m_State(0)
-{
-}
-
-std::string BuildXMLPath(int dataType, glm::vec2 pos) {
 	std::stringstream savePath;
 	//savePath << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/";
 	savePath << "C:/Users/Joel/Documents/LigumX/LigumX/data/";
@@ -154,17 +142,35 @@ std::string BuildXMLPath(int dataType, glm::vec2 pos) {
 
 	int index = 1;
 
-	savePath << (int) (pos.x * 1000) << "x" << (int)(pos.y * 1000);
+	savePath << (int)(pos.x * 1000) << "x" << (int)(pos.y * 1000);
 	savePath << ".xml";
 
 	return savePath.str();
 }
 
+CurlRequest::CurlRequest()
+	:	m_State(ThreadState_Ready),
+		m_Sector(nullptr),
+		m_SectorIndex(glm::ivec2(0, 0))
+{
+}
+
+
+CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent)
+	:	m_Coords(coords),
+		m_Extent(extent),
+		m_Sector(nullptr),
+		m_State(ThreadState_Ready),
+		m_SectorIndex(glm::ivec2(0, 0))
+{
+	m_Filename = BuildXMLPath(0, m_Coords);
+
+}
+
+
 void CurlRequest::Execute()
 {
 	PRINTSTRING("Beginning cURL request.");
-
-	m_Filename = BuildXMLPath(0, m_Coords);
 
 	bool fileAlreadyPresent = file_exists(m_Filename);
 

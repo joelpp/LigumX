@@ -8,6 +8,13 @@
 #include "Settings.h"
 #include "Logging.h"
 
+enum ThreadState
+{
+	ThreadState_Ready = 0,
+	ThreadState_Initialized,
+	ThreadState_Finished
+};
+
 #pragma region  FORWARD_DECLARATIONS CurlRequest
 #include "property.h"
 
@@ -79,10 +86,10 @@ CurlRequest(glm::vec2 coords, glm::vec2 extent);
 
 void Execute();
 
-bool Ready() { return m_State == 0; }
-bool Finished() { return m_State == 2; }
-void Reset() { m_State = 0; };
-void Initialize() { m_State = 1; };
+bool Ready() { return m_State == ThreadState_Ready; }
+bool Finished() { return m_State == ThreadState_Finished; }
+void Reset() { m_State = ThreadState_Ready; };
+void Initialize() { m_State = ThreadState_Initialized; };
 
 void Start();
 void End();
