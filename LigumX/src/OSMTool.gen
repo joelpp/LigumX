@@ -1,0 +1,7 @@
+class OSMTool
+{
+	bool Enabled;
+
+	Node* SelectedNode;
+	std::vector<Way> SelectedWays;
+}

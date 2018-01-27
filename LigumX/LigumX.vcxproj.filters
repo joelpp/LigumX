@@ -198,6 +198,9 @@
     <ClCompile Include="src\FileUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\OSMTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -491,6 +494,9 @@
     <ClInclude Include="src\FileUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\OSMTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -523,5 +529,6 @@
     <None Include="src\EngineSettings.gen" />
     <None Include="src\MainWindow.gen" />
     <None Include="src\GUI.gen" />
+    <None Include="src\OSMTool.gen" />
   </ItemGroup>
 </Project>

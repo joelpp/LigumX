@@ -5,7 +5,7 @@ enum EditorTool
 	TerrainSplatMap,
 	EntityManipulator,
 	SectorTool,
-	NodeTool,
+	OSMTool,
 }
 
 [globalinstance]
@@ -39,6 +39,7 @@ class Editor
 	float TerrainBrushSize;
 
 	SectorTool* SectorTool;
+	OSMTool* OSMTool;
 	int PickingBufferSize;
 
 	Node* SelectedNode;

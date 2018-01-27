@@ -20,6 +20,7 @@ class Editor;
 class EditorOptions;
 class Entity;
 class SectorTool;
+class OSMTool;
 class Node;
 
 extern Editor* g_Editor;
@@ -30,7 +31,7 @@ EditorTool_TerrainHeight,
 EditorTool_TerrainSplatMap,
 EditorTool_EntityManipulator,
 EditorTool_SectorTool,
-EditorTool_NodeTool,
+EditorTool_OSMTool,
 };
 
 extern const std::string EnumValues_EditorTool[6];
@@ -78,6 +79,8 @@ void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; };
 void AddToTerrainBrushSize(float value) { m_TerrainBrushSize += value; };
 SectorTool*& GetSectorTool() { return m_SectorTool; }; 
 void SetSectorTool(SectorTool* value) { m_SectorTool = value; }; 
+OSMTool*& GetOSMTool() { return m_OSMTool; }; 
+void SetOSMTool(OSMTool* value) { m_OSMTool = value; }; 
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 Node*& GetSelectedNode() { return m_SelectedNode; }; 
@@ -97,10 +100,11 @@ bool m_EditingTerrain = false;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 0.f;
 SectorTool* m_SectorTool;
+OSMTool* m_OSMTool;
 int m_PickingBufferSize = 0;
 Node* m_SelectedNode;
 public:
-static const int g_PropertyCount = 16;
+static const int g_PropertyCount = 17;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -119,6 +123,7 @@ PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_SectorTool,
+PIDX_OSMTool,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };
@@ -137,7 +142,7 @@ void ApplyTool();
 void UpdateManipulator();
 void UpdateTerrainEditor();
 void UpdateSectorLoader();
-void UpdateNodeTool();
+void UpdateOSMTool();
 
 void ProcessScrolling();
 

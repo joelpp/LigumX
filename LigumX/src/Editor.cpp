@@ -22,6 +22,7 @@
 #include "GUI.h"
 #include "LXError.h"
 #include "Logging.h"
+#include "OSMTool.h"
 
 #include "Node.h"
 #include "Way.h"
@@ -49,6 +50,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, 0, 0, 0, }, 
+{ "OSMTool", PIDX_OSMTool, offsetof(Editor, m_OSMTool), 0, LXType_OSMTool, true, LXType_None, 0, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, }, 
 };
@@ -64,7 +66,7 @@ const std::string EnumValues_EditorTool[] =
 "TerrainSplatMap",
 "EntityManipulator",
 "SectorTool",
-"NodeTool",
+"OSMTool",
 };
 
 const EditorTool Indirection_EditorTool[] =
@@ -74,7 +76,7 @@ const EditorTool Indirection_EditorTool[] =
 	EditorTool_TerrainSplatMap,
 	EditorTool_EntityManipulator,
 	EditorTool_SectorTool,
-	EditorTool_NodeTool,
+	EditorTool_OSMTool,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -96,6 +98,7 @@ void Editor::Initialize()
 	m_SplatMapTexture = new Texture(48463);
 
 	m_SectorTool = new SectorTool();
+	m_OSMTool = new OSMTool();
 }
 
 
@@ -277,22 +280,15 @@ void Editor::UpdateTerrainEditor()
 
 }
 
-void Editor::UpdateNodeTool()
+void Editor::UpdateOSMTool()
 {
 	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
 
-	if (mouseButton1Down)
-	{
-		const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
+	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
+	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
 
-		glm::vec3 wsPosition = m_SectorTool->GetAimingWorldSpacePosition(mousePosition);
+	m_OSMTool->Process(mouseButton1Down, mousePosition, dragDistance);
 
-		Node* node = g_SectorManager->GetClosestNode(glm::vec2(wsPosition));
-
-		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
-
-		m_SelectedNode = node;
-	}
 
 }
 
@@ -325,9 +321,9 @@ void Editor::ApplyTool()
 			UpdateSectorLoader();
 			break;
 		}
-		case EditorTool_NodeTool:
+		case EditorTool_OSMTool:
 		{
-			UpdateNodeTool();
+			UpdateOSMTool();
 			break;
 		}
 		case EditorTool_None:
@@ -702,19 +698,23 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	case LXType_stdstring:
 	{
 		const int maxFileNameSize = 512;
-		std::string sCopy = *((std::string*) ptr);
 
-		lxAssert(sCopy.size() <= maxFileNameSize);
+		std::string* s = (std::string*) ptr;
+		ShowGUIText(*s);
 
-		static char buf_stdstring[maxFileNameSize] = "";
+		//std::string sCopy(s->c_str());
 
-		memset(buf_stdstring, 0, maxFileNameSize);
-		memcpy(buf_stdstring, sCopy.c_str(), sCopy.size() * sizeof(char));
+		//lxAssert(sCopy.size() <= maxFileNameSize);
 
-		if (ImGui::InputText(name, buf_stdstring, maxFileNameSize, ImGuiInputTextFlags_EnterReturnsTrue))
-		{
-			*((std::string*) ptr) = std::string(buf_stdstring);
-		}
+		//static char buf_stdstring[maxFileNameSize];
+
+		//memset(buf_stdstring, 0, maxFileNameSize);
+		//memcpy(buf_stdstring, sCopy.c_str(), sCopy.size() * sizeof(char));
+
+		//if (ImGui::InputText(name, buf_stdstring, maxFileNameSize, ImGuiInputTextFlags_EnterReturnsTrue))
+		//{
+		//	*((std::string*) ptr) = std::string(buf_stdstring);
+		//}
 
 		break;
 	}
@@ -897,6 +897,12 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 	{
 		ptr = *(char**)ptr;
 	}
+
+	//if (propertyData.IsAPointer && ((char*)(*ptr) == nullptr))
+	//{
+	//	ShowGUIText(propertyData.m_Name + std::string(" : nullptr"));
+	//	return;
+	//}
 
 	float min = propertyData.m_MinValue;
 	float max = propertyData.m_MaxValue;
@@ -1265,6 +1271,14 @@ void Editor::RenderImgui()
 
 		g_GUI->EndWindow();
 	}
+	else if (m_ActiveTool == EditorTool_OSMTool)
+	{
+		g_GUI->BeginWindow(1000, 700, 0, 0, "OSM Tool");
+
+		ShowPropertyGridObject(m_OSMTool, "OSM Tool");
+
+		g_GUI->EndWindow();
+	}
 
 	ImGui::Render();
 }
@@ -1284,11 +1298,11 @@ void Editor::Render()
 {
 	RenderPicking();
 
-	RenderImgui();
-
 	ApplyTool();
 
 	ProcessScrolling();
+
+	RenderImgui();
 }
 
 

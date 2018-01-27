@@ -15,7 +15,8 @@
 #include "Model.h"
 #include "Material.h"
 #include "Editor.h"
-#include "Building.h"
+#include "Editor.h"
+#include "EngineSettings.h"
 #include "glm/gtx/transform.hpp"
 
 RenderDataManager* g_RenderDataManager;
@@ -275,7 +276,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
         Node last(*(way->GetNodes().back()));
         if((way->eType==OSMElement::BUILDING_UNMARKED||way->eType == OSMElement::LEISURE_PARK)&&way->GetNodes().size() >= 3 && first == last)
         {
-            Building* building = new Building(way);
+            //Building* building = new Building(way);
             // building->GenerateModel();
         }
     }
@@ -319,7 +320,7 @@ void RenderDataManager::InitializeSector(Sector* sector)
 {
 	const glm::ivec2& baseOffset = sector->GetOffsetIndex();
 
-	float offset = 200.f;
+	float offset = g_EngineSettings->GetWorldScale();
 	glm::vec3 base = glm::vec3(offset * baseOffset.x, offset * baseOffset.y, 1.f);
 
 	std::vector<glm::vec3> points;

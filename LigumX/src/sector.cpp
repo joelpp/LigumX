@@ -120,6 +120,8 @@ Sector::Sector(const glm::ivec2& index)
 	m_WorldPosition = g_SectorManager->OffsetIndexToWorldPosition(m_OffsetIndex);
 
 	m_LifeSize = glm::vec2(g_EngineSettings->GetExtent());
+
+	m_OSMFilename = "";
 }
 
 
