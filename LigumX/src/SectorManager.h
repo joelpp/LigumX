@@ -78,6 +78,8 @@ public:
 
 	float m_sectorSize;
 
+	Node* GetClosestNode(glm::vec2 wsPosition);
+
 	void AddSector(Sector* sector);
 	Sector* CreateSector(CurlRequest* request);
 	Sector* CreateSector(const glm::ivec2& sectorIndex);
@@ -96,8 +98,9 @@ public:
 
 
 	std::unordered_map<std::string, Node*> m_AllNodes;
-	std::unordered_map<int, Node*> m_AllNodesPtr;
+	std::map<int, Node*> m_AllNodesPtr;
 	std::map<std::string, Way*> m_AllWays;
+	std::map<int, Way*> m_AllWaysPtr;
 
 private:
 	REGISTERCLASS(SectorManager);

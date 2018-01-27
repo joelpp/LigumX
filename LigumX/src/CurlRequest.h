@@ -51,6 +51,8 @@ Sector*& GetSector() { return m_Sector; };
 void SetSector(Sector* value) { m_Sector = value; }; 
 const glm::ivec2& GetSectorIndex() { return m_SectorIndex; }; 
 void SetSectorIndex(glm::ivec2 value) { m_SectorIndex = value; }; 
+const bool& GetAsync() { return m_Async; }; 
+void SetAsync(bool value) { m_Async = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -61,8 +63,9 @@ std::string m_Result;
 std::string m_Filename;
 Sector* m_Sector;
 glm::ivec2 m_SectorIndex;
+bool m_Async = false;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CurlRequestPIDX
@@ -76,13 +79,14 @@ PIDX_Result,
 PIDX_Filename,
 PIDX_Sector,
 PIDX_SectorIndex,
+PIDX_Async,
 };
 bool Serialize(bool writing);
 
 #pragma endregion  HEADER CurlRequest
 
 CurlRequest();
-CurlRequest(glm::vec2 coords, glm::vec2 extent);
+CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async);
 
 void Execute();
 

@@ -250,6 +250,13 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
 
+	Sector* requestSector = world->GetSectorByIndex(request->GetSectorIndex());
+	if (!requestSector)
+	{
+		requestSector = CreateSector(request->GetSectorIndex());
+	}
+	request->SetSector(requestSector);
+
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
 		std::string childValue = std::string(child->Value());
@@ -318,14 +325,16 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			Way* way = new Way(id);
 			way->eType = OSMElement::NOT_IMPLEMENTED;
 
-			Sector* sector = world->GetSectorByIndex(request->GetSectorIndex());
-
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
 			{
 				if (std::string(way_child->Value()).compare("nd") == 0)
 				{
 					std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
-					way->AddNode(m_AllNodes[ref]);
+
+					Node* node = m_AllNodes[ref];
+					way->AddNode(node);
+
+					node->AddWay(way);
 				}
 				else if (std::string(way_child->Value()).compare("tag") == 0)
 				{
@@ -345,6 +354,11 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				}
 			}
 
+			if (way->hasTag("name"))
+			{
+				way->SetName(way->getValue("name"));
+			}
+
 			if (dataType == SectorData::CONTOUR)
 			{
 				float elevation = (float)atof(way->tags["ele"].c_str()) / 15000 + 0.000001f;
@@ -356,10 +370,13 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			}
 
 
-			std::unordered_map<std::string, Way*>& ways = sector->m_Data->ways;
+			std::unordered_map<std::string, Way*>& ways = requestSector->m_Data->ways;
 			ways.emplace(id, way);
 
 			m_AllWays.emplace(id, way);
+
+			int intID = StringUtils::ToInt(id);
+			m_AllWaysPtr[intID] = way;
 		}
 	}
 }
@@ -403,4 +420,27 @@ glm::vec2 SectorManager::OffsetIndexToWorldPosition(const glm::ivec2& sectorInde
 	glm::vec2 worldPosition = (glm::vec2) sectorIndex * g_EngineSettings->GetWorldScale();
 
 	return worldPosition;
+}
+
+
+Node* SectorManager::GetClosestNode(glm::vec2 wsPosition)
+{
+	float longestDistance = 99999.f;
+
+	Node* toReturn = nullptr;
+
+	for (auto it = m_AllNodesPtr.begin(); it != m_AllNodesPtr.end(); ++it)
+	{
+		Node* node = it->second;
+		glm::vec2 nodePos = glm::vec2(node->GetWorldPosition());
+		float length = glm::length(nodePos - wsPosition);
+
+		if (length < longestDistance)
+		{
+			longestDistance = length;
+			toReturn = node;
+		}
+	}
+
+	return toReturn;
 }

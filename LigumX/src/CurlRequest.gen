@@ -7,4 +7,5 @@ class CurlRequest
 	std::string Filename;
 	Sector* Sector;
 	glm::ivec2 SectorIndex;
+	bool Async;
 }

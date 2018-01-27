@@ -8,6 +8,7 @@
 #include "property.h"
 
 class Node;
+class Way;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Node
@@ -27,16 +28,22 @@ const int& GetOSMId() { return m_OSMId; };
 void SetOSMId(int value) { m_OSMId = value; }; 
 const glm::vec2& GetLongLat() { return m_LongLat; }; 
 void SetLongLat(glm::vec2 value) { m_LongLat = value; }; 
+const glm::vec3& GetWorldPosition() { return m_WorldPosition; }; 
+void SetWorldPosition(glm::vec3 value) { m_WorldPosition = value; }; 
 const float& GetElevation() { return m_Elevation; }; 
 void SetElevation(float value) { m_Elevation = value; }; 
+std::vector<Way*>& GetWays() { return m_Ways; }; 
+void SetWays(std::vector<Way*> value) { m_Ways = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 int m_OSMId = 0;
 glm::vec2 m_LongLat = glm::vec2(0, 0);
+glm::vec3 m_WorldPosition = glm::vec3(0, 0, 0);
 float m_Elevation = 0.f;
+std::vector<Way*> m_Ways;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_NodePIDX
@@ -45,7 +52,9 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_OSMId,
 PIDX_LongLat,
+PIDX_WorldPosition,
 PIDX_Elevation,
+PIDX_Ways,
 };
 bool Serialize(bool writing);
 
@@ -66,5 +75,7 @@ public:
 	{
        return latitude==n.latitude && longitude==n.longitude;
     }
+
+	void AddWay(Way* way);
 };
 

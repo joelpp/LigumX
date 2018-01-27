@@ -20,6 +20,7 @@ const ClassPropertyData CurlRequest::g_Properties[] =
 { "Filename", PIDX_Filename, offsetof(CurlRequest, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Sector", PIDX_Sector, offsetof(CurlRequest, m_Sector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
 { "SectorIndex", PIDX_SectorIndex, offsetof(CurlRequest, m_SectorIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
+{ "Async", PIDX_Async, offsetof(CurlRequest, m_Async), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool CurlRequest::Serialize(bool writing)
 {
@@ -63,10 +64,12 @@ std::string curl_request(char* path)
 
 }
 
+const char* g_OSM_API_Path = "http://www.overpass-api.de/api/xapi_meta?*[bbox=%f.2,%f.2,%f.2,%f.2]";
+
 std::string queryBoundingBox(float left, float bottom, float right, float top)
 {
 	char path[256];
-	sprintf(path, "http://overpass.osm.rambler.ru/cgi/xapi_meta?*[bbox=%f.2,%f.2,%f.2,%f.2]", left, bottom, right, top);
+	sprintf(path, g_OSM_API_Path, left, bottom, right, top);
 	return curl_request(path);
 }
 
@@ -128,7 +131,7 @@ inline bool file_exists(const std::string& name)
 }
 
 
-std::string BuildXMLPath(int dataType, glm::vec2 pos)
+std::string BuildXMLPath(int dataType, glm::vec2 pos) 
 {
 	std::stringstream savePath;
 	//savePath << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/";
@@ -142,7 +145,7 @@ std::string BuildXMLPath(int dataType, glm::vec2 pos)
 
 	int index = 1;
 
-	savePath << (int)(pos.x * 1000) << "x" << (int)(pos.y * 1000);
+	savePath << (int) (pos.x * 1000) << "x" << (int)(pos.y * 1000);
 	savePath << ".xml";
 
 	return savePath.str();
@@ -156,12 +159,14 @@ CurlRequest::CurlRequest()
 }
 
 
-CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent)
+CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async)
 	:	m_Coords(coords),
 		m_Extent(extent),
 		m_Sector(nullptr),
 		m_State(ThreadState_Ready),
-		m_SectorIndex(glm::ivec2(0, 0))
+		m_SectorIndex(glm::ivec2(0, 0)),
+		m_Async(async)
+
 {
 	m_Filename = BuildXMLPath(0, m_Coords);
 
@@ -181,19 +186,29 @@ void CurlRequest::Execute()
 	}
 
 	PRINTSTRING("Request complete")
-	m_State = 2;
+	m_State = ThreadState_Finished;
 }
 	 
 
 
 void CurlRequest::Start()
 {
-	m_JobThread = std::thread(&CurlRequest::Execute, this);
+	if (m_Async)
+	{
+		m_JobThread = std::thread(&CurlRequest::Execute, this);
+		m_State = ThreadState_Ready;
+	}
+	else
+	{
+		Execute();
+	}
 
-	m_State = 1;
 }
 
 void CurlRequest::End()
 {
-	m_JobThread.join();
+	if (m_Async)
+	{
+		m_JobThread.join();
+	}
 }

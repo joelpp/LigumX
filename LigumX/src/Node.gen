@@ -2,5 +2,7 @@ class Node
 {
 	int OSMId;
 	glm::vec2 LongLat;
+	glm::vec3 WorldPosition;
 	float Elevation;
+	std::vector<Way> Ways;
 }

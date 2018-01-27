@@ -13,7 +13,9 @@ const ClassPropertyData Node::g_Properties[] =
 { "Name", PIDX_Name, offsetof(Node, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "OSMId", PIDX_OSMId, offsetof(Node, m_OSMId), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "LongLat", PIDX_LongLat, offsetof(Node, m_LongLat), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
+{ "WorldPosition", PIDX_WorldPosition, offsetof(Node, m_WorldPosition), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "Elevation", PIDX_Elevation, offsetof(Node, m_Elevation), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "Ways", PIDX_Ways, offsetof(Node, m_Ways), 0, LXType_stdvector, false, LXType_Way, 0, 0, 0, }, 
 };
 bool Node::Serialize(bool writing)
 {
@@ -63,4 +65,18 @@ glm::vec2 Node::getLatLong()
 glm::vec3 Node::getLatLongEle()
 {
     return glm::vec3(longitude, latitude, elevation);
+}
+
+void Node::AddWay(Way* way)
+{
+	
+	for (Way* currentWay : m_Ways)
+	{
+		if (way == currentWay)
+		{
+			return;
+		}
+	}
+
+	m_Ways.push_back(way);
 }

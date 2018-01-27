@@ -146,6 +146,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 			glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
 			glm::vec3 pos = glm::vec3(worldPos, 0);
+			node->SetWorldPosition(pos);
 
 			AddPoint(line, pos);
 		}

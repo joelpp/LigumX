@@ -5,6 +5,7 @@ enum EditorTool
 	TerrainSplatMap,
 	EntityManipulator,
 	SectorTool,
+	NodeTool,
 }
 
 [globalinstance]

@@ -11,14 +11,20 @@
 #include "PostEffects.h"
 #include "Mesh.h"
 #include "Texture.h"
+
 #include "SectorData.h"
 #include "RenderDataManager.h"
+
+#include "SectorManager.h"
 #include "Sector.h"
 #include "InputHandler.h"
 #include "EngineSettings.h"
 #include "GUI.h"
 #include "LXError.h"
 #include "Logging.h"
+
+#include "Node.h"
+#include "Way.h"
 
 #pragma region  CLASS_SOURCE Editor
 Editor* g_Editor;
@@ -42,7 +48,8 @@ const ClassPropertyData Editor::g_Properties[] =
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
-{ "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, 0, 0, 0, }, 
+{ "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool Editor::Serialize(bool writing)
@@ -57,6 +64,8 @@ const std::string EnumValues_EditorTool[] =
 "TerrainSplatMap",
 "EntityManipulator",
 "SectorTool",
+"NodeTool",
+"WayTool",
 };
 
 const EditorTool Indirection_EditorTool[] =
@@ -66,6 +75,8 @@ const EditorTool Indirection_EditorTool[] =
 	EditorTool_TerrainSplatMap,
 	EditorTool_EntityManipulator,
 	EditorTool_SectorTool,
+	EditorTool_NodeTool,
+	EditorTool_WayTool,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -268,6 +279,21 @@ void Editor::UpdateTerrainEditor()
 
 }
 
+void Editor::UpdateNodeTool()
+{
+	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
+
+	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
+
+	glm::vec3 wsPosition = m_SectorTool->GetAimingWorldSpacePosition(mousePosition, false);
+
+	Node* node = g_SectorManager->GetClosestNode(glm::vec2(wsPosition));
+
+	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
+
+	m_SelectedNode = node;
+}
+
 void Editor::UpdateSectorLoader()
 {
 	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
@@ -276,8 +302,6 @@ void Editor::UpdateSectorLoader()
 	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
 
 	m_SectorTool->Process(mouseButton1Down, mousePosition, dragDistance);
-
-	
 }
 
 void Editor::ApplyTool()
@@ -297,6 +321,11 @@ void Editor::ApplyTool()
 		case EditorTool_SectorTool:
 		{
 			UpdateSectorLoader();
+			break;
+		}
+		case EditorTool_NodeTool:
+		{
+			UpdateNodeTool();
 			break;
 		}
 		case EditorTool_None:
@@ -532,6 +561,23 @@ void Editor::ShowProperty(std::map<int, char*>* map, const char* name)
 	ImGui::PopID();
 }
 
+template <typename T>
+void Editor::ShowProperty(std::map<int, T*>* map, const char* name)
+{
+	ImGui::PushID(name);
+	if (ImGui::TreeNode(name))
+	{
+		for (auto it = map->begin(); it != map->end(); ++it)
+		{
+			T* obj = (T*)it->second;
+			std::string label = obj->GetName() + " [" + std::to_string(it->first) + "]";
+			ShowPropertyGridTemplate(obj, label.c_str());
+		}
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
+}
+
 
 #define SHOW_ENUM(type) \
 case LXType_##type: \
@@ -692,6 +738,8 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	}
 
 	SHOW_PROPERTY_PTR(Material)
+	SHOW_PROPERTY_PTR(Node)
+	SHOW_PROPERTY_PTR(Way)
 	SHOW_PROPERTY_PTR(AABB)
 	SHOW_PROPERTY_PTR(Entity)
 	SHOW_PROPERTY_PTR(SunLight)
@@ -1209,6 +1257,9 @@ void Editor::RenderImgui()
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
 
 		ShowPropertyGridObject(m_SectorTool, "Sector Tool");
+
+		ShowProperty<Node>(&(g_SectorManager->m_AllNodesPtr), "Nodes");
+		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");
 
 		g_GUI->EndWindow();
 	}

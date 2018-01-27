@@ -20,6 +20,7 @@ class Editor;
 class EditorOptions;
 class Entity;
 class SectorTool;
+class Node;
 
 extern Editor* g_Editor;
 enum EditorTool
@@ -29,11 +30,13 @@ EditorTool_TerrainHeight,
 EditorTool_TerrainSplatMap,
 EditorTool_EntityManipulator,
 EditorTool_SectorTool,
+EditorTool_NodeTool,
+EditorTool_WayTool,
 };
 
-extern const std::string EnumValues_EditorTool[5];
-extern const EditorTool Indirection_EditorTool[5];
-const int EnumLength_EditorTool = 5;
+extern const std::string EnumValues_EditorTool[7];
+extern const EditorTool Indirection_EditorTool[7];
+const int EnumLength_EditorTool = 7;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Editor
@@ -76,6 +79,8 @@ void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; };
 void AddToTerrainBrushSize(float value) { m_TerrainBrushSize += value; };
 SectorTool*& GetSectorTool() { return m_SectorTool; }; 
 void SetSectorTool(SectorTool* value) { m_SectorTool = value; }; 
+Node*& GetSelectedNode() { return m_SelectedNode; }; 
+void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 private:
@@ -93,9 +98,10 @@ bool m_EditingTerrain = false;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 0.f;
 SectorTool* m_SectorTool;
+Node* m_SelectedNode;
 int m_PickingBufferSize = 0;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 16;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -114,6 +120,7 @@ PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_SectorTool,
+PIDX_SelectedNode,
 PIDX_PickingBufferSize,
 };
 bool Serialize(bool writing);
@@ -131,6 +138,7 @@ void ApplyTool();
 void UpdateManipulator();
 void UpdateTerrainEditor();
 void UpdateSectorLoader();
+void UpdateNodeTool();
 
 void ProcessScrolling();
 
@@ -194,6 +202,9 @@ void ShowProperty(std::string* value, const char* name);
 template <typename T>
 void ShowProperty(std::map<int, char *>* map, const char* name);
 
+template <typename T>
+void ShowProperty(std::map<int, T*>* map, const char* name);
+
 bool ShowEditableProperty(int* value, const char* name);
 void BackupData();
 
@@ -209,5 +220,4 @@ private:
 	// this is for r&d
 	SectorData* m_SectorData;
 	Sector* m_Sector;
-
 };

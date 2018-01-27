@@ -24,6 +24,7 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
 { "SectorGridColor", PIDX_SectorGridColor, offsetof(SectorTool, m_SectorGridColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "AsyncSectorLoading", PIDX_AsyncSectorLoading, offsetof(SectorTool, m_AsyncSectorLoading), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -120,7 +121,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	bool canSendRequest = mouseButton1Down && m_Request.Ready() && (!m_HighlightedSector || !m_HighlightedSector->GetDataLoaded());
 	if (canSendRequest)
 	{
-		m_Request = CurlRequest(earthStartCoords, glm::vec2(g_EngineSettings->GetExtent()));
+		m_Request = CurlRequest(earthStartCoords, glm::vec2(g_EngineSettings->GetExtent()), m_AsyncSectorLoading);
 		m_Request.SetSectorIndex(normalizedSectorIndex);
 		m_Request.Initialize();
 		m_Request.Start();
