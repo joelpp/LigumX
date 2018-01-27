@@ -168,6 +168,7 @@
     <ClCompile Include="src\EngineSettings.cpp" />
     <ClCompile Include="src\EngineStats.cpp" />
     <ClCompile Include="src\entity.cpp" />
+    <ClCompile Include="src\FileUtils.cpp" />
     <ClCompile Include="src\filled_buildings.cpp" />
     <ClCompile Include="src\Framebuffer.cpp" />
     <ClCompile Include="src\GL.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="src\EngineSettings.h" />
     <ClInclude Include="src\EngineStats.h" />
     <ClInclude Include="src\entity.h" />
+    <ClInclude Include="src\FileUtils.h" />
     <ClInclude Include="src\LXError.h" />
     <ClInclude Include="src\Framebuffer.h" />
     <ClInclude Include="src\GL.h" />

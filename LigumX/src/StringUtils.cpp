@@ -1,9 +1,31 @@
-#include "StringUtils.h"
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include "StringUtils.h"
+#include "FileUtils.h"
+#include "LXError.h"
 
-#pragma warning(disable : 4996) // deprecated std::localtime
+
+#pragma warning(disable : 4996) // TODO : deprecated std::localtime
+
+std::string StringUtils::FromFile(const char* fileName)
+{
+	std::stringstream stream;
+
+	std::fstream refFile = FileUtils::OpenFile(fileName);
+
+	std::string line;
+	while (std::getline(refFile, line))
+	{
+		stream << line;
+		stream << '\n';
+	}
+
+	FileUtils::CloseFile(refFile);
+
+	return stream.str();
+}
+
 
 std::vector<std::string> StringUtils::ReadFileLines(const char* fileName)
 {

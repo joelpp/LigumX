@@ -11,6 +11,7 @@ typedef std::vector<std::string> StringList;
 
 namespace StringUtils
 {
+	std::string FromFile(const char* fileName);
 
 	std::vector<std::string> ReadFileLines(const char* fileName);
 
@@ -33,4 +34,5 @@ namespace StringUtils
 	bool DumpToFile(std::string& path, std::string& data);
 
 	int Count(const std::string& s, const char c);
+
 }

@@ -23,6 +23,9 @@ public:
                       std::string srcFilename,
                       bool readSrcFilenamesAsSourceCode = false);
         ~ShaderProgram() {}
+
+		int m_NumLinesInInclude;
+
     };
 
     ShaderProgram  *pVertexShader,
@@ -48,9 +51,12 @@ public:
 
     void usePipeline();
 
+
+
 private:
     std::string m_name;
     REGISTERCLASS(ProgramPipeline);
+
 };
 
 #endif // ProgramPipeline_H
