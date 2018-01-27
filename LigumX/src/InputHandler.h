@@ -54,34 +54,20 @@ const glm::vec2& GetMouseScroll() { return m_MouseScroll; };
 void SetMouseScroll(glm::vec2 value) { m_MouseScroll = value; }; 
 void AddToMouseScroll(glm::vec2 value) { m_MouseScroll += value; };
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-bool m_Mouse1Pressed
- = false;
-bool m_Mouse2Pressed
- = false;
-bool m_Dragging
- = false;
-glm::vec2 m_DragDistance
- = glm::vec2(0, 0);
-glm::vec2 m_LastDragDistance
- = glm::vec2(0, 0);
-glm::vec2 m_DragAccumulator
- = glm::vec2(0, 0);
-glm::vec2 m_MouseClickPosition
- = glm::vec2(0, 0);
-glm::vec2 m_LastMouseClickPosition
- = glm::vec2(0, 0);
-glm::vec2 m_MouseReleasePosition
- = glm::vec2(0, 0);
-glm::vec2 m_MousePosition
- = glm::vec2(0, 0);
-glm::vec2 m_LastMousePosition
- = glm::vec2(0, 0);
-glm::vec2 m_MouseScroll
- = glm::vec2(0, 0);
+int m_ObjectID;
+std::string m_Name;
+bool m_Mouse1Pressed = false;
+bool m_Mouse2Pressed = false;
+bool m_Dragging = false;
+glm::vec2 m_DragDistance = glm::vec2(0, 0);
+glm::vec2 m_LastDragDistance = glm::vec2(0, 0);
+glm::vec2 m_DragAccumulator = glm::vec2(0, 0);
+glm::vec2 m_MouseClickPosition = glm::vec2(0, 0);
+glm::vec2 m_LastMouseClickPosition = glm::vec2(0, 0);
+glm::vec2 m_MouseReleasePosition = glm::vec2(0, 0);
+glm::vec2 m_MousePosition = glm::vec2(0, 0);
+glm::vec2 m_LastMousePosition = glm::vec2(0, 0);
+glm::vec2 m_MouseScroll = glm::vec2(0, 0);
 public:
 static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];

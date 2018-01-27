@@ -9,6 +9,7 @@
 #include "Way.h"
 #include "World.h"
 #include "EngineSettings.h"
+#include "LXError.h"
 
 SectorManager* g_SectorManager;
 
@@ -80,26 +81,26 @@ glm::vec2 SectorManager::posFromVec2(glm::vec2 pos)
 	return pos;
 }
 
-Sector* SectorManager::createSector(Coord2 pos)
-{
-
-	glm::vec2 sectorCoords = posFromVec2(pos);
-	int newSectorID = getSectorIndex(trunc(sectorCoords.x), trunc(sectorCoords.y));
-	Sector* c = new Sector(sectorCoords, m_sectorSize, newSectorID);
-
-	m_Sectors.emplace(newSectorID, c);
-
-    return c;
-}
-Sector* SectorManager::createSector(int ID)
-{
-	glm::vec2 sectorCoords = posFromID(ID);
-	Sector* c = new Sector( sectorCoords, m_sectorSize, ID);
-
-	m_Sectors.emplace(ID, c);
-
-    return c;
-}
+//Sector* SectorManager::createSector(Coord2 pos)
+//{
+//
+//	glm::vec2 sectorCoords = posFromVec2(pos);
+//	int newSectorID = getSectorIndex(trunc(sectorCoords.x), trunc(sectorCoords.y));
+//	Sector* c = new Sector(sectorCoords, m_sectorSize, newSectorID);
+//
+//	m_Sectors.emplace(newSectorID, c);
+//
+//    return c;
+//}
+//Sector* SectorManager::createSector(int ID)
+//{
+//	glm::vec2 sectorCoords = posFromID(ID);
+//	Sector* c = new Sector( sectorCoords, m_sectorSize, ID);
+//
+//	m_Sectors.emplace(ID, c);
+//
+//    return c;
+//}
 // Coord2 World::Normalized(Coord2 UnNormalized){
 // 	return UnNormalized * m_invSectorSize;
 // }
@@ -125,7 +126,8 @@ Sector* SectorManager::sectorContaining(Coord2 longLat)
 	{
 		// PRINT("Creating sector at ");
 		// PRINTVEC2(longLat);
-		sector = createSector(ID);
+		sector = nullptr;// createSector(ID);
+		lxAssert0();
 		m_Sectors.emplace(ID, sector);
 		PRINTINT(m_Sectors.size());
 
@@ -146,7 +148,8 @@ Sector* SectorManager::getSector(int ID)
     }
     else
     {
-        sector = createSector(ID);
+        //sector = createSector(ID);
+		lxAssert0();
 		m_Sectors.emplace(ID, sector);
     }
     
@@ -348,13 +351,17 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 	}
 }
 
+void SectorManager::AddSector(Sector* sector)
+{
+	LigumX::GetInstance().world->GetSectors().push_back(sector);
+}
+
+
 Sector* SectorManager::CreateSector(CurlRequest* request)
 {
 	Sector* sector = new Sector(request);
 
-	LigumX::GetInstance().world->GetSectors().push_back(sector);
-
-	request->SetSector(sector);
+	AddSector(sector);
 
 	return sector;
 }
@@ -363,7 +370,7 @@ Sector* SectorManager::CreateSector(const glm::ivec2& sectorIndex)
 {
 	Sector* sector = new Sector(sectorIndex);
 
-	LigumX::GetInstance().world->GetSectors().push_back(sector);
+	AddSector(sector);
 
 	return sector;
 }

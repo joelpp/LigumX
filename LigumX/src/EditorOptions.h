@@ -45,34 +45,20 @@ void SetSaveDisabled(bool value) { m_SaveDisabled = value; };
 const float& GetMouseScrollCameraSpeed() { return m_MouseScrollCameraSpeed; }; 
 void SetMouseScrollCameraSpeed(float value) { m_MouseScrollCameraSpeed = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-bool m_Enabled
- = false;
-bool m_ShowWorldWindow
- = false;
-bool m_ShowMaterialWindow
- = false;
-bool m_ShowEntityWindow
- = false;
-bool m_ShowObjectCreator
- = false;
-bool m_ShowEngineStats
- = false;
-bool m_ShowTestGUI
- = false;
-bool m_ShowObjectManager
- = false;
-bool m_BackupDataOnSave
- = false;
-bool m_DebugDisplay
- = false;
-bool m_SaveDisabled
- = false;
-float m_MouseScrollCameraSpeed
- = 1.0f;
+int m_ObjectID;
+std::string m_Name;
+bool m_Enabled = false;
+bool m_ShowWorldWindow = false;
+bool m_ShowMaterialWindow = false;
+bool m_ShowEntityWindow = false;
+bool m_ShowObjectCreator = false;
+bool m_ShowEngineStats = false;
+bool m_ShowTestGUI = false;
+bool m_ShowObjectManager = false;
+bool m_BackupDataOnSave = false;
+bool m_DebugDisplay = false;
+bool m_SaveDisabled = false;
+float m_MouseScrollCameraSpeed = 1.0f;
 public:
 static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];

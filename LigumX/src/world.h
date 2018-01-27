@@ -71,18 +71,12 @@ void SetDebugEntities(std::vector<Entity*> value) { m_DebugEntities = value; };
 std::vector<Sector*>& GetSectors() { return m_Sectors; }; 
 void SetSectors(std::vector<Sector*> value) { m_Sectors = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-SunLight* m_SunLight
-;
-std::vector<Entity*> m_Entities
-;
-std::vector<Entity*> m_DebugEntities
-;
-std::vector<Sector*> m_Sectors
-;
+int m_ObjectID;
+std::string m_Name;
+SunLight* m_SunLight;
+std::vector<Entity*> m_Entities;
+std::vector<Entity*> m_DebugEntities;
+std::vector<Sector*> m_Sectors;
 public:
 static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];

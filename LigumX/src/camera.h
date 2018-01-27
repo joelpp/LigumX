@@ -67,40 +67,23 @@ void SetViewSize(float value) { m_ViewSize = value; };
 const float& GetMovementSpeed() { return m_MovementSpeed; }; 
 void SetMovementSpeed(float value) { m_MovementSpeed = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-glm::vec3 m_Position
- = glm::vec3(0, 0, 0);
-glm::vec3 m_FrontVector
- = glm::vec3(0, 0, 0);
-glm::vec3 m_RightVector
- = glm::vec3(0, 0, 0);
-glm::vec3 m_UpVector
- = glm::vec3(0, 0, 0);
-glm::mat4 m_ViewMatrix
-;
-glm::mat4 m_ProjectionMatrix
-;
-glm::mat4 m_ViewProjectionMatrix
-;
-glm::mat4 m_ViewMatrixInverse
-;
-glm::mat4 m_ProjectionMatrixInverse
-;
-float m_NearPlane
- = 0.f;
-float m_FarPlane
- = 0.f;
-int m_ProjectionType
- = 0;
-float m_OrthoBorders
- = 0.f;
-float m_ViewSize
- = 0.f;
-float m_MovementSpeed
- = 0.f;
+int m_ObjectID;
+std::string m_Name;
+glm::vec3 m_Position = glm::vec3(0, 0, 0);
+glm::vec3 m_FrontVector = glm::vec3(0, 0, 0);
+glm::vec3 m_RightVector = glm::vec3(0, 0, 0);
+glm::vec3 m_UpVector = glm::vec3(0, 0, 0);
+glm::mat4 m_ViewMatrix;
+glm::mat4 m_ProjectionMatrix;
+glm::mat4 m_ViewProjectionMatrix;
+glm::mat4 m_ViewMatrixInverse;
+glm::mat4 m_ProjectionMatrixInverse;
+float m_NearPlane = 0.f;
+float m_FarPlane = 0.f;
+int m_ProjectionType = 0;
+float m_OrthoBorders = 0.f;
+float m_ViewSize = 0.f;
+float m_MovementSpeed = 0.f;
 public:
 static const int g_PropertyCount = 17;
 static const ClassPropertyData g_Properties[g_PropertyCount];

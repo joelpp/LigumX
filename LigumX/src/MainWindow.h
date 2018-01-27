@@ -31,18 +31,12 @@ void SetSize(glm::ivec2 value) { m_Size = value; };
 const std::string& GetTitle() { return m_Title; }; 
 void SetTitle(std::string value) { m_Title = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-bool m_InFocus
- = false;
-glm::vec2 m_Position
- = glm::vec2(0, 0);
-glm::ivec2 m_Size
-;
-std::string m_Title
-;
+int m_ObjectID;
+std::string m_Name;
+bool m_InFocus = false;
+glm::vec2 m_Position = glm::vec2(0, 0);
+glm::ivec2 m_Size;
+std::string m_Title;
 public:
 static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];

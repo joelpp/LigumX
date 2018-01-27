@@ -61,6 +61,8 @@ uniform vec3 g_CameraLookAt;
 uniform float g_CameraNearPlane;
 uniform float g_CameraFarPlane;
 uniform mat4 g_CameraInverse;
+uniform mat4 g_WorldToViewMatrix;
+uniform mat4 g_ProjectionMatrix;
 uniform mat4 g_ViewProjectionMatrixInverse;
 uniform mat4 g_ViewMatrixInverse;
 uniform mat4 g_ProjectionMatrixInverse;

@@ -30,16 +30,11 @@ void SetLongLat(glm::vec2 value) { m_LongLat = value; };
 const float& GetElevation() { return m_Elevation; }; 
 void SetElevation(float value) { m_Elevation = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-int m_OSMId
- = 0;
-glm::vec2 m_LongLat
- = glm::vec2(0, 0);
-float m_Elevation
- = 0.f;
+int m_ObjectID;
+std::string m_Name;
+int m_OSMId = 0;
+glm::vec2 m_LongLat = glm::vec2(0, 0);
+float m_Elevation = 0.f;
 public:
 static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];

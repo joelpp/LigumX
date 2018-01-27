@@ -79,36 +79,21 @@ void SetSectorTool(SectorTool* value) { m_SectorTool = value; };
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-EditorOptions* m_Options
-;
-EditorTool m_ActiveTool
-;
-glm::vec4 m_XYZMask
-;
-Entity* m_PickedEntity
-;
-glm::vec3 m_PickedWorldPosition
- = glm::vec3(0, 0, 0);
-bool m_ManipulatorDragging
- = false;
-glm::vec3 m_ManipulatorStartPosition
- = glm::vec3(0, 0, 0);
-glm::vec4 m_PickingData
-;
-bool m_EditingTerrain
- = false;
-bool m_TerrainErasureMode
- = false;
-float m_TerrainBrushSize
- = 0.f;
-SectorTool* m_SectorTool
-;
-int m_PickingBufferSize
- = 0;
+int m_ObjectID;
+std::string m_Name;
+EditorOptions* m_Options;
+EditorTool m_ActiveTool;
+glm::vec4 m_XYZMask;
+Entity* m_PickedEntity;
+glm::vec3 m_PickedWorldPosition = glm::vec3(0, 0, 0);
+bool m_ManipulatorDragging = false;
+glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
+glm::vec4 m_PickingData;
+bool m_EditingTerrain = false;
+bool m_TerrainErasureMode = false;
+float m_TerrainBrushSize = 0.f;
+SectorTool* m_SectorTool;
+int m_PickingBufferSize = 0;
 public:
 static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];

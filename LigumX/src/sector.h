@@ -28,8 +28,6 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const glm::vec2& GetPosition() { return m_Position; }; 
-void SetPosition(glm::vec2 value) { m_Position = value; }; 
 const glm::vec2& GetWorldPosition() { return m_WorldPosition; }; 
 void SetWorldPosition(glm::vec2 value) { m_WorldPosition = value; }; 
 const glm::vec2& GetEarthPosition() { return m_EarthPosition; }; 
@@ -43,33 +41,22 @@ void SetIndex(glm::ivec2 value) { m_Index = value; };
 const bool& GetDataLoaded() { return m_DataLoaded; }; 
 void SetDataLoaded(bool value) { m_DataLoaded = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-glm::vec2 m_Position
- = glm::vec2(0, 0);
-glm::vec2 m_WorldPosition
- = glm::vec2(0, 0);
-glm::vec2 m_EarthPosition
- = glm::vec2(0, 0);
-glm::ivec2 m_QuantizedPosition
-;
-glm::ivec2 m_OffsetIndex
-;
-glm::ivec2 m_Index
-;
-bool m_DataLoaded
- = false;
+int m_ObjectID;
+std::string m_Name;
+glm::vec2 m_WorldPosition = glm::vec2(0, 0);
+glm::vec2 m_EarthPosition = glm::vec2(0, 0);
+glm::ivec2 m_QuantizedPosition;
+glm::ivec2 m_OffsetIndex;
+glm::ivec2 m_Index;
+bool m_DataLoaded = false;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
-PIDX_Position,
 PIDX_WorldPosition,
 PIDX_EarthPosition,
 PIDX_QuantizedPosition,

@@ -9,7 +9,7 @@ uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;
 uniform mat4 g_LightProjectionMatrix;
 
-// Include Providers Marker
+// Include ProvidersMarker
 
 out vec2 myTexCoord;
 out vec3 vNormalWS;

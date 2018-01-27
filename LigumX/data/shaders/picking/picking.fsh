@@ -3,7 +3,7 @@
 in vec3 vWorldPosition;
 
 #define PROVIDER_Picking
-// Include Providers Marker
+// Include ProvidersMarker
 
 out vec4 FinalColor;
 

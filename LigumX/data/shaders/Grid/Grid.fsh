@@ -9,7 +9,7 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_View
 #define PROVIDER_Window
 
-// Include Providers Marker
+// Include ProvidersMarker
 
 layout (location = 0) out vec4 FinalColor;
 
@@ -41,6 +41,18 @@ vec3 GetAimingWorldSpacePosition(vec3 worldSpaceRay)
 	return worldPosition;
 }
 
+float GetLineWidth(vec2 wsPosition, float gridExtent)
+{
+	vec2 grid = abs(fract( (wsPosition.xy / gridExtent) - 0.5) - 0.5) / fwidth(wsPosition.xy / gridExtent);
+	float line = min(grid.x, grid.y);
+	return line;
+}
+
+float GetLineAlpha(float lineWidth, float maximum)
+{
+	return maximum - min(lineWidth, maximum);
+}
+
 
 void main() 
 {
@@ -60,12 +72,8 @@ void main()
 	int g_Extent = 200;
 
 	// from http://madebyevan.com/shaders/grid/
-	// Compute anti-aliased world-space grid lines
-	vec2 grid = abs(fract( (wsPosition.xy / g_Extent) - 0.5) - 0.5) / fwidth(wsPosition.xy / g_Extent);
-	float line = min(grid.x, grid.y);
-
-	// Just visualize the grid lines directly
-	float alpha = 1.0 - min(line, 1.0);
+	float line = GetLineWidth(wsPosition.xy, g_Extent);
+	float alpha = GetLineAlpha(line, 0.8f);
 
 	vec3 outputColor = vec3(1,1,1);
 

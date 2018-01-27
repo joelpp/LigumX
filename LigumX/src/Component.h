@@ -24,12 +24,9 @@ void SetName(std::string value) { m_Name = value; };
 Entity*& GetParentEntity() { return m_ParentEntity; }; 
 void SetParentEntity(Entity* value) { m_ParentEntity = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-Entity* m_ParentEntity
-;
+int m_ObjectID;
+std::string m_Name;
+Entity* m_ParentEntity;
 public:
 static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -1,7 +1,5 @@
 class Sector
 {
-	glm::vec2 Position;
-
 	glm::vec2 WorldPosition;
 	glm::vec2 EarthPosition;
 

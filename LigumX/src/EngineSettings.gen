@@ -6,4 +6,6 @@ class EngineSettings
 	glm::vec2 StartLonLat;
 
 	float Extent;
+
+	int OSMQuantizationScale = 1000000;
 }

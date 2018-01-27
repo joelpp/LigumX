@@ -193,7 +193,7 @@ public:
 			}
 
 			m_Stream << (var.IsAPointer() ? "*" : "");
-			m_Stream << " m_" << var.m_Name << std::endl;
+			m_Stream << " m_" << var.m_Name;
 
 			if (var.HasDefaultValue())
 			{

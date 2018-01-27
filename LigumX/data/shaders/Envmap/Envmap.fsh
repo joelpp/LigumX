@@ -11,7 +11,7 @@ uniform vec2 windowSize;
 
 #define PROVIDER_Sky
 
-// Include Providers Marker
+// Include ProvidersMarker
 
 out vec3 color;
 

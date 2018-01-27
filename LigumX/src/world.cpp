@@ -16,6 +16,7 @@
 #include "Texture.h"
 #include "Mesh.h"
 #include "DefaultObjects.h"
+#include "LXError.h"
 
 #pragma region  CLASS_SOURCE World
 
@@ -89,8 +90,8 @@ Coord2 World::sectorPosFromXY(Coord2 longLat)
 Sector* World::GetOrCreateSectorContainingXY(Coord2 longLat)
 {
 
-	Sector* sector = m_sectorManager->sectorContaining(longLat);
-
+	Sector* sector = nullptr;// m_sectorManager->sectorContaining(longLat);
+	lxAssert0();
 	return sector;
 }
 
@@ -276,19 +277,19 @@ bool fuzzyEquals2(glm::vec2 a, glm::vec2 b, float tolerance)
 	return (fabs(a.x - b.x) < tolerance) && (fabs(a.y - b.y) < tolerance);
 }
 
-Sector* World::GetSector(Coord2 longLat)
-{
-	Sector* toReturn = nullptr;
-	for (Sector* sector : m_Sectors)
-	{
-		if (fuzzyEquals2(sector->GetPosition(), longLat, 1e-2f))
-		{
-			return sector;
-		}
-	}
-
-	return nullptr;
-}
+//Sector* World::GetSector(Coord2 longLat)
+//{
+//	Sector* toReturn = nullptr;
+//	for (Sector* sector : m_Sectors)
+//	{
+//		if (fuzzyEquals2(sector->GetPosition(), longLat, 1e-2f))
+//		{
+//			return sector;
+//		}
+//	}
+//
+//	return nullptr;
+//}
 
 Sector* World::GetSectorByIndex(const glm::ivec2& normalizedSectorIndex)
 {

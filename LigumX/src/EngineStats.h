@@ -28,14 +28,10 @@ const int& GetNumDrawCalls() { return m_NumDrawCalls; };
 void SetNumDrawCalls(int value) { m_NumDrawCalls = value; }; 
 void AddToNumDrawCalls(int value) { m_NumDrawCalls += value; };
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-int m_NumObjectMapHits
- = 0;
-int m_NumDrawCalls
- = 0;
+int m_ObjectID;
+std::string m_Name;
+int m_NumObjectMapHits = 0;
+int m_NumDrawCalls = 0;
 public:
 static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];

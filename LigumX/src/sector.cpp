@@ -17,7 +17,6 @@ const ClassPropertyData Sector::g_Properties[] =
 {
 { "ObjectID", PIDX_ObjectID, offsetof(Sector, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Sector, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Position", PIDX_Position, offsetof(Sector, m_Position), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
@@ -44,12 +43,12 @@ Sector::Sector()
 Sector::Sector(glm::vec2 startPos)
 	: m_DataLoaded(false)
 {
-	m_Position = startPos;
+	//m_Position = startPos;
 
-	if (!m_Data)
-	{
-		m_Data = new SectorData(m_Position);
-	}
+	//if (!m_Data)
+	//{
+	//	m_Data = new SectorData(m_Position);
+	//}
 }
 
 
@@ -58,7 +57,7 @@ Sector::Sector(vec2 pos, float size, int ID)
 {
 	//PRINT("CONSTRUCTING NEW SECTOR AT")
 	//PRINTVEC2(pos);
-    this->m_Position = pos;
+    //this->m_Position = pos;
     this->m_LifeSize = glm::vec2(size);
 
 	m_Data = 0;
@@ -68,7 +67,7 @@ Sector::Sector(vec2 pos, float size, int ID)
     m_ID = ID;
 
 
-	m_Data = new SectorData(m_Position);
+	//m_Data = new SectorData(m_Position);
 }
 
 glm::ivec2 EarthToQuantized(const glm::vec2& earthPosition)
@@ -105,7 +104,6 @@ Sector::Sector(CurlRequest* curlRequest)
 
 	m_Data = new SectorData();
 
-	m_Position = curlRequest->GetCoords();
 	m_LifeSize = curlRequest->GetExtent();
 
 	SetEarthPosition(curlRequest->GetCoords());
@@ -114,6 +112,8 @@ Sector::Sector(CurlRequest* curlRequest)
 	SetWorldPosition(EarthToWorld(m_EarthPosition));
 
 	SetOffsetIndex(curlRequest->GetSectorIndex());
+
+	curlRequest->SetSector(this);
 }
 
 Sector::Sector(const glm::ivec2& index)
@@ -164,7 +164,7 @@ bool Sector::createHeightfield()
 {
     if (!m_heightfield)
     {
-        m_heightfield = new Heightfield(m_Position, m_Position.x);
+        m_heightfield = new Heightfield(m_EarthPosition, m_EarthPosition.x);
     }
 
     return m_heightfield->generate();

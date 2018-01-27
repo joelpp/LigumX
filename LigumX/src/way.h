@@ -35,14 +35,10 @@ void SetOSMId(int value) { m_OSMId = value; };
 std::vector<Node*>& GetNodes() { return m_Nodes; }; 
 void SetNodes(std::vector<Node*> value) { m_Nodes = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-int m_OSMId
- = 0;
-std::vector<Node*> m_Nodes
-;
+int m_ObjectID;
+std::string m_Name;
+int m_OSMId = 0;
+std::vector<Node*> m_Nodes;
 public:
 static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];

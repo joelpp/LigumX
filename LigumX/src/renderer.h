@@ -107,16 +107,11 @@ void SetPostEffects(PostEffects* value) { m_PostEffects = value; };
 Camera*& GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-DisplayOptions* m_DisplayOptions
-;
-PostEffects* m_PostEffects
-;
-Camera* m_DebugCamera
-;
+int m_ObjectID;
+std::string m_Name;
+DisplayOptions* m_DisplayOptions;
+PostEffects* m_PostEffects;
+Camera* m_DebugCamera;
 public:
 static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];

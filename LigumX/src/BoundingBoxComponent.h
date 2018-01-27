@@ -31,16 +31,11 @@ void SetUpdatesWithEntity(bool value) { m_UpdatesWithEntity = value; };
 const glm::mat4& GetModelToWorldMatrix() { return m_ModelToWorldMatrix; }; 
 void SetModelToWorldMatrix(glm::mat4 value) { m_ModelToWorldMatrix = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-AABB m_BoundingBox
-;
-bool m_UpdatesWithEntity
- = false;
-glm::mat4 m_ModelToWorldMatrix
-;
+int m_ObjectID;
+std::string m_Name;
+AABB m_BoundingBox;
+bool m_UpdatesWithEntity = false;
+glm::mat4 m_ModelToWorldMatrix;
 public:
 static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -11,7 +11,7 @@
 
 using namespace std;
 
-const std::string g_ProviderIncludeMarker = "// Include Providers Marker";
+const std::string g_ProviderIncludeMarker = "// Include ProvidersMarker";
 
 const std::string g_ProviderIncludeFilePath = g_PathShaders + "ProviderDefinitions.h";
 

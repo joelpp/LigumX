@@ -47,28 +47,17 @@ void SetPixelType(GLPixelType value) { m_PixelType = value; };
 const glm::ivec2& GetSize() { return m_Size; }; 
 void SetSize(glm::ivec2 value) { m_Size = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-std::string m_Filename
-;
-bool m_IsCubeMap
- = false;
-GLuint m_HWObject
-;
-int m_NumChannels
- = 0;
-int m_BitsPerPixel
- = 0;
-GLPixelFormat m_InternalFormat
-;
-GLPixelFormat m_Format
-;
-GLPixelType m_PixelType
-;
-glm::ivec2 m_Size
-;
+int m_ObjectID;
+std::string m_Name;
+std::string m_Filename;
+bool m_IsCubeMap = false;
+GLuint m_HWObject;
+int m_NumChannels = 0;
+int m_BitsPerPixel = 0;
+GLPixelFormat m_InternalFormat;
+GLPixelFormat m_Format;
+GLPixelType m_PixelType;
+glm::ivec2 m_Size;
 public:
 static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -84,52 +84,29 @@ void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; };
 const ShaderFamily& GetShaderFamily() { return m_ShaderFamily; }; 
 void SetShaderFamily(ShaderFamily value) { m_ShaderFamily = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-bool m_Enabled
- = false;
-glm::vec3 m_AmbientColor
- = glm::vec3(0, 0, 0);
-glm::vec3 m_DiffuseColor
- = glm::vec3(0, 0, 0);
-glm::vec3 m_SpecularColor
- = glm::vec3(0, 0, 0);
-bool m_IsPBR
- = false;
-float m_Shininess
- = 0.f;
-float m_Metallic
- = 0.f;
-float m_Roughness
- = 0.f;
-float m_AO
- = 0.f;
-float m_EmissiveFactor
- = 0.f;
-bool m_DiffuseTextureEnabled
- = false;
-bool m_SpecularTextureEnabled
- = false;
-bool m_Unlit
- = false;
-float m_RefractionIndex
- = 0.f;
-bool m_IsGlass
- = false;
-bool m_ReflectEnvironment
- = false;
-Texture* m_DiffuseTexture
-;
-Texture* m_SpecularTexture
-;
-Texture* m_HeightfieldTexture
-;
-ProgramPipeline* m_ProgramPipeline
-;
-ShaderFamily m_ShaderFamily
-;
+int m_ObjectID;
+std::string m_Name;
+bool m_Enabled = false;
+glm::vec3 m_AmbientColor = glm::vec3(0, 0, 0);
+glm::vec3 m_DiffuseColor = glm::vec3(0, 0, 0);
+glm::vec3 m_SpecularColor = glm::vec3(0, 0, 0);
+bool m_IsPBR = false;
+float m_Shininess = 0.f;
+float m_Metallic = 0.f;
+float m_Roughness = 0.f;
+float m_AO = 0.f;
+float m_EmissiveFactor = 0.f;
+bool m_DiffuseTextureEnabled = false;
+bool m_SpecularTextureEnabled = false;
+bool m_Unlit = false;
+float m_RefractionIndex = 0.f;
+bool m_IsGlass = false;
+bool m_ReflectEnvironment = false;
+Texture* m_DiffuseTexture;
+Texture* m_SpecularTexture;
+Texture* m_HeightfieldTexture;
+ProgramPipeline* m_ProgramPipeline;
+ShaderFamily m_ShaderFamily;
 public:
 static const int g_PropertyCount = 23;
 static const ClassPropertyData g_Properties[g_PropertyCount];

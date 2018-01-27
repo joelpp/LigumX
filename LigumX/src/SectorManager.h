@@ -77,6 +77,7 @@ public:
 
 	float m_sectorSize;
 
+	void AddSector(Sector* sector);
 	Sector* CreateSector(CurlRequest* request);
 	Sector* CreateSector(const glm::ivec2& sectorIndex);
 

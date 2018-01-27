@@ -7,7 +7,7 @@ out vec4 FragColor;
 
 #define PROVIDER_PostEffects
 
-// Include Providers Marker
+// Include ProvidersMarker
 
 uniform sampler2D g_MainTexture;
 uniform sampler2D g_GlowTexture;

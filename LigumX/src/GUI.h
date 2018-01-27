@@ -10,18 +10,6 @@ class GUI;
 
 extern GUI* g_GUI;
 
-//class GUIMessage
-//{
-//	std::string
-//};
-//
-//class GUIMessageCenter
-//{
-//	std::vector<GUIMessage> m_Messages;
-//
-//
-//};
-
 #pragma endregion  FORWARD_DECLARATIONS GUI
 
 class GUI
@@ -41,14 +29,10 @@ void Setm_Enabled(bool value) { m_m_Enabled = value; };
 const int& GetNumActiveWindows() { return m_NumActiveWindows; }; 
 void SetNumActiveWindows(int value) { m_NumActiveWindows = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-bool m_m_Enabled
- = false;
-int m_NumActiveWindows
- = 0;
+int m_ObjectID;
+std::string m_Name;
+bool m_m_Enabled = false;
+int m_NumActiveWindows = 0;
 public:
 static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -7,7 +7,7 @@ uniform mat4 vpMat;
 uniform mat4 g_ModelToWorldMatrix;
 uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;
-// Include Providers Marker
+// Include ProvidersMarker
 
 out vec3 vWorldPosition;
 

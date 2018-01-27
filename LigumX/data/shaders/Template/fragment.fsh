@@ -8,7 +8,7 @@ in vec4 FragPosLightSpace;
 
 #define PROVIDER_View
 
-// Include Providers Marker
+// Include ProvidersMarker
 
 layout (location = 0) out vec4 FinalColor;
 

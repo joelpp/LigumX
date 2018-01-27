@@ -28,19 +28,17 @@ const glm::vec2& GetStartLonLat() { return m_StartLonLat; };
 void SetStartLonLat(glm::vec2 value) { m_StartLonLat = value; }; 
 const float& GetExtent() { return m_Extent; }; 
 void SetExtent(float value) { m_Extent = value; }; 
+const int& GetOSMQuantizationScale() { return m_OSMQuantizationScale; }; 
+void SetOSMQuantizationScale(int value) { m_OSMQuantizationScale = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-float m_WorldScale
- = 0.f;
-glm::vec2 m_StartLonLat
- = glm::vec2(0, 0);
-float m_Extent
- = 0.f;
+int m_ObjectID;
+std::string m_Name;
+float m_WorldScale = 0.f;
+glm::vec2 m_StartLonLat = glm::vec2(0, 0);
+float m_Extent = 0.f;
+int m_OSMQuantizationScale = 1000000;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EngineSettingsPIDX
@@ -50,6 +48,7 @@ PIDX_Name,
 PIDX_WorldScale,
 PIDX_StartLonLat,
 PIDX_Extent,
+PIDX_OSMQuantizationScale,
 };
 bool Serialize(bool writing);
 

@@ -14,6 +14,7 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 { "WorldScale", PIDX_WorldScale, offsetof(EngineSettings, m_WorldScale), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "StartLonLat", PIDX_StartLonLat, offsetof(EngineSettings, m_StartLonLat), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "Extent", PIDX_Extent, offsetof(EngineSettings, m_Extent), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "OSMQuantizationScale", PIDX_OSMQuantizationScale, offsetof(EngineSettings, m_OSMQuantizationScale), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool EngineSettings::Serialize(bool writing)
 {

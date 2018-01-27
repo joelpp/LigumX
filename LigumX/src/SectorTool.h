@@ -33,16 +33,11 @@ void SetHighlightedWorldCoordinates(glm::vec3 value) { m_HighlightedWorldCoordin
 Sector*& GetHighlightedSector() { return m_HighlightedSector; }; 
 void SetHighlightedSector(Sector* value) { m_HighlightedSector = value; }; 
 private:
-int m_ObjectID
-;
-std::string m_Name
-;
-bool m_Enabled
- = false;
-glm::vec3 m_HighlightedWorldCoordinates
- = glm::vec3(0, 0, 0);
-Sector* m_HighlightedSector
-;
+int m_ObjectID;
+std::string m_Name;
+bool m_Enabled = false;
+glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
+Sector* m_HighlightedSector;
 public:
 static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
