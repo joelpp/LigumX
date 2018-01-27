@@ -102,7 +102,7 @@ bool fuzzyEquals(glm::vec2 a, glm::vec2 b, float tolerance)
 
 void Editor::UpdateManipulator()
 {
-	World* world = LigumX::GetInstance().getWorld();
+	World* world = LigumX::GetInstance().GetWorld();
 	glm::vec3 worldPosition = glm::swizzle(m_PickingData, glm::R, glm::G, glm::B);
 	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
 	glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
@@ -149,7 +149,7 @@ void Editor::UpdateManipulator()
 	}
 	else
 	{
-		World* world = LigumX::GetInstance().getWorld();
+		World* world = LigumX::GetInstance().GetWorld();
 
 		float distance = dragDistance.x / 10.f;
 		glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
@@ -308,7 +308,7 @@ void Editor::ApplyTool()
 void Editor::RenderPicking()
 {
 	Renderer* renderer = LigumX::GetRenderer();
-	World* world = LigumX::GetInstance().getWorld();
+	World* world = LigumX::GetInstance().GetWorld();
 
 	renderer->RenderPickingBuffer(m_Options->GetDebugDisplay());
 
@@ -999,7 +999,7 @@ void Editor::SaveObjectFromCreator(Entity* newEntity)
 {
 	newEntity->GetModel()->Serialize(false);
 
-	World* world = LigumX::GetInstance().getWorld();
+	World* world = LigumX::GetInstance().GetWorld();
 	world->GetEntities().push_back(newEntity);
 }
 
@@ -1066,7 +1066,7 @@ void Editor::TrySaveObject(T* object)
 void Editor::RenderImgui()
 {
 	Renderer* renderer = LigumX::GetRenderer();
-	World* world = LigumX::GetInstance().getWorld();
+	World* world = LigumX::GetInstance().GetWorld();
 
 	ImGui_ImplGlfwGL3_NewFrame();
 	if (g_Editor->GetOptions()->GetShowTestGUI())
@@ -1211,6 +1211,15 @@ void Editor::RenderImgui()
 
 }
 
+void Editor::ProcessScrolling()
+{
+	Camera* activeCamera = Renderer::GetInstance().GetDebugCamera();
+	const glm::vec2& scrolling = g_InputHandler->GetMouseScroll();
+
+	glm::vec3 moveVector = activeCamera->GetFrontVector() * scrolling.y * m_Options->GetMouseScrollCameraSpeed();
+
+	activeCamera->AddToPosition(moveVector);
+}
 
 
 void Editor::Render()
@@ -1220,6 +1229,8 @@ void Editor::Render()
 	RenderImgui();
 
 	ApplyTool();
+
+	ProcessScrolling();
 }
 
 

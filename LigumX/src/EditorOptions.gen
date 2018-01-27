@@ -11,4 +11,6 @@ class EditorOptions
 	bool BackupDataOnSave;
 	bool DebugDisplay;
 	bool SaveDisabled;
+
+	float MouseScrollCameraSpeed = 1.0f;
 }

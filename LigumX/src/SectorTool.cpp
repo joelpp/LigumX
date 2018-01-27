@@ -106,7 +106,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	float scale = g_EngineSettings->GetWorldScale();
 
-	World* world = LigumX::GetInstance().getWorld();
+	World* world = LigumX::GetInstance().GetWorld();
 
 	m_HighlightedSector = world->GetSectorByIndex(normalizedSectorIndex);
 	m_HighlightedWorldCoordinates = worldPosition;

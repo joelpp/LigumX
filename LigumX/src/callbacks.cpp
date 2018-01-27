@@ -35,7 +35,7 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* pWindow, double xOffset, double
 
 	if (!caughtByGUI)
 	{
-		g_Editor->AddToTerrainBrushSize((float) yOffset);
+		g_InputHandler->AddToMouseScroll(glm::vec2(xOffset, yOffset));
 	}
 }
 

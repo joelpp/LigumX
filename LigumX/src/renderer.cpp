@@ -229,7 +229,7 @@ void Renderer::Initialize()
 	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0.f, 0.f, 1.f), m_ShadowCamera->GetFrontVector())));
 	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
 	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->GetFrontVector() * 10.f);
-	m_ShadowCamera->updateVPMatrix();
+	m_ShadowCamera->UpdateVPMatrix();
 
 	InitGL();
 
@@ -485,11 +485,14 @@ void Renderer::SetViewUniforms(Camera* cam)
 	SetVertexUniform(glm::mat4(glm::mat3(cam->GetViewMatrix())), "g_WorldToViewMatrixRotationOnly");
 	SetFragmentUniform(glm::inverse(cam->GetViewMatrix()), "g_ViewToWorldMatrix");
 	SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
-	SetFragmentUniform(glm::inverse(cam->GetProjectionMatrix()), "g_ProjectionMatrixInverse");
+	SetFragmentUniform(glm::inverse(cam->GetViewProjectionMatrix()), "g_ViewProjectionMatrixInverse");
+	SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewMatrixInverse");
+	SetFragmentUniform(cam->GetProjectionMatrixInverse(), "g_ProjectionMatrixInverse");
 
 	SetFragmentUniform(cam->GetPosition(),	"g_CameraPosition");
 	SetFragmentUniform(cam->GetNearPlane(),	"g_CameraNearPlane");
-	SetFragmentUniform(cam->GetFarPlane(),	"g_CameraFarPlane");
+	SetFragmentUniform(cam->GetFarPlane(), "g_CameraFarPlane");
+	SetFragmentUniform(cam->GetFrontVector(),	"g_CameraLookAt");
 }
 
 void Renderer::SetDebugUniforms()
@@ -682,7 +685,7 @@ void Renderer::RenderShadowMap()
 	m_ShadowCamera->SetFrontVector(pos);
 	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->GetFrontVector())));
 	m_ShadowCamera->SetUpVector(normalize(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector())));
-	m_ShadowCamera->updateVPMatrix();
+	m_ShadowCamera->UpdateVPMatrix();
 
 	SetViewUniforms(m_ShadowCamera);
 	SetPostEffectsUniforms();
@@ -841,12 +844,14 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 
 void Renderer::BeginFrame(World* world)
 {
+	m_DebugCamera->handlePresetNewFrame(m_Window->pWindow);
+
+	m_DebugCamera->UpdateVPMatrix();
+
 	g_EngineStats->ResetFrame();
 
 	m_World = world;
 	GL::g_CheckGLErrors = m_DisplayOptions->GetOutputGLErrors();
-
-	m_DebugCamera->handlePresetNewFrame(m_Window->pWindow);
 
 	m_NumLights = 0;
 
@@ -926,8 +931,34 @@ void Renderer::BeforeWorldRender()
 //
 //}
 
+void Renderer::RenderGrid()
+{
+
+	if (!m_DisplayOptions->GetRenderGrid())
+	{
+		return;
+	}
+
+	SetPipeline(pPipelineGrid);
+
+	GL::SetCapability(GL::Capabilities::Blend, true);
+	GL::SetBlendMode(GL::SrcAlpha, GL::BlendMode::OneMinusSrcAlpha);
+
+	SetViewUniforms(m_DebugCamera);
+	SetFragmentUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
+
+	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
+	DrawMesh(mesh);
+
+
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	GL::SetCapability(GL::Capabilities::Blend, false);
+}
+
 void Renderer::RenderDebugModels()
 {
+
 	SetPipeline(pPipelineLines);
 
 	for (Model* model : m_DebugModels)
@@ -973,6 +1004,8 @@ void Renderer::RenderDebugModels()
 
 void Renderer::AfterWorldRender()
 {
+	RenderGrid();
+
 	RenderDebugModels();
 
 	ApplyEmissiveGlow();
@@ -1016,8 +1049,8 @@ void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 
 void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
 {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GL::SetCapability(GL::Blend, true);
+	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
 
 	SetPipeline(pPipelineUVEdges);
 
@@ -1027,13 +1060,13 @@ void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
 
-	glDisable(GL_BLEND);
+	GL::SetCapability(GL::Blend, false);
 }
 
 void Renderer::DrawManipulator(Entity* entity)
 {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GL::SetCapability(GL::Blend, true);
+	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
 
 	SetPipeline(pPipelineSolidColor);
 
@@ -1045,7 +1078,7 @@ void Renderer::DrawManipulator(Entity* entity)
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
 
-	glDisable(GL_BLEND);
+	GL::SetCapability(GL::Blend, false);
 }
 
 
@@ -1210,9 +1243,11 @@ void Renderer::RenderSky()
 
 void Renderer::RenderText(Text t)
 {
-     glEnable(GL_CULL_FACE);
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GL::SetCapability(GL::CullFace, true);
+	GL::SetCapability(GL::Blend, true);
+
+	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
+
    // Activate corresponding render state
    pPipelineText->usePipeline();
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
@@ -1273,9 +1308,8 @@ void Renderer::RenderText(Text t)
    glBindVertexArray(0);
    glBindTexture(GL_TEXTURE_2D, 0);
 
-   glDisable(GL_BLEND);
-   glDisable(GL_CULL_FACE);
-
+   GL::SetCapability(GL::Blend, false);
+   GL::SetCapability(GL::CullFace, false);
 }
 
 void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)

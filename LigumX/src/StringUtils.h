@@ -31,4 +31,6 @@ namespace StringUtils
 	std::string GetTimestamp();
 
 	bool DumpToFile(std::string& path, std::string& data);
+
+	int Count(const std::string& s, const char c);
 }

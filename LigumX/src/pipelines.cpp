@@ -29,6 +29,7 @@ void Renderer::init_pipelines()
 	pPipelineUVEdges = new ProgramPipeline("UVEdges");
 	pPipelineSolidColor = new ProgramPipeline("SolidColor");
 	pPipelineBlur = new ProgramPipeline("blur");
+	pPipelineGrid = new ProgramPipeline("Grid");
 	Renderer::outputGLError(__func__, __LINE__);
 
 	m_Pipelines.clear();

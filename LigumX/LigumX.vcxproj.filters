@@ -479,6 +479,12 @@
     <ClInclude Include="src\GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LXError.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />

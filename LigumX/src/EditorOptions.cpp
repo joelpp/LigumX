@@ -21,6 +21,7 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "BackupDataOnSave", PIDX_BackupDataOnSave, offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DebugDisplay", PIDX_DebugDisplay, offsetof(EditorOptions, m_DebugDisplay), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "SaveDisabled", PIDX_SaveDisabled, offsetof(EditorOptions, m_SaveDisabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "MouseScrollCameraSpeed", PIDX_MouseScrollCameraSpeed, offsetof(EditorOptions, m_MouseScrollCameraSpeed), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 bool EditorOptions::Serialize(bool writing)
 {

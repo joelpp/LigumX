@@ -54,22 +54,38 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void LigumX::mainLoop()
+void LigumX::BeginFrame()
 {
-    static double dt = 0.0;
-//    static double curr_time = glfwGetTime();
-    static double physic_accumulator = 0.0;
+	static double dt = 0.0;
+	//    static double curr_time = glfwGetTime();
+	static double physic_accumulator = 0.0;
 
-    physic_accumulator += dt;
+	physic_accumulator += dt;
 
 	g_InputHandler->FrameUpdate();
+}
 
-    if (Settings::GetInstance().i("loadNewSectors"))
-    {
-        updateWorld(10);
-    }
+void LigumX::DoFrame()
+{
+	world->Update();
+
 
 	m_Renderer->render(world);
+}
+
+void LigumX::EndFrame()
+{
+	g_InputHandler->Reset();
+
+}
+
+void LigumX::mainLoop()
+{
+	BeginFrame();
+
+	DoFrame();
+
+	EndFrame();
 }
 
 
@@ -110,7 +126,6 @@ void LigumX::Initialize()
     //=============================================================================
     //init_tweakBar();
 
-    // updateWorld(3);
 
 }
 
@@ -138,45 +153,6 @@ void LigumX::InitializeGlobalObjects()
 
 }
 
-void LigumX::updateWorld(int loadingRingSize)
-{
-    Renderer& renderer = Renderer::GetInstance();
-	//glm::vec2 cameraPos = glm::vec2(renderer.GetDebugCamera()->GetPosition());
-
- //   std::vector<Sector*>* newSectors = world->updateSectorsAroundPoint(cameraPos, loadingRingSize);
-
- //   for(int i = 0; i < newSectors->size(); ++i)
- //   {
- //   
- //       Sector* sector = newSectors->at(i);
- //       if (sector->m_initializationLevel < Sector::FullyInitialized)
- //       {
- //           if (sector->m_initializationLevel == Sector::ContourLoaded)
- //           {
- //               renderData->InitializeSector(sector);
- //           }
-
- //           if (sector->m_initializationLevel == Sector::DataLoaded)
- //           {
- //               renderData->fillBuffers(sector);
- //           }
-
- //           if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
- //           {
- //               //PRINT("heightfield geenerated, adding to terrain buffer")
- //                renderData->addToTerrainBuffer(sector);
- //           }
- //       }
-
-
- //   }
-
- //   delete(newSectors);
-
-	world->Update();
-}
-
-
 void LigumX::loadSettings(){
     Settings& s = Settings::GetInstance();
     s.load();
@@ -192,7 +168,7 @@ void LigumX::loadSettings(){
 }
 
 
-World* LigumX::getWorld()
+World* LigumX::GetWorld()
 {
     return world;
 }

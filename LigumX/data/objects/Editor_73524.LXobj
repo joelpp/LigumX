@@ -8,5 +8,6 @@ ActiveTool
 4
 TerrainBrushSize
 23
+SectorTool
 PickingBufferSize
 128

@@ -169,6 +169,7 @@ public:
 	void RenderEntities(ShaderFamily family, std::vector<Entity*> entities);
 	void RenderEntities(std::vector<Entity*> entities);
 	void RenderDebugModels();
+	void RenderGrid();
 
 	void BeforeWorldRender();
 	void AfterWorldRender();
@@ -268,6 +269,7 @@ public:
 	ProgramPipeline* pPipelineShadowMap;
 	ProgramPipeline* pPipelineUVEdges;
 	ProgramPipeline* pPipelineSolidColor;
+	ProgramPipeline* pPipelineGrid;
 	ProgramPipeline* activePipeline;
     std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 

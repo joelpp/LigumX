@@ -42,6 +42,8 @@ const bool& GetDebugDisplay() { return m_DebugDisplay; };
 void SetDebugDisplay(bool value) { m_DebugDisplay = value; }; 
 const bool& GetSaveDisabled() { return m_SaveDisabled; }; 
 void SetSaveDisabled(bool value) { m_SaveDisabled = value; }; 
+const float& GetMouseScrollCameraSpeed() { return m_MouseScrollCameraSpeed; }; 
+void SetMouseScrollCameraSpeed(float value) { m_MouseScrollCameraSpeed = value; }; 
 private:
 int m_ObjectID
 ;
@@ -69,8 +71,10 @@ bool m_DebugDisplay
  = false;
 bool m_SaveDisabled
  = false;
+float m_MouseScrollCameraSpeed
+ = 1.0f;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -88,6 +92,7 @@ PIDX_ShowObjectManager,
 PIDX_BackupDataOnSave,
 PIDX_DebugDisplay,
 PIDX_SaveDisabled,
+PIDX_MouseScrollCameraSpeed,
 };
 bool Serialize(bool writing);
 

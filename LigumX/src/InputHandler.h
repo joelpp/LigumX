@@ -50,6 +50,9 @@ void SetMousePosition(glm::vec2 value) { SetMousePositionCallback(value); };
 void SetMousePositionCallback(glm::vec2 value);
 const glm::vec2& GetLastMousePosition() { return m_LastMousePosition; }; 
 void SetLastMousePosition(glm::vec2 value) { m_LastMousePosition = value; }; 
+const glm::vec2& GetMouseScroll() { return m_MouseScroll; }; 
+void SetMouseScroll(glm::vec2 value) { m_MouseScroll = value; }; 
+void AddToMouseScroll(glm::vec2 value) { m_MouseScroll += value; };
 private:
 int m_ObjectID
 ;
@@ -77,8 +80,10 @@ glm::vec2 m_MousePosition
  = glm::vec2(0, 0);
 glm::vec2 m_LastMousePosition
  = glm::vec2(0, 0);
+glm::vec2 m_MouseScroll
+ = glm::vec2(0, 0);
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_InputHandlerPIDX
@@ -96,6 +101,7 @@ PIDX_LastMouseClickPosition,
 PIDX_MouseReleasePosition,
 PIDX_MousePosition,
 PIDX_LastMousePosition,
+PIDX_MouseScroll,
 };
 bool Serialize(bool writing);
 
@@ -106,5 +112,6 @@ InputHandler();
 void HandleInput(GLFWwindow* pWindow, int button, int action, int mods);
 void FrameUpdate();
 
+void Reset();
 
 };

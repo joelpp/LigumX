@@ -146,6 +146,8 @@ void UpdateManipulator();
 void UpdateTerrainEditor();
 void UpdateSectorLoader();
 
+void ProcessScrolling();
+
 void Render();
 
 void RenderImgui();

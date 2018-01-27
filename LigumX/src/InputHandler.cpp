@@ -22,6 +22,7 @@ const ClassPropertyData InputHandler::g_Properties[] =
 { "MouseReleasePosition", PIDX_MouseReleasePosition, offsetof(InputHandler, m_MouseReleasePosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "MousePosition", PIDX_MousePosition, offsetof(InputHandler, m_MousePosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "LastMousePosition", PIDX_LastMousePosition, offsetof(InputHandler, m_LastMousePosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
+{ "MouseScroll", PIDX_MouseScroll, offsetof(InputHandler, m_MouseScroll), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 };
 bool InputHandler::Serialize(bool writing)
 {
@@ -97,4 +98,9 @@ void InputHandler::FrameUpdate()
 	SetDragDistance(dragDistance);
 
 	SetLastMousePosition(m_MousePosition);
+}
+
+void InputHandler::Reset()
+{
+	m_MouseScroll = glm::vec2(0,0);
 }

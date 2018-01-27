@@ -57,6 +57,8 @@ const bool& GetRenderShadows() { return m_RenderShadows; };
 void SetRenderShadows(bool value) { m_RenderShadows = value; }; 
 const bool& GetOutputGLErrors() { return m_OutputGLErrors; }; 
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
+const bool& GetRenderGrid() { return m_RenderGrid; }; 
+void SetRenderGrid(bool value) { m_RenderGrid = value; }; 
 private:
 int m_ObjectID
 ;
@@ -96,8 +98,10 @@ bool m_RenderShadows
  = false;
 bool m_OutputGLErrors
  = false;
+bool m_RenderGrid
+ = true;
 public:
-static const int g_PropertyCount = 19;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -121,6 +125,7 @@ PIDX_RenderTextureOverlay,
 PIDX_RenderOpaque,
 PIDX_RenderShadows,
 PIDX_OutputGLErrors,
+PIDX_RenderGrid,
 };
 bool Serialize(bool writing);
 

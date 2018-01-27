@@ -37,6 +37,7 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
+void AddToPosition(glm::vec3 value) { m_Position += value; };
 const glm::vec3& GetFrontVector() { return m_FrontVector; }; 
 void SetFrontVector(glm::vec3 value) { m_FrontVector = value; }; 
 const glm::vec3& GetRightVector() { return m_RightVector; }; 
@@ -49,6 +50,10 @@ const glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; };
 void SetProjectionMatrix(glm::mat4 value) { m_ProjectionMatrix = value; }; 
 const glm::mat4& GetViewProjectionMatrix() { return m_ViewProjectionMatrix; }; 
 void SetViewProjectionMatrix(glm::mat4 value) { m_ViewProjectionMatrix = value; }; 
+const glm::mat4& GetViewMatrixInverse() { return m_ViewMatrixInverse; }; 
+void SetViewMatrixInverse(glm::mat4 value) { m_ViewMatrixInverse = value; }; 
+const glm::mat4& GetProjectionMatrixInverse() { return m_ProjectionMatrixInverse; }; 
+void SetProjectionMatrixInverse(glm::mat4 value) { m_ProjectionMatrixInverse = value; }; 
 const float& GetNearPlane() { return m_NearPlane; }; 
 void SetNearPlane(float value) { m_NearPlane = value; }; 
 const float& GetFarPlane() { return m_FarPlane; }; 
@@ -80,6 +85,10 @@ glm::mat4 m_ProjectionMatrix
 ;
 glm::mat4 m_ViewProjectionMatrix
 ;
+glm::mat4 m_ViewMatrixInverse
+;
+glm::mat4 m_ProjectionMatrixInverse
+;
 float m_NearPlane
  = 0.f;
 float m_FarPlane
@@ -93,7 +102,7 @@ float m_ViewSize
 float m_MovementSpeed
  = 0.f;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 17;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -107,6 +116,8 @@ PIDX_UpVector,
 PIDX_ViewMatrix,
 PIDX_ProjectionMatrix,
 PIDX_ViewProjectionMatrix,
+PIDX_ViewMatrixInverse,
+PIDX_ProjectionMatrixInverse,
 PIDX_NearPlane,
 PIDX_FarPlane,
 PIDX_ProjectionType,
@@ -156,8 +167,11 @@ public:
     void translateBy(glm::vec3 delta);
     void translateTo(glm::vec3 position);
     void moveFromUserInput(GLFWwindow* pWindow);
-    void updateVPMatrix();
+    void UpdateVPMatrix();
     void rotate(float _angle);
+
+	void NormalizeVectors();
+
 
     void handlePresetMouseButton(
                 GLFWwindow* pWindow, int button, int action, int mods);

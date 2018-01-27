@@ -36,3 +36,5 @@ RenderShadows
 0
 OutputGLErrors
 1
+RenderGrid
+1

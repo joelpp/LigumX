@@ -1,7 +1,9 @@
 [postserialization]
 class Camera
 {
+	[adder]
 	glm::vec3 Position;
+
 	glm::vec3 FrontVector
 	glm::vec3 RightVector
 	glm::vec3 UpVector
@@ -14,6 +16,12 @@ class Camera
 
 	[transient, hidden]
 	glm::mat4 ViewProjectionMatrix
+
+	[transient, hidden]
+	glm::mat4 ViewMatrixInverse;
+
+	[transient, hidden]
+	glm::mat4 ProjectionMatrixInverse;
 
 	float NearPlane
 	float FarPlane

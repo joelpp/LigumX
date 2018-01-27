@@ -3,6 +3,9 @@
 #include "program_pipeline.h"
 #include "renderer.h"
 #include "ObjectManager.h"
+#include "LXError.h"
+#include "StringUtils.h"
+
 using namespace std;
 
 const std::string g_ProviderIncludeMarker = "// Include Providers Marker";
@@ -68,8 +71,13 @@ uniform bool g_UseShadows;
 
 #ifdef PROVIDER_View
 uniform vec3 g_CameraPosition;
+uniform vec3 g_CameraLookAt;
 uniform float g_CameraNearPlane;
 uniform float g_CameraFarPlane;
+uniform mat4 g_CameraInverse;
+uniform mat4 g_ViewProjectionMatrixInverse;
+uniform mat4 g_ViewMatrixInverse;
+uniform mat4 g_ProjectionMatrixInverse;
 #endif
 
 #ifdef PROVIDER_Debug
@@ -104,14 +112,14 @@ uniform float sunOrientation;
 uniform float sunTime;
 #endif
 
-//#ifdef PROVIDER_Window
-//uniform vec2 g_WindowSize;
-//uniform vec2 g_MouseCoords;
-//#endif
+#ifdef PROVIDER_Window
+uniform vec2 g_WindowSize;
+uniform vec2 g_MouseCoords;
+#endif
 
 )";
 
-
+int g_ProviderDefinition_NumLines = 0;
 
 ProgramPipeline::ShaderProgram::ShaderProgram(
         GLenum shaderType,
@@ -152,6 +160,11 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 
 					if (line == g_ProviderIncludeMarker)
 					{
+						if (g_ProviderDefinition_NumLines == 0)
+						{
+							g_ProviderDefinition_NumLines = StringUtils::Count(g_ProviderDefinition, '\n');
+						}
+
 						sourceCodeStrings[count] += g_ProviderDefinition + "\n";
 						continue;
 					}
@@ -183,14 +196,17 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 
 	bool hadError = false;
 
-    if(!result) {
+    if(!result) 
+	{
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLength);
         info = new char[infoLength];
         glGetShaderInfoLog(shader, infoLength, NULL, info);
         cerr << "Compiler error in shader :" << endl;
         cerr << info << endl;
 		hadError = true;
-	} else {
+	} 
+	else 
+	{
         glidShaderProgram = glCreateProgram();
         glProgramParameteri(glidShaderProgram, GL_PROGRAM_SEPARABLE, GL_TRUE);
         glAttachShader(glidShaderProgram, shader);
@@ -200,20 +216,23 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 
         glGetProgramiv(glidShaderProgram, GL_LINK_STATUS, &result);
 
-        if(result != GL_TRUE) {
+        if(result != GL_TRUE) 
+		{
             glGetProgramiv(glidShaderProgram, GL_INFO_LOG_LENGTH, &infoLength);
             info = new char[infoLength];
             glGetProgramInfoLog(glidShaderProgram, infoLength, NULL, info);
             cerr << "Linker error in shader :" << endl;
-            cerr << info << endl;
+			cerr << info << endl;
 			hadError = true;
         }
     }
 
 	if (hadError)
 	{
-		assert(false);
+		cerr << g_ProviderDefinition_NumLines << endl;
+		lxAssert0();
 	}
+	
 }
 
 GLbitfield ProgramPipeline::sShaderTypeEnumToBitField(

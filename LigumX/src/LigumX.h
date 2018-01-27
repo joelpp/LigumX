@@ -49,15 +49,17 @@ public:
     void Initialize();
 	void InitializeGlobalObjects();
 
+	void BeginFrame();
+	void DoFrame();
+	void EndFrame();
+
+
     bool running;
     void mainLoop();
 
 	void Shutdown();
 
-    World* getWorld();
-
-    std::pair<glm::vec2, glm::vec2> windowBoundingBox();
-    void updateWorld(int loadingRingSize);
+    World* GetWorld();
 
     // TODO: move this to data
     void populateTypeColorArray();

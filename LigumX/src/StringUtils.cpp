@@ -129,3 +129,8 @@ bool StringUtils::DumpToFile(std::string& path, std::string& data)
 
 	return false;
 }
+
+int StringUtils::Count(const std::string& s, const char c)
+{
+	return std::count(s.begin(), s.end(), c);
+}

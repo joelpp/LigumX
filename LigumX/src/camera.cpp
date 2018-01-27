@@ -6,6 +6,7 @@
 #include <glm/gtx/transform.hpp>
 #include <iostream>
 #include "Settings.h"
+#include "LXError.h"
 
 #pragma region  CLASS_SOURCE Camera
 
@@ -17,13 +18,15 @@ const ClassPropertyData Camera::g_Properties[] =
 {
 { "ObjectID", PIDX_ObjectID, offsetof(Camera, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Camera, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Position", PIDX_Position, offsetof(Camera, m_Position), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "Position", PIDX_Position, offsetof(Camera, m_Position), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "FrontVector", PIDX_FrontVector, offsetof(Camera, m_FrontVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "RightVector", PIDX_RightVector, offsetof(Camera, m_RightVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "UpVector", PIDX_UpVector, offsetof(Camera, m_UpVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "ViewMatrix", PIDX_ViewMatrix, offsetof(Camera, m_ViewMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "ProjectionMatrix", PIDX_ProjectionMatrix, offsetof(Camera, m_ProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "ViewProjectionMatrix", PIDX_ViewProjectionMatrix, offsetof(Camera, m_ViewProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
+{ "ViewMatrixInverse", PIDX_ViewMatrixInverse, offsetof(Camera, m_ViewMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
+{ "ProjectionMatrixInverse", PIDX_ProjectionMatrixInverse, offsetof(Camera, m_ProjectionMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "FarPlane", PIDX_FarPlane, offsetof(Camera, m_FarPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
@@ -74,21 +77,19 @@ Camera::Camera()
     keyMovementSpeed = defaultKeyMovementSpeed;
     keyMovementSpeedIncreaseFactor = 1.5f;
     mouseIsDragging = false;
-    updateVPMatrix();
 }
 
 void Camera::PostSerialization(bool writing)
 {
 	if (!writing)
 	{
-		updateVPMatrix();
+		UpdateVPMatrix();
 	}
 }
 
 void Camera::translateBy(vec3 delta)
 {
     m_Position += delta;
-    updateVPMatrix();
 }
 
 void Camera::translateTo(vec3 inPosition)
@@ -101,13 +102,10 @@ void Camera::translateTo(vec3 inPosition)
 
 	m_Position.x += coordinateShifting.x;
 	m_Position.y += coordinateShifting.y;
-
-    updateVPMatrix();
 }
 
 void Camera::rotate(float _angle){
     angle += _angle;
-    updateVPMatrix();
 }
 
 void Camera::moveFromUserInput(GLFWwindow *pWindow)
@@ -138,7 +136,7 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
     }
 }
 
-void Camera::updateVPMatrix()
+void Camera::UpdateVPMatrix()
 {
 
     m_ViewProjectionMatrix = column(mat4(1), 0, vec4(m_RightVector, 0));
@@ -164,6 +162,11 @@ void Camera::updateVPMatrix()
 		m_ViewProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane) * m_ViewProjectionMatrix;
 		m_ProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane);
 	}
+
+	m_ViewMatrixInverse = glm::inverse(m_ViewMatrix);
+	m_ProjectionMatrixInverse = glm::inverse(m_ProjectionMatrix);
+
+	lxAssert(! (glm::isnan(m_ViewProjectionMatrix[0][0])));
 }
 
 
@@ -202,7 +205,6 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
             upVecReference = m_UpVector;
             rightVecReference = m_RightVector;
 //            mbRotationMatrixIsDirty = true;
-            updateVPMatrix();
         } else if(action == GLFW_RELEASE) {
            mouseIsDragging = false;
             if(cameraType == CameraType::TOP_3D) {
@@ -224,7 +226,6 @@ void Camera::dragMousePresetButton(GLFWwindow* pWindow, int button, int action, 
 //                mbTranslationMatrixIsDirty = true;
 //                mbRotationMatrixIsDirty = true;
             }
-            updateVPMatrix();
         }
     }
 }
@@ -350,28 +351,39 @@ void Camera::qweasdzxcKeyPreset(
 	}
 }
 
+void Camera::NormalizeVectors()
+{
+	m_FrontVector = normalize(m_FrontVector);
+	m_UpVector = normalize(m_UpVector);
+	m_RightVector = normalize(m_RightVector);
+}
+
+
 
 void Camera::handlePresetNewFrame(GLFWwindow* pWindow)
 {
+	// TODO : if imgui hadnled setcallback this wouldn't be needed
+	//NormalizeVectors();
+
 	if (!mouseIsDragging)
 	{
 		return;
 	}
-//    if(mbUsePresetNewFrameBehavior) {
-        //vec2 cursorPos;
-        switch(controlType) {
-        case ControlType::QWEASDZXC_DRAG:
-        case ControlType::QWEASDZXC_CONTINUOUS:
-            qweasdzxcKeyHoldPreset(pWindow);
-            break;
-        case ControlType::QWEASDZXC_ARROWS:
-            qweasdzxcKeyHoldPreset(pWindow);
-            viewArrowsPreset(pWindow);
-            break;
-        default:
-            break;
-        }
-//    }
+
+    switch(controlType) 
+	{
+		case ControlType::QWEASDZXC_DRAG:
+		case ControlType::QWEASDZXC_CONTINUOUS:
+			qweasdzxcKeyHoldPreset(pWindow);
+			break;
+		case ControlType::QWEASDZXC_ARROWS:
+			qweasdzxcKeyHoldPreset(pWindow);
+			viewArrowsPreset(pWindow);
+			break;
+		default:
+			break;
+    }
+
 }
 
 
@@ -570,5 +582,4 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
             }
         }
     }
-    updateVPMatrix();
 }

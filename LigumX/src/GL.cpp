@@ -127,6 +127,17 @@ void GL::SetCapability(GL::Capabilities cap, bool enabled)
 	}
 }
 
+
+void GL::SetBlendMode(GLuint target, GL::BlendMode srcFunc, GL::BlendMode dstFunc)
+{
+	glBlendFunci(target, srcFunc, dstFunc);
+}
+
+void GL::SetBlendMode(GL::BlendMode srcFunc, GL::BlendMode dstFunc)
+{
+	glBlendFunc(srcFunc, dstFunc);
+}
+
 // TODO : Should this be in like a GL device object?
 GLFWwindow* GL::CreateGLWindow(int width, int height, const char* title)
 {
