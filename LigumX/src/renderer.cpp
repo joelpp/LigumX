@@ -22,6 +22,7 @@
 #include "EngineStats.h"
 #include "MainWindow.h"
 #include "EngineSettings.h"
+#include "SectorTool.h"
 
 #pragma region  CLASS_SOURCE Renderer
 
@@ -476,6 +477,12 @@ void Renderer::SetShadowMapUniforms(Camera* cam)
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
 
 	SetVertexUniform(cam->GetViewProjectionMatrix(), "g_LightProjectionMatrix");
+}
+
+void Renderer::SetWorldGridUniforms()
+{
+	SetFragmentUniform(g_EngineSettings->GetWorldScale(), "g_WorldScale");
+	SetFragmentUniform(g_Editor->GetSectorTool()->GetSectorGridColor(), "g_SectorGridColor");
 }
 
 void Renderer::SetViewUniforms(Camera* cam)
@@ -945,6 +952,7 @@ void Renderer::RenderGrid()
 	GL::SetCapability(GL::Capabilities::Blend, true);
 	GL::SetBlendMode(GL::SrcAlpha, GL::BlendMode::OneMinusSrcAlpha);
 
+	SetWorldGridUniforms();
 	SetViewUniforms(m_DebugCamera);
 	SetFragmentUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
 

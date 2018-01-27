@@ -222,6 +222,7 @@ public:
 
 	void SetPipeline(ProgramPipeline* pipeline);
 	void SetLightingUniforms();
+	void SetWorldGridUniforms();
 	void SetViewUniforms(Camera* cam);
 	void SetShadowMapUniforms(Camera* cam);
 	void SetDebugUniforms();

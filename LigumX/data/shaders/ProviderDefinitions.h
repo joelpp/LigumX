@@ -104,3 +104,8 @@ uniform float sunTime;
 uniform vec2 g_WindowSize;
 uniform vec2 g_MouseCoords;
 #endif
+
+#ifdef PROVIDER_WorldGrid
+uniform float g_WorldScale;
+uniform vec3 g_SectorGridColor;
+#endif

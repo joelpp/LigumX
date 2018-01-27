@@ -374,3 +374,20 @@ Sector* SectorManager::CreateSector(const glm::ivec2& sectorIndex)
 
 	return sector;
 }
+
+glm::ivec2 SectorManager::EarthToQuantized(const glm::vec2& earthPosition)
+{
+	return (glm::ivec2) (earthPosition * (float) g_EngineSettings->GetOSMQuantizationScale());
+}
+
+int SectorManager::EarthToQuantized(const float& earthPosition)
+{
+	return (int)(earthPosition * g_EngineSettings->GetOSMQuantizationScale());
+}
+
+glm::vec2 SectorManager::OffsetIndexToWorldPosition(const glm::ivec2& sectorIndex)
+{
+	glm::vec2 worldPosition = (glm::vec2) sectorIndex * g_EngineSettings->GetWorldScale();
+
+	return worldPosition;
+}

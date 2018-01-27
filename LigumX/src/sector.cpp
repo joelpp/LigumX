@@ -3,6 +3,7 @@
 #include "heightfield.h"
 #include "LigumX.h"
 #include "Logging.h"
+#include "SectorManager.h"
 #include "RenderDataManager.h"
 #include "EngineSettings.h"
 #include "CurlRequest.h"
@@ -70,27 +71,17 @@ Sector::Sector(vec2 pos, float size, int ID)
 	//m_Data = new SectorData(m_Position);
 }
 
-glm::ivec2 EarthToQuantized(const glm::vec2& earthPosition)
-{
-	return (glm::ivec2) (earthPosition * OSM_QUANTIZATION_SCALE);
-}
-
-int EarthToQuantized(const float& earthPosition)
-{
-	return (int) (earthPosition * OSM_QUANTIZATION_SCALE);
-}
-
 glm::vec2 Sector::EarthToWorld(const glm::vec2& earthPosition)
 {
 	const float& worldScale = g_EngineSettings->GetWorldScale();
 	const glm::vec2& startEarthPosition = g_EngineSettings->GetStartLonLat();
 
-	glm::ivec2 quantizedPosition = EarthToQuantized(earthPosition);
-	glm::ivec2 startQuantizedPosition = EarthToQuantized(startEarthPosition);
+	glm::ivec2 quantizedPosition = g_SectorManager->EarthToQuantized(earthPosition);
+	glm::ivec2 startQuantizedPosition = g_SectorManager->EarthToQuantized(startEarthPosition);
 
 	glm::ivec2 adjustedQuantizedPosition = quantizedPosition - startQuantizedPosition;
 
-	float quantizedExtentF = (float) EarthToQuantized(g_EngineSettings->GetExtent());
+	float quantizedExtentF = (float)g_SectorManager->EarthToQuantized(g_EngineSettings->GetExtent());
 
 	glm::vec2 worldPosition = worldScale * (glm::vec2)adjustedQuantizedPosition / quantizedExtentF;
 
@@ -107,7 +98,7 @@ Sector::Sector(CurlRequest* curlRequest)
 	m_LifeSize = curlRequest->GetExtent();
 
 	SetEarthPosition(curlRequest->GetCoords());
-	SetQuantizedPosition(EarthToQuantized(m_EarthPosition));
+	SetQuantizedPosition(g_SectorManager->EarthToQuantized(m_EarthPosition));
 
 	SetWorldPosition(EarthToWorld(m_EarthPosition));
 
@@ -122,21 +113,11 @@ Sector::Sector(const glm::ivec2& index)
 
 	m_Data = new SectorData();
 
-	glm::vec2 start = glm::vec2(0, 0);
-
 	m_OffsetIndex = index;
-	m_WorldPosition = OffsetIndexToWorldPosition(m_OffsetIndex);
+	m_WorldPosition = SectorManager::OffsetIndexToWorldPosition(m_OffsetIndex);
 
 
 	m_LifeSize = glm::vec2(g_EngineSettings->GetExtent());
-}
-
-
-glm::vec2 Sector::OffsetIndexToWorldPosition(const glm::ivec2& sectorIndex)
-{
-	glm::vec2 worldPosition = (glm::vec2) sectorIndex * g_EngineSettings->GetWorldScale();
-
-	return worldPosition;
 }
 
 

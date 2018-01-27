@@ -6,5 +6,5 @@ class SectorTool
 
 	Sector* HighlightedSector;
 
-
+	glm::vec3 SectorGridColor = glm::vec3(0.5);
 }

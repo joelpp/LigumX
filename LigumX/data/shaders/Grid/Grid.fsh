@@ -8,6 +8,7 @@ in vec4 FragPosLightSpace;
 
 #define PROVIDER_View
 #define PROVIDER_Window
+#define PROVIDER_WorldGrid
 
 // Include ProvidersMarker
 
@@ -69,13 +70,11 @@ void main()
 
 	vec3 wsPosition = GetAimingWorldSpacePosition(worldSpaceRay);
 
-	int g_Extent = 200;
-
 	// from http://madebyevan.com/shaders/grid/
-	float line = GetLineWidth(wsPosition.xy, g_Extent);
+	float line = GetLineWidth(wsPosition.xy, g_WorldScale);
 	float alpha = GetLineAlpha(line, 0.8f);
 
-	vec3 outputColor = vec3(1,1,1);
+	vec3 outputColor = g_SectorGridColor;
 
 	clamp(outputColor, vec3(0, 0, 0), vec3(1, 1, 1));
 

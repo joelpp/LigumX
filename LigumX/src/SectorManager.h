@@ -81,10 +81,17 @@ public:
 	Sector* CreateSector(CurlRequest* request);
 	Sector* CreateSector(const glm::ivec2& sectorIndex);
 
+	glm::ivec2 EarthToQuantized(const glm::vec2& earthPosition);
+
+	int EarthToQuantized(const float& earthPosition);
+
 
 	void LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType);
 
 	void ProcessXMLResult(tinyxml2::XMLNode* docRoot);
+
+	glm::vec2 OffsetIndexToWorldPosition(const glm::ivec2& sectorIndex);
+
 
 
 	std::unordered_map<std::string, Node*> m_AllNodes;

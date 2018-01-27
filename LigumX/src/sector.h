@@ -89,7 +89,6 @@ public:
 	Sector(glm::vec2 startPos);
     bool createHeightfield();
 
-	static glm::vec2 OffsetIndexToWorldPosition(const glm::ivec2& sectorIndex);
 	static glm::ivec2 GetNormalizedSectorIndex(const glm::vec2& position);
 	static glm::vec2 GetStartPosition(glm::vec2 position);
 

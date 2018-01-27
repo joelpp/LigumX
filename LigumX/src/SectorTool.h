@@ -32,14 +32,17 @@ const glm::vec3& GetHighlightedWorldCoordinates() { return m_HighlightedWorldCoo
 void SetHighlightedWorldCoordinates(glm::vec3 value) { m_HighlightedWorldCoordinates = value; }; 
 Sector*& GetHighlightedSector() { return m_HighlightedSector; }; 
 void SetHighlightedSector(Sector* value) { m_HighlightedSector = value; }; 
+const glm::vec3& GetSectorGridColor() { return m_SectorGridColor; }; 
+void SetSectorGridColor(glm::vec3 value) { m_SectorGridColor = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = false;
 glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
 Sector* m_HighlightedSector;
+glm::vec3 m_SectorGridColor = glm::vec3(0.5);
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
@@ -49,6 +52,7 @@ PIDX_Name,
 PIDX_Enabled,
 PIDX_HighlightedWorldCoordinates,
 PIDX_HighlightedSector,
+PIDX_SectorGridColor,
 };
 bool Serialize(bool writing);
 
