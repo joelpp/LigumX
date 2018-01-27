@@ -153,7 +153,6 @@ public:
     void init_pipelines_buildingSides();
     void init_pipelines_filledBuildings();
     void init_pipelines_roads();
-    void init_pipelines_screenQuad();
     void init_pipelines_text();
 
     void render(World* world);

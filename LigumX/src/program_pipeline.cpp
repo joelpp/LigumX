@@ -8,6 +8,7 @@
 #include "StringUtils.h"
 
 
+
 using namespace std;
 
 const std::string g_ProviderIncludeMarker = "// Include Providers Marker";
@@ -27,56 +28,50 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
     int nbSources = 1;//int(srcFilenames.size());
     const char ** sourceCodes = new const char *[nbSources];
     int count = 0;
-    string* sourceCodeStrings;
+    StringList sourceCodeStrings;
 
-    if(readSrcFilenamesAsSourceCode) {
-        //for(initializer_list<string>::iterator iSrc = srcFilenames.begin();
-        //        iSrc != srcFilenames.end(); iSrc++)
-        //{
-            //sourceCodes[count++] = iSrc->c_str();
-        //}
+    if(readSrcFilenamesAsSourceCode) 
+	{
         sourceCodes[count++] = srcFilenames.c_str();
 
-    } else {
+    } 
+	else 
+	{
         // Read the Vertex Shader code from the files
         // based on http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
 
-        sourceCodeStrings = new string[nbSources];
+		sourceCodeStrings = StringList(nbSources);
 
-        //for(initializer_list<string>::iterator iSrc = srcFilenames.begin();
-        //        iSrc != srcFilenames.end(); iSrc++)
-        //{
-            //ifstream sourceCodeStream(*iSrc, ios::in);
-            ifstream sourceCodeStream(srcFilenames, ios::in);
-            if(sourceCodeStream.is_open())
-            {
-                string line;
-                while(getline(sourceCodeStream, line)) 
+        ifstream sourceCodeStream(srcFilenames, ios::in);
+        if(sourceCodeStream.is_open())
+        {
+            string line;
+            while(getline(sourceCodeStream, line)) 
+			{
+				if (line == g_ProviderIncludeMarker)
 				{
-					if (line == g_ProviderIncludeMarker)
+					std::string providerInclude = StringUtils::FromFile(g_ProviderIncludeFilePath.c_str());
+					if (m_NumLinesInInclude == 0)
 					{
-						std::string providerInclude = StringUtils::FromFile(g_ProviderIncludeFilePath.c_str());
-						if (m_NumLinesInInclude == 0)
-						{
-							m_NumLinesInInclude = StringUtils::Count(providerInclude, '\n');
-						}
-
-						sourceCodeStrings[count] += providerInclude + "\n";
-						continue;
+						m_NumLinesInInclude = StringUtils::Count(providerInclude, '\n');
 					}
 
-                    sourceCodeStrings[count] += line + "\n";
+					sourceCodeStrings[count] += providerInclude + "\n";
+					continue;
+				}
 
-                }
-                sourceCodeStream.close();
-            } else {
-                //cout << "Error loading shader : " << *iSrc << endl;
-                cout << "Error loading shader : " << srcFilenames << endl;
-				return;
+                sourceCodeStrings[count] += line + "\n";
+
             }
-            sourceCodes[count] = sourceCodeStrings[count].c_str();
-            count++;
-        //}
+            sourceCodeStream.close();
+        } 
+		else 
+		{
+            cout << "Error loading shader : " << srcFilenames << endl;
+			return;
+        }
+        sourceCodes[count] = sourceCodeStrings[count].c_str();
+        count++;
 
     }
 

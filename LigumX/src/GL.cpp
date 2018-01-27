@@ -252,3 +252,9 @@ void GL::OutputErrors()
 		err = glGetError();
 	}
 }
+
+
+void GL::DepthWriteEnabled(bool enabled)
+{
+	glDepthMask(enabled);
+}

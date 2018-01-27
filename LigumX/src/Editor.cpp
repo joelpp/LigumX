@@ -1208,7 +1208,6 @@ void Editor::RenderImgui()
 	}
 
 	ImGui::Render();
-
 }
 
 void Editor::ProcessScrolling()

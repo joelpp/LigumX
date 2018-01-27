@@ -933,11 +933,12 @@ void Renderer::BeforeWorldRender()
 
 void Renderer::RenderGrid()
 {
-
 	if (!m_DisplayOptions->GetRenderGrid())
 	{
 		return;
 	}
+
+	GL::DepthWriteEnabled(false);
 
 	SetPipeline(pPipelineGrid);
 
@@ -950,8 +951,7 @@ void Renderer::RenderGrid()
 	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
 	DrawMesh(mesh);
 
-
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	GL::DepthWriteEnabled(true);
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
 }

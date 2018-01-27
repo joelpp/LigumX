@@ -7,7 +7,6 @@ in float height;
 in vec4 FragPosLightSpace;
 
 #define PROVIDER_View
-
 #define PROVIDER_Window
 
 // Include Providers Marker

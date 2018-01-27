@@ -1,6 +1,7 @@
 #pragma once
 #include "imgui_impl_glfw_gl3.h"
 #include "GLFW\glfw3.h"
+#include <vector>
 
 #pragma region  FORWARD_DECLARATIONS GUI
 #include "property.h"
@@ -8,6 +9,18 @@
 class GUI;
 
 extern GUI* g_GUI;
+
+//class GUIMessage
+//{
+//	std::string
+//};
+//
+//class GUIMessageCenter
+//{
+//	std::vector<GUIMessage> m_Messages;
+//
+//
+//};
 
 #pragma endregion  FORWARD_DECLARATIONS GUI
 

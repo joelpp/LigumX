@@ -12,6 +12,7 @@ class Texture;
 class SectorData;
 class Sector;
 
+
 #pragma region  FORWARD_DECLARATIONS Editor
 #include "property.h"
 

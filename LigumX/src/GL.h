@@ -163,6 +163,10 @@ public:
 	static void SetBlendMode(GL::BlendMode srcFunc, GL::BlendMode dstFunc);
 	static void SetBlendMode(GLuint target, GL::BlendMode srcFunc, GL::BlendMode dstFunc);
 
+	static void DepthWriteEnabled(bool enabled);
+
+
+
 	static GLFWwindow* CreateGLWindow(int width, int height, const char* title);
 	static GLuint CreateFrameBuffer();
 	static GLuint CreateTexture();
