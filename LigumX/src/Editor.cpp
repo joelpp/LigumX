@@ -48,9 +48,9 @@ const ClassPropertyData Editor::g_Properties[] =
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
-{ "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, 0, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, }, 
 };
 bool Editor::Serialize(bool writing)
 {
@@ -65,7 +65,6 @@ const std::string EnumValues_EditorTool[] =
 "EntityManipulator",
 "SectorTool",
 "NodeTool",
-"WayTool",
 };
 
 const EditorTool Indirection_EditorTool[] =
@@ -76,7 +75,6 @@ const EditorTool Indirection_EditorTool[] =
 	EditorTool_EntityManipulator,
 	EditorTool_SectorTool,
 	EditorTool_NodeTool,
-	EditorTool_WayTool,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -283,15 +281,19 @@ void Editor::UpdateNodeTool()
 {
 	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
 
-	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
+	if (mouseButton1Down)
+	{
+		const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
 
-	glm::vec3 wsPosition = m_SectorTool->GetAimingWorldSpacePosition(mousePosition, false);
+		glm::vec3 wsPosition = m_SectorTool->GetAimingWorldSpacePosition(mousePosition);
 
-	Node* node = g_SectorManager->GetClosestNode(glm::vec2(wsPosition));
+		Node* node = g_SectorManager->GetClosestNode(glm::vec2(wsPosition));
 
-	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
+		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
 
-	m_SelectedNode = node;
+		m_SelectedNode = node;
+	}
+
 }
 
 void Editor::UpdateSectorLoader()

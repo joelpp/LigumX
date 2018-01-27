@@ -31,12 +31,11 @@ EditorTool_TerrainSplatMap,
 EditorTool_EntityManipulator,
 EditorTool_SectorTool,
 EditorTool_NodeTool,
-EditorTool_WayTool,
 };
 
-extern const std::string EnumValues_EditorTool[7];
-extern const EditorTool Indirection_EditorTool[7];
-const int EnumLength_EditorTool = 7;
+extern const std::string EnumValues_EditorTool[6];
+extern const EditorTool Indirection_EditorTool[6];
+const int EnumLength_EditorTool = 6;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Editor
@@ -79,10 +78,10 @@ void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; };
 void AddToTerrainBrushSize(float value) { m_TerrainBrushSize += value; };
 SectorTool*& GetSectorTool() { return m_SectorTool; }; 
 void SetSectorTool(SectorTool* value) { m_SectorTool = value; }; 
-Node*& GetSelectedNode() { return m_SelectedNode; }; 
-void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
+Node*& GetSelectedNode() { return m_SelectedNode; }; 
+void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -98,8 +97,8 @@ bool m_EditingTerrain = false;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 0.f;
 SectorTool* m_SectorTool;
-Node* m_SelectedNode;
 int m_PickingBufferSize = 0;
+Node* m_SelectedNode;
 public:
 static const int g_PropertyCount = 16;
 static const ClassPropertyData g_Properties[g_PropertyCount];
@@ -120,8 +119,8 @@ PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_SectorTool,
-PIDX_SelectedNode,
 PIDX_PickingBufferSize,
+PIDX_SelectedNode,
 };
 bool Serialize(bool writing);
 

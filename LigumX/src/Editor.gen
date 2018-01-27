@@ -40,4 +40,6 @@ class Editor
 
 	SectorTool* SectorTool;
 	int PickingBufferSize;
+
+	Node* SelectedNode;
 }
