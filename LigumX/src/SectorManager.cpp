@@ -82,37 +82,6 @@ glm::vec2 SectorManager::posFromVec2(glm::vec2 pos)
 	return pos;
 }
 
-//Sector* SectorManager::createSector(Coord2 pos)
-//{
-//
-//	glm::vec2 sectorCoords = posFromVec2(pos);
-//	int newSectorID = getSectorIndex(trunc(sectorCoords.x), trunc(sectorCoords.y));
-//	Sector* c = new Sector(sectorCoords, m_sectorSize, newSectorID);
-//
-//	m_Sectors.emplace(newSectorID, c);
-//
-//    return c;
-//}
-//Sector* SectorManager::createSector(int ID)
-//{
-//	glm::vec2 sectorCoords = posFromID(ID);
-//	Sector* c = new Sector( sectorCoords, m_sectorSize, ID);
-//
-//	m_Sectors.emplace(ID, c);
-//
-//    return c;
-//}
-// Coord2 World::Normalized(Coord2 UnNormalized){
-// 	return UnNormalized * m_invSectorSize;
-// }
-
-// Coord2 World::sectorPosFromXY(Coord2 longLat){
-// 	Coord2 normalized = Normalized(longLat);
-// 	normalized = glm::floor(normalized);
-
-// 	return normalized * m_sectorSize;
-// }
-
 Sector* SectorManager::sectorContaining(Coord2 longLat)
 {
 	Sector* sector;

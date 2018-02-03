@@ -45,21 +45,12 @@ Sector::Sector()
 Sector::Sector(glm::vec2 startPos)
 	: m_DataLoaded(false)
 {
-	//m_Position = startPos;
-
-	//if (!m_Data)
-	//{
-	//	m_Data = new SectorData(m_Position);
-	//}
 }
 
 
 Sector::Sector(vec2 pos, float size, int ID)
 	: m_DataLoaded(false)
 {
-	//PRINT("CONSTRUCTING NEW SECTOR AT")
-	//PRINTVEC2(pos);
-    //this->m_Position = pos;
     this->m_LifeSize = glm::vec2(size);
 
 	m_Data = 0;
@@ -67,9 +58,6 @@ Sector::Sector(vec2 pos, float size, int ID)
    	m_initialized = false;
     m_initializationLevel = Uninitialized;
     m_ID = ID;
-
-
-	//m_Data = new SectorData(m_Position);
 }
 
 glm::vec2 Sector::EarthToWorld(const glm::vec2& earthPosition)

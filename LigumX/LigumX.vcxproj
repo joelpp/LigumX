@@ -199,6 +199,7 @@
     <ClCompile Include="src\roads.cpp" />
     <ClCompile Include="src\sector.cpp" />
     <ClCompile Include="src\SectorData.cpp" />
+    <ClCompile Include="src\SectorGraphicalData.cpp" />
     <ClCompile Include="src\SectorManager.cpp" />
     <ClCompile Include="src\SectorMath.cpp" />
     <ClCompile Include="src\SectorTool.cpp" />
@@ -298,6 +299,7 @@
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\sector.h" />
     <ClInclude Include="src\SectorData.h" />
+    <ClInclude Include="src\SectorGraphicalData.h" />
     <ClInclude Include="src\SectorManager.h" />
     <ClInclude Include="src\SectorMath.h" />
     <ClInclude Include="src\SectorTool.h" />
@@ -345,6 +347,9 @@
     <None Include="src\OSMTool.gen" />
     <None Include="src\PostEffects.gen" />
     <None Include="src\renderer.gen" />
+    <None Include="src\Sector.gen" />
+    <None Include="src\SectorGraphicalData.gen" />
+    <None Include="src\SectorTool.gen" />
     <None Include="src\SunLight.gen" />
     <None Include="src\Texture.gen" />
     <None Include="src\Way.gen" />

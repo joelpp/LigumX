@@ -18,35 +18,10 @@ class Way;
 class Node;
 class Relation;
 class Heightfield;
+class SectorGraphicalData;
 
 typedef std::unordered_map<OSMElement::ElementType, std::unordered_map<std::string, Way*> > WayTypeMap;
 
-/**
- *  Template for iterating over ways and nodes
- */
-// for (auto it = waysTypeMap[OSMElement::HIGHWAY_RESIDENTIAL].begin(); it != waysTypeMap[OSMElement::HIGHWAY_RESIDENTIAL].end(); ++it){
-//     Way* way = it->second;
-//     int first = true;
-//     int counter = 0;
-//     Node *node0, *node1;
-//     for (auto nodeIt = way->nodes.begin(); nodeIt != way->nodes.end();++it){
-//         if (first){
-//             node0 = *nodeIt;
-//             first = false;
-//         }
-
-//         if ((counter % 2) == 0) node0 = node1;
-//         else{
-//             node1 = *nodeIt;
-//         }
-
-
-//         counter++;
-//     }
-
-// }
-// 
-// 
 class SectorData 
 {
 
@@ -77,13 +52,6 @@ public:
   	 * @param  pos [The position of the sector (lon-lat)]
   	 * @return     [The string representing the path to the xml file]
   	 */
-  	std::string BuildXMLPath(EOSMDataType dataType, glm::vec2 pos);
-
-  	/**
-  	 * [BuildXMLPath Build the OSM data path.]
-  	 * @param  pos [The position of the sector (lon-lat)]
-  	 * @return     [The string representing the path to the xml file]
-  	 */
   	std::vector<Way*> findNClosestWays(int n, 
   											  glm::vec2 xy, 
   											  int filter, 
@@ -94,12 +62,11 @@ public:
     Node* findClosestNode(glm::vec2 xy);
     void elevateNodes(Heightfield* heightfield);
 
-    void downloadData(std::string path);
-    //TODO: Implement this (in the right place)
-    // std::vector<Way*> getNearestWays(OSMElement::ElementType type,double lon,double lat,double maxResults);
+	SectorGraphicalData* GetGraphicalData() { return m_GraphicalData; };
 
-	
 private:
+
+	SectorGraphicalData* m_GraphicalData;
 
 	CurlRequest* m_CurlRequest;
 

@@ -762,11 +762,6 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 		{ 
 			ShowGUIText(name); 
 			ImGui::SameLine(); 
-			//if (ImGui::Button("New")) 
-			//{ 
-			//	Sector* dptr = new Sector();
-			//	*(char**)ptr = (char*)dptr; 
-			//} 
 		} 
 		else 
 		{ 

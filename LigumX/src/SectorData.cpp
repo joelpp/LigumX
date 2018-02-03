@@ -9,6 +9,7 @@
 #include "Settings.h"
 #include "SectorData.h"
 #include "EngineSettings.h"
+#include "SectorGraphicalData.h"
 #include "SectorManager.h"
 #include "RenderDataManager.h"
 #include "way.h"
@@ -26,23 +27,15 @@ OSMElement::ElementType typeFromStrings(string key, string value);
 
 SectorData::SectorData()
 {
+	m_GraphicalData = new SectorGraphicalData();
 
 }
 
 SectorData::SectorData(glm::vec2 pos)
 {
- 
+	m_GraphicalData = new SectorGraphicalData();
+
     m_pos = pos;
-}
-
-void SectorData::downloadData(std::string path)
-{
-    //string s = downloadSectorData(m_pos);
-
-    //std::ofstream out(path);
-
-    //out << s;
-    //out.close();
 }
 
 void SectorData::elevateNodes(Heightfield* heightfield)
@@ -60,29 +53,6 @@ void SectorData::elevateNodes(Heightfield* heightfield)
         }
     }
 }
-
-
-std::string SectorData::BuildXMLPath(EOSMDataType dataType, glm::vec2 pos){
-    std::stringstream savePath;
-	//savePath << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/";
-	savePath << "C:/Users/Joel/Documents/LigumX/LigumX/data/";
-    switch(dataType)
-    {
-        case CONTOUR:   savePath << "SRTMData/";
-                        break;
-        case MAP:       savePath << "OSMData/";
-    }
-
-	// todo: call instance of sector manager or something
-    //int index = SectorManager::IDFromPos(pos);
-	int index = -1;
-    // savePath << m_pos.x * 1000 << "x" << m_pos.y * 1000;
-    savePath << index;
-    savePath << ".xml";
-
-    return savePath.str();
-}
-
 
 
 OSMElement::ElementType typeFromStrings(string key, string value){

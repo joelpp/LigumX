@@ -180,7 +180,6 @@ std::string StringUtils::SeparateByCapitalLetters(const std::string& str)
 			toReturn.insert(charIndex, " ");
 			charIndex++;
 		}
-
 	}
 
 	return toReturn;
