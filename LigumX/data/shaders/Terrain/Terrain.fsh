@@ -16,7 +16,7 @@ void main()
     float lightPower = 0.4f *  dot(v_Normal, lightDirection);
 
 	vec3 ambient = vec3(0.1f);
-	vec3 diffuse = vec3(0.1f, 0.8f, 0.1f);
+	vec3 diffuse = vec3(0.0f, 0.0f, 0.1f);
 
 	if ( any(greaterThan( splatMap.rgb, vec3(0,0,0) )) )
 	{

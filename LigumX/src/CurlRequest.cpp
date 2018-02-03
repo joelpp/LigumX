@@ -134,7 +134,6 @@ inline bool file_exists(const std::string& name)
 std::string BuildXMLPath(int dataType, glm::vec2 pos) 
 {
 	std::stringstream savePath;
-	//savePath << "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/";
 	savePath << "C:/Users/Joel/Documents/LigumX/LigumX/data/";
 	switch (dataType)
 	{
