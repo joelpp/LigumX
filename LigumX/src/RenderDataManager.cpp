@@ -57,7 +57,7 @@ void FlatWaysMesh::CreateBuffers()
 
 	glEnableVertexAttribArray(3);
 	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayTypeBuffer);
-	glVertexAttribPointer(3, 1, GL_INT, GL_FALSE, 0, NULL);
+	glVertexAttribIPointer(3, 1, GL_INT, 0, NULL);
 
 }
 

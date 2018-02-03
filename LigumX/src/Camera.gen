@@ -23,6 +23,9 @@ class Camera
 	[transient, hidden]
 	glm::mat4 ProjectionMatrixInverse;
 
+	[transient, hidden]
+	glm::mat4 ViewProjectionMatrixInverse;
+
 	float NearPlane
 	float FarPlane
 	int ProjectionType

@@ -26,7 +26,7 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "PickingData", PIDX_PickingData, offsetof(PickingTool, m_PickingData), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickedDepth", PIDX_PickedDepth, offsetof(PickingTool, m_PickedDepth), 0, LXType_float, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickedID", PIDX_PickedID, offsetof(PickingTool, m_PickedID), 0, LXType_float, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "PickDebugModels", PIDX_PickDebugModels, offsetof(PickingTool, m_PickDebugModels), 0, LXType_float, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "PickDebugModels", PIDX_PickDebugModels, offsetof(PickingTool, m_PickDebugModels), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 };
 bool PickingTool::Serialize(bool writing)
 {

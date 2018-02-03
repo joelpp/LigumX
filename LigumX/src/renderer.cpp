@@ -491,9 +491,10 @@ void Renderer::SetViewUniforms(Camera* cam)
 	SetVertexUniform(cam->GetViewProjectionMatrix(), "vpMat");
 	SetVertexUniform(cam->GetViewMatrix(),			"g_WorldToViewMatrix");
 	SetVertexUniform(glm::mat4(glm::mat3(cam->GetViewMatrix())), "g_WorldToViewMatrixRotationOnly");
-	SetFragmentUniform(glm::inverse(cam->GetViewMatrix()), "g_ViewToWorldMatrix");
 	SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
-	SetFragmentUniform(glm::inverse(cam->GetViewProjectionMatrix()), "g_ViewProjectionMatrixInverse");
+
+	SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewToWorldMatrix");
+	SetFragmentUniform(cam->GetViewProjectionMatrixInverse(), "g_ViewProjectionMatrixInverse");
 	SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewMatrixInverse");
 	SetFragmentUniform(cam->GetProjectionMatrixInverse(), "g_ProjectionMatrixInverse");
 

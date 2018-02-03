@@ -17,5 +17,5 @@ class PickingTool
 	float PickedID;
 
 	[transient]
-	float PickDebugModels = false;
+	bool PickDebugModels = false;
 }

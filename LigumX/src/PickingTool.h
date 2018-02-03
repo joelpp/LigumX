@@ -34,8 +34,8 @@ const float& GetPickedDepth() { return m_PickedDepth; };
 void SetPickedDepth(float value) { m_PickedDepth = value; }; 
 const float& GetPickedID() { return m_PickedID; }; 
 void SetPickedID(float value) { m_PickedID = value; }; 
-const float& GetPickDebugModels() { return m_PickDebugModels; }; 
-void SetPickDebugModels(float value) { m_PickDebugModels = value; }; 
+const bool& GetPickDebugModels() { return m_PickDebugModels; }; 
+void SetPickDebugModels(bool value) { m_PickDebugModels = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -45,7 +45,7 @@ glm::vec3 m_PickedWorldPosition = glm::vec3(0, 0, 0);
 glm::vec4 m_PickingData;
 float m_PickedDepth = 0.f;
 float m_PickedID = 0.f;
-float m_PickDebugModels = false;
+bool m_PickDebugModels = false;
 public:
 static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];

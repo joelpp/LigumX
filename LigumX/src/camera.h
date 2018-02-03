@@ -54,6 +54,8 @@ const glm::mat4& GetViewMatrixInverse() { return m_ViewMatrixInverse; };
 void SetViewMatrixInverse(glm::mat4 value) { m_ViewMatrixInverse = value; }; 
 const glm::mat4& GetProjectionMatrixInverse() { return m_ProjectionMatrixInverse; }; 
 void SetProjectionMatrixInverse(glm::mat4 value) { m_ProjectionMatrixInverse = value; }; 
+const glm::mat4& GetViewProjectionMatrixInverse() { return m_ViewProjectionMatrixInverse; }; 
+void SetViewProjectionMatrixInverse(glm::mat4 value) { m_ViewProjectionMatrixInverse = value; }; 
 const float& GetNearPlane() { return m_NearPlane; }; 
 void SetNearPlane(float value) { m_NearPlane = value; }; 
 const float& GetFarPlane() { return m_FarPlane; }; 
@@ -78,6 +80,7 @@ glm::mat4 m_ProjectionMatrix;
 glm::mat4 m_ViewProjectionMatrix;
 glm::mat4 m_ViewMatrixInverse;
 glm::mat4 m_ProjectionMatrixInverse;
+glm::mat4 m_ViewProjectionMatrixInverse;
 float m_NearPlane = 0.f;
 float m_FarPlane = 0.f;
 int m_ProjectionType = 0;
@@ -85,7 +88,7 @@ float m_OrthoBorders = 0.f;
 float m_ViewSize = 0.f;
 float m_MovementSpeed = 0.f;
 public:
-static const int g_PropertyCount = 17;
+static const int g_PropertyCount = 18;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -101,6 +104,7 @@ PIDX_ProjectionMatrix,
 PIDX_ViewProjectionMatrix,
 PIDX_ViewMatrixInverse,
 PIDX_ProjectionMatrixInverse,
+PIDX_ViewProjectionMatrixInverse,
 PIDX_NearPlane,
 PIDX_FarPlane,
 PIDX_ProjectionType,
