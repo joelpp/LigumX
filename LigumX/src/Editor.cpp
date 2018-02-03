@@ -27,6 +27,8 @@
 #include "Node.h"
 #include "Way.h"
 
+#include "StringUtils.h"
+
 #pragma region  CLASS_SOURCE Editor
 Editor* g_Editor;
 
@@ -904,6 +906,8 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 	//	return;
 	//}
 
+	std::string sanitizedPropertyName = StringUtils::SeparateByCapitalLetters(std::string(propertyData.m_Name));
+
 	float min = propertyData.m_MinValue;
 	float max = propertyData.m_MaxValue;
 	bool noneditable = (propertyData.m_PropertyFlags & PropertyFlags_NonEditable) != 0;
@@ -915,7 +919,7 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 		for (int i = 0; i < v->size(); ++i)
 		{
 			char displayName[100];
-			sprintf(displayName, "%s[%d] : %s", propertyData.m_Name, i, object->GetName().c_str());
+			sprintf(displayName, "%s[%d] : %s", sanitizedPropertyName.c_str(), i, object->GetName().c_str());
 
 			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, min, max, noneditable);
 		}
@@ -925,7 +929,7 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 	else
 	{
 		char* oldptr = ptr;
-		ShowPropertyTemplate(ptr, propertyData.m_Name, propertyData.m_Type, min, max, noneditable);
+		ShowPropertyTemplate(ptr, sanitizedPropertyName.c_str(), propertyData.m_Type, min, max, noneditable);
 
 		if (oldptr != ptr)
 		{
@@ -966,9 +970,10 @@ void Editor::ShowPropertyGridObject(T*& object, const char* name)
 				{
 					int objectID = object->GetObjectID();
 
+					std::string sanitizedPropertyName = StringUtils::SeparateByCapitalLetters(std::string(propertyData.m_Name));
 					// todo :  the contents of this is shared with serializer.cpp and should go in its own function asap
 					// rename ObjectManager to just ObjectManager?
-					if (ShowEditableProperty(&objectID, propertyData.m_Name))
+					if (ShowEditableProperty(&objectID, sanitizedPropertyName.c_str()))
 					{
 						ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, T::Type, false);
 						if (loadedObject == nullptr)

@@ -9,4 +9,10 @@ class SectorTool
 	glm::vec3 SectorGridColor = glm::vec3(0.5);
 
 	bool AsyncSectorLoading = false;
+
+	float NodeSize = 2;
+	bool ShowNodes;
+
+	bool ShowWays;
+
 }

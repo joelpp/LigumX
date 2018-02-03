@@ -36,6 +36,12 @@ const glm::vec3& GetSectorGridColor() { return m_SectorGridColor; };
 void SetSectorGridColor(glm::vec3 value) { m_SectorGridColor = value; }; 
 const bool& GetAsyncSectorLoading() { return m_AsyncSectorLoading; }; 
 void SetAsyncSectorLoading(bool value) { m_AsyncSectorLoading = value; }; 
+const float& GetNodeSize() { return m_NodeSize; }; 
+void SetNodeSize(float value) { m_NodeSize = value; }; 
+const bool& GetShowNodes() { return m_ShowNodes; }; 
+void SetShowNodes(bool value) { m_ShowNodes = value; }; 
+const bool& GetShowWays() { return m_ShowWays; }; 
+void SetShowWays(bool value) { m_ShowWays = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -44,8 +50,11 @@ glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
 Sector* m_HighlightedSector;
 glm::vec3 m_SectorGridColor = glm::vec3(0.5);
 bool m_AsyncSectorLoading = false;
+float m_NodeSize = 2;
+bool m_ShowNodes = false;
+bool m_ShowWays = false;
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
@@ -57,6 +66,9 @@ PIDX_HighlightedWorldCoordinates,
 PIDX_HighlightedSector,
 PIDX_SectorGridColor,
 PIDX_AsyncSectorLoading,
+PIDX_NodeSize,
+PIDX_ShowNodes,
+PIDX_ShowWays,
 };
 bool Serialize(bool writing);
 

@@ -157,3 +157,31 @@ int StringUtils::ToInt(const std::string& str)
 {
 	return std::atoi(str.c_str());
 }
+
+bool StringUtils::IsCapitalLetter(const char& c)
+{
+	return !(c >= 'a' && c <= 'z');
+}
+
+bool StringUtils::IsLowerCaseLetter(const char& c)
+{
+	return !IsCapitalLetter(c);
+}
+
+std::string StringUtils::SeparateByCapitalLetters(const std::string& str)
+{
+	std::string toReturn = str;
+
+	
+	for (int charIndex = 0; charIndex < toReturn.size(); ++charIndex)
+	{
+		if (charIndex > 0 && IsCapitalLetter(toReturn[charIndex]) && !IsCapitalLetter(toReturn[charIndex - 1]))
+		{
+			toReturn.insert(charIndex, " ");
+			charIndex++;
+		}
+
+	}
+
+	return toReturn;
+}

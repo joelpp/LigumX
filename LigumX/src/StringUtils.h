@@ -38,5 +38,10 @@ namespace StringUtils
 
 	int ToInt(const std::string& str);
 
+	bool IsCapitalLetter(const char&);
+	bool IsLowerCaseLetter(const char& c);
+
+	std::string SeparateByCapitalLetters(const std::string& str);
+
 
 }
