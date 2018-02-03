@@ -279,6 +279,10 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			Node* node = new Node(id, longitude, latitude);
 
+			glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
+			float height = 0;
+			node->SetWorldPosition(glm::vec3(worldPos, height));
+
 			for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
 			{
 				std::string key = tag->ToElement()->FindAttribute("k")->Value();

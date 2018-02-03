@@ -967,7 +967,7 @@ void Renderer::RenderGrid()
 void Renderer::RenderDebugModels()
 {
 
-	SetPipeline(pPipelineLines);
+	SetPipeline(pPipelineNodes);
 
 	for (Model* model : m_DebugModels)
 	{

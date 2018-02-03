@@ -148,20 +148,19 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	glm::vec3 worldPosition = GetAimingWorldSpacePosition(mousePosition);
 
-	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
 	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
 
+	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
 	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
 
 	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
-
-	float scale = g_EngineSettings->GetWorldScale();
 
 	World* world = LigumX::GetInstance().GetWorld();
 
 	m_HighlightedSector = world->GetSectorByIndex(normalizedSectorIndex);
 	m_HighlightedWorldCoordinates = worldPosition;
 
+	float scale = g_EngineSettings->GetWorldScale();
 	AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
 
 	glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
@@ -187,7 +186,6 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 		m_Request.Reset();
 	}
-
 
 	return true;
 }

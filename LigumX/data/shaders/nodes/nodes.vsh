@@ -1,15 +1,30 @@
 #version 410 core
 layout(location=0) in vec3 pos;
-//layout(location=1) in vec3 color;
-// uniform vec3 color;
+
 uniform mat4 vpMat;
-out gl_PerVertex {
+
+#define PROVIDER_View
+
+// Include ProvidersMarker
+
+out gl_PerVertex 
+{
     vec4 gl_Position;
     float gl_PointSize;
 };
-// out vec3 vColor;
-void main() {
-	gl_PointSize = 1.0;
+
+flat out int vertexID;
+
+void main() 
+{
+	vec3 worldToCam = pos - g_CameraPosition;
+	float l = length(worldToCam);
+
+	float lNorm = min(l / 10.f, 1.f);
+	float f = 1.f/* - lNorm*/;
+	gl_PointSize = 2.0 * f;
+
     gl_Position = vpMat * vec4(pos, 1);
-    // vColor = color;
+
+	vertexID = gl_VertexID;
 }

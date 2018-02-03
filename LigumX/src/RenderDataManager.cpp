@@ -136,6 +136,25 @@ void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
 
 void RenderDataManager::CreateWaysLines(Sector* sector)
 {
+	std::vector<glm::vec3> nodePositions;
+
+	for (auto it = sector->m_Data->nodes.begin(); it != sector->m_Data->nodes.end(); ++it)
+	{
+		Node* node = it->second;
+		nodePositions.push_back(node->GetWorldPosition());
+	}
+
+	Renderer& renderer = Renderer::GetInstance();
+
+	Mesh* nodeMesh = new Mesh(nodePositions, GL_POINTS, true);
+
+	Model* nodeModel = new Model();
+	nodeModel->addMesh(nodeMesh, new Material(renderer.pPipelineNodes, glm::vec3(1,1,1)));
+	nodeModel->SetName("Sector_nodes_");
+
+	renderer.m_DebugModels.push_back(nodeModel);
+	
+#if 0
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		std::vector<glm::vec3> line;
@@ -145,9 +164,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		{
 			Node* node = *nodeIt;
 
-			glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
-			glm::vec3 pos = glm::vec3(worldPos, 0);
-			node->SetWorldPosition(pos);
+			const glm::vec3& pos = node->GetWorldPosition();
 
 			AddPoint(line, pos);
 		}
@@ -156,6 +173,8 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		glm::vec3 color = renderer.typeColorMap[way->eType];
 		AddDebugModel(line, color);
 	}
+#endif
+
 }
 
 void RenderDataManager::fillBuffers(Sector* sector)
