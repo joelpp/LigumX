@@ -91,7 +91,7 @@ public:
 
     std::unordered_map<std::string, int> tagConversionTable;
     World* world;
-    RenderDataManager* renderData;
+    RenderDataManager* m_RenderDataManager;
 
     // debug stuff
 

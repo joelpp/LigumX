@@ -23,6 +23,7 @@
 #include "MainWindow.h"
 #include "EngineSettings.h"
 #include "SectorTool.h"
+#include "SectorGraphicalData.h"
 
 #pragma region  CLASS_SOURCE Renderer
 
@@ -586,7 +587,7 @@ void Renderer::DrawMesh(Mesh* mesh)
 		FLUSH_ERRORS();
 	}
 
-	g_EngineStats->AddToNumDrawCalls(1);
+	g_EngineStats->AddTo_NumDrawCalls(1);
 }
 
 
@@ -940,11 +941,6 @@ void Renderer::BeforeWorldRender()
 
 void Renderer::RenderGrid()
 {
-	if (!m_DisplayOptions->GetRenderGrid())
-	{
-		return;
-	}
-
 	GL::DepthWriteEnabled(false);
 
 	SetPipeline(pPipelineGrid);
@@ -964,56 +960,37 @@ void Renderer::RenderGrid()
 	GL::SetCapability(GL::Capabilities::Blend, false);
 }
 
+void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline)
+{
+	SetPipeline(programPipeline);
+
+	for (int i = 0; i < model->m_meshes.size(); ++i)
+	{
+		SetVertexUniform(modelToWorld, "g_ModelToWorldMatrix");
+
+		Material* material = model->GetMaterials()[i];
+
+		SetViewUniforms(m_DebugCamera);
+
+		DrawMesh(model->m_meshes[i], material);
+	}
+}
+
 void Renderer::RenderDebugModels()
 {
+	g_Editor->RenderTools();
 
-	SetPipeline(pPipelineNodes);
-
-	for (Model* model : m_DebugModels)
-	{
-		for (int i = 0; i < model->m_meshes.size(); ++i)
-		{
-			SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
-
-			Material* material = model->GetMaterials()[i];
-
-			SetViewUniforms(m_DebugCamera);
-
-			DrawMesh(model->m_meshes[i], material);
-		}
-	}
-
-	for (Sector* sector : m_World->GetSectors())
-	{
-		const float& worldScale = g_EngineSettings->GetWorldScale() * 0.99f;
-		AABB bb = AABB::BuildFromStartPointAndScale(sector->GetWorldPosition(), glm::vec3(worldScale, worldScale, 3.f));
-		
-		glm::vec3 color(0.863f, 0.078f, 0.235f);
-		if (sector->GetDataLoaded())
-		{
-			color = glm::vec3(0.255, 0.412, 0.882);
-		}
-
-		AABBJob job;
-		job.m_AABB = bb;
-		job.m_Color = color;
-
-		renderData->GetAABBJobs().push_back(job);
-	}
-
-	for (AABBJob& aabb : renderData->GetAABBJobs())
+	for (AABBJob& aabb : m_RenderDataManager->GetAABBJobs())
 	{
 		RenderAABB(aabb.m_AABB, aabb.m_Color);
 	}
 
-	renderData->ClearAABBJobs();
+	m_RenderDataManager->ClearAABBJobs();
 }
 
 
 void Renderer::AfterWorldRender()
 {
-	RenderGrid();
-
 	RenderDebugModels();
 
 	ApplyEmissiveGlow();

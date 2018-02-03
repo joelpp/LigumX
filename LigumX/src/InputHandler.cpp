@@ -93,7 +93,7 @@ void InputHandler::FrameUpdate()
 	if (m_Mouse1Pressed)
 	{
 		dragDistance = m_MousePosition - m_LastMousePosition;
-		AddToDragAccumulator(dragDistance);
+		AddTo_DragAccumulator(dragDistance);
 	}
 	SetDragDistance(dragDistance);
 

@@ -35,7 +35,7 @@ void LigumX::glfwMouseScrollCallback(GLFWwindow* pWindow, double xOffset, double
 
 	if (!caughtByGUI)
 	{
-		g_InputHandler->AddToMouseScroll(glm::vec2(xOffset, yOffset));
+		g_InputHandler->AddTo_MouseScroll(glm::vec2(xOffset, yOffset));
 	}
 }
 

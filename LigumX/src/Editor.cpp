@@ -170,7 +170,7 @@ void Editor::UpdateManipulator()
 		float distance = dragDistance.x / 10.f;
 		glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
 
-		m_PickedEntity->AddToPosition(toAdd);
+		m_PickedEntity->AddTo_Position(toAdd);
 	}
 }
 
@@ -1290,9 +1290,14 @@ void Editor::ProcessScrolling()
 
 	glm::vec3 moveVector = activeCamera->GetFrontVector() * scrolling.y * m_Options->GetMouseScrollCameraSpeed();
 
-	activeCamera->AddToPosition(moveVector);
+	activeCamera->AddTo_Position(moveVector);
 }
 
+void Editor::RenderTools()
+{
+	m_SectorTool->Display();
+
+}
 
 void Editor::Render()
 {

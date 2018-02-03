@@ -37,7 +37,7 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(glm::vec3 value) { m_Position = value; }; 
-void AddToPosition(glm::vec3 value) { m_Position += value; };
+void AddTo_Position(glm::vec3 value) { m_Position += value; };
 const glm::vec3& GetFrontVector() { return m_FrontVector; }; 
 void SetFrontVector(glm::vec3 value) { m_FrontVector = value; }; 
 const glm::vec3& GetRightVector() { return m_RightVector; }; 

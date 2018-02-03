@@ -113,18 +113,18 @@ SectorList* World::updateSectorsAroundPoint(Coord2 point, int ringSize)
 	//    {
 	//        if (sector->m_initializationLevel == Sector::ContourLoaded)
 	//        {
-	//            renderData->InitializeSector(sector);
+	//            m_RenderDataManager->InitializeSector(sector);
 	//        }
 
 	//        if (sector->m_initializationLevel == Sector::DataLoaded)
 	//        {
-	//            renderData->fillBuffers(sector);
+	//            m_RenderDataManager->fillBuffers(sector);
 	//        }
 
 	//        if (sector->m_initializationLevel == Sector::HeightfieldGenerated)
 	//        {
 	//            //PRINT("heightfield geenerated, adding to terrain buffer")
-	//             renderData->addToTerrainBuffer(sector);
+	//             m_RenderDataManager->addToTerrainBuffer(sector);
 	//        }
 	//    }
 

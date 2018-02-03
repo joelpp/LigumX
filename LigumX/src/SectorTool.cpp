@@ -7,9 +7,11 @@
 #include "SectorManager.h"
 #include "Sector.h"
 #include "SectorData.h"
+#include "SectorGraphicalData.h"
 #include "World.h"
 #include "GUI.h"
 #include "Editor.h"
+#include "RenderDataManager.h"
 
 #pragma region  CLASS_SOURCE SectorTool
 
@@ -29,6 +31,10 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "NodeSize", PIDX_NodeSize, offsetof(SectorTool, m_NodeSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ShowNodes", PIDX_ShowNodes, offsetof(SectorTool, m_ShowNodes), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowWays", PIDX_ShowWays, offsetof(SectorTool, m_ShowWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowSectorAABBs", PIDX_ShowSectorAABBs, offsetof(SectorTool, m_ShowSectorAABBs), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowGrid", PIDX_ShowGrid, offsetof(SectorTool, m_ShowGrid), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "HighlightSelectedSector", PIDX_HighlightSelectedSector, offsetof(SectorTool, m_HighlightSelectedSector), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "LoadSectorsOnClick", PIDX_LoadSectorsOnClick, offsetof(SectorTool, m_LoadSectorsOnClick), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -163,13 +169,16 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	m_HighlightedSector = world->GetSectorByIndex(normalizedSectorIndex);
 	m_HighlightedWorldCoordinates = worldPosition;
 
-	float scale = g_EngineSettings->GetWorldScale();
-	AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
+	if (m_HighlightSelectedSector)
+	{
+		float scale = g_EngineSettings->GetWorldScale();
+		AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
 
-	glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
-	LigumX::GetInstance().renderData->AddAABBJob(aabb, aabbColor);
+		glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
+		LigumX::GetInstance().m_RenderDataManager->AddAABBJob(aabb, aabbColor);
+	}
 
-	bool canSendRequest = mouseButton1Down && m_Request.Ready() && (!m_HighlightedSector || !m_HighlightedSector->GetDataLoaded());
+	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready() && (!m_HighlightedSector || !m_HighlightedSector->GetDataLoaded());
 	if (canSendRequest)
 	{
 		m_Request = CurlRequest(earthStartCoords, glm::vec2(g_EngineSettings->GetExtent()), m_AsyncSectorLoading);
@@ -194,11 +203,70 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 }
 
 
+void SectorTool::DisplaySectorDebug(SectorGraphicalData* gfxData)
+{
+	Renderer* renderer = LigumX::GetInstance().GetRenderer();
+
+	glm::mat4 identity = glm::mat4(1.0);
+
+	if (m_ShowNodes)
+	{
+		renderer->RenderDebugModel(gfxData->GetNodesModel(), identity, renderer->pPipelineNodes);
+	}
+
+	if (m_ShowWays) 
+	{
+		renderer->RenderDebugModel(gfxData->GetWaysModel(), identity, renderer->pPipelineLines);
+
+		for (Model* wayModel : gfxData->GetWaysModelsVector())
+		{
+			renderer->RenderDebugModel(wayModel, identity, renderer->pPipelineLines);
+		}
+	}
+}
+
+
 void SectorTool::Display()
 {
-	//g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
+	if (!m_Enabled)
+	{
+		return;
+	}
 
+	World* world = LigumX::GetInstance().GetWorld();
+	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 
+	const std::vector<Sector*> sectors = world->GetSectors();
 
-	//g_GUI->EndWindow();
+	for (Sector* sector : world->GetSectors())
+	{
+		bool dataLoaded = sector->GetDataLoaded();
+		if (dataLoaded)
+		{
+			DisplaySectorDebug(sector->GetGraphicalData());
+		}
+
+		if (m_ShowSectorAABBs)
+		{
+			const float& worldScale = g_EngineSettings->GetWorldScale() * 0.99f;
+			AABB bb = AABB::BuildFromStartPointAndScale(sector->GetWorldPosition(), glm::vec3(worldScale, worldScale, 3.f));
+
+			glm::vec3 color(0.863f, 0.078f, 0.235f);
+			if (dataLoaded)
+			{
+				color = glm::vec3(0.255, 0.412, 0.882);
+			}
+
+			AABBJob job;
+			job.m_AABB = bb;
+			job.m_Color = color;
+
+			renderer->GetRenderDataManager()->GetAABBJobs().push_back(job);
+		}
+	}
+
+	if (m_ShowGrid)
+	{
+		renderer->RenderGrid();
+	}
 }

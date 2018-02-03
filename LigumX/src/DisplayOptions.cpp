@@ -28,7 +28,6 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "RenderOpaque", PIDX_RenderOpaque, offsetof(DisplayOptions, m_RenderOpaque), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "RenderShadows", PIDX_RenderShadows, offsetof(DisplayOptions, m_RenderShadows), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "OutputGLErrors", PIDX_OutputGLErrors, offsetof(DisplayOptions, m_OutputGLErrors), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "RenderGrid", PIDX_RenderGrid, offsetof(DisplayOptions, m_RenderGrid), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool DisplayOptions::Serialize(bool writing)
 {

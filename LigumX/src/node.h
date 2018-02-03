@@ -34,6 +34,7 @@ const float& GetElevation() { return m_Elevation; };
 void SetElevation(float value) { m_Elevation = value; }; 
 std::vector<Way*>& GetWays() { return m_Ways; }; 
 void SetWays(std::vector<Way*> value) { m_Ways = value; }; 
+void AddTo_Ways(Way* value) { m_Ways.push_back(value); };
 private:
 int m_ObjectID;
 std::string m_Name;

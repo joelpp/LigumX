@@ -1,10 +1,11 @@
 #pragma once
+#include <vector>
 
 #pragma region  FORWARD_DECLARATIONS SectorGraphicalData
 #include "property.h"
 
 class SectorGraphicalData;
-class Mesh;
+class Model;
 
 
 #pragma endregion  FORWARD_DECLARATIONS SectorGraphicalData
@@ -21,25 +22,30 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-Mesh*& GetNodesMesh() { return m_NodesMesh; }; 
-void SetNodesMesh(Mesh* value) { m_NodesMesh = value; }; 
-Mesh*& GetWaysMesh() { return m_WaysMesh; }; 
-void SetWaysMesh(Mesh* value) { m_WaysMesh = value; }; 
+Model*& GetNodesModel() { return m_NodesModel; }; 
+void SetNodesModel(Model* value) { m_NodesModel = value; }; 
+Model*& GetWaysModel() { return m_WaysModel; }; 
+void SetWaysModel(Model* value) { m_WaysModel = value; }; 
+std::vector<Model*>& GetWaysModelsVector() { return m_WaysModelsVector; }; 
+void SetWaysModelsVector(std::vector<Model*> value) { m_WaysModelsVector = value; }; 
+void AddTo_WaysModelsVector(Model* value) { m_WaysModelsVector.push_back(value); };
 private:
 int m_ObjectID;
 std::string m_Name;
-Mesh* m_NodesMesh;
-Mesh* m_WaysMesh;
+Model* m_NodesModel;
+Model* m_WaysModel;
+std::vector<Model*> m_WaysModelsVector;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorGraphicalDataPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
-PIDX_NodesMesh,
-PIDX_WaysMesh,
+PIDX_NodesModel,
+PIDX_WaysModel,
+PIDX_WaysModelsVector,
 };
 bool Serialize(bool writing);
 

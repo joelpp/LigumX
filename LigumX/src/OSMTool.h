@@ -30,6 +30,7 @@ Node*& GetSelectedNode() { return m_SelectedNode; };
 void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
 std::vector<Way*>& GetSelectedWays() { return m_SelectedWays; }; 
 void SetSelectedWays(std::vector<Way*> value) { m_SelectedWays = value; }; 
+void AddTo_SelectedWays(Way* value) { m_SelectedWays.push_back(value); };
 private:
 int m_ObjectID;
 std::string m_Name;

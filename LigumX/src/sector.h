@@ -13,8 +13,9 @@ class SectorData;
 class Heightfield;
 class vec2i;
 class CurlRequest;
-typedef std::pair<int, int> IntPair;
+class SectorGraphicalData;
 
+typedef std::pair<int, int> IntPair;
 
 class Sector
 {
@@ -85,12 +86,10 @@ public:
         FullyInitialized
     };
 
-    Sector();
-    Sector(glm::vec2 pos, float size, int ID);
-	Sector(vec2i pos, float size);
+	Sector();
 	Sector(CurlRequest* curlRequest);
 	Sector(const glm::ivec2& index);
-	Sector(glm::vec2 startPos);
+
     bool createHeightfield();
 
 	static glm::ivec2 GetNormalizedSectorIndex(const glm::vec2& position);
@@ -110,5 +109,5 @@ public:
 
 	void InitializeFromRequest(CurlRequest* request);
 
-
+	SectorGraphicalData* GetGraphicalData() { return m_Data->GetGraphicalData(); }
 };

@@ -7,6 +7,7 @@
 #include "RenderDataManager.h"
 #include "EngineSettings.h"
 #include "CurlRequest.h"
+#include "LXError.h"
 
 #pragma region  CLASS_SOURCE Sector
 
@@ -37,28 +38,13 @@ bool Sector::Serialize(bool writing)
 #define OSM_QUANTIZATION_SCALE 1e7f
 
 using namespace glm;
+
 Sector::Sector()
-	: m_DataLoaded(false)
 {
+	// Not supposed to call the default Sector constructor! >:(
+	lxAssert0();
 }
 
-Sector::Sector(glm::vec2 startPos)
-	: m_DataLoaded(false)
-{
-}
-
-
-Sector::Sector(vec2 pos, float size, int ID)
-	: m_DataLoaded(false)
-{
-    this->m_LifeSize = glm::vec2(size);
-
-	m_Data = 0;
-   	m_heightfield = 0;
-   	m_initialized = false;
-    m_initializationLevel = Uninitialized;
-    m_ID = ID;
-}
 
 glm::vec2 Sector::EarthToWorld(const glm::vec2& earthPosition)
 {

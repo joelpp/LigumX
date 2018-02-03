@@ -58,7 +58,8 @@ public:
 
     void fillBuffers(Sector* newSector);
     static void InitializeSector(Sector* sector);
-	static void AddDebugModel(std::vector<glm::vec3>& line, glm::vec3 color);
+	static void AddDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color);
+	static Model* CreateDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color, const char* name);
 
 	void addToTerrainBuffer(Sector* newSector);
     Mesh* terrainMesh();

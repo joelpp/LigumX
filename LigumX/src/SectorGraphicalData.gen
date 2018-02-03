@@ -1,5 +1,6 @@
 class SectorGraphicalData
 {
-	Mesh* NodesMesh;
-	Mesh* WaysMesh;
+	Model* NodesModel;
+	Model* WaysModel;
+	std::vector<Model> WaysModelsVector;
 }

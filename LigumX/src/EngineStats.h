@@ -23,10 +23,10 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const int& GetNumObjectMapHits() { return m_NumObjectMapHits; }; 
 void SetNumObjectMapHits(int value) { m_NumObjectMapHits = value; }; 
-void AddToNumObjectMapHits(int value) { m_NumObjectMapHits += value; };
+void AddTo_NumObjectMapHits(int value) { m_NumObjectMapHits += value; };
 const int& GetNumDrawCalls() { return m_NumDrawCalls; }; 
 void SetNumDrawCalls(int value) { m_NumDrawCalls = value; }; 
-void AddToNumDrawCalls(int value) { m_NumDrawCalls += value; };
+void AddTo_NumDrawCalls(int value) { m_NumDrawCalls += value; };
 private:
 int m_ObjectID;
 std::string m_Name;

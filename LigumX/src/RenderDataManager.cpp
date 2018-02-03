@@ -9,12 +9,12 @@
 #include "Triangle.h"
 #include "World.h"
 #include "SectorData.h"
+#include "SectorGraphicalData.h"
 #include "Heightfield.h"
 #include "Logging.h"
 #include "Mesh.h"
 #include "Model.h"
 #include "Material.h"
-#include "Editor.h"
 #include "Editor.h"
 #include "EngineSettings.h"
 #include "glm/gtx/transform.hpp"
@@ -42,7 +42,8 @@ int findSetBit(int number){
     return pos;
 }   
 
-RenderDataManager::RenderDataManager(){
+RenderDataManager::RenderDataManager()
+{
     nbRoads = 0;
     m_renderingScale = Settings::GetInstance().f("RenderingScale");
     Renderer& renderer = Renderer::GetInstance();
@@ -110,8 +111,20 @@ Mesh* RenderDataManager::terrainMesh()
     return Heightfield::hfBaseMesh;
 }
 
+Model* RenderDataManager::CreateDebugModel(const std::vector<glm::vec3>& lineData, glm::vec3 color, const char* name)
+{
+	Renderer& renderer = Renderer::GetInstance();
 
-void RenderDataManager::AddDebugModel(std::vector<glm::vec3>& line, glm::vec3 color)
+	Mesh* mesh = new Mesh(lineData, GL_LINES);
+
+	Model* model = new Model();
+	model->addMesh(mesh, new Material(renderer.pPipelineLines, color));
+	model->SetName(name);
+	
+	return model;
+}
+
+void RenderDataManager::AddDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color)
 {
 	Renderer& renderer = Renderer::GetInstance();
 
@@ -136,6 +149,8 @@ void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
 
 void RenderDataManager::CreateWaysLines(Sector* sector)
 {
+	SectorGraphicalData* gfxData = sector->GetGraphicalData();
+
 	std::vector<glm::vec3> nodePositions;
 
 	for (auto it = sector->m_Data->nodes.begin(); it != sector->m_Data->nodes.end(); ++it)
@@ -152,9 +167,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	nodeModel->addMesh(nodeMesh, new Material(renderer.pPipelineNodes, glm::vec3(1,1,1)));
 	nodeModel->SetName("Sector_nodes_");
 
-	renderer.m_DebugModels.push_back(nodeModel);
-	
-#if 0
+	Model* waysModel = nullptr;
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		std::vector<glm::vec3> line;
@@ -171,10 +184,13 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 		Renderer& renderer = Renderer::GetInstance();
 		glm::vec3 color = renderer.typeColorMap[way->eType];
-		AddDebugModel(line, color);
-	}
-#endif
+		waysModel = CreateDebugModel(line, color, "Sector_Lines_");
 
+		gfxData->AddTo_WaysModelsVector(waysModel);
+	}
+
+	gfxData->SetNodesModel(nodeModel);
+	gfxData->SetWaysModel(waysModel);
 }
 
 void RenderDataManager::fillBuffers(Sector* sector)

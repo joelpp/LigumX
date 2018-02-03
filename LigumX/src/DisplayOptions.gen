@@ -17,5 +17,4 @@ class DisplayOptions
 	bool RenderOpaque;
 	bool RenderShadows;
 	bool OutputGLErrors;
-	bool RenderGrid = true;
 }

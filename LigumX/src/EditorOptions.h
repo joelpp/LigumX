@@ -58,7 +58,7 @@ bool m_ShowObjectManager = false;
 bool m_BackupDataOnSave = false;
 bool m_DebugDisplay = false;
 bool m_SaveDisabled = false;
-float m_MouseScrollCameraSpeed = 1.0f;
+float m_MouseScrollCameraSpeed = 10.0f;
 public:
 static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];

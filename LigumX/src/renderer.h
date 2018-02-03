@@ -23,6 +23,7 @@
 #include "Material.h"
 
 class MainWindow;
+class SectorGraphicalData;
 
 
 #pragma region  FORWARD_DECLARATIONS Renderer
@@ -163,6 +164,8 @@ public:
 	void RenderEntities(ShaderFamily family, std::vector<Entity*> entities);
 	void RenderEntities(std::vector<Entity*> entities);
 	void RenderDebugModels();
+	void RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline);
+	void RenderSectorDebug(SectorGraphicalData* gfxData);
 	void RenderGrid();
 
 	void BeforeWorldRender();
@@ -380,7 +383,7 @@ public:
     
     void setDataSource(RenderDataManager* manager)
     {
-        renderData = manager;
+        m_RenderDataManager = manager;
     }
 
 	bool m_ShowTestGUI = false;
@@ -388,6 +391,8 @@ public:
 
 	void RenderAABB(AABB& aabb);
 	void RenderAABB(AABB& aabb, const glm::vec3& color);
+
+	RenderDataManager* GetRenderDataManager() { return m_RenderDataManager; }
 
 private:
 	void DrawBoundingBox(BoundingBoxComponent* bb);
@@ -407,7 +412,7 @@ private:
     Renderer(Renderer const&)               = delete;
     void operator=(Renderer const&)  = delete;
 
-    RenderDataManager* renderData;
+    RenderDataManager* m_RenderDataManager;
 	
 	int m_NumLights;
 

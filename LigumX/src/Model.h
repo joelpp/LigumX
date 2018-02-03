@@ -42,6 +42,7 @@ const std::string& GetFilename() { return m_Filename; };
 void SetFilename(std::string value) { m_Filename = value; }; 
 std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
+void AddTo_Materials(Material* value) { m_Materials.push_back(value); };
 private:
 int m_ObjectID;
 std::string m_Name;

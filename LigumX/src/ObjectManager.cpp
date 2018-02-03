@@ -91,7 +91,7 @@ ObjectPtr ObjectManager::FindObjectByID(ObjectID id, LXType type, bool createIfN
 
 	auto it = m_ObjectMaps[type].find(id);
 
-	g_EngineStats->AddToNumObjectMapHits(1);
+	g_EngineStats->AddTo_NumObjectMapHits(1);
 
 	if (it == m_ObjectMaps[type].end())
 	{

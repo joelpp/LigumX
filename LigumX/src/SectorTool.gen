@@ -1,6 +1,6 @@
 class SectorTool
 {
-	bool Enabled;
+	bool Enabled = true;
 
 	glm::vec3 HighlightedWorldCoordinates;
 
@@ -11,8 +11,11 @@ class SectorTool
 	bool AsyncSectorLoading = false;
 
 	float NodeSize = 2;
-	bool ShowNodes;
 
-	bool ShowWays;
-
+	bool ShowNodes = true;
+	bool ShowWays = true;
+	bool ShowSectorAABBs = true;
+	bool ShowGrid = true;
+	bool HighlightSelectedSector = true;
+	bool LoadSectorsOnClick = true;
 }

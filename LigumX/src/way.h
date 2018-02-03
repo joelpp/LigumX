@@ -34,6 +34,7 @@ const int& GetOSMId() { return m_OSMId; };
 void SetOSMId(int value) { m_OSMId = value; }; 
 std::vector<Node*>& GetNodes() { return m_Nodes; }; 
 void SetNodes(std::vector<Node*> value) { m_Nodes = value; }; 
+void AddTo_Nodes(Node* value) { m_Nodes.push_back(value); };
 private:
 int m_ObjectID;
 std::string m_Name;

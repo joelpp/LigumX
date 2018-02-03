@@ -37,7 +37,7 @@ const glm::vec2& GetLastDragDistance() { return m_LastDragDistance; };
 void SetLastDragDistance(glm::vec2 value) { m_LastDragDistance = value; }; 
 const glm::vec2& GetDragAccumulator() { return m_DragAccumulator; }; 
 void SetDragAccumulator(glm::vec2 value) { m_DragAccumulator = value; }; 
-void AddToDragAccumulator(glm::vec2 value) { m_DragAccumulator += value; };
+void AddTo_DragAccumulator(glm::vec2 value) { m_DragAccumulator += value; };
 const glm::vec2& GetMouseClickPosition() { return m_MouseClickPosition; }; 
 void SetMouseClickPosition(glm::vec2 value) { SetMouseClickPositionCallback(value); }; 
 void SetMouseClickPositionCallback(glm::vec2 value);
@@ -52,7 +52,7 @@ const glm::vec2& GetLastMousePosition() { return m_LastMousePosition; };
 void SetLastMousePosition(glm::vec2 value) { m_LastMousePosition = value; }; 
 const glm::vec2& GetMouseScroll() { return m_MouseScroll; }; 
 void SetMouseScroll(glm::vec2 value) { m_MouseScroll = value; }; 
-void AddToMouseScroll(glm::vec2 value) { m_MouseScroll += value; };
+void AddTo_MouseScroll(glm::vec2 value) { m_MouseScroll += value; };
 private:
 int m_ObjectID;
 std::string m_Name;

@@ -4,6 +4,8 @@
 #include "CurlRequest.h"
 #include <thread>
 
+class SectorGraphicalData;
+
 
 #pragma region  FORWARD_DECLARATIONS SectorTool
 #include "property.h"
@@ -42,19 +44,31 @@ const bool& GetShowNodes() { return m_ShowNodes; };
 void SetShowNodes(bool value) { m_ShowNodes = value; }; 
 const bool& GetShowWays() { return m_ShowWays; }; 
 void SetShowWays(bool value) { m_ShowWays = value; }; 
+const bool& GetShowSectorAABBs() { return m_ShowSectorAABBs; }; 
+void SetShowSectorAABBs(bool value) { m_ShowSectorAABBs = value; }; 
+const bool& GetShowGrid() { return m_ShowGrid; }; 
+void SetShowGrid(bool value) { m_ShowGrid = value; }; 
+const bool& GetHighlightSelectedSector() { return m_HighlightSelectedSector; }; 
+void SetHighlightSelectedSector(bool value) { m_HighlightSelectedSector = value; }; 
+const bool& GetLoadSectorsOnClick() { return m_LoadSectorsOnClick; }; 
+void SetLoadSectorsOnClick(bool value) { m_LoadSectorsOnClick = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
-bool m_Enabled = false;
+bool m_Enabled = true;
 glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
 Sector* m_HighlightedSector;
 glm::vec3 m_SectorGridColor = glm::vec3(0.5);
 bool m_AsyncSectorLoading = false;
 float m_NodeSize = 2;
-bool m_ShowNodes = false;
-bool m_ShowWays = false;
+bool m_ShowNodes = true;
+bool m_ShowWays = true;
+bool m_ShowSectorAABBs = true;
+bool m_ShowGrid = true;
+bool m_HighlightSelectedSector = true;
+bool m_LoadSectorsOnClick = true;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
@@ -69,6 +83,10 @@ PIDX_AsyncSectorLoading,
 PIDX_NodeSize,
 PIDX_ShowNodes,
 PIDX_ShowWays,
+PIDX_ShowSectorAABBs,
+PIDX_ShowGrid,
+PIDX_HighlightSelectedSector,
+PIDX_LoadSectorsOnClick,
 };
 bool Serialize(bool writing);
 
@@ -81,6 +99,7 @@ CurlRequest m_Request;
 
 Sector* m_LoadingSector;
 
+void DisplaySectorDebug(SectorGraphicalData* gfxData);
 void Display();
 
 glm::vec3 GetWorldSpaceRay(glm::vec3 ndc, const glm::mat4& projectionMatrixInverse, const glm::mat4& viewMatrixInverse);

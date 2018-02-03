@@ -59,7 +59,7 @@ const EditorTool& GetActiveTool() { return m_ActiveTool; };
 void SetActiveTool(EditorTool value) { m_ActiveTool = value; }; 
 const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
 void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
-void AddToXYZMask(glm::vec4 value) { m_XYZMask += value; };
+void AddTo_XYZMask(glm::vec4 value) { m_XYZMask += value; };
 Entity*& GetPickedEntity() { return m_PickedEntity; }; 
 void SetPickedEntity(Entity* value) { m_PickedEntity = value; }; 
 const glm::vec3& GetPickedWorldPosition() { return m_PickedWorldPosition; }; 
@@ -76,7 +76,7 @@ const bool& GetTerrainErasureMode() { return m_TerrainErasureMode; };
 void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; }; 
 const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
 void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; }; 
-void AddToTerrainBrushSize(float value) { m_TerrainBrushSize += value; };
+void AddTo_TerrainBrushSize(float value) { m_TerrainBrushSize += value; };
 SectorTool*& GetSectorTool() { return m_SectorTool; }; 
 void SetSectorTool(SectorTool* value) { m_SectorTool = value; }; 
 OSMTool*& GetOSMTool() { return m_OSMTool; }; 
@@ -147,6 +147,7 @@ void UpdateOSMTool();
 void ProcessScrolling();
 
 void Render();
+void RenderTools();
 
 void RenderImgui();
 

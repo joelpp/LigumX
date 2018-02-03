@@ -66,10 +66,13 @@ SunLight*& GetSunLight() { return m_SunLight; };
 void SetSunLight(SunLight* value) { m_SunLight = value; }; 
 std::vector<Entity*>& GetEntities() { return m_Entities; }; 
 void SetEntities(std::vector<Entity*> value) { m_Entities = value; }; 
+void AddTo_Entities(Entity* value) { m_Entities.push_back(value); };
 std::vector<Entity*>& GetDebugEntities() { return m_DebugEntities; }; 
 void SetDebugEntities(std::vector<Entity*> value) { m_DebugEntities = value; }; 
+void AddTo_DebugEntities(Entity* value) { m_DebugEntities.push_back(value); };
 std::vector<Sector*>& GetSectors() { return m_Sectors; }; 
 void SetSectors(std::vector<Sector*> value) { m_Sectors = value; }; 
+void AddTo_Sectors(Sector* value) { m_Sectors.push_back(value); };
 private:
 int m_ObjectID;
 std::string m_Name;

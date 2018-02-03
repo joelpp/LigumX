@@ -124,8 +124,15 @@ public:
 
 			if (var.m_PropertyFlags & PropertyFlags_Adder)
 			{
-				m_Stream << "void AddTo" << var.m_Name << "(" << var.m_Type;
+				m_Stream << "void AddTo_" << var.m_Name << "(" << var.m_Type;
 				m_Stream << " value) { m_" << var.m_Name << " += value; };";
+				m_Stream << std::endl;
+			}
+
+			if (vector)
+			{
+				m_Stream << "void AddTo_" << var.m_Name << "(" << var.m_AssociatedType << "*";
+				m_Stream << " value) { m_" << var.m_Name << ".push_back(value); };";
 				m_Stream << std::endl;
 			}
 
