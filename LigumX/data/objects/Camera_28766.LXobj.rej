@@ -1,9 +1,0 @@
-diff a/LigumX/data/objects/Camera_28766.LXobj b/LigumX/data/objects/Camera_28766.LXobj	(rejected hunks)
-@@ -7,6 +7,7 @@
-  -599.828
-  260.051
-  FrontVector
-++<<<<<<< Updated upstream
- +0.241235
- +-0.864134
- +0.441534

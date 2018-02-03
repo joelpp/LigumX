@@ -175,13 +175,19 @@ CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async)
 void CurlRequest::Execute()
 {
 	PRINTSTRING("Beginning cURL request.");
+	std::cout << "Searching for " << m_Filename << "..." << std::endl;
 
 	bool fileAlreadyPresent = file_exists(m_Filename);
 
 	if (!fileAlreadyPresent)
 	{
+		std::cout << "File not found on disk. Downloading from OpenStreeMaps..." << std::endl;
 		m_Result = queryBoundingBox(m_Coords.x, m_Coords.y, m_Coords.x + m_Extent.x, m_Coords.y + m_Extent.y);
 		StringUtils::DumpToFile(m_Filename, m_Result);
+	}
+	else
+	{
+		std::cout << "File found on disk!" << std::endl;
 	}
 
 	PRINTSTRING("Request complete")

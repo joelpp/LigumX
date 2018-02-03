@@ -19,9 +19,9 @@ UpVector
 0.520662
 0.853715
 NearPlane
-0.01
+0.1
 FarPlane
-5000
+100000
 ProjectionType
 0
 OrthoBorders
