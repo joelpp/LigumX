@@ -165,6 +165,7 @@ public:
 	void RenderEntities(std::vector<Entity*> entities);
 	void RenderDebugModels();
 	void RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline);
+	void RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, int displayFlags, int selectedWay);
 	void RenderSectorDebug(SectorGraphicalData* gfxData);
 	void RenderGrid();
 

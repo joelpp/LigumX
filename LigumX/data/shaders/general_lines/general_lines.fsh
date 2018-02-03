@@ -40,6 +40,8 @@ in VertexData
 	flat int m_WayType;
 } inData;
 
+uniform int g_DisplayFlags;
+
 float GetLineWidth(vec2 wsPosition, float gridExtent)
 {
 	vec2 grid = abs(fract( (wsPosition.xy / gridExtent) - 0.5) - 0.5) / fwidth(wsPosition.xy / gridExtent);
@@ -93,6 +95,10 @@ void main()
 	int wayID = inData.m_WayType;
 	vec3 color = GetLineColor(wayID);
 
+	if ((wayID & g_DisplayFlags) == 0)
+	{
+		discard;
+	}
 
     OutputColor = vec4(color, 1.0f);
 }

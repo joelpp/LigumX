@@ -36,6 +36,28 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "ShowGrid", PIDX_ShowGrid, offsetof(SectorTool, m_ShowGrid), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HighlightSelectedSector", PIDX_HighlightSelectedSector, offsetof(SectorTool, m_HighlightSelectedSector), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "LoadSectorsOnClick", PIDX_LoadSectorsOnClick, offsetof(SectorTool, m_LoadSectorsOnClick), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "a", PIDX_a, offsetof(SectorTool, m_a), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowHIGHWAYTRUNK", PIDX_ShowHIGHWAYTRUNK, offsetof(SectorTool, m_ShowHIGHWAYTRUNK), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowHIGHWAYPRIMARY", PIDX_ShowHIGHWAYPRIMARY, offsetof(SectorTool, m_ShowHIGHWAYPRIMARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowHIGHWAYSECONDARY", PIDX_ShowHIGHWAYSECONDARY, offsetof(SectorTool, m_ShowHIGHWAYSECONDARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowHIGHWAYTERTIARY", PIDX_ShowHIGHWAYTERTIARY, offsetof(SectorTool, m_ShowHIGHWAYTERTIARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowHIGHWAYRESIDENTIAL", PIDX_ShowHIGHWAYRESIDENTIAL, offsetof(SectorTool, m_ShowHIGHWAYRESIDENTIAL), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowHIGHWAYUNCLASSIFIED", PIDX_ShowHIGHWAYUNCLASSIFIED, offsetof(SectorTool, m_ShowHIGHWAYUNCLASSIFIED), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowHIGHWAYSERVICE", PIDX_ShowHIGHWAYSERVICE, offsetof(SectorTool, m_ShowHIGHWAYSERVICE), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowBUILDINGUNMARKED", PIDX_ShowBUILDINGUNMARKED, offsetof(SectorTool, m_ShowBUILDINGUNMARKED), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowBUILDINGSCHOOL", PIDX_ShowBUILDINGSCHOOL, offsetof(SectorTool, m_ShowBUILDINGSCHOOL), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowBUILDINGADDRINTERP", PIDX_ShowBUILDINGADDRINTERP, offsetof(SectorTool, m_ShowBUILDINGADDRINTERP), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowRAILWAYSUBWAY", PIDX_ShowRAILWAYSUBWAY, offsetof(SectorTool, m_ShowRAILWAYSUBWAY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowNATURALWOOD", PIDX_ShowNATURALWOOD, offsetof(SectorTool, m_ShowNATURALWOOD), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowNATURALWATER", PIDX_ShowNATURALWATER, offsetof(SectorTool, m_ShowNATURALWATER), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowLEISUREPARK", PIDX_ShowLEISUREPARK, offsetof(SectorTool, m_ShowLEISUREPARK), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowADDRINTERPOLATION", PIDX_ShowADDRINTERPOLATION, offsetof(SectorTool, m_ShowADDRINTERPOLATION), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowGRIDLINE", PIDX_ShowGRIDLINE, offsetof(SectorTool, m_ShowGRIDLINE), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowaDEBUG", PIDX_ShowaDEBUG, offsetof(SectorTool, m_ShowaDEBUG), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowLANDUSE", PIDX_ShowLANDUSE, offsetof(SectorTool, m_ShowLANDUSE), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowBOUNDARY", PIDX_ShowBOUNDARY, offsetof(SectorTool, m_ShowBOUNDARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowCONTOUR", PIDX_ShowCONTOUR, offsetof(SectorTool, m_ShowCONTOUR), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "WayDisplayFlags", PIDX_WayDisplayFlags, offsetof(SectorTool, m_WayDisplayFlags), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -225,7 +247,30 @@ void SectorTool::DisplaySectorDebug(SectorGraphicalData* gfxData)
 
 	if (m_ShowFlatWays)
 	{
-		renderer->RenderDebugModel(gfxData->GetWaysModel(), identity, renderer->pPipelineLines);
+		m_WayDisplayFlags = 0;
+		m_WayDisplayFlags |= m_ShowHIGHWAYTRUNK			? OSMElement::HIGHWAY_TRUNK			: 0;
+		m_WayDisplayFlags |= m_ShowHIGHWAYPRIMARY		? OSMElement::HIGHWAY_PRIMARY		: 0;
+		m_WayDisplayFlags |= m_ShowHIGHWAYSECONDARY		? OSMElement::HIGHWAY_SECONDARY		: 0;
+		m_WayDisplayFlags |= m_ShowHIGHWAYTERTIARY		? OSMElement::HIGHWAY_TERTIARY		: 0;
+		m_WayDisplayFlags |= m_ShowHIGHWAYRESIDENTIAL	? OSMElement::HIGHWAY_RESIDENTIAL	: 0;
+		m_WayDisplayFlags |= m_ShowHIGHWAYUNCLASSIFIED	? OSMElement::HIGHWAY_UNCLASSIFIED	: 0;
+		m_WayDisplayFlags |= m_ShowHIGHWAYSERVICE		? OSMElement::HIGHWAY_SERVICE		: 0;
+		m_WayDisplayFlags |= m_ShowBUILDINGUNMARKED		? OSMElement::BUILDING_UNMARKED		: 0;
+		m_WayDisplayFlags |= m_ShowBUILDINGSCHOOL		? OSMElement::BUILDING_SCHOOL		: 0;
+		m_WayDisplayFlags |= m_ShowBUILDINGADDRINTERP	? OSMElement::BUILDING_ADDRINTERP	: 0;
+		m_WayDisplayFlags |= m_ShowRAILWAYSUBWAY 		? OSMElement::RAILWAY_SUBWAY		: 0;
+		m_WayDisplayFlags |= m_ShowNATURALWOOD			? OSMElement::NATURAL_WOOD			: 0;
+		m_WayDisplayFlags |= m_ShowNATURALWATER			? OSMElement::NATURAL_WATER			: 0;
+		m_WayDisplayFlags |= m_ShowLEISUREPARK			? OSMElement::LEISURE_PARK			: 0;
+		m_WayDisplayFlags |= m_ShowADDRINTERPOLATION	? OSMElement::ADDR_INTERPOLATION	: 0;
+		m_WayDisplayFlags |= m_ShowGRIDLINE				? OSMElement::GRID_LINE				: 0;
+		m_WayDisplayFlags |= m_ShowaDEBUG				? OSMElement::aDEBUG				: 0;
+		m_WayDisplayFlags |= m_ShowLANDUSE				? OSMElement::LANDUSE				: 0;
+		m_WayDisplayFlags |= m_ShowBOUNDARY				? OSMElement::BOUNDARY				: 0;
+		m_WayDisplayFlags |= m_ShowCONTOUR				? OSMElement::CONTOUR				: 0;
+
+		
+		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayFlags, 0);
 	}
 }
 

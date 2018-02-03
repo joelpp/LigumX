@@ -29,18 +29,14 @@ public:
         HIGHWAY_UNCLASSIFIED	= 1 << 6,
         SIDEWALK				= 1 << 7, 
         CONTOUR					= 1 << 10,
-
         BUILDING_UNMARKED		= 1 << 15,
         BUILDING_SCHOOL			= 1 << 16,
         BUILDING_ADDRINTERP		= 1 << 17,
-
         BOUNDARY				= 1 << 21,
         LEISURE_PARK			= 1 << 22,
         NATURAL_WOOD			= 1 << 23,
         NATURAL_WATER			= 1 << 24,
-
         LANDUSE					= 1 << 25,
-
         RAILWAY_SUBWAY			= 1 << 26,
         aDEBUG					= 1 << 27,
         ADDR_INTERPOLATION		= 1 << 28,

@@ -976,6 +976,24 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 	}
 }
 
+void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, int displayFlags, int selectedWay)
+{
+	SetPipeline(programPipeline);
+
+	for (int i = 0; i < model->m_meshes.size(); ++i)
+	{
+		SetVertexUniform(modelToWorld, "g_ModelToWorldMatrix");
+
+		Material* material = model->GetMaterials()[i];
+
+		SetViewUniforms(m_DebugCamera);
+
+		SetFragmentUniform(displayFlags, "g_DisplayFlags");
+
+		DrawMesh(model->m_meshes[i], material);
+	}
+}
+
 void Renderer::RenderDebugModels()
 {
 	g_Editor->RenderTools();
