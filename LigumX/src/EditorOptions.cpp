@@ -21,7 +21,11 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "BackupDataOnSave", PIDX_BackupDataOnSave, offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DebugDisplay", PIDX_DebugDisplay, offsetof(EditorOptions, m_DebugDisplay), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "SaveDisabled", PIDX_SaveDisabled, offsetof(EditorOptions, m_SaveDisabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DisplayPickingTool", PIDX_DisplayPickingTool, offsetof(EditorOptions, m_DisplayPickingTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DisplayOSMTool", PIDX_DisplayOSMTool, offsetof(EditorOptions, m_DisplayOSMTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DisplaySectorTool", PIDX_DisplaySectorTool, offsetof(EditorOptions, m_DisplaySectorTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "MouseScrollCameraSpeed", PIDX_MouseScrollCameraSpeed, offsetof(EditorOptions, m_MouseScrollCameraSpeed), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "MouseScrollEntityCloseupPercent", PIDX_MouseScrollEntityCloseupPercent, offsetof(EditorOptions, m_MouseScrollEntityCloseupPercent), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 bool EditorOptions::Serialize(bool writing)
 {

@@ -1,6 +1,6 @@
-#include "OSMTool.h"
-#include "InputHandler.h"
 #include "Editor.h"
+#include "SectorTool.h"
+#include "InputHandler.h"
 #include "SectorManager.h"
 #include "DefaultObjects.h"
 #include "Node.h"

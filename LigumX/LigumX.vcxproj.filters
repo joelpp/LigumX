@@ -204,6 +204,12 @@
     <ClCompile Include="src\SectorGraphicalData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PickingTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MathUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -503,6 +509,12 @@
     <ClInclude Include="src\SectorGraphicalData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\PickingTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MathUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -539,5 +551,6 @@
     <None Include="src\SectorGraphicalData.gen" />
     <None Include="src\Sector.gen" />
     <None Include="src\SectorTool.gen" />
+    <None Include="src\PickingTool.gen" />
   </ItemGroup>
 </Project>

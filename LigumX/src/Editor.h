@@ -6,7 +6,6 @@
 #include <vector>
 #include "Logging.h"
 #include "CurlRequest.h"
-#include "SectorTool.h"
 
 class Texture;
 class SectorData;
@@ -18,9 +17,9 @@ class Sector;
 
 class Editor;
 class EditorOptions;
-class Entity;
 class SectorTool;
 class OSMTool;
+class PickingTool;
 class Node;
 
 extern Editor* g_Editor;
@@ -32,11 +31,12 @@ EditorTool_TerrainSplatMap,
 EditorTool_EntityManipulator,
 EditorTool_SectorTool,
 EditorTool_OSMTool,
+EditorTool_PickingTool,
 };
 
-extern const std::string EnumValues_EditorTool[6];
-extern const EditorTool Indirection_EditorTool[6];
-const int EnumLength_EditorTool = 6;
+extern const std::string EnumValues_EditorTool[7];
+extern const EditorTool Indirection_EditorTool[7];
+const int EnumLength_EditorTool = 7;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Editor
@@ -60,16 +60,10 @@ void SetActiveTool(EditorTool value) { m_ActiveTool = value; };
 const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
 void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
 void AddTo_XYZMask(glm::vec4 value) { m_XYZMask += value; };
-Entity*& GetPickedEntity() { return m_PickedEntity; }; 
-void SetPickedEntity(Entity* value) { m_PickedEntity = value; }; 
-const glm::vec3& GetPickedWorldPosition() { return m_PickedWorldPosition; }; 
-void SetPickedWorldPosition(glm::vec3 value) { m_PickedWorldPosition = value; }; 
 const bool& GetManipulatorDragging() { return m_ManipulatorDragging; }; 
 void SetManipulatorDragging(bool value) { m_ManipulatorDragging = value; }; 
 const glm::vec3& GetManipulatorStartPosition() { return m_ManipulatorStartPosition; }; 
 void SetManipulatorStartPosition(glm::vec3 value) { m_ManipulatorStartPosition = value; }; 
-const glm::vec4& GetPickingData() { return m_PickingData; }; 
-void SetPickingData(glm::vec4 value) { m_PickingData = value; }; 
 const bool& GetEditingTerrain() { return m_EditingTerrain; }; 
 void SetEditingTerrain(bool value) { m_EditingTerrain = value; }; 
 const bool& GetTerrainErasureMode() { return m_TerrainErasureMode; }; 
@@ -81,6 +75,8 @@ SectorTool*& GetSectorTool() { return m_SectorTool; };
 void SetSectorTool(SectorTool* value) { m_SectorTool = value; }; 
 OSMTool*& GetOSMTool() { return m_OSMTool; }; 
 void SetOSMTool(OSMTool* value) { m_OSMTool = value; }; 
+PickingTool*& GetPickingTool() { return m_PickingTool; }; 
+void SetPickingTool(PickingTool* value) { m_PickingTool = value; }; 
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 Node*& GetSelectedNode() { return m_SelectedNode; }; 
@@ -91,20 +87,18 @@ std::string m_Name;
 EditorOptions* m_Options;
 EditorTool m_ActiveTool;
 glm::vec4 m_XYZMask;
-Entity* m_PickedEntity;
-glm::vec3 m_PickedWorldPosition = glm::vec3(0, 0, 0);
 bool m_ManipulatorDragging = false;
 glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
-glm::vec4 m_PickingData;
 bool m_EditingTerrain = false;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 0.f;
 SectorTool* m_SectorTool;
 OSMTool* m_OSMTool;
+PickingTool* m_PickingTool;
 int m_PickingBufferSize = 0;
 Node* m_SelectedNode;
 public:
-static const int g_PropertyCount = 17;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -114,16 +108,14 @@ PIDX_Name,
 PIDX_Options,
 PIDX_ActiveTool,
 PIDX_XYZMask,
-PIDX_PickedEntity,
-PIDX_PickedWorldPosition,
 PIDX_ManipulatorDragging,
 PIDX_ManipulatorStartPosition,
-PIDX_PickingData,
 PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_SectorTool,
 PIDX_OSMTool,
+PIDX_PickingTool,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };

@@ -1,0 +1,21 @@
+class PickingTool
+{
+	bool Enabled = true;
+
+	[transient, hidden]
+	Entity* PickedEntity
+	[transient]
+	glm::vec3 PickedWorldPosition
+
+	[transient]
+	glm::vec4 PickingData;
+
+	[transient]
+	float PickedDepth;
+
+	[transient]
+	float PickedID;
+
+	[transient]
+	float PickDebugModels = false;
+}

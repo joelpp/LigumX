@@ -1092,8 +1092,6 @@ void Renderer::RenderEditor()
 
 	GL::SetViewport(m_Window->GetSize());
 
-	//RenderImgui();
-
 	RenderFPS();
 
 	RenderTextureOverlay();
@@ -1102,8 +1100,6 @@ void Renderer::RenderEditor()
 void Renderer::render(World* world)
 {
 	BeginFrame(world);
-
-	//g_Editor->RenderPicking();
 
 	RenderShadowMap();
 

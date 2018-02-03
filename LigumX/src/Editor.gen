@@ -6,6 +6,7 @@ enum EditorTool
 	EntityManipulator,
 	SectorTool,
 	OSMTool,
+	PickingTool,
 }
 
 [globalinstance]
@@ -17,17 +18,12 @@ class Editor
 
 	[transient, adder, hidden]
 	glm::vec4 XYZMask
-	[transient, hidden]
-	Entity* PickedEntity
-	[transient]
-	glm::vec3 PickedWorldPosition
+
 	[transient]
 	bool ManipulatorDragging
 	[transient]
 	glm::vec3 ManipulatorStartPosition;
 
-	[transient]
-	glm::vec4 PickingData;
 
 	[transient]
 	bool EditingTerrain;
@@ -40,6 +36,8 @@ class Editor
 
 	SectorTool* SectorTool;
 	OSMTool* OSMTool;
+	PickingTool* PickingTool;
+
 	int PickingBufferSize;
 
 	Node* SelectedNode;

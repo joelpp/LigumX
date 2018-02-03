@@ -42,8 +42,16 @@ const bool& GetDebugDisplay() { return m_DebugDisplay; };
 void SetDebugDisplay(bool value) { m_DebugDisplay = value; }; 
 const bool& GetSaveDisabled() { return m_SaveDisabled; }; 
 void SetSaveDisabled(bool value) { m_SaveDisabled = value; }; 
+const bool& GetDisplayPickingTool() { return m_DisplayPickingTool; }; 
+void SetDisplayPickingTool(bool value) { m_DisplayPickingTool = value; }; 
+const bool& GetDisplayOSMTool() { return m_DisplayOSMTool; }; 
+void SetDisplayOSMTool(bool value) { m_DisplayOSMTool = value; }; 
+const bool& GetDisplaySectorTool() { return m_DisplaySectorTool; }; 
+void SetDisplaySectorTool(bool value) { m_DisplaySectorTool = value; }; 
 const float& GetMouseScrollCameraSpeed() { return m_MouseScrollCameraSpeed; }; 
 void SetMouseScrollCameraSpeed(float value) { m_MouseScrollCameraSpeed = value; }; 
+const float& GetMouseScrollEntityCloseupPercent() { return m_MouseScrollEntityCloseupPercent; }; 
+void SetMouseScrollEntityCloseupPercent(float value) { m_MouseScrollEntityCloseupPercent = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -58,9 +66,13 @@ bool m_ShowObjectManager = false;
 bool m_BackupDataOnSave = false;
 bool m_DebugDisplay = false;
 bool m_SaveDisabled = false;
+bool m_DisplayPickingTool = true;
+bool m_DisplayOSMTool = false;
+bool m_DisplaySectorTool = false;
 float m_MouseScrollCameraSpeed = 10.0f;
+float m_MouseScrollEntityCloseupPercent = 15.0f;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 18;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -78,7 +90,11 @@ PIDX_ShowObjectManager,
 PIDX_BackupDataOnSave,
 PIDX_DebugDisplay,
 PIDX_SaveDisabled,
+PIDX_DisplayPickingTool,
+PIDX_DisplayOSMTool,
+PIDX_DisplaySectorTool,
 PIDX_MouseScrollCameraSpeed,
+PIDX_MouseScrollEntityCloseupPercent,
 };
 bool Serialize(bool writing);
 

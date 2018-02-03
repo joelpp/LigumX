@@ -29,6 +29,7 @@ enum LXType
 	LXType_Model,
 	LXType_Node,
 	LXType_OSMTool,
+	LXType_PickingTool,
 	LXType_PostEffects,
 	LXType_ProgramPipeline,
 	LXType_Renderer,

@@ -183,6 +183,7 @@
     <ClCompile Include="src\linesegment.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\MathUtils.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\node.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="src\OSMTool.cpp" />
     <ClCompile Include="src\osm_element.cpp" />
     <ClCompile Include="src\PerlinNoise.cpp" />
+    <ClCompile Include="src\PickingTool.cpp" />
     <ClCompile Include="src\pipelines.cpp" />
     <ClCompile Include="src\PostEffects.cpp" />
     <ClCompile Include="src\program_pipeline.cpp" />
@@ -284,6 +286,7 @@
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Math.h" />
+    <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\node.h" />
@@ -291,6 +294,7 @@
     <ClInclude Include="src\OSMTool.h" />
     <ClInclude Include="src\osm_element.h" />
     <ClInclude Include="src\PerlinNoise.h" />
+    <ClInclude Include="src\PickingTool.h" />
     <ClInclude Include="src\PostEffects.h" />
     <ClInclude Include="src\program_pipeline.h" />
     <ClInclude Include="src\property.h" />
@@ -345,6 +349,7 @@
     <None Include="src\Model.gen" />
     <None Include="src\Node.gen" />
     <None Include="src\OSMTool.gen" />
+    <None Include="src\PickingTool.gen" />
     <None Include="src\PostEffects.gen" />
     <None Include="src\renderer.gen" />
     <None Include="src\Sector.gen" />
