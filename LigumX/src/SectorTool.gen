@@ -14,6 +14,7 @@ class SectorTool
 
 	bool ShowNodes = true;
 	bool ShowWays = true;
+	bool ShowFlatWays = false;
 	bool ShowSectorAABBs = true;
 	bool ShowGrid = true;
 	bool HighlightSelectedSector = true;

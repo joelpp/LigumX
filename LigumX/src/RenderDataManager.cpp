@@ -24,7 +24,46 @@ RenderDataManager* g_RenderDataManager;
 using namespace std;
 using namespace glm;
 
-int findSetBit(int number){
+
+FlatWaysMesh::FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& typeBuffer, GLenum renderingMode, bool usePointRendering)
+{
+	m_buffers.vertexPositions = vertices;
+	m_WayTypeBuffer = typeBuffer;
+
+	m_renderingMode = renderingMode;
+	SetPointRendering(usePointRendering);
+
+	SetUsesIndexBuffer(false);
+
+	padBuffer(VERTEX_UVS);
+
+	CreateBuffers();
+}
+
+void FlatWaysMesh::CreateBuffers()
+{
+	// TODO: I'm not quite convinced this belongs here. or does it?
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.vertexPositions);
+
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayTypeBuffer, m_WayTypeBuffer);
+
+
+	glGenVertexArrays(1, &m_VAO);
+	glBindVertexArray(m_VAO);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+
+	glEnableVertexAttribArray(3);
+	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayTypeBuffer);
+	glVertexAttribPointer(3, 1, GL_INT, GL_FALSE, 0, NULL);
+
+}
+
+
+int findSetBit(int number)
+{
     unsigned i = 1, pos = 1;
  
     // Iterate through bits of n till we find a set bit
@@ -124,6 +163,34 @@ Model* RenderDataManager::CreateDebugModel(const std::vector<glm::vec3>& lineDat
 	return model;
 }
 
+//Model* RenderDataManager::CreateDebugModel(const std::vector<glm::vec3>& lineData, const std::vector<int>& indexBuffer, glm::vec3 color, const char* name)
+//{
+//	Renderer& renderer = Renderer::GetInstance();
+//
+//	Mesh* mesh = new Mesh(lineData, indexBuffer, GL_LINES, false);
+//
+//	Model* model = new Model();
+//	model->addMesh(mesh, new Material(renderer.pPipelineLines, color));
+//	model->SetName(name);
+//
+//	return model;
+//}
+
+
+Model* RenderDataManager::CreateFlatDebugModel(const std::vector<glm::vec3>& lineData, const std::vector<int>& typeBuffer, glm::vec3 color, const char* name)
+{
+	Renderer& renderer = Renderer::GetInstance();
+
+	FlatWaysMesh* mesh = new FlatWaysMesh(lineData, typeBuffer, GL_LINES, false);
+
+	Model* model = new Model();
+	model->addMesh(mesh, new Material(renderer.pPipelineLines, color));
+	model->SetName(name);
+
+	return model;
+}
+
+
 void RenderDataManager::AddDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color)
 {
 	Renderer& renderer = Renderer::GetInstance();
@@ -168,11 +235,21 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	nodeModel->SetName("Sector_nodes_");
 
 	Model* waysModel = nullptr;
+
+	std::vector<glm::vec3> flatWayPositions;
+	 //todo : make it work with an index buffer someday
+	std::vector<int> vertexType;
+
+	// todo : make it work with an index buffer someday
+	//std::vector<int> indexBuffer;
+	int index = 0;
+	int previousLastIndex = 0;
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		std::vector<glm::vec3> line;
 		Way* way = it->second;
 
+		bool newWay = true;
 		for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
 		{
 			Node* node = *nodeIt;
@@ -180,17 +257,33 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			const glm::vec3& pos = node->GetWorldPosition();
 
 			AddPoint(line, pos);
-		}
 
-		Renderer& renderer = Renderer::GetInstance();
+			if (!newWay && index > (previousLastIndex) && (index - 1) != previousLastIndex)
+			{
+				flatWayPositions.push_back(flatWayPositions.back());
+				vertexType.push_back(way->eType);
+			}
+
+			flatWayPositions.push_back(pos);
+			vertexType.push_back(way->eType);
+
+			newWay = false;
+			index++;
+		}
+		previousLastIndex = index - 1;
+		index -= 1;
+
 		glm::vec3 color = renderer.typeColorMap[way->eType];
 		waysModel = CreateDebugModel(line, color, "Sector_Lines_");
 
 		gfxData->AddTo_WaysModelsVector(waysModel);
+
 	}
 
+	Model* flatWaysModel = CreateFlatDebugModel(flatWayPositions, vertexType, glm::vec3(1,1,1), "Sector_FlatLines_");
+
 	gfxData->SetNodesModel(nodeModel);
-	gfxData->SetWaysModel(waysModel);
+	gfxData->SetWaysModel(flatWaysModel);
 }
 
 void RenderDataManager::fillBuffers(Sector* sector)

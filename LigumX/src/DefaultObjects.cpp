@@ -55,7 +55,7 @@ void DefaultObjects::InitializeDefaultQuad()
 	indexBuffer.push_back(3);
 
 	DefaultQuadMesh->createBuffers();
-	DefaultQuadMesh->m_usesIndexBuffer = true;
+	DefaultQuadMesh->SetUsesIndexBuffer(true);
 	DefaultQuadMesh->m_renderingMode = GL_TRIANGLES;
 
 	DefaultQuadMesh->SetName("Default Quad Mesh");
@@ -110,7 +110,7 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 	}
 
 	DefaultTerrainMesh->createBuffers();
-	DefaultTerrainMesh->m_usesIndexBuffer = true;
+	DefaultTerrainMesh->SetUsesIndexBuffer(true);
 	DefaultTerrainMesh->m_renderingMode = GL_TRIANGLES;
 
 	DefaultTerrainMesh->SetName("Default Terrain Mesh");
@@ -189,7 +189,7 @@ void DefaultObjects::InitializeDefaultLine()
 	UVs.push_back(glm::vec2(1, 1));
 
 	DefaultLineMesh->createBuffers();
-	DefaultLineMesh->m_usesIndexBuffer = true;
+	DefaultLineMesh->SetUsesIndexBuffer(true);
 	DefaultLineMesh->m_renderingMode = GL_LINES;
 
 	DefaultLineMesh->SetName("Default Line Mesh");

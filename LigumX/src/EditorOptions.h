@@ -66,9 +66,9 @@ bool m_ShowObjectManager = false;
 bool m_BackupDataOnSave = false;
 bool m_DebugDisplay = false;
 bool m_SaveDisabled = false;
-bool m_DisplayPickingTool = true;
+bool m_DisplayPickingTool = false;
 bool m_DisplayOSMTool = false;
-bool m_DisplaySectorTool = false;
+bool m_DisplaySectorTool = true;
 float m_MouseScrollCameraSpeed = 10.0f;
 float m_MouseScrollEntityCloseupPercent = 15.0f;
 public:

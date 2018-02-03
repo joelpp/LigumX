@@ -1269,7 +1269,6 @@ void Editor::ProcessScrolling()
 void Editor::RenderTools()
 {
 	m_SectorTool->Display();
-
 }
 
 void Editor::Render()

@@ -575,11 +575,11 @@ void Renderer::DrawMesh(Mesh* mesh)
 {
 	glBindVertexArray(mesh->m_VAO);
 
-	if (mesh->m_usesIndexBuffer)
+	if (mesh->GetUsesIndexBuffer())
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->m_VBOs.glidIndexBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetGPUBuffers().glidIndexBuffer);
 
-		GL::DrawElements(GL_TRIANGLES, (int) mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+		GL::DrawElements(mesh->m_renderingMode, (int) mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
@@ -597,29 +597,28 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
 
   SetMaterialUniforms(material);
 
-  if (mesh->m_wireframeRendering)
+  if (mesh->GetWireframeRendering())
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   }
 
-  if (mesh->m_pointRendering)
+  if (mesh->GetPointRendering())
   {
     glEnable(GL_PROGRAM_POINT_SIZE);
   }
 
   DrawMesh(mesh);
 
-  if (mesh->m_pointRendering)
+  if (mesh->GetPointRendering())
   {
     glDisable(GL_PROGRAM_POINT_SIZE);
   }
 
-  if (mesh->m_wireframeRendering)
+  if (mesh->GetWireframeRendering())
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
-  //FreeBoundTexture();
 }
 
 void Renderer::RenderTerrain()

@@ -92,7 +92,7 @@ void Model::CreateHWBuffers()
 	for (Mesh* mesh : m_meshes)
 	{
 		mesh->createBuffers();
-		mesh->m_usesIndexBuffer = true;
+		mesh->SetUsesIndexBuffer(true);
 		mesh->m_renderingMode = GL_TRIANGLES;
 	}
 }

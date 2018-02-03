@@ -8,7 +8,8 @@ out vec4 OutputColor;
 
 in VertexData
 {
-  vec3 m_WorldPosition;
+	vec3 m_WorldPosition;
+	flat int m_WayType;
 } inData;
 
 float GetLineWidth(vec2 wsPosition, float gridExtent)
@@ -26,5 +27,8 @@ float GetLineAlpha(float lineWidth, float maximum)
 
 void main()
 {
-    OutputColor = vec4(g_Material.m_DiffuseColor, 1.0f);
+	float wayID = log2(inData.m_WayType);
+
+
+    OutputColor = vec4(g_Material.m_DiffuseColor * (wayID / 32.f), 1.0f);
 }

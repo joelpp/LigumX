@@ -24,20 +24,38 @@ enum EBufferType
 	VERTEX_UVS
 };
 
-struct GPUBuffers{
+class GPUBuffers
+{
+public:
+
 	GLuint glidPositions;
 	GLuint glidNormals;
 	GLuint glidUVs;
 	GLuint glidIndexBuffer;
 };
 
-struct CPUBuffers
+class FlatWaysGPUBuffers : public GPUBuffers
 {
+public:
+	GLuint glidWayTypeBuffer;
+};
+
+class CPUBuffers
+{
+public:
+
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<glm::vec3> m_vertexNormals;
 	std::vector<glm::vec2> m_vertexUVs;
 	std::vector<int> indexBuffer;
 };
+
+class FlatWaysCPUBuffers : public CPUBuffers
+{
+public:
+	std::vector<int> WayTypeBuffer;
+};
+
 
 class Mesh
 {
@@ -51,17 +69,29 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
+const bool& GetUsesIndexBuffer() { return m_UsesIndexBuffer; }; 
+void SetUsesIndexBuffer(bool value) { m_UsesIndexBuffer = value; }; 
+const bool& GetWireframeRendering() { return m_WireframeRendering; }; 
+void SetWireframeRendering(bool value) { m_WireframeRendering = value; }; 
+const bool& GetPointRendering() { return m_PointRendering; }; 
+void SetPointRendering(bool value) { m_PointRendering = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
+bool m_UsesIndexBuffer = false;
+bool m_WireframeRendering = false;
+bool m_PointRendering = false;
 public:
-static const int g_PropertyCount = 2;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MeshPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
+PIDX_UsesIndexBuffer,
+PIDX_WireframeRendering,
+PIDX_PointRendering,
 };
 bool Serialize(bool writing);
 
@@ -72,22 +102,23 @@ public:
 	// Mesh(std::vector<Vertex> vertexArray);
 	// void addVertex(Vertex v);
 	Mesh();
-	Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode);
-	Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode, bool usePointRendering);
+	Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode);
+	Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode, bool usePointRendering);
+	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GLenum renderingMode, bool usePointRendering);
 	
 	void padBuffer(EBufferType bufferType);
-	void createBuffers();
+	virtual void createBuffers();
 	std::vector<int> m_indexArray;
 
-	GPUBuffers m_VBOs;
 	CPUBuffers m_buffers;
 
 
 	GLuint m_VAO;
 
-	bool m_usesIndexBuffer;
-	bool m_wireframeRendering;
-	bool m_pointRendering;
 	GLenum m_renderingMode;
 	
+	virtual GPUBuffers& GetGPUBuffers() { return m_VBOs; }
+private:
+	GPUBuffers m_VBOs;
+
 };

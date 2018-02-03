@@ -44,6 +44,8 @@ const bool& GetShowNodes() { return m_ShowNodes; };
 void SetShowNodes(bool value) { m_ShowNodes = value; }; 
 const bool& GetShowWays() { return m_ShowWays; }; 
 void SetShowWays(bool value) { m_ShowWays = value; }; 
+const bool& GetShowFlatWays() { return m_ShowFlatWays; }; 
+void SetShowFlatWays(bool value) { m_ShowFlatWays = value; }; 
 const bool& GetShowSectorAABBs() { return m_ShowSectorAABBs; }; 
 void SetShowSectorAABBs(bool value) { m_ShowSectorAABBs = value; }; 
 const bool& GetShowGrid() { return m_ShowGrid; }; 
@@ -63,12 +65,13 @@ bool m_AsyncSectorLoading = false;
 float m_NodeSize = 2;
 bool m_ShowNodes = true;
 bool m_ShowWays = true;
+bool m_ShowFlatWays = false;
 bool m_ShowSectorAABBs = true;
 bool m_ShowGrid = true;
 bool m_HighlightSelectedSector = true;
 bool m_LoadSectorsOnClick = true;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
@@ -83,6 +86,7 @@ PIDX_AsyncSectorLoading,
 PIDX_NodeSize,
 PIDX_ShowNodes,
 PIDX_ShowWays,
+PIDX_ShowFlatWays,
 PIDX_ShowSectorAABBs,
 PIDX_ShowGrid,
 PIDX_HighlightSelectedSector,

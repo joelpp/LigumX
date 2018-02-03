@@ -12,9 +12,9 @@ class EditorOptions
 	bool DebugDisplay;
 	bool SaveDisabled;
 
-	bool DisplayPickingTool = true;
+	bool DisplayPickingTool = false;
 	bool DisplayOSMTool = false;
-	bool DisplaySectorTool = false;
+	bool DisplaySectorTool = true;
 
 	float MouseScrollCameraSpeed = 10.0f;
 	float MouseScrollEntityCloseupPercent = 15.0f;

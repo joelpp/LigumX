@@ -31,6 +31,7 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "NodeSize", PIDX_NodeSize, offsetof(SectorTool, m_NodeSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ShowNodes", PIDX_ShowNodes, offsetof(SectorTool, m_ShowNodes), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowWays", PIDX_ShowWays, offsetof(SectorTool, m_ShowWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowFlatWays", PIDX_ShowFlatWays, offsetof(SectorTool, m_ShowFlatWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowSectorAABBs", PIDX_ShowSectorAABBs, offsetof(SectorTool, m_ShowSectorAABBs), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowGrid", PIDX_ShowGrid, offsetof(SectorTool, m_ShowGrid), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HighlightSelectedSector", PIDX_HighlightSelectedSector, offsetof(SectorTool, m_HighlightSelectedSector), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
@@ -216,12 +217,15 @@ void SectorTool::DisplaySectorDebug(SectorGraphicalData* gfxData)
 
 	if (m_ShowWays) 
 	{
-		renderer->RenderDebugModel(gfxData->GetWaysModel(), identity, renderer->pPipelineLines);
-
 		for (Model* wayModel : gfxData->GetWaysModelsVector())
 		{
 			renderer->RenderDebugModel(wayModel, identity, renderer->pPipelineLines);
 		}
+	}
+
+	if (m_ShowFlatWays)
+	{
+		renderer->RenderDebugModel(gfxData->GetWaysModel(), identity, renderer->pPipelineLines);
 	}
 }
 

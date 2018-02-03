@@ -1,3 +1,6 @@
 class Mesh
 {
+	bool UsesIndexBuffer;
+	bool WireframeRendering;
+	bool PointRendering;
 }

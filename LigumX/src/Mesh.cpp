@@ -15,6 +15,9 @@ const ClassPropertyData Mesh::g_Properties[] =
 {
 { "ObjectID", PIDX_ObjectID, offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Mesh, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "UsesIndexBuffer", PIDX_UsesIndexBuffer, offsetof(Mesh, m_UsesIndexBuffer), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "WireframeRendering", PIDX_WireframeRendering, offsetof(Mesh, m_WireframeRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "PointRendering", PIDX_PointRendering, offsetof(Mesh, m_PointRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool Mesh::Serialize(bool writing)
 {
@@ -26,12 +29,13 @@ bool Mesh::Serialize(bool writing)
 
 Mesh::Mesh()
 {
-    m_wireframeRendering = false;
-    m_usesIndexBuffer = false;
-    m_pointRendering = false;
+    m_WireframeRendering = false;
+    m_UsesIndexBuffer = false;
+    m_PointRendering = false;
+	m_renderingMode = GL_TRIANGLES;
 }
 
-Mesh::Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode)
+Mesh::Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode)
 {
   m_buffers.vertexPositions = vertices;
   m_renderingMode = renderingMode;
@@ -40,11 +44,26 @@ Mesh::Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode)
   createBuffers();
 }
 
-Mesh::Mesh(std::vector<glm::vec3> vertices, GLenum renderingMode, bool usePointRendering)
+Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GLenum renderingMode, bool usePointRendering)
+{
+	m_buffers.vertexPositions = vertices;
+	m_buffers.indexBuffer = indices;
+
+	m_renderingMode = renderingMode;
+	m_PointRendering = usePointRendering;
+
+	m_UsesIndexBuffer = true;
+
+	padBuffer(VERTEX_UVS);
+
+	createBuffers();
+}
+
+Mesh::Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode, bool usePointRendering)
 {
   m_buffers.vertexPositions = vertices;
   m_renderingMode = renderingMode;
-  m_pointRendering = usePointRendering;
+  m_PointRendering = usePointRendering;
   padBuffer(VERTEX_UVS);
   createBuffers();
 }
@@ -85,6 +104,7 @@ void Mesh::createBuffers()
 		LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals, m_buffers.m_vertexNormals);
 		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals);
+
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	}
 
