@@ -8,7 +8,7 @@ uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;
 uniform mat4 g_LightProjectionMatrix;
 
-uniform sampler2D heightfieldTexture;
+uniform sampler2D g_HeightfieldTexture;
 
 
 
@@ -33,7 +33,7 @@ vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 		offsets.x = 0;
 	}
 	offsets.y = 0;
-	float heightLeft = textureLod(heightfieldTexture, texCoord - offsets, 0.f).r;
+	float heightLeft = textureLod(g_HeightfieldTexture, texCoord - offsets, 0.f).r;
 	
 	offsets = vec2(resolution);
 	if (texCoord.x >= (1.f - resolution - 0.001f))
@@ -41,7 +41,7 @@ vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 		offsets.x = 0;
 	}
 	offsets.y = 0;
-	float heightRight =		textureLod(heightfieldTexture, texCoord + offsets * vec2(1, 0), 0.f).r;
+	float heightRight =		textureLod(g_HeightfieldTexture, texCoord + offsets * vec2(1, 0), 0.f).r;
 	
 	offsets = vec2(resolution);
 	if (texCoord.y <= resolution + 0.001f)
@@ -49,7 +49,7 @@ vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 		offsets.y = 0;
 	}
 	offsets.x = 0;
-	float heightBottom =	textureLod(heightfieldTexture, texCoord - offsets * vec2(0, 1), 0.f).r;
+	float heightBottom =	textureLod(g_HeightfieldTexture, texCoord - offsets * vec2(0, 1), 0.f).r;
 
 	offsets = vec2(resolution);
 	if (texCoord.y >= (1.f - resolution - 0.001f))
@@ -58,7 +58,7 @@ vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 	}
 
 	offsets.x = 0;
-	float heightTop =		textureLod(heightfieldTexture, texCoord + offsets * vec2(0, 1), 0.f).r;
+	float heightTop =		textureLod(g_HeightfieldTexture, texCoord + offsets * vec2(0, 1), 0.f).r;
 
 	vec3 normal = vec3(0, 0, 0);
 
@@ -102,7 +102,7 @@ void main()
 	
 
 
-	float heightMid = textureLod(heightfieldTexture, texCoord, 0.f).r;
+	float heightMid = textureLod(g_HeightfieldTexture, texCoord, 0.f).r;
 
 	vec3 normal = ComputeNormal(heightMid, texCoord, resolution);
 

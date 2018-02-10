@@ -16,7 +16,7 @@ void main()
     float lightPower = 0.4f *  dot(v_Normal, lightDirection);
 
 	vec3 ambient = vec3(0.1f);
-	vec3 diffuse = vec3(0.0f, 0.0f, 0.1f);
+	vec3 diffuse = vec3(1.0f, 1.0f, 1.0f);
 
 	if ( any(greaterThan( splatMap.rgb, vec3(0,0,0) )) )
 	{
@@ -24,7 +24,7 @@ void main()
 	} 
 
 	vec3 finalColor = diffuse /** (ambient + lightPower)*/;
-
+	finalColor *= vec3(v_TexCoord, 0);
     o_PSOutput = vec4(finalColor, 1.0);
 
 	

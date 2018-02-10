@@ -268,3 +268,30 @@ void Texture::SaveToFile(std::string fileName)
 	}
 	FreeImage_Unload(image);
 }
+
+void Texture::GenerateFromData(std::vector<float>& data)
+{
+	GLuint bindingTarget = GL_TEXTURE_2D;
+
+	if (m_IsCubeMap)
+	{
+		bindingTarget = GL_TEXTURE_CUBE_MAP;
+	}
+
+	glGenTextures(1, &m_HWObject);
+	glBindTexture(bindingTarget, m_HWObject);
+
+	glTexParameteri(bindingTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(bindingTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	int i = 0;
+
+	char* bytes = (char*)data.data();
+	glTexImage2D(bindingTarget, 0, m_InternalFormat, m_Size.x, m_Size.y, 0, m_Format, m_PixelType, bytes);
+
+	glGenerateMipmap(bindingTarget);
+
+	glBindTexture(bindingTarget, 0);
+}

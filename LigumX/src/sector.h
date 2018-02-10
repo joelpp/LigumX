@@ -6,6 +6,7 @@
 #include "property.h"
 
 class Sector;
+class Entity;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Sector
@@ -14,6 +15,7 @@ class Heightfield;
 class vec2i;
 class CurlRequest;
 class SectorGraphicalData;
+class PerlinNoise;
 
 typedef std::pair<int, int> IntPair;
 
@@ -108,8 +110,11 @@ public:
 	static glm::vec2 EarthToWorld(const glm::vec2& earthPosition);
 
 	void InitializeFromRequest(CurlRequest* request);
+	void CreateTerrainPatchEntity();
 
 	SectorGraphicalData* GetGraphicalData() { return m_Data->GetGraphicalData(); }
 
+	Entity* m_TerrainPatchEntity;
 
+	static PerlinNoise* pNoise;
 };

@@ -92,7 +92,7 @@ public:
 
 	BYTE* GetTextureData() { return m_TextureData; };
 
-
+	void GenerateFromData(std::vector<float>& data);
 public:
     Texture(std::string filename, bool isCubeMap = false);
 

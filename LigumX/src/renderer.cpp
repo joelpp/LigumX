@@ -660,25 +660,30 @@ void Renderer::RenderTerrain()
 	glDrawBuffers(2, attachments);
 
 	Material* terrainMaterial = nullptr;
-	Entity* terrainEntity = nullptr;
-	for (Entity* entity : m_World->GetEntities())
-	{
-		// todo : fix this awful hack to get terrain material
 
-		Material* cmpMaterial = entity->GetModel()->GetMaterials()[0];
-		if (cmpMaterial && cmpMaterial->GetShaderFamily() == ShaderFamily_Terrain)
+	for (int i = 0; i < m_World->GetSectors().size(); ++i)
+	{
+		Sector* sector = m_World->GetSectors()[i];
+
+		if (sector)
 		{
-			terrainEntity = entity;
-			terrainMaterial = cmpMaterial;
-			break;
+			Entity* entity = sector->m_TerrainPatchEntity;
+
+			if (entity)
+			{
+				SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+				terrainMaterial = entity->GetModel()->GetMaterials()[0];
+
+				SetFragmentUniform(0, "g_HeightfieldTexture");
+				Bind2DTexture(0, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
+
+				DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
+			}
 		}
 	}
 
-	//RenderEntities(ShaderFamily_Terrain, m_World->GetEntities());
 
-	SetVertexUniform(terrainEntity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
-	DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 }
 
 void Renderer::RenderShadowMap()

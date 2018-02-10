@@ -33,7 +33,7 @@ Heightfield::Heightfield(vec2 startPoint, float sideLength){
     if (!hfBaseMesh)
     {
         generateBaseMesh();
-        pNoise = new PerlinNoise(1, 1, 0.5, 2, 5847);
+        pNoise = new PerlinNoise(100, 0.1, 2, 3, 5847);
 
     }
 }
