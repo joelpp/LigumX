@@ -32,12 +32,21 @@ struct AABBJob
 	glm::vec3 m_Color;
 };
 
+struct WayData
+{
+	int type;
+	int IndexInSector;
+};
+
+
 class FlatWaysMesh : public Mesh
 {
 public:
-	FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& typeBuffer, GLenum renderingMode, bool usePointRendering);
+	FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<WayData>& typeBuffer, GLenum renderingMode, bool usePointRendering);
 
 	std::vector<int> m_WayTypeBuffer;
+	std::vector<WayData> m_DataBuffer;
+
 	GLuint glidTypeBuffer;
 	void CreateBuffers();
 
@@ -78,7 +87,7 @@ public:
 	static void AddDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color);
 	static Model* CreateDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color, const char* name);
 	static Model* CreateDebugModel(const std::vector<glm::vec3>& lineData, const std::vector<int>& indexBuffer, glm::vec3 color, const char* name);
-	static Model* CreateFlatDebugModel(const std::vector<glm::vec3>& lineData, const std::vector<int>& typeBuffer, glm::vec3 color, const char* name);
+	static Model* CreateFlatDebugModel(const std::vector<glm::vec3>& lineData, const std::vector<WayData>& typeBuffer, glm::vec3 color, const char* name);
 
 	void addToTerrainBuffer(Sector* newSector);
     Mesh* terrainMesh();

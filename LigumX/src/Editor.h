@@ -208,6 +208,12 @@ void ShowProperty(std::map<int, char *>* map, const char* name);
 template <typename T>
 void ShowProperty(std::map<int, T*>* map, const char* name);
 
+template <typename T>
+void ShowProperty(std::unordered_map<int, char *>* map, const char* name);
+
+template <typename T>
+void ShowProperty(std::unordered_map<int, T*>* map, const char* name);
+
 bool ShowEditableProperty(int* value, const char* name);
 void BackupData();
 

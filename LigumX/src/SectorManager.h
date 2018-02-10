@@ -78,7 +78,7 @@ public:
 
 	float m_sectorSize;
 
-	Node* GetClosestNode(glm::vec2 wsPosition);
+	Node* GetClosestNode(glm::vec2 wsPosition, bool searchOnlyWithinSector);
 
 	void AddSector(Sector* sector);
 	Sector* CreateSector(CurlRequest* request);

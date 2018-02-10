@@ -546,6 +546,39 @@ void Editor::ShowProperty(std::map<int, T*>* map, const char* name)
 	ImGui::PopID();
 }
 
+template <typename T>
+void Editor::ShowProperty(std::unordered_map<int, char*>* map, const char* name)
+{
+	ImGui::PushID(name);
+	if (ImGui::TreeNode(name))
+	{
+		for (auto it = map->begin(); it != map->end(); ++it)
+		{
+			T* obj = (T*)it->second;
+			std::string label = obj->GetName() + " [" + std::to_string(it->first) + "]";
+			ShowPropertyGridTemplate(obj, label.c_str());
+		}
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
+}
+
+template <typename T>
+void Editor::ShowProperty(std::unordered_map<int, T*>* map, const char* name)
+{
+	ImGui::PushID(name);
+	if (ImGui::TreeNode(name))
+	{
+		for (auto it = map->begin(); it != map->end(); ++it)
+		{
+			T* obj = (T*)it->second;
+			std::string label = obj->GetName() + " [" + std::to_string(it->first) + "]";
+			ShowPropertyGridTemplate(obj, label.c_str());
+		}
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
+}
 
 #define SHOW_ENUM(type) \
 case LXType_##type: \
@@ -1282,7 +1315,7 @@ void Editor::RenderImgui()
 		}
 
 
-		ShowProperty<Node>(&(g_SectorManager->m_AllNodesPtr), "Nodes");
+		//ShowProperty<Node>(&(g_SectorManager->m_AllNodesPtr), "Nodes");
 		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");
 
 		g_GUI->EndWindow();

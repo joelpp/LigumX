@@ -26,11 +26,11 @@ using namespace std;
 using namespace glm;
 
 
-FlatWaysMesh::FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& typeBuffer, GLenum renderingMode, bool usePointRendering)
+FlatWaysMesh::FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<WayData>& dataBuffer, GLenum renderingMode, bool usePointRendering)
 {
 	m_buffers.vertexPositions = vertices;
-	m_WayTypeBuffer = typeBuffer;
 
+	m_DataBuffer = dataBuffer;
 	m_renderingMode = renderingMode;
 	SetPointRendering(usePointRendering);
 
@@ -46,7 +46,7 @@ void FlatWaysMesh::CreateBuffers()
 	// TODO: I'm not quite convinced this belongs here. or does it?
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.vertexPositions);
 
-	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayTypeBuffer, m_WayTypeBuffer);
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayDataBuffer, m_DataBuffer);
 
 
 	glGenVertexArrays(1, &m_VAO);
@@ -57,8 +57,8 @@ void FlatWaysMesh::CreateBuffers()
 
 
 	glEnableVertexAttribArray(3);
-	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayTypeBuffer);
-	glVertexAttribIPointer(3, 1, GL_INT, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayDataBuffer);
+	glVertexAttribIPointer(3, 2, GL_INT, 0, NULL);
 
 }
 
@@ -178,7 +178,7 @@ Model* RenderDataManager::CreateDebugModel(const std::vector<glm::vec3>& lineDat
 //}
 
 
-Model* RenderDataManager::CreateFlatDebugModel(const std::vector<glm::vec3>& lineData, const std::vector<int>& typeBuffer, glm::vec3 color, const char* name)
+Model* RenderDataManager::CreateFlatDebugModel(const std::vector<glm::vec3>& lineData, const std::vector<WayData>& typeBuffer, glm::vec3 color, const char* name)
 {
 	Renderer& renderer = Renderer::GetInstance();
 
@@ -239,12 +239,13 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 	std::vector<glm::vec3> flatWayPositions;
 	 //todo : make it work with an index buffer someday
-	std::vector<int> vertexType;
+	std::vector<WayData> vertexData;
 
 	// todo : make it work with an index buffer someday
 	//std::vector<int> indexBuffer;
 	int index = 0;
 	int previousLastIndex = 0;
+	int wayIndex = 0;
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		std::vector<glm::vec3> line;
@@ -262,11 +263,11 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			if (!newWay && index > (previousLastIndex) && (index - 1) != previousLastIndex)
 			{
 				flatWayPositions.push_back(flatWayPositions.back());
-				vertexType.push_back(way->eType);
+				vertexData.push_back( { way->GetOSMElementType(), way->GetIndexInSector() } );
 			}
 
 			flatWayPositions.push_back(pos);
-			vertexType.push_back(way->GetOSMElementType());
+			vertexData.push_back( { way->GetOSMElementType(), way->GetIndexInSector() } );
 
 			newWay = false;
 			index++;
@@ -277,6 +278,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		waysModel = CreateDebugModel(line, glm::vec3(1,0,0), "Sector_Lines_");
 
 		gfxData->AddTo_WaysModelsVector(waysModel);
+		wayIndex++;
 
 		int fillFlags = OSMElement::BUILDING_UNMARKED | OSMElement::BUILDING_SCHOOL | OSMElement::LEISURE_PARK | OSMElement::NATURAL_WOOD | OSMElement::NATURAL_WATER ;
 		if ((way->eType & fillFlags) != 0)
@@ -287,10 +289,9 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			renderer.m_DebugModels.push_back(building.m_Model);
 
 		}
-
 	}
 
-	Model* flatWaysModel = CreateFlatDebugModel(flatWayPositions, vertexType, glm::vec3(1,1,1), "Sector_FlatLines_");
+	Model* flatWaysModel = CreateFlatDebugModel(flatWayPositions, vertexData, glm::vec3(1,1,1), "Sector_FlatLines_");
 
 	gfxData->SetNodesModel(nodeModel);
 	gfxData->SetWaysModel(flatWaysModel);

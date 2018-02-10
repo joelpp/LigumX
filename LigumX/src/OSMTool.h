@@ -31,14 +31,20 @@ void SetSelectedNode(Node* value) { m_SelectedNode = value; };
 std::vector<Way*>& GetSelectedWays() { return m_SelectedWays; }; 
 void SetSelectedWays(std::vector<Way*> value) { m_SelectedWays = value; }; 
 void AddTo_SelectedWays(Way* value) { m_SelectedWays.push_back(value); };
+const bool& GetSearchOnlyWithinSector() { return m_SearchOnlyWithinSector; }; 
+void SetSearchOnlyWithinSector(bool value) { m_SearchOnlyWithinSector = value; }; 
+const glm::ivec2& GetSelectedSectorIndex() { return m_SelectedSectorIndex; }; 
+void SetSelectedSectorIndex(glm::ivec2 value) { m_SelectedSectorIndex = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = false;
 Node* m_SelectedNode;
 std::vector<Way*> m_SelectedWays;
+bool m_SearchOnlyWithinSector = false;
+glm::ivec2 m_SelectedSectorIndex;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMToolPIDX
@@ -48,6 +54,8 @@ PIDX_Name,
 PIDX_Enabled,
 PIDX_SelectedNode,
 PIDX_SelectedWays,
+PIDX_SearchOnlyWithinSector,
+PIDX_SelectedSectorIndex,
 };
 bool Serialize(bool writing);
 

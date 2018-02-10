@@ -38,8 +38,10 @@ in VertexData
 {
 	vec3 m_WorldPosition;
 	flat int m_WayType;
+	flat int m_Index;
 } inData;
 
+uniform int g_SelectedWayIndex;
 uniform int g_DisplayFlags[21];
 uniform vec3 g_WayDebugColors[21];
 
@@ -119,12 +121,20 @@ vec3 GetLineColor(int wayID)
 void main()
 {
 	int wayID = inData.m_WayType;
+	int wayIndex = inData.m_Index;
+
 	vec3 color = GetLineColor(wayID);
 
 	if ((g_DisplayFlags[wayID]) == 0)
 	{
 		discard;
 	}
+
+	if (wayIndex == g_SelectedWayIndex)
+	{
+		color = vec3(1,1,1);
+	}
+
 
     OutputColor = vec4(color, 1.0f);
 }

@@ -4,4 +4,6 @@ class Way
 	std::vector<Node> Nodes;
 
 	OSMElementType OSMElementType = OSMElementType_Unknown;
+
+	int IndexInSector;
 }

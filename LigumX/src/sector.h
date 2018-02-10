@@ -110,4 +110,6 @@ public:
 	void InitializeFromRequest(CurlRequest* request);
 
 	SectorGraphicalData* GetGraphicalData() { return m_Data->GetGraphicalData(); }
+
+
 };

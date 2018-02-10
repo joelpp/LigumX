@@ -37,7 +37,7 @@ public:
 class FlatWaysGPUBuffers : public GPUBuffers
 {
 public:
-	GLuint glidWayTypeBuffer;
+	GLuint glidWayDataBuffer;
 };
 
 class CPUBuffers

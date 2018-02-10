@@ -20,31 +20,5 @@ class SectorTool
 	bool HighlightSelectedSector = true;
 	bool LoadSectorsOnClick = true;
 	
-	bool a = true;
-
-	bool ShowHIGHWAYTRUNK = true;
-	bool ShowHIGHWAYPRIMARY = true;
-	bool ShowHIGHWAYSECONDARY = true;
-	bool ShowHIGHWAYTERTIARY = true;
-	bool ShowHIGHWAYRESIDENTIAL = true;
-	bool ShowHIGHWAYUNCLASSIFIED = true;
-	bool ShowHIGHWAYSERVICE = true;
-	bool ShowBUILDINGUNMARKED = true;
-	bool ShowBUILDINGSCHOOL = true;
-	bool ShowBUILDINGADDRINTERP = true;
-	bool ShowRAILWAYSUBWAY = true;
-	bool ShowNATURALWOOD = true;
-	bool ShowNATURALWATER = true;
-	bool ShowLEISUREPARK = true;
-	bool ShowADDRINTERPOLATION = true;
-	bool ShowGRIDLINE = true;
-	bool ShowaDEBUG = true;
-	bool ShowLANDUSE = true;
-	bool ShowBOUNDARY = true;
-	bool ShowCONTOUR = true;
-
-
-
-
-	int WayDisplayFlags = 0;
+	int SelectedWayIndex;
 }

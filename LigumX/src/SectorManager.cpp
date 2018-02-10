@@ -283,6 +283,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			m_AllNodes.emplace(id, node);
 
 			int intID = StringUtils::ToInt(id);
+			sector->m_Data->m_AllNodesPtr[intID] = node;
 			m_AllNodesPtr[intID] = node;
 		}
 
@@ -362,9 +363,13 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			m_AllWays.emplace(id, way);
 
 			int intID = StringUtils::ToInt(id);
+			way->SetIndexInSector(requestSector->m_Data->m_AllWaysPtr.size());
+			requestSector->m_Data->m_AllWaysPtr[intID] = way;
 			m_AllWaysPtr[intID] = way;
 		}
 	}
+
+
 }
 
 void SectorManager::AddSector(Sector* sector)
@@ -409,13 +414,28 @@ glm::vec2 SectorManager::OffsetIndexToWorldPosition(const glm::ivec2& sectorInde
 }
 
 
-Node* SectorManager::GetClosestNode(glm::vec2 wsPosition)
+Node* SectorManager::GetClosestNode(glm::vec2 wsPosition, bool searchOnlyWithinSector)
 {
 	float longestDistance = 99999.f;
 
 	Node* toReturn = nullptr;
 
-	for (auto it = m_AllNodesPtr.begin(); it != m_AllNodesPtr.end(); ++it)
+	std::map<int, Node*>* allNodesPtr = &m_AllNodesPtr;
+
+	if (searchOnlyWithinSector)
+	{
+		glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(wsPosition);
+
+		World *world = LigumX::GetInstance().world;
+		Sector* clickedSector = world->GetSectorByIndex(normalizedSectorIndex);
+
+		if (clickedSector)
+		{
+			allNodesPtr = &(clickedSector->m_Data->m_AllNodesPtr);
+		}
+	}
+
+	for (auto it = allNodesPtr->begin(); it != allNodesPtr->end(); ++it)
 	{
 		Node* node = it->second;
 		glm::vec2 nodePos = glm::vec2(node->GetWorldPosition());

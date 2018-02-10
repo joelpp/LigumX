@@ -8,6 +8,7 @@
 #include "GUI.h"
 
 #include "Editor.h"
+#include "OSMTool.h"
 
 #include "World.h"
 #include "Sector.h"
@@ -39,28 +40,7 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "ShowGrid", PIDX_ShowGrid, offsetof(SectorTool, m_ShowGrid), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HighlightSelectedSector", PIDX_HighlightSelectedSector, offsetof(SectorTool, m_HighlightSelectedSector), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "LoadSectorsOnClick", PIDX_LoadSectorsOnClick, offsetof(SectorTool, m_LoadSectorsOnClick), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "a", PIDX_a, offsetof(SectorTool, m_a), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowHIGHWAYTRUNK", PIDX_ShowHIGHWAYTRUNK, offsetof(SectorTool, m_ShowHIGHWAYTRUNK), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowHIGHWAYPRIMARY", PIDX_ShowHIGHWAYPRIMARY, offsetof(SectorTool, m_ShowHIGHWAYPRIMARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowHIGHWAYSECONDARY", PIDX_ShowHIGHWAYSECONDARY, offsetof(SectorTool, m_ShowHIGHWAYSECONDARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowHIGHWAYTERTIARY", PIDX_ShowHIGHWAYTERTIARY, offsetof(SectorTool, m_ShowHIGHWAYTERTIARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowHIGHWAYRESIDENTIAL", PIDX_ShowHIGHWAYRESIDENTIAL, offsetof(SectorTool, m_ShowHIGHWAYRESIDENTIAL), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowHIGHWAYUNCLASSIFIED", PIDX_ShowHIGHWAYUNCLASSIFIED, offsetof(SectorTool, m_ShowHIGHWAYUNCLASSIFIED), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowHIGHWAYSERVICE", PIDX_ShowHIGHWAYSERVICE, offsetof(SectorTool, m_ShowHIGHWAYSERVICE), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowBUILDINGUNMARKED", PIDX_ShowBUILDINGUNMARKED, offsetof(SectorTool, m_ShowBUILDINGUNMARKED), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowBUILDINGSCHOOL", PIDX_ShowBUILDINGSCHOOL, offsetof(SectorTool, m_ShowBUILDINGSCHOOL), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowBUILDINGADDRINTERP", PIDX_ShowBUILDINGADDRINTERP, offsetof(SectorTool, m_ShowBUILDINGADDRINTERP), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowRAILWAYSUBWAY", PIDX_ShowRAILWAYSUBWAY, offsetof(SectorTool, m_ShowRAILWAYSUBWAY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowNATURALWOOD", PIDX_ShowNATURALWOOD, offsetof(SectorTool, m_ShowNATURALWOOD), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowNATURALWATER", PIDX_ShowNATURALWATER, offsetof(SectorTool, m_ShowNATURALWATER), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowLEISUREPARK", PIDX_ShowLEISUREPARK, offsetof(SectorTool, m_ShowLEISUREPARK), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowADDRINTERPOLATION", PIDX_ShowADDRINTERPOLATION, offsetof(SectorTool, m_ShowADDRINTERPOLATION), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowGRIDLINE", PIDX_ShowGRIDLINE, offsetof(SectorTool, m_ShowGRIDLINE), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowaDEBUG", PIDX_ShowaDEBUG, offsetof(SectorTool, m_ShowaDEBUG), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowLANDUSE", PIDX_ShowLANDUSE, offsetof(SectorTool, m_ShowLANDUSE), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowBOUNDARY", PIDX_ShowBOUNDARY, offsetof(SectorTool, m_ShowBOUNDARY), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowCONTOUR", PIDX_ShowCONTOUR, offsetof(SectorTool, m_ShowCONTOUR), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "WayDisplayFlags", PIDX_WayDisplayFlags, offsetof(SectorTool, m_WayDisplayFlags), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "SelectedWayIndex", PIDX_SelectedWayIndex, offsetof(SectorTool, m_SelectedWayIndex), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -100,7 +80,7 @@ SectorTool::SectorTool()
 		vec3(1.0, 1.0, 1.0),	// Landuse,
 		vec3(1.0, 1.0, 1.0),	// RailwaySubway,
 		vec3(0.0, 0.8, 1.0),	// AddressInterpolation,
-		vec3(1.0, 0.0, 0.0),	// NotImplemented,
+		vec3(1.0, 1.0, 1.0),	// NotImplemented,
 		vec3(1.0, 0.1, 0.1)		// Unknown,
 	};
 }
@@ -264,9 +244,10 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 }
 
 
-void SectorTool::DisplaySectorDebug(SectorGraphicalData* gfxData)
+void SectorTool::DisplaySectorDebug(Sector* sector)
 {
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
+	SectorGraphicalData* gfxData = sector->GetGraphicalData();
 
 	glm::mat4 identity = glm::mat4(1.0);
 
@@ -285,7 +266,16 @@ void SectorTool::DisplaySectorDebug(SectorGraphicalData* gfxData)
 
 	if (m_ShowFlatWays)
 	{	
-		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, 0);
+		OSMTool* osmTool = g_Editor->GetOSMTool();
+
+		int selectedWay = 0;
+
+		if (sector->GetOffsetIndex() == osmTool->GetSelectedSectorIndex() && osmTool->GetSelectedWays().size() > 0)
+		{
+			selectedWay = osmTool->GetSelectedWays()[0]->GetIndexInSector();
+		}
+
+		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
 	}
 }
 
@@ -307,7 +297,7 @@ void SectorTool::Display()
 		bool dataLoaded = sector->GetDataLoaded();
 		if (dataLoaded)
 		{
-			DisplaySectorDebug(sector->GetGraphicalData());
+			DisplaySectorDebug(sector);
 		}
 
 		if (m_ShowSectorAABBs)

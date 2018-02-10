@@ -1000,6 +1000,7 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 
 		SetViewUniforms(m_DebugCamera);
 
+		SetFragmentUniform(selectedWay, "g_SelectedWayIndex");
 		SetFragmentUniform(displayFlags, "g_DisplayFlags");
 		SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
 

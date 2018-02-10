@@ -2,6 +2,7 @@
 #define _SECTOR_DATA_
 
 #include <sstream>
+#include <map>
 #include <unordered_map>
 
 #include "glm/glm.hpp"
@@ -38,8 +39,10 @@ public:
     std::unordered_map<std::string, Way*> ways;
     std::unordered_map<std::string, Way*> contourWays;
   	std::unordered_map<std::string, Node*> nodes;
+	std::map<int, Node*> m_AllNodesPtr;
+
   	std::unordered_map<int, std::unordered_map<std::string, Way*> > waysMap;
-	  WayTypeMap m_wayTypeMap;
+	WayTypeMap m_wayTypeMap;
 
   	/**
   	 *  Constructor / Destructor
@@ -63,6 +66,7 @@ public:
     void elevateNodes(Heightfield* heightfield);
 
 	SectorGraphicalData* GetGraphicalData() { return m_GraphicalData; };
+	std::map<int, Way*> m_AllWaysPtr;
 
 private:
 

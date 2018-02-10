@@ -4,4 +4,8 @@ class OSMTool
 
 	Node* SelectedNode;
 	std::vector<Way> SelectedWays;
+
+	bool SearchOnlyWithinSector = false;
+
+	glm::ivec2 SelectedSectorIndex;
 }
