@@ -205,7 +205,10 @@ glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mousePosition);
 glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPosition, bool printDebugInfo);
 glm::vec3 GetHighlightColor(Sector* sector);
 
+std::vector<glm::vec3>& GetWayDebugColors() { return m_WayDebugColors; };
 std::vector<int>& GetWayDisplayToggles() { return m_WayDisplayToggles; };
 private:
 	std::vector<int> m_WayDisplayToggles;
+	std::vector<glm::vec3> m_WayDebugColors;
+
 };

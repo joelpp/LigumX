@@ -266,7 +266,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			}
 
 			flatWayPositions.push_back(pos);
-			vertexType.push_back(way->eType);
+			vertexType.push_back(way->GetOSMElementType());
 
 			newWay = false;
 			index++;
@@ -274,8 +274,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		previousLastIndex = index - 1;
 		index -= 1;
 
-		glm::vec3 color = renderer.typeColorMap[way->eType];
-		waysModel = CreateDebugModel(line, color, "Sector_Lines_");
+		waysModel = CreateDebugModel(line, glm::vec3(1,0,0), "Sector_Lines_");
 
 		gfxData->AddTo_WaysModelsVector(waysModel);
 

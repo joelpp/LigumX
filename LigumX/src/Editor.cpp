@@ -1265,6 +1265,22 @@ void Editor::RenderImgui()
 			ImGui::PopID();
 		}
 
+		{
+			const char* name = "Display Colors";
+			ImGui::PushID(name);
+			if (ImGui::TreeNode(name))
+			{
+				std::vector<glm::vec3>& displayColors = m_SectorTool->GetWayDebugColors();
+				for (int i = 0; i < displayColors.size(); ++i)
+				{
+					ShowProperty(&(displayColors[i]), EnumValues_OSMElementType[i].c_str(), 0, 1);
+				}
+
+				ImGui::TreePop();
+			}
+			ImGui::PopID();
+		}
+
 
 		ShowProperty<Node>(&(g_SectorManager->m_AllNodesPtr), "Nodes");
 		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");

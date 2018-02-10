@@ -228,6 +228,29 @@ void LigumX::populateTypeColorArray(){
     renderer.typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0,1.0,1.0));
     renderer.typeColorMap.emplace(OSMElement::CONTOUR, vec3(1.0,0.1,0.1));
 
+
+
+	renderer.typeColorMap.emplace(OSMElement::HIGHWAY_TRUNK, vec3(1, 1, 1));
+	renderer.typeColorMap.emplace(OSMElement::HIGHWAY_PRIMARY, vec3(0.9, 0.9, 0.9));
+	renderer.typeColorMap.emplace(OSMElement::HIGHWAY_SECONDARY, vec3(0.8, 0.8, 0.8));
+	renderer.typeColorMap.emplace(OSMElement::HIGHWAY_TERTIARY, vec3(0.7, 0.7, 0.7));
+	renderer.typeColorMap.emplace(OSMElement::HIGHWAY_RESIDENTIAL, vec3(0.6, 0.6, 0.6));
+	renderer.typeColorMap.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, vec3(0.5, 0.5, 0.5));
+	renderer.typeColorMap.emplace(OSMElement::HIGHWAY_SERVICE, vec3(0.4, 0.4, 0.4));
+	renderer.typeColorMap.emplace(OSMElement::BUILDING_UNMARKED, vec3(0, 0, 1));
+	renderer.typeColorMap.emplace(OSMElement::BUILDING_SCHOOL, vec3(0, 0, 1));
+	renderer.typeColorMap.emplace(OSMElement::BUILDING_ADDRINTERP, vec3(0.4, 1, 1));
+	renderer.typeColorMap.emplace(OSMElement::RAILWAY_SUBWAY, vec3(1, 0, 1));
+	renderer.typeColorMap.emplace(OSMElement::NATURAL_WOOD, vec3(0, 0.5, 0));
+	renderer.typeColorMap.emplace(OSMElement::NATURAL_WATER, vec3(0, 0, 0.5));
+	renderer.typeColorMap.emplace(OSMElement::LEISURE_PARK, vec3(0, 1, 0));
+	renderer.typeColorMap.emplace(OSMElement::ADDR_INTERPOLATION, vec3(1, 0, 0));
+	renderer.typeColorMap.emplace(OSMElement::GRID_LINE, vec3(0.4, 0.4, 0.4));
+	renderer.typeColorMap.emplace(OSMElement::aDEBUG, vec3(1.0, 0, 1.0));
+	renderer.typeColorMap.emplace(OSMElement::LANDUSE, vec3(1.0, 1.0, 1.0));
+	renderer.typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0, 1.0, 1.0));
+	renderer.typeColorMap.emplace(OSMElement::CONTOUR, vec3(1.0, 0.1, 0.1));
+
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_TRUNK, true);
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_PRIMARY, true);
     renderer.displayElementType.emplace(OSMElement::HIGHWAY_SECONDARY, true);

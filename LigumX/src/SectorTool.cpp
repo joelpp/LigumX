@@ -78,6 +78,31 @@ SectorTool::SectorTool()
 	{
 		m_WayDisplayToggles[i] = true;
 	}
+
+	m_WayDebugColors =
+	{
+		vec3(1.0, 1.0, 1.0),	// HighwayTrunk,
+		vec3(0.9, 0.9, 0.9),	// HighwayPrimary,
+		vec3(0.8, 0.8, 0.8),	// HighwaySecondary,
+		vec3(0.7, 0.7, 0.7),	// HighwayTertiary,
+		vec3(0.6, 0.6, 0.6),	// HighwayResidential,
+		vec3(0.5, 0.5, 0.5),	// HighwayService,
+		vec3(0.4, 0.4, 0.4),	// HighwayUnclassified,
+		vec3(1.0, 0.0, 1.0),	// Sidewalk,
+		vec3(1.0, 1.0, 1.0),	// Contour,
+		vec3(0.0, 0.0, 1.0),	// Building_Unmarked,
+		vec3(0.0, 0.0, 1.0),	// Building_School,
+		vec3(0.0, 0.5, 0.0),	// Building_Addressinterpolation,
+		vec3(0.0, 0.0, 0.5),	// Boundary,
+		vec3(0.1, 1.0, 0.1),	// LeisurePark,
+		vec3(0.0, 1.0, 0.0),	// NaturalWood,
+		vec3(0.0, 0.2, 0.8),	// NaturalWater,
+		vec3(1.0, 1.0, 1.0),	// Landuse,
+		vec3(1.0, 1.0, 1.0),	// RailwaySubway,
+		vec3(0.0, 0.8, 1.0),	// AddressInterpolation,
+		vec3(1.0, 0.0, 0.0),	// NotImplemented,
+		vec3(1.0, 0.1, 0.1)		// Unknown,
+	};
 }
 
 
@@ -259,31 +284,8 @@ void SectorTool::DisplaySectorDebug(SectorGraphicalData* gfxData)
 	}
 
 	if (m_ShowFlatWays)
-	{
-		m_WayDisplayFlags = 0;
-		m_WayDisplayFlags |= m_ShowHIGHWAYTRUNK			? OSMElement::HIGHWAY_TRUNK			: 0;
-		m_WayDisplayFlags |= m_ShowHIGHWAYPRIMARY		? OSMElement::HIGHWAY_PRIMARY		: 0;
-		m_WayDisplayFlags |= m_ShowHIGHWAYSECONDARY		? OSMElement::HIGHWAY_SECONDARY		: 0;
-		m_WayDisplayFlags |= m_ShowHIGHWAYTERTIARY		? OSMElement::HIGHWAY_TERTIARY		: 0;
-		m_WayDisplayFlags |= m_ShowHIGHWAYRESIDENTIAL	? OSMElement::HIGHWAY_RESIDENTIAL	: 0;
-		m_WayDisplayFlags |= m_ShowHIGHWAYUNCLASSIFIED	? OSMElement::HIGHWAY_UNCLASSIFIED	: 0;
-		m_WayDisplayFlags |= m_ShowHIGHWAYSERVICE		? OSMElement::HIGHWAY_SERVICE		: 0;
-		m_WayDisplayFlags |= m_ShowBUILDINGUNMARKED		? OSMElement::BUILDING_UNMARKED		: 0;
-		m_WayDisplayFlags |= m_ShowBUILDINGSCHOOL		? OSMElement::BUILDING_SCHOOL		: 0;
-		m_WayDisplayFlags |= m_ShowBUILDINGADDRINTERP	? OSMElement::BUILDING_ADDRINTERP	: 0;
-		m_WayDisplayFlags |= m_ShowRAILWAYSUBWAY 		? OSMElement::RAILWAY_SUBWAY		: 0;
-		m_WayDisplayFlags |= m_ShowNATURALWOOD			? OSMElement::NATURAL_WOOD			: 0;
-		m_WayDisplayFlags |= m_ShowNATURALWATER			? OSMElement::NATURAL_WATER			: 0;
-		m_WayDisplayFlags |= m_ShowLEISUREPARK			? OSMElement::LEISURE_PARK			: 0;
-		m_WayDisplayFlags |= m_ShowADDRINTERPOLATION	? OSMElement::ADDR_INTERPOLATION	: 0;
-		m_WayDisplayFlags |= m_ShowGRIDLINE				? OSMElement::GRID_LINE				: 0;
-		m_WayDisplayFlags |= m_ShowaDEBUG				? OSMElement::aDEBUG				: 0;
-		m_WayDisplayFlags |= m_ShowLANDUSE				? OSMElement::LANDUSE				: 0;
-		m_WayDisplayFlags |= m_ShowBOUNDARY				? OSMElement::BOUNDARY				: 0;
-		m_WayDisplayFlags |= m_ShowCONTOUR				? OSMElement::CONTOUR				: 0;
-
-		
-		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayFlags, 0);
+	{	
+		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, 0);
 	}
 }
 

@@ -40,7 +40,8 @@ in VertexData
 	flat int m_WayType;
 } inData;
 
-uniform int g_DisplayFlags;
+uniform int g_DisplayFlags[21];
+uniform vec3 g_WayDebugColors[21];
 
 float GetLineWidth(vec2 wsPosition, float gridExtent)
 {
@@ -56,10 +57,35 @@ float GetLineAlpha(float lineWidth, float maximum)
 
 #define ELSE_COLOR(type, color) else if ((wayID & type) != 0)	{ return color ; }
 
-
+//vec3 g_WayDebugColors[21] = vec3[]
+//(
+//	vec3(1.0, 1.0, 1.0),	// HighwayTrunk,
+//	vec3(0.9, 0.9, 0.9),	// HighwayPrimary,
+//	vec3(0.8, 0.8, 0.8),	// HighwaySecondary,
+//	vec3(0.7, 0.7, 0.7),	// HighwayTertiary,
+//	vec3(0.6, 0.6, 0.6),	// HighwayResidential,
+//	vec3(0.5, 0.5, 0.5),	// HighwayService,
+//	vec3(0.4, 0.4, 0.4),	// HighwayUnclassified,
+//	vec3(0.0, 0.0, 1.0),	// Sidewalk,
+//	vec3(0.0, 0.0, 1.0),	// Contour,
+//	vec3(0.4, 1.0, 1.0),	// Building_Unmarked,
+//	vec3(1.0, 0.0, 1.0),	// Building_School,
+//	vec3(0.0, 0.5, 0.0),	// Building_Addressinterpolation,
+//	vec3(0.0, 0.0, 0.5),	// Boundary,
+//	vec3(0.0, 1.0, 0.0),	// LeisurePark,
+//	vec3(1.0, 0.0, 0.0),	// NaturalWood,
+//	vec3(0.4, 0.4, 0.4),	// NaturalWater,
+//	vec3(1.0, 0.0, 1.0),	// Landuse,
+//	vec3(1.0, 1.0, 1.0),	// RailwaySubway,
+//	vec3(1.0, 1.0, 1.0),	// AddressInterpolation,
+//	vec3(1.0, 0.0, 0.0),	// NotImplemented,
+//	vec3(1.0, 0.1, 0.1)		// Unknown,
+//);
 
 vec3 GetLineColor(int wayID)
 {
+	return g_WayDebugColors[wayID];
+
 	if ((wayID & ADDR_INTERPOLATION) != 0)
 	{
 		return vec3(1,0,0);
@@ -95,7 +121,7 @@ void main()
 	int wayID = inData.m_WayType;
 	vec3 color = GetLineColor(wayID);
 
-	if ((wayID & g_DisplayFlags) == 0)
+	if ((g_DisplayFlags[wayID]) == 0)
 	{
 		discard;
 	}

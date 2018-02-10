@@ -165,7 +165,7 @@ public:
 	void RenderEntities(std::vector<Entity*> entities);
 	void RenderDebugModels();
 	void RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline);
-	void RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, int displayFlags, int selectedWay);
+	void RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay);
 	void RenderSectorDebug(SectorGraphicalData* gfxData);
 	void RenderGrid();
 
@@ -210,6 +210,9 @@ public:
 
 	void SetVertexUniform(int value, const char* name);
 	void SetFragmentUniform(int value, const char* name);
+	void SetFragmentUniform(const std::vector<int>& values, const char* name);
+	void SetFragmentUniformArray(const std::vector<glm::vec3>& values, const char* name);
+
 	void SetComputeUniform(int value, const char* name);
 
 	template<typename T>
@@ -301,7 +304,7 @@ public:
 
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::map<OSMElement::ElementType, bool> displayElementType;
-    std::unordered_map<OSMElement::ElementType, glm::vec3> typeColorMap;
+	std::unordered_map<OSMElement::ElementType, glm::vec3> typeColorMap;
     std::unordered_map<OSMElement::ElementType, int> numberOfVerticesToDrawPerElement;
     // Qties of primitives to draw
     unsigned int nbBuildingTriangles;

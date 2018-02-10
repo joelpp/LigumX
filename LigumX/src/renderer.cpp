@@ -329,6 +329,18 @@ void Renderer::SetFragmentUniform(int value, const char* name)
 	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
 }
 
+void Renderer::SetFragmentUniform(const std::vector<int>& values, const char* name)
+{
+	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	glProgramUniform1iv(prog, glGetUniformLocation(prog, name), values.size(), values.data());
+}
+
+void Renderer::SetFragmentUniformArray(const std::vector<glm::vec3>& values, const char* name)
+{
+	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	glProgramUniform3fv(prog, glGetUniformLocation(prog, name), values.size() * 3, (const GLfloat*) values.data());
+}
+
 void Renderer::SetComputeUniform(int value, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_COMPUTE_SHADER)->glidShaderProgram;
@@ -976,7 +988,7 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 	}
 }
 
-void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, int displayFlags, int selectedWay)
+void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay)
 {
 	SetPipeline(programPipeline);
 
@@ -989,6 +1001,7 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 		SetViewUniforms(m_DebugCamera);
 
 		SetFragmentUniform(displayFlags, "g_DisplayFlags");
+		SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
 
 		DrawMesh(model->m_meshes[i], material);
 	}
