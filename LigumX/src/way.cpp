@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "way.h"
 #include "node.h"
-#include "osm_element.h"
+#include "OSMElement.h"
 #include "linesegment.h"
 
 #pragma region  CLASS_SOURCE Way
@@ -16,12 +16,64 @@ const ClassPropertyData Way::g_Properties[] =
 { "Name", PIDX_Name, offsetof(Way, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Nodes", PIDX_Nodes, offsetof(Way, m_Nodes), 0, LXType_stdvector, false, LXType_Node, 0, 0, 0, }, 
+{ "OSMElementType", PIDX_OSMElementType, offsetof(Way, m_OSMElementType), 0, LXType_OSMElementType, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
 };
 bool Way::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+const std::string EnumValues_OSMElementType[] = 
+{
+"HighwayTrunk",
+"HighwayPrimary",
+"HighwaySecondary",
+"HighwayTertiary",
+"HighwayResidential",
+"HighwayService",
+"HighwayUnclassified",
+"Sidewalk",
+"Contour",
+"Building_Unmarked",
+"Building_School",
+"Building_Addressinterpolation",
+"Boundary",
+"LeisurePark",
+"NaturalWood",
+"NaturalWater",
+"Landuse",
+"RailwaySubway",
+"AddressInterpolation",
+"NotImplemented",
+"Unknown",
+"Count",
+};
+
+const OSMElementType Indirection_OSMElementType[] =
+{
+	OSMElementType_HighwayTrunk,
+	OSMElementType_HighwayPrimary,
+	OSMElementType_HighwaySecondary,
+	OSMElementType_HighwayTertiary,
+	OSMElementType_HighwayResidential,
+	OSMElementType_HighwayService,
+	OSMElementType_HighwayUnclassified,
+	OSMElementType_Sidewalk,
+	OSMElementType_Contour,
+	OSMElementType_Building_Unmarked,
+	OSMElementType_Building_School,
+	OSMElementType_Building_Addressinterpolation,
+	OSMElementType_Boundary,
+	OSMElementType_LeisurePark,
+	OSMElementType_NaturalWood,
+	OSMElementType_NaturalWater,
+	OSMElementType_Landuse,
+	OSMElementType_RailwaySubway,
+	OSMElementType_AddressInterpolation,
+	OSMElementType_NotImplemented,
+	OSMElementType_Unknown,
+	OSMElementType_Count,
+};
 
 #pragma endregion  CLASS_SOURCE Way
 Way::Way()

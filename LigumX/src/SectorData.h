@@ -10,7 +10,7 @@
 #include "Math.h"
 #include "Logging.h"
 #include <string>
-#include "OSM_Element.h"
+#include "OSMElement.h"
 #include "CurlRequest.h"
 
 // class OSMElement;

@@ -162,12 +162,12 @@ std::vector<Way*> World::findNClosestWays(int n, glm::vec2 xy,
          Way* way = *it;
 //        if (!way->selectable) continue;
 
-        // This way's type not yet implemented :( get to it!
-        if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
+        //// This way's type not yet implemented :( get to it!
+        //if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
 
-        // A specific filter has been chosen. Check if this way passes it!
-        if (filter != OSMElement::ANY_TYPE)
-            if ((way->eType & filter) == 0) continue;
+        //// A specific filter has been chosen. Check if this way passes it!
+        //if (filter != OSMElement::ANY_TYPE)
+        //    if ((way->eType & filter) == 0) continue;
 
         Node* firstNode = NULL;
         Node* secondNode = NULL;

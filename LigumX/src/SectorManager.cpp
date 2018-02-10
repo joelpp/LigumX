@@ -315,7 +315,8 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 					std::string value = way_child->ToElement()->FindAttribute("v")->Value();
 					way->addTag(key, value);
 
-					OSMElement::ElementType _eType = OSMElement::typeFromStrings(key, value);
+					OSMElement::ElementType _eType = OSMElement::GetTypeFromStrings(key, value);
+					//OSMElementType elementype = OSMElement::GetOSMTypeFromStrings(key, value);
 					if (_eType == OSMElement::NOT_IMPLEMENTED)
 					{
 						continue;

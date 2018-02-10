@@ -1,5 +1,5 @@
 #pragma once
-#include "osm_element.h"
+#include "OSMElement.h"
 #include <vector>
 #include "glm/glm.hpp"
 #include <string>
@@ -10,6 +10,36 @@
 
 class Way;
 class Node;
+
+enum OSMElementType
+{
+OSMElementType_HighwayTrunk,
+OSMElementType_HighwayPrimary,
+OSMElementType_HighwaySecondary,
+OSMElementType_HighwayTertiary,
+OSMElementType_HighwayResidential,
+OSMElementType_HighwayService,
+OSMElementType_HighwayUnclassified,
+OSMElementType_Sidewalk,
+OSMElementType_Contour,
+OSMElementType_Building_Unmarked,
+OSMElementType_Building_School,
+OSMElementType_Building_Addressinterpolation,
+OSMElementType_Boundary,
+OSMElementType_LeisurePark,
+OSMElementType_NaturalWood,
+OSMElementType_NaturalWater,
+OSMElementType_Landuse,
+OSMElementType_RailwaySubway,
+OSMElementType_AddressInterpolation,
+OSMElementType_NotImplemented,
+OSMElementType_Unknown,
+OSMElementType_Count,
+};
+
+extern const std::string EnumValues_OSMElementType[22];
+extern const OSMElementType Indirection_OSMElementType[22];
+const int EnumLength_OSMElementType = 22;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Way
@@ -35,13 +65,16 @@ void SetOSMId(int value) { m_OSMId = value; };
 std::vector<Node*>& GetNodes() { return m_Nodes; }; 
 void SetNodes(std::vector<Node*> value) { m_Nodes = value; }; 
 void AddTo_Nodes(Node* value) { m_Nodes.push_back(value); };
+const OSMElementType& GetOSMElementType() { return m_OSMElementType; }; 
+void SetOSMElementType(OSMElementType value) { m_OSMElementType = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 int m_OSMId = 0;
 std::vector<Node*> m_Nodes;
+OSMElementType m_OSMElementType = OSMElementType_Unknown;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WayPIDX
@@ -50,6 +83,7 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_OSMId,
 PIDX_Nodes,
+PIDX_OSMElementType,
 };
 bool Serialize(bool writing);
 

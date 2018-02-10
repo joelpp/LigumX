@@ -1,17 +1,20 @@
 #include "SectorTool.h"
 #include "LigumX.h"
+#include "EngineSettings.h"
+
 #include "Renderer.h"
 #include "MainWindow.h"
-#include "EngineSettings.h"
 #include "RenderDataManager.h"
-#include "SectorManager.h"
+#include "GUI.h"
+
+#include "Editor.h"
+
+#include "World.h"
 #include "Sector.h"
+#include "SectorManager.h"
 #include "SectorData.h"
 #include "SectorGraphicalData.h"
-#include "World.h"
-#include "GUI.h"
-#include "Editor.h"
-#include "RenderDataManager.h"
+#include "Way.h"
 
 #pragma region  CLASS_SOURCE SectorTool
 
@@ -66,6 +69,16 @@ bool SectorTool::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE SectorTool
+
+SectorTool::SectorTool()
+{
+	m_WayDisplayToggles.resize(OSMElementType_Count);
+
+	for (int i = 0; i < OSMElementType_Count; ++i)
+	{
+		m_WayDisplayToggles[i] = true;
+	}
+}
 
 
 glm::vec3 SectorTool::GetWorldSpaceRay(glm::vec3 ndc, const glm::mat4& projectionMatrixInverse, const glm::mat4& viewMatrixInverse)

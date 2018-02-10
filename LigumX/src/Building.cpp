@@ -3,7 +3,7 @@
 #include "Building.h"
 #include "Way.h"
 #include "Model.h"
-#include "OSM_Element.h"
+#include "OSMElement.h"
 #include "Node.h"
 #include "Mesh.h"
 #include "Renderer.h"

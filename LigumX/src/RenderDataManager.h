@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include "glm/glm.hpp"
-#include "OSM_element.h"
+#include "OSMElement.h"
 
 #include "Logging.h"
 

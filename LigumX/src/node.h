@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include "glm/glm.hpp"
 #include "Logging.h"
-#include "osm_element.h"
+#include "OSMElement.h"
 
 #pragma region  FORWARD_DECLARATIONS Node
 #include "property.h"

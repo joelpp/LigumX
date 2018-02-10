@@ -9,7 +9,8 @@
 
 #include "Logging.h"
 
-class Settings{
+class Settings
+{
 public:
 
 	std::string get(std::string key)

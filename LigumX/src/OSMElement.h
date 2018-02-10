@@ -69,14 +69,17 @@ public:
 
     std::vector<OSMElement*> parents;
 
-    static ElementType typeFromStrings(std::string key, std::string value);    
+	static ElementType GetTypeFromStrings(const std::string& key, const std::string& value);
+	//static OSMElementType GetOSMTypeFromStrings(const std::string& key, const std::string& value);
 
 };
 namespace std
 {
 template<>
-struct hash<OSMElement::ElementType> {
-    size_t operator()(const OSMElement::ElementType &et) const {
+struct hash<OSMElement::ElementType> 
+{
+    size_t operator()(const OSMElement::ElementType &et) const 
+	{
         return std::hash<int>()(et);
     }
 };

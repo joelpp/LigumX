@@ -18,7 +18,7 @@
 #include "program_pipeline.h"
 #include "texture.h"
 #include "camera.h"
-#include "osm_element.h"
+#include "OSMElement.h"
 #include "AABB.h"
 #include "Material.h"
 

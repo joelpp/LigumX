@@ -107,9 +107,9 @@ Sector* m_HighlightedSector;
 glm::vec3 m_SectorGridColor = glm::vec3(0.5);
 bool m_AsyncSectorLoading = false;
 float m_NodeSize = 2;
-bool m_ShowNodes = true;
-bool m_ShowWays = true;
-bool m_ShowFlatWays = false;
+bool m_ShowNodes = false;
+bool m_ShowWays = false;
+bool m_ShowFlatWays = true;
 bool m_ShowSectorAABBs = true;
 bool m_ShowGrid = true;
 bool m_HighlightSelectedSector = true;
@@ -184,6 +184,9 @@ bool Serialize(bool writing);
 
 #pragma endregion  HEADER SectorTool
 
+SectorTool();
+
+
 bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
 
 
@@ -202,5 +205,7 @@ glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mousePosition);
 glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPosition, bool printDebugInfo);
 glm::vec3 GetHighlightColor(Sector* sector);
 
-
+std::vector<int>& GetWayDisplayToggles() { return m_WayDisplayToggles; };
+private:
+	std::vector<int> m_WayDisplayToggles;
 };

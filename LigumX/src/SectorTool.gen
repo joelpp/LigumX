@@ -12,9 +12,9 @@ class SectorTool
 
 	float NodeSize = 2;
 
-	bool ShowNodes = true;
-	bool ShowWays = true;
-	bool ShowFlatWays = false;
+	bool ShowNodes = false;
+	bool ShowWays = false;
+	bool ShowFlatWays = true;
 	bool ShowSectorAABBs = true;
 	bool ShowGrid = true;
 	bool HighlightSelectedSector = true;

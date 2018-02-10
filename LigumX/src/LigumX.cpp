@@ -191,14 +191,12 @@ string LigumX::labelFromType(OSMElement::ElementType type)
         case(OSMElement::LEISURE_PARK):         return "Leisure (park)";break;
         case(OSMElement::ADDR_INTERPOLATION):   return "Address interpolation";break;
         case(OSMElement::CONTOUR):              return "Contour line";break;
-        case(OSMElement::GRID_LINE):            return "Grid line";break;
         case(OSMElement::aDEBUG):               return "debug";break;
         case(OSMElement::RAILWAY_SUBWAY):       return "Railway (subway)";break;
         case(OSMElement::LANDUSE):              return "Land use";break;
         case(OSMElement::BOUNDARY):             return "Boundary";break;
         case(OSMElement::SIDEWALK):             return "Sidewalk";break;
         case(OSMElement::NOT_IMPLEMENTED):      return "NOT_IMPLEMENTED";break;
-        case(OSMElement::ANY_TYPE):             return "ANY_TYPE";break;
 
     }
     return "!!! WRONG TYPE !!!";

@@ -406,10 +406,26 @@ void Editor::ShowProperty(int* value, const char* name)
 	ShowVariableAsText(*value, name);
 }
 
+void Editor::ShowProperty(int* value, const char* name, int min, int max)
+{
+	ImGui::SliderInt(name, value, min, max);
+}
+
 void Editor::ShowProperty(bool* value, const char* name)
 {
 	ImGui::Checkbox(name, value);
 }
+
+void Editor::ShowProperty(bool& value, const char* name)
+{
+	ImGui::Checkbox(name, &value);
+}
+//
+//void Editor::ShowProperty(std::vector<bool>::reference value, const char* name)
+//{
+//	ImGui::Checkbox(name, valuer);
+//}
+
 
 void Editor::ShowProperty(float* value, const char* name, float min, float max)
 {
@@ -863,12 +879,22 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 	{
 		std::vector<char*>* v = (std::vector<char*>*) ptr;
 
-		for (int i = 0; i < v->size(); ++i)
 		{
-			char displayName[100];
-			sprintf(displayName, "%s[%d] : %s", sanitizedPropertyName.c_str(), i, object->GetName().c_str());
+			const char* propertyName = sanitizedPropertyName.c_str();
+			ImGui::PushID(propertyName);
+			if (ImGui::TreeNode(propertyName))
+			{
+				for (int i = 0; i < v->size(); ++i)
+				{
+					char displayName[100];
+					sprintf(displayName, "%s[%d]", object->GetName().c_str(), i);
 
-			ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, min, max, noneditable);
+					ShowPropertyTemplate((*v)[i], displayName, propertyData.m_AssociatedType, min, max, noneditable);
+				}
+
+				ImGui::TreePop();
+			}
+			ImGui::PopID();
 		}
 
 		ShowAddButton(v, propertyData.m_AssociatedType);
@@ -1217,6 +1243,28 @@ void Editor::RenderImgui()
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
 
 		ShowPropertyGridObject(m_SectorTool, "Sector Tool");
+
+
+		{
+			const char* name = "Display Toggles";
+			ImGui::PushID(name);
+			if (ImGui::TreeNode(name))
+			{
+				std::vector<int>& displayToggles = m_SectorTool->GetWayDisplayToggles();
+				for (int i = 0; i < displayToggles.size(); ++i)
+				{
+					bool b = displayToggles[i] == 1 ? true : false;
+					ShowProperty(&b, EnumValues_OSMElementType[i].c_str());
+					displayToggles[i] = b ? 1 : 0;
+
+					lxAssert(displayToggles[i] == 0 || displayToggles[i] == 1);
+				}
+
+				ImGui::TreePop();
+			}
+			ImGui::PopID();
+		}
+
 
 		ShowProperty<Node>(&(g_SectorManager->m_AllNodesPtr), "Nodes");
 		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");

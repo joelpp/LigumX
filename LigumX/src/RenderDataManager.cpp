@@ -343,12 +343,12 @@ void RenderDataManager::fillBuffers(Sector* sector)
             if (!first)
             {
 
-                if (way->eType == OSMElement::GRID_LINE)
-                {
-                    continue; 
-                }
+                //if (way->eType == OSMElement::GRID_LINE)
+                //{
+                //    continue; 
+                //}
 
-                else
+                //else
                 {
                     waysNodesPositions.push_back(oldpt);
                     waysNodesColors.push_back(color);

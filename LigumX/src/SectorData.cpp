@@ -4,7 +4,7 @@
 #include "CurlRequest.h"
 #include "Heightfield.h"
 #include "LigumX.h"
-#include "osm_element.h"
+#include "OSMElement.h"
 #include "Sector.h"
 #include "Settings.h"
 #include "SectorData.h"
@@ -20,8 +20,6 @@
 
 using namespace std;
 using namespace glm;
-
-OSMElement::ElementType typeFromStrings(string key, string value);
 
 
 
@@ -55,42 +53,6 @@ void SectorData::elevateNodes(Heightfield* heightfield)
 }
 
 
-OSMElement::ElementType typeFromStrings(string key, string value){
-    if (key.compare("highway") == 0){
-        if (value.compare("trunk") == 0) return OSMElement::HIGHWAY_TRUNK;
-        else if (value.compare("primary") == 0) return OSMElement::HIGHWAY_PRIMARY;
-        else if (value.compare("secondary") == 0) return OSMElement::HIGHWAY_SECONDARY;
-        else if (value.compare("tertiary") == 0) return OSMElement::HIGHWAY_TERTIARY;
-        else if (value.compare("residential") == 0) return OSMElement::HIGHWAY_RESIDENTIAL;
-        else if (value.compare("service") == 0) return OSMElement::HIGHWAY_SERVICE;
-        else if (value.compare("unclassified") == 0) return OSMElement::HIGHWAY_UNCLASSIFIED;
-        else return OSMElement::NOT_IMPLEMENTED;
-
-    }
-    else if (key.compare("natural") == 0){
-        if (value.compare("wood") == 0) return OSMElement::NATURAL_WOOD;
-        if (value.compare("water") == 0) return OSMElement::NATURAL_WATER;
-        else return OSMElement::NOT_IMPLEMENTED;
-
-    }
-    else if (key.compare("building") == 0){
-        if (value.compare("yes") == 0) return OSMElement::BUILDING_UNMARKED;
-        else if (value.compare("school") == 0) return OSMElement::BUILDING_SCHOOL;
-        else return OSMElement::NOT_IMPLEMENTED;
-
-    }
-    else if (key.compare("contour") == 0) return OSMElement::CONTOUR;
-    else if (key.compare("leisure") == 0){
-        if (value.compare("park") == 0) return OSMElement::LEISURE_PARK;
-        else return OSMElement::NOT_IMPLEMENTED;
-
-    }
-    else if (key.compare("addr:interpolation") == 0){ return OSMElement::ADDR_INTERPOLATION; }
-    else if (key.compare("landuse") == 0){ return OSMElement::LANDUSE; }
-    else if (key.compare("boundary") == 0){ return OSMElement::BOUNDARY; }
-
-    else return OSMElement::NOT_IMPLEMENTED;
-}
 
 //TODO: I feel this should be more a static "find n closest ways in this list i carefully prepared" rather than per-sector Data_
 std::vector<Way*> SectorData::findNClosestWays(int n, glm::vec2 xy, int filter, vector<double> &distances, vector<glm::vec2> &_directions, vector<std::pair<Node*, Node*>> &_nodePairs){
@@ -112,12 +74,12 @@ std::vector<Way*> SectorData::findNClosestWays(int n, glm::vec2 xy, int filter, 
         Way* way = it->second;
 //        if (!way->selectable) continue;
 
-        // This way's type not yet implemented :( get to it!
-        if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
+        //// This way's type not yet implemented :( get to it!
+        //if (way->eType == OSMElement::NOT_IMPLEMENTED) continue;
 
-        // A specific filter has been chosen. Check if this way passes it!
-        if (filter != OSMElement::ANY_TYPE)
-            if ((way->eType & filter) == 0) continue;
+        //// A specific filter has been chosen. Check if this way passes it!
+        //if (filter != OSMElement::ANY_TYPE)
+        //    if ((way->eType & filter) == 0) continue;
 
         Node* firstNode = NULL;
         Node* secondNode = NULL;

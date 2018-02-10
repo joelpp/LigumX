@@ -1,0 +1,170 @@
+#include "stdafx.h"
+
+#include "OSMElement.h"
+
+using namespace std;
+
+std::string OSMElement::getValue(std::string key){
+    return tags[key];
+}
+
+bool OSMElement::hasTag(std::string tag){
+
+        std::unordered_map<std::string,std::string>::const_iterator got = tags.find(tag);
+
+     if ( got == tags.end() )
+        return false;
+     else
+        return true;
+
+
+}
+
+bool OSMElement::hasITag(int tag){
+    try{
+        std::unordered_map<int,int>::const_iterator got = itags.find(tag);
+
+         if ( got == itags.end() )
+            return false;
+         else
+            return true;
+    }
+    catch(...){
+        PRINT("exception!");
+        return false;
+    }
+}
+
+bool OSMElement::hasTagAndValue(std::string key, std::string value){
+
+    if (hasTag(key))
+        return ((tags[key].compare(value) == 0) || tags[key].compare("") == 0);
+    else
+        return false;
+}
+
+bool OSMElement::hasITagAndValue(int key, int value){
+    try
+	{
+        if (hasITag(key))
+            return (itags[key] == value);
+        else
+            return false;
+    }
+    catch(...)
+	{
+        return false;
+    }
+}
+
+#define BEGIN_KEY(keyName) \
+if (key.compare(#keyName) == 0) \
+{ 
+
+#define END_KEY(keyName) \
+else return OSMElement::NOT_IMPLEMENTED; \
+}
+
+#define ADD_VALUE(valueName, osmElementType) if	(value.compare(#valueName) == 0) return OSMElement::osmElementType;
+#define ELSE_ADD_VALUE(valueName, osmElementType) else if (value.compare(#valueName) == 0) return OSMElement::osmElementType;
+
+#define ADD_SINGLE_KEY(keyName, osmElementType) \
+else if (key.compare(#keyName) == 0) \
+{ \
+	return OSMElement::osmElementType; \
+} \
+
+#define ELSE_BEGIN_KEY(keyName) \
+else if (key.compare(#keyName) == 0) \
+{ 
+
+
+OSMElement::ElementType OSMElement::GetTypeFromStrings(const std::string& key, const std::string& value)
+{
+	BEGIN_KEY(highway)
+		ADD_VALUE(trunk,				HIGHWAY_TRUNK)
+		ELSE_ADD_VALUE(primary,			HIGHWAY_PRIMARY)
+		ELSE_ADD_VALUE(secondary,		HIGHWAY_SECONDARY)
+		ELSE_ADD_VALUE(tertiary,		HIGHWAY_TERTIARY)
+		ELSE_ADD_VALUE(residential,		HIGHWAY_RESIDENTIAL)
+		ELSE_ADD_VALUE(service,			HIGHWAY_SERVICE)
+		ELSE_ADD_VALUE(unclassified,	HIGHWAY_UNCLASSIFIED)
+	END_KEY(highway)
+
+	ELSE_BEGIN_KEY(natural)
+		ADD_VALUE(wood,					NATURAL_WOOD)
+		ELSE_ADD_VALUE(water,			NATURAL_WATER)
+	END_KEY(natural)
+
+	ELSE_BEGIN_KEY(building)
+		ADD_VALUE(yes,			BUILDING_UNMARKED)
+		ELSE_ADD_VALUE(school,	BUILDING_SCHOOL)
+	END_KEY(building)
+
+	ELSE_BEGIN_KEY(leisure)
+		ADD_VALUE(park, LEISURE_PARK)
+	END_KEY(leisure)
+
+	ADD_SINGLE_KEY(addr:interpolation,	ADDR_INTERPOLATION)
+	ADD_SINGLE_KEY(landuse,				LANDUSE)
+	ADD_SINGLE_KEY(boundary,			BOUNDARY)
+	ADD_SINGLE_KEY(contour,	CONTOUR)
+
+    else return OSMElement::NOT_IMPLEMENTED;
+}
+
+#define BEGIN_KEY(keyName) \
+if (key.compare(#keyName) == 0) \
+{ 
+
+#define END_KEY(keyName) \
+else return OSMElementType_Unknown; \
+}
+
+#define ADD_VALUE(valueName, osmElementType) if	(value.compare(#valueName) == 0) return osmElementType;
+#define ELSE_ADD_VALUE(valueName, osmElementType) else if (value.compare(#valueName) == 0) return osmElementType;
+
+#define ADD_SINGLE_KEY(keyName, osmElementType) \
+else if (key.compare(#keyName) == 0) \
+{ \
+	return osmElementType; \
+} \
+
+#define ELSE_BEGIN_KEY(keyName) \
+else if (key.compare(#keyName) == 0) \
+{ 
+
+
+//OSMElementType OSMElement::GetOSMTypeFromStrings(const std::string& key, const std::string& value)
+//{
+//	BEGIN_KEY(highway)
+//		ADD_VALUE(trunk,				OSMElementType_HighwayTrunk)
+//		ELSE_ADD_VALUE(primary,			OSMElementType_HighwayPrimary)
+//		ELSE_ADD_VALUE(secondary,		OSMElementType_HighwaySecondary)
+//		ELSE_ADD_VALUE(tertiary,		OSMElementType_HighwayTertiary)
+//		ELSE_ADD_VALUE(residential,		OSMElementType_HighwayResidential)
+//		ELSE_ADD_VALUE(service,			OSMElementType_HighwayService)
+//		ELSE_ADD_VALUE(unclassified,	OSMElementType_HighwayUnclassified)
+//	END_KEY(highway)
+//
+//	ELSE_BEGIN_KEY(natural)
+//		ADD_VALUE(wood,			OSMElementType_NaturalWood)
+//		ELSE_ADD_VALUE(water,	OSMElementType_NaturalWater)
+//	END_KEY(natural)
+//
+//	ELSE_BEGIN_KEY(building)
+//		ADD_VALUE(yes,			OSMElementType_Building_Unmarked)
+//		ELSE_ADD_VALUE(school,	OSMElementType_Building_School)
+//	END_KEY(building)
+//
+//	ELSE_BEGIN_KEY(leisure)
+//		ADD_VALUE(park, OSMElementType_LeisurePark)
+//	END_KEY(leisure)
+//
+//	ADD_SINGLE_KEY(addr:interpolation,	OSMElementType_AddressInterpolation)
+//	ADD_SINGLE_KEY(landuse,				OSMElementType_Landuse)
+//	ADD_SINGLE_KEY(boundary,			OSMElementType_Boundary)
+//	ADD_SINGLE_KEY(contour,				OSMElementType_Contour)
+//
+//	else return OSMElementType_Unknown;
+//}
