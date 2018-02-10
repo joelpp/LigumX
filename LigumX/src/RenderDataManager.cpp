@@ -19,6 +19,7 @@
 #include "EngineSettings.h"
 #include "glm/gtx/transform.hpp"
 
+#include "Building.h"
 RenderDataManager* g_RenderDataManager;
 
 using namespace std;
@@ -277,6 +278,16 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		waysModel = CreateDebugModel(line, color, "Sector_Lines_");
 
 		gfxData->AddTo_WaysModelsVector(waysModel);
+
+		int fillFlags = OSMElement::BUILDING_UNMARKED | OSMElement::BUILDING_SCHOOL | OSMElement::LEISURE_PARK | OSMElement::NATURAL_WOOD | OSMElement::NATURAL_WATER ;
+		if ((way->eType & fillFlags) != 0)
+		{
+			Building building(way);
+			building.GenerateModel();
+
+			renderer.m_DebugModels.push_back(building.m_Model);
+
+		}
 
 	}
 

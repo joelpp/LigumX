@@ -998,6 +998,28 @@ void Renderer::RenderDebugModels()
 {
 	g_Editor->RenderTools();
 
+	SetPipeline(pPipelineBasic);
+	for (Model* model : m_DebugModels)
+	{
+		// TODO : right now this is for buildings but they should create their own entity
+		for (int i = 0; i < model->m_meshes.size(); ++i)
+		{
+			SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
+
+			Material* material = model->GetMaterials()[i];
+
+			SetViewUniforms(m_DebugCamera);
+
+			if (!material->GetEnabled())
+			{
+				continue;
+			}
+
+			DrawMesh(model->m_meshes[i], material);
+		}
+
+	}
+
 	for (AABBJob& aabb : m_RenderDataManager->GetAABBJobs())
 	{
 		RenderAABB(aabb.m_AABB, aabb.m_Color);

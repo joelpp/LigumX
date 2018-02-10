@@ -39,6 +39,9 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode)
 {
   m_buffers.vertexPositions = vertices;
   m_renderingMode = renderingMode;
+  m_WireframeRendering = false;
+  m_UsesIndexBuffer = false;
+  m_PointRendering = false;
 
   padBuffer(VERTEX_UVS);
   createBuffers();

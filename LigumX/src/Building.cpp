@@ -9,6 +9,7 @@
 #include "Renderer.h"
 #include "Material.h"
 #include "LigumX.h"
+#include "LXError.h"
 
 using namespace glm;
 using namespace std;
@@ -37,7 +38,7 @@ bool Building::GenerateModel()
 	float height = 0;
 	if (way->eType == OSMElement::BUILDING_UNMARKED) 
 	{
-		height = 3;//game.buildingHeight /* + (rand() / RAND_MAX) * 4.f*/;
+		height = 10;//game.buildingHeight /* + (rand() / RAND_MAX) * 4.f*/;
 	}
 	//            cout << "building loop" << endl;
 
@@ -61,8 +62,8 @@ bool Building::GenerateModel()
 	        
 	        if (way->eType == LiftableWalls)
 	        {
-	            buildingLines.push_back(vec3((*n)->longitude, (*n)->latitude, (*n)->elevation));
-	            buildingLines.push_back(vec3((*(n+1))->longitude, (*(n+1))->latitude, (*(n+1))->elevation));
+	            buildingLines.push_back((*n)->GetWorldPosition());
+	            buildingLines.push_back((*n+1)->GetWorldPosition());
 	        }
 
 	        if (way->eType == LiftableWalls)
@@ -70,8 +71,8 @@ bool Building::GenerateModel()
 	            buildingLinesTexCoords.push_back(float(distance));    
 	        } 
 
-	        distance += glm::distance(vec2((*n)->longitude, (*n)->latitude),
-	                                  vec2((*(n+1))->longitude, (*(n+1))->latitude));
+	        distance += glm::distance(vec2((*n)->GetWorldPosition()),
+	                                  vec2((*n + 1)->GetWorldPosition()));
 
 	        if (way->eType == LiftableWalls)
 	        {
@@ -99,10 +100,14 @@ bool Building::GenerateModel()
 	        Node* n2 = *(nodeIt2);
 	        Node* n3 = *(nodeIt3);
 
-	        vec2 p1 = vec2(n1->longitude, n1->latitude);
-	        vec2 p2 = vec2(n2->longitude, n2->latitude);
-	        vec2 p3 = vec2(n3->longitude, n3->latitude);
-	        if(p1==p2 || p1==p3) cout << "bad precision" << std::endl;
+	        vec2 p1 = vec2(n1->GetWorldPosition());
+	        vec2 p2 = vec2(n2->GetWorldPosition());
+	        vec2 p3 = vec2(n3->GetWorldPosition());
+			if (p1 == p2 || p1 == p3)
+			{
+				cout << "bad precision" << std::endl;
+				lxAssert0();
+			}
 	        vec2 v12 = p2 - p1;
 	        vec2 v13 = p3 - p1;
 
@@ -120,7 +125,7 @@ bool Building::GenerateModel()
 	            {
 	                if(node == n1 || node == n2 || node == n3) continue;
 	                //vec3 n_3D = vec3(node->latitude, node->longitude, 0);
-	                vec3 n_3D = vec3(node->longitude, node->latitude, 0);
+					vec3 n_3D = node->GetWorldPosition();
 	                if(clockwiseness * glm::cross(v12_3D, n_3D - vec3(p1.x, p1.y, 0)).z > 0.f &&
 	                   clockwiseness * glm::cross(v23_3D, n_3D - vec3(p2.x, p2.y, 0)).z > 0.f &&
 	                   clockwiseness * glm::cross(v31_3D, n_3D - vec3(p3.x, p3.y, 0)).z > 0.f ) 
@@ -133,9 +138,9 @@ bool Building::GenerateModel()
 	    	if(isGoodTriangle) 
 	    	{
 	        	// create triangle
-	            vec3 p1 = vec3(n1->longitude, n1->latitude,0);
-	            vec3 p2 = vec3(n2->longitude, n2->latitude,0);
-	            vec3 p3 = vec3(n3->longitude, n3->latitude,0);
+	            vec3 p1 = n1->GetWorldPosition();
+	            vec3 p2 = n2->GetWorldPosition();
+	            vec3 p3 = n3->GetWorldPosition();
 
 	            vec3 point;
 	            point = p1;
@@ -194,7 +199,7 @@ bool Building::GenerateModel()
 	    // keep and copy the triangles we created
 	    for(vec3 v : tempTriangleVertices) 
 	    {
-	        // v.z = height;
+	         v.z = height;
 	        buildingTrianglePositions.push_back(v);
 		}
 	}
@@ -203,15 +208,17 @@ bool Building::GenerateModel()
 	{
 		return false;
 	}
-	//Renderer& renderer = Renderer::GetInstance();
+	Renderer& renderer = Renderer::GetInstance();
 
-	//m_Model = new Model();
-	//m_Model->SetName("Building");
+	m_Model = new Model();
+	m_Model->SetName("Building");
 
-	//Mesh* mesh = new Mesh(buildingTrianglePositions, GL_TRIANGLES);
-	//m_Model->addMesh( mesh, new Material(renderer.pPipelineBasic, glm::vec3(1,1,1) ) );
+	Mesh* mesh = new Mesh(buildingTrianglePositions, GL_TRIANGLES);
 
-	//renderer.m_debugModels.push_back(m_Model);
+	glm::vec3 color = renderer.typeColorMap[m_Way->eType];
+
+	Material* material = new Material(renderer.pPipelineBasic, color);
+	m_Model->addMesh(mesh, material);
     
     return true;
 }
