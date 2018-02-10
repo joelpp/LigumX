@@ -91,7 +91,9 @@ struct LXClass
 	int m_PropertyFlags;
 	VariableList m_Members;
 	EnumList m_Enums;
+	bool m_IsValid = false;
 };
+
 typedef std::vector<LXClass> ClassList;
 typedef std::vector<std::string> TokenList;
 

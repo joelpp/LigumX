@@ -224,6 +224,11 @@ public:
 
 	void Process()
 	{
+		if (!m_Class.m_IsValid)
+		{
+			return;
+		}
+
 		// Write class header region
 		WriteHeader();
 

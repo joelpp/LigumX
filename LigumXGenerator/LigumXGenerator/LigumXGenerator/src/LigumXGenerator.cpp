@@ -8,6 +8,7 @@
 #include "CodeRegion.h"
 #include "ClassSourceRegion.h"
 #include "ClassHeaderRegion.h"
+#include "StringUtils.h"
 #include "ForwardDeclarationRegion.h"
 #define NAMESPACE_BEGIN namespace LigumXGenerator {
 #define NAMESPACE_END }
@@ -178,7 +179,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 					//		AddToTypesMap(g_AdditionalEnums, var.m_Type);
 					//	}
 					//}
-
+					currentClass.m_IsValid = true;
 					classes.push_back(currentClass);
 					currentClass = LXClass();
 				}
@@ -251,6 +252,13 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 	}
 
+	// if there was no class in the file
+	if (classes.size() == 0)
+	{
+		// push it anyway
+		classes.push_back(currentClass);
+	}
+
 	return classes;
 }
 
@@ -269,6 +277,12 @@ void processSingleGeneratorFile(GeneratorFile& genFile)
 	ClassList classes = createLXClass(lines);
 
 	LXClass& theClass = classes[0];
+
+	if (theClass.m_Name.empty())
+	{
+		StringList tokens = splitString(genFile.m_Name, '.');
+		theClass.m_Name = tokens[0];
+	}
 
 	ClassHeaderRegion headerRegion(theClass);
 	headerRegion.Process();

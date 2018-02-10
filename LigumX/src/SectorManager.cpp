@@ -236,7 +236,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 		else if (childValue == "node")
 		{
-			std::string id = child->ToElement()->FindAttribute("id")->Value();
+			const std::string id = child->ToElement()->FindAttribute("id")->Value();
 
 			if (m_AllNodes.find(id) != m_AllNodes.end())
 			{
@@ -271,7 +271,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			if (sector && sectorIndex == request->GetSectorIndex() && !sector->GetDataLoaded())
 			{
 				//sector->InitializeFromRequest(request);
-				std::string filename = std::string(request->GetFilename());
+				std::string filename = path;
 				sector->SetOSMFilename(filename);
 				request->SetSector(sector);
 
@@ -288,7 +288,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 		else if (childValue == "way")
 		{
-			std::string id = child->ToElement()->FindAttribute("id")->Value();
+			const std::string id = child->ToElement()->FindAttribute("id")->Value();
 
 			if (m_AllWays.find(id) != m_AllWays.end())
 			{
@@ -302,7 +302,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			{
 				if (std::string(way_child->Value()).compare("nd") == 0)
 				{
-					std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
+					const std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
 
 					Node* node = m_AllNodes[ref];
 					way->AddNode(node);
@@ -311,12 +311,22 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				}
 				else if (std::string(way_child->Value()).compare("tag") == 0)
 				{
-					std::string key = way_child->ToElement()->FindAttribute("k")->Value();
-					std::string value = way_child->ToElement()->FindAttribute("v")->Value();
+					const std::string key = way_child->ToElement()->FindAttribute("k")->Value();
+					const std::string value = way_child->ToElement()->FindAttribute("v")->Value();
 					way->addTag(key, value);
 
 					OSMElement::ElementType _eType = OSMElement::GetTypeFromStrings(key, value);
-					//OSMElementType elementype = OSMElement::GetOSMTypeFromStrings(key, value);
+
+					if (way->GetOSMElementType() == OSMElementType_Unknown)
+					{
+						OSMElementType elementType = OSMElement::GetOSMTypeFromStrings(key, value);
+
+						if (elementType != OSMElementType_Unknown)
+						{
+							way->SetOSMElementType(elementType);
+						}
+					}
+
 					if (_eType == OSMElement::NOT_IMPLEMENTED)
 					{
 						continue;
@@ -325,6 +335,8 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 					{
 						way->eType = _eType;
 					}
+
+
 				}
 			}
 

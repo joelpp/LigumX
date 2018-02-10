@@ -1,29 +1,3 @@
-enum OSMElementType 
-{ 
-HighwayTrunk,
-HighwayPrimary,
-HighwaySecondary,
-HighwayTertiary,
-HighwayResidential,
-HighwayService,
-HighwayUnclassified,
-Sidewalk, 
-Contour,
-Building_Unmarked,
-Building_School,
-Building_Addressinterpolation,
-Boundary,
-LeisurePark,
-NaturalWood,
-NaturalWater,
-Landuse,
-RailwaySubway,
-AddressInterpolation,
-NotImplemented,
-Unknown,
-Count
-}
-
 class Way
 {
 	int OSMId;

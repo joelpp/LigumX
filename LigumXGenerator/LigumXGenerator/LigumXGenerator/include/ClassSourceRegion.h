@@ -204,6 +204,15 @@ public:
 
 	void Process()
 	{
+		if (!m_Class.m_IsValid)
+		{
+			WriteLine(m_CodeRegionBeginString);
+			WriteEnums();
+			WriteLine(m_CodeRegionEndString);
+			WriteToFile();
+			return;
+		}
+
 		// Write class header region
 		WriteHeader();
 

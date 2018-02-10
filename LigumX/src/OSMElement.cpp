@@ -2,6 +2,62 @@
 
 #include "OSMElement.h"
 
+#pragma region  CLASS_SOURCE OSMElement
+const std::string EnumValues_OSMElementType[] = 
+{
+"HighwayTrunk",
+"HighwayPrimary",
+"HighwaySecondary",
+"HighwayTertiary",
+"HighwayResidential",
+"HighwayService",
+"HighwayUnclassified",
+"Sidewalk",
+"Contour",
+"Building_Unmarked",
+"Building_School",
+"Building_Addressinterpolation",
+"Boundary",
+"LeisurePark",
+"NaturalWood",
+"NaturalWater",
+"Landuse",
+"RailwaySubway",
+"AddressInterpolation",
+"NotImplemented",
+"Unknown",
+"Count",
+};
+
+const OSMElementType Indirection_OSMElementType[] =
+{
+	OSMElementType_HighwayTrunk,
+	OSMElementType_HighwayPrimary,
+	OSMElementType_HighwaySecondary,
+	OSMElementType_HighwayTertiary,
+	OSMElementType_HighwayResidential,
+	OSMElementType_HighwayService,
+	OSMElementType_HighwayUnclassified,
+	OSMElementType_Sidewalk,
+	OSMElementType_Contour,
+	OSMElementType_Building_Unmarked,
+	OSMElementType_Building_School,
+	OSMElementType_Building_Addressinterpolation,
+	OSMElementType_Boundary,
+	OSMElementType_LeisurePark,
+	OSMElementType_NaturalWood,
+	OSMElementType_NaturalWater,
+	OSMElementType_Landuse,
+	OSMElementType_RailwaySubway,
+	OSMElementType_AddressInterpolation,
+	OSMElementType_NotImplemented,
+	OSMElementType_Unknown,
+	OSMElementType_Count,
+};
+#pragma endregion  CLASS_SOURCE OSMElement
+
+
+
 using namespace std;
 
 std::string OSMElement::getValue(std::string key){
@@ -135,36 +191,36 @@ else if (key.compare(#keyName) == 0) \
 { 
 
 
-//OSMElementType OSMElement::GetOSMTypeFromStrings(const std::string& key, const std::string& value)
-//{
-//	BEGIN_KEY(highway)
-//		ADD_VALUE(trunk,				OSMElementType_HighwayTrunk)
-//		ELSE_ADD_VALUE(primary,			OSMElementType_HighwayPrimary)
-//		ELSE_ADD_VALUE(secondary,		OSMElementType_HighwaySecondary)
-//		ELSE_ADD_VALUE(tertiary,		OSMElementType_HighwayTertiary)
-//		ELSE_ADD_VALUE(residential,		OSMElementType_HighwayResidential)
-//		ELSE_ADD_VALUE(service,			OSMElementType_HighwayService)
-//		ELSE_ADD_VALUE(unclassified,	OSMElementType_HighwayUnclassified)
-//	END_KEY(highway)
-//
-//	ELSE_BEGIN_KEY(natural)
-//		ADD_VALUE(wood,			OSMElementType_NaturalWood)
-//		ELSE_ADD_VALUE(water,	OSMElementType_NaturalWater)
-//	END_KEY(natural)
-//
-//	ELSE_BEGIN_KEY(building)
-//		ADD_VALUE(yes,			OSMElementType_Building_Unmarked)
-//		ELSE_ADD_VALUE(school,	OSMElementType_Building_School)
-//	END_KEY(building)
-//
-//	ELSE_BEGIN_KEY(leisure)
-//		ADD_VALUE(park, OSMElementType_LeisurePark)
-//	END_KEY(leisure)
-//
-//	ADD_SINGLE_KEY(addr:interpolation,	OSMElementType_AddressInterpolation)
-//	ADD_SINGLE_KEY(landuse,				OSMElementType_Landuse)
-//	ADD_SINGLE_KEY(boundary,			OSMElementType_Boundary)
-//	ADD_SINGLE_KEY(contour,				OSMElementType_Contour)
-//
-//	else return OSMElementType_Unknown;
-//}
+OSMElementType OSMElement::GetOSMTypeFromStrings(const std::string& key, const std::string& value)
+{
+	BEGIN_KEY(highway)
+		ADD_VALUE(trunk,				OSMElementType_HighwayTrunk)
+		ELSE_ADD_VALUE(primary,			OSMElementType_HighwayPrimary)
+		ELSE_ADD_VALUE(secondary,		OSMElementType_HighwaySecondary)
+		ELSE_ADD_VALUE(tertiary,		OSMElementType_HighwayTertiary)
+		ELSE_ADD_VALUE(residential,		OSMElementType_HighwayResidential)
+		ELSE_ADD_VALUE(service,			OSMElementType_HighwayService)
+		ELSE_ADD_VALUE(unclassified,	OSMElementType_HighwayUnclassified)
+	END_KEY(highway)
+
+	ELSE_BEGIN_KEY(natural)
+		ADD_VALUE(wood,			OSMElementType_NaturalWood)
+		ELSE_ADD_VALUE(water,	OSMElementType_NaturalWater)
+	END_KEY(natural)
+
+	ELSE_BEGIN_KEY(building)
+		ADD_VALUE(yes,			OSMElementType_Building_Unmarked)
+		ELSE_ADD_VALUE(school,	OSMElementType_Building_School)
+	END_KEY(building)
+
+	ELSE_BEGIN_KEY(leisure)
+		ADD_VALUE(park, OSMElementType_LeisurePark)
+	END_KEY(leisure)
+
+	ADD_SINGLE_KEY(addr:interpolation,	OSMElementType_AddressInterpolation)
+	ADD_SINGLE_KEY(landuse,				OSMElementType_Landuse)
+	ADD_SINGLE_KEY(boundary,			OSMElementType_Boundary)
+	ADD_SINGLE_KEY(contour,				OSMElementType_Contour)
+
+	else return OSMElementType_Unknown;
+}

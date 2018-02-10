@@ -11,36 +11,6 @@
 class Way;
 class Node;
 
-enum OSMElementType
-{
-OSMElementType_HighwayTrunk,
-OSMElementType_HighwayPrimary,
-OSMElementType_HighwaySecondary,
-OSMElementType_HighwayTertiary,
-OSMElementType_HighwayResidential,
-OSMElementType_HighwayService,
-OSMElementType_HighwayUnclassified,
-OSMElementType_Sidewalk,
-OSMElementType_Contour,
-OSMElementType_Building_Unmarked,
-OSMElementType_Building_School,
-OSMElementType_Building_Addressinterpolation,
-OSMElementType_Boundary,
-OSMElementType_LeisurePark,
-OSMElementType_NaturalWood,
-OSMElementType_NaturalWater,
-OSMElementType_Landuse,
-OSMElementType_RailwaySubway,
-OSMElementType_AddressInterpolation,
-OSMElementType_NotImplemented,
-OSMElementType_Unknown,
-OSMElementType_Count,
-};
-
-extern const std::string EnumValues_OSMElementType[22];
-extern const OSMElementType Indirection_OSMElementType[22];
-const int EnumLength_OSMElementType = 22;
-
 
 #pragma endregion  FORWARD_DECLARATIONS Way
 class LineSegment;
