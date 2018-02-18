@@ -33,6 +33,7 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "SectorGridColor", PIDX_SectorGridColor, offsetof(SectorTool, m_SectorGridColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "AsyncSectorLoading", PIDX_AsyncSectorLoading, offsetof(SectorTool, m_AsyncSectorLoading), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "NodeSize", PIDX_NodeSize, offsetof(SectorTool, m_NodeSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "LoadingRingSize", PIDX_LoadingRingSize, offsetof(SectorTool, m_LoadingRingSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "ShowNodes", PIDX_ShowNodes, offsetof(SectorTool, m_ShowNodes), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowWays", PIDX_ShowWays, offsetof(SectorTool, m_ShowWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowFlatWays", PIDX_ShowFlatWays, offsetof(SectorTool, m_ShowFlatWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
@@ -217,11 +218,23 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	if (m_HighlightSelectedSector)
 	{
-		float scale = g_EngineSettings->GetWorldScale();
-		AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0), glm::vec3(scale, scale, 1.f));
+		int numSectorsPerSide = 2 * m_LoadingRingSize - 1;
+		int offset = m_LoadingRingSize - 1;
 
-		glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
-		LigumX::GetInstance().m_RenderDataManager->AddAABBJob(aabb, aabbColor);
+		float scale = g_EngineSettings->GetWorldScale();
+
+		for (int i = 0; i < numSectorsPerSide; ++i)
+		{
+			for (int j = 0; j < numSectorsPerSide; ++j)
+			{
+				glm::ivec3 offsets = glm::ivec3(i - offset, j - offset, 0);
+				AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0) - scale * (glm::vec3) offsets, glm::vec3(scale, scale, 1.f));
+
+				glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
+				LigumX::GetInstance().m_RenderDataManager->AddAABBJob(aabb, aabbColor);
+			}
+		}
+
 	}
 
 	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready() && (!m_HighlightedSector || !m_HighlightedSector->GetDataLoaded());
@@ -231,9 +244,10 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		m_Request.SetSectorIndex(normalizedSectorIndex);
 		m_Request.Initialize();
 		m_Request.Start();
-	}
-	else if (m_Request.Finished())
-	{
+		// todo : reenable threading ( it was gone for a while anyway)
+	//}
+	//else if (m_Request.Finished())
+	//{
 		m_Request.End();
 
 		g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);

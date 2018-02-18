@@ -12,6 +12,8 @@ class SectorTool
 
 	float NodeSize = 2;
 
+	int LoadingRingSize = 1;
+
 	bool ShowNodes = false;
 	bool ShowWays = false;
 	bool ShowFlatWays = true;

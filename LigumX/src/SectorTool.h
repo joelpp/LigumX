@@ -40,6 +40,8 @@ const bool& GetAsyncSectorLoading() { return m_AsyncSectorLoading; };
 void SetAsyncSectorLoading(bool value) { m_AsyncSectorLoading = value; }; 
 const float& GetNodeSize() { return m_NodeSize; }; 
 void SetNodeSize(float value) { m_NodeSize = value; }; 
+const int& GetLoadingRingSize() { return m_LoadingRingSize; }; 
+void SetLoadingRingSize(int value) { m_LoadingRingSize = value; }; 
 const bool& GetShowNodes() { return m_ShowNodes; }; 
 void SetShowNodes(bool value) { m_ShowNodes = value; }; 
 const bool& GetShowWays() { return m_ShowWays; }; 
@@ -65,6 +67,7 @@ Sector* m_HighlightedSector;
 glm::vec3 m_SectorGridColor = glm::vec3(0.5);
 bool m_AsyncSectorLoading = false;
 float m_NodeSize = 2;
+int m_LoadingRingSize = 1;
 bool m_ShowNodes = false;
 bool m_ShowWays = false;
 bool m_ShowFlatWays = true;
@@ -74,7 +77,7 @@ bool m_HighlightSelectedSector = true;
 bool m_LoadSectorsOnClick = true;
 int m_SelectedWayIndex = 0;
 public:
-static const int g_PropertyCount = 16;
+static const int g_PropertyCount = 17;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
@@ -87,6 +90,7 @@ PIDX_HighlightedSector,
 PIDX_SectorGridColor,
 PIDX_AsyncSectorLoading,
 PIDX_NodeSize,
+PIDX_LoadingRingSize,
 PIDX_ShowNodes,
 PIDX_ShowWays,
 PIDX_ShowFlatWays,
