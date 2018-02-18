@@ -237,26 +237,55 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	}
 
-	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready() && (!m_HighlightedSector || !m_HighlightedSector->GetDataLoaded());
+	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready();
 	if (canSendRequest)
 	{
-		m_Request = CurlRequest(earthStartCoords, glm::vec2(g_EngineSettings->GetExtent()), m_AsyncSectorLoading);
-		m_Request.SetSectorIndex(normalizedSectorIndex);
-		m_Request.Initialize();
-		m_Request.Start();
-		// todo : reenable threading ( it was gone for a while anyway)
-	//}
-	//else if (m_Request.Finished())
-	//{
-		m_Request.End();
+		int numSectorsPerSide = 2 * m_LoadingRingSize - 1;
+		int offset = m_LoadingRingSize - 1;
 
-		g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
+		for (int i = 0; i < numSectorsPerSide; ++i)
+		{
+			for (int j = 0; j < numSectorsPerSide; ++j)
+			{
+				glm::ivec2 offsets = glm::ivec2(i - offset, j - offset);
+				glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
+				m_Request = CurlRequest(earthStartCoords - earthExtent * (glm::vec2) offsets, earthExtent, m_AsyncSectorLoading);
 
-		RenderDataManager::CreateWaysLines(m_Request.GetSector());
+				glm::ivec2 requestedSectorIndex = normalizedSectorIndex + glm::ivec2(offsets);
+				m_Request.SetSectorIndex(requestedSectorIndex);
 
-		m_Request.GetSector()->SetDataLoaded(true);
+				Sector* requestSector = world->GetSectorByIndex(m_Request.GetSectorIndex());
+				if (!requestSector)
+				{
+					requestSector = g_SectorManager->CreateSector(requestedSectorIndex);
+				}
+				m_Request.SetSector(requestSector);
 
-		m_Request.Reset();
+				if (requestSector->GetDataLoaded())
+				{
+					continue;
+				}
+
+				m_Request.Initialize();
+				m_Request.Start();
+				// todo : reenable threading ( it was gone for a while anyway)
+				//}
+				//else if (m_Request.Finished())
+				//{
+				m_Request.End();
+
+				g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
+
+				RenderDataManager::CreateWaysLines(m_Request.GetSector());
+
+				m_Request.GetSector()->SetDataLoaded(true);
+
+				m_Request.Reset();
+			}
+		}
+
+
+		
 	}
 
 	return true;

@@ -219,12 +219,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
 
-	Sector* requestSector = world->GetSectorByIndex(request->GetSectorIndex());
-	if (!requestSector)
-	{
-		requestSector = CreateSector(request->GetSectorIndex());
-	}
-	request->SetSector(requestSector);
 
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
@@ -357,14 +351,14 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			}
 
 
-			std::unordered_map<std::string, Way*>& ways = requestSector->m_Data->ways;
+			std::unordered_map<std::string, Way*>& ways = request->GetSector()->m_Data->ways;
 			ways.emplace(id, way);
 
 			m_AllWays.emplace(id, way);
 
 			int intID = StringUtils::ToInt(id);
-			way->SetIndexInSector(requestSector->m_Data->m_AllWaysPtr.size());
-			requestSector->m_Data->m_AllWaysPtr[intID] = way;
+			way->SetIndexInSector(request->GetSector()->m_Data->m_AllWaysPtr.size());
+			request->GetSector()->m_Data->m_AllWaysPtr[intID] = way;
 			m_AllWaysPtr[intID] = way;
 		}
 	}
