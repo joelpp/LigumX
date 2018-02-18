@@ -32,13 +32,13 @@ Mesh::Mesh()
     m_WireframeRendering = false;
     m_UsesIndexBuffer = false;
     m_PointRendering = false;
-	m_renderingMode = GL_TRIANGLES;
+	m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 }
 
-Mesh::Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode)
+Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode)
 {
   m_buffers.vertexPositions = vertices;
-  m_renderingMode = renderingMode;
+  m_PrimitiveMode = primitiveMode;
   m_WireframeRendering = false;
   m_UsesIndexBuffer = false;
   m_PointRendering = false;
@@ -47,12 +47,12 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode)
   createBuffers();
 }
 
-Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GLenum renderingMode, bool usePointRendering)
+Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
 	m_buffers.vertexPositions = vertices;
 	m_buffers.indexBuffer = indices;
 
-	m_renderingMode = renderingMode;
+	m_PrimitiveMode = primitiveMode;
 	m_PointRendering = usePointRendering;
 
 	m_UsesIndexBuffer = true;
@@ -62,10 +62,10 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indic
 	createBuffers();
 }
 
-Mesh::Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode, bool usePointRendering)
+Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
   m_buffers.vertexPositions = vertices;
-  m_renderingMode = renderingMode;
+  m_PrimitiveMode = primitiveMode;
   m_PointRendering = usePointRendering;
   padBuffer(VERTEX_UVS);
   createBuffers();

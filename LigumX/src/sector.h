@@ -6,7 +6,6 @@
 #include "property.h"
 
 class Sector;
-class Entity;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Sector
@@ -16,6 +15,7 @@ class vec2i;
 class CurlRequest;
 class SectorGraphicalData;
 class PerlinNoise;
+class Entity;
 
 typedef std::pair<int, int> IntPair;
 

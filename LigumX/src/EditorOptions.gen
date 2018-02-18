@@ -16,6 +16,8 @@ class EditorOptions
 	bool DisplayOSMTool = false;
 	bool DisplaySectorTool = true;
 
+	bool DisplayAxisGizmo = true;
+
 	float MouseScrollCameraSpeed = 10.0f;
 	float MouseScrollEntityCloseupPercent = 15.0f;
 }

@@ -102,9 +102,9 @@ public:
 	// Mesh(std::vector<Vertex> vertexArray);
 	// void addVertex(Vertex v);
 	Mesh();
-	Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode);
-	Mesh(const std::vector<glm::vec3>& vertices, GLenum renderingMode, bool usePointRendering);
-	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GLenum renderingMode, bool usePointRendering);
+	Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode);
+	Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode, bool usePointRendering);
+	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 	
 	void padBuffer(EBufferType bufferType);
 	virtual void createBuffers();
@@ -115,7 +115,7 @@ public:
 
 	GLuint m_VAO;
 
-	GLenum m_renderingMode;
+	GL::PrimitiveMode m_PrimitiveMode;
 	
 	virtual GPUBuffers& GetGPUBuffers() { return m_VBOs; }
 private:

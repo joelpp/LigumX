@@ -30,6 +30,7 @@ void Renderer::init_pipelines()
 	pPipelineSolidColor = new ProgramPipeline("SolidColor");
 	pPipelineBlur = new ProgramPipeline("blur");
 	pPipelineGrid = new ProgramPipeline("Grid");
+	pPipelineAxisGizmo = new ProgramPipeline("AxisGizmo");
 	Renderer::outputGLError(__func__, __LINE__);
 
 	m_Pipelines.clear();
@@ -37,6 +38,8 @@ void Renderer::init_pipelines()
 	{
 		m_Pipelines.push_back(new ProgramPipeline(EnumValues_ShaderFamily[i]));
 	}
+
+	PRINTSTRING("Successfully built all shaders!");
 
 }
 

@@ -141,6 +141,8 @@ void ProcessScrolling();
 void Render();
 void RenderTools();
 
+void DisplayAxisGizmo();
+
 void RenderImgui();
 
 template <typename T>

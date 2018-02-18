@@ -26,12 +26,12 @@ using namespace std;
 using namespace glm;
 
 
-FlatWaysMesh::FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<WayData>& dataBuffer, GLenum renderingMode, bool usePointRendering)
+FlatWaysMesh::FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<WayData>& dataBuffer, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
 	m_buffers.vertexPositions = vertices;
 
 	m_DataBuffer = dataBuffer;
-	m_renderingMode = renderingMode;
+	m_PrimitiveMode = primitiveMode;
 	SetPointRendering(usePointRendering);
 
 	SetUsesIndexBuffer(false);
@@ -155,7 +155,7 @@ Model* RenderDataManager::CreateDebugModel(const std::vector<glm::vec3>& lineDat
 {
 	Renderer& renderer = Renderer::GetInstance();
 
-	Mesh* mesh = new Mesh(lineData, GL_LINES);
+	Mesh* mesh = new Mesh(lineData, GL::PrimitiveMode::Lines);
 
 	Model* model = new Model();
 	model->addMesh(mesh, new Material(renderer.pPipelineLines, color));
@@ -182,7 +182,7 @@ Model* RenderDataManager::CreateFlatDebugModel(const std::vector<glm::vec3>& lin
 {
 	Renderer& renderer = Renderer::GetInstance();
 
-	FlatWaysMesh* mesh = new FlatWaysMesh(lineData, typeBuffer, GL_LINES, false);
+	FlatWaysMesh* mesh = new FlatWaysMesh(lineData, typeBuffer, GL::PrimitiveMode::Lines, false);
 
 	Model* model = new Model();
 	model->addMesh(mesh, new Material(renderer.pPipelineLines, color));
@@ -196,7 +196,7 @@ void RenderDataManager::AddDebugModel(const std::vector<glm::vec3>& line, glm::v
 {
 	Renderer& renderer = Renderer::GetInstance();
 
-	Mesh* linesMesh = new Mesh(line, GL_LINES);
+	Mesh* linesMesh = new Mesh(line, GL::PrimitiveMode::Lines);
 
 	Model* linesModel = new Model();
 	linesModel->addMesh(linesMesh, new Material(renderer.pPipelineLines, color));
@@ -229,7 +229,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 	Renderer& renderer = Renderer::GetInstance();
 
-	Mesh* nodeMesh = new Mesh(nodePositions, GL_POINTS, true);
+	Mesh* nodeMesh = new Mesh(nodePositions, GL::PrimitiveMode::Points, true);
 
 	Model* nodeModel = new Model();
 	nodeModel->addMesh(nodeMesh, new Material(renderer.pPipelineNodes, glm::vec3(1,1,1)));
@@ -437,7 +437,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
     {
         OSMElement::ElementType index = it->first;
 
-        Mesh* mesh = new Mesh(it->second, GL_LINES);
+        Mesh* mesh = new Mesh(it->second, GL::PrimitiveMode::Lines);
 
         waysModel->addMesh( mesh, new Material(renderer.pPipelineLines, renderer.typeColorMap[index]) );
     }

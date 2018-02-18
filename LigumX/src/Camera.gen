@@ -12,6 +12,9 @@ class Camera
 	glm::mat4 ViewMatrix
 
 	[transient, hidden]
+	glm::mat4 ViewMatrixNoTranslation
+
+	[transient, hidden]
 	glm::mat4 ProjectionMatrix
 
 	[transient, hidden]

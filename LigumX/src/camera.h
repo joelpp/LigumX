@@ -46,6 +46,8 @@ const glm::vec3& GetUpVector() { return m_UpVector; };
 void SetUpVector(glm::vec3 value) { m_UpVector = value; }; 
 const glm::mat4& GetViewMatrix() { return m_ViewMatrix; }; 
 void SetViewMatrix(glm::mat4 value) { m_ViewMatrix = value; }; 
+const glm::mat4& GetViewMatrixNoTranslation() { return m_ViewMatrixNoTranslation; }; 
+void SetViewMatrixNoTranslation(glm::mat4 value) { m_ViewMatrixNoTranslation = value; }; 
 const glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; }; 
 void SetProjectionMatrix(glm::mat4 value) { m_ProjectionMatrix = value; }; 
 const glm::mat4& GetViewProjectionMatrix() { return m_ViewProjectionMatrix; }; 
@@ -76,6 +78,7 @@ glm::vec3 m_FrontVector = glm::vec3(0, 0, 0);
 glm::vec3 m_RightVector = glm::vec3(0, 0, 0);
 glm::vec3 m_UpVector = glm::vec3(0, 0, 0);
 glm::mat4 m_ViewMatrix;
+glm::mat4 m_ViewMatrixNoTranslation;
 glm::mat4 m_ProjectionMatrix;
 glm::mat4 m_ViewProjectionMatrix;
 glm::mat4 m_ViewMatrixInverse;
@@ -88,7 +91,7 @@ float m_OrthoBorders = 0.f;
 float m_ViewSize = 0.f;
 float m_MovementSpeed = 0.f;
 public:
-static const int g_PropertyCount = 18;
+static const int g_PropertyCount = 19;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -100,6 +103,7 @@ PIDX_FrontVector,
 PIDX_RightVector,
 PIDX_UpVector,
 PIDX_ViewMatrix,
+PIDX_ViewMatrixNoTranslation,
 PIDX_ProjectionMatrix,
 PIDX_ViewProjectionMatrix,
 PIDX_ViewMatrixInverse,

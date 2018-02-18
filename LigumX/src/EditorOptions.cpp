@@ -24,6 +24,7 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "DisplayPickingTool", PIDX_DisplayPickingTool, offsetof(EditorOptions, m_DisplayPickingTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DisplayOSMTool", PIDX_DisplayOSMTool, offsetof(EditorOptions, m_DisplayOSMTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DisplaySectorTool", PIDX_DisplaySectorTool, offsetof(EditorOptions, m_DisplaySectorTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DisplayAxisGizmo", PIDX_DisplayAxisGizmo, offsetof(EditorOptions, m_DisplayAxisGizmo), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "MouseScrollCameraSpeed", PIDX_MouseScrollCameraSpeed, offsetof(EditorOptions, m_MouseScrollCameraSpeed), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "MouseScrollEntityCloseupPercent", PIDX_MouseScrollEntityCloseupPercent, offsetof(EditorOptions, m_MouseScrollEntityCloseupPercent), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };

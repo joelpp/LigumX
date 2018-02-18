@@ -56,7 +56,7 @@ void DefaultObjects::InitializeDefaultQuad()
 
 	DefaultQuadMesh->createBuffers();
 	DefaultQuadMesh->SetUsesIndexBuffer(true);
-	DefaultQuadMesh->m_renderingMode = GL_TRIANGLES;
+	DefaultQuadMesh->m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 
 	DefaultQuadMesh->SetName("Default Quad Mesh");
 	DefaultQuadMesh->SetObjectID(g_ObjectManager->DefaultQuadMeshID);
@@ -111,7 +111,7 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 
 	DefaultTerrainMesh->createBuffers();
 	DefaultTerrainMesh->SetUsesIndexBuffer(true);
-	DefaultTerrainMesh->m_renderingMode = GL_TRIANGLES;
+	DefaultTerrainMesh->m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 
 	DefaultTerrainMesh->SetName("Default Terrain Mesh");
 	DefaultTerrainMesh->SetObjectID(g_ObjectManager->DefaultTerrainMeshID);
@@ -190,7 +190,7 @@ void DefaultObjects::InitializeDefaultLine()
 
 	DefaultLineMesh->createBuffers();
 	DefaultLineMesh->SetUsesIndexBuffer(true);
-	DefaultLineMesh->m_renderingMode = GL_LINES;
+	DefaultLineMesh->m_PrimitiveMode = GL::PrimitiveMode::Lines;
 
 	DefaultLineMesh->SetName("Default Line Mesh");
 	DefaultLineMesh->SetObjectID(g_ObjectManager->DefaultLineMeshID);

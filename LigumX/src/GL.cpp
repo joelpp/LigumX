@@ -220,10 +220,10 @@ void GL::ClearDepthBuffer()
 	glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-void GL::DrawElements(GLuint primitiveType, int numIndices, GLuint indicesType, int firstIndex)
+void GL::DrawElements(PrimitiveMode mode, int numIndices, GLuint indicesType, int firstIndex)
 {
 #pragma warning(disable:4312) // TODO : figure out how to handle this properly
-	glDrawElements(primitiveType, numIndices, indicesType, (const GLvoid *) firstIndex);
+	glDrawElements(mode, numIndices, indicesType, (const GLvoid *) firstIndex);
 #pragma warning(default:4312) 
 
 	if (g_CheckGLErrors)
@@ -231,6 +231,20 @@ void GL::DrawElements(GLuint primitiveType, int numIndices, GLuint indicesType, 
 		OutputErrors();
 	}
 }
+
+
+void GL::DrawArrays(PrimitiveMode mode, int startingIndex, int count)
+{
+#pragma warning(disable:4312) // TODO : figure out how to handle this properly
+	glDrawArrays(mode, startingIndex, count);
+#pragma warning(default:4312) 
+
+	if (g_CheckGLErrors)
+	{
+		OutputErrors();
+	}
+}
+
 
 void GL::OutputErrors()
 {
@@ -258,3 +272,4 @@ void GL::DepthWriteEnabled(bool enabled)
 {
 	glDepthMask(enabled);
 }
+

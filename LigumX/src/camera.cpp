@@ -23,6 +23,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "RightVector", PIDX_RightVector, offsetof(Camera, m_RightVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "UpVector", PIDX_UpVector, offsetof(Camera, m_UpVector), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "ViewMatrix", PIDX_ViewMatrix, offsetof(Camera, m_ViewMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
+{ "ViewMatrixNoTranslation", PIDX_ViewMatrixNoTranslation, offsetof(Camera, m_ViewMatrixNoTranslation), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "ProjectionMatrix", PIDX_ProjectionMatrix, offsetof(Camera, m_ProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "ViewProjectionMatrix", PIDX_ViewProjectionMatrix, offsetof(Camera, m_ViewProjectionMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
 { "ViewMatrixInverse", PIDX_ViewMatrixInverse, offsetof(Camera, m_ViewMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
@@ -167,6 +168,9 @@ void Camera::UpdateVPMatrix()
 	m_ViewMatrixInverse = glm::inverse(m_ViewMatrix);
 	m_ProjectionMatrixInverse = glm::inverse(m_ProjectionMatrix);
 	m_ViewProjectionMatrixInverse = glm::inverse(m_ViewProjectionMatrix);
+
+	m_ViewMatrixNoTranslation = m_ViewMatrix;
+	m_ViewMatrixNoTranslation[3] = glm::vec4(0, 0, 0, 1);
 
 	lxAssert(! (glm::isnan(m_ViewProjectionMatrix[0][0])));
 }

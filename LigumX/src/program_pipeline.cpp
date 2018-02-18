@@ -68,6 +68,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 		else 
 		{
             cout << "Error loading shader : " << srcFilenames << endl;
+			lxAssert0();
 			return;
         }
         sourceCodes[count] = sourceCodeStrings[count].c_str();

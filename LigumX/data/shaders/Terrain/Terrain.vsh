@@ -99,10 +99,11 @@ void main()
 	// todo : find a better way to generate terrain normals...
 
 	vec2 heightTexCoords = texCoord;
+	heightTexCoords.y = 1.f - heightTexCoords.y;
 	
 
 
-	float heightMid = textureLod(g_HeightfieldTexture, texCoord, 0.f).r;
+	float heightMid = textureLod(g_HeightfieldTexture, heightTexCoords, 0.f).r;
 
 	vec3 normal = ComputeNormal(heightMid, texCoord, resolution);
 
@@ -111,7 +112,7 @@ void main()
 	worldPosition.z += heightMid;
 
 	v_Height = heightMid;
-	v_TexCoord = texCoord;
+	v_TexCoord = heightTexCoords;
 	v_maxHeight = g_MaxHeight;
 	v_Normal = normal;
 

@@ -213,7 +213,7 @@ bool Building::GenerateModel()
 	m_Model = new Model();
 	m_Model->SetName("Building");
 
-	Mesh* mesh = new Mesh(buildingTrianglePositions, GL_TRIANGLES);
+	Mesh* mesh = new Mesh(buildingTrianglePositions, GL::PrimitiveMode::Triangles);
 
 	glm::vec3 color = renderer.typeColorMap[m_Way->eType];
 

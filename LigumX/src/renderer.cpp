@@ -502,6 +502,7 @@ void Renderer::SetViewUniforms(Camera* cam)
 {
 	SetVertexUniform(cam->GetViewProjectionMatrix(), "vpMat");
 	SetVertexUniform(cam->GetViewMatrix(),			"g_WorldToViewMatrix");
+	SetVertexUniform(cam->GetViewMatrixNoTranslation(), "g_WorldToViewMatrixNoTranslation");
 	SetVertexUniform(glm::mat4(glm::mat3(cam->GetViewMatrix())), "g_WorldToViewMatrixRotationOnly");
 	SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
 
@@ -592,11 +593,11 @@ void Renderer::DrawMesh(Mesh* mesh)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetGPUBuffers().glidIndexBuffer);
 
-		GL::DrawElements(mesh->m_renderingMode, (int) mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+		GL::DrawElements(mesh->m_PrimitiveMode, (int) mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
-		glDrawArrays(mesh->m_renderingMode, 0, (int) mesh->m_buffers.vertexPositions.size());
+		glDrawArrays(mesh->m_PrimitiveMode, 0, (int) mesh->m_buffers.vertexPositions.size());
 		FLUSH_ERRORS();
 	}
 
@@ -976,6 +977,16 @@ void Renderer::RenderGrid()
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
 }
+
+void Renderer::RenderAxisGizmo()
+{
+	SetPipeline(pPipelineAxisGizmo);
+
+	SetViewUniforms(m_DebugCamera);
+
+	GL::DrawArrays(GL::PrimitiveMode::Lines, 0, 6);
+}
+
 
 void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline)
 {

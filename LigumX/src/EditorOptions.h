@@ -48,6 +48,8 @@ const bool& GetDisplayOSMTool() { return m_DisplayOSMTool; };
 void SetDisplayOSMTool(bool value) { m_DisplayOSMTool = value; }; 
 const bool& GetDisplaySectorTool() { return m_DisplaySectorTool; }; 
 void SetDisplaySectorTool(bool value) { m_DisplaySectorTool = value; }; 
+const bool& GetDisplayAxisGizmo() { return m_DisplayAxisGizmo; }; 
+void SetDisplayAxisGizmo(bool value) { m_DisplayAxisGizmo = value; }; 
 const float& GetMouseScrollCameraSpeed() { return m_MouseScrollCameraSpeed; }; 
 void SetMouseScrollCameraSpeed(float value) { m_MouseScrollCameraSpeed = value; }; 
 const float& GetMouseScrollEntityCloseupPercent() { return m_MouseScrollEntityCloseupPercent; }; 
@@ -69,10 +71,11 @@ bool m_SaveDisabled = false;
 bool m_DisplayPickingTool = false;
 bool m_DisplayOSMTool = false;
 bool m_DisplaySectorTool = true;
+bool m_DisplayAxisGizmo = true;
 float m_MouseScrollCameraSpeed = 10.0f;
 float m_MouseScrollEntityCloseupPercent = 15.0f;
 public:
-static const int g_PropertyCount = 18;
+static const int g_PropertyCount = 19;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -93,6 +96,7 @@ PIDX_SaveDisabled,
 PIDX_DisplayPickingTool,
 PIDX_DisplayOSMTool,
 PIDX_DisplaySectorTool,
+PIDX_DisplayAxisGizmo,
 PIDX_MouseScrollCameraSpeed,
 PIDX_MouseScrollEntityCloseupPercent,
 };

@@ -7,9 +7,9 @@ Enabled
 ShowWorldWindow
 1
 ShowMaterialWindow
-1
+0
 ShowEntityWindow
-1
+0
 ShowObjectCreator
 0
 ShowEngineStats
@@ -17,7 +17,7 @@ ShowEngineStats
 ShowTestGUI
 0
 ShowObjectManager
-1
+0
 BackupDataOnSave
 0
 DebugDisplay

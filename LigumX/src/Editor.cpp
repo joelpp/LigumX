@@ -1366,7 +1366,20 @@ void Editor::ProcessScrolling()
 void Editor::RenderTools()
 {
 	m_SectorTool->Display();
+
+	DisplayAxisGizmo();
 }
+
+void Editor::DisplayAxisGizmo()
+{
+	if (!m_Options->GetDisplayAxisGizmo())
+	{
+		return;
+	}
+
+	Renderer::GetInstance().RenderAxisGizmo();
+}
+
 
 void Editor::Render()
 {

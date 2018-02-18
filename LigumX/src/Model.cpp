@@ -93,7 +93,7 @@ void Model::CreateHWBuffers()
 	{
 		mesh->createBuffers();
 		mesh->SetUsesIndexBuffer(true);
-		mesh->m_renderingMode = GL_TRIANGLES;
+		mesh->m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 	}
 }
 

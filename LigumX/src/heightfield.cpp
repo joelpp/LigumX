@@ -85,7 +85,7 @@ void Heightfield::generateBaseMesh()
     
     hfBaseMesh->createBuffers();
     hfBaseMesh->SetUsesIndexBuffer(true);
-    hfBaseMesh->m_renderingMode = GL_TRIANGLES;
+    hfBaseMesh->m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 }
 
 bool Heightfield::generate(){

@@ -167,7 +167,10 @@ public:
 	void RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline);
 	void RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay);
 	void RenderSectorDebug(SectorGraphicalData* gfxData);
+	
 	void RenderGrid();
+	void RenderAxisGizmo();
+
 
 	void BeforeWorldRender();
 	void AfterWorldRender();
@@ -272,6 +275,7 @@ public:
 	ProgramPipeline* pPipelineUVEdges;
 	ProgramPipeline* pPipelineSolidColor;
 	ProgramPipeline* pPipelineGrid;
+	ProgramPipeline* pPipelineAxisGizmo;
 	ProgramPipeline* activePipeline;
     std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 

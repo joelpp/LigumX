@@ -42,7 +42,7 @@ struct WayData
 class FlatWaysMesh : public Mesh
 {
 public:
-	FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<WayData>& typeBuffer, GLenum renderingMode, bool usePointRendering);
+	FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<WayData>& typeBuffer, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 
 	std::vector<int> m_WayTypeBuffer;
 	std::vector<WayData> m_DataBuffer;
