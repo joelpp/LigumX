@@ -216,3 +216,9 @@ void Sector::InitializeFromRequest(CurlRequest* request)
 
 	//request->SetSector(this);
 }
+
+float Sector::SampleHeight(glm::vec2 normalizedPos)
+{
+	int iWidth = 64;
+	return 0.f;
+}

@@ -117,4 +117,6 @@ public:
 	Entity* m_TerrainPatchEntity;
 
 	static PerlinNoise* pNoise;
+
+	float SampleHeight(glm::vec2 normalizedPos);
 };

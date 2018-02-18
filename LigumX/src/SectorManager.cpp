@@ -262,6 +262,14 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				sector = CreateSector(sectorIndex);
 			}
 
+			float worldScale = g_EngineSettings->GetWorldScale();
+
+			glm::vec2 posInSector = worldPos / worldScale;
+
+			glm::vec2 normalizedPosInSector = glm::fract(posInSector);
+
+			//float height = sector->SampleHeight(normalizedPosInSector);
+
 			if (sector && sectorIndex == request->GetSectorIndex() && !sector->GetDataLoaded())
 			{
 				//sector->InitializeFromRequest(request);
