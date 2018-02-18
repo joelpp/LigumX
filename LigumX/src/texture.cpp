@@ -35,11 +35,21 @@ bool Texture::Serialize(bool writing)
 using namespace std;
 
 Texture::Texture()
+	: m_MagFilterMode(GL::TextureMagFilterMode_Linear)
+	, m_MinFilterMode(GL::TextureMinFilterMode_LinearMipMapLinear)
+	, m_WrapR(GL::Repeat)
+	, m_WrapS(GL::Repeat)
+	, m_WrapT(GL::Repeat)
 {
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
 Texture::Texture(int objectID)
+	: m_MagFilterMode(GL::TextureMagFilterMode_Linear)
+	, m_MinFilterMode(GL::TextureMinFilterMode_LinearMipMapLinear)
+	, m_WrapR(GL::Repeat)
+	, m_WrapS(GL::Repeat)
+	, m_WrapT(GL::Repeat)
 {
 	SetObjectID(objectID);
 	Serialize(false);
@@ -49,8 +59,13 @@ Texture::Texture(int objectID)
 
 // create texture from file.
 Texture::Texture(string filename, bool isCubeMap)
-	: m_Filename(filename),
-	  m_IsCubeMap(isCubeMap)
+	: m_Filename(filename)
+	, m_IsCubeMap(isCubeMap)
+	, m_MagFilterMode(GL::TextureMagFilterMode_Linear)
+	, m_MinFilterMode(GL::TextureMinFilterMode_LinearMipMapLinear)
+	, m_WrapR(GL::Repeat)
+	, m_WrapS(GL::Repeat)
+	, m_WrapT(GL::Repeat)
 {
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
@@ -98,10 +113,11 @@ void Texture::Initialize()
 	glGenTextures(1, &m_HWObject);
 	glBindTexture(bindingTarget, m_HWObject);
 
-	glTexParameteri(bindingTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(bindingTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	GL::SetTextureParameter(m_MinFilterMode);
+	GL::SetTextureParameter(m_MagFilterMode);
+	GL::SetTextureParameter(GL::WrapR, m_WrapR);
+	GL::SetTextureParameter(GL::WrapS, m_WrapS);
+	GL::SetTextureParameter(GL::WrapT, m_WrapT);
 
 	int i = 0;
 	for (std::string& file : filenames)
@@ -281,10 +297,11 @@ void Texture::GenerateFromData(std::vector<float>& data)
 	glGenTextures(1, &m_HWObject);
 	glBindTexture(bindingTarget, m_HWObject);
 
-	glTexParameteri(bindingTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(bindingTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(bindingTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	GL::SetTextureParameter(m_MinFilterMode);
+	GL::SetTextureParameter(m_MagFilterMode);
+	GL::SetTextureParameter(GL::WrapR,	m_WrapR);
+	GL::SetTextureParameter(GL::WrapS,	m_WrapS);
+	GL::SetTextureParameter(GL::WrapT,	m_WrapT);
 
 	int i = 0;
 

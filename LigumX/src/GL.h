@@ -168,7 +168,52 @@ public:
 		OneMinusSrc1Alpha		= GL_ONE_MINUS_SRC1_ALPHA
 	};
 
+	enum TextureParameter
+	{
+		DepthStencilMode	= GL_DEPTH_STENCIL_TEXTURE_MODE,
+		BaseLevel			= GL_TEXTURE_BASE_LEVEL,
+		CompareFunc			= GL_TEXTURE_COMPARE_FUNC,
+		CompareMode			= GL_TEXTURE_COMPARE_MODE,
+		LodBias				= GL_TEXTURE_LOD_BIAS,
+		MinFilter			= GL_TEXTURE_MIN_FILTER,
+		MagFilter			= GL_TEXTURE_MAG_FILTER,
+		MinLod				= GL_TEXTURE_MIN_LOD,
+		MaxLod				= GL_TEXTURE_MAX_LOD,
+		MaxLevel			= GL_TEXTURE_MAX_LEVEL,
+		SwizzleR			= GL_TEXTURE_SWIZZLE_R,
+		SwizzleG			= GL_TEXTURE_SWIZZLE_G,
+		SwizzleB			= GL_TEXTURE_SWIZZLE_B,
+		SwizzleA			= GL_TEXTURE_SWIZZLE_A,
+		WrapS				= GL_TEXTURE_WRAP_S,
+		WrapT				= GL_TEXTURE_WRAP_T,
+		WrapR				= GL_TEXTURE_WRAP_R
+	};
 
+	enum TextureWrapMode
+	{
+		ClampToEdge			= GL_CLAMP_TO_EDGE,
+		ClampToBorder		= GL_CLAMP_TO_BORDER,
+		MirroredRepeat		= GL_MIRRORED_REPEAT,
+		Repeat				= GL_REPEAT,
+		MirrorClamptoEdge	= GL_MIRROR_CLAMP_TO_EDGE
+	};
+
+	enum TextureMinFilterMode
+	{
+		TextureMinFilterMode_Nearest				= GL_NEAREST,
+		TextureMinFilterMode_Linear					= GL_LINEAR,
+		TextureMinFilterMode_NearestMipMapNearest	= GL_NEAREST_MIPMAP_NEAREST,
+		TextureMinFilterMode_LinearMipMapNearest	= GL_LINEAR_MIPMAP_NEAREST,
+		TextureMinFilterMode_NearestMipMapLinear	= GL_NEAREST_MIPMAP_LINEAR,
+		TextureMinFilterMode_LinearMipMapLinear		= GL_LINEAR_MIPMAP_LINEAR
+	};
+
+
+	enum TextureMagFilterMode
+	{
+		TextureMagFilterMode_Nearest	= GL_NEAREST,
+		TextureMagFilterMode_Linear		= GL_LINEAR
+	};
 
 	static void SetDepthFunction(DepthFunction func);
 
@@ -191,6 +236,10 @@ public:
 	static void ClearTexture(int width, int height, GLPixelFormat internalPixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType);
 
 	static void SetTextureParameter(GLuint param, GLuint value);
+
+	static void SetTextureParameter(TextureMagFilterMode mode);
+	static void SetTextureParameter(TextureMinFilterMode mode);
+	static void SetTextureParameter(TextureParameter param, TextureWrapMode value);
 
 	static void AttachTextureToFramebuffer(GLuint texture, GLuint slot);
 

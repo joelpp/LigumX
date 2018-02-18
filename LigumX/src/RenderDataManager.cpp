@@ -202,7 +202,7 @@ void RenderDataManager::AddDebugModel(const std::vector<glm::vec3>& line, glm::v
 	linesModel->addMesh(linesMesh, new Material(renderer.pPipelineLines, color));
 	linesModel->SetName("Sector_lines_");
 
-	renderer.m_DebugModels.push_back(linesModel);
+	renderer.AddToDebugModels(linesModel);
 }
 
 void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
@@ -284,10 +284,12 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		if ((way->eType & fillFlags) != 0)
 		{
 			Building building(way);
-			building.GenerateModel();
+			bool success = building.GenerateModel();
 
-			renderer.m_DebugModels.push_back(building.m_Model);
-
+			if (success)
+			{
+				renderer.AddToDebugModels(building.m_Model);
+			}
 		}
 	}
 
@@ -443,7 +445,7 @@ void RenderDataManager::fillBuffers(Sector* sector)
     }
 
     waysModel->SetName("Ways");
-    renderer.m_DebugModels.push_back(waysModel);
+    renderer.AddToDebugModels(waysModel);
     
     // Model* nodesModel = new Model();
 

@@ -130,17 +130,18 @@ void Sector::CreateTerrainPatchEntity()
 		for (int j = 0; j < iWidth; j++)
 		{
 			float last = iWidth - 1.f;
-			float x = (float)i / (float)last;
-			float y = (float)j / (float)last;
+			float x = 1.f - (float)i / last;
+			float y = (float)j / last;
 
-			glm::vec2 wsPos = glm::vec2(g_EngineSettings->GetWorldScale()) * (glm::vec2(m_OffsetIndex) + glm::vec2(x, y));
+			glm::vec2 wsPos = (glm::vec2(m_OffsetIndex) + glm::vec2(x, y));
 
 			if (!pNoise)
 			{
-				pNoise = new PerlinNoise(1, 0.01, 1.0, 2, 5847);
+				pNoise = new PerlinNoise(1, 10, 1, 1, 5847);
 			}
 			float z = pNoise->GetHeight(wsPos.x, wsPos.y);
-			heights[i * iWidth + j] = z;
+
+			heights[j * iWidth + i] = z;
 		}
 	}
 
@@ -151,6 +152,10 @@ void Sector::CreateTerrainPatchEntity()
 	customTexture->SetFormat(GLPixelFormat_RED);
 	customTexture->SetInternalFormat(GLPixelFormat_R32F);
 	customTexture->SetPixelType(GLPixelType_Float);
+
+	customTexture->SetWrapS(GL::TextureWrapMode::ClampToEdge);
+	customTexture->SetWrapR(GL::TextureWrapMode::ClampToEdge);
+	customTexture->SetWrapT(GL::TextureWrapMode::ClampToEdge);
 
 	customTexture->GenerateFromData(heights);
 

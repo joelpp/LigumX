@@ -287,6 +287,7 @@ public:
     ProgramPipeline::ShaderProgram* pFragmentShader2;
     ProgramPipeline::ShaderProgram* pFragmentShader3;
 
+	void AddToDebugModels(Model* model);
     std::vector<Model*> m_DebugModels;
 
     // VBOs

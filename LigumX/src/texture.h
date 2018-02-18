@@ -84,6 +84,7 @@ void PostSerialization(bool writing);
 public:
 	Texture::Texture();
 	Texture::Texture(int objectID);
+	Texture(std::string filename, bool isCubeMap = false);
 
 
 	void LoadFromFile(GLuint target, std::string filename);
@@ -93,10 +94,23 @@ public:
 	BYTE* GetTextureData() { return m_TextureData; };
 
 	void GenerateFromData(std::vector<float>& data);
-public:
-    Texture(std::string filename, bool isCubeMap = false);
+
 
 	BYTE* m_TextureData;
+
+	void SetMagFilterMode(GL::TextureMagFilterMode value) { m_MagFilterMode = value; }
+	void SetMinFilterMode(GL::TextureMinFilterMode value) { m_MinFilterMode = value; }
+	void SetWrapR(GL::TextureWrapMode value) { m_WrapR = value; }
+	void SetWrapS(GL::TextureWrapMode value) { m_WrapS = value; }
+	void SetWrapT(GL::TextureWrapMode value) { m_WrapT = value; }
+
+
+private:
+	GL::TextureMagFilterMode m_MagFilterMode;
+	GL::TextureMinFilterMode m_MinFilterMode;
+	GL::TextureWrapMode m_WrapR;
+	GL::TextureWrapMode m_WrapS;
+	GL::TextureWrapMode m_WrapT;
 };
 
 #endif // TEXTURE_H

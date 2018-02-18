@@ -1,29 +1,37 @@
 #include "stdafx.h"
-
 #include "renderer.h"
+
 #include "program_pipeline.h"
+#include "RenderDataManager.h"
+#include "GL.h"
+#include "MainWindow.h"
+
+#include "SectorGraphicalData.h"
+#include "DefaultObjects.h"
+#include "Framebuffer.h"
+
+#include "SectorTool.h"
+#include "Editor.h"
+#include "EditorOptions.h"
+
+#include "Settings.h"
+#include "LXError.h"
+#include "EngineStats.h"
+#include "EngineSettings.h"
+#include "DisplayOptions.h"
+
+#include "PostEffects.h"
+
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
 #include "World.h"
 #include "Entity.h"
-#include "RenderDataManager.h"
-#include "DisplayOptions.h"
-#include "Editor.h"
-#include "EditorOptions.h"
-#include "Settings.h"
-#include "PostEffects.h"
-#include "Sunlight.h"
-#include "DefaultObjects.h"
-#include "GL.h"
-#include "Framebuffer.h"
 #include "Sector.h"
+#include "Sunlight.h"
 #include "BoundingBoxComponent.h"
-#include "EngineStats.h"
-#include "MainWindow.h"
-#include "EngineSettings.h"
-#include "SectorTool.h"
-#include "SectorGraphicalData.h"
+
+
 
 #pragma region  CLASS_SOURCE Renderer
 
@@ -1460,4 +1468,10 @@ void Renderer::outputGLError(std::string func, int line)
     PRINTSTRING(error.c_str());
     err=glGetError();    
   }
+}
+
+void Renderer::AddToDebugModels(Model* model)
+{
+	lxAssert(model != nullptr);
+	m_DebugModels.push_back(model);
 }

@@ -99,9 +99,7 @@ void main()
 	// todo : find a better way to generate terrain normals...
 
 	vec2 heightTexCoords = texCoord;
-	heightTexCoords.y = 1.f - heightTexCoords.y;
-	
-
+	heightTexCoords.x = 1.f - heightTexCoords.x;
 
 	float heightMid = textureLod(g_HeightfieldTexture, heightTexCoords, 0.f).r;
 

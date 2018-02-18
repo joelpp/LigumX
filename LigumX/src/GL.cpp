@@ -1,5 +1,6 @@
 #include "GL.h"
 #include "Logging.h"
+#include "LXError.h"
 #include <string>
 #include <sstream>
 
@@ -175,6 +176,22 @@ void GL::BindTexture(GLuint& hwTexture)
 
 void GL::SetTextureParameter(GLuint param, GLuint value)
 {
+	glTexParameteri(GL_TEXTURE_2D, param, value);
+}
+
+void GL::SetTextureParameter(TextureMagFilterMode mode)
+{
+	glTexParameteri(GL_TEXTURE_2D, TextureParameter::MagFilter, mode);
+}
+
+void GL::SetTextureParameter(TextureMinFilterMode mode)
+{
+	glTexParameteri(GL_TEXTURE_2D, TextureParameter::MinFilter, mode);
+}
+
+void GL::SetTextureParameter(TextureParameter param, TextureWrapMode value)
+{
+	lxAssert(param == TextureParameter::WrapR || param == TextureParameter::WrapS || param == TextureParameter::WrapT);
 	glTexParameteri(GL_TEXTURE_2D, param, value);
 }
 

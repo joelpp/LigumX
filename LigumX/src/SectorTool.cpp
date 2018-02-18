@@ -194,6 +194,11 @@ glm::vec3 SectorTool::GetAimingWorldSpacePosition(const glm::vec2& mousePosition
 
 bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
+	if (!m_Enabled)
+	{
+		return false;
+	}
+
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 
 	glm::vec3 worldPosition = GetAimingWorldSpacePosition(mousePosition);
