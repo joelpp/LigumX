@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "Logging.h"
+#include "EngineSettings.h"
 
 #pragma region  CLASS_SOURCE MainWindow
 
@@ -19,26 +20,36 @@ const ClassPropertyData MainWindow::g_Properties[] =
 bool MainWindow::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
+	PostSerialization(writing);
 	return success;
 }
 
 #pragma endregion  CLASS_SOURCE MainWindow
 
-
 MainWindow::MainWindow()
 {
-	m_Size = glm::vec2(1100, 800);
-	m_Title = "LX Editor - Main Window";
-	// Create GLFW window
-	pWindow = GL::CreateGLWindow(m_Size.x, m_Size.y, m_Title.c_str());
 
-	glfwSetWindowPos(pWindow, -1180, 50);
-	glfwMakeContextCurrent(pWindow);
-	if (pWindow == NULL)
+}
+
+MainWindow::MainWindow(int objectID)
+{
+	SetObjectID(objectID);
+	Serialize(false);
+}
+
+void MainWindow::PostSerialization(bool writing)
+{
+	if (!writing)
 	{
-		PRINTSTRING("Failed to open GLFW window.");
-		glfwTerminate();
-		return;
-	}
+		pWindow = GL::CreateGLWindow(m_Size.x, m_Size.y, m_Title.c_str());
 
+		glfwSetWindowPos(pWindow, m_Position.x, m_Position.y);
+		glfwMakeContextCurrent(pWindow);
+		if (pWindow == NULL)
+		{
+			PRINTSTRING("Failed to open GLFW window.");
+			glfwTerminate();
+			return;
+		}
+	}
 }

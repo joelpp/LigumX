@@ -116,7 +116,7 @@ void Renderer::InitGL()
 		PRINT("Initialized GLFW.");
 	}
 
-	m_Window = new MainWindow();
+	m_Window = new MainWindow(75638);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{

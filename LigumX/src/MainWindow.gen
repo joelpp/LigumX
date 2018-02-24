@@ -1,3 +1,4 @@
+[postserialization]
 class MainWindow
 {
 	bool InFocus;

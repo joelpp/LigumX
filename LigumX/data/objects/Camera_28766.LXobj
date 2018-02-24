@@ -21,7 +21,7 @@ UpVector
 NearPlane
 0.1
 FarPlane
-10000
+100000
 ProjectionType
 0
 OrthoBorders

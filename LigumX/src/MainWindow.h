@@ -51,10 +51,13 @@ PIDX_Size,
 PIDX_Title,
 };
 bool Serialize(bool writing);
+void PostSerialization(bool writing);
 
 #pragma endregion  HEADER MainWindow
 
 MainWindow();
+MainWindow(int objectID);
+
 
 GLFWwindow* GetHWObject() { return pWindow; }
 
