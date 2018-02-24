@@ -243,8 +243,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			Node* node = new Node(id, longitude, latitude);
 
 			glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
-			float height = 0;
-			node->SetWorldPosition(glm::vec3(worldPos, height));
 
 			for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
 			{
@@ -268,7 +266,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			glm::vec2 normalizedPosInSector = glm::fract(posInSector);
 
-			//float height = sector->SampleHeight(normalizedPosInSector);
+			float sampledHeight = sector->SampleHeight(normalizedPosInSector);
+			sampledHeight += 1.f;
+
+			node->elevation = sampledHeight;
+			node->SetWorldPosition(glm::vec3(worldPos, sampledHeight));
+
 
 			if (sector && sectorIndex == request->GetSectorIndex() && !sector->GetDataLoaded())
 			{

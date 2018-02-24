@@ -123,7 +123,7 @@ void Sector::CreateTerrainPatchEntity()
 	Texture* tex = (Texture*)(*g_ObjectManager->GetObjects(LXType_Texture))[23389];
 
 	int iWidth = 64;
-	std::vector<float> heights(iWidth * iWidth);
+	m_HeightData.resize(iWidth * iWidth);
 
 	for (int i = 0; i < iWidth; i++)
 	{
@@ -140,8 +140,9 @@ void Sector::CreateTerrainPatchEntity()
 				pNoise = new PerlinNoise(1, 10, 1, 1, 5847);
 			}
 			float z = pNoise->GetHeight(wsPos.x, wsPos.y);
+			z *= 20.f;
 
-			heights[j * iWidth + i] = z;
+			m_HeightData[j * iWidth + i] = z;
 		}
 	}
 
@@ -157,7 +158,7 @@ void Sector::CreateTerrainPatchEntity()
 	customTexture->SetWrapR(GL::TextureWrapMode::ClampToEdge);
 	customTexture->SetWrapT(GL::TextureWrapMode::ClampToEdge);
 
-	customTexture->GenerateFromData(heights);
+	customTexture->GenerateFromData(m_HeightData);
 
 	terrainMaterial->SetHeightfieldTexture(customTexture);
 	Model* terrainPatchModel = new Model(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
@@ -191,12 +192,14 @@ glm::vec2 Sector::GetStartPosition(glm::vec2 position)
 
 bool Sector::createHeightfield()
 {
-    if (!m_heightfield)
-    {
-        m_heightfield = new Heightfield(m_EarthPosition, m_EarthPosition.x);
-    }
+    //if (!m_heightfield)
+    //{
+    //    m_heightfield = new Heightfield(m_EarthPosition, m_EarthPosition.x);
+    //}
 
-    return m_heightfield->generate();
+    //return m_heightfield->generate();
+	lxAssert0(); // pretty sure this is dead code
+	return false;
 }
 
 
@@ -217,8 +220,15 @@ void Sector::InitializeFromRequest(CurlRequest* request)
 	//request->SetSector(this);
 }
 
-float Sector::SampleHeight(glm::vec2 normalizedPos)
+float Sector::SampleHeight(const glm::vec2& normalizedPos)
 {
-	int iWidth = 64;
-	return 0.f;
+	float iWidth = 64.f;
+
+	glm::vec2 correctedPos = glm::vec2(1.f - normalizedPos.x, normalizedPos.y);
+
+	glm::ivec2 samplingIndices = (glm::ivec2) (correctedPos * iWidth);
+
+	int index = samplingIndices.y * iWidth + samplingIndices.x;
+
+	return m_HeightData[index];
 }

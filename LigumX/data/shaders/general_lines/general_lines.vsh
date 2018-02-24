@@ -17,7 +17,6 @@ uniform mat4 g_ModelToWorldMatrix;
 
 out VertexData
 {
-	vec3 m_WorldPosition;
 	flat int m_WayType;
 	flat int m_Index;
 } outData;
@@ -29,11 +28,9 @@ out gl_PerVertex
 
 void main() 
 {
-	vec4 vWorldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
+	vec3 worldPos = pos;
 
-	outData.m_WorldPosition = vWorldPosition.xyz;
-
-	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * vec4(pos, 1);
+	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * vec4(worldPos, 1);
 
 	outData.m_WayType = g_WayData.x;
 	outData.m_Index = g_WayData.y;

@@ -36,7 +36,6 @@ out vec4 OutputColor;
 
 in VertexData
 {
-	vec3 m_WorldPosition;
 	flat int m_WayType;
 	flat int m_Index;
 } inData;

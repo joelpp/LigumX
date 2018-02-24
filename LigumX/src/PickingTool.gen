@@ -18,4 +18,10 @@ class PickingTool
 
 	[transient]
 	bool PickDebugModels = false;
+
+	[transient]
+	float PickedHeight;
+
+	[transient]
+	Sector* PickedSector;
 }

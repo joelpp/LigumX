@@ -6,6 +6,7 @@
 
 class PickingTool;
 class Entity;
+class Sector;
 
 
 #pragma endregion  FORWARD_DECLARATIONS PickingTool
@@ -36,6 +37,10 @@ const float& GetPickedID() { return m_PickedID; };
 void SetPickedID(float value) { m_PickedID = value; }; 
 const bool& GetPickDebugModels() { return m_PickDebugModels; }; 
 void SetPickDebugModels(bool value) { m_PickDebugModels = value; }; 
+const float& GetPickedHeight() { return m_PickedHeight; }; 
+void SetPickedHeight(float value) { m_PickedHeight = value; }; 
+Sector*& GetPickedSector() { return m_PickedSector; }; 
+void SetPickedSector(Sector* value) { m_PickedSector = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -46,8 +51,10 @@ glm::vec4 m_PickingData;
 float m_PickedDepth = 0.f;
 float m_PickedID = 0.f;
 bool m_PickDebugModels = false;
+float m_PickedHeight = 0.f;
+Sector* m_PickedSector;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_PickingToolPIDX
@@ -61,6 +68,8 @@ PIDX_PickingData,
 PIDX_PickedDepth,
 PIDX_PickedID,
 PIDX_PickDebugModels,
+PIDX_PickedHeight,
+PIDX_PickedSector,
 };
 bool Serialize(bool writing);
 

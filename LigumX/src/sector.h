@@ -99,7 +99,7 @@ public:
 
 	SectorData *m_Data;
 
-    Heightfield *m_heightfield;
+    Heightfield* m_Heightfield;
 	glm::vec2 m_LifeSize;
 	glm::vec2 m_Size;
 
@@ -118,5 +118,6 @@ public:
 
 	static PerlinNoise* pNoise;
 
-	float SampleHeight(glm::vec2 normalizedPos);
+	float SampleHeight(const glm::vec2& normalizedPos);
+	std::vector<float> m_HeightData;
 };

@@ -126,7 +126,7 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
     Renderer& renderer = Renderer::GetInstance();
     int counter = 0;
 
-    Heightfield* heightField = newSector->m_heightfield;
+    Heightfield* heightField = newSector->m_Heightfield;
 
 //    if (heightField->m_mesh)
 //    {
