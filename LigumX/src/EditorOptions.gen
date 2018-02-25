@@ -15,6 +15,7 @@ class EditorOptions
 	bool DisplayPickingTool = false;
 	bool DisplayOSMTool = false;
 	bool DisplaySectorTool = true;
+	bool DisplayFramebufferTool = true;
 
 	bool DisplayAxisGizmo = true;
 

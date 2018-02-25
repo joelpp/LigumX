@@ -249,6 +249,8 @@ public:
     // window params
 	MainWindow* m_Window;
 
+
+	Framebuffer* GetFramebuffer(FramebufferType type) { return m_Framebuffers[type]; }
 	Framebuffer* m_Framebuffers[NBFramebuffers];
 
 	// textures

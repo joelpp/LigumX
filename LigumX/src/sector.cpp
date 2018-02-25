@@ -125,6 +125,11 @@ void Sector::CreateHeightfield()
 	mat = glm::translate(mat, glm::vec3(m_WorldPosition, 0));
 	mat = glm::scale(mat, scale);
 	m_TerrainPatchEntity->m_ModelToWorldMatrix = mat;
+
+	std::stringstream name;
+	name << "Terrain Patch [";
+	name << m_OffsetIndex.x << ", " << m_OffsetIndex.y << "]";
+	m_TerrainPatchEntity->SetName(name.str());
 	
 	Material* terrainMaterial = new Material();
 	terrainMaterial->SetHeightfieldTexture(m_Heightfield->GetHeightDataTexture());

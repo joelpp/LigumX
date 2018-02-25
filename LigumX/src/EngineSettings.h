@@ -30,6 +30,10 @@ const float& GetExtent() { return m_Extent; };
 void SetExtent(float value) { m_Extent = value; }; 
 const int& GetOSMQuantizationScale() { return m_OSMQuantizationScale; }; 
 void SetOSMQuantizationScale(int value) { m_OSMQuantizationScale = value; }; 
+const bool& GetGenerateFlatTerrain() { return m_GenerateFlatTerrain; }; 
+void SetGenerateFlatTerrain(bool value) { m_GenerateFlatTerrain = value; }; 
+const float& GetWayTessellationFactor() { return m_WayTessellationFactor; }; 
+void SetWayTessellationFactor(float value) { m_WayTessellationFactor = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -37,8 +41,10 @@ float m_WorldScale = 0.f;
 glm::vec2 m_StartLonLat = glm::vec2(0, 0);
 float m_Extent = 0.f;
 int m_OSMQuantizationScale = 1000000;
+bool m_GenerateFlatTerrain = false;
+float m_WayTessellationFactor = 1.0f;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EngineSettingsPIDX
@@ -49,11 +55,14 @@ PIDX_WorldScale,
 PIDX_StartLonLat,
 PIDX_Extent,
 PIDX_OSMQuantizationScale,
+PIDX_GenerateFlatTerrain,
+PIDX_WayTessellationFactor,
 };
 bool Serialize(bool writing);
 
 #pragma endregion  HEADER EngineSettings
 
+EngineSettings();
 EngineSettings(int id);
 
 

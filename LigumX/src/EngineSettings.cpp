@@ -15,6 +15,8 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 { "StartLonLat", PIDX_StartLonLat, offsetof(EngineSettings, m_StartLonLat), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "Extent", PIDX_Extent, offsetof(EngineSettings, m_Extent), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "OSMQuantizationScale", PIDX_OSMQuantizationScale, offsetof(EngineSettings, m_OSMQuantizationScale), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "GenerateFlatTerrain", PIDX_GenerateFlatTerrain, offsetof(EngineSettings, m_GenerateFlatTerrain), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "WayTessellationFactor", PIDX_WayTessellationFactor, offsetof(EngineSettings, m_WayTessellationFactor), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 bool EngineSettings::Serialize(bool writing)
 {
@@ -24,6 +26,9 @@ bool EngineSettings::Serialize(bool writing)
 
 #pragma endregion  CLASS_SOURCE EngineSettings
 
+EngineSettings::EngineSettings()
+{
+}
 
 EngineSettings::EngineSettings(int id)
 {

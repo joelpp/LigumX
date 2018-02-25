@@ -767,14 +767,13 @@ void Renderer::RenderTextureOverlay()
 	}
 
 	GL::SetViewport(300, 300);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	SetPipeline(pPipelineScreenSpaceTexture);
 
-	SetFragmentUniform(0, "g_Texture");
-	//Bind2DTexture(0, m_Framebuffers[FramebufferType_ShadowMap]->GetTexture());
-	//Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetColorTexture());
+	SetPostEffectsUniforms();
+
+	SetFragmentUniform(0, "g_MainTexture");
 	Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
-	//Bind2DTexture(0, m_World->m_Entities[0]->getModel()->m_materialList[3]->GetDiffuseTexture()->GetHWObject());
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
@@ -848,6 +847,24 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	GL::ClearColorAndDepthBuffers();
 	
 	SetViewUniforms(m_DebugCamera);
+
+
+	SetVertexUniform(1, "g_UseHeightfield");
+
+	for (Sector* sector : m_World->GetSectors())
+	{
+		Entity* entity = sector->GetTerrainPatchEntity();
+		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+
+		SetVertexUniform(3, "g_HeightfieldTexture");
+		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
+
+		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
+		{
+			DrawMesh(entity->GetModel()->m_meshes[i]);
+		}
+	}
 	
 	SetVertexUniform(0, "g_UseHeightfield");
 
@@ -876,22 +893,6 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 		}
 	}
 
-	SetVertexUniform(1, "g_UseHeightfield");
-
-	for (Sector* sector : m_World->GetSectors())
-	{
-		Entity* entity = sector->GetTerrainPatchEntity();
-		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
-		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
-
-		SetVertexUniform(3, "g_HeightfieldTexture");
-		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
-
-		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
-		{
-			DrawMesh(entity->GetModel()->m_meshes[i]);
-		}
-	}
 
 	BindFramebuffer(FramebufferType_Default);
 }
@@ -1188,11 +1189,9 @@ void Renderer::RenderEditor()
 
 	g_Editor->Render();
 
-	GL::SetViewport(m_Window->GetSize());
+	RenderTextureOverlay();
 
 	RenderFPS();
-
-	RenderTextureOverlay();
 }
 
 void Renderer::render(World* world)
@@ -1280,6 +1279,8 @@ void Renderer::RenderFPS()
 	{
 		return;
 	}
+
+	GL::SetViewport(m_Window->GetSize());
 
 	std::stringstream fpsString;
 	float smoothing = 0.99f; // larger=more smoothing

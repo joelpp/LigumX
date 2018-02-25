@@ -11,6 +11,7 @@
 #include "LineSegment.h"
 #include "Sector.h"
 #include "PerlinNoise.h"
+#include "EngineSettings.h"
 #include <sstream>
 using namespace std;
 #pragma region  CLASS_SOURCE Heightfield
@@ -76,6 +77,11 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 
 			m_MaxHeight = max(m_MaxHeight, z);
 			m_MinHeight = min(m_MinHeight, z);
+
+			if (g_EngineSettings->GetGenerateFlatTerrain())
+			{
+				z = -0.1f;
+			}
 
 			m_HeightData[j * m_Width + i] = z;
 		}

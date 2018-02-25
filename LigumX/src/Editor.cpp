@@ -11,6 +11,7 @@
 
 #include "GL.h"
 #include "Renderer.h"
+#include "Framebuffer.h"
 #include "RenderDataManager.h"
 #include "MainWindow.h"
 #include "Mesh.h"
@@ -132,7 +133,7 @@ void Editor::UpdateManipulator()
 		for (Entity* entity : world->GetDebugEntities())
 		{
 			// todo : proper int rendertarget; how does depth work then? do we care?
-			if (MathUtils::FuzzyEquals(pickedID, entity->GetPickingID(), 0.005f))
+			if (MathUtils::FuzzyEquals(pickedID, entity->GetPickingID(), 0.05f))
 			{
 				if (entity->GetObjectID() == g_ObjectManager->DefaultManipulatorEntityID)
 				{
@@ -1185,6 +1186,7 @@ void Editor::RenderImgui()
 
 		ShowPropertyGridTemplate<DisplayOptions>(renderer->GetDisplayOptions(), "Display options");
 		ShowPropertyGridTemplate<EditorOptions>(GetOptions(), "Editor options");
+		ShowPropertyGridTemplate<EngineSettings>(g_EngineSettings, "Engine Settings");
 
 
 		ImGui::EndMainMenuBar();
@@ -1349,6 +1351,19 @@ void Editor::RenderImgui()
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Picking Tool");
 
 		ShowPropertyGridObject(m_PickingTool, "Picking Tool");
+
+		g_GUI->EndWindow();
+	}
+
+	if (m_Options->GetDisplayFramebufferTool())
+	{
+		g_GUI->BeginWindow(1000, 700, 0, 0, "Framebuffer Tool");
+
+		ImVec2 size = ImGui::GetWindowSize();
+		size.x -= 25;
+		size.y -= 25;
+
+		ImGui::Image((ImTextureID) renderer->GetFramebuffer(FramebufferType_Picking)->GetColorTexture(0), size);
 
 		g_GUI->EndWindow();
 	}

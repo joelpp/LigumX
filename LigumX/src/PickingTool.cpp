@@ -2,6 +2,7 @@
 
 #include "LigumX.h"
 #include "World.h"
+#include "Sector.h"
 
 #include "InputHandler.h"
 
@@ -38,6 +39,20 @@ bool PickingTool::Serialize(bool writing)
 
 #pragma endregion  CLASS_SOURCE PickingTool
 
+bool PickingTool::CheckEntity(Entity* entity)
+{
+	if (MathUtils::FuzzyEquals(m_PickedID, entity->GetPickingID(), 0.005f))
+	{
+		m_PickedEntity = entity;
+
+		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
+		
+		return true;
+	}
+
+	return false;
+}
+
 
 bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
@@ -46,23 +61,36 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		return false;
 	}
 
+	bool found = false;
+
 	World* world = LigumX::GetInstance().GetWorld();
 
 	for (Entity* entity : world->GetEntities())
 	{
-		// todo : proper int rendertarget; how does depth work then? do we care?
-		if (MathUtils::FuzzyEquals(m_PickedID, entity->GetPickingID(), 0.005f))
+		if (CheckEntity(entity))
 		{
-			m_PickedEntity = entity;
-
-			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
-
-			// todo : ressuscitate this!
-			//Renderer* renderer = LigumX::GetRenderer();
-			//renderer->RenderEntityBB(m_PickedEntity);
-
+			found = true;
 			break;
+		};
+	}
+
+	if (!found)
+	{
+		for (Sector* sector : world->GetSectors())
+		{
+			if (CheckEntity(sector->GetTerrainPatchEntity()))
+			{
+				found = true;
+				break;
+			};
 		}
+	}
+
+	if (!found)
+	{
+		m_PickedEntity = nullptr;
+
+		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(glm::vec3(0,0,0));
 	}
 
 	return true;

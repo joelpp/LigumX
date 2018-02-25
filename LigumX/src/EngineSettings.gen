@@ -9,5 +9,7 @@ class EngineSettings
 
 	int OSMQuantizationScale = 1000000;
 
+	bool GenerateFlatTerrain;
 
+	float WayTessellationFactor = 1.0f;
 }

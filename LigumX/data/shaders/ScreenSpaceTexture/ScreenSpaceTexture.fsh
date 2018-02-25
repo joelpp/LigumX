@@ -33,7 +33,7 @@ void main() {
 		mapped = mapped / (mapped + vec3(1.0));
 	}
 
-    FragColor = vec4(mapped + glow, 1.0);
+    FragColor = vec4(mapped /*+ glow*/, 1.0);
 	
 	FragColor.rgb = pow(FragColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 

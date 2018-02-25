@@ -35,7 +35,7 @@ bool Entity::Serialize(bool writing)
 
 using namespace glm;
 
-static float g_NextEntityPickingID = 0.1f;
+static float g_NextEntityPickingID = 1.f;
 
 #define ENTITY_SIZE 0.0001f
 #define POWER_MAG ENTITY_SIZE * 10.f
@@ -53,7 +53,7 @@ Entity::Entity()
 	desiredSpeed(0.f)
 {
 	m_PickingID = g_NextEntityPickingID;
-	g_NextEntityPickingID += 0.1f;
+	g_NextEntityPickingID += 0.5f;
 
 	m_RotationAxis = glm::vec3(1, 0, 0);
 	m_Scale = glm::vec3(1, 1, 1);

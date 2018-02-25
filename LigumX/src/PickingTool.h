@@ -81,5 +81,6 @@ void UpdatePickingData();
 
 bool IsPickingEntity();
 
+bool CheckEntity(Entity* entity);
 
 };

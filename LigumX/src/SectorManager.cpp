@@ -267,8 +267,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			glm::vec2 normalizedPosInSector = glm::fract(posInSector);
 
-			float sampledHeight = sector->SampleHeight(normalizedPosInSector);
-			sampledHeight += 1.f;
+			float sampledHeight = sector->SampleHeight(normalizedPosInSector) * 25.f;
+
+			if (g_EngineSettings->GetGenerateFlatTerrain())
+			{
+				sampledHeight = 0.f;
+			}
 
 			node->elevation = sampledHeight;
 			node->SetWorldPosition(glm::vec3(worldPos, sampledHeight));
