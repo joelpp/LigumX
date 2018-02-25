@@ -59,8 +59,9 @@ void main()
 	float uvScale = 10.f;
 	vec2 diffuseTexCoords = v_TexCoords * uvScale;
 	diffuse = texture(g_Material.m_DiffuseTexture, diffuseTexCoords).rgb;
+	diffuse = vec3(0.5f * (1.f + v_Height / 300.f), 0, 0);
 
-	vec3 finalColor = diffuse * lightPower;
+	vec3 finalColor = diffuse /** lightPower*/;
 	//finalColor *= vec3(v_TexCoords, 0);
     o_PSOutput = vec4(finalColor, 1.0);
 

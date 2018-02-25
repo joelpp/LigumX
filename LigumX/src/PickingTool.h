@@ -27,6 +27,10 @@ const bool& GetEnabled() { return m_Enabled; };
 void SetEnabled(bool value) { m_Enabled = value; }; 
 Entity*& GetPickedEntity() { return m_PickedEntity; }; 
 void SetPickedEntity(Entity* value) { m_PickedEntity = value; }; 
+const glm::vec3& GetMouseRay() { return m_MouseRay; }; 
+void SetMouseRay(glm::vec3 value) { m_MouseRay = value; }; 
+const glm::vec3& GetHoveredWorldPosition() { return m_HoveredWorldPosition; }; 
+void SetHoveredWorldPosition(glm::vec3 value) { m_HoveredWorldPosition = value; }; 
 const glm::vec3& GetPickedWorldPosition() { return m_PickedWorldPosition; }; 
 void SetPickedWorldPosition(glm::vec3 value) { m_PickedWorldPosition = value; }; 
 const glm::vec4& GetPickingData() { return m_PickingData; }; 
@@ -46,6 +50,8 @@ int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = true;
 Entity* m_PickedEntity;
+glm::vec3 m_MouseRay = glm::vec3(0, 0, 0);
+glm::vec3 m_HoveredWorldPosition = glm::vec3(0, 0, 0);
 glm::vec3 m_PickedWorldPosition = glm::vec3(0, 0, 0);
 glm::vec4 m_PickingData;
 float m_PickedDepth = 0.f;
@@ -54,7 +60,7 @@ bool m_PickDebugModels = false;
 float m_PickedHeight = 0.f;
 Sector* m_PickedSector;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_PickingToolPIDX
@@ -63,6 +69,8 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_Enabled,
 PIDX_PickedEntity,
+PIDX_MouseRay,
+PIDX_HoveredWorldPosition,
 PIDX_PickedWorldPosition,
 PIDX_PickingData,
 PIDX_PickedDepth,

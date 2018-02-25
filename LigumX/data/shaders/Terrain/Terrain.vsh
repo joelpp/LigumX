@@ -60,8 +60,6 @@ void main()
 
 	vec4 worldPosition = g_ModelToWorldMatrix * vec4(tempPos, 1);
 
-
-
 	// todo : find a better way to generate terrain normals...
 
 	vec2 heightTexCoords = texCoord;
@@ -74,7 +72,7 @@ void main()
 
 	heightMid*= g_MaxHeight;
 
-	worldPosition.z += heightMid;
+	//worldPosition.z += heightMid;
 
 	v_Height = heightMid;
 	v_TexCoords = heightTexCoords;

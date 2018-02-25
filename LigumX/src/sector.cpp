@@ -180,3 +180,15 @@ float Sector::SampleHeight(const glm::vec2& normalizedPos)
 
 	return m_Heightfield->SampleHeight(normalizedPos);
 }
+
+float Sector::SampleHeight(const glm::vec3& worldPos)
+{
+	lxAssert(m_Heightfield != nullptr);
+
+	glm::vec2 sectorOffset = glm::vec2(worldPos) - m_WorldPosition;
+
+	glm::vec2 normalizedPos = sectorOffset / g_EngineSettings->GetWorldScale();
+
+	return SampleHeight(normalizedPos);
+}
+

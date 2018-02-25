@@ -209,12 +209,20 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
 	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
 
-	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(worldPosition);
-
 	World* world = LigumX::GetInstance().GetWorld();
 
 	m_HighlightedSector = world->GetSectorByIndex(normalizedSectorIndex);
+
+	if (m_HighlightedSector != nullptr)
+	{
+		float height = m_HighlightedSector->SampleHeight(worldPosition);
+		worldPosition.z = height;
+	}
+
 	m_HighlightedWorldCoordinates = worldPosition;
+
+	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_HighlightedWorldCoordinates);
+
 
 	if (m_HighlightSelectedSector)
 	{
@@ -234,8 +242,8 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 				LigumX::GetInstance().m_RenderDataManager->AddAABBJob(aabb, aabbColor);
 			}
 		}
-
 	}
+
 
 	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready();
 	if (canSendRequest)
