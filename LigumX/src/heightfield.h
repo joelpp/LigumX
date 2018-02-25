@@ -33,12 +33,21 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 Texture*& GetHeightDataTexture() { return m_HeightDataTexture; }; 
 void SetHeightDataTexture(Texture* value) { m_HeightDataTexture = value; }; 
+const float& GetMaxHeight() { return m_MaxHeight; }; 
+void SetMaxHeight(float value) { m_MaxHeight = value; }; 
+const float& GetMinHeight() { return m_MinHeight; }; 
+void SetMinHeight(float value) { m_MinHeight = value; }; 
+const int& GetWidth() { return m_Width; }; 
+void SetWidth(int value) { m_Width = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 Texture* m_HeightDataTexture;
+float m_MaxHeight = 0.f;
+float m_MinHeight = 0.f;
+int m_Width = 64;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_HeightfieldPIDX
@@ -46,13 +55,17 @@ enum g_HeightfieldPIDX
 PIDX_ObjectID,
 PIDX_Name,
 PIDX_HeightDataTexture,
+PIDX_MaxHeight,
+PIDX_MinHeight,
+PIDX_Width,
 };
 bool Serialize(bool writing);
 
 #pragma endregion  HEADER Heightfield
 
 public:
-    Heightfield(glm::vec2 offsetIndex);
+	Heightfield();
+	Heightfield(glm::vec2 offsetIndex);
     Heightfield(glm::vec2 startPoint, float sideLength);
 
     void generateBaseMesh();
@@ -69,7 +82,6 @@ public:
 private:
     Mesh* m_mesh;
     
-    int m_Width;
     float step;
     float sideLength;
     std::vector<Triangle* > triangles;

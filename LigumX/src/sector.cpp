@@ -128,6 +128,9 @@ void Sector::CreateHeightfield()
 	Material* terrainMaterial = new Material();
 	terrainMaterial->SetHeightfieldTexture(m_Heightfield->GetHeightDataTexture());
 
+	Texture* grassTexture = g_ObjectManager->GetLXObject<Texture>(10691);
+	terrainMaterial->SetDiffuseTexture(grassTexture);
+
 	Model* terrainPatchModel = new Model(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 	m_TerrainPatchEntity->SetModel(terrainPatchModel);
 }

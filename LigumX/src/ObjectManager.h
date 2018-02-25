@@ -61,6 +61,13 @@ public:
 		return AddObject(T::Type, ptr);
 	}
 
+	template <typename T>
+	T* GetLXObject(int objectID)
+	{
+		return (T*) (m_ObjectMaps[T::Type][objectID]);
+	}
+
+
 private:
 	int m_NextTransientID = StartTransientIDs;
 	int m_NextHardcodedID;

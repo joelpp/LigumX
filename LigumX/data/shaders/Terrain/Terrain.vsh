@@ -1,4 +1,4 @@
-#version 410 core
+#version 430 core
 layout(location=0) in vec3 pos;
 layout(location=1) in vec2 texCoord;
 
@@ -8,7 +8,7 @@ uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;
 uniform mat4 g_LightProjectionMatrix;
 
-uniform sampler2D g_HeightfieldTexture;
+layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 
 
 
@@ -21,65 +21,32 @@ out gl_PerVertex {
 };
 
 out float v_Height;
-out vec2 v_TexCoord;
+out vec2 v_TexCoords;
 out vec3 v_Normal;
 out float v_maxHeight;
 
 vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 {
-	vec2 offsets = vec2(resolution);
-	if (texCoord.x <= resolution + 0.001f)
-	{
-		offsets.x = 0;
-	}
-	offsets.y = 0;
-	float heightLeft = textureLod(g_HeightfieldTexture, texCoord - offsets, 0.f).r;
-	
-	offsets = vec2(resolution);
-	if (texCoord.x >= (1.f - resolution - 0.001f))
-	{
-		offsets.x = 0;
-	}
-	offsets.y = 0;
-	float heightRight =		textureLod(g_HeightfieldTexture, texCoord + offsets * vec2(1, 0), 0.f).r;
-	
-	offsets = vec2(resolution);
-	if (texCoord.y <= resolution + 0.001f)
-	{
-		offsets.y = 0;
-	}
-	offsets.x = 0;
-	float heightBottom =	textureLod(g_HeightfieldTexture, texCoord - offsets * vec2(0, 1), 0.f).r;
+	vec2 du = vec2(resolution, 0);
+	vec2 dv = vec2(0, resolution);
 
-	offsets = vec2(resolution);
-	if (texCoord.y >= (1.f - resolution - 0.001f))
-	{
-		offsets.y = 0;
-	}
+	float heightLeft = textureLod(g_HeightfieldTexture, texCoord - du, 0.f).r;
 
-	offsets.x = 0;
-	float heightTop =		textureLod(g_HeightfieldTexture, texCoord + offsets * vec2(0, 1), 0.f).r;
+	float heightRight =	textureLod(g_HeightfieldTexture, texCoord + du, 0.f).r;
 
-	vec3 normal = vec3(0, 0, 0);
+	float heightBottom = textureLod(g_HeightfieldTexture, texCoord - dv , 0.f).r;
+	float heightTop = textureLod(g_HeightfieldTexture, texCoord + dv , 0.f).r;
 
-	resolution = 0.1f;
-	float leftSlope		= -(heightMid - heightLeft) / sqrt(pow(resolution, 2) + pow(heightMid - heightLeft, 2)); 
-	float rightSlope	= -(heightRight - heightMid) / sqrt(pow(resolution, 2) + pow(heightRight - heightMid, 2)); 
-	normal.x += (leftSlope + rightSlope);
+	float dhdu = (2 * resolution) * (heightRight - heightLeft); 
+	float dhdv = (2 * resolution) * (heightTop - heightBottom); 
 
-	float upSlope	= -(heightMid - heightBottom) / sqrt(pow(resolution, 2) + pow(heightMid - heightBottom, 2)); 
-	float downSlope = -(heightTop - heightMid) / sqrt(pow(resolution, 2) + pow(heightTop - heightMid, 2)); 
-	normal.y += (upSlope + downSlope);
+	//vec3 normal = normalize(vec3(0,0,1) + vec3(1,0,0) * dhdu + vec3(0,1,0) * dhdv);
 
-	normal.x = clamp(normal.x, -1.f, 1.f);
-	normal.y = clamp(normal.y, -1.f, 1.f);
+	vec3 va = normalize(vec3(2, 0, heightRight - heightLeft));
+    vec3 vb = normalize(vec3(0, 2, heightTop - heightBottom));
+    vec3 normal = cross(va,vb);
 
-	float hypotenuse = 0.5f;
-	normal.z = max(sqrt(pow(hypotenuse, 2) - pow(normal.x, 2) - pow(normal.y, 2)), 1e-6);
-
-	normal = normalize(normal);
-
-	return normal;
+	return normalize(normal);
 }
 
 float srgbToLinear(float S)
@@ -93,7 +60,6 @@ void main()
 
 	vec4 worldPosition = g_ModelToWorldMatrix * vec4(tempPos, 1);
 
-	float resolution = 1.f / 512;
 
 
 	// todo : find a better way to generate terrain normals...
@@ -103,14 +69,15 @@ void main()
 
 	float heightMid = textureLod(g_HeightfieldTexture, heightTexCoords, 0.f).r;
 
-	vec3 normal = ComputeNormal(heightMid, texCoord, resolution);
+	float resolution = 1.f / 64;
+	vec3 normal = ComputeNormal(heightMid, heightTexCoords, resolution);
 
 	heightMid*= g_MaxHeight;
 
 	worldPosition.z += heightMid;
 
 	v_Height = heightMid;
-	v_TexCoord = heightTexCoords;
+	v_TexCoords = heightTexCoords;
 	v_maxHeight = g_MaxHeight;
 	v_Normal = normal;
 

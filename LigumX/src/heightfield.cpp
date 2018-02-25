@@ -24,6 +24,9 @@ const ClassPropertyData Heightfield::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(Heightfield, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Heightfield, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "HeightDataTexture", PIDX_HeightDataTexture, offsetof(Heightfield, m_HeightDataTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, }, 
+{ "MaxHeight", PIDX_MaxHeight, offsetof(Heightfield, m_MaxHeight), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "MinHeight", PIDX_MinHeight, offsetof(Heightfield, m_MinHeight), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool Heightfield::Serialize(bool writing)
 {
@@ -39,10 +42,20 @@ inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }
 Mesh* Heightfield::hfBaseMesh;
 PerlinNoise* Heightfield::pNoise;
 
-Heightfield::Heightfield(glm::vec2 offsetIndex)
+Heightfield::Heightfield()
 {
 	m_Width = 64;
+
+}
+
+Heightfield::Heightfield(glm::vec2 offsetIndex)
+{
+	m_MaxHeight = -1000;
+	m_MinHeight = 1000;
+	
 	m_HeightData.resize(m_Width * m_Width);
+
+
 
 	for (int i = 0; i < m_Width; i++)
 	{
@@ -60,6 +73,9 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 			}
 			float z = pNoise->GetHeight(wsPos.x, wsPos.y);
 			z *= 20.f;
+
+			m_MaxHeight = max(m_MaxHeight, z);
+			m_MinHeight = min(m_MinHeight, z);
 
 			m_HeightData[j * m_Width + i] = z;
 		}

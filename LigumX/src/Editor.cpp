@@ -25,6 +25,7 @@
 
 #include "SectorManager.h"
 #include "Sector.h"
+#include "Heightfield.h"
 
 #include "Node.h"
 #include "Way.h"
@@ -748,6 +749,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_PROPERTY_PTR(AABB)
 	SHOW_PROPERTY_PTR(Entity)
 	SHOW_PROPERTY_PTR(SunLight)
+	SHOW_PROPERTY_PTR(Heightfield)
 		//case LXType_Model:
 		//{
 		//	ShowPropertyGridTemplate<Model>((Model*) ptr, name);

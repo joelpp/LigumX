@@ -683,8 +683,8 @@ void Renderer::RenderTerrain()
 				SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 				terrainMaterial = entity->GetModel()->GetMaterials()[0];
 
-				SetFragmentUniform(0, "g_HeightfieldTexture");
-				Bind2DTexture(0, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
+				SetFragmentUniform(3, "g_HeightfieldTexture");
+				Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
 
 				DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 			}

@@ -1,4 +1,8 @@
 class Heightfield
 {
 	Texture* HeightDataTexture;
+
+	float MaxHeight;
+	float MinHeight;
+	int Width = 64;
 }
