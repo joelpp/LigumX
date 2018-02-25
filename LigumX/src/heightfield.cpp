@@ -13,6 +13,25 @@
 #include "PerlinNoise.h"
 #include <sstream>
 using namespace std;
+#pragma region  CLASS_SOURCE Heightfield
+
+#include "Heightfield.h"
+#include "serializer.h"
+#include <cstddef>
+#include "ObjectManager.h"
+const ClassPropertyData Heightfield::g_Properties[] = 
+{
+{ "ObjectID", PIDX_ObjectID, offsetof(Heightfield, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Heightfield, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "HeightDataTexture", PIDX_HeightDataTexture, offsetof(Heightfield, m_HeightDataTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, }, 
+};
+bool Heightfield::Serialize(bool writing)
+{
+	bool success = g_Serializer->SerializeObject(this, writing); 
+	return success;
+}
+
+#pragma endregion  CLASS_SOURCE Heightfield
 using namespace glm;
 
 inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }
@@ -20,22 +39,60 @@ inline double lerp(double a, double b, double t){ return a * t + b * (1 - t); }
 Mesh* Heightfield::hfBaseMesh;
 PerlinNoise* Heightfield::pNoise;
 
-Heightfield::Heightfield(){
+Heightfield::Heightfield(glm::vec2 offsetIndex)
+{
+	m_Width = 64;
+	m_HeightData.resize(m_Width * m_Width);
 
+	for (int i = 0; i < m_Width; i++)
+	{
+		for (int j = 0; j < m_Width; j++)
+		{
+			float last = m_Width - 1.f;
+			float x = 1.f - (float)i / last;
+			float y = (float)j / last;
+
+			glm::vec2 wsPos = (glm::vec2(offsetIndex) + glm::vec2(x, y));
+
+			if (!pNoise)
+			{
+				pNoise = new PerlinNoise(1, 10, 1, 1, 5847);
+			}
+			float z = pNoise->GetHeight(wsPos.x, wsPos.y);
+			z *= 20.f;
+
+			m_HeightData[j * m_Width + i] = z;
+		}
+	}
+
+	m_HeightDataTexture = new Texture();
+
+	m_HeightDataTexture->SetSize(glm::ivec2(m_Width));
+	m_HeightDataTexture->SetBitsPerPixel(32);
+	m_HeightDataTexture->SetFormat(GLPixelFormat_RED);
+	m_HeightDataTexture->SetInternalFormat(GLPixelFormat_R32F);
+	m_HeightDataTexture->SetPixelType(GLPixelType_Float);
+
+	m_HeightDataTexture->SetWrapS(GL::TextureWrapMode::ClampToEdge);
+	m_HeightDataTexture->SetWrapR(GL::TextureWrapMode::ClampToEdge);
+	m_HeightDataTexture->SetWrapT(GL::TextureWrapMode::ClampToEdge);
+
+	m_HeightDataTexture->GenerateFromData(m_HeightData);
 }
-Heightfield::Heightfield(vec2 startPoint, float sideLength){
-    this->sideLength = sideLength;
-    this->startPoint = startPoint;
-    this->step = Settings::GetInstance().f("HeightfieldResolution");
-    this->iWidth = 1 + (int) (sideLength / step);
-    m_mesh = 0;
-    
-    if (!hfBaseMesh)
-    {
-        generateBaseMesh();
-        pNoise = new PerlinNoise(100, 0.1, 2, 3, 5847);
 
-    }
+Heightfield::Heightfield(vec2 startPoint, float sideLength){
+    //this->sideLength = sideLength;
+    //this->startPoint = startPoint;
+    //this->step = Settings::GetInstance().f("HeightfieldResolution");
+    //this->iWidth = 1 + (int) (sideLength / step);
+    //m_mesh = 0;
+    //
+    //if (!hfBaseMesh)
+    //{
+    //    generateBaseMesh();
+    //    pNoise = new PerlinNoise(100, 0.1, 2, 3, 5847);
+
+    //}
 }
 
 void Heightfield::generateBaseMesh()
@@ -47,11 +104,11 @@ void Heightfield::generateBaseMesh()
     
     int c = 0;
 
-    for(int i = 0; i < iWidth; i++)
+    for(int i = 0; i < m_Width; i++)
     {
-        for (int j = 0; j < iWidth; j++)
+        for (int j = 0; j < m_Width; j++)
         {
-            float last = (float) (iWidth - 1);
+            float last = (float) (m_Width - 1);
             float x = (float)i / (float)last;
             float y = (float)j / (float)last;
             vec3 point = vec3(x, y, 0);
@@ -63,12 +120,12 @@ void Heightfield::generateBaseMesh()
     }
 
     // vertically
-    for (int i = 0; i < iWidth - 1; ++i)
+    for (int i = 0; i < m_Width - 1; ++i)
     {
         //horizontally
-        for (int j = 0; j < iWidth - 1; ++j)
+        for (int j = 0; j < m_Width - 1; ++j)
         {
-            int width = iWidth;
+            int width = m_Width;
             indexBuffer.push_back( (i * width) + j );
             indexBuffer.push_back( ((i + 1) * width) + (j) );
             indexBuffer.push_back( (i * width) + (j + 1)) ;
@@ -92,10 +149,10 @@ bool Heightfield::generate(){
     // for a lon, fill all the lat
     float lon;
     float lat = startPoint.y;
-    for(int i = 0; i < iWidth; i++)
+    for(int i = 0; i < m_Width; i++)
     {
         lon = startPoint.x;
-        for (int j = 0; j < iWidth; j++)
+        for (int j = 0; j < m_Width; j++)
         {
 			//float z = pNoise->GetHeight(lon, lat);
 			float z = 0.1f * (sin(lon) + sin(lat));
@@ -117,7 +174,7 @@ bool Heightfield::generate(){
     // Set texture filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, iWidth, iWidth, 0, GL_RED, GL_FLOAT, data.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, m_Width, m_Width, 0, GL_RED, GL_FLOAT, data.data());
     glBindTexture(GL_TEXTURE_2D, 0);
 
 
@@ -139,7 +196,7 @@ double Heightfield::getHeight(glm::vec2 xy)
 {
     glm::vec2 normalized = (xy - startPoint) / glm::vec2(sideLength);
     // PRINTVEC2(normalized);
-    glm::vec2 unNormalized = normalized * glm::vec2(iWidth, iWidth);
+    glm::vec2 unNormalized = normalized * glm::vec2(m_Width, m_Width);
     // PRINTVEC2(unNormalized);
 
     int xIndex = (int) trunc(unNormalized.x);
@@ -159,10 +216,10 @@ double Heightfield::getHeight(glm::vec2 xy)
     corners[3].x = startPoint.x + unNormalized.x + step;
     corners[3].y = startPoint.y + unNormalized.y + step;
     
-    corners[0].z = data[ yIndex * iWidth + xIndex ];
-    corners[1].z = data[ yIndex * iWidth + xIndex + 1 ];
-    corners[2].z = data[ (yIndex + 1) * iWidth + xIndex ];
-    corners[3].z = data[ (yIndex + 1) * iWidth + xIndex + 1];
+    corners[0].z = data[ yIndex * m_Width + xIndex ];
+    corners[1].z = data[ yIndex * m_Width + xIndex + 1 ];
+    corners[2].z = data[ (yIndex + 1) * m_Width + xIndex ];
+    corners[3].z = data[ (yIndex + 1) * m_Width + xIndex + 1];
 
     // PRINTVEC3(corner[0]);
     // PRINTVEC3(corner[1]);
@@ -275,6 +332,17 @@ int Heightfield::getLerpedContourLines(vec2 xy, vector<Way*> ways, vector<vec2> 
     }
     L0.p1 = xy + directions[1];
     return -1; // method didnt really work .revert to default.
+}
+
+float Heightfield::SampleHeight(const glm::vec2& normalizedPos)
+{
+	glm::vec2 correctedPos = glm::vec2(1.f - normalizedPos.x, normalizedPos.y);
+
+	glm::ivec2 samplingIndices = (glm::ivec2) (correctedPos * (float) m_Width);
+
+	int index = samplingIndices.y * m_Width + samplingIndices.x;
+
+	return m_HeightData[index];
 }
 
 

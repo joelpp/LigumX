@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
 void LigumX::BeginFrame()
 {
 	static double dt = 0.0;
@@ -172,6 +173,12 @@ World* LigumX::GetWorld()
 {
     return world;
 }
+
+void LigumX::ResetWorld()
+{
+	world->ResetSectors();
+}
+
 
 string LigumX::labelFromType(OSMElement::ElementType type)
 {

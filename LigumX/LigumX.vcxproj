@@ -342,6 +342,7 @@
     <None Include="src\Framebuffer.gen" />
     <None Include="src\GL.gen" />
     <None Include="src\GUI.gen" />
+    <None Include="src\Heightfield.gen" />
     <None Include="src\InputHandler.gen" />
     <None Include="src\MainWindow.gen" />
     <None Include="src\Material.gen" />

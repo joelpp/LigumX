@@ -11,8 +11,6 @@
 #include "LXError.h"
 #include "PerlinNoise.h"
 
-PerlinNoise* Sector::pNoise;
-
 #pragma region  CLASS_SOURCE Sector
 
 #include "Sector.h"
@@ -48,6 +46,13 @@ Sector::Sector()
 	// Not supposed to call the default Sector constructor! >:(
 	lxAssert0();
 }
+
+Sector::~Sector()
+{
+	delete m_Data;
+
+}
+
 
 
 glm::vec2 Sector::EarthToWorld(const glm::vec2& earthPosition)
@@ -87,7 +92,7 @@ Sector::Sector(CurlRequest* curlRequest)
 
 	curlRequest->SetSector(this);
 
-	CreateTerrainPatchEntity();
+	CreateHeightfield();
 
 }
 
@@ -104,69 +109,26 @@ Sector::Sector(const glm::ivec2& index)
 
 	m_OSMFilename = "";
 
-	CreateTerrainPatchEntity();
+	CreateHeightfield();
 }
 
-void Sector::CreateTerrainPatchEntity()
+void Sector::CreateHeightfield()
 {
+	m_Heightfield = new Heightfield(glm::vec2(m_OffsetIndex));
+
 	m_TerrainPatchEntity = new Entity();
-
-	Material* terrainMaterial = new Material();
-
 
 	glm::mat4 mat = glm::mat4(1.0);
 	glm::vec3 scale = glm::vec3(g_EngineSettings->GetWorldScale());
 	mat = glm::translate(mat, glm::vec3(m_WorldPosition, 0));
 	mat = glm::scale(mat, scale);
 	m_TerrainPatchEntity->m_ModelToWorldMatrix = mat;
+	
+	Material* terrainMaterial = new Material();
+	terrainMaterial->SetHeightfieldTexture(m_Heightfield->GetHeightDataTexture());
 
-	Texture* tex = (Texture*)(*g_ObjectManager->GetObjects(LXType_Texture))[23389];
-
-	int iWidth = 64;
-	m_HeightData.resize(iWidth * iWidth);
-
-	for (int i = 0; i < iWidth; i++)
-	{
-		for (int j = 0; j < iWidth; j++)
-		{
-			float last = iWidth - 1.f;
-			float x = 1.f - (float)i / last;
-			float y = (float)j / last;
-
-			glm::vec2 wsPos = (glm::vec2(m_OffsetIndex) + glm::vec2(x, y));
-
-			if (!pNoise)
-			{
-				pNoise = new PerlinNoise(1, 10, 1, 1, 5847);
-			}
-			float z = pNoise->GetHeight(wsPos.x, wsPos.y);
-			z *= 20.f;
-
-			m_HeightData[j * iWidth + i] = z;
-		}
-	}
-
-	Texture* customTexture = new Texture();
-		
-	customTexture->SetSize(glm::ivec2(iWidth));
-	customTexture->SetBitsPerPixel(32);
-	customTexture->SetFormat(GLPixelFormat_RED);
-	customTexture->SetInternalFormat(GLPixelFormat_R32F);
-	customTexture->SetPixelType(GLPixelType_Float);
-
-	customTexture->SetWrapS(GL::TextureWrapMode::ClampToEdge);
-	customTexture->SetWrapR(GL::TextureWrapMode::ClampToEdge);
-	customTexture->SetWrapT(GL::TextureWrapMode::ClampToEdge);
-
-	customTexture->GenerateFromData(m_HeightData);
-
-	terrainMaterial->SetHeightfieldTexture(customTexture);
 	Model* terrainPatchModel = new Model(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 	m_TerrainPatchEntity->SetModel(terrainPatchModel);
-
-
-
-	
 }
 
 
@@ -190,18 +152,6 @@ glm::vec2 Sector::GetStartPosition(glm::vec2 position)
 	return startCoords;
 }
 
-bool Sector::createHeightfield()
-{
-    //if (!m_heightfield)
-    //{
-    //    m_heightfield = new Heightfield(m_EarthPosition, m_EarthPosition.x);
-    //}
-
-    //return m_heightfield->generate();
-	lxAssert0(); // pretty sure this is dead code
-	return false;
-}
-
 
 void Sector::InitializeFromRequest(CurlRequest* request)
 {
@@ -222,13 +172,7 @@ void Sector::InitializeFromRequest(CurlRequest* request)
 
 float Sector::SampleHeight(const glm::vec2& normalizedPos)
 {
-	float iWidth = 64.f;
+	lxAssert(m_Heightfield != nullptr);
 
-	glm::vec2 correctedPos = glm::vec2(1.f - normalizedPos.x, normalizedPos.y);
-
-	glm::ivec2 samplingIndices = (glm::ivec2) (correctedPos * iWidth);
-
-	int index = samplingIndices.y * iWidth + samplingIndices.x;
-
-	return m_HeightData[index];
+	return m_Heightfield->SampleHeight(normalizedPos);
 }

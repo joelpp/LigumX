@@ -303,3 +303,13 @@ Sector* World::GetSectorByIndex(const glm::ivec2& normalizedSectorIndex)
 
 	return nullptr;
 }
+
+void World::ResetSectors()
+{
+	for (Sector* sector : m_Sectors)
+	{
+		delete sector;
+	}
+
+	m_Sectors.clear();
+}

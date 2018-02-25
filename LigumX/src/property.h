@@ -22,6 +22,7 @@ enum LXType
 	LXType_GLPixelType,
 	LXType_GLuint,
 	LXType_GUI,
+	LXType_Heightfield,
 	LXType_InputHandler,
 	LXType_MainWindow,
 	LXType_Material,

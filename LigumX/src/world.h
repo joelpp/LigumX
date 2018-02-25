@@ -106,6 +106,8 @@ public:
 	void InitTestWorld();
 
 	void Update();
+	void ResetSectors();
+
 
     Sector* createSector(Coord2 pos);
 	SectorList* GetAllSectors();

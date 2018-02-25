@@ -1,0 +1,4 @@
+class Heightfield
+{
+	Texture* HeightDataTexture;
+}

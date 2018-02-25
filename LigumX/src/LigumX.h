@@ -59,6 +59,8 @@ public:
 
 	void Shutdown();
 
+	void ResetWorld();
+
     World* GetWorld();
 
     // TODO: move this to data

@@ -553,5 +553,6 @@
     <None Include="src\SectorTool.gen" />
     <None Include="src\PickingTool.gen" />
     <None Include="src\OSMElement.gen" />
+    <None Include="src\Heightfield.gen" />
   </ItemGroup>
 </Project>

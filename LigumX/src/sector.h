@@ -92,7 +92,7 @@ public:
 	Sector(CurlRequest* curlRequest);
 	Sector(const glm::ivec2& index);
 
-    bool createHeightfield();
+	~Sector();
 
 	static glm::ivec2 GetNormalizedSectorIndex(const glm::vec2& position);
 	static glm::vec2 GetStartPosition(glm::vec2 position);
@@ -110,14 +110,11 @@ public:
 	static glm::vec2 EarthToWorld(const glm::vec2& earthPosition);
 
 	void InitializeFromRequest(CurlRequest* request);
-	void CreateTerrainPatchEntity();
+	void CreateHeightfield();
 
 	SectorGraphicalData* GetGraphicalData() { return m_Data->GetGraphicalData(); }
 
 	Entity* m_TerrainPatchEntity;
 
-	static PerlinNoise* pNoise;
-
 	float SampleHeight(const glm::vec2& normalizedPos);
-	std::vector<float> m_HeightData;
 };

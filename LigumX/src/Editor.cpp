@@ -1146,11 +1146,53 @@ void Editor::RenderImgui()
 	{
 		ImGui::ShowTestWindow();
 	}
+	// Menu
+	if (ImGui::BeginMainMenuBar())
+	{
+		m_RenderingMenu = true;
 
+		if (ImGui::BeginMenu("Menu"))
+		{
+			if (ImGui::MenuItem("Reset World"))
+			{
+				LigumX::GetInstance().ResetWorld();
+			}
+			if (ImGui::MenuItem("Reset Sectors"))
+			{
+				LigumX::GetInstance().GetWorld()->ResetSectors();
+			}
+			if (ImGui::MenuItem("Save Editor"))
+			{
+				TrySaveObject(g_Editor);
+			}
+			if (ImGui::MenuItem("Save renderer"))
+			{
+				TrySaveObject(this);
+			}
+			if (ImGui::MenuItem("Save world"))
+			{
+				TrySaveObject(world);
+			}
+			if (ImGui::MenuItem("Quit"))
+			{
+				LigumX::GetInstance().Shutdown();
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ShowPropertyGridTemplate<DisplayOptions>(renderer->GetDisplayOptions(), "Display options");
+		ShowPropertyGridTemplate<EditorOptions>(GetOptions(), "Editor options");
+
+
+		ImGui::EndMainMenuBar();
+
+		m_RenderingMenu = false;
+	}
 	//if (g_Editor->GetOptions()->GetShowWorldWindow())
 	{
 		ImGui::PushID("WorldWindow");
-		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Editor");
+		g_GUI->BeginWindow(1000, 700, 0, 0, "Editor");
 
 		ShowPropertyGridTemplate(g_InputHandler, "Input Handler");
 		ShowPropertyGridTemplate(renderer->GetPostEffects(), "Post Effects");
@@ -1161,37 +1203,7 @@ void Editor::RenderImgui()
 		Editor* editor = this;
 		ShowPropertyGridTemplate(editor, "Editor");
 
-		// Menu
-		if (ImGui::BeginMenuBar())
-		{
-			m_RenderingMenu = true;
-
-			if (ImGui::BeginMenu("Menu"))
-			{
-				if (ImGui::MenuItem("Save Editor"))
-				{
-					TrySaveObject(g_Editor);
-				}
-				if (ImGui::MenuItem("Save renderer"))
-				{
-					TrySaveObject(this);
-				}
-				if (ImGui::MenuItem("Save world"))
-				{
-					TrySaveObject(world);
-				}
-
-				ImGui::EndMenu();
-			}
-
-			ShowPropertyGridTemplate<DisplayOptions>(renderer->GetDisplayOptions(), "Display options");
-			ShowPropertyGridTemplate<EditorOptions>(GetOptions(), "Editor options");
-
-
-			ImGui::EndMenuBar();
-
-			m_RenderingMenu = false;
-		}
+		
 		g_GUI->EndWindow();
 		ImGui::PopID();
 

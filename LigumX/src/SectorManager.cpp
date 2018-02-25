@@ -129,6 +129,7 @@ Sector* SectorManager::getSector(int ID)
 int minHeightfieldDistance = 1;
 void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 {
+	lxAssert0(); // dead code
 	switch(sector->m_initializationLevel)
 	{
 		case Sector::Uninitialized:			
@@ -142,7 +143,7 @@ void SectorManager::keepInitializing(Sector* sector, int manhattanDistance)
 											break;
 
 		case Sector::DataLoaded:			
-											 if ( /*(manhattanDistance <= 0) &&*/ (sector->createHeightfield()) )
+											 //if ( /*(manhattanDistance <= 0) &&*/ (sector->createHeightfield()) )
 											{
 												sector->m_initializationLevel = Sector::HeightfieldGenerated;
 			  								}

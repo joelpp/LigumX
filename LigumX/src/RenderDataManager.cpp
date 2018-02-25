@@ -139,17 +139,17 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
 //        renderer.m_debugModels.push_back( hfModel );
 //    }
     
-    TerrainRenderingJob job;
-    job.start = heightField->startPoint;
-    job.scale = heightField->sideLength;
-    job.buffer = heightField->buffer;
-    terrainRenderingJobs.push_back(job);
+    //TerrainRenderingJob job;
+    //job.start = heightField->startPoint;
+    //job.scale = heightField->sideLength;
+    //job.buffer = heightField->buffer;
+    //terrainRenderingJobs.push_back(job);
 }
-
-Mesh* RenderDataManager::terrainMesh()
-{
-    return Heightfield::hfBaseMesh;
-}
+//
+//Mesh* RenderDataManager::terrainMesh()
+//{
+//    return Heightfield::hfBaseMesh;
+//}
 
 Model* RenderDataManager::CreateDebugModel(const std::vector<glm::vec3>& lineData, glm::vec3 color, const char* name)
 {
