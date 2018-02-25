@@ -98,7 +98,7 @@ public:
 
 
 	std::unordered_map<std::string, Node*> m_AllNodes;
-	std::map<int, Node*> m_AllNodesPtr;
+	std::map<long, Node*> m_AllNodesPtr;
 	std::map<std::string, Way*> m_AllWays;
 	std::map<int, Way*> m_AllWaysPtr;
 

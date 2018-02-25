@@ -2,6 +2,7 @@
 
 #include "world.h"
 #include "sector.h"
+#include "EngineSettings.h"
 #include "Way.h"
 #include "Node.h"
 #include "Math.h"
@@ -312,4 +313,20 @@ void World::ResetSectors()
 	}
 
 	m_Sectors.clear();
+}
+
+
+float World::SampleHeight(const glm::vec3& worldPos)
+{
+	glm::vec2 normalizedPos = glm::vec2(worldPos) / g_EngineSettings->GetWorldScale();
+	glm::ivec2 sectorIndex = glm::ivec2(normalizedPos);
+
+	Sector* sector = GetSectorByIndex(sectorIndex);
+
+	if (sector == nullptr)
+	{
+		return 0.f;
+	}
+
+	return sector->SampleHeight(glm::fract(normalizedPos));
 }

@@ -221,19 +221,8 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 	std::vector<glm::vec3> nodePositions;
 
-	for (auto it = sector->m_Data->nodes.begin(); it != sector->m_Data->nodes.end(); ++it)
-	{
-		Node* node = it->second;
-		nodePositions.push_back(node->GetWorldPosition());
-	}
-
+	World* world = LigumX::GetInstance().GetWorld();
 	Renderer& renderer = Renderer::GetInstance();
-
-	Mesh* nodeMesh = new Mesh(nodePositions, GL::PrimitiveMode::Points, true);
-
-	Model* nodeModel = new Model();
-	nodeModel->addMesh(nodeMesh, new Material(renderer.pPipelineNodes, glm::vec3(1,1,1)));
-	nodeModel->SetName("Sector_nodes_");
 
 	Model* waysModel = nullptr;
 
@@ -250,27 +239,77 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	{
 		std::vector<glm::vec3> line;
 		Way* way = it->second;
+		std::vector<Node*>& nodes = way->GetNodes();
 
 		bool newWay = true;
-		for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
+		for (int i = 0; i < nodes.size(); ++i)
 		{
-			Node* node = *nodeIt;
+			Node* node = nodes[i];
+
 
 			const glm::vec3& pos = node->GetWorldPosition();
 
+			nodePositions.push_back(node->GetWorldPosition());
+
 			AddPoint(line, pos);
 
-			if (!newWay && index > (previousLastIndex) && (index - 1) != previousLastIndex)
 			{
-				flatWayPositions.push_back(flatWayPositions.back());
-				vertexData.push_back( { way->GetOSMElementType(), way->GetIndexInSector() } );
+				if (!newWay && index > (previousLastIndex) && (index - 1) != previousLastIndex)
+				{
+					flatWayPositions.push_back(flatWayPositions.back());
+					vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
+				}
+
+
+				flatWayPositions.push_back(pos);
+				vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
+
+				newWay = false;
+				index++;
 			}
 
-			flatWayPositions.push_back(pos);
-			vertexData.push_back( { way->GetOSMElementType(), way->GetIndexInSector() } );
+#if 0
+			if (i != nodes.size() - 1)
+			{
+				Node* nextNode = nodes[i + 1];
+				const glm::vec3& nextPos = nextNode->GetWorldPosition();
 
-			newWay = false;
-			index++;
+				glm::vec3 distance = nextPos - pos;
+
+				if (distance != glm::vec3(0, 0, 0))
+				{
+					glm::vec3 direction = glm::normalize(distance);
+					float length = glm::length(distance);
+					int numsubdivisions = (int)(length / g_EngineSettings->GetWayTessellationFactor());
+					float factor = numsubdivisions + 1;
+					for (int j = 0; j < numsubdivisions; ++j)
+					{
+						glm::vec3 subdivisionPoint;
+						subdivisionPoint = pos + (float)(j + 1) * direction * length / factor;
+
+						subdivisionPoint.z = world->SampleHeight(subdivisionPoint);
+
+						nodePositions.push_back(subdivisionPoint);
+						AddPoint(line, subdivisionPoint);
+
+						if (!newWay && index >(previousLastIndex) && (index - 1) != previousLastIndex)
+						{
+							flatWayPositions.push_back(flatWayPositions.back());
+							vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
+						}
+
+
+						flatWayPositions.push_back(subdivisionPoint);
+						vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
+
+						newWay = false;
+						index++;
+					}
+				}
+			}
+
+#endif
+
 		}
 		previousLastIndex = index - 1;
 		index -= 1;
@@ -292,6 +331,13 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			}
 		}
 	}
+
+
+	Mesh* nodeMesh = new Mesh(nodePositions, GL::PrimitiveMode::Points, true);
+
+	Model* nodeModel = new Model();
+	nodeModel->addMesh(nodeMesh, new Material(renderer.pPipelineNodes, glm::vec3(1, 1, 1)));
+	nodeModel->SetName("Sector_nodes_");
 
 	Model* flatWaysModel = CreateFlatDebugModel(flatWayPositions, vertexData, glm::vec3(1,1,1), "Sector_FlatLines_");
 

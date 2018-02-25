@@ -8,4 +8,6 @@ class OSMTool
 	bool SearchOnlyWithinSector = false;
 
 	glm::ivec2 SelectedSectorIndex;
+
+	glm::vec3 WorldSpacePosition;
 }

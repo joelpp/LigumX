@@ -11,11 +11,6 @@ uniform mat4 g_LightProjectionMatrix;
 layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 
 
-
-float g_MaxHeight = 25.f; 
-
-
-
 out gl_PerVertex {
     vec4 gl_Position;
 };
@@ -70,13 +65,10 @@ void main()
 	float resolution = 1.f / 64;
 	vec3 normal = ComputeNormal(heightMid, heightTexCoords, resolution);
 
-	heightMid*= g_MaxHeight;
-
 	worldPosition.z += heightMid;
 
 	v_Height = heightMid;
 	v_TexCoords = heightTexCoords;
-	v_maxHeight = g_MaxHeight;
 	v_Normal = normal;
 
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * worldPosition;

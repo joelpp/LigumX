@@ -108,6 +108,7 @@ public:
 	void Update();
 	void ResetSectors();
 
+	float SampleHeight(const glm::vec3& worldPosi);
 
     Sector* createSector(Coord2 pos);
 	SectorList* GetAllSectors();

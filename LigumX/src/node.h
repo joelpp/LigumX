@@ -24,8 +24,8 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const int& GetOSMId() { return m_OSMId; }; 
-void SetOSMId(int value) { m_OSMId = value; }; 
+const long& GetOSMId() { return m_OSMId; }; 
+void SetOSMId(long value) { m_OSMId = value; }; 
 const glm::vec2& GetLongLat() { return m_LongLat; }; 
 void SetLongLat(glm::vec2 value) { m_LongLat = value; }; 
 const glm::vec3& GetWorldPosition() { return m_WorldPosition; }; 
@@ -35,16 +35,22 @@ void SetElevation(float value) { m_Elevation = value; };
 std::vector<Way*>& GetWays() { return m_Ways; }; 
 void SetWays(std::vector<Way*> value) { m_Ways = value; }; 
 void AddTo_Ways(Way* value) { m_Ways.push_back(value); };
+const glm::ivec2& GetSectorIndex() { return m_SectorIndex; }; 
+void SetSectorIndex(glm::ivec2 value) { m_SectorIndex = value; }; 
+const glm::vec2& GetSectorOffset() { return m_SectorOffset; }; 
+void SetSectorOffset(glm::vec2 value) { m_SectorOffset = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
-int m_OSMId = 0;
+long m_OSMId;
 glm::vec2 m_LongLat = glm::vec2(0, 0);
 glm::vec3 m_WorldPosition = glm::vec3(0, 0, 0);
 float m_Elevation = 0.f;
 std::vector<Way*> m_Ways;
+glm::ivec2 m_SectorIndex;
+glm::vec2 m_SectorOffset = glm::vec2(0, 0);
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_NodePIDX
@@ -56,6 +62,8 @@ PIDX_LongLat,
 PIDX_WorldPosition,
 PIDX_Elevation,
 PIDX_Ways,
+PIDX_SectorIndex,
+PIDX_SectorOffset,
 };
 bool Serialize(bool writing);
 

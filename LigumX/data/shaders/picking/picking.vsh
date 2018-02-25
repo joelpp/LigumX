@@ -20,8 +20,6 @@ out gl_PerVertex {
     vec4 gl_Position;
 };
 
-float g_MaxHeight = 25.f; 
-
 
 void main() {
 	vec4 worldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
@@ -32,7 +30,6 @@ void main() {
 		heightTexCoords.x = 1.f - heightTexCoords.x;
 
 		float heightMid = textureLod(g_HeightfieldTexture, heightTexCoords, 0.f).r;
-		heightMid*= g_MaxHeight;
 
 		worldPosition.z += heightMid;
 	}

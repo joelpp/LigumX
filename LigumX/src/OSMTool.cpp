@@ -25,6 +25,7 @@ const ClassPropertyData OSMTool::g_Properties[] =
 { "SelectedWays", PIDX_SelectedWays, offsetof(OSMTool, m_SelectedWays), 0, LXType_stdvector, false, LXType_Way, 0, 0, 0, }, 
 { "SearchOnlyWithinSector", PIDX_SearchOnlyWithinSector, offsetof(OSMTool, m_SearchOnlyWithinSector), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "SelectedSectorIndex", PIDX_SelectedSectorIndex, offsetof(OSMTool, m_SelectedSectorIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
+{ "WorldSpacePosition", PIDX_WorldSpacePosition, offsetof(OSMTool, m_WorldSpacePosition), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 };
 bool OSMTool::Serialize(bool writing)
 {
@@ -41,11 +42,11 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 	{
 		const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
 
-		glm::vec3 wsPosition = g_Editor->GetSectorTool()->GetAimingWorldSpacePosition(mousePosition);
+		m_WorldSpacePosition = g_Editor->GetSectorTool()->GetAimingWorldSpacePosition(mousePosition);
 
-		glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(wsPosition));
+		glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(m_WorldSpacePosition));
 
-		Node* node = g_SectorManager->GetClosestNode(glm::vec2(wsPosition), m_SearchOnlyWithinSector);
+		Node* node = g_SectorManager->GetClosestNode(glm::vec2(m_WorldSpacePosition), m_SearchOnlyWithinSector);
 
 		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
 

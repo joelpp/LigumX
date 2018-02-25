@@ -37,6 +37,7 @@ namespace StringUtils
 	int Count(const std::string& s, const char c);
 
 	int ToInt(const std::string& str);
+	long int ToLongInt(const std::string& str);
 
 	bool IsCapitalLetter(const char&);
 	bool IsLowerCaseLetter(const char& c);

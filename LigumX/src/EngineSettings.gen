@@ -11,5 +11,5 @@ class EngineSettings
 
 	bool GenerateFlatTerrain;
 
-	float WayTessellationFactor = 1.0f;
+	float WayTessellationFactor = 50.f;
 }

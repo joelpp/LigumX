@@ -158,6 +158,14 @@ int StringUtils::ToInt(const std::string& str)
 	return std::atoi(str.c_str());
 }
 
+long int StringUtils::ToLongInt(const std::string& str)
+{
+	return std::atol(str.c_str());
+
+}
+
+
+
 bool StringUtils::IsCapitalLetter(const char& c)
 {
 	return !(c >= 'a' && c <= 'z');

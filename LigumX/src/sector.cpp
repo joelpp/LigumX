@@ -184,7 +184,14 @@ float Sector::SampleHeight(const glm::vec2& normalizedPos)
 {
 	lxAssert(m_Heightfield != nullptr);
 
-	return m_Heightfield->SampleHeight(normalizedPos);
+	if (g_EngineSettings->GetGenerateFlatTerrain())
+	{
+		return 0.f;
+	}
+
+	glm::vec2 pos = glm::clamp(normalizedPos, glm::vec2(0.f, 0.f), glm::vec2(0.99f, 0.99f));
+
+	return m_Heightfield->SampleHeight(pos);
 }
 
 float Sector::SampleHeight(const glm::vec3& worldPos)

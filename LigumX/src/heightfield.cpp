@@ -73,7 +73,7 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 				pNoise = new PerlinNoise(1, 10, 1, 1, 5847);
 			}
 			float z = pNoise->GetHeight(wsPos.x, wsPos.y);
-			z *= 20.f;
+			z *= 500.f;
 
 			m_MaxHeight = max(m_MaxHeight, z);
 			m_MinHeight = min(m_MinHeight, z);
@@ -361,6 +361,9 @@ float Heightfield::SampleHeight(const glm::vec2& normalizedPos)
 	glm::vec2 correctedPos = glm::vec2(1.f - normalizedPos.x, normalizedPos.y);
 
 	glm::ivec2 samplingIndices = (glm::ivec2) (correctedPos * (float) m_Width);
+
+	samplingIndices.x = min(samplingIndices.x, 63);
+	samplingIndices.y = min(samplingIndices.y, 63);
 
 	int index = samplingIndices.y * m_Width + samplingIndices.x;
 

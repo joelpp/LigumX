@@ -220,7 +220,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
 
-
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
 		std::string childValue = std::string(child->Value());
@@ -254,6 +253,11 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			glm::ivec2 sectorIndex = GetSectorIndexFromEarthLonLat(glm::vec2(longitude, latitude));
 
+			glm::ivec2 quantizedPosition = (glm::ivec2) (node->getLatLong() * 1e7f);
+			glm::ivec2 sectorQuantizedPosition = (glm::ivec2) (1e7f * (g_EngineSettings->GetStartLonLat()+ (g_EngineSettings->GetExtent() * (glm::vec2)sectorIndex)));
+
+			glm::ivec2 quantizedOffset = quantizedPosition - sectorQuantizedPosition;
+
 			Sector* sector = world->GetSectorByIndex(sectorIndex);
 
 			if (!sector)
@@ -267,16 +271,10 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			glm::vec2 normalizedPosInSector = glm::fract(posInSector);
 
-			float sampledHeight = sector->SampleHeight(normalizedPosInSector) * 25.f;
-
-			if (g_EngineSettings->GetGenerateFlatTerrain())
-			{
-				sampledHeight = 0.f;
-			}
+			float sampledHeight = sector->SampleHeight(normalizedPosInSector);
 
 			node->elevation = sampledHeight;
 			node->SetWorldPosition(glm::vec3(worldPos, sampledHeight));
-
 
 			if (sector && sectorIndex == request->GetSectorIndex() && !sector->GetDataLoaded())
 			{
@@ -292,9 +290,18 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			nodes.emplace(id, node);
 			m_AllNodes.emplace(id, node);
 
-			int intID = StringUtils::ToInt(id);
+			long int intID = StringUtils::ToLongInt(id);
+
+			if (intID == 2147483647)
+			{
+				std::string newid = id.substr(3, id.size());
+				intID = StringUtils::ToLongInt(newid);
+			}
+
 			sector->m_Data->m_AllNodesPtr[intID] = node;
+
 			m_AllNodesPtr[intID] = node;
+
 		}
 
 		else if (childValue == "way")
@@ -372,14 +379,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			m_AllWays.emplace(id, way);
 
-			int intID = StringUtils::ToInt(id);
+			long intID = StringUtils::ToLongInt(id);
 			way->SetIndexInSector(request->GetSector()->m_Data->m_AllWaysPtr.size());
 			request->GetSector()->m_Data->m_AllWaysPtr[intID] = way;
 			m_AllWaysPtr[intID] = way;
 		}
 	}
-
-
 }
 
 void SectorManager::AddSector(Sector* sector)
@@ -430,7 +435,7 @@ Node* SectorManager::GetClosestNode(glm::vec2 wsPosition, bool searchOnlyWithinS
 
 	Node* toReturn = nullptr;
 
-	std::map<int, Node*>* allNodesPtr = &m_AllNodesPtr;
+	std::map<long, Node*>* allNodesPtr = &m_AllNodesPtr;
 
 	if (searchOnlyWithinSector)
 	{

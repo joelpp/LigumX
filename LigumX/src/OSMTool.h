@@ -35,6 +35,8 @@ const bool& GetSearchOnlyWithinSector() { return m_SearchOnlyWithinSector; };
 void SetSearchOnlyWithinSector(bool value) { m_SearchOnlyWithinSector = value; }; 
 const glm::ivec2& GetSelectedSectorIndex() { return m_SelectedSectorIndex; }; 
 void SetSelectedSectorIndex(glm::ivec2 value) { m_SelectedSectorIndex = value; }; 
+const glm::vec3& GetWorldSpacePosition() { return m_WorldSpacePosition; }; 
+void SetWorldSpacePosition(glm::vec3 value) { m_WorldSpacePosition = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -43,8 +45,9 @@ Node* m_SelectedNode;
 std::vector<Way*> m_SelectedWays;
 bool m_SearchOnlyWithinSector = false;
 glm::ivec2 m_SelectedSectorIndex;
+glm::vec3 m_WorldSpacePosition = glm::vec3(0, 0, 0);
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMToolPIDX
@@ -56,6 +59,7 @@ PIDX_SelectedNode,
 PIDX_SelectedWays,
 PIDX_SearchOnlyWithinSector,
 PIDX_SelectedSectorIndex,
+PIDX_WorldSpacePosition,
 };
 bool Serialize(bool writing);
 

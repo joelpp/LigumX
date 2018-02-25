@@ -42,7 +42,7 @@ glm::vec2 m_StartLonLat = glm::vec2(0, 0);
 float m_Extent = 0.f;
 int m_OSMQuantizationScale = 1000000;
 bool m_GenerateFlatTerrain = false;
-float m_WayTessellationFactor = 1.0f;
+float m_WayTessellationFactor = 50.f;
 public:
 static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
