@@ -11,5 +11,8 @@ class Sector
 
 	bool DataLoaded;
 
+	[transient]
+	Heightfield* Heightfield;
+
 	std::string OSMFilename;
 }

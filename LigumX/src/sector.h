@@ -6,6 +6,7 @@
 #include "property.h"
 
 class Sector;
+class Heightfield;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Sector
@@ -43,6 +44,8 @@ const glm::ivec2& GetIndex() { return m_Index; };
 void SetIndex(glm::ivec2 value) { m_Index = value; }; 
 const bool& GetDataLoaded() { return m_DataLoaded; }; 
 void SetDataLoaded(bool value) { m_DataLoaded = value; }; 
+Heightfield*& GetHeightfield() { return m_Heightfield; }; 
+void SetHeightfield(Heightfield* value) { m_Heightfield = value; }; 
 const std::string& GetOSMFilename() { return m_OSMFilename; }; 
 void SetOSMFilename(std::string value) { m_OSMFilename = value; }; 
 private:
@@ -54,9 +57,10 @@ glm::ivec2 m_QuantizedPosition;
 glm::ivec2 m_OffsetIndex;
 glm::ivec2 m_Index;
 bool m_DataLoaded = false;
+Heightfield* m_Heightfield;
 std::string m_OSMFilename;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorPIDX
@@ -69,6 +73,7 @@ PIDX_QuantizedPosition,
 PIDX_OffsetIndex,
 PIDX_Index,
 PIDX_DataLoaded,
+PIDX_Heightfield,
 PIDX_OSMFilename,
 };
 bool Serialize(bool writing);
@@ -99,7 +104,6 @@ public:
 
 	SectorData *m_Data;
 
-    Heightfield* m_Heightfield;
 	glm::vec2 m_LifeSize;
 	glm::vec2 m_Size;
 

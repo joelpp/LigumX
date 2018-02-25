@@ -27,6 +27,7 @@ const ClassPropertyData Sector::g_Properties[] =
 { "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 { "Index", PIDX_Index, offsetof(Sector, m_Index), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 { "DataLoaded", PIDX_DataLoaded, offsetof(Sector, m_DataLoaded), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "Heightfield", PIDX_Heightfield, offsetof(Sector, m_Heightfield), 0, LXType_Heightfield, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "OSMFilename", PIDX_OSMFilename, offsetof(Sector, m_OSMFilename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 };
 bool Sector::Serialize(bool writing)
