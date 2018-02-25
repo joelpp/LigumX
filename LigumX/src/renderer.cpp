@@ -30,6 +30,7 @@
 #include "Sector.h"
 #include "Sunlight.h"
 #include "BoundingBoxComponent.h"
+#include "Heightfield.h"
 
 
 
@@ -676,7 +677,7 @@ void Renderer::RenderTerrain()
 
 		if (sector)
 		{
-			Entity* entity = sector->m_TerrainPatchEntity;
+			Entity* entity = sector->GetTerrainPatchEntity();
 
 			if (entity)
 			{
@@ -848,6 +849,8 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	
 	SetViewUniforms(m_DebugCamera);
 	
+	SetVertexUniform(0, "g_UseHeightfield");
+
 	for (Entity* entity : m_World->GetEntities())
 	{
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
@@ -870,6 +873,23 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 			{
 				DrawMesh(entity->GetModel()->m_meshes[i]);
 			}
+		}
+	}
+
+	SetVertexUniform(1, "g_UseHeightfield");
+
+	for (Sector* sector : m_World->GetSectors())
+	{
+		Entity* entity = sector->GetTerrainPatchEntity();
+		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+
+		SetVertexUniform(3, "g_HeightfieldTexture");
+		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
+
+		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
+		{
+			DrawMesh(entity->GetModel()->m_meshes[i]);
 		}
 	}
 

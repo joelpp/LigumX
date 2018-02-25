@@ -7,6 +7,7 @@
 
 class Sector;
 class Heightfield;
+class Entity;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Sector
@@ -46,6 +47,8 @@ const bool& GetDataLoaded() { return m_DataLoaded; };
 void SetDataLoaded(bool value) { m_DataLoaded = value; }; 
 Heightfield*& GetHeightfield() { return m_Heightfield; }; 
 void SetHeightfield(Heightfield* value) { m_Heightfield = value; }; 
+Entity*& GetTerrainPatchEntity() { return m_TerrainPatchEntity; }; 
+void SetTerrainPatchEntity(Entity* value) { m_TerrainPatchEntity = value; }; 
 const std::string& GetOSMFilename() { return m_OSMFilename; }; 
 void SetOSMFilename(std::string value) { m_OSMFilename = value; }; 
 private:
@@ -58,9 +61,10 @@ glm::ivec2 m_OffsetIndex;
 glm::ivec2 m_Index;
 bool m_DataLoaded = false;
 Heightfield* m_Heightfield;
+Entity* m_TerrainPatchEntity;
 std::string m_OSMFilename;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorPIDX
@@ -74,6 +78,7 @@ PIDX_OffsetIndex,
 PIDX_Index,
 PIDX_DataLoaded,
 PIDX_Heightfield,
+PIDX_TerrainPatchEntity,
 PIDX_OSMFilename,
 };
 bool Serialize(bool writing);
@@ -117,8 +122,6 @@ public:
 	void CreateHeightfield();
 
 	SectorGraphicalData* GetGraphicalData() { return m_Data->GetGraphicalData(); }
-
-	Entity* m_TerrainPatchEntity;
 
 	float SampleHeight(const glm::vec2& normalizedPos);
 	float SampleHeight(const glm::vec3& worldPos);

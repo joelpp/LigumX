@@ -72,7 +72,7 @@ void main()
 
 	heightMid*= g_MaxHeight;
 
-	//worldPosition.z += heightMid;
+	worldPosition.z += heightMid;
 
 	v_Height = heightMid;
 	v_TexCoords = heightTexCoords;

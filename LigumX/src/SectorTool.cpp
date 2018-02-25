@@ -9,6 +9,7 @@
 
 #include "Editor.h"
 #include "OSMTool.h"
+#include "PickingTool.h"
 
 #include "World.h"
 #include "Sector.h"
@@ -202,7 +203,16 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 
-	glm::vec3 worldPosition = GetAimingWorldSpacePosition(mousePosition);
+	glm::vec3 worldPosition;
+	
+	if (g_Editor->GetPickingTool()->IsPickingEntity())
+	{
+		worldPosition = g_Editor->GetPickingTool()->GetPickedWorldPosition();
+	}
+	else
+	{
+		worldPosition = GetAimingWorldSpacePosition(mousePosition);
+	} 
 
 	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
 
@@ -212,12 +222,6 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	World* world = LigumX::GetInstance().GetWorld();
 
 	m_HighlightedSector = world->GetSectorByIndex(normalizedSectorIndex);
-
-	if (m_HighlightedSector != nullptr)
-	{
-		float height = m_HighlightedSector->SampleHeight(worldPosition);
-		worldPosition.z = height;
-	}
 
 	m_HighlightedWorldCoordinates = worldPosition;
 

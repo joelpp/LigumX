@@ -12,29 +12,29 @@ layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 uniform sampler2D g_SplatMapTexture;
 
 
-//vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
-//{
-//	vec2 du = vec2(resolution, 0);
-//	vec2 dv = vec2(0, resolution);
+vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
+{
+	vec2 du = vec2(resolution, 0);
+	vec2 dv = vec2(0, resolution);
 
-//	float heightLeft = textureLod(g_HeightfieldTexture, texCoord - du, 0.f).r;
+	float heightLeft = textureLod(g_HeightfieldTexture, texCoord - du, 0.f).r;
 
-//	float heightRight =	textureLod(g_HeightfieldTexture, texCoord + du, 0.f).r;
+	float heightRight =	textureLod(g_HeightfieldTexture, texCoord + du, 0.f).r;
 
-//	float heightBottom = textureLod(g_HeightfieldTexture, texCoord - dv , 0.f).r;
-//	float heightTop = textureLod(g_HeightfieldTexture, texCoord + dv , 0.f).r;
+	float heightBottom = textureLod(g_HeightfieldTexture, texCoord - dv , 0.f).r;
+	float heightTop = textureLod(g_HeightfieldTexture, texCoord + dv , 0.f).r;
 
-//	float dhdu = (2 * resolution) * (heightRight - heightLeft); 
-//	float dhdv = (2 * resolution) * (heightTop - heightBottom); 
+	float dhdu = (2 * resolution) * (heightRight - heightLeft); 
+	float dhdv = (2 * resolution) * (heightTop - heightBottom); 
 
-//	//vec3 normal = normalize(vec3(0,0,1) + vec3(1,0,0) * dhdu + vec3(0,1,0) * dhdv);
+	//vec3 normal = normalize(vec3(0,0,1) + vec3(1,0,0) * dhdu + vec3(0,1,0) * dhdv);
 
-//	vec3 va = normalize(vec3(2, 0, heightRight - heightLeft));
-//    vec3 vb = normalize(vec3(0, 2, heightTop - heightBottom));
-//    vec3 normal = cross(va,vb);
+	vec3 va = normalize(vec3(2, 0, heightRight - heightLeft));
+    vec3 vb = normalize(vec3(0, 2, heightTop - heightBottom));
+    vec3 normal = cross(va,vb);
 
-//	return normalize(normal);
-//}
+	return normalize(normal);
+}
 
 
 out vec4 o_PSOutput;
@@ -42,6 +42,9 @@ void main()
 {
 
 	vec3 f_Normal = v_Normal;
+
+	float resolution = 1.f / 64;
+	f_Normal = ComputeNormal(v_Height, v_TexCoords, resolution);
 
 	vec4 splatMap = textureLod(g_SplatMapTexture, v_TexCoords, 0.0f);
 	//vec3 lightDirection = normalize(vec3(0.5f, 0.5f, 1.0f));
@@ -59,16 +62,16 @@ void main()
 	float uvScale = 10.f;
 	vec2 diffuseTexCoords = v_TexCoords * uvScale;
 	diffuse = texture(g_Material.m_DiffuseTexture, diffuseTexCoords).rgb;
-	diffuse = vec3(0.5f * (1.f + v_Height / 300.f), 0, 0);
+	//diffuse = vec3(0.5f * (1.f + v_Height / 300.f), 0, 0);
 
-	vec3 finalColor = diffuse /** lightPower*/;
+	vec3 finalColor = diffuse * lightPower;
+	//vec3 finalColor = diffuse /** lightPower*/;
 	//finalColor *= vec3(v_TexCoords, 0);
     o_PSOutput = vec4(finalColor, 1.0);
 
 	
 
-	//float resolution = 1.f / 64;
-	//normal = ComputeNormal(v_Height, v_TexCoords, resolution);
+
 
     //o_PSOutput = vec4(0.5f * (normal + vec3(1,1,1)), 1.0);
    

@@ -14,5 +14,8 @@ class Sector
 	[transient]
 	Heightfield* Heightfield;
 
+	[transient]
+	Entity* TerrainPatchEntity;
+
 	std::string OSMFilename;
 }
