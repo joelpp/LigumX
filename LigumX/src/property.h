@@ -11,6 +11,7 @@ enum LXType
 	LXType_CurlRequest,
 	LXType_DebugRenderer,
 	LXType_DisplayOptions,
+	LXType_EEditorTool,
 	LXType_Editor,
 	LXType_EditorOptions,
 	LXType_EditorTool,

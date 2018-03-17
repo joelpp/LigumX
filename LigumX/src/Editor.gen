@@ -1,4 +1,4 @@
-enum EditorTool
+enum EEditorTool
 {
 	None,
 	TerrainTool,
@@ -13,7 +13,7 @@ class Editor
 {
 	EditorOptions* Options;
 	
-	EditorTool ActiveTool;
+	EEditorTool ActiveTool;
 
 	[transient, adder, hidden]
 	glm::vec4 XYZMask

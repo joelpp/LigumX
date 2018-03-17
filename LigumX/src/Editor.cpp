@@ -49,7 +49,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(Editor, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Editor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
-{ "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_EditorTool, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
+{ "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_EEditorTool, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
 { "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
@@ -68,7 +68,7 @@ bool Editor::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-const std::string EnumValues_EditorTool[] = 
+const std::string EnumValues_EEditorTool[] = 
 {
 "None",
 "TerrainTool",
@@ -78,14 +78,14 @@ const std::string EnumValues_EditorTool[] =
 "PickingTool",
 };
 
-const EditorTool Indirection_EditorTool[] =
+const EEditorTool Indirection_EEditorTool[] =
 {
-	EditorTool_None,
-	EditorTool_TerrainTool,
-	EditorTool_EntityManipulator,
-	EditorTool_SectorTool,
-	EditorTool_OSMTool,
-	EditorTool_PickingTool,
+	EEditorTool_None,
+	EEditorTool_TerrainTool,
+	EEditorTool_EntityManipulator,
+	EEditorTool_SectorTool,
+	EEditorTool_OSMTool,
+	EEditorTool_PickingTool,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -278,32 +278,32 @@ void Editor::ApplyTool()
 
 	switch (m_ActiveTool)
 	{
-		case EditorTool_EntityManipulator:
+		case EEditorTool_EntityManipulator:
 		{
 			UpdateManipulator();
 			break;
 		}
-		case EditorTool_TerrainTool:
+		case EEditorTool_TerrainTool:
 		{
 			m_TerrainTool->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
-		case EditorTool_SectorTool:
+		case EEditorTool_SectorTool:
 		{
 			m_SectorTool->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
-		case EditorTool_OSMTool:
+		case EEditorTool_OSMTool:
 		{
 			m_OSMTool->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
-		case EditorTool_PickingTool:
+		case EEditorTool_PickingTool:
 		{
 			m_PickingTool->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
-		case EditorTool_None:
+		case EEditorTool_None:
 		default:
 		{
 			break;
@@ -813,7 +813,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_ENUM(ShaderFamily);
 	SHOW_ENUM(GLPixelType);
 	SHOW_ENUM(GLPixelFormat);
-	SHOW_ENUM(EditorTool);
+	SHOW_ENUM(EEditorTool);
 
 	//case LXType_GLPixelType: \
 	//{ \

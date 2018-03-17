@@ -24,19 +24,19 @@ class TerrainTool;
 class Node;
 
 extern Editor* g_Editor;
-enum EditorTool
+enum EEditorTool
 {
-EditorTool_None,
-EditorTool_TerrainTool,
-EditorTool_EntityManipulator,
-EditorTool_SectorTool,
-EditorTool_OSMTool,
-EditorTool_PickingTool,
+EEditorTool_None,
+EEditorTool_TerrainTool,
+EEditorTool_EntityManipulator,
+EEditorTool_SectorTool,
+EEditorTool_OSMTool,
+EEditorTool_PickingTool,
 };
 
-extern const std::string EnumValues_EditorTool[6];
-extern const EditorTool Indirection_EditorTool[6];
-const int EnumLength_EditorTool = 6;
+extern const std::string EnumValues_EEditorTool[6];
+extern const EEditorTool Indirection_EEditorTool[6];
+const int EnumLength_EEditorTool = 6;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Editor
@@ -55,8 +55,8 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 EditorOptions*& GetOptions() { return m_Options; }; 
 void SetOptions(EditorOptions* value) { m_Options = value; }; 
-const EditorTool& GetActiveTool() { return m_ActiveTool; }; 
-void SetActiveTool(EditorTool value) { m_ActiveTool = value; }; 
+const EEditorTool& GetActiveTool() { return m_ActiveTool; }; 
+void SetActiveTool(EEditorTool value) { m_ActiveTool = value; }; 
 const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
 void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
 void AddTo_XYZMask(glm::vec4 value) { m_XYZMask += value; };
@@ -87,7 +87,7 @@ private:
 int m_ObjectID;
 std::string m_Name;
 EditorOptions* m_Options;
-EditorTool m_ActiveTool;
+EEditorTool m_ActiveTool;
 glm::vec4 m_XYZMask;
 bool m_ManipulatorDragging = false;
 glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
