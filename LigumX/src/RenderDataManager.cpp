@@ -268,7 +268,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 				index++;
 			}
 
-#if 0
+#if 1
 			if (i != nodes.size() - 1)
 			{
 				Node* nextNode = nodes[i + 1];

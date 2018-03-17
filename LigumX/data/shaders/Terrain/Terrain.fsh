@@ -29,8 +29,8 @@ vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 
 	//vec3 normal = normalize(vec3(0,0,1) + vec3(1,0,0) * dhdu + vec3(0,1,0) * dhdv);
 
-	vec3 va = normalize(vec3(2, 0, heightRight - heightLeft));
-    vec3 vb = normalize(vec3(0, 2, heightTop - heightBottom));
+	vec3 va = normalize(vec3(2, 0, 1.f / 25 * (heightRight - heightLeft)));
+    vec3 vb = normalize(vec3(0, 2, 1.f / 25 * (heightTop - heightBottom)));
     vec3 normal = cross(va,vb);
 
 	return normalize(normal);

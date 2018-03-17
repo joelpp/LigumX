@@ -4,10 +4,17 @@ class PickingTool
 
 	[transient, hidden]
 	Entity* PickedEntity
+
+	[transient]
+	glm::vec3 AimingWorldPosition
+
+	[transient]
+	float AimingID;
+
 	[transient]
 	glm::vec3 PickedWorldPosition
 
-	[transient]
+	[transient, hidden]
 	glm::vec4 PickingData;
 
 	[transient]

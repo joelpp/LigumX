@@ -118,11 +118,8 @@ void DisplaySectorDebug(Sector* sector);
 void Display();
 
 glm::vec3 GetWorldSpaceRay(glm::vec3 ndc, const glm::mat4& projectionMatrixInverse, const glm::mat4& viewMatrixInverse);
-glm::vec3 GetAimingWorldSpacePosition2(glm::vec3 worldSpaceRay, glm::vec3 cameraPosition);
-glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mousePosition);
+glm::vec3 IntersectRayWithFlatPlane(glm::vec3 worldSpaceRay, glm::vec3 cameraPosition);
 
-
-glm::vec3 GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPosition, bool printDebugInfo);
 glm::vec3 GetHighlightColor(Sector* sector);
 
 std::vector<glm::vec3>& GetWayDebugColors() { return m_WayDebugColors; };

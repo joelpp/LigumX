@@ -88,68 +88,6 @@ SectorTool::SectorTool()
 }
 
 
-glm::vec3 SectorTool::GetWorldSpaceRay(glm::vec3 ndc, const glm::mat4& projectionMatrixInverse, const glm::mat4& viewMatrixInverse)
-{
-	glm::vec4 clipCoords = glm::vec4(glm::vec2(ndc), -1.0f, 1.0f);
-	clipCoords.y = -clipCoords.y;
-
-	glm::vec4 cameraRay = projectionMatrixInverse * clipCoords;
-
-	cameraRay.z = -1;
-	cameraRay.w = 0;
-
-	glm::vec4 worldSpaceRay = viewMatrixInverse * cameraRay;
-
-	return glm::normalize(glm::vec3(worldSpaceRay));
-}
-
-glm::vec3 SectorTool::GetAimingWorldSpacePosition2(glm::vec3 worldSpaceRay, glm::vec3 cameraPosition)
-{
-	glm::vec3 planeNormal = glm::vec3(0, 0, 1);
-	glm::vec3 pointOnPlane = glm::vec3(0, 0, 0);
-
-	float t = dot(pointOnPlane - cameraPosition, planeNormal) / glm::dot(glm::vec3(worldSpaceRay), planeNormal);
-
-	glm::vec3 worldPosition = cameraPosition + t * glm::vec3(worldSpaceRay);
-
-	return worldPosition;
-}
-
-
-glm::vec3 SectorTool::GetAimingWorldSpacePosition(const glm::vec2& mouseScreenPosition, bool printDebugInfo)
-{
-	Renderer* renderer = LigumX::GetInstance().GetRenderer();
-
-	const glm::vec2& windowSize = glm::vec2(renderer->m_Window->GetSize());
-
-	const glm::vec2 mouseNDC = mouseScreenPosition / windowSize;
-	const glm::vec2 mouseScreen = mouseNDC * 2.f - glm::vec2(1, 1);
-
-	const glm::vec4 screenSpaceRay = glm::normalize(glm::vec4(mouseScreen, 1.f, 0.f));
-
-	const glm::mat4 cameraInverse = glm::inverse(renderer->GetDebugCamera()->GetViewProjectionMatrix());
-	const glm::vec4 worldSpaceRay = glm::normalize(glm::mul(cameraInverse, screenSpaceRay));
-
-	if (printDebugInfo)
-	{
-		PRINTVEC2(mouseNDC);
-		PRINTVEC2(mouseScreen);
-
-		PRINTVEC4(worldSpaceRay);
-	}
-
-	const glm::vec3& cameraPosition = renderer->GetDebugCamera()->GetPosition();
-	const glm::vec3& cameraFront = renderer->GetDebugCamera()->GetFrontVector();
-
-	const glm::vec3 planeNormal = glm::vec3(0, 0, 1);
-	const glm::vec3 pointOnPlane = glm::vec3(0, 0, 0);
-
-	float t = glm::dot(pointOnPlane - cameraPosition, planeNormal) / glm::dot(cameraFront, planeNormal);
-
-	glm::vec3 worldPosition = cameraPosition + t * cameraFront;
-
-	return worldPosition;
-}
 
 glm::vec3 SectorTool::GetHighlightColor(Sector* sector)
 {
@@ -177,22 +115,6 @@ glm::vec3 SectorTool::GetHighlightColor(Sector* sector)
 	return color;
 }
 
-glm::vec3 SectorTool::GetAimingWorldSpacePosition(const glm::vec2& mousePosition)
-{
-	Renderer* renderer = LigumX::GetInstance().GetRenderer();
-
-	glm::ivec2 screenSize = renderer->m_Window->GetSize();
-
-	glm::vec2 normalizedScreenPosition = glm::vec2(mousePosition / glm::vec2(screenSize));
-
-	glm::vec3 ndc = glm::vec3(2.f * normalizedScreenPosition - glm::vec2(1.f, 1.f), 1.f);
-
-	glm::vec3 wsRay = GetWorldSpaceRay(ndc, renderer->GetDebugCamera()->GetProjectionMatrixInverse(), renderer->GetDebugCamera()->GetViewMatrixInverse());
-
-	glm::vec3 worldPosition = GetAimingWorldSpacePosition2(wsRay, renderer->GetDebugCamera()->GetPosition());
-
-	return worldPosition;
-}
 
 bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
@@ -203,16 +125,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 
-	glm::vec3 worldPosition;
-	
-	if (g_Editor->GetPickingTool()->IsPickingEntity())
-	{
-		worldPosition = g_Editor->GetPickingTool()->GetPickedWorldPosition();
-	}
-	else
-	{
-		worldPosition = GetAimingWorldSpacePosition(mousePosition);
-	} 
+	glm::vec3 worldPosition = g_Editor->GetPickingTool()->GetAimingWorldPosition();
 
 	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
 

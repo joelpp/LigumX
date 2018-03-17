@@ -35,6 +35,7 @@ void main() {
 	}
 
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * worldPosition;
+	gl_Position.y = 990 - gl_Position.y;
 
 
 	vWorldPosition = worldPosition.xyz;

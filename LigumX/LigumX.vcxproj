@@ -195,6 +195,7 @@
     <ClCompile Include="src\pipelines.cpp" />
     <ClCompile Include="src\PostEffects.cpp" />
     <ClCompile Include="src\program_pipeline.cpp" />
+    <ClCompile Include="src\RaycastingHelpers.cpp" />
     <ClCompile Include="src\relation.cpp" />
     <ClCompile Include="src\RenderDataManager.cpp" />
     <ClCompile Include="src\renderer.cpp" />
@@ -298,6 +299,7 @@
     <ClInclude Include="src\PostEffects.h" />
     <ClInclude Include="src\program_pipeline.h" />
     <ClInclude Include="src\property.h" />
+    <ClInclude Include="src\RaycastingHelpers.h" />
     <ClInclude Include="src\relation.h" />
     <ClInclude Include="src\RenderDataManager.h" />
     <ClInclude Include="src\renderer.h" />

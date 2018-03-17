@@ -189,9 +189,7 @@ float Sector::SampleHeight(const glm::vec2& normalizedPos)
 		return 0.f;
 	}
 
-	glm::vec2 pos = glm::clamp(normalizedPos, glm::vec2(0.f, 0.f), glm::vec2(0.99f, 0.99f));
-
-	return m_Heightfield->SampleHeight(pos);
+	return m_Heightfield->SampleHeight(normalizedPos);
 }
 
 float Sector::SampleHeight(const glm::vec3& worldPos)

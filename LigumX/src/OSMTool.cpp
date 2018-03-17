@@ -7,6 +7,7 @@
 #include "Entity.h"
 
 #include "SectorTool.h"
+#include "PickingTool.h"
 #include "SectorManager.h"
 #include "Sector.h"
 
@@ -40,9 +41,7 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 {
 	if (mouseButton1Down)
 	{
-		const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
-
-		m_WorldSpacePosition = g_Editor->GetSectorTool()->GetAimingWorldSpacePosition(mousePosition);
+		m_WorldSpacePosition = g_Editor->GetPickingTool()->GetAimingWorldPosition();
 
 		glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(m_WorldSpacePosition));
 

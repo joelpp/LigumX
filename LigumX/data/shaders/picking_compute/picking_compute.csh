@@ -22,7 +22,6 @@ uniform vec2 g_MousePosition;
 void main() 
 {
 	vec2 coords = g_MousePosition / g_WindowSize;
-	coords.y = 1.f - coords.y;
 
 	outMousePosition.rgba = texture(g_PickingBuffer, coords).rgba;
 

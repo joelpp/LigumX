@@ -45,7 +45,7 @@ PerlinNoise* Heightfield::pNoise;
 
 Heightfield::Heightfield()
 {
-	m_Width = 64;
+	m_Width = 2048;
 
 }
 
@@ -77,6 +77,8 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 
 			m_MaxHeight = max(m_MaxHeight, z);
 			m_MinHeight = min(m_MinHeight, z);
+
+			//z = wsPos.y * 1000.f;
 
 			if (g_EngineSettings->GetGenerateFlatTerrain())
 			{
@@ -360,12 +362,18 @@ float Heightfield::SampleHeight(const glm::vec2& normalizedPos)
 {
 	glm::vec2 correctedPos = glm::vec2(1.f - normalizedPos.x, normalizedPos.y);
 
-	glm::ivec2 samplingIndices = (glm::ivec2) (correctedPos * (float) m_Width);
+	glm::vec2 samplingIndices = (correctedPos * (float) m_Width);
 
-	samplingIndices.x = min(samplingIndices.x, 63);
-	samplingIndices.y = min(samplingIndices.y, 63);
+	glm::ivec2 indices = glm::ivec2(samplingIndices);
+	glm::vec2 weights = glm::fract(samplingIndices);
 
-	int index = samplingIndices.y * m_Width + samplingIndices.x;
+	int index = indices.y * m_Width + indices.x;
+
+	int indexAround[4];
+	indexAround[0] = index - 1;
+	indexAround[1] = index + 1;
+	indexAround[2] = index - m_Width;
+	indexAround[3] = index + m_Width;
 
 	return m_HeightData[index];
 }
