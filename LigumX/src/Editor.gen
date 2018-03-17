@@ -1,11 +1,11 @@
 enum EEditorTool
 {
-	None,
 	TerrainTool,
 	EntityManipulator,
 	SectorTool,
 	OSMTool,
 	PickingTool,
+	None,
 }
 
 [globalinstance]
@@ -37,6 +37,9 @@ class Editor
 	OSMTool* OSMTool;
 	PickingTool* PickingTool;
 	TerrainTool* TerrainTool;
+
+	[transient]
+	std::vector<EditorTool> Tools;
 
 	int PickingBufferSize;
 

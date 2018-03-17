@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "EditorTool.h"
 
 
 #pragma region  FORWARD_DECLARATIONS TerrainTool
@@ -23,7 +24,7 @@ const int EnumLength_TerrainEditionMode = 3;
 
 #pragma endregion  FORWARD_DECLARATIONS TerrainTool
 
-class TerrainTool
+class TerrainTool : public EditorTool
 {
 #pragma region  HEADER TerrainTool
 public:
@@ -61,6 +62,7 @@ bool Serialize(bool writing);
 
 public:
 
-bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
+	bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
+
 
 };

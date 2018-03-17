@@ -60,6 +60,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "OSMTool", PIDX_OSMTool, offsetof(Editor, m_OSMTool), 0, LXType_OSMTool, true, LXType_None, 0, 0, 0, }, 
 { "PickingTool", PIDX_PickingTool, offsetof(Editor, m_PickingTool), 0, LXType_PickingTool, true, LXType_None, 0, 0, 0, }, 
 { "TerrainTool", PIDX_TerrainTool, offsetof(Editor, m_TerrainTool), 0, LXType_TerrainTool, true, LXType_None, 0, 0, 0, }, 
+{ "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, false, LXType_EditorTool, PropertyFlags_Transient, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, }, 
 };
@@ -70,22 +71,22 @@ bool Editor::Serialize(bool writing)
 }
 const std::string EnumValues_EEditorTool[] = 
 {
-"None",
 "TerrainTool",
 "EntityManipulator",
 "SectorTool",
 "OSMTool",
 "PickingTool",
+"None",
 };
 
 const EEditorTool Indirection_EEditorTool[] =
 {
-	EEditorTool_None,
 	EEditorTool_TerrainTool,
 	EEditorTool_EntityManipulator,
 	EEditorTool_SectorTool,
 	EEditorTool_OSMTool,
 	EEditorTool_PickingTool,
+	EEditorTool_None,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -110,6 +111,9 @@ void Editor::Initialize()
 	m_OSMTool = new OSMTool();
 	m_PickingTool = new PickingTool();
 	m_TerrainTool = new TerrainTool();
+
+	m_Tools.resize(EEditorTool_None - 1);
+	m_Tools[EEditorTool_TerrainTool] = new TerrainTool();
 }
 
 
@@ -285,7 +289,7 @@ void Editor::ApplyTool()
 		}
 		case EEditorTool_TerrainTool:
 		{
-			m_TerrainTool->Process(mouseButton1Down, mousePosition, dragDistance);
+			m_Tools[m_ActiveTool]->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
 		case EEditorTool_SectorTool:

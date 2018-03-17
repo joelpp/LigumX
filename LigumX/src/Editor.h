@@ -21,17 +21,18 @@ class SectorTool;
 class OSMTool;
 class PickingTool;
 class TerrainTool;
+class EditorTool;
 class Node;
 
 extern Editor* g_Editor;
 enum EEditorTool
 {
-EEditorTool_None,
 EEditorTool_TerrainTool,
 EEditorTool_EntityManipulator,
 EEditorTool_SectorTool,
 EEditorTool_OSMTool,
 EEditorTool_PickingTool,
+EEditorTool_None,
 };
 
 extern const std::string EnumValues_EEditorTool[6];
@@ -79,6 +80,9 @@ PickingTool*& GetPickingTool() { return m_PickingTool; };
 void SetPickingTool(PickingTool* value) { m_PickingTool = value; }; 
 TerrainTool*& GetTerrainTool() { return m_TerrainTool; }; 
 void SetTerrainTool(TerrainTool* value) { m_TerrainTool = value; }; 
+std::vector<EditorTool*>& GetTools() { return m_Tools; }; 
+void SetTools(std::vector<EditorTool*> value) { m_Tools = value; }; 
+void AddTo_Tools(EditorTool* value) { m_Tools.push_back(value); };
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 Node*& GetSelectedNode() { return m_SelectedNode; }; 
@@ -98,10 +102,11 @@ SectorTool* m_SectorTool;
 OSMTool* m_OSMTool;
 PickingTool* m_PickingTool;
 TerrainTool* m_TerrainTool;
+std::vector<EditorTool*> m_Tools;
 int m_PickingBufferSize = 0;
 Node* m_SelectedNode;
 public:
-static const int g_PropertyCount = 16;
+static const int g_PropertyCount = 17;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -120,6 +125,7 @@ PIDX_SectorTool,
 PIDX_OSMTool,
 PIDX_PickingTool,
 PIDX_TerrainTool,
+PIDX_Tools,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };

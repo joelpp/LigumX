@@ -1,4 +1,5 @@
 #include "TerrainTool.h"
+#include "Logging.h"
 
 #pragma region  CLASS_SOURCE TerrainTool
 
@@ -40,7 +41,7 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 {
 	if (mouseButton1Down)
 	{
-
+		PRINTSTRING("Processing terrain tool!");
 	}
 
 	return false;
