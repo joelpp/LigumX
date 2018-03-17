@@ -213,6 +213,12 @@
     <ClCompile Include="src\RaycastingHelpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TerrainTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -521,6 +527,12 @@
     <ClInclude Include="src\RaycastingHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\TerrainTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -560,5 +572,7 @@
     <None Include="src\PickingTool.gen" />
     <None Include="src\OSMElement.gen" />
     <None Include="src\Heightfield.gen" />
+    <None Include="src\TerrainTool.gen" />
+    <None Include="src\DebugRenderer.gen" />
   </ItemGroup>
 </Project>

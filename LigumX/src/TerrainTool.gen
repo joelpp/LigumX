@@ -1,0 +1,14 @@
+enum TerrainEditionMode
+{
+	None,
+	Height,
+	Color
+}
+
+
+class TerrainTool
+{
+	Sector* Sector;
+
+	TerrainEditionMode Mode;
+}

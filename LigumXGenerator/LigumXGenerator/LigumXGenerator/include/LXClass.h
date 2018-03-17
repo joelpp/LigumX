@@ -87,6 +87,7 @@ typedef std::vector<LXEnum> EnumList;
 struct LXClass
 {
 	std::string m_Name;
+	std::string m_ParentName;
 	std::string m_FileNames[FileType_NumFileTypes];
 	int m_PropertyFlags;
 	VariableList m_Members;

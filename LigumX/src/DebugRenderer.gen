@@ -1,0 +1,5 @@
+[globalinstance]
+class DebugRenderer
+{
+	bool Enabled;
+}

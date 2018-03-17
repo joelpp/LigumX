@@ -140,6 +140,12 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				currentClass.m_Name = tokens[1];
 				generatingClass = true;
 
+				int numTokensForInclude = 3;
+				if (tokens.size() == numTokensForInclude)
+				{
+					currentClass.m_ParentName = tokens[numTokensForInclude - 1];
+				}
+
 				Variable objectIDVar;
 				objectIDVar.m_IsPtr = false;
 				objectIDVar.m_IsTemplate = false;

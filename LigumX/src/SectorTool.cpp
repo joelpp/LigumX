@@ -3,6 +3,7 @@
 #include "EngineSettings.h"
 
 #include "Renderer.h"
+#include "DebugRenderer.h"
 #include "MainWindow.h"
 #include "RenderDataManager.h"
 #include "GUI.h"

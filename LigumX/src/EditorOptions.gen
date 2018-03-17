@@ -16,6 +16,7 @@ class EditorOptions
 	bool DisplayOSMTool = false;
 	bool DisplaySectorTool = true;
 	bool DisplayFramebufferTool = true;
+	bool DisplayTerrainTool = true;
 
 	bool DisplayAxisGizmo = true;
 

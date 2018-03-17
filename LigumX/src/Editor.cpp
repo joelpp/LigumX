@@ -34,6 +34,7 @@
 #include "SectorTool.h"
 #include "OSMTool.h"
 #include "PickingTool.h"
+#include "TerrainTool.h"
 
 
 #pragma region  CLASS_SOURCE Editor
@@ -58,6 +59,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, 0, 0, 0, }, 
 { "OSMTool", PIDX_OSMTool, offsetof(Editor, m_OSMTool), 0, LXType_OSMTool, true, LXType_None, 0, 0, 0, }, 
 { "PickingTool", PIDX_PickingTool, offsetof(Editor, m_PickingTool), 0, LXType_PickingTool, true, LXType_None, 0, 0, 0, }, 
+{ "TerrainTool", PIDX_TerrainTool, offsetof(Editor, m_TerrainTool), 0, LXType_TerrainTool, true, LXType_None, 0, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, }, 
 };
@@ -69,8 +71,7 @@ bool Editor::Serialize(bool writing)
 const std::string EnumValues_EditorTool[] = 
 {
 "None",
-"TerrainHeight",
-"TerrainSplatMap",
+"TerrainTool",
 "EntityManipulator",
 "SectorTool",
 "OSMTool",
@@ -80,8 +81,7 @@ const std::string EnumValues_EditorTool[] =
 const EditorTool Indirection_EditorTool[] =
 {
 	EditorTool_None,
-	EditorTool_TerrainHeight,
-	EditorTool_TerrainSplatMap,
+	EditorTool_TerrainTool,
 	EditorTool_EntityManipulator,
 	EditorTool_SectorTool,
 	EditorTool_OSMTool,
@@ -109,6 +109,7 @@ void Editor::Initialize()
 	m_SectorTool = new SectorTool();
 	m_OSMTool = new OSMTool();
 	m_PickingTool = new PickingTool();
+	m_TerrainTool = new TerrainTool();
 }
 
 
@@ -282,9 +283,9 @@ void Editor::ApplyTool()
 			UpdateManipulator();
 			break;
 		}
-		case EditorTool_TerrainSplatMap:
+		case EditorTool_TerrainTool:
 		{
-			UpdateTerrainEditor();
+			m_TerrainTool->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
 		case EditorTool_SectorTool:

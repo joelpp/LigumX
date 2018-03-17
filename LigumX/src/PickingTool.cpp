@@ -44,9 +44,24 @@ bool PickingTool::Serialize(bool writing)
 
 bool PickingTool::CheckEntity(Entity* entity)
 {
-	if (MathUtils::FuzzyEquals(m_PickedID, entity->GetPickingID(), 0.005f))
+	if (m_AimingID == 0)
+	{
+		return false;
+	}
+
+	Renderer& renderer = Renderer::GetInstance();
+	const glm::vec3& cameraPosition = renderer.GetDebugCamera()->GetPosition();
+
+	if (MathUtils::FuzzyEquals(m_AimingID, entity->GetPickingID(), 0.005f))
 	{
 		m_PickedEntity = entity;
+
+		SetPickedWorldPosition(m_AimingWorldPosition);
+		SetPickedID(m_AimingID);
+
+		float depth = glm::length(m_PickedWorldPosition - cameraPosition);
+
+		SetPickedDepth(depth);
 
 		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_PickedEntity->GetPosition());
 		
@@ -119,23 +134,10 @@ void PickingTool::UpdatePickingData()
 
 	SetAimingID(m_PickingData[3]);
 
-	if (m_AimingID != 0.f)
-	{
-		SetPickedWorldPosition(m_AimingWorldPosition);
-		SetPickedID(m_AimingID);
-
-		const glm::vec3& cameraPosition = renderer->GetDebugCamera()->GetPosition();
-
-		float depth = glm::length(m_PickedWorldPosition - cameraPosition);
-
-		SetPickedDepth(depth);
-	}
-	else
+	if (m_AimingID == 0.f)
 	{
 		// We need to compute aiming world position ourselves
-
 		m_AimingWorldPosition = RaycastingHelpers::GetAimingWorldSpacePosition();
-
 	}
 
 }

@@ -20,23 +20,23 @@ class EditorOptions;
 class SectorTool;
 class OSMTool;
 class PickingTool;
+class TerrainTool;
 class Node;
 
 extern Editor* g_Editor;
 enum EditorTool
 {
 EditorTool_None,
-EditorTool_TerrainHeight,
-EditorTool_TerrainSplatMap,
+EditorTool_TerrainTool,
 EditorTool_EntityManipulator,
 EditorTool_SectorTool,
 EditorTool_OSMTool,
 EditorTool_PickingTool,
 };
 
-extern const std::string EnumValues_EditorTool[7];
-extern const EditorTool Indirection_EditorTool[7];
-const int EnumLength_EditorTool = 7;
+extern const std::string EnumValues_EditorTool[6];
+extern const EditorTool Indirection_EditorTool[6];
+const int EnumLength_EditorTool = 6;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Editor
@@ -77,6 +77,8 @@ OSMTool*& GetOSMTool() { return m_OSMTool; };
 void SetOSMTool(OSMTool* value) { m_OSMTool = value; }; 
 PickingTool*& GetPickingTool() { return m_PickingTool; }; 
 void SetPickingTool(PickingTool* value) { m_PickingTool = value; }; 
+TerrainTool*& GetTerrainTool() { return m_TerrainTool; }; 
+void SetTerrainTool(TerrainTool* value) { m_TerrainTool = value; }; 
 const int& GetPickingBufferSize() { return m_PickingBufferSize; }; 
 void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 Node*& GetSelectedNode() { return m_SelectedNode; }; 
@@ -95,10 +97,11 @@ float m_TerrainBrushSize = 0.f;
 SectorTool* m_SectorTool;
 OSMTool* m_OSMTool;
 PickingTool* m_PickingTool;
+TerrainTool* m_TerrainTool;
 int m_PickingBufferSize = 0;
 Node* m_SelectedNode;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 16;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -116,6 +119,7 @@ PIDX_TerrainBrushSize,
 PIDX_SectorTool,
 PIDX_OSMTool,
 PIDX_PickingTool,
+PIDX_TerrainTool,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };

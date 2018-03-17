@@ -1,8 +1,7 @@
 enum EditorTool
 {
 	None,
-	TerrainHeight,
-	TerrainSplatMap,
+	TerrainTool,
 	EntityManipulator,
 	SectorTool,
 	OSMTool,
@@ -37,6 +36,7 @@ class Editor
 	SectorTool* SectorTool;
 	OSMTool* OSMTool;
 	PickingTool* PickingTool;
+	TerrainTool* TerrainTool;
 
 	int PickingBufferSize;
 

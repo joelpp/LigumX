@@ -109,7 +109,6 @@ SectorTool();
 
 bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
 
-
 CurlRequest m_Request;
 
 Sector* m_LoadingSector;
@@ -117,15 +116,14 @@ Sector* m_LoadingSector;
 void DisplaySectorDebug(Sector* sector);
 void Display();
 
-glm::vec3 GetWorldSpaceRay(glm::vec3 ndc, const glm::mat4& projectionMatrixInverse, const glm::mat4& viewMatrixInverse);
-glm::vec3 IntersectRayWithFlatPlane(glm::vec3 worldSpaceRay, glm::vec3 cameraPosition);
-
 glm::vec3 GetHighlightColor(Sector* sector);
 
 std::vector<glm::vec3>& GetWayDebugColors() { return m_WayDebugColors; };
 std::vector<int>& GetWayDisplayToggles() { return m_WayDisplayToggles; };
+
 private:
-	std::vector<int> m_WayDisplayToggles;
-	std::vector<glm::vec3> m_WayDebugColors;
+
+std::vector<int> m_WayDisplayToggles;
+std::vector<glm::vec3> m_WayDebugColors;
 
 };
