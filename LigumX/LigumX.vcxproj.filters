@@ -219,6 +219,9 @@
     <ClCompile Include="src\DebugRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\EditorTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -533,6 +536,9 @@
     <ClInclude Include="src\DebugRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\EditorTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -574,5 +580,6 @@
     <None Include="src\Heightfield.gen" />
     <None Include="src\TerrainTool.gen" />
     <None Include="src\DebugRenderer.gen" />
+    <None Include="src\EditorTool.gen" />
   </ItemGroup>
 </Project>

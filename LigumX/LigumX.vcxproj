@@ -166,6 +166,7 @@
     <ClCompile Include="src\DisplayOptions.cpp" />
     <ClCompile Include="src\Editor.cpp" />
     <ClCompile Include="src\EditorOptions.cpp" />
+    <ClCompile Include="src\EditorTool.cpp" />
     <ClCompile Include="src\EngineSettings.cpp" />
     <ClCompile Include="src\EngineStats.cpp" />
     <ClCompile Include="src\entity.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="src\DisplayOptions.h" />
     <ClInclude Include="src\Editor.h" />
     <ClInclude Include="src\EditorOptions.h" />
+    <ClInclude Include="src\EditorTool.h" />
     <ClInclude Include="src\EngineSettings.h" />
     <ClInclude Include="src\EngineStats.h" />
     <ClInclude Include="src\entity.h" />
@@ -343,6 +345,7 @@
     <None Include="src\DisplayOptions.gen" />
     <None Include="src\Editor.gen" />
     <None Include="src\EditorOptions.gen" />
+    <None Include="src\EditorTool.gen" />
     <None Include="src\EngineSettings.gen" />
     <None Include="src\EngineStats.gen" />
     <None Include="src\Entity.gen" />

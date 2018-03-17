@@ -1,0 +1,4 @@
+class EditorTool
+{
+	bool Active;
+}
