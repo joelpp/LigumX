@@ -2,6 +2,8 @@
 #include <vector>
 #include "glm/glm.hpp"
 
+#include "EditorTool.h"
+
 #pragma region  FORWARD_DECLARATIONS OSMTool
 #include "property.h"
 
@@ -12,7 +14,7 @@ class Way;
 
 #pragma endregion  FORWARD_DECLARATIONS OSMTool
 
-class OSMTool
+class OSMTool : public EditorTool
 {
 #pragma region  HEADER OSMTool
 public:
@@ -65,7 +67,7 @@ bool Serialize(bool writing);
 
 #pragma endregion  HEADER OSMTool
 
-bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
+bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 
 
 };

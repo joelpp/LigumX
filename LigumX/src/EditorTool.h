@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "LXError.h"
 
 #pragma region  FORWARD_DECLARATIONS EditorTool
 #include "property.h"
@@ -43,7 +44,11 @@ bool Serialize(bool writing);
 
 #pragma endregion  HEADER EditorTool
 
-virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) = 0; 
+virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+{
+	lxAssert0();
+	return false;
+}
 
 
 };

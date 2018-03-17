@@ -33,11 +33,6 @@ class Editor
 	[adder]
 	float TerrainBrushSize;
 
-	SectorTool* SectorTool;
-	OSMTool* OSMTool;
-	PickingTool* PickingTool;
-	TerrainTool* TerrainTool;
-
 	[transient]
 	std::vector<EditorTool> Tools;
 

@@ -10,6 +10,10 @@
 class Texture;
 class SectorData;
 class Sector;
+class PickingTool;
+class OSMTool;
+class SectorTool;
+class TerrainTool;
 
 
 #pragma region  FORWARD_DECLARATIONS Editor
@@ -17,10 +21,6 @@ class Sector;
 
 class Editor;
 class EditorOptions;
-class SectorTool;
-class OSMTool;
-class PickingTool;
-class TerrainTool;
 class EditorTool;
 class Node;
 
@@ -72,14 +72,6 @@ void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; };
 const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
 void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; }; 
 void AddTo_TerrainBrushSize(float value) { m_TerrainBrushSize += value; };
-SectorTool*& GetSectorTool() { return m_SectorTool; }; 
-void SetSectorTool(SectorTool* value) { m_SectorTool = value; }; 
-OSMTool*& GetOSMTool() { return m_OSMTool; }; 
-void SetOSMTool(OSMTool* value) { m_OSMTool = value; }; 
-PickingTool*& GetPickingTool() { return m_PickingTool; }; 
-void SetPickingTool(PickingTool* value) { m_PickingTool = value; }; 
-TerrainTool*& GetTerrainTool() { return m_TerrainTool; }; 
-void SetTerrainTool(TerrainTool* value) { m_TerrainTool = value; }; 
 std::vector<EditorTool*>& GetTools() { return m_Tools; }; 
 void SetTools(std::vector<EditorTool*> value) { m_Tools = value; }; 
 void AddTo_Tools(EditorTool* value) { m_Tools.push_back(value); };
@@ -98,15 +90,11 @@ glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
 bool m_EditingTerrain = false;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 0.f;
-SectorTool* m_SectorTool;
-OSMTool* m_OSMTool;
-PickingTool* m_PickingTool;
-TerrainTool* m_TerrainTool;
 std::vector<EditorTool*> m_Tools;
 int m_PickingBufferSize = 0;
 Node* m_SelectedNode;
 public:
-static const int g_PropertyCount = 17;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -121,10 +109,6 @@ PIDX_ManipulatorStartPosition,
 PIDX_EditingTerrain,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
-PIDX_SectorTool,
-PIDX_OSMTool,
-PIDX_PickingTool,
-PIDX_TerrainTool,
 PIDX_Tools,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
@@ -233,6 +217,14 @@ Texture* m_SplatMapTexture;
 std::vector<unsigned char> m_SplatMapData;
 
 void DisplayActiveTool();
+
+#define DEFINE_TOOL_GETTER(name) name* Get##name() { return (##name *) m_Tools[EEditorTool_##name]; }
+
+DEFINE_TOOL_GETTER(PickingTool);
+//DEFINE_TOOL_GETTER(SectorTool);
+//PickingTool* GetPickingTool() { return (PickingTool*)m_Tools[EEditorTool_PickingTool]; }
+SectorTool* GetSectorTool() { return (SectorTool*)m_Tools[EEditorTool_SectorTool]; }
+OSMTool* GetOSMTool() { return (OSMTool*) m_Tools[EEditorTool_OSMTool]; }
 
 private:
 	bool m_RenderingMenu;

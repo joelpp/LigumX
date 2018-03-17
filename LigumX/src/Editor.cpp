@@ -56,10 +56,6 @@ const ClassPropertyData Editor::g_Properties[] =
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
-{ "SectorTool", PIDX_SectorTool, offsetof(Editor, m_SectorTool), 0, LXType_SectorTool, true, LXType_None, 0, 0, 0, }, 
-{ "OSMTool", PIDX_OSMTool, offsetof(Editor, m_OSMTool), 0, LXType_OSMTool, true, LXType_None, 0, 0, 0, }, 
-{ "PickingTool", PIDX_PickingTool, offsetof(Editor, m_PickingTool), 0, LXType_PickingTool, true, LXType_None, 0, 0, 0, }, 
-{ "TerrainTool", PIDX_TerrainTool, offsetof(Editor, m_TerrainTool), 0, LXType_TerrainTool, true, LXType_None, 0, 0, 0, }, 
 { "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, false, LXType_EditorTool, PropertyFlags_Transient, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, }, 
@@ -107,12 +103,10 @@ void Editor::Initialize()
 {
 	m_SplatMapTexture = new Texture(48463);
 
-	m_SectorTool = new SectorTool();
-	m_OSMTool = new OSMTool();
-	m_PickingTool = new PickingTool();
-	m_TerrainTool = new TerrainTool();
-
-	m_Tools.resize(EEditorTool_None - 1);
+	m_Tools.resize(EEditorTool_None);
+	m_Tools[EEditorTool_OSMTool] = new OSMTool();
+	m_Tools[EEditorTool_PickingTool] = new PickingTool();
+	m_Tools[EEditorTool_SectorTool] = new SectorTool();
 	m_Tools[EEditorTool_TerrainTool] = new TerrainTool();
 }
 
@@ -121,7 +115,7 @@ void Editor::Initialize()
 void Editor::UpdateManipulator()
 {
 	World* world = LigumX::GetInstance().GetWorld();
-	glm::vec3 worldPosition = m_PickingTool->GetPickedWorldPosition();
+	glm::vec3 worldPosition = GetPickingTool()->GetPickedWorldPosition();
 
 	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
 	glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
@@ -133,7 +127,7 @@ void Editor::UpdateManipulator()
 
 	if (!m_ManipulatorDragging || (m_XYZMask == glm::vec4(0, 0, 0, 0)))
 	{
-		float pickedID = m_PickingTool->GetPickedID();
+		float pickedID = GetPickingTool()->GetPickedID();
 
 		for (Entity* entity : world->GetDebugEntities())
 		{
@@ -156,9 +150,9 @@ void Editor::UpdateManipulator()
 		float distance = dragDistance.x / 10.f;
 		glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
 
-		if (m_PickingTool->GetPickedEntity())
+		if (GetPickingTool()->GetPickedEntity())
 		{
-			m_PickingTool->GetPickedEntity()->AddTo_Position(toAdd);
+			GetPickingTool()->GetPickedEntity()->AddTo_Position(toAdd);
 		}
 	}
 }
@@ -171,7 +165,7 @@ void Editor::UpdateTerrainEditor()
 		return;
 	}
 
-	glm::vec3 worldPosition = m_PickingTool->GetPickedWorldPosition();
+	glm::vec3 worldPosition = GetPickingTool()->GetPickedWorldPosition();
 	glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
 
 	Texture* tex = m_SplatMapTexture;
@@ -190,7 +184,7 @@ void Editor::UpdateTerrainEditor()
 	glm::vec2 screenDistance = dragDistance;
 	screenDistance.y *= -1;
 
-	glm::vec3 scale = m_PickingTool->GetPickedEntity()->GetScale();
+	glm::vec3 scale = GetPickingTool()->GetPickedEntity()->GetScale();
 	glm::vec3 normalized = worldPosition / scale;
 
 	glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
@@ -287,24 +281,12 @@ void Editor::ApplyTool()
 			UpdateManipulator();
 			break;
 		}
+		case EEditorTool_SectorTool:
+		case EEditorTool_PickingTool:
+		case EEditorTool_OSMTool:
 		case EEditorTool_TerrainTool:
 		{
 			m_Tools[m_ActiveTool]->Process(mouseButton1Down, mousePosition, dragDistance);
-			break;
-		}
-		case EEditorTool_SectorTool:
-		{
-			m_SectorTool->Process(mouseButton1Down, mousePosition, dragDistance);
-			break;
-		}
-		case EEditorTool_OSMTool:
-		{
-			m_OSMTool->Process(mouseButton1Down, mousePosition, dragDistance);
-			break;
-		}
-		case EEditorTool_PickingTool:
-		{
-			m_PickingTool->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
 		case EEditorTool_None:
@@ -1224,9 +1206,9 @@ void Editor::RenderImgui()
 
 		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Entity");
 
-		if (m_PickingTool->GetPickedEntity())
+		if (GetPickingTool()->GetPickedEntity())
 		{
-			ShowPropertyGridObject<Entity>(m_PickingTool->GetPickedEntity(), "Entity");
+			ShowPropertyGridObject<Entity>(GetPickingTool()->GetPickedEntity(), "Entity");
 		}
 		else
 		{
@@ -1242,10 +1224,10 @@ void Editor::RenderImgui()
 		ImGui::PushID("MaterialWindow");
 		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Materials");
 
-		if (m_PickingTool->GetPickedEntity())
+		if (GetPickingTool()->GetPickedEntity())
 		{
 			int i = 0;
-			for (Material*& material : m_PickingTool->GetPickedEntity()->GetModel()->GetMaterials())
+			for (Material*& material : GetPickingTool()->GetPickedEntity()->GetModel()->GetMaterials())
 			{
 				ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
 			}
@@ -1295,16 +1277,16 @@ void Editor::RenderImgui()
 	if (m_Options->GetDisplaySectorTool())
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
+		SectorTool* sectorTool = GetSectorTool();
 
-		ShowPropertyGridObject(m_SectorTool, "Sector Tool");
-
+		ShowPropertyGridObject(sectorTool, "Sector Tool");
 
 		{
 			const char* name = "Display Toggles";
 			ImGui::PushID(name);
 			if (ImGui::TreeNode(name))
 			{
-				std::vector<int>& displayToggles = m_SectorTool->GetWayDisplayToggles();
+				std::vector<int>& displayToggles = sectorTool->GetWayDisplayToggles();
 				for (int i = 0; i < displayToggles.size(); ++i)
 				{
 					bool b = displayToggles[i] == 1 ? true : false;
@@ -1324,7 +1306,7 @@ void Editor::RenderImgui()
 			ImGui::PushID(name);
 			if (ImGui::TreeNode(name))
 			{
-				std::vector<glm::vec3>& displayColors = m_SectorTool->GetWayDebugColors();
+				std::vector<glm::vec3>& displayColors = sectorTool->GetWayDebugColors();
 				for (int i = 0; i < displayColors.size(); ++i)
 				{
 					ShowProperty(&(displayColors[i]), EnumValues_OSMElementType[i].c_str(), 0, 1);
@@ -1335,8 +1317,6 @@ void Editor::RenderImgui()
 			ImGui::PopID();
 		}
 
-
-		//ShowProperty<Node>(&(g_SectorManager->m_AllNodesPtr), "Nodes");
 		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");
 
 		g_GUI->EndWindow();
@@ -1346,7 +1326,8 @@ void Editor::RenderImgui()
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "OSM Tool");
 
-		ShowPropertyGridObject(m_OSMTool, "OSM Tool");
+		OSMTool* osmTool = GetOSMTool();
+		ShowPropertyGridObject(osmTool, "OSM Tool");
 
 		g_GUI->EndWindow();
 	}
@@ -1355,7 +1336,8 @@ void Editor::RenderImgui()
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Picking Tool");
 
-		ShowPropertyGridObject(m_PickingTool, "Picking Tool");
+		PickingTool* pickingTool = GetPickingTool();
+		ShowPropertyGridObject(pickingTool, "Picking Tool");
 
 		g_GUI->EndWindow();
 	}
@@ -1383,10 +1365,10 @@ void Editor::ProcessScrolling()
 	const glm::vec2& scrolling = g_InputHandler->GetMouseScroll();
 	glm::vec3 moveVector;
 
-	if (m_PickingTool->GetPickedID() != 0)
+	if (GetPickingTool()->GetPickedID() != 0)
 	{
 		float closeUp = m_Options->GetMouseScrollEntityCloseupPercent() / 100.f;
-		float entityDistance = closeUp * m_PickingTool->GetPickedDepth();
+		float entityDistance = closeUp * GetPickingTool()->GetPickedDepth();
 		moveVector = activeCamera->GetFrontVector() * scrolling.y * entityDistance;
 	}
 	else
@@ -1399,7 +1381,7 @@ void Editor::ProcessScrolling()
 
 void Editor::RenderTools()
 {
-	m_SectorTool->Display();
+	((SectorTool*)m_Tools[EEditorTool_SectorTool])->Display();
 
 	DisplayAxisGizmo();
 }
@@ -1417,7 +1399,7 @@ void Editor::DisplayAxisGizmo()
 
 void Editor::Render()
 {
-	m_PickingTool->UpdatePickingData();
+	GetPickingTool()->UpdatePickingData();
 
 	ApplyTool();
 

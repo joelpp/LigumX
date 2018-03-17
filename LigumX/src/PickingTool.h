@@ -1,5 +1,6 @@
 #pragma once
 #include "glm\glm.hpp"
+#include "EditorTool.h"
 
 #pragma region  FORWARD_DECLARATIONS PickingTool
 #include "property.h"
@@ -11,7 +12,7 @@ class Sector;
 
 #pragma endregion  FORWARD_DECLARATIONS PickingTool
 
-class PickingTool
+class PickingTool : public EditorTool
 {
 #pragma region  HEADER PickingTool
 public:
@@ -83,7 +84,7 @@ bool Serialize(bool writing);
 
 #pragma endregion  HEADER PickingTool
 
-bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
+bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 
 void UpdatePickingData();
 

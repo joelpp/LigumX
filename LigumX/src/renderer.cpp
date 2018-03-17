@@ -504,7 +504,9 @@ void Renderer::SetShadowMapUniforms(Camera* cam)
 void Renderer::SetWorldGridUniforms()
 {
 	SetFragmentUniform(g_EngineSettings->GetWorldScale(), "g_WorldScale");
-	SetFragmentUniform(g_Editor->GetSectorTool()->GetSectorGridColor(), "g_SectorGridColor");
+
+	SectorTool* sectorTool = (SectorTool*) g_Editor->GetTools()[EEditorTool_SectorTool];
+	SetFragmentUniform(sectorTool->GetSectorGridColor(), "g_SectorGridColor");
 }
 
 void Renderer::SetViewUniforms(Camera* cam)
