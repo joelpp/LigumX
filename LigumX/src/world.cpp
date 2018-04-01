@@ -292,6 +292,7 @@ bool fuzzyEquals2(glm::vec2 a, glm::vec2 b, float tolerance)
 //	return nullptr;
 //}
 
+
 Sector* World::GetSectorByIndex(const glm::ivec2& normalizedSectorIndex)
 {
 	for (Sector* sector : m_Sectors)
@@ -304,6 +305,18 @@ Sector* World::GetSectorByIndex(const glm::ivec2& normalizedSectorIndex)
 
 	return nullptr;
 }
+
+Sector* World::GetSectorByWorldPosition(const glm::vec3& worldPosition)
+{
+	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(worldPosition));
+
+	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
+	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
+
+	return GetSectorByIndex(normalizedSectorIndex);
+}
+
+
 
 void World::ResetSectors()
 {

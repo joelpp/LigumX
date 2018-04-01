@@ -114,7 +114,8 @@ public:
 	SectorList* GetAllSectors();
 
 	Sector* GetSectorByIndex(const glm::ivec2& normalizedSectorIndex);
-
+	Sector* GetSectorByWorldPosition(const glm::vec3& worldPosition);
+	
 
     /**
      * [Normalized Takes in a World-Space point and returns the coordinates (on a normalized grid) of the sector holding it]

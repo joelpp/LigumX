@@ -15,7 +15,7 @@ class Editor
 	
 	EEditorTool ActiveTool;
 
-	[transient, adder, hidden]
+	[transient, adder, hidden, setcallback]
 	glm::vec4 XYZMask
 
 	[transient]
@@ -26,12 +26,6 @@ class Editor
 
 	[transient]
 	bool EditingTerrain;
-
-	[transient]
-	bool TerrainErasureMode;
-	
-	[adder]
-	float TerrainBrushSize;
 
 	[transient]
 	std::vector<EditorTool> Tools;

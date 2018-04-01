@@ -104,7 +104,8 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 	m_HeightDataTexture->GenerateFromData(m_HeightData);
 }
 
-Heightfield::Heightfield(vec2 startPoint, float sideLength){
+Heightfield::Heightfield(vec2 startPoint, float sideLength)
+{
     //this->sideLength = sideLength;
     //this->startPoint = startPoint;
     //this->step = Settings::GetInstance().f("HeightfieldResolution");

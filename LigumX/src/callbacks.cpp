@@ -1,16 +1,19 @@
 #include "stdafx.h"
 
+#include <string>
+#include <chrono>
+
 #include "LigumX.h"
 #include "World.h"
 #include "SectorManager.h"
 #include "Renderer.h"
 #include "GUI.h"
+
 #include "Editor.h"
 #include "EditorOptions.h"
-#include "InputHandler.h"
-#include <string>
-#include <chrono>
+#include "TerrainTool.h"
 
+#include "InputHandler.h"
 
 using std::cout;
 using std::endl;
@@ -93,7 +96,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		{
 			g_IsCtrlHeld = isPress ? true : false;
 
-			g_Editor->SetTerrainErasureMode(g_IsCtrlHeld);
+			g_Editor->GetTerrainTool()->SetTerrainErasureMode(g_IsCtrlHeld);
 		}
 
 		bool maskModified = isXYZ[0] || isXYZ[1] || isXYZ[2] || isShift;

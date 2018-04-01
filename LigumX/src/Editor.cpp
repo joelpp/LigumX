@@ -50,12 +50,10 @@ const ClassPropertyData Editor::g_Properties[] =
 { "Name", PIDX_Name, offsetof(Editor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, }, 
 { "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_EEditorTool, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
-{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
+{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_SetCallback | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, }, 
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(Editor, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(Editor, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, false, LXType_EditorTool, PropertyFlags_Transient, 0, 0, }, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, }, 
@@ -101,13 +99,17 @@ Editor::Editor(int objectID)
 
 void Editor::Initialize()
 {
-	m_SplatMapTexture = new Texture(48463);
-
 	m_Tools.resize(EEditorTool_None);
-	m_Tools[EEditorTool_OSMTool] = new OSMTool();
-	m_Tools[EEditorTool_PickingTool] = new PickingTool();
-	m_Tools[EEditorTool_SectorTool] = new SectorTool();
-	m_Tools[EEditorTool_TerrainTool] = new TerrainTool();
+	m_Tools[EEditorTool_OSMTool]		= new OSMTool();
+	m_Tools[EEditorTool_PickingTool]	= new PickingTool();
+	m_Tools[EEditorTool_SectorTool]		= new SectorTool();
+	m_Tools[EEditorTool_TerrainTool]	= new TerrainTool();
+
+	m_ToolDisplayToggles.resize(EEditorTool_None);
+	m_ToolDisplayToggles[EEditorTool_OSMTool]		= 0;
+	m_ToolDisplayToggles[EEditorTool_PickingTool]	= 0;
+	m_ToolDisplayToggles[EEditorTool_SectorTool]	= 0;
+	m_ToolDisplayToggles[EEditorTool_TerrainTool]	= 0;
 }
 
 
@@ -159,111 +161,119 @@ void Editor::UpdateManipulator()
 
 void Editor::UpdateTerrainEditor()
 {
-	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
-	if (!mouseButton1Down)
-	{
-		return;
-	}
+	//const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
+	//if (!mouseButton1Down)
+	//{
+	//	return;
+	//}
 
-	glm::vec3 worldPosition = GetPickingTool()->GetPickedWorldPosition();
-	glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
+	//glm::vec3 worldPosition = GetPickingTool()->GetPickedWorldPosition();
+	//glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
 
-	Texture* tex = m_SplatMapTexture;
-	glm::ivec2 texSize = tex->GetSize();
-	int numTexels = texSize.x * texSize.y;
-	int stride = 4;
-	int numBytes = stride * numTexels;
+	//Texture* tex = m_SplatMapTexture;
+	//glm::ivec2 texSize = tex->GetSize();
+	//int numTexels = texSize.x * texSize.y;
+	//int stride = 4;
+	//int numBytes = stride * numTexels;
 
-	int brushWidth = (int) m_TerrainBrushSize;
-	int brushWidthSq = brushWidth * brushWidth;
-	if (m_SplatMapData.size() != numBytes)
-	{
-		m_SplatMapData.resize(numBytes);
-	}
+	//int brushWidth = (int) m_TerrainBrushSize;
+	//int brushWidthSq = brushWidth * brushWidth;
+	//if (m_SplatMapData.size() != numBytes)
+	//{
+	//	m_SplatMapData.resize(numBytes);
+	//}
 
-	glm::vec2 screenDistance = dragDistance;
-	screenDistance.y *= -1;
+	//glm::vec2 screenDistance = dragDistance;
+	//screenDistance.y *= -1;
 
-	glm::vec3 scale = GetPickingTool()->GetPickedEntity()->GetScale();
-	glm::vec3 normalized = worldPosition / scale;
+	//glm::vec3 scale = GetPickingTool()->GetPickedEntity()->GetScale();
+	//glm::vec3 normalized = worldPosition / scale;
 
-	glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
+	//glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
 
-	glm::ivec2 clickedTexel = glm::ivec2(xyCoords * glm::vec2(tex->GetSize()));
-	glm::ivec2 startTexel = clickedTexel - glm::ivec2(brushWidth) / 2;
-	startTexel = glm::max(startTexel, glm::ivec2(0, 0));
-	startTexel = glm::min(startTexel, texSize - glm::ivec2(brushWidth));
+	//glm::ivec2 clickedTexel = glm::ivec2(xyCoords * glm::vec2(tex->GetSize()));
+	//glm::ivec2 startTexel = clickedTexel - glm::ivec2(brushWidth) / 2;
+	//startTexel = glm::max(startTexel, glm::ivec2(0, 0));
+	//startTexel = glm::min(startTexel, texSize - glm::ivec2(brushWidth));
 
-	unsigned char* val = m_SplatMapData.data();
+	//unsigned char* val = m_SplatMapData.data();
 
-	int dataOffset = stride * (startTexel.y * tex->GetSize().x + startTexel.x);
-	val += dataOffset;
+	//int dataOffset = stride * (startTexel.y * tex->GetSize().x + startTexel.x);
+	//val += dataOffset;
 
-	double maxVal = std::max(-screenDistance.y / 100, 0.f);
+	//double maxVal = std::max(-screenDistance.y / 100, 0.f);
 
-	glm::vec2 center = glm::vec2(0.5f, 0.5f);
+	//glm::vec2 center = glm::vec2(0.5f, 0.5f);
 
-	double maxHeight = maxVal * glm::length(center);
-	double radius = 0.5f;
+	//double maxHeight = maxVal * glm::length(center);
+	//double radius = 0.5f;
 
-	for (int i = 0; i < brushWidth; ++i)
-	{
-		for (int j = 0; j < brushWidth; ++j)
-		{
-			int index = (int)(stride * (j * texSize.y + i));
+	//for (int i = 0; i < brushWidth; ++i)
+	//{
+	//	for (int j = 0; j < brushWidth; ++j)
+	//	{
+	//		int index = (int)(stride * (j * texSize.y + i));
 
-			glm::vec2 localUV = glm::vec2(i, j) / glm::vec2(brushWidth);
+	//		glm::vec2 localUV = glm::vec2(i, j) / glm::vec2(brushWidth);
 
-			glm::vec2 centeredUV = localUV - center;
-			double horizDist = glm::length(centeredUV);;
+	//		glm::vec2 centeredUV = localUV - center;
+	//		double horizDist = glm::length(centeredUV);;
 
-			float height = 0;
+	//		float height = 0;
 
-			if (horizDist < radius)
-			{
-				height = (~(0));
-			}
+	//		if (horizDist < radius)
+	//		{
+	//			height = (~(0));
+	//		}
 
-			if (index < 0 || index > numBytes)
-			{
-				continue;
-			}
+	//		if (index < 0 || index > numBytes)
+	//		{
+	//			continue;
+	//		}
 
-			for (int c = 0; c < 4; ++c)
-			{
-				unsigned char& value = val[index + c];
-				int toAdd = (int)m_XYZMask[c];
+	//		for (int c = 0; c < 4; ++c)
+	//		{
+	//			unsigned char& value = val[index + c];
+	//			int toAdd = (int)m_XYZMask[c];
 
-				if (GetTerrainErasureMode() && toAdd != 0)
-				{
-					value = 0;
-				}
-				else if (m_XYZMask.w == 0) // adding 
-				{
-					value += (value == 255) ? 0 : (char)toAdd;
-				}
-				else if (m_XYZMask.w == 1) // subtracting
-				{
-					value -= (value == 0) ? 0 : (char)toAdd;
-				}
+	//			if (GetTerrainErasureMode() && toAdd != 0)
+	//			{
+	//				value = 0;
+	//			}
+	//			else if (m_XYZMask.w == 0) // adding 
+	//			{
+	//				value += (value == 255) ? 0 : (char)toAdd;
+	//			}
+	//			else if (m_XYZMask.w == 1) // subtracting
+	//			{
+	//				value -= (value == 0) ? 0 : (char)toAdd;
+	//			}
 
-			}
-		}
-	}
+	//		}
+	//	}
+	//}
 
-	Renderer* renderer = LigumX::GetRenderer();
-	renderer->Bind2DTexture(0, tex->GetHWObject());
-	GLuint format = tex->GetFormat();
-	GLuint type = tex->GetPixelType();
+	//Renderer* renderer = LigumX::GetRenderer();
+	//renderer->Bind2DTexture(0, tex->GetHWObject());
+	//GLuint format = tex->GetFormat();
+	//GLuint type = tex->GetPixelType();
 
-	//glTexSubImage2D(GL_TEXTURE_2D, 0, startTexel.x, startTexel.y, brushWidth, brushWidth, format, type, val);
-	int startPoint = 0;
-	glTexSubImage2D(GL_TEXTURE_2D, 0, startPoint, startPoint, texSize.x, texSize.y, format, type, m_SplatMapData.data());
-	//tex->SaveToFile("C:\\temp\\output.png");
+	////glTexSubImage2D(GL_TEXTURE_2D, 0, startTexel.x, startTexel.y, brushWidth, brushWidth, format, type, val);
+	//int startPoint = 0;
+	//glTexSubImage2D(GL_TEXTURE_2D, 0, startPoint, startPoint, texSize.x, texSize.y, format, type, m_SplatMapData.data());
+	////tex->SaveToFile("C:\\temp\\output.png");
 
-	renderer->Bind2DTexture(0, 0);
+	//renderer->Bind2DTexture(0, 0);
 
 }
+
+void Editor::SetXYZMaskCallback(glm::vec4 value)
+{
+	m_XYZMask = value;
+
+	GetTerrainTool()->SetXYZMask(value);
+}
+
 
 
 void Editor::ApplyTool()
@@ -800,6 +810,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_ENUM(GLPixelType);
 	SHOW_ENUM(GLPixelFormat);
 	SHOW_ENUM(EEditorTool);
+	SHOW_ENUM(TerrainEditionMode);
 
 	//case LXType_GLPixelType: \
 	//{ \
@@ -1173,6 +1184,30 @@ void Editor::RenderImgui()
 
 		ShowPropertyGridTemplate<DisplayOptions>(renderer->GetDisplayOptions(), "Display options");
 		ShowPropertyGridTemplate<EditorOptions>(GetOptions(), "Editor options");
+
+		{
+			const char* name = "Tools";
+
+
+			if (ImGui::BeginMenu(name))
+			{
+				ImGui::PushID(name);
+
+				std::vector<int>& displayToggles = m_ToolDisplayToggles;
+				for (int i = 0; i < displayToggles.size(); ++i)
+				{
+					bool b = displayToggles[i] == 1 ? true : false;
+					ShowProperty(&b, EnumValues_EEditorTool[i].c_str());
+					displayToggles[i] = b ? 1 : 0;
+
+					lxAssert(displayToggles[i] == 0 || displayToggles[i] == 1);
+				}
+
+				ImGui::PopID();
+				ImGui::EndMenu();
+			}
+		}
+
 		ShowPropertyGridTemplate<EngineSettings>(g_EngineSettings, "Engine Settings");
 
 
@@ -1321,6 +1356,18 @@ void Editor::RenderImgui()
 
 		g_GUI->EndWindow();
 	}
+
+
+	if (m_ToolDisplayToggles[EEditorTool_TerrainTool] != 0)
+	{
+		g_GUI->BeginWindow(1000, 700, 0, 0, "Terrain Tool");
+
+		TerrainTool* terrainTool = GetTerrainTool();
+		ShowPropertyGridObject(terrainTool, "Terrain Tool");
+
+		g_GUI->EndWindow();
+	}
+
 	
 	if (m_Options->GetDisplayOSMTool())
 	{

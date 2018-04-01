@@ -59,7 +59,8 @@ void SetOptions(EditorOptions* value) { m_Options = value; };
 const EEditorTool& GetActiveTool() { return m_ActiveTool; }; 
 void SetActiveTool(EEditorTool value) { m_ActiveTool = value; }; 
 const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
-void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
+void SetXYZMask(glm::vec4 value) { SetXYZMaskCallback(value); }; 
+void SetXYZMaskCallback(glm::vec4 value);
 void AddTo_XYZMask(glm::vec4 value) { m_XYZMask += value; };
 const bool& GetManipulatorDragging() { return m_ManipulatorDragging; }; 
 void SetManipulatorDragging(bool value) { m_ManipulatorDragging = value; }; 
@@ -67,11 +68,6 @@ const glm::vec3& GetManipulatorStartPosition() { return m_ManipulatorStartPositi
 void SetManipulatorStartPosition(glm::vec3 value) { m_ManipulatorStartPosition = value; }; 
 const bool& GetEditingTerrain() { return m_EditingTerrain; }; 
 void SetEditingTerrain(bool value) { m_EditingTerrain = value; }; 
-const bool& GetTerrainErasureMode() { return m_TerrainErasureMode; }; 
-void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; }; 
-const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
-void SetTerrainBrushSize(float value) { m_TerrainBrushSize = value; }; 
-void AddTo_TerrainBrushSize(float value) { m_TerrainBrushSize += value; };
 std::vector<EditorTool*>& GetTools() { return m_Tools; }; 
 void SetTools(std::vector<EditorTool*> value) { m_Tools = value; }; 
 void AddTo_Tools(EditorTool* value) { m_Tools.push_back(value); };
@@ -88,13 +84,11 @@ glm::vec4 m_XYZMask;
 bool m_ManipulatorDragging = false;
 glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
 bool m_EditingTerrain = false;
-bool m_TerrainErasureMode = false;
-float m_TerrainBrushSize = 0.f;
 std::vector<EditorTool*> m_Tools;
 int m_PickingBufferSize = 0;
 Node* m_SelectedNode;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -107,8 +101,6 @@ PIDX_XYZMask,
 PIDX_ManipulatorDragging,
 PIDX_ManipulatorStartPosition,
 PIDX_EditingTerrain,
-PIDX_TerrainErasureMode,
-PIDX_TerrainBrushSize,
 PIDX_Tools,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
@@ -213,24 +205,24 @@ void ShowProperty(std::unordered_map<int, T*>* map, const char* name);
 bool ShowEditableProperty(int* value, const char* name);
 void BackupData();
 
-Texture* m_SplatMapTexture;
-std::vector<unsigned char> m_SplatMapData;
-
 void DisplayActiveTool();
 
 #define DEFINE_TOOL_GETTER(name) name* Get##name() { return (##name *) m_Tools[EEditorTool_##name]; }
 
 DEFINE_TOOL_GETTER(PickingTool);
-//DEFINE_TOOL_GETTER(SectorTool);
+DEFINE_TOOL_GETTER(TerrainTool);
 //PickingTool* GetPickingTool() { return (PickingTool*)m_Tools[EEditorTool_PickingTool]; }
 SectorTool* GetSectorTool() { return (SectorTool*)m_Tools[EEditorTool_SectorTool]; }
 OSMTool* GetOSMTool() { return (OSMTool*) m_Tools[EEditorTool_OSMTool]; }
 
 private:
+	std::vector<int> m_ToolDisplayToggles;
+
 	bool m_RenderingMenu;
 	bool m_LoadingCurlRequest;
 
 	// this is for r&d
 	SectorData* m_SectorData;
 	Sector* m_Sector;
+
 };

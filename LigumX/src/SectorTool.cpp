@@ -135,7 +135,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	World* world = LigumX::GetInstance().GetWorld();
 
-	m_HighlightedSector = world->GetSectorByIndex(normalizedSectorIndex);
+	m_HighlightedSector = world->GetSectorByWorldPosition(worldPosition);
 
 	m_HighlightedWorldCoordinates = worldPosition;
 

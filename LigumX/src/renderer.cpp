@@ -10,6 +10,7 @@
 #include "DefaultObjects.h"
 #include "Framebuffer.h"
 
+#include "TerrainTool.h"
 #include "SectorTool.h"
 #include "Editor.h"
 #include "EditorOptions.h"
@@ -665,7 +666,7 @@ void Renderer::RenderTerrain()
 	SetDebugUniforms();
 
 	SetFragmentUniform(1, "g_SplatMapTexture");
-	Bind2DTexture(1, g_Editor->m_SplatMapTexture->GetHWObject());
+	Bind2DTexture(1, g_Editor->GetTerrainTool()->GetSplatMapTexture()->GetHWObject());
 
 
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };

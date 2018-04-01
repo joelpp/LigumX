@@ -11,4 +11,20 @@ class TerrainTool
 	Sector* Sector;
 
 	TerrainEditionMode Mode;
+
+	[transient]
+	Texture* SplatMapTexture;
+	
+	[transient]
+	bool TerrainErasureMode;
+	
+	[adder]
+	float TerrainBrushSize;
+
+	[transient]
+	glm::vec4 XYZMask;
+
+	
+	[transient]
+	glm::ivec2 ClickedTexel;
 }
