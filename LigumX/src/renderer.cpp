@@ -1042,7 +1042,6 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 	SetPipeline(programPipeline);
 
 	GL::SetCapability(GL::Capabilities::Blend, true);
-	GL::SetCapability(GL::Capabilities::LineSmooth, true);
 
 	for (int i = 0; i < model->m_meshes.size(); ++i)
 	{
@@ -1060,7 +1059,6 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 		DrawMesh(model->m_meshes[i], material);
 	}
 
-	GL::SetCapability(GL::Capabilities::LineSmooth, false);
 	GL::SetCapability(GL::Capabilities::Blend, false);
 }
 
