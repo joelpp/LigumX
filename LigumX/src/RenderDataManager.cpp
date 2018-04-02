@@ -84,6 +84,8 @@ int findSetBit(int number)
 
 RenderDataManager::RenderDataManager()
 {
+	g_RenderDataManager = this;
+
     nbRoads = 0;
     m_renderingScale = Settings::GetInstance().f("RenderingScale");
     Renderer& renderer = Renderer::GetInstance();
@@ -533,6 +535,19 @@ void RenderDataManager::InitializeSector(Sector* sector)
 
 void RenderDataManager::AddAABBJob(const AABB& aabb, const glm::vec3& color)
 {
+	AABBJob job;
+	job.m_AABB = aabb;
+	job.m_Color = color;
+
+	m_AABBJobs.push_back(job);
+}
+
+void RenderDataManager::AddAABBJob(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color)
+{
+	AABB aabb;
+	aabb.SetStartPoint(worldPosition);
+	aabb.SetScale(glm::vec3(brushWidth));
+
 	AABBJob job;
 	job.m_AABB = aabb;
 	job.m_Color = color;

@@ -96,6 +96,7 @@ public:
     std::vector<TerrainRenderingJob> terrainRenderingJobs;
 
 	void AddAABBJob(const AABB& aabb, const glm::vec3& color);
+	void AddAABBJob(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 
 	std::vector<AABBJob>& GetAABBJobs();
 	void ClearAABBJobs();

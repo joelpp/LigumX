@@ -10,6 +10,7 @@
 #include "LigumX.h"
 #include "InputHandler.h"
 #include "Texture.h"
+#include "RenderDataManager.h"
 
 #include "RaycastingHelpers.h"
 
@@ -90,6 +91,8 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		{
 			m_SplatMapData.resize(numBytes);
 		}
+
+		g_RenderDataManager->AddAABBJob(worldPosition, brushWidth, glm::vec3(1, 0, 0));
 
 		glm::vec2 screenDistance = dragDistance;
 		screenDistance.y *= -1;
@@ -173,7 +176,6 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		//tex->SaveToFile("C:\\temp\\output.png");
 
 		renderer->Bind2DTexture(0, 0);
-
 	}
 
 	return false;

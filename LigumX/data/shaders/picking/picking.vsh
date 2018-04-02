@@ -22,8 +22,8 @@ out gl_PerVertex {
 
 
 void main() {
-	vec4 worldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
 
+	vec4 worldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
 	if (g_UseHeightfield == 1)
 	{
 		vec2 heightTexCoords = texCoord;
@@ -33,9 +33,8 @@ void main() {
 
 		worldPosition.z += heightMid;
 	}
-
+	
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * worldPosition;
-	gl_Position.y = 990 - gl_Position.y;
 
 
 	vWorldPosition = worldPosition.xyz;
