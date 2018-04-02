@@ -26,11 +26,14 @@ out gl_PerVertex
     vec4 gl_Position;
 };
 
+
 void main() 
 {
 	vec3 worldPos = pos;
 
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * vec4(worldPos, 1);
+
+	gl_Position.z -= 0.01f;
 
 	outData.m_WayType = g_WayData.x;
 	outData.m_Index = g_WayData.y;

@@ -1038,7 +1038,11 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 
 void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay)
 {
+	
 	SetPipeline(programPipeline);
+
+	GL::SetCapability(GL::Capabilities::Blend, true);
+	GL::SetCapability(GL::Capabilities::LineSmooth, true);
 
 	for (int i = 0; i < model->m_meshes.size(); ++i)
 	{
@@ -1052,8 +1056,12 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 		SetFragmentUniform(displayFlags, "g_DisplayFlags");
 		SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
 
+		glLineWidth(1.5f);
 		DrawMesh(model->m_meshes[i], material);
 	}
+
+	GL::SetCapability(GL::Capabilities::LineSmooth, false);
+	GL::SetCapability(GL::Capabilities::Blend, false);
 }
 
 void Renderer::RenderDebugModels()

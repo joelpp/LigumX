@@ -44,17 +44,6 @@ uniform int g_SelectedWayIndex;
 uniform int g_DisplayFlags[21];
 uniform vec3 g_WayDebugColors[21];
 
-float GetLineWidth(vec2 wsPosition, float gridExtent)
-{
-	vec2 grid = abs(fract( (wsPosition.xy / gridExtent) - 0.5) - 0.5) / fwidth(wsPosition.xy / gridExtent);
-	float line = min(grid.x, grid.y);
-	return line;
-}
-
-float GetLineAlpha(float lineWidth, float maximum)
-{
-	return maximum - min(lineWidth, maximum);
-}
 
 #define ELSE_COLOR(type, color) else if ((wayID & type) != 0)	{ return color ; }
 
@@ -117,6 +106,22 @@ vec3 GetLineColor(int wayID)
 	return vec3(0, 0, 0);
 }
 
+
+float GetLineWidth(vec2 val)
+{
+	vec2 grid = abs(fract( (val) - 0.5) - 0.5) / fwidth(val);
+	float line = min(grid.x, grid.y);
+	return line;
+}
+
+
+float GetLineAlpha(float lineWidth, float maximum)
+{
+	return maximum - min(lineWidth, maximum);
+}
+
+
+
 void main()
 {
 	int wayID = inData.m_WayType;
@@ -134,6 +139,10 @@ void main()
 		color = vec3(1,1,1);
 	}
 
+	//float width = GetLineWidth(gl_FragCoord.xy);
+	float alpha = 1.f;//GetLineAlpha(width, 0.9f);
 
-    OutputColor = vec4(color, 1.0f);
+
+
+    OutputColor = vec4(color, alpha);
 }

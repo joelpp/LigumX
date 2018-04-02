@@ -72,18 +72,18 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 			{
 				pNoise = new PerlinNoise(1, 10, 1, 1, 5847);
 			}
-			float z = pNoise->GetHeight(wsPos.x, wsPos.y);
+
+			float z = 0;
+
+			if (!(g_EngineSettings->GetGenerateFlatTerrain()))
+			{
+				z = pNoise->GetHeight(wsPos.x, wsPos.y);
+			}
+
 			z *= 500.f;
 
 			m_MaxHeight = max(m_MaxHeight, z);
 			m_MinHeight = min(m_MinHeight, z);
-
-			//z = wsPos.y * 1000.f;
-
-			if (g_EngineSettings->GetGenerateFlatTerrain())
-			{
-				z = -0.1f;
-			}
 
 			m_HeightData[j * m_Width + i] = z;
 		}
