@@ -1,8 +1,10 @@
 // LigumXGenerator.cpp : Defines the entry point for the console application.
 //
 #define NOMINMAX
-#include <intrin.h>
 #include "stdafx.h"
+#include <intrin.h>
+#include <ctime>
+
 #include "Common.h"
 #include "LXClass.h"
 #include "CodeRegion.h"
@@ -10,9 +12,23 @@
 #include "ClassHeaderRegion.h"
 #include "StringUtils.h"
 #include "ForwardDeclarationRegion.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
+#ifdef WIN32
+#define stat _stat
+#endif
+
+
+
 #define NAMESPACE_BEGIN namespace LigumXGenerator {
 #define NAMESPACE_END }
 
+int g_Now;
 
 struct GeneratorFile
 {
@@ -20,10 +36,121 @@ struct GeneratorFile
 	std::vector<LXClass> m_Contained;
 };
 
+
+
+
+struct LogFileEntry
+{
+	const char m_Separator = '|';
+
+	LogFileEntry()
+	{
+	}
+
+	LogFileEntry(const std::string& string)
+	{
+		std::vector<std::string> tokens = splitString(string, m_Separator);
+		m_FileName = tokens[0];
+		m_Time = std::atoi(tokens[1].c_str());
+	}
+
+	std::string ToString() const
+	{
+		return std::string(m_FileName + m_Separator + std::to_string(m_Time));
+	}
+
+	bool Process(const std::string& fileName, int timeLastModified)
+	{
+		if (timeLastModified > m_Time)
+		{
+			m_Time = timeLastModified;
+			return true;
+		}
+
+		return false;
+	}
+
+	std::string m_FileName;
+	int m_Time;
+};
+
+struct LogFile
+{
+	LogFile() {};
+
+	LogFile(const std::string& fileName)
+	{
+		m_FileName = g_GenerationRootDir + fileName;
+
+		std::vector<std::string> lines = readFileLines(m_FileName.c_str());
+
+		for (const std::string& line : lines)
+		{
+			LogFileEntry entry(line);
+			m_Entries.push_back(entry);
+		}
+	}
+
+	bool ProcessFile(const std::string& fileName, int timeLastModified)
+	{
+		bool found = false;
+		for (LogFileEntry& entry : m_Entries)
+		{
+			found = entry.m_FileName == fileName;
+
+			if (found)
+			{
+				return entry.Process(fileName, timeLastModified);
+			}
+		}
+
+		if (!found)
+		{
+			LogFileEntry newEntry;
+
+			newEntry.m_FileName = fileName;
+			newEntry.m_Time = timeLastModified;
+
+			m_Entries.push_back(newEntry);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	void Save()
+	{
+		std::stringstream sstream;
+
+		for (const LogFileEntry& entry : m_Entries)
+		{
+			std::string line = entry.ToString();
+
+			sstream << line << std::endl;
+		}
+
+		std::fstream logFile(m_FileName, std::ios::out);
+		if (logFile.is_open())
+		{
+			logFile << sstream.str();
+		}
+		logFile.close();
+	}
+
+	std::string m_FileName;
+	std::vector<LogFileEntry> m_Entries;
+};
+
+
 std::string g_DebugClassNameBreak;
 
 std::map<std::string, int> g_FoundTypes;
 std::map<std::string, int> g_AdditionalEnums;
+
+LogFile g_LogFile;
+
+
 
 void AddToTypesMap(std::map<std::string, int>& map, std::string type)
 {
@@ -319,6 +446,10 @@ g_PropertyFlagsStringMap.emplace(name, flag);
 
 void InitializeGenerator()
 {
+
+	g_LogFile = LogFile("GenFileLog.log");
+	g_Now = (int)std::time(nullptr);
+
 	// Substrings we want to remove from property names
 	g_UnwantedSubstrings.push_back("\t");
 	g_UnwantedSubstrings.push_back(";");
@@ -439,10 +570,9 @@ struct ClassPropertyData
 
 }
 
+
 int main()
 {
-	InitializeGenerator();
-
 	const unsigned len = GetCurrentDirectory(0, 0);
 	if (!len)
 		return 1;
@@ -462,10 +592,10 @@ int main()
 	std::cout << "Current dir : " << currentDir << std::endl;
 	std::cout << "Generation root dir : " << g_GenerationRootDir << std::endl;
 
+	InitializeGenerator();
 
 	HANDLE hFind;
 	WIN32_FIND_DATA data;
-
 
 	std::vector<std::string> srcFileList;
 
@@ -501,7 +631,25 @@ int main()
 			GeneratorFile genFile;
 			genFile.m_Name = fileName + ".gen";
 
-			generatorFiles.push_back(genFile);
+			struct _stat64i32 result;
+			int timeLastModified = 0;
+			bool processFile = false;
+
+			if (stat((g_GenerationRootDir + genFile.m_Name).c_str(), &result) == 0)
+			{
+				timeLastModified = (int) result.st_mtime;
+				processFile = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
+			}
+
+			if (processFile)
+			{
+				std::cout << "\"" << fileName << "\" : has been updated." << std::endl;
+				generatorFiles.push_back(genFile);
+			}
+			else
+			{
+				std::cout << "\"" << fileName << "\" : no change since " << timeLastModified << std::endl;
+			}
 		}
 		else if (type == FileType_Header)
 		{
@@ -516,7 +664,9 @@ int main()
 
 	processGeneratorFiles(generatorFiles);
 
-	GeneratePropertyFile();
+	g_LogFile.Save();
+
+	//GeneratePropertyFile();
 
 	return 0;
 }
