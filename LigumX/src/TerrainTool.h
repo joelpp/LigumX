@@ -11,7 +11,6 @@
 
 class TerrainTool;
 class Sector;
-class Texture;
 
 enum TerrainEditionMode
 {
@@ -39,12 +38,8 @@ const int& GetObjectID() { return m_ObjectID; };
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-Sector*& GetSector() { return m_Sector; }; 
-void SetSector(Sector* value) { m_Sector = value; }; 
 const TerrainEditionMode& GetMode() { return m_Mode; }; 
 void SetMode(TerrainEditionMode value) { m_Mode = value; }; 
-Texture*& GetSplatMapTexture() { return m_SplatMapTexture; }; 
-void SetSplatMapTexture(Texture* value) { m_SplatMapTexture = value; }; 
 const bool& GetTerrainErasureMode() { return m_TerrainErasureMode; }; 
 void SetTerrainErasureMode(bool value) { m_TerrainErasureMode = value; }; 
 const float& GetTerrainBrushSize() { return m_TerrainBrushSize; }; 
@@ -56,17 +51,21 @@ const glm::ivec2& GetClickedTexel() { return m_ClickedTexel; };
 void SetClickedTexel(glm::ivec2 value) { m_ClickedTexel = value; }; 
 const glm::ivec2& GetStartTexel() { return m_StartTexel; }; 
 void SetStartTexel(glm::ivec2 value) { m_StartTexel = value; }; 
+const int& GetSplatMapIncrement() { return m_SplatMapIncrement; }; 
+void SetSplatMapIncrement(int value) { m_SplatMapIncrement = value; }; 
+Sector*& GetClickedSector() { return m_ClickedSector; }; 
+void SetClickedSector(Sector* value) { m_ClickedSector = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
-Sector* m_Sector;
 TerrainEditionMode m_Mode;
-Texture* m_SplatMapTexture;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 10;
 glm::vec4 m_XYZMask;
-glm::ivec2 m_ClickedTexel;
-glm::ivec2 m_StartTexel;
+glm::ivec2 m_ClickedTexel = glm::ivec2(0, 0);
+glm::ivec2 m_StartTexel = glm::ivec2(0, 0);
+int m_SplatMapIncrement = 10;
+Sector* m_ClickedSector;
 public:
 static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
@@ -75,14 +74,14 @@ enum g_TerrainToolPIDX
 {
 PIDX_ObjectID,
 PIDX_Name,
-PIDX_Sector,
 PIDX_Mode,
-PIDX_SplatMapTexture,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_XYZMask,
 PIDX_ClickedTexel,
 PIDX_StartTexel,
+PIDX_SplatMapIncrement,
+PIDX_ClickedSector,
 };
 bool Serialize(bool writing);
 
@@ -96,7 +95,5 @@ public:
 	void HandleKeyboardInput(int button, int action, int mods) override;
 
 private:
-
-	std::vector<unsigned char> m_SplatMapData;
 
 };

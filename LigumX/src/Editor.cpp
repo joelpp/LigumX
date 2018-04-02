@@ -103,7 +103,8 @@ void Editor::Initialize()
 	m_Tools[EEditorTool_OSMTool]		= new OSMTool();
 	m_Tools[EEditorTool_PickingTool]	= new PickingTool();
 	m_Tools[EEditorTool_SectorTool]		= new SectorTool();
-	m_Tools[EEditorTool_TerrainTool]	= new TerrainTool();
+	m_Tools[EEditorTool_TerrainTool] = new TerrainTool();
+	m_Tools[EEditorTool_EntityManipulator]	= new EditorTool();
 
 	m_ToolDisplayToggles.resize(EEditorTool_None);
 	m_ToolDisplayToggles[EEditorTool_OSMTool]		= 0;
@@ -1395,8 +1396,14 @@ void Editor::RenderImgui()
 		size.x -= 25;
 		size.y -= 25;
 
+
+		Sector* clickedSector = GetTerrainTool()->GetClickedSector();
+		if (clickedSector && clickedSector->GetSplatMapTexture())
+		{
 		//ImGui::Image((ImTextureID)renderer->GetFramebuffer(FramebufferType_Picking)->GetColorTexture(0), size);
-		ImGui::Image((ImTextureID) GetTerrainTool()->GetSplatMapTexture()->GetHWObject(), size);
+		//ImGui::Image((ImTextureID) GetTerrainTool()->GetSplatMapTexture()->GetHWObject(), size);
+			ImGui::Image((ImTextureID)clickedSector->GetSplatMapTexture()->GetHWObject(), size);
+		}
 
 		g_GUI->EndWindow();
 	}

@@ -199,6 +199,7 @@ std::string DefaultValueForType(const std::string& type)
 	ELSE_RETURN_DEFAULT("bool",			"false")
 	ELSE_RETURN_DEFAULT("int",			"0")
 	ELSE_RETURN_DEFAULT("float",		"0.f")
+	ELSE_RETURN_DEFAULT("glm::ivec2",	"glm::ivec2(0, 0)")
 	ELSE_RETURN_DEFAULT("glm::vec2",	"glm::vec2(0, 0)")
 	ELSE_RETURN_DEFAULT("glm::vec3",	"glm::vec3(0, 0, 0)")
 	else

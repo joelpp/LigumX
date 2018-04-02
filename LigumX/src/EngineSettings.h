@@ -32,6 +32,8 @@ const int& GetOSMQuantizationScale() { return m_OSMQuantizationScale; };
 void SetOSMQuantizationScale(int value) { m_OSMQuantizationScale = value; }; 
 const bool& GetGenerateFlatTerrain() { return m_GenerateFlatTerrain; }; 
 void SetGenerateFlatTerrain(bool value) { m_GenerateFlatTerrain = value; }; 
+const glm::ivec2& GetSplatMapResolution() { return m_SplatMapResolution; }; 
+void SetSplatMapResolution(glm::ivec2 value) { m_SplatMapResolution = value; }; 
 const float& GetWayTessellationFactor() { return m_WayTessellationFactor; }; 
 void SetWayTessellationFactor(float value) { m_WayTessellationFactor = value; }; 
 const glm::vec2& GetMessagesStartingPosition() { return m_MessagesStartingPosition; }; 
@@ -42,6 +44,8 @@ const int& GetMessagesDefaultFrameCount() { return m_MessagesDefaultFrameCount; 
 void SetMessagesDefaultFrameCount(int value) { m_MessagesDefaultFrameCount = value; }; 
 const int& GetMessagesPixelsOffset() { return m_MessagesPixelsOffset; }; 
 void SetMessagesPixelsOffset(int value) { m_MessagesPixelsOffset = value; }; 
+const bool& GetLoadOSMData() { return m_LoadOSMData; }; 
+void SetLoadOSMData(bool value) { m_LoadOSMData = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -50,13 +54,15 @@ glm::vec2 m_StartLonLat = glm::vec2(0, 0);
 float m_Extent = 0.f;
 int m_OSMQuantizationScale = 1000000;
 bool m_GenerateFlatTerrain = false;
+glm::ivec2 m_SplatMapResolution = glm::ivec2(0, 0);
 float m_WayTessellationFactor = 50.f;
 glm::vec2 m_MessagesStartingPosition = glm::vec2(0, 0);
 float m_MessagesFontSize = 1.f;
 int m_MessagesDefaultFrameCount = 50;
 int m_MessagesPixelsOffset = 10;
+bool m_LoadOSMData = true;
 public:
-static const int g_PropertyCount = 12;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EngineSettingsPIDX
@@ -68,11 +74,13 @@ PIDX_StartLonLat,
 PIDX_Extent,
 PIDX_OSMQuantizationScale,
 PIDX_GenerateFlatTerrain,
+PIDX_SplatMapResolution,
 PIDX_WayTessellationFactor,
 PIDX_MessagesStartingPosition,
 PIDX_MessagesFontSize,
 PIDX_MessagesDefaultFrameCount,
 PIDX_MessagesPixelsOffset,
+PIDX_LoadOSMData,
 };
 bool Serialize(bool writing);
 

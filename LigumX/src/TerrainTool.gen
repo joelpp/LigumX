@@ -8,13 +8,9 @@ enum TerrainEditionMode
 
 class TerrainTool
 {
-	Sector* Sector;
 
 	TerrainEditionMode Mode;
 
-	[transient]
-	Texture* SplatMapTexture;
-	
 	[transient]
 	bool TerrainErasureMode;
 	
@@ -30,4 +26,10 @@ class TerrainTool
 
 	[transient]
 	glm::ivec2 StartTexel;
+
+	int SplatMapIncrement = 10;
+
+	[transient]
+	Sector* ClickedSector;
+
 }

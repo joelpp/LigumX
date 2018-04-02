@@ -34,7 +34,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
-{ "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, false, LXType_None, 0, 0, 20, }, 
+{ "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, false, LXType_None, 0, 0, 5000, }, 
 };
 bool Camera::Serialize(bool writing)
 {

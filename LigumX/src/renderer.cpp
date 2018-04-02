@@ -248,6 +248,10 @@ void Renderer::Initialize()
 	InitFreetype();
 
 	g_Editor->Initialize();
+
+	m_Debug_RockTexture = new Texture(10692);
+	m_Debug_SandTexture = new Texture(10693);
+	m_Debug_WoodTexture = new Texture(11039);
 }
 
 void Renderer::Shutdown()
@@ -574,7 +578,11 @@ GLuint slots[] =
 	GL_TEXTURE1,
 	GL_TEXTURE2,
 	GL_TEXTURE3,
-	GL_TEXTURE4
+	GL_TEXTURE4,
+	GL_TEXTURE5,
+	GL_TEXTURE6,
+	GL_TEXTURE7,
+	GL_TEXTURE8
 };
 
 void Renderer::Bind2DTexture(int slot, GLuint HWObject)
@@ -665,14 +673,19 @@ void Renderer::RenderTerrain()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	SetFragmentUniform(1, "g_SplatMapTexture");
-	Bind2DTexture(1, g_Editor->GetTerrainTool()->GetSplatMapTexture()->GetHWObject());
-
-
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
 	Material* terrainMaterial = nullptr;
+
+	SetFragmentUniform(4, "g_RockTexture");
+	Bind2DTexture(4, m_Debug_RockTexture->GetHWObject());
+
+	SetFragmentUniform(5, "g_SandTexture");
+	Bind2DTexture(5, m_Debug_SandTexture->GetHWObject());
+
+	SetFragmentUniform(6, "g_WoodTexture");
+	Bind2DTexture(6, m_Debug_WoodTexture->GetHWObject());
 
 	for (int i = 0; i < m_World->GetSectors().size(); ++i)
 	{
@@ -686,6 +699,9 @@ void Renderer::RenderTerrain()
 			{
 				SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 				terrainMaterial = entity->GetModel()->GetMaterials()[0];
+
+				SetFragmentUniform(1, "g_SplatMapTexture");
+				Bind2DTexture(1, sector->GetSplatMapTexture()->GetHWObject());
 
 				SetFragmentUniform(3, "g_HeightfieldTexture");
 				Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());

@@ -8,6 +8,7 @@
 class Sector;
 class Heightfield;
 class Entity;
+class Texture;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Sector
@@ -122,6 +123,7 @@ public:
 	void CreateHeightfield();
 
 	SectorGraphicalData* GetGraphicalData() { return m_Data->GetGraphicalData(); }
+	Texture* GetSplatMapTexture();
 
 	float SampleHeight(const glm::vec2& normalizedPos);
 	float SampleHeight(const glm::vec3& worldPos);

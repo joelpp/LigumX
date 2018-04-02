@@ -11,10 +11,17 @@ class EngineSettings
 
 	bool GenerateFlatTerrain;
 
+	glm::ivec2 SplatMapResolution;
+
 	float WayTessellationFactor = 50.f;
 
 	glm::vec2 MessagesStartingPosition = glm::vec2(500, 500);
+
 	float MessagesFontSize = 1.f;
+
 	int MessagesDefaultFrameCount = 50;
+
 	int MessagesPixelsOffset = 10;
+
+	bool LoadOSMData = true;
 }

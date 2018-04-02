@@ -127,7 +127,15 @@ void Texture::Initialize()
 			target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
 		}
 
-		LoadFromFile(target, filenames[i]);
+		if (filenames[i].size() > 0)
+		{
+			LoadFromFile(target, filenames[i]);
+		}
+		else
+		{
+			LoadBlank(target);
+		}
+
 		i++;
 	}
 
@@ -135,6 +143,13 @@ void Texture::Initialize()
 
 	glBindTexture(bindingTarget, 0);
 }
+
+void Texture::LoadBlank(GLuint target)
+{
+	glTexImage2D(target, 0, m_InternalFormat, m_Size.x, m_Size.y, 0, m_Format, m_PixelType, m_TextureData);
+
+}
+
 
 void Texture::LoadFromFile(GLuint target, std::string filename)
 {
@@ -311,4 +326,37 @@ void Texture::GenerateFromData(std::vector<float>& data)
 	glGenerateMipmap(bindingTarget);
 
 	glBindTexture(bindingTarget, 0);
+}
+
+void Texture::UpdateFromData()
+{
+	glBindTexture(GL_TEXTURE_2D, m_HWObject);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Size.x, m_Size.y, m_Format, m_PixelType, m_TextureData);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
+
+void Texture::InitBlank(glm::ivec2 size)
+{
+	SetBitsPerPixel(32);
+	SetSize(glm::ivec2(size.x, size.y));
+	int numBytes = m_BitsPerPixel * size.x * size.y / 4;
+
+	m_TextureData = (BYTE*) malloc(numBytes);
+	memset(m_TextureData, 0, numBytes);
+
+	GLPixelFormat internalFormat = GLPixelFormat_RGBA;
+	GLPixelFormat format = GLPixelFormat_BGRA;
+	GLPixelType type = GLPixelType_uByte;
+
+	SetInternalFormat(internalFormat);
+	SetFormat(format);
+	SetPixelType(type);
+	SetIsCubeMap(false);
+
+	Initialize();
+
+	//glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, bits);
+	Renderer::outputGLError(__func__, __LINE__);
 }

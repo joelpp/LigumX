@@ -46,7 +46,6 @@ bool Serialize(bool writing);
 
 virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
-	lxAssert0();
 	return false;
 }
 

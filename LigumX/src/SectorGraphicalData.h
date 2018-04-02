@@ -6,6 +6,7 @@
 
 class SectorGraphicalData;
 class Model;
+class Texture;
 
 
 #pragma endregion  FORWARD_DECLARATIONS SectorGraphicalData
@@ -29,14 +30,17 @@ void SetWaysModel(Model* value) { m_WaysModel = value; };
 std::vector<Model*>& GetWaysModelsVector() { return m_WaysModelsVector; }; 
 void SetWaysModelsVector(std::vector<Model*> value) { m_WaysModelsVector = value; }; 
 void AddTo_WaysModelsVector(Model* value) { m_WaysModelsVector.push_back(value); };
+Texture*& GetSplatMapTexture() { return m_SplatMapTexture; }; 
+void SetSplatMapTexture(Texture* value) { m_SplatMapTexture = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
 Model* m_NodesModel;
 Model* m_WaysModel;
 std::vector<Model*> m_WaysModelsVector;
+Texture* m_SplatMapTexture;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorGraphicalDataPIDX
@@ -46,9 +50,12 @@ PIDX_Name,
 PIDX_NodesModel,
 PIDX_WaysModel,
 PIDX_WaysModelsVector,
+PIDX_SplatMapTexture,
 };
 bool Serialize(bool writing);
 
 #pragma endregion  HEADER SectorGraphicalData
+
+SectorGraphicalData();
 
 };

@@ -20,3 +20,6 @@ MessagesFontSize
 0.25
 MessagesPixelOffset
 125
+SplatMapResolution
+512
+512

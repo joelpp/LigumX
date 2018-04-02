@@ -3,4 +3,6 @@ class SectorGraphicalData
 	Model* NodesModel;
 	Model* WaysModel;
 	std::vector<Model> WaysModelsVector;
+
+	Texture* SplatMapTexture;
 }

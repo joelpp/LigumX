@@ -87,13 +87,16 @@ public:
 	Texture(std::string filename, bool isCubeMap = false);
 
 
+	void LoadBlank(GLuint target);
 	void LoadFromFile(GLuint target, std::string filename);
 	void SaveToFile(std::string fileName);
 	void Initialize();
+	void InitBlank(glm::ivec2 size);
 
 	BYTE* GetTextureData() { return m_TextureData; };
 
 	void GenerateFromData(std::vector<float>& data);
+	void UpdateFromData();
 
 
 	BYTE* m_TextureData;

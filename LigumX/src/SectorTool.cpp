@@ -162,7 +162,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		}
 	}
 
-
+	bool loadOSMData = g_EngineSettings->GetLoadOSMData();
 	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready();
 	if (canSendRequest)
 	{
@@ -180,11 +180,12 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 				glm::ivec2 requestedSectorIndex = normalizedSectorIndex + glm::ivec2(offsets);
 				m_Request.SetSectorIndex(requestedSectorIndex);
 
-				Sector* requestSector = world->GetSectorByIndex(m_Request.GetSectorIndex());
+				Sector* requestSector = world->GetSectorByIndex(requestedSectorIndex);
 				if (!requestSector)
 				{
 					requestSector = g_SectorManager->CreateSector(requestedSectorIndex);
 				}
+
 				m_Request.SetSector(requestSector);
 
 				if (requestSector->GetDataLoaded())
@@ -192,13 +193,12 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 					continue;
 				}
 
-				m_Request.Initialize();
-				m_Request.Start();
-				// todo : reenable threading ( it was gone for a while anyway)
-				//}
-				//else if (m_Request.Finished())
-				//{
-				m_Request.End();
+				if (loadOSMData)
+				{
+					m_Request.Initialize();
+					m_Request.Start();
+					m_Request.End();
+				}
 
 				g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
 

@@ -72,5 +72,5 @@ void main()
 	v_Normal = normal;
 
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * worldPosition;
-
+	gl_Position.z += 0.1f;
 }
