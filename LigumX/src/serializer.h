@@ -144,9 +144,9 @@ public:
 
 		std::string basePath = g_PathObjects;
 		std::string fileName = object->ClassName + std::string("_") + std::to_string(object->GetObjectID()) + ".LXobj";
-
+		std::string fullPath = basePath + fileName;
 		int fileMask = writing ? std::ios::out : std::ios::in;
-		std::fstream objectStream(basePath + fileName, fileMask);
+		std::fstream objectStream(fullPath, fileMask);
 
 		if (objectStream.is_open())
 		{

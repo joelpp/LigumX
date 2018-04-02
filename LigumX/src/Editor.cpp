@@ -1309,7 +1309,7 @@ void Editor::RenderImgui()
 		g_GUI->EndWindow();
 	}
 
-	if (m_Options->GetDisplaySectorTool())
+	if (m_ToolDisplayToggles[EEditorTool_SectorTool] != 0)
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
 		SectorTool* sectorTool = GetSectorTool();
@@ -1369,7 +1369,7 @@ void Editor::RenderImgui()
 	}
 
 	
-	if (m_Options->GetDisplayOSMTool())
+	if (m_ToolDisplayToggles[EEditorTool_OSMTool] != 0)
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "OSM Tool");
 
@@ -1379,7 +1379,7 @@ void Editor::RenderImgui()
 		g_GUI->EndWindow();
 	}
 
-	if (m_Options->GetDisplayPickingTool())
+	if (m_ToolDisplayToggles[EEditorTool_PickingTool] != 0)
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Picking Tool");
 
@@ -1458,5 +1458,52 @@ void Editor::Render()
 
 void Editor::DisplayActiveTool()
 {
+
+}
+
+
+void Editor::HandleInputEvent(int button, int action, int mods)
+{
+	EEditorTool ToolKeyboardToggles[] =
+	{
+		EEditorTool_None,
+		EEditorTool_TerrainTool,
+		EEditorTool_EntityManipulator,
+		EEditorTool_SectorTool,
+		EEditorTool_OSMTool,
+		EEditorTool_PickingTool,
+	};
+
+	if (action != GLFW_PRESS)
+	{
+		return;
+	}
+	int base = GLFW_KEY_0;
+	int max = sizeof(ToolKeyboardToggles);
+	if (button > base && button < base + max)
+	{
+		if (mods & GLFW_MOD_SHIFT)
+		{
+			int offset = button - base;
+			EEditorTool tool = ToolKeyboardToggles[offset];
+
+			const std::string& toolName = EnumValues_EEditorTool[tool];
+			std::string message = "Selected editor tool : " + toolName + "(" + std::to_string(offset) + ")";
+
+			//g_RenderDataManager->AddTimedMessage(message);
+
+			SetActiveTool(tool);
+			return;
+		}
+		else if (mods & GLFW_MOD_ALT)
+		{
+			int offset = button - base;
+			EEditorTool tool = ToolKeyboardToggles[offset];
+
+			m_ToolDisplayToggles[tool] = 1 - m_ToolDisplayToggles[tool];
+
+			return;
+		}
+	}
 
 }

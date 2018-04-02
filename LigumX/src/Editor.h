@@ -164,6 +164,8 @@ void SaveObjectFromCreator(T* object);
 
 void ShowAddButton(std::vector<char*>* vectorPtr, const LXType& type);
 
+void HandleInputEvent(int button, int action, int mods);
+
 void ShowVariableAsText(glm::vec3 variable, const char* variableName);
 void ShowVariableAsText(glm::vec3* variable, const char* variableName);
 void ShowVariableAsText(float variable, const char* variableName);

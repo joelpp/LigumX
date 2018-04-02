@@ -50,7 +50,9 @@ void flipBool(bool& value)
 void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
 	
-    // send event to entity Manager (temporary before a playerInput class)
+	g_Editor->HandleInputEvent(key, action, mods);
+
+	// send event to entity Manager (temporary before a playerInput class)
 	LigumX& game = LigumX::GetInstance();
 
     if(action == GLFW_PRESS){
@@ -119,6 +121,8 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 	m_Renderer->GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
 
 	ImGui_ImplGlfwGL3_KeyCallback(pWindow, key, scancode, action, mods);
+
+
 }
 
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
@@ -129,6 +133,8 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 	if (!caughtByImgui)
 	{
 		g_InputHandler->HandleInput(pWindow, button, action, mods);
+
+
 	}
 
   //      // Left-click
