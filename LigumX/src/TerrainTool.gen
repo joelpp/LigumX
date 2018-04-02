@@ -19,7 +19,7 @@ class TerrainTool
 	bool TerrainErasureMode;
 	
 	[adder]
-	float TerrainBrushSize = 100;
+	float TerrainBrushSize = 10;
 
 	[transient]
 	glm::vec4 XYZMask;
@@ -27,4 +27,7 @@ class TerrainTool
 	
 	[transient]
 	glm::ivec2 ClickedTexel;
+
+	[transient]
+	glm::ivec2 StartTexel;
 }

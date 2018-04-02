@@ -54,6 +54,8 @@ const glm::vec4& GetXYZMask() { return m_XYZMask; };
 void SetXYZMask(glm::vec4 value) { m_XYZMask = value; }; 
 const glm::ivec2& GetClickedTexel() { return m_ClickedTexel; }; 
 void SetClickedTexel(glm::ivec2 value) { m_ClickedTexel = value; }; 
+const glm::ivec2& GetStartTexel() { return m_StartTexel; }; 
+void SetStartTexel(glm::ivec2 value) { m_StartTexel = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -61,11 +63,12 @@ Sector* m_Sector;
 TerrainEditionMode m_Mode;
 Texture* m_SplatMapTexture;
 bool m_TerrainErasureMode = false;
-float m_TerrainBrushSize = 100;
+float m_TerrainBrushSize = 10;
 glm::vec4 m_XYZMask;
 glm::ivec2 m_ClickedTexel;
+glm::ivec2 m_StartTexel;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_TerrainToolPIDX
@@ -79,6 +82,7 @@ PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,
 PIDX_XYZMask,
 PIDX_ClickedTexel,
+PIDX_StartTexel,
 };
 bool Serialize(bool writing);
 
@@ -89,6 +93,7 @@ public:
 	TerrainTool();
 
 	bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
+	void HandleKeyboardInput(int button, int action, int mods) override;
 
 private:
 

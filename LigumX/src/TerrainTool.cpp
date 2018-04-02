@@ -31,6 +31,7 @@ const ClassPropertyData TerrainTool::g_Properties[] =
 { "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(TerrainTool, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "XYZMask", PIDX_XYZMask, offsetof(TerrainTool, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "ClickedTexel", PIDX_ClickedTexel, offsetof(TerrainTool, m_ClickedTexel), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "StartTexel", PIDX_StartTexel, offsetof(TerrainTool, m_StartTexel), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 };
 bool TerrainTool::Serialize(bool writing)
 {
@@ -59,6 +60,17 @@ TerrainTool::TerrainTool()
 
 }
 
+glm::ivec2 WorldToTexture(glm::vec2 worldPos, float scale, glm::ivec2 texSize)
+{
+	glm::vec2 normalized = glm::fract(worldPos / scale);
+
+	return glm::ivec2(normalized * glm::vec2(texSize));
+}
+
+float TextureToWorldScale(float scale, glm::ivec2 texSize)
+{
+	return scale / texSize.x;
+}
 
 
 bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
@@ -67,7 +79,13 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 
 	glm::vec3 worldPosition = pickingTool->GetAimingWorldPosition();
 
-	g_RenderDataManager->AddAABBJobCentered(worldPosition, (int)m_TerrainBrushSize, glm::vec3(1, 0, 0));
+	float worldScale = g_EngineSettings->GetWorldScale();
+	Texture* tex = m_SplatMapTexture;
+
+
+	glm::vec3 scale = glm::vec3(worldScale); // /*pickingTool->GetPickedEntity()->GetScale();*/
+
+	g_RenderDataManager->AddAABBJobCentered(worldPosition, (int)(m_TerrainBrushSize * TextureToWorldScale(worldScale, tex->GetSize())), glm::vec3(1,0,0));
 
 	if (mouseButton1Down)
 	{
@@ -76,7 +94,6 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		World* world = LigumX::GetInstance().GetWorld();
 		Sector* sector = world->GetSectorByWorldPosition(worldPosition);
 
-		Texture* tex = m_SplatMapTexture;
 		glm::ivec2 texSize = tex->GetSize();
 		int numTexels = texSize.x * texSize.y;
 		int stride = 4;
@@ -93,20 +110,20 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		glm::vec2 screenDistance = dragDistance;
 		screenDistance.y *= -1;
 
-		glm::vec3 scale = glm::vec3(g_EngineSettings->GetWorldScale()); // /*pickingTool->GetPickedEntity()->GetScale();*/
 
 		glm::vec3 normalized = glm::fract(worldPosition / scale);
 
 		glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
 
-		m_ClickedTexel = glm::ivec2(xyCoords * glm::vec2(tex->GetSize()));
-		glm::ivec2 startTexel = m_ClickedTexel - glm::ivec2(brushWidth) / 2;
-		startTexel = glm::max(startTexel, glm::ivec2(0, 0));
-		startTexel = glm::min(startTexel, texSize - glm::ivec2(brushWidth));
+		m_ClickedTexel = WorldToTexture(glm::vec2(worldPosition), worldScale, tex->GetSize());
 
+		m_StartTexel = m_ClickedTexel - glm::ivec2(brushWidth) / 2;
+		m_StartTexel = glm::max(m_StartTexel, glm::ivec2(0, 0));
+		m_StartTexel = glm::min(m_StartTexel, texSize - glm::ivec2(brushWidth));
+		
 		unsigned char* val = m_SplatMapData.data();
 
-		int dataOffset = stride * (startTexel.y * tex->GetSize().x + startTexel.x);
+		int dataOffset = stride * (m_StartTexel.y * tex->GetSize().x + m_StartTexel.x);
 		val += dataOffset;
 
 		double maxVal = std::max(-screenDistance.y / 100, 0.f);
@@ -175,4 +192,29 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 	}
 
 	return false;
+}
+
+void TerrainTool::HandleKeyboardInput(int button, int action, int mods)
+{
+	bool isXYZ[3] = { button == GLFW_KEY_X, button == GLFW_KEY_Y, button == GLFW_KEY_Z };
+	bool isPress = action == GLFW_PRESS;
+	bool isRelease = action == GLFW_RELEASE;
+	bool isShift = mods & GLFW_MOD_SHIFT;
+
+	bool maskModified = isXYZ[0] || isXYZ[1] || isXYZ[2] || isShift;
+	maskModified &= (isPress || isRelease);
+
+	if (maskModified)
+	{
+		float add = isPress ? 1.f : -1.f;
+
+		glm::vec3 newMask = glm::vec3(m_XYZMask);
+
+		newMask = add * glm::vec3(isXYZ[0], isXYZ[1], isXYZ[2]) + newMask;
+		newMask = glm::max(newMask, glm::vec3(-1, -1, -1));
+		newMask = glm::min(newMask, glm::vec3(1, 1, 1));
+
+		m_XYZMask = glm::vec4(newMask, isShift);
+	}
+
 }

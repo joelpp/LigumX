@@ -50,5 +50,8 @@ virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, cons
 	return false;
 }
 
+virtual void HandleKeyboardInput(int button, int action, int mods)
+{
+}
 
 };

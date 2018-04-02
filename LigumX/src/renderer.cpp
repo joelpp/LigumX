@@ -1287,12 +1287,14 @@ void Renderer::HandleScreenshot()
 
 void Renderer::RenderMessages()
 {
+	GL::SetViewport(m_Window->GetSize());
+
 	glm::vec2 startingPosition = g_EngineSettings->GetMessagesStartingPosition();
 	float fontSize = g_EngineSettings->GetMessagesFontSize();
 	float heightOffset = g_EngineSettings->GetMessagesPixelsOffset();
 
 	int numMessages = g_RenderDataManager->GetTimedMessages().size();
-	startingPosition += heightOffset * (numMessages - 1);
+	startingPosition.y += heightOffset * (numMessages - 1);
 
 	for (const TimedMessage& message : g_RenderDataManager->GetTimedMessages())
 	{
@@ -1429,8 +1431,11 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
    // Activate corresponding render state
-   pPipelineText->usePipeline();
-   GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+   SetPipeline(pPipelineText);
+
+   GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+
+
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
    if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));

@@ -270,8 +270,6 @@ void Editor::UpdateTerrainEditor()
 void Editor::SetXYZMaskCallback(glm::vec4 value)
 {
 	m_XYZMask = value;
-
-	GetTerrainTool()->SetXYZMask(value);
 }
 
 
@@ -1397,7 +1395,8 @@ void Editor::RenderImgui()
 		size.x -= 25;
 		size.y -= 25;
 
-		ImGui::Image((ImTextureID) renderer->GetFramebuffer(FramebufferType_Picking)->GetColorTexture(0), size);
+		//ImGui::Image((ImTextureID)renderer->GetFramebuffer(FramebufferType_Picking)->GetColorTexture(0), size);
+		ImGui::Image((ImTextureID) GetTerrainTool()->GetSplatMapTexture()->GetHWObject(), size);
 
 		g_GUI->EndWindow();
 	}
@@ -1464,6 +1463,8 @@ void Editor::DisplayActiveTool()
 
 void Editor::HandleInputEvent(int button, int action, int mods)
 {
+	m_Tools[m_ActiveTool]->HandleKeyboardInput(button, action, mods);
+
 	EEditorTool ToolKeyboardToggles[EnumLength_EEditorTool] =
 	{
 		EEditorTool_None,
@@ -1506,5 +1507,6 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 			return;
 		}
 	}
+
 
 }
