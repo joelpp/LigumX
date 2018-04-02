@@ -28,6 +28,8 @@ const bool& GetEnabled() { return m_Enabled; };
 void SetEnabled(bool value) { m_Enabled = value; }; 
 Entity*& GetPickedEntity() { return m_PickedEntity; }; 
 void SetPickedEntity(Entity* value) { m_PickedEntity = value; }; 
+const glm::vec2& GetAimingWindowPosition() { return m_AimingWindowPosition; }; 
+void SetAimingWindowPosition(glm::vec2 value) { m_AimingWindowPosition = value; }; 
 const glm::vec3& GetAimingWorldPosition() { return m_AimingWorldPosition; }; 
 void SetAimingWorldPosition(glm::vec3 value) { m_AimingWorldPosition = value; }; 
 const float& GetAimingID() { return m_AimingID; }; 
@@ -51,6 +53,7 @@ int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = true;
 Entity* m_PickedEntity;
+glm::vec2 m_AimingWindowPosition = glm::vec2(0, 0);
 glm::vec3 m_AimingWorldPosition = glm::vec3(0, 0, 0);
 float m_AimingID = 0.f;
 glm::vec3 m_PickedWorldPosition = glm::vec3(0, 0, 0);
@@ -61,7 +64,7 @@ bool m_PickDebugModels = false;
 float m_PickedHeight = 0.f;
 Sector* m_PickedSector;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_PickingToolPIDX
@@ -70,6 +73,7 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_Enabled,
 PIDX_PickedEntity,
+PIDX_AimingWindowPosition,
 PIDX_AimingWorldPosition,
 PIDX_AimingID,
 PIDX_PickedWorldPosition,

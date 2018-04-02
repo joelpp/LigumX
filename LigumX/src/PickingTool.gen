@@ -6,6 +6,9 @@ class PickingTool
 	Entity* PickedEntity
 
 	[transient]
+	glm::vec2 AimingWindowPosition;
+
+	[transient]
 	glm::vec3 AimingWorldPosition
 
 	[transient]

@@ -12,4 +12,9 @@ class EngineSettings
 	bool GenerateFlatTerrain;
 
 	float WayTessellationFactor = 50.f;
+
+	glm::vec2 MessagesStartingPosition = glm::vec2(500, 500);
+	float MessagesFontSize = 1.f;
+	int MessagesDefaultFrameCount = 50;
+	int MessagesPixelsOffset = 10;
 }

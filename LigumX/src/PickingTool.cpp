@@ -24,6 +24,7 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "Name", PIDX_Name, offsetof(PickingTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Enabled", PIDX_Enabled, offsetof(PickingTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "PickedEntity", PIDX_PickedEntity, offsetof(PickingTool, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
+{ "AimingWindowPosition", PIDX_AimingWindowPosition, offsetof(PickingTool, m_AimingWindowPosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "AimingWorldPosition", PIDX_AimingWorldPosition, offsetof(PickingTool, m_AimingWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "AimingID", PIDX_AimingID, offsetof(PickingTool, m_AimingID), 0, LXType_float, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "PickedWorldPosition", PIDX_PickedWorldPosition, offsetof(PickingTool, m_PickedWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
@@ -127,6 +128,8 @@ void PickingTool::UpdatePickingData()
 	renderer->RenderPickingBuffer(m_PickDebugModels);
 
 	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
+
+	m_AimingWindowPosition = mousePosition;
 
 	renderer->GetPickingData(mousePosition, m_PickingData);
 

@@ -1,5 +1,5 @@
 ObjectID
-3974
+89373
 Name
 EngineSettings
 WorldScale
@@ -11,3 +11,12 @@ Extent
 0.01135
 GenerateFlatTerrain
 1
+MessagesStartingPosition
+593
+76
+MessagesDefaultFrameCount
+500
+MessagesFontSize
+0.25
+MessagesPixelOffset
+125

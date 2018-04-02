@@ -61,7 +61,7 @@ Sector* m_Sector;
 TerrainEditionMode m_Mode;
 Texture* m_SplatMapTexture;
 bool m_TerrainErasureMode = false;
-float m_TerrainBrushSize = 0.f;
+float m_TerrainBrushSize = 100;
 glm::vec4 m_XYZMask;
 glm::ivec2 m_ClickedTexel;
 public:

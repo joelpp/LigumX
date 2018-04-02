@@ -570,3 +570,28 @@ void RenderDataManager::ClearAABBJobs()
 {
 	m_AABBJobs.clear();
 }
+
+void RenderDataManager::AddTimedMessage(const std::string& message)
+{
+	m_TimedMessages.push_back(TimedMessage(message, g_EngineSettings->GetMessagesDefaultFrameCount()));
+}
+
+void RenderDataManager::Update()
+{
+	auto messageIterator = m_TimedMessages.begin();
+	while (messageIterator != m_TimedMessages.end())
+	{
+		TimedMessage& message = *messageIterator;
+
+		message.m_Timer -= 1;
+
+		if (message.m_Timer == 0)
+		{
+			messageIterator = m_TimedMessages.erase(messageIterator);
+		}
+		else
+		{
+			messageIterator++;
+		}
+	}
+}

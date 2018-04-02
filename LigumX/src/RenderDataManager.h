@@ -38,6 +38,18 @@ struct WayData
 	int IndexInSector;
 };
 
+struct TimedMessage
+{
+	TimedMessage(const std::string& message, int timer)
+	{
+		m_Message = message;
+		m_Timer = timer;
+	}
+
+	std::string m_Message;
+	int m_Timer;
+};
+
 
 class FlatWaysMesh : public Mesh
 {
@@ -99,12 +111,18 @@ public:
 	void AddAABBJob(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 	void AddAABBJobCentered(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 
+	void AddTimedMessage(const std::string& message);
+	std::vector<TimedMessage>& GetTimedMessages() { return m_TimedMessages; }
+
+	void Update();
+
 	std::vector<AABBJob>& GetAABBJobs();
 	void ClearAABBJobs();
 
-	std::vector<AABBJob> m_AABBJobs;
 private:
 	REGISTERCLASS(RenderDataManager);
     
+	std::vector<TimedMessage> m_TimedMessages;
+	std::vector<AABBJob> m_AABBJobs;
 
 };

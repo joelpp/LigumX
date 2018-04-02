@@ -1464,14 +1464,14 @@ void Editor::DisplayActiveTool()
 
 void Editor::HandleInputEvent(int button, int action, int mods)
 {
-	EEditorTool ToolKeyboardToggles[] =
+	EEditorTool ToolKeyboardToggles[EnumLength_EEditorTool] =
 	{
 		EEditorTool_None,
-		EEditorTool_TerrainTool,
-		EEditorTool_EntityManipulator,
 		EEditorTool_SectorTool,
-		EEditorTool_OSMTool,
+		EEditorTool_TerrainTool,
 		EEditorTool_PickingTool,
+		EEditorTool_EntityManipulator,
+		EEditorTool_OSMTool,
 	};
 
 	if (action != GLFW_PRESS)
@@ -1479,7 +1479,8 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 		return;
 	}
 	int base = GLFW_KEY_0;
-	int max = sizeof(ToolKeyboardToggles);
+	int max = EnumLength_EEditorTool;
+
 	if (button > base && button < base + max)
 	{
 		if (mods & GLFW_MOD_SHIFT)
@@ -1490,7 +1491,7 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 			const std::string& toolName = EnumValues_EEditorTool[tool];
 			std::string message = "Selected editor tool : " + toolName + "(" + std::to_string(offset) + ")";
 
-			//g_RenderDataManager->AddTimedMessage(message);
+			g_RenderDataManager->AddTimedMessage(message);
 
 			SetActiveTool(tool);
 			return;

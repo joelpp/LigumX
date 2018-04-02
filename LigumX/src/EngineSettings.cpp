@@ -17,6 +17,10 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 { "OSMQuantizationScale", PIDX_OSMQuantizationScale, offsetof(EngineSettings, m_OSMQuantizationScale), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "GenerateFlatTerrain", PIDX_GenerateFlatTerrain, offsetof(EngineSettings, m_GenerateFlatTerrain), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "WayTessellationFactor", PIDX_WayTessellationFactor, offsetof(EngineSettings, m_WayTessellationFactor), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "MessagesStartingPosition", PIDX_MessagesStartingPosition, offsetof(EngineSettings, m_MessagesStartingPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
+{ "MessagesFontSize", PIDX_MessagesFontSize, offsetof(EngineSettings, m_MessagesFontSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "MessagesDefaultFrameCount", PIDX_MessagesDefaultFrameCount, offsetof(EngineSettings, m_MessagesDefaultFrameCount), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "MessagesPixelsOffset", PIDX_MessagesPixelsOffset, offsetof(EngineSettings, m_MessagesPixelsOffset), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 };
 bool EngineSettings::Serialize(bool writing)
 {

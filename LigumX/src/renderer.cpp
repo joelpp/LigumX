@@ -902,6 +902,8 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 
 void Renderer::BeginFrame(World* world)
 {
+	g_RenderDataManager->Update();
+
 	m_DebugCamera->handlePresetNewFrame(m_Window->pWindow);
 
 	m_DebugCamera->UpdateVPMatrix();
@@ -1055,7 +1057,6 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 		SetFragmentUniform(displayFlags, "g_DisplayFlags");
 		SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
 
-		glLineWidth(1.5f);
 		DrawMesh(model->m_meshes[i], material);
 	}
 
@@ -1201,6 +1202,8 @@ void Renderer::RenderEditor()
 	RenderTextureOverlay();
 
 	RenderFPS();
+
+	RenderMessages();
 }
 
 void Renderer::render(World* world)
@@ -1280,6 +1283,23 @@ void Renderer::HandleScreenshot()
 	//        delete [] pixels;
 	//    }
 	//    
+}
+
+void Renderer::RenderMessages()
+{
+	glm::vec2 startingPosition = g_EngineSettings->GetMessagesStartingPosition();
+	float fontSize = g_EngineSettings->GetMessagesFontSize();
+	float heightOffset = g_EngineSettings->GetMessagesPixelsOffset();
+
+	int numMessages = g_RenderDataManager->GetTimedMessages().size();
+	startingPosition += heightOffset * (numMessages - 1);
+
+	for (const TimedMessage& message : g_RenderDataManager->GetTimedMessages())
+	{
+		RenderText(message.m_Message, startingPosition.x, startingPosition.y, fontSize, glm::vec3(0.5, 0.8f, 0.2f), false);
+
+		startingPosition.y -= heightOffset;
+	}
 }
 
 void Renderer::RenderFPS()
@@ -1429,6 +1449,7 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
 
        GLfloat w = ch.Size.x * scale;
        GLfloat h = ch.Size.y * scale;
+
        // Update VBO for each character
        GLfloat vertices[6][3] = {
            { xpos,     ypos + h,  0.0001f },
