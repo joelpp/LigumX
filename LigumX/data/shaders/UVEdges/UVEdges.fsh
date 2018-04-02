@@ -9,10 +9,16 @@ uniform vec3 g_Color;
 
 layout (location = 0) out vec4 FinalColor;
 
+float GetLineWidth(vec2 uv)
+{
+	vec2 grid = abs(fract( (uv) - 0.5) - 0.5) / fwidth(uv);
+	float line = min(grid.x, grid.y);
+	return line;
+}
 
 void main() 
 {
-	float threshold = 0.99f;
+	float threshold = GetLineWidth(myTexCoord);
 	float alpha = 1.f;
 	if (myTexCoord.x < threshold && 
 		myTexCoord.x > 1.f - threshold && 

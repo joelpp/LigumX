@@ -542,6 +542,12 @@ void RenderDataManager::AddAABBJob(const AABB& aabb, const glm::vec3& color)
 	m_AABBJobs.push_back(job);
 }
 
+
+void RenderDataManager::AddAABBJobCentered(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color)
+{
+	AddAABBJob(worldPosition - glm::vec3(brushWidth / 2), brushWidth, color);
+}
+
 void RenderDataManager::AddAABBJob(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color)
 {
 	AABB aabb;

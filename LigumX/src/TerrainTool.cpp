@@ -63,21 +63,18 @@ TerrainTool::TerrainTool()
 
 bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
+	PickingTool* pickingTool = g_Editor->GetPickingTool();
+
+	glm::vec3 worldPosition = pickingTool->GetAimingWorldPosition();
+
+	g_RenderDataManager->AddAABBJobCentered(worldPosition, (int)m_TerrainBrushSize, glm::vec3(1, 0, 0));
+
 	if (mouseButton1Down)
 	{
-		if (!mouseButton1Down)
-		{
-			return false;
-		}
-
-		PickingTool* pickingTool = g_Editor->GetPickingTool();
-
-		glm::vec3 worldPosition = pickingTool->GetAimingWorldPosition();
 		glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
 
 		World* world = LigumX::GetInstance().GetWorld();
 		Sector* sector = world->GetSectorByWorldPosition(worldPosition);
-
 
 		Texture* tex = m_SplatMapTexture;
 		glm::ivec2 texSize = tex->GetSize();
@@ -92,7 +89,6 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 			m_SplatMapData.resize(numBytes);
 		}
 
-		g_RenderDataManager->AddAABBJob(worldPosition, brushWidth, glm::vec3(1, 0, 0));
 
 		glm::vec2 screenDistance = dragDistance;
 		screenDistance.y *= -1;
