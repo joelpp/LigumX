@@ -107,6 +107,7 @@ Sector* m_LoadingSector;
 void DebugDisplay() override;
 
 glm::vec3 GetHighlightColor(Sector* sector);
+bool HandleMouseScroll(const glm::vec2& scrolling) override;
 
 
 };

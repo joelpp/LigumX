@@ -32,6 +32,8 @@ void SetWaysModelsVector(std::vector<Model*> value) { m_WaysModelsVector = value
 void AddTo_WaysModelsVector(Model* value) { m_WaysModelsVector.push_back(value); };
 Texture*& GetSplatMapTexture() { return m_SplatMapTexture; }; 
 void SetSplatMapTexture(Texture* value) { m_SplatMapTexture = value; }; 
+Texture*& GetAlbedoTexture() { return m_AlbedoTexture; }; 
+void SetAlbedoTexture(Texture* value) { m_AlbedoTexture = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -39,8 +41,9 @@ Model* m_NodesModel;
 Model* m_WaysModel;
 std::vector<Model*> m_WaysModelsVector;
 Texture* m_SplatMapTexture;
+Texture* m_AlbedoTexture;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorGraphicalDataPIDX
@@ -51,6 +54,7 @@ PIDX_NodesModel,
 PIDX_WaysModel,
 PIDX_WaysModelsVector,
 PIDX_SplatMapTexture,
+PIDX_AlbedoTexture,
 };
 bool Serialize(bool writing);
 

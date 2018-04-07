@@ -5,4 +5,5 @@ class SectorGraphicalData
 	std::vector<Model> WaysModelsVector;
 
 	Texture* SplatMapTexture;
+	Texture* AlbedoTexture;
 }

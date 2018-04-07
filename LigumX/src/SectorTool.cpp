@@ -1,6 +1,7 @@
 #include "SectorTool.h"
 #include "LigumX.h"
 #include "EngineSettings.h"
+#include "InputHandler.h"
 
 #include "Renderer.h"
 #include "DebugRenderer.h"
@@ -54,7 +55,6 @@ SectorTool::SectorTool()
 {
 	
 }
-
 
 
 glm::vec3 SectorTool::GetHighlightColor(Sector* sector)
@@ -131,6 +131,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 	bool loadOSMData = g_EngineSettings->GetLoadOSMData();
 	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready();
+	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
 	if (canSendRequest)
 	{
 		int numSectorsPerSide = 2 * m_LoadingRingSize - 1;
@@ -141,7 +142,6 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 			for (int j = 0; j < numSectorsPerSide; ++j)
 			{
 				glm::ivec2 offsets = glm::ivec2(i - offset, j - offset);
-				glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
 				m_Request = CurlRequest(earthStartCoords - earthExtent * (glm::vec2) offsets, earthExtent, m_AsyncSectorLoading);
 
 				glm::ivec2 requestedSectorIndex = normalizedSectorIndex + glm::ivec2(offsets);
@@ -165,20 +165,15 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 					m_Request.Initialize();
 					m_Request.Start();
 					m_Request.End();
+
+					g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
+					RenderDataManager::CreateWaysLines(m_Request.GetSector());
+					m_Request.GetSector()->SetDataLoaded(true);
 				}
-
-				g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
-
-				RenderDataManager::CreateWaysLines(m_Request.GetSector());
-
-				m_Request.GetSector()->SetDataLoaded(true);
 
 				m_Request.Reset();
 			}
 		}
-
-
-		
 	}
 
 	return true;
@@ -224,4 +219,18 @@ void SectorTool::DebugDisplay()
 	{
 		renderer->RenderGrid();
 	}
+}
+
+
+bool SectorTool::HandleMouseScroll(const glm::vec2& scrolling)
+{
+	bool ctrlHeld = g_InputHandler->GetCtrlHeld();
+
+	if (ctrlHeld)
+	{
+		m_LoadingRingSize += scrolling.y;
+		return true;
+	}
+
+	return false;
 }

@@ -99,6 +99,7 @@ void main()
 	lerp0 = mix(lerp0, Rock, splatMap.y);
 	lerp0 = mix(lerp0, Sand, splatMap.z);
 	diffuse = mix(lerp0, Wood, splatMap.w);
+	diffuse = grass;
 
 	//diffuse = mix(diffuse, grass, splatMap.x);
 	//diffuse = mix(diffuse, Rock, splatMap.y);
