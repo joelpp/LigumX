@@ -29,9 +29,9 @@ bool SectorGraphicalData::Serialize(bool writing)
 
 SectorGraphicalData::SectorGraphicalData()
 {
-	m_SplatMapTexture = new Texture();
+	//m_SplatMapTexture = new Texture();
 	//m_SplatMapTexture->InitBlank(g_EngineSettings->GetSplatMapResolution());
-	//m_SplatMapTexture = new Texture(48463);
+	m_SplatMapTexture = new Texture(48463);
 
 	unsigned char* data = m_SplatMapTexture->GetTextureData();
 	int numBytes = 4 * m_SplatMapTexture->GetSize().x * m_SplatMapTexture->GetSize().y;

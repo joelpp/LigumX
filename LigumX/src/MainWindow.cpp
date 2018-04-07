@@ -20,7 +20,7 @@ const ClassPropertyData MainWindow::g_Properties[] =
 bool MainWindow::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-	PostSerialization(writing);
+	PostSerialization(writing, success);
 	return success;
 }
 
@@ -37,7 +37,7 @@ MainWindow::MainWindow(int objectID)
 	Serialize(false);
 }
 
-void MainWindow::PostSerialization(bool writing)
+void MainWindow::PostSerialization(bool writing, bool success)
 {
 	if (!writing)
 	{

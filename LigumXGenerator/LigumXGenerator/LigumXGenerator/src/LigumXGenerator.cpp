@@ -641,7 +641,7 @@ int main()
 				timeLastModified = (int) result.st_mtime;
 				processFile = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
 			}
-
+			processFile = true;
 			if (processFile)
 			{
 				std::cout << "\"" << fileName << "\" : has been updated." << std::endl;

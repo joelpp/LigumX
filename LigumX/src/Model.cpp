@@ -25,7 +25,7 @@ const ClassPropertyData Model::g_Properties[] =
 bool Model::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-	PostSerialization(writing);
+	PostSerialization(writing, success);
 	return success;
 }
 
@@ -63,7 +63,7 @@ Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
-void Model::PostSerialization(bool writing)
+void Model::PostSerialization(bool writing, bool success)
 {
 	if (!writing) // reading
 	{

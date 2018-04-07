@@ -52,7 +52,7 @@ const ClassPropertyData Renderer::g_Properties[] =
 bool Renderer::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-	PostSerialization(writing);
+	PostSerialization(writing, success);
 	return success;
 }
 
@@ -220,7 +220,7 @@ void Renderer::InitFreetype()
 
 }
 
-void Renderer::PostSerialization(bool writing)
+void Renderer::PostSerialization(bool writing, bool success)
 {
 	if (!writing)
 	{
@@ -1026,6 +1026,8 @@ void Renderer::BeforeWorldRender()
 	GL::SetViewport(m_Window->GetSize());
 
 	GL::ClearColorAndDepthBuffers();
+
+	GL::OutputErrors();
 }
 //
 //void Renderer::RenderSquare(const glm::vec3& position, const glm::vec3& size, const glm::vec3& color)

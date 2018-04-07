@@ -39,7 +39,7 @@ const ClassPropertyData Camera::g_Properties[] =
 bool Camera::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-	PostSerialization(writing);
+	PostSerialization(writing, success);
 	return success;
 }
 
@@ -81,7 +81,7 @@ Camera::Camera()
     mouseIsDragging = false;
 }
 
-void Camera::PostSerialization(bool writing)
+void Camera::PostSerialization(bool writing, bool success)
 {
 	if (!writing)
 	{

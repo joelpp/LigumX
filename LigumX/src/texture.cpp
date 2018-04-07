@@ -27,7 +27,7 @@ const ClassPropertyData Texture::g_Properties[] =
 bool Texture::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-	PostSerialization(writing);
+	PostSerialization(writing, success);
 	return success;
 }
 
@@ -70,7 +70,7 @@ Texture::Texture(string filename, bool isCubeMap)
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
-void Texture::PostSerialization(bool writing)
+void Texture::PostSerialization(bool writing, bool success)
 {
 	if (!writing)
 	{

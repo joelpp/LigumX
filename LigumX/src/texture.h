@@ -57,7 +57,7 @@ int m_BitsPerPixel = 0;
 GLPixelFormat m_InternalFormat;
 GLPixelFormat m_Format;
 GLPixelType m_PixelType;
-glm::ivec2 m_Size;
+glm::ivec2 m_Size = glm::ivec2(0, 0);
 public:
 static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
@@ -77,7 +77,7 @@ PIDX_PixelType,
 PIDX_Size,
 };
 bool Serialize(bool writing);
-void PostSerialization(bool writing);
+void PostSerialization(bool writing, bool success);
 
 #pragma endregion  HEADER Texture
 

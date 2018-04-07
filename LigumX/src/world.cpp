@@ -37,7 +37,7 @@ const ClassPropertyData World::g_Properties[] =
 bool World::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
-	PostSerialization(writing);
+	PostSerialization(writing, success);
 	return success;
 }
 
@@ -54,7 +54,7 @@ World::World()
 
 
 
-void World::PostSerialization(bool writing)
+void World::PostSerialization(bool writing, bool success)
 {
 	if (!writing)
 	{

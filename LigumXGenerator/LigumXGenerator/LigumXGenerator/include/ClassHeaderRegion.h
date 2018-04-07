@@ -178,7 +178,7 @@ public:
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{
-			WriteLine("void PostSerialization(bool writing);");
+			WriteLine("void PostSerialization(bool writing, bool success);");
 		}
 	}
 

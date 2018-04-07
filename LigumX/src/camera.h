@@ -117,7 +117,7 @@ PIDX_ViewSize,
 PIDX_MovementSpeed,
 };
 bool Serialize(bool writing);
-void PostSerialization(bool writing);
+void PostSerialization(bool writing, bool success);
 
 #pragma endregion  HEADER Camera
 

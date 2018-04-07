@@ -47,7 +47,7 @@ glm::vec2 m_LongLat = glm::vec2(0, 0);
 glm::vec3 m_WorldPosition = glm::vec3(0, 0, 0);
 float m_Elevation = 0.f;
 std::vector<Way*> m_Ways;
-glm::ivec2 m_SectorIndex;
+glm::ivec2 m_SectorIndex = glm::ivec2(0, 0);
 glm::vec2 m_SectorOffset = glm::vec2(0, 0);
 public:
 static const int g_PropertyCount = 9;

@@ -35,7 +35,7 @@ int m_ObjectID;
 std::string m_Name;
 bool m_InFocus = false;
 glm::vec2 m_Position = glm::vec2(0, 0);
-glm::ivec2 m_Size;
+glm::ivec2 m_Size = glm::ivec2(0, 0);
 std::string m_Title;
 public:
 static const int g_PropertyCount = 6;
@@ -51,7 +51,7 @@ PIDX_Size,
 PIDX_Title,
 };
 bool Serialize(bool writing);
-void PostSerialization(bool writing);
+void PostSerialization(bool writing, bool success);
 
 #pragma endregion  HEADER MainWindow
 

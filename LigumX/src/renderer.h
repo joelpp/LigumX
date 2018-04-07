@@ -126,7 +126,7 @@ PIDX_PostEffects,
 PIDX_DebugCamera,
 };
 bool Serialize(bool writing);
-void PostSerialization(bool writing);
+void PostSerialization(bool writing, bool success);
 
 #pragma endregion  HEADER Renderer
 public:

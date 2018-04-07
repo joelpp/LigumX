@@ -8,7 +8,6 @@
 class Sector;
 class Heightfield;
 class Entity;
-class Texture;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Sector
@@ -18,6 +17,7 @@ class vec2i;
 class CurlRequest;
 class SectorGraphicalData;
 class PerlinNoise;
+class Texture;
 class Entity;
 
 typedef std::pair<int, int> IntPair;
@@ -57,9 +57,9 @@ int m_ObjectID;
 std::string m_Name;
 glm::vec2 m_WorldPosition = glm::vec2(0, 0);
 glm::vec2 m_EarthPosition = glm::vec2(0, 0);
-glm::ivec2 m_QuantizedPosition;
-glm::ivec2 m_OffsetIndex;
-glm::ivec2 m_Index;
+glm::ivec2 m_QuantizedPosition = glm::ivec2(0, 0);
+glm::ivec2 m_OffsetIndex = glm::ivec2(0, 0);
+glm::ivec2 m_Index = glm::ivec2(0, 0);
 bool m_DataLoaded = false;
 Heightfield* m_Heightfield;
 Entity* m_TerrainPatchEntity;

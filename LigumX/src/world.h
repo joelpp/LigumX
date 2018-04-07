@@ -94,7 +94,7 @@ PIDX_DebugEntities,
 PIDX_Sectors,
 };
 bool Serialize(bool writing);
-void PostSerialization(bool writing);
+void PostSerialization(bool writing, bool success);
 
 #pragma endregion  HEADER World
 
