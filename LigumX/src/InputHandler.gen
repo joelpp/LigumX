@@ -6,6 +6,8 @@ class InputHandler
 
 	bool Mouse2Pressed;
 
+	bool CtrlHeld;
+
 	bool Dragging;
 	glm::vec2 DragDistance;
 	glm::vec2 LastDragDistance;

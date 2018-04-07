@@ -1426,6 +1426,11 @@ void Editor::ProcessScrolling()
 	const glm::vec2& scrolling = g_InputHandler->GetMouseScroll();
 	glm::vec3 moveVector;
 
+	if (GetTool()->HandleMouseScroll(scrolling))
+	{
+		return;
+	}
+
 	if (GetPickingTool()->GetPickedID() != 0)
 	{
 		float closeUp = m_Options->GetMouseScrollEntityCloseupPercent() / 100.f;

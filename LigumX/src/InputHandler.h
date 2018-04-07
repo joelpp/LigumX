@@ -29,6 +29,8 @@ void SetMouse1Pressed(bool value) { SetMouse1PressedCallback(value); };
 void SetMouse1PressedCallback(bool value);
 const bool& GetMouse2Pressed() { return m_Mouse2Pressed; }; 
 void SetMouse2Pressed(bool value) { m_Mouse2Pressed = value; }; 
+const bool& GetCtrlHeld() { return m_CtrlHeld; }; 
+void SetCtrlHeld(bool value) { m_CtrlHeld = value; }; 
 const bool& GetDragging() { return m_Dragging; }; 
 void SetDragging(bool value) { m_Dragging = value; }; 
 const glm::vec2& GetDragDistance() { return m_DragDistance; }; 
@@ -58,6 +60,7 @@ int m_ObjectID;
 std::string m_Name;
 bool m_Mouse1Pressed = false;
 bool m_Mouse2Pressed = false;
+bool m_CtrlHeld = false;
 bool m_Dragging = false;
 glm::vec2 m_DragDistance = glm::vec2(0, 0);
 glm::vec2 m_LastDragDistance = glm::vec2(0, 0);
@@ -69,7 +72,7 @@ glm::vec2 m_MousePosition = glm::vec2(0, 0);
 glm::vec2 m_LastMousePosition = glm::vec2(0, 0);
 glm::vec2 m_MouseScroll = glm::vec2(0, 0);
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_InputHandlerPIDX
@@ -78,6 +81,7 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_Mouse1Pressed,
 PIDX_Mouse2Pressed,
+PIDX_CtrlHeld,
 PIDX_Dragging,
 PIDX_DragDistance,
 PIDX_LastDragDistance,
@@ -95,7 +99,8 @@ bool Serialize(bool writing);
 
 InputHandler();
 
-void HandleInput(GLFWwindow* pWindow, int button, int action, int mods);
+void HandleMouseButtonInput(GLFWwindow* pWindow, int button, int action, int mods);
+void HandleKeyboardInput(int key, int scancode, int action, int mods);
 void FrameUpdate();
 
 void Reset();

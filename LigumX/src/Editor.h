@@ -209,6 +209,8 @@ void BackupData();
 
 void DisplayActiveTool();
 
+EditorTool* GetTool() { return m_Tools[m_ActiveTool]; }
+
 #define DEFINE_TOOL_GETTER(name) name* Get##name() { return (##name *) m_Tools[EEditorTool_##name]; }
 
 DEFINE_TOOL_GETTER(PickingTool);

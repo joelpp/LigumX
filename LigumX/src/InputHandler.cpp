@@ -13,6 +13,7 @@ const ClassPropertyData InputHandler::g_Properties[] =
 { "Name", PIDX_Name, offsetof(InputHandler, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Mouse1Pressed", PIDX_Mouse1Pressed, offsetof(InputHandler, m_Mouse1Pressed), 0, LXType_bool, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "Mouse2Pressed", PIDX_Mouse2Pressed, offsetof(InputHandler, m_Mouse2Pressed), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "CtrlHeld", PIDX_CtrlHeld, offsetof(InputHandler, m_CtrlHeld), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Dragging", PIDX_Dragging, offsetof(InputHandler, m_Dragging), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DragDistance", PIDX_DragDistance, offsetof(InputHandler, m_DragDistance), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "LastDragDistance", PIDX_LastDragDistance, offsetof(InputHandler, m_LastDragDistance), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
@@ -39,7 +40,7 @@ InputHandler::InputHandler()
 }
 
 
-void InputHandler::HandleInput(GLFWwindow* pWindow, int button, int action, int mods)
+void InputHandler::HandleMouseButtonInput(GLFWwindow* pWindow, int button, int action, int mods)
 {
 	switch (button)
 	{
@@ -70,7 +71,20 @@ void InputHandler::HandleInput(GLFWwindow* pWindow, int button, int action, int 
 	}
 }
 
-#include "Logging.h"
+void InputHandler::HandleKeyboardInput(int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_REPEAT)
+	{
+		return;
+	}
+
+	if (key == GLFW_KEY_LEFT_CONTROL)
+	{
+		m_CtrlHeld = (action == GLFW_PRESS);
+	}
+}
+
+
 void InputHandler::SetMousePositionCallback(glm::vec2 value)
 {
 	m_MousePosition = value;

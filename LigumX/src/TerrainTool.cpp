@@ -278,6 +278,20 @@ void TerrainTool::HandleKeyboardInput(int button, int action, int mods)
 
 }
 
+bool TerrainTool::HandleMouseScroll(const glm::vec2& scrolling)
+{
+	bool ctrlHeld = g_InputHandler->GetCtrlHeld();
+
+	if (ctrlHeld)
+	{
+		m_TerrainBrushSize += scrolling.y;
+		return true;
+	}
+
+	return false;
+}
+
+
 Texture* TerrainTool::GetTextureToDisplay()
 {
 	if (m_ClickedSector)
