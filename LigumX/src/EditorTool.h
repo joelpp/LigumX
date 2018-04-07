@@ -51,5 +51,6 @@ virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, cons
 
 virtual void HandleKeyboardInput(int button, int action, int mods) { }
 virtual bool HandleMouseScroll(const glm::vec2& scrolling) { return false; }
+virtual void DebugDisplay() { }
 
 };

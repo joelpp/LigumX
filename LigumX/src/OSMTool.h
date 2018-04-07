@@ -4,6 +4,8 @@
 
 #include "EditorTool.h"
 
+class Sector;
+
 #pragma region  FORWARD_DECLARATIONS OSMTool
 #include "property.h"
 
@@ -39,17 +41,26 @@ const glm::ivec2& GetSelectedSectorIndex() { return m_SelectedSectorIndex; };
 void SetSelectedSectorIndex(glm::ivec2 value) { m_SelectedSectorIndex = value; }; 
 const glm::vec3& GetWorldSpacePosition() { return m_WorldSpacePosition; }; 
 void SetWorldSpacePosition(glm::vec3 value) { m_WorldSpacePosition = value; }; 
+const bool& GetShowNodes() { return m_ShowNodes; }; 
+void SetShowNodes(bool value) { m_ShowNodes = value; }; 
+const bool& GetShowWays() { return m_ShowWays; }; 
+void SetShowWays(bool value) { m_ShowWays = value; }; 
+const bool& GetShowFlatWays() { return m_ShowFlatWays; }; 
+void SetShowFlatWays(bool value) { m_ShowFlatWays = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
-bool m_Enabled = false;
+bool m_Enabled = true;
 Node* m_SelectedNode;
 std::vector<Way*> m_SelectedWays;
 bool m_SearchOnlyWithinSector = false;
-glm::ivec2 m_SelectedSectorIndex;
+glm::ivec2 m_SelectedSectorIndex = glm::ivec2(0, 0);
 glm::vec3 m_WorldSpacePosition = glm::vec3(0, 0, 0);
+bool m_ShowNodes = false;
+bool m_ShowWays = false;
+bool m_ShowFlatWays = true;
 public:
-static const int g_PropertyCount = 8;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMToolPIDX
@@ -62,12 +73,26 @@ PIDX_SelectedWays,
 PIDX_SearchOnlyWithinSector,
 PIDX_SelectedSectorIndex,
 PIDX_WorldSpacePosition,
+PIDX_ShowNodes,
+PIDX_ShowWays,
+PIDX_ShowFlatWays,
 };
 bool Serialize(bool writing);
 
 #pragma endregion  HEADER OSMTool
 
+OSMTool();
+
 bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 
+void DebugDisplay() override;
+void DisplaySectorDebug(Sector* sector);
 
+std::vector<glm::vec3>& GetWayDebugColors() { return m_WayDebugColors; };
+std::vector<int>& GetWayDisplayToggles() { return m_WayDisplayToggles; };
+
+private:
+
+std::vector<int> m_WayDisplayToggles;
+std::vector<glm::vec3> m_WayDebugColors;
 };

@@ -1,6 +1,6 @@
 class OSMTool
 {
-	bool Enabled;
+	bool Enabled = true;
 
 	Node* SelectedNode;
 	std::vector<Way> SelectedWays;
@@ -10,4 +10,8 @@ class OSMTool
 	glm::ivec2 SelectedSectorIndex;
 
 	glm::vec3 WorldSpacePosition;
+
+	bool ShowNodes = false;
+	bool ShowWays = false;
+	bool ShowFlatWays = true;
 }

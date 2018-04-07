@@ -1,3 +1,4 @@
+#include "LigumX.h"
 #include "Editor.h"
 #include "InputHandler.h"
 
@@ -10,6 +11,9 @@
 #include "PickingTool.h"
 #include "SectorManager.h"
 #include "Sector.h"
+#include "SectorGraphicalData.h"
+#include "Way.h"
+#include "World.h"
 
 #pragma region  CLASS_SOURCE OSMTool
 
@@ -27,6 +31,9 @@ const ClassPropertyData OSMTool::g_Properties[] =
 { "SearchOnlyWithinSector", PIDX_SearchOnlyWithinSector, offsetof(OSMTool, m_SearchOnlyWithinSector), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "SelectedSectorIndex", PIDX_SelectedSectorIndex, offsetof(OSMTool, m_SelectedSectorIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
 { "WorldSpacePosition", PIDX_WorldSpacePosition, offsetof(OSMTool, m_WorldSpacePosition), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "ShowNodes", PIDX_ShowNodes, offsetof(OSMTool, m_ShowNodes), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowWays", PIDX_ShowWays, offsetof(OSMTool, m_ShowWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "ShowFlatWays", PIDX_ShowFlatWays, offsetof(OSMTool, m_ShowFlatWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool OSMTool::Serialize(bool writing)
 {
@@ -35,6 +42,41 @@ bool OSMTool::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE OSMTool
+
+OSMTool::OSMTool()
+{
+	m_WayDisplayToggles.resize(OSMElementType_Count);
+
+	for (int i = 0; i < OSMElementType_Count; ++i)
+	{
+		m_WayDisplayToggles[i] = true;
+	}
+
+	m_WayDebugColors =
+	{
+		vec3(1.0, 1.0, 1.0),	// HighwayTrunk,
+		vec3(0.9, 0.9, 0.9),	// HighwayPrimary,
+		vec3(0.8, 0.8, 0.8),	// HighwaySecondary,
+		vec3(0.7, 0.7, 0.7),	// HighwayTertiary,
+		vec3(0.6, 0.6, 0.6),	// HighwayResidential,
+		vec3(0.5, 0.5, 0.5),	// HighwayService,
+		vec3(0.4, 0.4, 0.4),	// HighwayUnclassified,
+		vec3(1.0, 0.0, 1.0),	// Sidewalk,
+		vec3(1.0, 1.0, 1.0),	// Contour,
+		vec3(0.0, 0.0, 1.0),	// Building_Unmarked,
+		vec3(0.0, 0.0, 1.0),	// Building_School,
+		vec3(0.0, 0.5, 0.0),	// Building_Addressinterpolation,
+		vec3(0.0, 0.0, 0.5),	// Boundary,
+		vec3(0.1, 1.0, 0.1),	// LeisurePark,
+		vec3(0.0, 1.0, 0.0),	// NaturalWood,
+		vec3(0.0, 0.2, 0.8),	// NaturalWater,
+		vec3(1.0, 1.0, 1.0),	// Landuse,
+		vec3(1.0, 1.0, 1.0),	// RailwaySubway,
+		vec3(0.0, 0.8, 1.0),	// AddressInterpolation,
+		vec3(1.0, 1.0, 1.0),	// NotImplemented,
+		vec3(1.0, 0.1, 0.1)		// Unknown,
+	};
+}
 
 
 bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
@@ -58,4 +100,60 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 
 	}
 	return false;
+}
+
+void OSMTool::DisplaySectorDebug(Sector* sector)
+{
+	Renderer* renderer = LigumX::GetInstance().GetRenderer();
+	SectorGraphicalData* gfxData = sector->GetGraphicalData();
+
+	glm::mat4 identity = glm::mat4(1.0);
+
+	if (m_ShowNodes)
+	{
+		renderer->RenderDebugModel(gfxData->GetNodesModel(), identity, renderer->pPipelineNodes);
+	}
+
+	if (m_ShowWays)
+	{
+		for (Model* wayModel : gfxData->GetWaysModelsVector())
+		{
+			renderer->RenderDebugModel(wayModel, identity, renderer->pPipelineLines);
+		}
+	}
+
+	if (m_ShowFlatWays)
+	{
+		int selectedWay = 0;
+
+		if (sector->GetOffsetIndex() == GetSelectedSectorIndex() && GetSelectedWays().size() > 0)
+		{
+			selectedWay = GetSelectedWays()[0]->GetIndexInSector();
+		}
+
+		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
+	}
+}
+
+void OSMTool::DebugDisplay()
+{
+	if (!m_Enabled)
+	{
+		return;
+	}
+
+	World* world = LigumX::GetInstance().GetWorld();
+	Renderer* renderer = LigumX::GetInstance().GetRenderer();
+
+	const std::vector<Sector*> sectors = world->GetSectors();
+
+	for (Sector* sector : world->GetSectors())
+	{
+		bool dataLoaded = sector->GetDataLoaded();
+		if (dataLoaded)
+		{
+			DisplaySectorDebug(sector);
+		}
+	
+	}
 }

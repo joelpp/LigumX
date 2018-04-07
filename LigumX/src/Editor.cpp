@@ -1315,44 +1315,6 @@ void Editor::RenderImgui()
 
 		ShowPropertyGridObject(sectorTool, "Sector Tool");
 
-		{
-			const char* name = "Display Toggles";
-			ImGui::PushID(name);
-			if (ImGui::TreeNode(name))
-			{
-				std::vector<int>& displayToggles = sectorTool->GetWayDisplayToggles();
-				for (int i = 0; i < displayToggles.size(); ++i)
-				{
-					bool b = displayToggles[i] == 1 ? true : false;
-					ShowProperty(&b, EnumValues_OSMElementType[i].c_str());
-					displayToggles[i] = b ? 1 : 0;
-
-					lxAssert(displayToggles[i] == 0 || displayToggles[i] == 1);
-				}
-
-				ImGui::TreePop();
-			}
-			ImGui::PopID();
-		}
-
-		{
-			const char* name = "Display Colors";
-			ImGui::PushID(name);
-			if (ImGui::TreeNode(name))
-			{
-				std::vector<glm::vec3>& displayColors = sectorTool->GetWayDebugColors();
-				for (int i = 0; i < displayColors.size(); ++i)
-				{
-					ShowProperty(&(displayColors[i]), EnumValues_OSMElementType[i].c_str(), 0, 1);
-				}
-
-				ImGui::TreePop();
-			}
-			ImGui::PopID();
-		}
-
-		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");
-
 		g_GUI->EndWindow();
 	}
 
@@ -1382,6 +1344,44 @@ void Editor::RenderImgui()
 
 		OSMTool* osmTool = GetOSMTool();
 		ShowPropertyGridObject(osmTool, "OSM Tool");
+
+		{
+			const char* name = "Display Toggles";
+			ImGui::PushID(name);
+			if (ImGui::TreeNode(name))
+			{
+				std::vector<int>& displayToggles = osmTool->GetWayDisplayToggles();
+				for (int i = 0; i < displayToggles.size(); ++i)
+				{
+					bool b = displayToggles[i] == 1 ? true : false;
+					ShowProperty(&b, EnumValues_OSMElementType[i].c_str());
+					displayToggles[i] = b ? 1 : 0;
+
+					lxAssert(displayToggles[i] == 0 || displayToggles[i] == 1);
+				}
+
+				ImGui::TreePop();
+			}
+			ImGui::PopID();
+		}
+
+		{
+			const char* name = "Display Colors";
+			ImGui::PushID(name);
+			if (ImGui::TreeNode(name))
+			{
+				std::vector<glm::vec3>& displayColors = osmTool->GetWayDebugColors();
+				for (int i = 0; i < displayColors.size(); ++i)
+				{
+					ShowProperty(&(displayColors[i]), EnumValues_OSMElementType[i].c_str(), 0, 1);
+				}
+
+				ImGui::TreePop();
+			}
+			ImGui::PopID();
+		}
+
+		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");
 
 		g_GUI->EndWindow();
 	}
@@ -1447,7 +1447,10 @@ void Editor::ProcessScrolling()
 
 void Editor::RenderTools()
 {
-	((SectorTool*)m_Tools[EEditorTool_SectorTool])->Display();
+	for (EditorTool* tool : m_Tools)
+	{
+		tool->DebugDisplay();
+	}
 
 	DisplayAxisGizmo();
 }

@@ -14,9 +14,7 @@ class SectorTool
 
 	int LoadingRingSize = 1;
 
-	bool ShowNodes = false;
-	bool ShowWays = false;
-	bool ShowFlatWays = true;
+
 	bool ShowSectorAABBs = true;
 	bool ShowGrid = true;
 	bool HighlightSelectedSector = true;

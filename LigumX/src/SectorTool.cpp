@@ -36,9 +36,6 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "AsyncSectorLoading", PIDX_AsyncSectorLoading, offsetof(SectorTool, m_AsyncSectorLoading), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "NodeSize", PIDX_NodeSize, offsetof(SectorTool, m_NodeSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "LoadingRingSize", PIDX_LoadingRingSize, offsetof(SectorTool, m_LoadingRingSize), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "ShowNodes", PIDX_ShowNodes, offsetof(SectorTool, m_ShowNodes), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowWays", PIDX_ShowWays, offsetof(SectorTool, m_ShowWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "ShowFlatWays", PIDX_ShowFlatWays, offsetof(SectorTool, m_ShowFlatWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowSectorAABBs", PIDX_ShowSectorAABBs, offsetof(SectorTool, m_ShowSectorAABBs), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowGrid", PIDX_ShowGrid, offsetof(SectorTool, m_ShowGrid), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HighlightSelectedSector", PIDX_HighlightSelectedSector, offsetof(SectorTool, m_HighlightSelectedSector), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
@@ -55,37 +52,7 @@ bool SectorTool::Serialize(bool writing)
 
 SectorTool::SectorTool()
 {
-	m_WayDisplayToggles.resize(OSMElementType_Count);
-
-	for (int i = 0; i < OSMElementType_Count; ++i)
-	{
-		m_WayDisplayToggles[i] = true;
-	}
-
-	m_WayDebugColors =
-	{
-		vec3(1.0, 1.0, 1.0),	// HighwayTrunk,
-		vec3(0.9, 0.9, 0.9),	// HighwayPrimary,
-		vec3(0.8, 0.8, 0.8),	// HighwaySecondary,
-		vec3(0.7, 0.7, 0.7),	// HighwayTertiary,
-		vec3(0.6, 0.6, 0.6),	// HighwayResidential,
-		vec3(0.5, 0.5, 0.5),	// HighwayService,
-		vec3(0.4, 0.4, 0.4),	// HighwayUnclassified,
-		vec3(1.0, 0.0, 1.0),	// Sidewalk,
-		vec3(1.0, 1.0, 1.0),	// Contour,
-		vec3(0.0, 0.0, 1.0),	// Building_Unmarked,
-		vec3(0.0, 0.0, 1.0),	// Building_School,
-		vec3(0.0, 0.5, 0.0),	// Building_Addressinterpolation,
-		vec3(0.0, 0.0, 0.5),	// Boundary,
-		vec3(0.1, 1.0, 0.1),	// LeisurePark,
-		vec3(0.0, 1.0, 0.0),	// NaturalWood,
-		vec3(0.0, 0.2, 0.8),	// NaturalWater,
-		vec3(1.0, 1.0, 1.0),	// Landuse,
-		vec3(1.0, 1.0, 1.0),	// RailwaySubway,
-		vec3(0.0, 0.8, 1.0),	// AddressInterpolation,
-		vec3(1.0, 1.0, 1.0),	// NotImplemented,
-		vec3(1.0, 0.1, 0.1)		// Unknown,
-	};
+	
 }
 
 
@@ -218,43 +185,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 }
 
 
-void SectorTool::DisplaySectorDebug(Sector* sector)
-{
-	Renderer* renderer = LigumX::GetInstance().GetRenderer();
-	SectorGraphicalData* gfxData = sector->GetGraphicalData();
-
-	glm::mat4 identity = glm::mat4(1.0);
-
-	if (m_ShowNodes)
-	{
-		renderer->RenderDebugModel(gfxData->GetNodesModel(), identity, renderer->pPipelineNodes);
-	}
-
-	if (m_ShowWays) 
-	{
-		for (Model* wayModel : gfxData->GetWaysModelsVector())
-		{
-			renderer->RenderDebugModel(wayModel, identity, renderer->pPipelineLines);
-		}
-	}
-
-	if (m_ShowFlatWays)
-	{	
-		OSMTool* osmTool = g_Editor->GetOSMTool();
-
-		int selectedWay = 0;
-
-		if (sector->GetOffsetIndex() == osmTool->GetSelectedSectorIndex() && osmTool->GetSelectedWays().size() > 0)
-		{
-			selectedWay = osmTool->GetSelectedWays()[0]->GetIndexInSector();
-		}
-
-		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
-	}
-}
-
-
-void SectorTool::Display()
+void SectorTool::DebugDisplay()
 {
 	if (!m_Enabled)
 	{
@@ -269,10 +200,6 @@ void SectorTool::Display()
 	for (Sector* sector : world->GetSectors())
 	{
 		bool dataLoaded = sector->GetDataLoaded();
-		if (dataLoaded)
-		{
-			DisplaySectorDebug(sector);
-		}
 
 		if (m_ShowSectorAABBs)
 		{
