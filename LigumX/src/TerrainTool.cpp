@@ -5,6 +5,7 @@
 #include "EngineSettings.h"
 #include "Editor.h"
 #include "Sector.h"
+#include "Heightfield.h"
 #include "PickingTool.h"
 #include "Logging.h"
 #include "World.h"
@@ -71,8 +72,6 @@ float TextureToWorldScale(float scale, glm::ivec2 texSize)
 	return scale / texSize.x;
 }
 
-
-
 bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 	PickingTool* pickingTool = g_Editor->GetPickingTool();
@@ -87,13 +86,27 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 	World* world = LigumX::GetInstance().GetWorld();
 	m_ClickedSector = world->GetSectorByWorldPosition(worldPosition);
 
-	Texture* tex = m_ClickedSector->GetSplatMapTexture();
+	Texture* tex;
+	
+	if (m_Mode == TerrainEditionMode_Color)
+	{
+		tex = m_ClickedSector->GetSplatMapTexture();
+	}
+	else
+	{
+		tex = m_ClickedSector->GetHeightfield()->GetHeightDataTexture();
+	}
 
 	float worldScale = g_EngineSettings->GetWorldScale();
 
 	glm::vec3 scale = glm::vec3(worldScale); // /*pickingTool->GetPickedEntity()->GetScale();*/
 
-	g_RenderDataManager->AddAABBJobCentered(worldPosition, (int)(m_TerrainBrushSize * TextureToWorldScale(worldScale, tex->GetSize())), glm::vec3(1,0,0));
+	glm::vec3 aabbCenterPoint = worldPosition;
+	int aabbScale = (int)(m_TerrainBrushSize * TextureToWorldScale(worldScale, tex->GetSize()));
+	
+	// move aabb basis to 0
+	aabbCenterPoint.z = aabbScale / 2.f;
+	g_RenderDataManager->AddAABBJobCentered(worldPosition, aabbScale, glm::vec3(1,0,0));
 
 	if (mouseButton1Down)
 	{
@@ -101,8 +114,7 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 
 		glm::ivec2 texSize = tex->GetSize();
 		int numTexels = texSize.x * texSize.y;
-		int stride = 4;
-		int numBytes = stride * numTexels;
+
 
 		int brushWidth = (int)m_TerrainBrushSize;
 		int brushWidthSq = brushWidth * brushWidth;
@@ -120,13 +132,24 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		m_StartTexel = glm::max(m_StartTexel, glm::ivec2(0, 0));
 		m_StartTexel = glm::min(m_StartTexel, texSize - glm::ivec2(brushWidth));
 		
-		unsigned char* val = tex->GetTextureData();
+		unsigned char* val = nullptr;
+		
+		int stride = 4;
+
+		if (m_Mode == TerrainEditionMode_Color)
+		{
+			val = tex->GetTextureData();
+		}
+		else
+		{
+			val = (unsigned char*) m_ClickedSector->GetHeightfield()->GetHeightData().data();
+		}
+
+		int numBytes = stride * numTexels;
 
 		int dataOffset = stride * (m_StartTexel.y * tex->GetSize().x + m_StartTexel.x);
 
 		unsigned char* offsetVal = val + dataOffset;
-
-		
 
 		double maxVal = std::max(-screenDistance.y / 100, 0.f);
 
@@ -158,24 +181,34 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 					continue;
 				}
 
-				for (int c = 0; c < 4; ++c)
+				if (m_Mode == TerrainEditionMode_Color)
 				{
-					unsigned char& value = offsetVal[index + c];
-					int toAdd = (int)m_XYZMask[c] * m_SplatMapIncrement;
+					for (int c = 0; c < 4; ++c)
+					{
+						unsigned char& value = offsetVal[index + c];
+						int toAdd = (int)m_XYZMask[c] * m_SplatMapIncrement * (m_XYZMask.w == 0 ? 1 : -1);
+
+						if (GetTerrainErasureMode() && toAdd != 0)
+						{
+							value = 0;
+						}
+						
+						value = std::min(255, std::max(value + toAdd, 0));
+					}
+				}
+				else
+				{
+					float* value = (float*) (offsetVal + index);
+					float toAdd = (float)m_XYZMask[0] * (m_XYZMask.w == 0 ? 1 : -1);
 
 					if (GetTerrainErasureMode() && toAdd != 0)
 					{
 						value = 0;
 					}
-					else if (m_XYZMask.w == 0) // adding 
+					else
 					{
-						value = std::min(255, value + (char)toAdd);
+						*value = std::min(FLT_MAX, std::max(*value + toAdd, FLT_MIN));
 					}
-					else if (m_XYZMask.w == 1) // subtracting
-					{
-						value = std::max(0, value - (char)toAdd);
-					}
-
 				}
 			}
 		}	
@@ -214,7 +247,50 @@ void TerrainTool::HandleKeyboardInput(int button, int action, int mods)
 		newMask = glm::max(newMask, glm::vec3(-1, -1, -1));
 		newMask = glm::min(newMask, glm::vec3(1, 1, 1));
 
-		m_XYZMask = glm::vec4(newMask, isShift);
+		m_XYZMask = glm::vec4(newMask, isShift && isPress);
+	}
+
+	if (mods & GLFW_MOD_CONTROL)
+	{
+		int max = EnumLength_TerrainEditionMode;
+		constexpr TerrainEditionMode ModeKeyboardToggles[EnumLength_TerrainEditionMode] =
+		{
+			TerrainEditionMode_None,
+			TerrainEditionMode_Color,
+			TerrainEditionMode_Height,
+		};
+
+		int base = GLFW_KEY_0;
+
+		if (button > base && button < base + max)
+		{
+			int offset = button - base;
+			TerrainEditionMode mode = ModeKeyboardToggles[offset];
+
+			const std::string& toolName = EnumValues_TerrainEditionMode[mode];
+			std::string message = "Selected terrain editin mode : " + toolName + "(" + std::to_string(offset) + ")";
+
+			g_RenderDataManager->AddTimedMessage(message);
+
+			m_Mode = mode;
+		}
 	}
 
 }
+
+Texture* TerrainTool::GetTextureToDisplay()
+{
+	if (m_ClickedSector)
+	{
+		if (m_Mode == TerrainEditionMode_Color)
+		{
+			return m_ClickedSector->GetSplatMapTexture();
+		}
+		else
+		{
+			return m_ClickedSector->GetHeightfield()->GetHeightDataTexture();
+		}
+	}
+	return nullptr;
+}
+

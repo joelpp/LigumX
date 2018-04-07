@@ -1364,6 +1364,14 @@ void Editor::RenderImgui()
 		TerrainTool* terrainTool = GetTerrainTool();
 		ShowPropertyGridObject(terrainTool, "Terrain Tool");
 
+		Texture* textureToDisplay = terrainTool->GetTextureToDisplay();
+		if (textureToDisplay)
+		{
+			ImVec2 size = ImVec2(100, 100);
+			
+			ImGui::Image((ImTextureID)textureToDisplay->GetHWObject(), size);
+		}
+
 		g_GUI->EndWindow();
 	}
 

@@ -63,7 +63,7 @@ void main()
 	f_Normal = ComputeNormal(v_Height, v_TexCoords, resolution);
 
 	vec2 splatTexCoords = vec2(1 - v_TexCoords.x, v_TexCoords.y);
-	vec4 splatMap = textureLod(g_SplatMapTexture, splatTexCoords, 0.0f);
+	vec4 splatMap = textureLod(g_SplatMapTexture, v_TexCoords, 0.0f);
 	//vec3 lightDirection = normalize(vec3(0.5f, 0.5f, 1.0f));
 	vec3 lightDirection = normalize(vec3(0.f, 0.f, 1.0f));
     float lightPower = dot(f_Normal, lightDirection);

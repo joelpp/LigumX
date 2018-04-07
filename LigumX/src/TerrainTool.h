@@ -5,6 +5,7 @@
 #include "glm/glm.hpp"
 #include "EditorTool.h"
 
+class Texture;
 
 #pragma region  FORWARD_DECLARATIONS TerrainTool
 #include "property.h"
@@ -93,6 +94,8 @@ public:
 
 	bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 	void HandleKeyboardInput(int button, int action, int mods) override;
+
+	Texture* GetTextureToDisplay();
 
 private:
 

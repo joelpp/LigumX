@@ -78,6 +78,7 @@ public:
 
 	float SampleHeight(const glm::vec2& normalizedPos);
 
+	std::vector<float>& GetHeightData() { return m_HeightData; }
 
 private:
     Mesh* m_mesh;
