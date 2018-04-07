@@ -40,7 +40,15 @@ class RenderDataManager;
 
 #define string_pair std::pair<std::string,std::string>
 
-class LigumX {
+enum EApplicationState
+{
+	EApplicationState_Uninitialized,
+	EApplicationState_Running,
+	EApplicationState_WantsToQuit
+};
+
+class LigumX 
+{
 
 public:
 	static Renderer* GetRenderer() { return m_Renderer; };
@@ -53,9 +61,7 @@ public:
 	void DoFrame();
 	void EndFrame();
 
-
-    bool running;
-    void mainLoop();
+    void MainLoop();
 
 	void Shutdown();
 
@@ -83,36 +89,16 @@ public:
     static void glfwWindowFocusCallback(GLFWwindow* /*pGlfwWindow*/, int /*focused*/) {}
     static void glfwWindowIconifyCallback(GLFWwindow* /*pGlfwWindow*/, int /*iconified*/) {}
     static void glfwWindowFramebufferSizeCallback(GLFWwindow* /*pGlfwWindow*/, int /*width*/, int /*height*/) {}
-//    static void debugCallback(GLenum /*source*/, GLenum /*type*/, GLuint /*id*/, GLenum /*severity*/,
-//                       GLsizei /*length*/, const GLchar* /*message*/, const void* /*pVoidWindow*/);
 
-
-
-    glm::vec2 oldMousePosition;
-    glm::vec2 windowPosToWorldPos(glm::vec2 ij);
-
-    std::unordered_map<std::string, int> tagConversionTable;
     World* world;
+
     RenderDataManager* m_RenderDataManager;
 
     // debug stuff
-
-    bool showTweakBar;
-    bool drawBuildingSides;
-    struct WaySelection{
-        Way* way;
-        int numberOfBytesBefore;
-        int numberOfBytesToWrite;
-    };
-    int unsuccessfulInterpolations;
-    bool interpolateContours;
-    WaySelection selectedWay;
-    float buildingHeight;
-    float buildingSideScaleFactor;   
-
-    void init_tweakBar();
-
     void loadSettings();
+
+	void SetApplicationState(EApplicationState appState) { m_ApplicationState = appState; }
+	EApplicationState GetApplicationState() { return m_ApplicationState; }
 
 static LigumX& GetInstance()
 {
@@ -120,7 +106,11 @@ static LigumX& GetInstance()
                               // Instantiated on first use.
     return instance;
 }
+
 private:
+
+	EApplicationState m_ApplicationState = EApplicationState_Uninitialized;
+
     REGISTERCLASS(LigumX);
 
     LigumX() {};                   // Constructor? (the {} brackets) are needed here.

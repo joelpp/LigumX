@@ -29,7 +29,7 @@ bool g_IsCtrlHeld = false;
 
 void LigumX::glfwWindowClosedCallback(GLFWwindow* /*pWindow*/)
 {
-    LigumX::GetInstance().Shutdown();
+	LigumX::GetInstance().Shutdown();
 }
 
 void LigumX::glfwMouseScrollCallback(GLFWwindow* pWindow, double xOffset, double yOffset)

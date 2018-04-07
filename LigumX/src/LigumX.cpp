@@ -35,19 +35,17 @@ const double static_dt = 1.0 / 100.0;
 
 int main(int argc, char *argv[])
 {
-    std::string _ClassName = "Main";
     srand(987654321);
 
     LigumX& game = LigumX::GetInstance();
 	
     game.Initialize();
 
-	game.running = true;
-    while(game.running) 
+    while(game.GetApplicationState() != EApplicationState_WantsToQuit) 
 	{
         glfwPollEvents();
 
-        game.mainLoop();
+        game.MainLoop();
     }
 
     glfwTerminate();
@@ -70,17 +68,15 @@ void LigumX::DoFrame()
 {
 	world->Update();
 
-
 	m_Renderer->render(world);
 }
 
 void LigumX::EndFrame()
 {
 	g_InputHandler->Reset();
-
 }
 
-void LigumX::mainLoop()
+void LigumX::MainLoop()
 {
 	BeginFrame();
 
@@ -120,6 +116,7 @@ void LigumX::Initialize()
     m_RenderDataManager = new RenderDataManager();
     renderer.setDataSource(m_RenderDataManager);
 
+	SetApplicationState(EApplicationState_Running);
 }
 
 
@@ -152,8 +149,6 @@ void LigumX::loadSettings(){
 
     glm::vec2 coordinateShift = trunc(Settings::GetInstance().f2("cameraPosition"));
     s.add("coordinateShifting", -coordinateShift);
-    buildingHeight = (float) s.i("buildingHeight");
-    buildingSideScaleFactor = 1;
 
 	Renderer& renderer = Renderer::GetInstance();
 	renderer.m_ShowGUI = true;
@@ -171,10 +166,10 @@ void LigumX::ResetWorld()
 	world->ResetSectors();
 }
 
-
 string LigumX::labelFromType(OSMElement::ElementType type)
 {
-    switch (type){
+    switch (type)
+	{
         case(OSMElement::HIGHWAY_TRUNK):        return "Highway (trunk)"; break;
         case(OSMElement::HIGHWAY_PRIMARY):      return "Highway (primary)";break;
         case(OSMElement::HIGHWAY_SECONDARY):    return "Highway (secondary)";break;
@@ -202,7 +197,8 @@ string LigumX::labelFromType(OSMElement::ElementType type)
 }
 
 
-void LigumX::populateTypeColorArray(){
+void LigumX::populateTypeColorArray()
+{
 
 	// todo : this shouldnt really be in renderer
     Renderer& renderer = Renderer::GetInstance();
@@ -250,38 +246,11 @@ void LigumX::populateTypeColorArray(){
 	renderer.typeColorMap.emplace(OSMElement::BOUNDARY, vec3(1.0, 1.0, 1.0));
 	renderer.typeColorMap.emplace(OSMElement::CONTOUR, vec3(1.0, 0.1, 0.1));
 
-    renderer.displayElementType.emplace(OSMElement::HIGHWAY_TRUNK, true);
-    renderer.displayElementType.emplace(OSMElement::HIGHWAY_PRIMARY, true);
-    renderer.displayElementType.emplace(OSMElement::HIGHWAY_SECONDARY, true);
-    renderer.displayElementType.emplace(OSMElement::HIGHWAY_TERTIARY, true);
-    renderer.displayElementType.emplace(OSMElement::HIGHWAY_RESIDENTIAL, true);
-    renderer.displayElementType.emplace(OSMElement::HIGHWAY_UNCLASSIFIED, true);
-    renderer.displayElementType.emplace(OSMElement::HIGHWAY_SERVICE, true);
-    renderer.displayElementType.emplace(OSMElement::BUILDING_UNMARKED, true);
-    renderer.displayElementType.emplace(OSMElement::BUILDING_SCHOOL, true);
-    renderer.displayElementType.emplace(OSMElement::BUILDING_ADDRINTERP, true);
-    renderer.displayElementType.emplace(OSMElement::RAILWAY_SUBWAY, true);
-    renderer.displayElementType.emplace(OSMElement::NATURAL_WOOD, true);
-    renderer.displayElementType.emplace(OSMElement::NATURAL_WATER, true);
-    renderer.displayElementType.emplace(OSMElement::LEISURE_PARK, true);
-    renderer.displayElementType.emplace(OSMElement::ADDR_INTERPOLATION, true);
-    renderer.displayElementType.emplace(OSMElement::GRID_LINE, true);
-    renderer.displayElementType.emplace(OSMElement::aDEBUG, true);
-    renderer.displayElementType.emplace(OSMElement::LANDUSE, true);
-    renderer.displayElementType.emplace(OSMElement::BOUNDARY, true);
-    renderer.displayElementType.emplace(OSMElement::CONTOUR, true);
-
 }
 
-static bool deleteAll( OSMElement * theElement ) { delete theElement; return true; }
 
-
-static void test_error_cb (int error, const char *description)
+void LigumX::SetCallbacks()
 {
-    fprintf(stderr, "%d: %s\n", error, description);
-}
-
-void LigumX::SetCallbacks(){
     Renderer& renderer = Renderer::GetInstance();
 
 	GLFWwindow* window = renderer.m_Window->pWindow;
@@ -302,7 +271,6 @@ void LigumX::SetCallbacks(){
 
 void LigumX::Shutdown()
 {
+	SetApplicationState(EApplicationState_WantsToQuit);
 	m_Renderer->Shutdown();
-
-	running = false;
 }
