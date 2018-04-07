@@ -69,7 +69,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
         }
 		else if (key == GLFW_KEY_R)
 		{ 
-			m_Renderer->init_pipelines(); 
+			m_Renderer->InitPipelines(); 
 		}
 		else if (key == GLFW_KEY_M)
 		{

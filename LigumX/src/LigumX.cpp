@@ -117,16 +117,8 @@ void LigumX::Initialize()
     //============================================================================
     Renderer &renderer = Renderer::GetInstance();
 
-    renderer.init_pipelines();
-
     m_RenderDataManager = new RenderDataManager();
     renderer.setDataSource(m_RenderDataManager);
-
-    //=============================================================================
-    // Textures, framebuffer, renderbuffer
-    //=============================================================================
-    //init_tweakBar();
-
 
 }
 

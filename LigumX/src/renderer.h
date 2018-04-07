@@ -140,12 +140,11 @@ public:
 	void InitGL();
 	void InitFramebuffers();
 	void InitFreetype();
-	GLuint CreateTexture();
 
 	void Shutdown();
 
     // subfunctions
-    void init_pipelines();
+    void InitPipelines();
     void init_pipelines_buildingSides();
     void init_pipelines_filledBuildings();
     void init_pipelines_roads();
@@ -168,7 +167,6 @@ public:
 	void RenderDebugModels();
 	void RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline);
 	void RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay);
-	void RenderSectorDebug(SectorGraphicalData* gfxData);
 	
 	void RenderGrid();
 	void RenderAxisGizmo();
@@ -195,7 +193,6 @@ public:
 	void BindFramebuffer(FramebufferType buffer);
 	void BindCubemap(int slot, GLuint HWObject);
 	void Bind2DTexture(int slot, GLuint HWObject);
-	void BindTexture(GLuint& hwTexture);
 	void FreeBoundTexture();
 
 	void SetUniform(int value, const char* name, GLuint location);
@@ -223,14 +220,12 @@ public:
 	template<typename T>
 	void SetComputeUniform(const T& value, const char* name);
 
-	//void SetVertexUniform(glm::vec3& value, const char* name);
 	template<typename T>
 	void SetVertexUniform(T& value, const char* name);
 	template<typename T>
 	void SetFragmentUniform(T& value, const char* name);
 
 	void  SetFragmentUniform(glm::vec3& value, const char* name, GLuint location);
-
 
 	void SetPipeline(ProgramPipeline* pipeline);
 	void SetLightingUniforms();
