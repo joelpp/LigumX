@@ -12,9 +12,10 @@ layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 layout(binding = 1) uniform sampler2D g_SplatMapTexture;
 
 
-layout(binding = 6) uniform sampler2D g_WoodTexture;
 layout(binding = 4) uniform sampler2D g_RockTexture;
 layout(binding = 5) uniform sampler2D g_SandTexture;
+layout(binding = 6) uniform sampler2D g_WoodTexture;
+layout(binding = 7) uniform sampler2D g_AlbedoTexture;
 
 
 
@@ -85,20 +86,20 @@ void main()
 	//		+ splatMap.z * texture(g_SandTexture, diffuseTexCoords).rgb
 	//		+ splatMap.w * texture(g_WoodTexture, diffuseTexCoords).rgb;
 	
-	vec3 grass =  texture(g_Material.m_DiffuseTexture, diffuseTexCoords).rgb;
-	vec3 Rock =  texture(g_RockTexture, diffuseTexCoords).rgb;
-	vec3 Sand =  texture(g_SandTexture, diffuseTexCoords).rgb;
-	vec3 Wood =  texture(g_WoodTexture, diffuseTexCoords).rgb;
-	vec3 neutral = vec3(0.2, 0.1, 0.3);
+	//vec3 grass =  texture(g_Material.m_DiffuseTexture, diffuseTexCoords).rgb;
+	//vec3 Rock =  texture(g_RockTexture, diffuseTexCoords).rgb;
+	//vec3 Sand =  texture(g_SandTexture, diffuseTexCoords).rgb;
+	//vec3 Wood =  texture(g_WoodTexture, diffuseTexCoords).rgb;
+	//vec3 neutral = vec3(0.2, 0.1, 0.3);
 	//diffuse = grass * splatMap.x;
 	//diffuse += Rock * splatMap.y;
 	//diffuse += Sand * splatMap.z;
 	//diffuse += Wood * splatMap.w;
 
-	vec3 lerp0 = mix(neutral, grass, splatMap.x);
-	lerp0 = mix(lerp0, Rock, splatMap.y);
-	lerp0 = mix(lerp0, Sand, splatMap.z);
-	diffuse = mix(lerp0, Wood, splatMap.w);
+	//vec3 lerp0 = mix(neutral, grass, splatMap.x);
+	//lerp0 = mix(lerp0, Rock, splatMap.y);
+	//lerp0 = mix(lerp0, Sand, splatMap.z);
+	diffuse =  texture(g_AlbedoTexture, diffuseTexCoords).rgb;
 
 	//diffuse = mix(diffuse, grass, splatMap.x);
 	//diffuse = mix(diffuse, Rock, splatMap.y);

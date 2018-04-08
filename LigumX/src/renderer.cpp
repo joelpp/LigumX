@@ -728,6 +728,8 @@ void Renderer::RenderTerrain()
 	SetFragmentUniform(6, "g_WoodTexture");
 	Bind2DTexture(6, m_Debug_WoodTexture->GetHWObject());
 
+
+
 	for (int i = 0; i < m_World->GetSectors().size(); ++i)
 	{
 		Sector* sector = m_World->GetSectors()[i];
@@ -740,6 +742,9 @@ void Renderer::RenderTerrain()
 			{
 				SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 				terrainMaterial = entity->GetModel()->GetMaterials()[0];
+
+				SetFragmentUniform(7, "g_AlbedoTexture");
+				Bind2DTexture(7, sector->GetGraphicalData()->GetAlbedoTexture()->GetHWObject());
 
 				SetFragmentUniform(1, "g_SplatMapTexture");
 				Bind2DTexture(1, sector->GetSplatMapTexture()->GetHWObject());
