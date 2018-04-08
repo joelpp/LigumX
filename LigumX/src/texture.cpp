@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include "Renderer.h"
-#include "texture.h"
 #include <vector>
+
+#include "LXError.h"
 
 #pragma region  CLASS_SOURCE Texture
 
@@ -40,8 +40,15 @@ Texture::Texture()
 	, m_WrapR(GL::Repeat)
 	, m_WrapS(GL::Repeat)
 	, m_WrapT(GL::Repeat)
+	, m_Size(glm::ivec2(256, 256))
+	, m_IsCubeMap(false)
+	, m_Filename("")
+	, m_InternalFormat(GLPixelFormat_RGBA)
+	, m_Format(GLPixelFormat_BGRA)
+	, m_PixelType(GLPixelType_uByte)
 {
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
+	PostSerialization(false, false);
 }
 
 Texture::Texture(int objectID)
@@ -81,11 +88,13 @@ void Texture::PostSerialization(bool writing, bool success)
 void Texture::Initialize()
 {
 	std::vector<std::string> filenames;
-	GLuint target;
+
+	bool fromBlank = (m_Filename == "");
+	GLuint bindingTarget = m_IsCubeMap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
+
 	if (!m_IsCubeMap)
 	{
 		filenames.push_back(m_Filename);
-		target = GL_TEXTURE_2D;
 	}
 	else
 	{
@@ -104,11 +113,6 @@ void Texture::Initialize()
 		}
 
 	}
-	GLuint bindingTarget = GL_TEXTURE_2D;
-	if (m_IsCubeMap)
-	{
-		bindingTarget = GL_TEXTURE_CUBE_MAP;
-	}
 
 	glGenTextures(1, &m_HWObject);
 	glBindTexture(bindingTarget, m_HWObject);
@@ -119,37 +123,24 @@ void Texture::Initialize()
 	GL::SetTextureParameter(GL::WrapS, m_WrapS);
 	GL::SetTextureParameter(GL::WrapT, m_WrapT);
 
-	int i = 0;
-	for (std::string& file : filenames)
+	if (fromBlank)
 	{
-		if (m_IsCubeMap)
+		InitBlank();
+	}
+	else
+	{
+		for (int i = 0; i < filenames.size(); ++i)
 		{
-			target = GL_TEXTURE_CUBE_MAP_POSITIVE_X + i;
-		}
+			GLuint target = m_IsCubeMap ? GL_TEXTURE_CUBE_MAP_POSITIVE_X + i : bindingTarget;
 
-		if (filenames[i].size() > 0)
-		{
 			LoadFromFile(target, filenames[i]);
 		}
-		else
-		{
-			LoadBlank(target);
-		}
-
-		i++;
 	}
 
 	glGenerateMipmap(bindingTarget);
 
 	glBindTexture(bindingTarget, 0);
 }
-
-void Texture::LoadBlank(GLuint target)
-{
-	glTexImage2D(target, 0, m_InternalFormat, m_Size.x, m_Size.y, 0, m_Format, m_PixelType, m_TextureData);
-
-}
-
 
 void Texture::LoadFromFile(GLuint target, std::string filename)
 {
@@ -251,7 +242,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	SetPixelType(type);
 
 	glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, bits);
-	Renderer::outputGLError(__func__, __LINE__);
+	GL::OutputErrors();
 
 	if (m_ObjectID == 48463)
 	{
@@ -335,28 +326,18 @@ void Texture::UpdateFromData()
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-
-
-void Texture::InitBlank(glm::ivec2 size)
+void Texture::InitBlank()
 {
 	SetBitsPerPixel(32);
-	SetSize(glm::ivec2(size.x, size.y));
-	int numBytes = m_BitsPerPixel * size.x * size.y / 4;
 
-	m_TextureData = (BYTE*) malloc(numBytes);
+	lxAssert(m_Size != glm::ivec2(0, 0));
+
+	int numBytes = m_BitsPerPixel * m_Size.x * m_Size.y / 4;
+
+	m_TextureData = (unsigned char*) malloc(numBytes);
 	memset(m_TextureData, 0, numBytes);
 
-	GLPixelFormat internalFormat = GLPixelFormat_RGBA;
-	GLPixelFormat format = GLPixelFormat_BGRA;
-	GLPixelType type = GLPixelType_uByte;
+	glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Size.x, m_Size.y, 0, m_Format, m_PixelType, m_TextureData);
 
-	SetInternalFormat(internalFormat);
-	SetFormat(format);
-	SetPixelType(type);
-	SetIsCubeMap(false);
-
-	Initialize();
-
-	//glTexImage2D(target, 0, internalFormat, width, height, 0, format, type, bits);
-	Renderer::outputGLError(__func__, __LINE__);
+	GL::OutputErrors();
 }

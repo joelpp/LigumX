@@ -86,6 +86,11 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 	World* world = LigumX::GetInstance().GetWorld();
 	m_ClickedSector = world->GetSectorByWorldPosition(worldPosition);
 
+	if (m_ClickedSector == nullptr)
+	{
+		return false;
+	}
+
 	Texture* tex;
 	
 	if (m_Mode == TerrainEditionMode_Color)
@@ -183,8 +188,17 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 
 				if (m_Mode == TerrainEditionMode_Color)
 				{
+					glm::vec4 splatMapData = glm::vec4(offsetVal[index + 0], offsetVal[index + 1], offsetVal[index + 2], offsetVal[index + 3]);
+					splatMapData += m_XYZMask;
+					if (splatMapData.length() > 255.f)
+					{
+						splatMapData = glm::normalize(splatMapData) * 255.f;
+					}
+
+
 					for (int c = 0; c < 4; ++c)
 					{
+						//offsetVal[index + c] = std::min(255, std::max((int)splatMapData[c], 0));
 						unsigned char& value = offsetVal[index + c];
 						int toAdd = (int)m_XYZMask[c] * m_SplatMapIncrement * (m_XYZMask.w == 0 ? 1 : -1);
 

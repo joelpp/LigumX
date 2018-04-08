@@ -207,7 +207,6 @@ float Sector::SampleHeight(const glm::vec3& worldPos)
 
 Texture* Sector::GetSplatMapTexture()
 {
-	lxAssert(m_Data);
 	lxAssert(m_Data->GetGraphicalData());
 
 	return m_Data->GetGraphicalData()->GetSplatMapTexture();
