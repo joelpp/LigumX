@@ -172,7 +172,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 					m_Request.End();
 
 					g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
-					RenderDataManager::CreateWaysLines(m_Request.GetSector());
+					g_RenderDataManager->CreateWaysLines(m_Request.GetSector());
 					m_Request.GetSector()->SetDataLoaded(true);
 				}
 

@@ -94,7 +94,8 @@ public:
     int nbRoads;
     RenderDataManager();
 
-    void fillBuffers(Sector* newSector);
+	void BuildRoadMeshes(Sector* sector);
+	void fillBuffers(Sector* newSector);
     static void InitializeSector(Sector* sector);
 	static void AddDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color);
 	static Model* CreateDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color, const char* name);
@@ -103,7 +104,7 @@ public:
 
 	void addToTerrainBuffer(Sector* newSector);
     Mesh* terrainMesh();
-	static void CreateWaysLines(Sector* sector);
+	void CreateWaysLines(Sector* sector);
 
     std::vector<TerrainRenderingJob> terrainRenderingJobs;
 

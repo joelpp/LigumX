@@ -99,7 +99,7 @@ void main()
 	//vec3 lerp0 = mix(neutral, grass, splatMap.x);
 	//lerp0 = mix(lerp0, Rock, splatMap.y);
 	//lerp0 = mix(lerp0, Sand, splatMap.z);
-	diffuse = mix(grass, Rock, splatMap.z);
+	diffuse = mix(grass, Rock, 1.f - splatMap.z);
 
 	//diffuse = mix(diffuse, grass, splatMap.x);
 	//diffuse = mix(diffuse, Rock, splatMap.y);
