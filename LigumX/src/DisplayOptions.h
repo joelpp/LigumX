@@ -57,6 +57,8 @@ const bool& GetRenderShadows() { return m_RenderShadows; };
 void SetRenderShadows(bool value) { m_RenderShadows = value; }; 
 const bool& GetOutputGLErrors() { return m_OutputGLErrors; }; 
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
+const bool& GetDisplayDebugModels() { return m_DisplayDebugModels; }; 
+void SetDisplayDebugModels(bool value) { m_DisplayDebugModels = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -77,8 +79,9 @@ bool m_RenderTextureOverlay = false;
 bool m_RenderOpaque = false;
 bool m_RenderShadows = false;
 bool m_OutputGLErrors = false;
+bool m_DisplayDebugModels = false;
 public:
-static const int g_PropertyCount = 19;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -102,6 +105,7 @@ PIDX_RenderTextureOverlay,
 PIDX_RenderOpaque,
 PIDX_RenderShadows,
 PIDX_OutputGLErrors,
+PIDX_DisplayDebugModels,
 };
 bool Serialize(bool writing);
 

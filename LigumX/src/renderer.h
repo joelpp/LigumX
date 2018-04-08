@@ -45,9 +45,6 @@ class Renderer;
 extern Renderer* g_Instance;
 
 
-#define FLUSH_ERRORS() outputGLError(__func__, __LINE__);
-//#define FLUSH_ERRORS()
-
 enum FramebufferType
 {
 	FramebufferType_Default = 0,
@@ -156,7 +153,6 @@ public:
     void DrawMesh(Mesh* mesh, Material* material);
 	void DrawMesh(Mesh* mesh);
     void DrawModel(Entity* entity, Model* model);
-    static void outputGLError(std::string func, int line);
     void RenderSky();
     void RenderFPS();
 	void RenderMessages();

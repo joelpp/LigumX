@@ -19,6 +19,11 @@ Building::Building(Way* way)
 	m_Way = way;
 }
 
+struct Triangle
+{
+
+};
+
 bool Building::GenerateModel()
 {
 
@@ -197,7 +202,7 @@ bool Building::GenerateModel()
 	    nbSuccessLoops++;
 
 	    // keep and copy the triangles we created
-	    for(vec3 v : tempTriangleVertices) 
+	    for(vec3& v : tempTriangleVertices) 
 	    {
 	         v.z = height;
 	        buildingTrianglePositions.push_back(v);

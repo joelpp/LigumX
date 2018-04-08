@@ -103,23 +103,6 @@ RenderDataManager::RenderDataManager()
 	Renderer::createGLBuffer(renderer.glidScreenQuadPositions, screenQuadPos);
     Renderer::createGLBuffer(renderer.glidScreenQuadTexCoords, screenQuadTexCoords);
 
-    //Model* model = new Model("C:/Users/Joel/Documents/LigumX/LigumX/data/models/sphere.obj");
-    //testMesh = model->m_meshes[0];
-
-    //glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-0.6, 0.55, 0));
-    //glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0),  0.f, glm::vec3(0, 0, 1));
-    //glm::mat4 scaleMatrix = glm::scale(0.01f, 0.01f, 0.01f);
-    //model->m_modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
-
-    //testMesh->createBuffers();
-    //testMesh->m_usesIndexBuffer = false;
-    //testMesh->m_renderingMode = GL_TRIANGLES;
-
-    //model->m_materialList.push_back(  new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1))  ) ;
-
-    //model->name = "Sphere 1";
-    //renderer.m_debugModels.push_back( model );
-    PRINTSTRING("GERREREEGRG");
 }
 
 void RenderDataManager::addToTerrainBuffer(Sector* newSector)
@@ -130,28 +113,8 @@ void RenderDataManager::addToTerrainBuffer(Sector* newSector)
 
     Heightfield* heightField = newSector->GetHeightfield();
 
-//    if (heightField->m_mesh)
-//    {
-//        Model* hfModel = new Model();
-//        
-//        //  hfModel->addMesh( Heightfield::hfBaseMesh, new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1)) );
-//        hfModel->addMesh( heightField->m_mesh, new Material(renderer.pPipelineBasicUV, glm::vec3(1,1,1)) );
-//        hfModel->name = "heightfield";
-//        
-//        renderer.m_debugModels.push_back( hfModel );
-//    }
-    
-    //TerrainRenderingJob job;
-    //job.start = heightField->startPoint;
-    //job.scale = heightField->sideLength;
-    //job.buffer = heightField->buffer;
-    //terrainRenderingJobs.push_back(job);
+
 }
-//
-//Mesh* RenderDataManager::terrainMesh()
-//{
-//    return Heightfield::hfBaseMesh;
-//}
 
 Model* RenderDataManager::CreateDebugModel(const std::vector<glm::vec3>& lineData, glm::vec3 color, const char* name)
 {
@@ -255,20 +218,19 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 			AddPoint(line, pos);
 
+			// if needed copy last node to gfx 2dline/data
+			if (!newWay && index > (previousLastIndex) && (index - 1) != previousLastIndex)
 			{
-				if (!newWay && index > (previousLastIndex) && (index - 1) != previousLastIndex)
-				{
-					flatWayPositions.push_back(flatWayPositions.back());
-					vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
-				}
-
-
-				flatWayPositions.push_back(pos);
+				flatWayPositions.push_back(flatWayPositions.back());
 				vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
-
-				newWay = false;
-				index++;
 			}
+
+
+			flatWayPositions.push_back(pos);
+			vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
+
+			newWay = false;
+			index++;
 
 #if 1
 			if (i != nodes.size() - 1)
@@ -330,6 +292,8 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			if (success)
 			{
 				renderer.AddToDebugModels(building.m_Model);
+
+
 			}
 		}
 	}
@@ -495,13 +459,6 @@ void RenderDataManager::fillBuffers(Sector* sector)
     waysModel->SetName("Ways");
     renderer.AddToDebugModels(waysModel);
     
-    // Model* nodesModel = new Model();
-
-    // Mesh* nodesMesh = new Mesh(nodesPositions, GL_POINTS, true);
-
-    // nodesModel->name = "Nodes";
-    // nodesModel->addMesh( nodesMesh, new Material(renderer.pPipelineNodes, glm::vec3(0,0,0)) );
-    // renderer.m_debugModels.push_back(nodesModel);
 }
 
 

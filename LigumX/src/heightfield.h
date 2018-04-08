@@ -12,7 +12,6 @@ class Texture;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Heightfield
-class Triangle;
 class Mesh;
 class Way;
 class Node;
@@ -85,7 +84,6 @@ private:
     
     float step;
     float sideLength;
-    std::vector<Triangle* > triangles;
     std::vector<float> data;
     GLuint buffer;
     glm::vec2 startPoint;

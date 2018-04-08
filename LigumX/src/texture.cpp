@@ -196,17 +196,7 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	//
 	// All above leaks (192 bytes) are caused by XGetDefault (in /usr/lib/libX11.so.6.3.0) - we have no control over this.
 	//
-	FIBITMAP* bitmap32;
-	if (bitsPerPixel == 32)
-	{
-		cout << "Source image has " << bitsPerPixel << " bits per pixel. Skipping conversion." << endl;
-		bitmap32 = bitmap;
-	}
-	else
-	{
-		cout << "Source image has " << bitsPerPixel << " bits per pixel. Converting to 32-bit colour." << endl;
-		bitmap32 = FreeImage_ConvertTo32Bits(bitmap);
-	}
+	FIBITMAP* bitmap32 = (bitsPerPixel == 32) ? bitmap : FreeImage_ConvertTo32Bits(bitmap);
 
 	bits = FreeImage_GetBits(bitmap32);
 	unsigned int width = FreeImage_GetWidth(bitmap);

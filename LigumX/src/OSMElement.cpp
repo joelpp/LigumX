@@ -108,6 +108,7 @@ const OSMElementType Indirection_OSMElementType[] =
 
 
 
+
 using namespace std;
 
 std::string OSMElement::getValue(std::string key){
@@ -218,6 +219,13 @@ OSMElement::ElementType OSMElement::GetTypeFromStrings(const std::string& key, c
 
     else return OSMElement::NOT_IMPLEMENTED;
 }
+
+#undef BEGIN_KEY
+#undef END_KEY
+#undef ADD_VALUE
+#undef ELSE_ADD_VALUE
+#undef ADD_SINGLE_KEY
+#undef ELSE_BEGIN_KEY
 
 #define BEGIN_KEY(keyName) \
 if (key.compare(#keyName) == 0) \

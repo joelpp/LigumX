@@ -235,8 +235,6 @@ void Renderer::InitPipelines()
 	// todo : instead parse through the shaders folder and init automatically families
 
 	init_pipelines_text();
-	Renderer::outputGLError(__func__, __LINE__);
-
 
 	pPipelineBasic = new ProgramPipeline("Basic");
 	pPipelineBasicUV = new ProgramPipeline("BasicUV");
@@ -253,7 +251,7 @@ void Renderer::InitPipelines()
 	pPipelineBlur = new ProgramPipeline("blur");
 	pPipelineGrid = new ProgramPipeline("Grid");
 	pPipelineAxisGizmo = new ProgramPipeline("AxisGizmo");
-	Renderer::outputGLError(__func__, __LINE__);
+	GL::OutputErrors();
 
 	m_Pipelines.clear();
 	for (int i = 0; i < EnumLength_ShaderFamily; ++i)
@@ -659,7 +657,7 @@ void Renderer::DrawMesh(Mesh* mesh)
 	else
 	{
 		glDrawArrays(mesh->m_PrimitiveMode, 0, (int) mesh->m_buffers.vertexPositions.size());
-		FLUSH_ERRORS();
+		GL::OutputErrors();
 	}
 
 	g_EngineStats->AddTo_NumDrawCalls(1);
@@ -1034,26 +1032,7 @@ void Renderer::BeforeWorldRender()
 
 	GL::OutputErrors();
 }
-//
-//void Renderer::RenderSquare(const glm::vec3& position, const glm::vec3& size, const glm::vec3& color)
-//{
-//	SetPipeline(pP);
-//
-//	for (Model* model : m_DebugModels)
-//	{
-//		for (int i = 0; i < model->m_meshes.size(); ++i)
-//		{
-//			SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
-//
-//			Material* material = model->GetMaterials()[i];
-//
-//			SetViewUniforms(m_DebugCamera);
-//
-//			DrawMesh(model->m_meshes[i], material);
-//		}
-//	}
-//
-//}
+
 
 void Renderer::RenderGrid()
 {
@@ -1131,32 +1110,36 @@ void Renderer::RenderDebugModels()
 {
 	g_Editor->RenderTools();
 
-	SetPipeline(pPipelineBasic);
-	for (Model* model : m_DebugModels)
+	if (m_DisplayOptions->GetDisplayDebugModels())
 	{
-		// TODO : right now this is for buildings but they should create their own entity
-		for (int i = 0; i < model->m_meshes.size(); ++i)
+		SetPipeline(pPipelineBasic);
+		for (Model* model : m_DebugModels)
 		{
-			SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
-
-			Material* material = model->GetMaterials()[i];
-
-			SetViewUniforms(m_DebugCamera);
-
-			if (!material->GetEnabled())
+			// TODO : right now this is for buildings but they should create their own entity
+			for (int i = 0; i < model->m_meshes.size(); ++i)
 			{
-				continue;
+				SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
+
+				Material* material = model->GetMaterials()[i];
+
+				SetViewUniforms(m_DebugCamera);
+
+				if (!material->GetEnabled())
+				{
+					continue;
+				}
+
+				DrawMesh(model->m_meshes[i], material);
 			}
 
-			DrawMesh(model->m_meshes[i], material);
 		}
 
+		for (AABBJob& aabb : m_RenderDataManager->GetAABBJobs())
+		{
+			RenderAABB(aabb.m_AABB, aabb.m_Color);
+		}
 	}
 
-	for (AABBJob& aabb : m_RenderDataManager->GetAABBJobs())
-	{
-		RenderAABB(aabb.m_AABB, aabb.m_Color);
-	}
 
 	m_RenderDataManager->ClearAABBJobs();
 }
@@ -1562,32 +1545,6 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
    GL::SetCapability(GL::Capabilities::Blend,		false);
    GL::SetCapability(GL::Capabilities::CullFace,	false);
 
-}
-
-
-
-void Renderer::outputGLError(std::string func, int line)
-{
-  GLenum err;
-  while ((err = glGetError()) != GL_NO_ERROR) 
-  {
-    string error;
-
-    switch(err) 
-    {
-      case GL_INVALID_OPERATION:      error="INVALID_OPERATION";      break;
-      case GL_INVALID_ENUM:           error="INVALID_ENUM";           break;
-      case GL_INVALID_VALUE:          error="INVALID_VALUE";          break;
-      case GL_OUT_OF_MEMORY:          error="OUT_OF_MEMORY";          break;
-      case GL_INVALID_FRAMEBUFFER_OPERATION:  error="INVALID_FRAMEBUFFER_OPERATION";  break;
-    }
-    std::stringstream ss;
-
-    ss << func << " : " << line;
-    PRINTSTRING(ss.str());
-    PRINTSTRING(error.c_str());
-    err=glGetError();    
-  }
 }
 
 void Renderer::AddToDebugModels(Model* model)

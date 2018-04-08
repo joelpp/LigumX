@@ -220,7 +220,6 @@
     <ClCompile Include="src\text.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
-    <ClCompile Include="src\triangle.cpp" />
     <ClCompile Include="src\way.cpp" />
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
@@ -326,7 +325,6 @@
     <ClInclude Include="src\TerrainTool.h" />
     <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\tinyxml2.h" />
-    <ClInclude Include="src\triangle.h" />
     <ClInclude Include="src\vec2i.h" />
     <ClInclude Include="src\way.h" />
     <ClInclude Include="src\world.h" />

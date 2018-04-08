@@ -55,8 +55,7 @@ bool Settings::load()
 			ss << v[i] << " ";
 		}
 		value = ss.str();
-		std::cout << key;
-		std::cout << value;
+		std::cout << key << " " << value << std::endl;
 		m_settings.emplace(key, value);
 	}
 	return true;
