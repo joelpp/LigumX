@@ -306,7 +306,12 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 				glm::ivec2 texelMin = glm::ivec2(sectorUVMin * glm::vec2(tex->GetSize()));
 				glm::ivec2 texelMax = glm::ivec2(sectorUVMax * glm::vec2(tex->GetSize()));
 
-				tex->EditData(texelMin, texelMax);
+				std::function<void(unsigned char*)> operation = [](unsigned char* texel) 
+				{
+					(*texel) = 255;
+				};
+
+				tex->EditData(texelMin, texelMax, operation);
 			}
 		}
 	}

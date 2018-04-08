@@ -333,7 +333,7 @@ void Texture::InitBlank()
 }
 
 
-void Texture::EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel)
+void Texture::EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel, std::function<void(unsigned char*)> operation)
 {
 	unsigned char* val = GetTextureData();
 
@@ -355,7 +355,7 @@ void Texture::EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel)
 				continue;
 			}
 
-			offsetVal[index] = (unsigned char)255;
+			operation(offsetVal + index);
 		}
 	}
 

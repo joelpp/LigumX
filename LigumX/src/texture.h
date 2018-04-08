@@ -1,6 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <functional>
 #include <iostream>
 //#include "FreeImage\Dist\x64\FreeImage.h"
 #include "FreeImage/Dist/x64/FreeImage.h"
@@ -108,7 +109,7 @@ public:
 	int GetNumTexels() { return m_Size.x * m_Size.y; }
 	int GetNumBytes() { return 4 * GetNumTexels(); }
 
-	void EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel);
+	void EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel, std::function<void(unsigned char*)> operation);
 
 private:
 	GL::TextureMagFilterMode m_MagFilterMode;
