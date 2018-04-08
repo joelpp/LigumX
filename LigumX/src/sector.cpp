@@ -218,3 +218,9 @@ glm::vec2 Sector::GetUVForWorldPosition(const glm::vec3& worldPosition)
 	glm::vec2 uv = (glm::vec2(worldPosition) - m_WorldPosition) / g_EngineSettings->GetWorldScale();
 	return uv;
 }
+
+
+glm::vec3 Sector::GetWorldPositionForUV(const glm::vec2& uv)
+{
+	return glm::vec3(g_EngineSettings->GetWorldScale() * uv + m_WorldPosition, 0);
+}

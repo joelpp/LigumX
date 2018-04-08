@@ -179,6 +179,39 @@ void AddPoint(std::vector<glm::vec3>& points, glm::vec3 point)
 	points.push_back(point);
 }
 
+// Compute barycentric coordinates (u, v, w) for
+// point p with respect to triangle (a, b, c)
+glm::vec3 Barycentric(const glm::vec3& p, const glm::vec3& a, const glm::vec3& b, const glm::vec3& c)
+{
+	glm::vec3 v0 = b - a, v1 = c - a, v2 = p - a;
+	float d00 = glm::dot(v0, v0);
+	float d01 = glm::dot(v0, v1);
+	float d11 = glm::dot(v1, v1);
+	float d20 = glm::dot(v2, v0);
+	float d21 = glm::dot(v2, v1);
+	float denom = d00 * d11 - d01 * d01;
+	float v = (d11 * d20 - d01 * d21) / denom;
+	float w = (d00 * d21 - d01 * d20) / denom;
+	float u = 1.0f - v - w; 
+	return glm::vec3(v, w, u);
+}
+
+float sign(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
+{
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool PointInTriangle(const glm::vec3& pt, const glm::vec3& v1, const glm::vec3& v2, const glm::vec3& v3)
+{
+	bool b1, b2, b3;
+
+	b1 = sign(pt, v1, v2) < 0.0f;
+	b2 = sign(pt, v2, v3) < 0.0f;
+	b3 = sign(pt, v3, v1) < 0.0f;
+
+	return ((b1 == b2) && (b2 == b3));
+}
+
 void RenderDataManager::CreateWaysLines(Sector* sector)
 {
 	SectorGraphicalData* gfxData = sector->GetGraphicalData();
@@ -295,6 +328,83 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 				Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
 				lxAssert(tex != nullptr);
 
+
+				struct TerrainColorEditingJob
+				{
+					TerrainColorEditingJob(Sector* sector, glm::ivec2 texelMin, glm::ivec2 texelMax)
+						: m_Sector(sector)
+						, m_TexelMin(texelMin)
+						, m_TexelMax(texelMax)
+					{
+
+					}
+
+					void Execute(const std::vector<Triangle>& triangles)
+					{
+						Texture* tex = m_Sector->GetGraphicalData()->GetSplatMapTexture();
+						unsigned char* val = tex->GetTextureData();
+
+						int numBytes = tex->GetNumBytes();
+						int stride = 4;
+						int dataOffset = stride * (m_TexelMin.y * tex->GetSize().x + m_TexelMin.x);
+
+						unsigned char* offsetVal = val + dataOffset;
+						for (int i = 0; i < m_TexelMax.x - m_TexelMin.x; ++i)
+						{
+							for (int j = 0; j < m_TexelMax.y - m_TexelMin.y; ++j)
+							{
+								int index = (int)(stride * (j * tex->GetSize().y + i));
+
+								if (index < 0 || index > numBytes)
+								{
+									continue;
+								}
+
+								glm::ivec2 texelSpace = m_TexelMin + glm::ivec2(i, j);
+								glm::vec2 uvSpace = (glm::vec2)texelSpace / (glm::vec2)tex->GetSize();
+								glm::vec3 worldSpace = m_Sector->GetWorldPositionForUV(uvSpace);
+
+								for (int t = 0; t < triangles.size(); ++t)
+								{
+									const Triangle& triangle = triangles[t];
+
+									glm::vec3 offset = glm::vec3(0.f);
+
+									// TODO jpp : make this work eventually...
+									//glm::vec3 barycentricCoords = Barycentric(worldSpace, 
+									//										  triangle.m_Vertices[0] - offset, 
+									//										  triangle.m_Vertices[1] - offset, 
+									//										  triangle.m_Vertices[2] - offset);
+
+									//if (glm::all(glm::lessThan(glm::vec3(1, 1, 1), barycentricCoords)))
+									//{
+									//	offsetVal[index] = (unsigned char)255;
+									//	break;
+									//}
+
+									if (PointInTriangle(worldSpace,
+										triangle.m_Vertices[0] - offset,
+										triangle.m_Vertices[1] - offset,
+										triangle.m_Vertices[2] - offset))
+									{
+										offsetVal[index] = (unsigned char)255;
+										break;
+									}
+								}
+
+							}
+						}
+
+						tex->UpdateFromData();
+					}
+
+					Sector* m_Sector;
+					glm::ivec2 m_TexelMin;
+					glm::ivec2 m_TexelMax;
+				};
+
+				std::vector<TerrainColorEditingJob> terrainJobs;
+
 				const std::vector<Triangle> triangles = building.GetTriangles();
 				
 				glm::vec2 sectorUVMin = sector->GetUVForWorldPosition(building.m_MinCoords);
@@ -305,13 +415,26 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 				glm::ivec2 texelMin = glm::ivec2(sectorUVMin * glm::vec2(tex->GetSize()));
 				glm::ivec2 texelMax = glm::ivec2(sectorUVMax * glm::vec2(tex->GetSize()));
+				
 
-				std::function<void(unsigned char*)> operation = [](unsigned char* texel) 
-				{
-					(*texel) = 255;
-				};
 
-				tex->EditData(texelMin, texelMax, operation);
+
+				TerrainColorEditingJob mainJob(sector, texelMin, texelMax);
+				//terrainJobs.push_back()
+				//	if (texelMin.x < 0)
+				//	{
+				//		TerrainColorEditingJob additionalJob;
+				//		additionalJob.m_TexelMin.x = tex->GetSize().x + texelMin.x;
+				//		additionalJob.m_TexelMax.x = tex->GetSize().x;
+
+				//		additionalJob.m_TexelMin.y = texelMin.y;
+				//		additionalJob.m_TexelMax.y = texelMax.y;
+				//		texelMin.x = 0;
+
+				//		additionalJobs.push_back(additionalJob);
+				//	}
+
+				mainJob.Execute(triangles);
 			}
 		}
 	}
