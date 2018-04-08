@@ -105,6 +105,10 @@ public:
 	void SetWrapS(GL::TextureWrapMode value) { m_WrapS = value; }
 	void SetWrapT(GL::TextureWrapMode value) { m_WrapT = value; }
 
+	int GetNumTexels() { return m_Size.x * m_Size.y; }
+	int GetNumBytes() { return 4 * GetNumTexels(); }
+
+	void EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel);
 
 private:
 	GL::TextureMagFilterMode m_MagFilterMode;

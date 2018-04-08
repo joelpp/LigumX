@@ -117,10 +117,6 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 	{
 		glm::vec2 dragDistance = g_InputHandler->GetDragDistance();;
 
-		glm::ivec2 texSize = tex->GetSize();
-		int numTexels = texSize.x * texSize.y;
-
-
 		int brushWidth = (int)m_TerrainBrushSize;
 		int brushWidthSq = brushWidth * brushWidth;
 
@@ -130,6 +126,8 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		glm::vec3 normalized = glm::fract(worldPosition / scale);
 
 		glm::vec2 xyCoords = glm::vec2(normalized[0], normalized[1]);
+
+		glm::ivec2 texSize = tex->GetSize();
 
 		m_ClickedTexel = WorldToTexture(glm::vec2(worldPosition), worldScale, tex->GetSize());
 
@@ -150,6 +148,7 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 			val = (unsigned char*) m_ClickedSector->GetHeightfield()->GetHeightData().data();
 		}
 
+		int numTexels = texSize.x * texSize.y;
 		int numBytes = stride * numTexels;
 
 		int dataOffset = stride * (m_StartTexel.y * tex->GetSize().x + m_StartTexel.x);
@@ -158,9 +157,6 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 
 		double maxVal = std::max(-screenDistance.y / 100, 0.f);
 
-		glm::vec2 center = glm::vec2(0.5f, 0.5f);
-
-		double maxHeight = maxVal * glm::length(center);
 		double radius = 0.5f;
 
 		for (int i = 0; i < brushWidth; ++i)
@@ -168,18 +164,6 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 			for (int j = 0; j < brushWidth; ++j)
 			{
 				int index = (int)(stride * (j * texSize.y + i));
-
-				glm::vec2 localUV = glm::vec2(i, j) / glm::vec2(brushWidth);
-
-				glm::vec2 centeredUV = localUV - center;
-				double horizDist = glm::length(centeredUV);;
-
-				float height = 0;
-
-				if (horizDist < radius)
-				{
-					height = (~(0));
-				}
 
 				if (index < 0 || index > numBytes)
 				{

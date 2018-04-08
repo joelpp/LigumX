@@ -331,3 +331,33 @@ void Texture::InitBlank()
 
 	GL::OutputErrors();
 }
+
+
+void Texture::EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel)
+{
+	unsigned char* val = GetTextureData();
+
+	int numBytes = GetNumBytes();
+	int stride = 4;
+
+	int dataOffset = stride * (startTexel.y * m_Size.x + startTexel.x);
+
+	unsigned char* offsetVal = val + dataOffset;
+
+	for (int i = 0; i < endTexel.x - startTexel.x; ++i)
+	{
+		for (int j = 0; j < endTexel.y - startTexel.y; ++j)
+		{
+			int index = (int)(stride * (j * m_Size.y + i));
+
+			if (index < 0 || index > numBytes)
+			{
+				continue;
+			}
+
+			offsetVal[index] = (unsigned char)255;
+		}
+	}
+
+	UpdateFromData();
+}

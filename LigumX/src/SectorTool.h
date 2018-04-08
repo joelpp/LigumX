@@ -35,6 +35,8 @@ const bool& GetEnabled() { return m_Enabled; };
 void SetEnabled(bool value) { m_Enabled = value; }; 
 const glm::vec3& GetHighlightedWorldCoordinates() { return m_HighlightedWorldCoordinates; }; 
 void SetHighlightedWorldCoordinates(glm::vec3 value) { m_HighlightedWorldCoordinates = value; }; 
+const glm::vec2& GetHighlightedSectorUV() { return m_HighlightedSectorUV; }; 
+void SetHighlightedSectorUV(glm::vec2 value) { m_HighlightedSectorUV = value; }; 
 Sector*& GetHighlightedSector() { return m_HighlightedSector; }; 
 void SetHighlightedSector(Sector* value) { m_HighlightedSector = value; }; 
 const glm::vec3& GetSectorGridColor() { return m_SectorGridColor; }; 
@@ -60,6 +62,7 @@ int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = true;
 glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
+glm::vec2 m_HighlightedSectorUV = glm::vec2(0, 0);
 Sector* m_HighlightedSector;
 glm::vec3 m_SectorGridColor = glm::vec3(0.5);
 bool m_AsyncSectorLoading = false;
@@ -71,7 +74,7 @@ bool m_HighlightSelectedSector = true;
 bool m_LoadSectorsOnClick = true;
 int m_SelectedWayIndex = 0;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
@@ -80,6 +83,7 @@ PIDX_ObjectID,
 PIDX_Name,
 PIDX_Enabled,
 PIDX_HighlightedWorldCoordinates,
+PIDX_HighlightedSectorUV,
 PIDX_HighlightedSector,
 PIDX_SectorGridColor,
 PIDX_AsyncSectorLoading,

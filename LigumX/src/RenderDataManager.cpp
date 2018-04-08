@@ -6,7 +6,6 @@
 #include "Renderer.h"
 #include "Way.h"
 #include "Node.h"
-#include "Triangle.h"
 #include "World.h"
 #include "SectorData.h"
 #include "SectorGraphicalData.h"
@@ -293,7 +292,21 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			{
 				renderer.AddToDebugModels(building.m_Model);
 
+				Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+				lxAssert(tex != nullptr);
 
+				const std::vector<Triangle> triangles = building.GetTriangles();
+				
+				glm::vec2 sectorUVMin = sector->GetUVForWorldPosition(building.m_MinCoords);
+				glm::vec2 sectorUVMax = sector->GetUVForWorldPosition(building.m_MaxCoords);
+
+				sectorUVMin = glm::clamp(sectorUVMin, glm::vec2(0), glm::vec2(1));
+				sectorUVMax = glm::clamp(sectorUVMax, glm::vec2(0), glm::vec2(1));
+
+				glm::ivec2 texelMin = glm::ivec2(sectorUVMin * glm::vec2(tex->GetSize()));
+				glm::ivec2 texelMax = glm::ivec2(sectorUVMax * glm::vec2(tex->GetSize()));
+
+				tex->EditData(texelMin, texelMax);
 			}
 		}
 	}

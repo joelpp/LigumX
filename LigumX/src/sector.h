@@ -127,4 +127,6 @@ public:
 
 	float SampleHeight(const glm::vec2& normalizedPos);
 	float SampleHeight(const glm::vec3& worldPos);
+
+	glm::vec2 GetUVForWorldPosition(const glm::vec3& worldPosition);
 };

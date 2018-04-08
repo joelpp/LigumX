@@ -32,6 +32,7 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "Name", PIDX_Name, offsetof(SectorTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "HighlightedSectorUV", PIDX_HighlightedSectorUV, offsetof(SectorTool, m_HighlightedSectorUV), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_Sector, true, LXType_None, 0, 0, 0, }, 
 { "SectorGridColor", PIDX_SectorGridColor, offsetof(SectorTool, m_SectorGridColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "AsyncSectorLoading", PIDX_AsyncSectorLoading, offsetof(SectorTool, m_AsyncSectorLoading), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
@@ -105,6 +106,10 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	m_HighlightedSector = world->GetSectorByWorldPosition(worldPosition);
 
 	m_HighlightedWorldCoordinates = worldPosition;
+	if (m_HighlightedSector)
+	{
+		m_HighlightedSectorUV = m_HighlightedSector->GetUVForWorldPosition(worldPosition);
+	}
 
 	g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_HighlightedWorldCoordinates);
 

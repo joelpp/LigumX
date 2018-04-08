@@ -3,6 +3,7 @@ class SectorTool
 	bool Enabled = true;
 
 	glm::vec3 HighlightedWorldCoordinates;
+	glm::vec2 HighlightedSectorUV;
 
 	Sector* HighlightedSector;
 

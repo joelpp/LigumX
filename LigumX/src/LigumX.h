@@ -26,7 +26,6 @@ class Relation;
 class Node;
 class Way;
 class LineSegment;
-class Triangle;
 class World;
 class RenderDataManager;
 // class Settings;

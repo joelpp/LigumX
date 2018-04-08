@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "heightfield.h"
-#include "triangle.h"
 #include "Settings.h"
 #include "Mesh.h"
 #include "Node.h"

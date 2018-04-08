@@ -14,15 +14,13 @@
 using namespace glm;
 using namespace std;
 
-Building::Building(Way* way)
+Building::Building(Way* way) 
+	: m_MinCoords(glm::vec3(std::numeric_limits<float>::max()))
+	, m_MaxCoords(glm::vec3(-std::numeric_limits<float>::max()))
 {
 	m_Way = way;
 }
 
-struct Triangle
-{
-
-};
 
 bool Building::GenerateModel()
 {
@@ -188,31 +186,36 @@ bool Building::GenerateModel()
 	    if(!failedLoop) 
 	    {
 	        break; // do not check other clockwiseness, the first guess worked.
-	    } else 
+	    } 
+		else 
 	    {
 	        tempTriangleVertices.clear();
 	    }
 	}
-	if(failedLoop) 
-	{
-	    nbFailedLoops++;
-	} 
-	else 
-	{
-	    nbSuccessLoops++;
 
-	    // keep and copy the triangles we created
-	    for(vec3& v : tempTriangleVertices) 
-	    {
-	         v.z = height;
-	        buildingTrianglePositions.push_back(v);
-		}
-	}
-
-	if (!nbSuccessLoops)
+	if (failedLoop)
 	{
 		return false;
 	}
+
+	// keep and copy the triangles we created
+	for (vec3& v : tempTriangleVertices)
+	{
+		v.z = height;
+		buildingTrianglePositions.push_back(v);
+
+		m_MaxCoords = glm::max(v, m_MaxCoords);
+		m_MinCoords = glm::min(v, m_MinCoords);
+	}
+
+	lxAssert((tempTriangleVertices.size() % 3) == 0);
+	for (int i = 0; i < (tempTriangleVertices.size() / 3); ++i)
+	{
+		m_Triangles.push_back(Triangle({ tempTriangleVertices[3 * i + 0], 
+							             tempTriangleVertices[3 * i + 1],
+							             tempTriangleVertices[3 * i + 2] }));
+	}
+
 	Renderer& renderer = Renderer::GetInstance();
 
 	m_Model = new Model();
