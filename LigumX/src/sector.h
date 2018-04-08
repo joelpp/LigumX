@@ -42,8 +42,6 @@ const glm::ivec2& GetQuantizedPosition() { return m_QuantizedPosition; };
 void SetQuantizedPosition(glm::ivec2 value) { m_QuantizedPosition = value; }; 
 const glm::ivec2& GetOffsetIndex() { return m_OffsetIndex; }; 
 void SetOffsetIndex(glm::ivec2 value) { m_OffsetIndex = value; }; 
-const glm::ivec2& GetIndex() { return m_Index; }; 
-void SetIndex(glm::ivec2 value) { m_Index = value; }; 
 const bool& GetDataLoaded() { return m_DataLoaded; }; 
 void SetDataLoaded(bool value) { m_DataLoaded = value; }; 
 Heightfield*& GetHeightfield() { return m_Heightfield; }; 
@@ -59,13 +57,12 @@ glm::vec2 m_WorldPosition = glm::vec2(0, 0);
 glm::vec2 m_EarthPosition = glm::vec2(0, 0);
 glm::ivec2 m_QuantizedPosition = glm::ivec2(0, 0);
 glm::ivec2 m_OffsetIndex = glm::ivec2(0, 0);
-glm::ivec2 m_Index = glm::ivec2(0, 0);
 bool m_DataLoaded = false;
 Heightfield* m_Heightfield;
 Entity* m_TerrainPatchEntity;
 std::string m_OSMFilename;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorPIDX
@@ -76,7 +73,6 @@ PIDX_WorldPosition,
 PIDX_EarthPosition,
 PIDX_QuantizedPosition,
 PIDX_OffsetIndex,
-PIDX_Index,
 PIDX_DataLoaded,
 PIDX_Heightfield,
 PIDX_TerrainPatchEntity,

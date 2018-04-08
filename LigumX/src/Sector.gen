@@ -7,8 +7,6 @@ class Sector
 
 	glm::ivec2 OffsetIndex;
 
-	glm::ivec2 Index;
-
 	bool DataLoaded;
 
 	[transient]
