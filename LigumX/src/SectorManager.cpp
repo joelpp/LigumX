@@ -257,7 +257,6 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 				g_OSMDataProcessor->ProcessSector(requestSector);
 
 				requestSector->SetDataLoaded(true);
-
 			}
 
 		}
@@ -274,8 +273,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 	doc.LoadFile(path.c_str());
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
-
-	Sector* requestedSector;
 
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
@@ -333,18 +330,18 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			node->elevation = sampledHeight;
 			node->SetWorldPosition(glm::vec3(worldPos, sampledHeight));
 
-			if (sector && sectorIndex == request->GetSectorIndex() && !sector->GetDataLoaded())
-			{
-				//sector->InitializeFromRequest(request);
-				std::string filename = path;
-				sector->SetOSMFilename(filename);
-				request->SetSector(sector);
-				requestedSector = sector;
-			}
+			//if (sector && sectorIndex == request->GetSectorIndex() && !sector->GetDataLoaded())
+			//{
+			//	//sector->InitializeFromRequest(request);
+			//	std::string filename = path;
+			//	sector->SetOSMFilename(filename);
+			//	request->SetSector(sector);
+			//}
 
 			std::unordered_map<std::string, Node*>& nodes = sector->m_Data->nodes;
 
 			nodes.emplace(id, node);
+
 			m_AllNodes.emplace(id, node);
 
 			long int intID = StringUtils::ToLongInt(id);
@@ -372,12 +369,15 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			Way* way = new Way(id);
 			way->eType = OSMElement::NOT_IMPLEMENTED;
+			lxAssert(id != "185200343");
+			lxAssert(id != "185199868");
 
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
 			{
 				if (std::string(way_child->Value()).compare("nd") == 0)
 				{
 					const std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
+
 
 					Node* node = m_AllNodes[ref];
 					way->AddNode(node);
@@ -402,14 +402,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 						}
 					}
 
-					if (_eType == OSMElement::NOT_IMPLEMENTED)
-					{
-						continue;
-					}
-					else
-					{
-						way->eType = _eType;
-					}
+					way->eType = _eType;
 
 
 				}

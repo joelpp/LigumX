@@ -134,7 +134,7 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		}
 	}
 
-	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready();
+	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down /*&& m_Request.Ready()*/;
 	if (canSendRequest)
 	{
 		g_SectorManager->LoadSectors(m_LoadingRingSize, earthStartCoords, worldStartCoords, normalizedSectorIndex);

@@ -22,6 +22,7 @@
 #include "MainWindow.h"
 #include "GUI.h"
 #include "SectorManager.h"
+#include "OSMDataProcessor.h"
 
 
 #include "imgui_impl_glfw_gl3.h"
@@ -140,6 +141,7 @@ void LigumX::InitializeGlobalObjects()
 	g_EngineStats = new EngineStats();
 	
 	g_SectorManager = new SectorManager();
+	g_OSMDataProcessor = new OSMDataProcessor();
 
 }
 

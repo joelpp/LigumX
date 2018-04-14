@@ -1,5 +1,6 @@
 #pragma once
 
+class Way;
 class Sector;
 
 #pragma region  FORWARD_DECLARATIONS OSMDataProcessor
@@ -45,7 +46,9 @@ bool Serialize(bool writing);
 
 void ProcessSector(Sector* sector);
 
-void BuildRoadMeshes(Sector* sector);
+void ProcessRoad(Sector* sector, Way* way);
+void BuildRoadMeshes(Sector* sector, Way* way);
+
 
 
 };

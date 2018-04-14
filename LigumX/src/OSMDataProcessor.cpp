@@ -35,103 +35,104 @@ bool OSMDataProcessor::Serialize(bool writing)
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor
 
-void OSMDataProcessor::BuildRoadMeshes(Sector* sector)
+void OSMDataProcessor::BuildRoadMeshes(Sector* sector, Way* way)
 {
-	Renderer& renderer = Renderer::GetInstance();
+	std::vector<glm::vec3> vertices;
+	glm::vec3 up = glm::vec3(0, 0, 1);
 
-
-	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
+	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
-		std::vector<glm::vec3> vertices;
-		Way* way = it->second;
+		float offset = 3.f;
+		Node* node = *nodeIt;
+		Node* nextNode = *(nodeIt + 1);
+		glm::vec3 nodePos = node->GetWorldPosition();
+		glm::vec3 nextPos = nextNode->GetWorldPosition();
 
-		if (way->GetNodes().size() == 0)
+		glm::vec3 segment = nextPos - nodePos;
+		float distance = glm::length(segment);
+
+		if (distance == 0.f)
 		{
 			continue;
 		}
 
-		bool isRoad = way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
-		if (isRoad)
-		{
-			glm::vec3 up = glm::vec3(0, 0, 1);
-
-
-			for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
-			{
-				float offset = 3.f;
-				Node* node = *nodeIt;
-				Node* nextNode = *(nodeIt + 1);
-				glm::vec3 nodePos = node->GetWorldPosition();
-				glm::vec3 nextPos = nextNode->GetWorldPosition();
-
-				glm::vec3 segment = nextPos - nodePos;
-				float distance = glm::length(segment);
-
-				if (distance == 0.f)
-				{
-					continue;
-				}
-
-				glm::vec3 direction = glm::normalize(segment);
-				glm::vec3 right = glm::cross(direction, up);
+		glm::vec3 direction = glm::normalize(segment);
+		glm::vec3 right = glm::cross(direction, up);
 #if 0 
 
-				glm::vec3 right = glm::cross(direction, up);
+		glm::vec3 right = glm::cross(direction, up);
 
-				glm::vec3 first = nodePos - offset * right;
+		glm::vec3 first = nodePos - offset * right;
 
-				vertices.push_back(first);
-				vertices.push_back(first + glm::vec3(offset, 0, 0) * right);
-				vertices.push_back(first + glm::vec3(0, offset, 0) * direction);
-				vertices.push_back(first + glm::vec3(offset, 0, 0) * right);
-				vertices.push_back(first + glm::vec3(0, offset, 0) * direction);
-				vertices.push_back(first + glm::vec3(offset, offset, 0) * (direction + right));
+		vertices.push_back(first);
+		vertices.push_back(first + glm::vec3(offset, 0, 0) * right);
+		vertices.push_back(first + glm::vec3(0, offset, 0) * direction);
+		vertices.push_back(first + glm::vec3(offset, 0, 0) * right);
+		vertices.push_back(first + glm::vec3(0, offset, 0) * direction);
+		vertices.push_back(first + glm::vec3(offset, offset, 0) * (direction + right));
 #else
-				right *= 10.f;
-				direction *= distance;
-				glm::vec3 first = nodePos - offset * right;
-				offset *= 2;
+		right *= 10.f;
+		direction *= distance;
+		glm::vec3 first = nodePos - offset * right;
+		offset *= 2;
 
-				glm::vec3 second = first + right * offset;
-				if (nodeIt != way->GetNodes().begin())
-				{
-					glm::vec3 old2 = vertices[vertices.size() - 2];
-					glm::vec3 old = vertices[vertices.size() - 1];
-					vertices.push_back(old2);
-					vertices.push_back(old);
-					vertices.push_back(first);
-					vertices.push_back(old);
-					vertices.push_back(first);
-					vertices.push_back(second);
-				}
+		glm::vec3 second = first + right * offset;
+		if (vertices.size() > 0)
+		{
+			glm::vec3 old2 = vertices[vertices.size() - 2];
+			glm::vec3 old = vertices[vertices.size() - 1];
+			vertices.push_back(old2);
+			vertices.push_back(old);
+			vertices.push_back(first);
+			vertices.push_back(old);
+			vertices.push_back(first);
+			vertices.push_back(second);
+		}
 
-				vertices.push_back(first);
-				vertices.push_back(second);
-				vertices.push_back(first + direction);
-				vertices.push_back(second);
-				vertices.push_back(first + direction);
-				vertices.push_back(first + direction + right * offset);
+		vertices.push_back(first);
+		vertices.push_back(second);
+		vertices.push_back(first + direction);
+		vertices.push_back(second);
+		vertices.push_back(first + direction);
+		vertices.push_back(first + direction + right * offset);
 #endif
 
-				if (nodeIt != way->GetNodes().begin())
-				{
+		if (nodeIt != way->GetNodes().begin())
+		{
 
-				}
-			}
-
-			if (vertices.size() > 0)
-			{
-				Mesh* roadMesh = new Mesh(vertices, GL::PrimitiveMode::Triangles, false);
-				Model* roadModel = new Model();
-				roadModel->addMesh(roadMesh, new Material(renderer.pPipelineBasic, glm::vec3(1, 1, 1)));
-				roadModel->SetName("Road_Test");
-				renderer.AddToDebugModels(roadModel);
-			}
 		}
 	}
+
+	if (vertices.size() > 0)
+	{
+		Renderer& renderer = Renderer::GetInstance();
+
+		Mesh* roadMesh = new Mesh(vertices, GL::PrimitiveMode::Triangles, false);
+		Model* roadModel = new Model();
+		roadModel->addMesh(roadMesh, new Material(renderer.pPipelineBasic, glm::vec3(1, 1, 1)));
+		roadModel->SetName("Road_Test");
+		renderer.AddToDebugModels(roadModel);
+	}
+}
+
+void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
+{
+	BuildRoadMeshes(sector, way);
 }
 
 void OSMDataProcessor::ProcessSector(Sector* sector)
 {
-	BuildRoadMeshes(sector);
+	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
+	{
+		Way* way = it->second;
+
+		bool hsNodes = (way->GetNodes().size() > 0);
+
+		bool isRoad = way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
+		if (isRoad)
+		{
+			ProcessRoad(sector, way);
+			continue;
+		}
+	}
 }
