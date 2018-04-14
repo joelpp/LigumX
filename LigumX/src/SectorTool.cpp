@@ -134,51 +134,10 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 		}
 	}
 
-	bool loadOSMData = g_EngineSettings->GetLoadOSMData();
 	bool canSendRequest = m_LoadSectorsOnClick && mouseButton1Down && m_Request.Ready();
-	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
 	if (canSendRequest)
 	{
-		int numSectorsPerSide = 2 * m_LoadingRingSize - 1;
-		int offset = m_LoadingRingSize - 1;
-
-		for (int i = 0; i < numSectorsPerSide; ++i)
-		{
-			for (int j = 0; j < numSectorsPerSide; ++j)
-			{
-				glm::ivec2 offsets = glm::ivec2(i - offset, j - offset);
-				m_Request = CurlRequest(earthStartCoords - earthExtent * (glm::vec2) offsets, earthExtent, m_AsyncSectorLoading);
-
-				glm::ivec2 requestedSectorIndex = normalizedSectorIndex + glm::ivec2(offsets);
-				m_Request.SetSectorIndex(requestedSectorIndex);
-
-				Sector* requestSector = world->GetSectorByIndex(requestedSectorIndex);
-				if (!requestSector)
-				{
-					requestSector = g_SectorManager->CreateSector(requestedSectorIndex);
-				}
-
-				m_Request.SetSector(requestSector);
-
-				if (requestSector->GetDataLoaded())
-				{
-					continue;
-				}
-
-				if (loadOSMData)
-				{
-					m_Request.Initialize();
-					m_Request.Start();
-					m_Request.End();
-
-					g_SectorManager->LoadRequest(&m_Request, SectorData::EOSMDataType::MAP);
-					g_RenderDataManager->CreateWaysLines(m_Request.GetSector());
-					m_Request.GetSector()->SetDataLoaded(true);
-				}
-
-				m_Request.Reset();
-			}
-		}
+		g_SectorManager->LoadSectors(m_LoadingRingSize, earthStartCoords, worldStartCoords, normalizedSectorIndex);
 	}
 
 	return true;

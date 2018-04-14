@@ -219,6 +219,9 @@
     <ClCompile Include="src\EditorTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\OSMDataProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -533,6 +536,9 @@
     <ClInclude Include="src\EditorTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\OSMDataProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -575,5 +581,6 @@
     <None Include="src\TerrainTool.gen" />
     <None Include="src\DebugRenderer.gen" />
     <None Include="src\EditorTool.gen" />
+    <None Include="src\OSMDataProcessor.gen" />
   </ItemGroup>
 </Project>

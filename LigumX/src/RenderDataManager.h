@@ -94,7 +94,6 @@ public:
     int nbRoads;
     RenderDataManager();
 
-	void BuildRoadMeshes(Sector* sector);
 	void fillBuffers(Sector* newSector);
     static void InitializeSector(Sector* sector);
 	static void AddDebugModel(const std::vector<glm::vec3>& line, glm::vec3 color);

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "RenderDataManager.h"
 #include "SectorManager.h"
 #include "Sector.h"
 #include "LigumX.h"
@@ -11,6 +12,7 @@
 #include "EngineSettings.h"
 #include "LXError.h"
 #include "StringUtils.h"
+#include "OSMDataProcessor.h"
 
 SectorManager* g_SectorManager;
 
@@ -209,6 +211,59 @@ glm::ivec2 GetSectorIndexFromEarthLonLat(const glm::vec2& earthLonLat)
 	return sectorIndex;
 }
 
+void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStartCoords, const glm::vec2& worldStartCoords, const glm::ivec2& normalizedSectorIndex)
+{
+	World* world = LigumX::GetInstance().GetWorld();
+
+	bool loadOSMData = g_EngineSettings->GetLoadOSMData();
+	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
+
+	int numSectorsPerSide = 2 * loadingRingSize - 1;
+	int offset = loadingRingSize - 1;
+
+	for (int i = 0; i < numSectorsPerSide; ++i)
+	{
+		for (int j = 0; j < numSectorsPerSide; ++j)
+		{
+			glm::ivec2 offsets = glm::ivec2(i - offset, j - offset);
+			CurlRequest request = CurlRequest(earthStartCoords - earthExtent * (glm::vec2) offsets, earthExtent, false);
+
+			glm::ivec2 requestedSectorIndex = normalizedSectorIndex + glm::ivec2(offsets);
+			request.SetSectorIndex(requestedSectorIndex);
+
+			Sector* requestSector = world->GetSectorByIndex(requestedSectorIndex);
+			if (!requestSector)
+			{
+				requestSector = CreateSector(requestedSectorIndex);
+			}
+
+			request.SetSector(requestSector);
+
+			if (requestSector->GetDataLoaded())
+			{
+				continue;
+			}
+
+			if (loadOSMData)
+			{
+				request.Initialize();
+				request.Start();
+				request.End();
+
+				LoadRequest(&request, SectorData::EOSMDataType::MAP);
+
+				g_RenderDataManager->CreateWaysLines(requestSector);
+
+				g_OSMDataProcessor->ProcessSector(requestSector);
+
+				requestSector->SetDataLoaded(true);
+
+			}
+
+		}
+	}
+}
+
 void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType)
 {
 	World *world = LigumX::GetInstance().world;
@@ -219,6 +274,8 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 	doc.LoadFile(path.c_str());
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
+
+	Sector* requestedSector;
 
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
@@ -282,7 +339,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				std::string filename = path;
 				sector->SetOSMFilename(filename);
 				request->SetSector(sector);
-
+				requestedSector = sector;
 			}
 
 			std::unordered_map<std::string, Node*>& nodes = sector->m_Data->nodes;
@@ -465,3 +522,4 @@ Node* SectorManager::GetClosestNode(glm::vec2 wsPosition, bool searchOnlyWithinS
 
 	return toReturn;
 }
+

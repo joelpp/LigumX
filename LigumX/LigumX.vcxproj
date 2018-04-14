@@ -190,6 +190,7 @@
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\node.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
+    <ClCompile Include="src\OSMDataProcessor.cpp" />
     <ClCompile Include="src\OSMTool.cpp" />
     <ClCompile Include="src\OSMElement.cpp" />
     <ClCompile Include="src\PerlinNoise.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\node.h" />
     <ClInclude Include="src\ObjectManager.h" />
+    <ClInclude Include="src\OSMDataProcessor.h" />
     <ClInclude Include="src\OSMTool.h" />
     <ClInclude Include="src\OSMElement.h" />
     <ClInclude Include="src\PerlinNoise.h" />
@@ -358,6 +360,7 @@
     <None Include="src\Model.gen" />
     <None Include="src\Node.gen" />
     <None Include="src\OSMElement.gen" />
+    <None Include="src\OSMDataProcessor.gen" />
     <None Include="src\OSMTool.gen" />
     <None Include="src\PickingTool.gen" />
     <None Include="src\PostEffects.gen" />

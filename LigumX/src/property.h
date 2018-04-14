@@ -31,6 +31,7 @@ enum LXType
 	LXType_Mesh,
 	LXType_Model,
 	LXType_Node,
+	LXType_OSMDataProcessor,
 	LXType_OSMElementType,
 	LXType_OSMTool,
 	LXType_PickingTool,
