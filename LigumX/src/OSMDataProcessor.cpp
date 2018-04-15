@@ -72,19 +72,19 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		{
 			glm::vec3 old2 = vertices[vertices.size() - 2];
 			glm::vec3 old = vertices[vertices.size() - 1];
+			vertices.push_back(old);
 			vertices.push_back(old2);
-			vertices.push_back(old);
 			vertices.push_back(first);
-			vertices.push_back(old);
-			vertices.push_back(first);
+			vertices.push_back(old2);
 			vertices.push_back(second);
+			vertices.push_back(first);
 
 			uvs.push_back(glm::vec2(0, 0));
 			uvs.push_back(glm::vec2(1, 0));
 			uvs.push_back(glm::vec2(0, 1));
 			uvs.push_back(glm::vec2(1, 0));
-			uvs.push_back(glm::vec2(1, 0));
 			uvs.push_back(glm::vec2(1, 1));
+			uvs.push_back(glm::vec2(0, 1));
 		}
 
 		vertices.push_back(first);
