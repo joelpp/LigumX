@@ -17,6 +17,7 @@ const ClassPropertyData SectorGraphicalData::g_Properties[] =
 { "WaysModel", PIDX_WaysModel, offsetof(SectorGraphicalData, m_WaysModel), 0, LXType_Model, true, LXType_None, 0, 0, 0, }, 
 { "WaysModelsVector", PIDX_WaysModelsVector, offsetof(SectorGraphicalData, m_WaysModelsVector), 0, LXType_stdvector, false, LXType_Model, 0, 0, 0, }, 
 { "RoadEntities", PIDX_RoadEntities, offsetof(SectorGraphicalData, m_RoadEntities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
+{ "StaticEntities", PIDX_StaticEntities, offsetof(SectorGraphicalData, m_StaticEntities), 0, LXType_stdvector, false, LXType_Entity, 0, 0, 0, }, 
 { "SplatMapTexture", PIDX_SplatMapTexture, offsetof(SectorGraphicalData, m_SplatMapTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, }, 
 { "AlbedoTexture", PIDX_AlbedoTexture, offsetof(SectorGraphicalData, m_AlbedoTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, }, 
 };

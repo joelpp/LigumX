@@ -972,6 +972,7 @@ void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
 		}
 
 		GatherVisibleEntities(sector->GetGraphicalData()->GetRoadEntities(), camera);
+		GatherVisibleEntities(sector->GetGraphicalData()->GetStaticEntities(), camera);
 
 	}
 

@@ -1,13 +1,13 @@
 #pragma once
 
-#if defined(_DEBUG)
+//#if defined(_DEBUG)
 
 	#define lxAssert(condition) if (!(condition)) __debugbreak();
 	#define lxAssert0() lxAssert(false);
 
-#else
+//#else
 
-	#define lxAssert(condition)
-	#define lxAssert()
+	//#define lxAssert(condition)
+	//#define lxAssert()
 
-#endif
+//#endif

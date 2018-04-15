@@ -157,7 +157,7 @@ public:
 	void RenderMessages();
 
     void RenderTerrain();
-	void RenderEntities(ShaderFamily family, std::vector<Entity*> entities);
+	void RenderEntities(ShaderFamily family, const std::vector<Entity*>& entities);
 	void RenderEntities(std::vector<Entity*> entities);
 	void RenderDebugModels();
 	void RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline);

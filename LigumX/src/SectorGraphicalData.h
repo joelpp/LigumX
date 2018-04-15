@@ -34,6 +34,9 @@ void AddTo_WaysModelsVector(Model* value) { m_WaysModelsVector.push_back(value);
 std::vector<Entity*>& GetRoadEntities() { return m_RoadEntities; }; 
 void SetRoadEntities(std::vector<Entity*> value) { m_RoadEntities = value; }; 
 void AddTo_RoadEntities(Entity* value) { m_RoadEntities.push_back(value); };
+std::vector<Entity*>& GetStaticEntities() { return m_StaticEntities; }; 
+void SetStaticEntities(std::vector<Entity*> value) { m_StaticEntities = value; }; 
+void AddTo_StaticEntities(Entity* value) { m_StaticEntities.push_back(value); };
 Texture*& GetSplatMapTexture() { return m_SplatMapTexture; }; 
 void SetSplatMapTexture(Texture* value) { m_SplatMapTexture = value; }; 
 Texture*& GetAlbedoTexture() { return m_AlbedoTexture; }; 
@@ -45,10 +48,11 @@ Model* m_NodesModel;
 Model* m_WaysModel;
 std::vector<Model*> m_WaysModelsVector;
 std::vector<Entity*> m_RoadEntities;
+std::vector<Entity*> m_StaticEntities;
 Texture* m_SplatMapTexture;
 Texture* m_AlbedoTexture;
 public:
-static const int g_PropertyCount = 8;
+static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorGraphicalDataPIDX
@@ -59,6 +63,7 @@ PIDX_NodesModel,
 PIDX_WaysModel,
 PIDX_WaysModelsVector,
 PIDX_RoadEntities,
+PIDX_StaticEntities,
 PIDX_SplatMapTexture,
 PIDX_AlbedoTexture,
 };

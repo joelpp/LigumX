@@ -955,7 +955,7 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	
 	SetVertexUniform(0, "g_UseHeightfield");
 
-	for (Entity* entity : m_World->GetEntities())
+	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 	{
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
@@ -1306,7 +1306,7 @@ void Renderer::render(World* world)
 	FinishFrame();
 }
 
-void Renderer::RenderEntities(ShaderFamily family, std::vector<Entity*> entities)
+void Renderer::RenderEntities(ShaderFamily family, const std::vector<Entity*>& entities)
 {
 	for (Entity* entity : entities)
 	{

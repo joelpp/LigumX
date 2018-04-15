@@ -50,6 +50,9 @@ void ProcessSector(Sector* sector);
 void ProcessRoad(Sector* sector, Way* way);
 Mesh* BuildRoadMesh(Sector* sector, Way* way);
 
+void ProcessAddressInterpolation(Sector* sector, Way* way);
+Mesh* BuildGenericBuilding(Sector* sector, Way* way);
 
+void ProcessGenericBuilding(Sector* sector, Way* way);
 
 };

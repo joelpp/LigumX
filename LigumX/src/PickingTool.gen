@@ -2,7 +2,7 @@ class PickingTool
 {
 	bool Enabled = true;
 
-	[transient, hidden]
+	[transient]
 	Entity* PickedEntity
 
 	[transient]

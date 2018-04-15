@@ -10,6 +10,7 @@
 #include "RaycastingHelpers.h"
 
 #include "Renderer.h"
+#include "RenderDataManager.h"
 #include "Camera.h"
 
 #pragma region  CLASS_SOURCE PickingTool
@@ -23,7 +24,7 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(PickingTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(PickingTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Enabled", PIDX_Enabled, offsetof(PickingTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "PickedEntity", PIDX_PickedEntity, offsetof(PickingTool, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, }, 
+{ "PickedEntity", PIDX_PickedEntity, offsetof(PickingTool, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "AimingWindowPosition", PIDX_AimingWindowPosition, offsetof(PickingTool, m_AimingWindowPosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "AimingWorldPosition", PIDX_AimingWorldPosition, offsetof(PickingTool, m_AimingWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "AimingID", PIDX_AimingID, offsetof(PickingTool, m_AimingID), 0, LXType_float, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
@@ -84,22 +85,24 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 
 	World* world = LigumX::GetInstance().GetWorld();
 
-	for (Entity* entity : world->GetEntities())
+	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 	{
 		if (CheckEntity(entity))
 		{
 			found = true;
+			m_PickedEntity = entity;
 			break;
 		};
 	}
 
 	if (!found)
 	{
-		for (Sector* sector : world->GetSectors())
+		for (Sector* sector : g_RenderDataManager->GetVisibleSectors())
 		{
 			if (CheckEntity(sector->GetTerrainPatchEntity()))
 			{
 				found = true;
+				m_PickedEntity = sector->GetTerrainPatchEntity();
 				break;
 			};
 		}

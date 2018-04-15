@@ -156,7 +156,7 @@ void SectorTool::DebugDisplay()
 
 	const std::vector<Sector*> sectors = world->GetSectors();
 
-	for (Sector* sector : world->GetSectors())
+	for (Sector* sector : g_RenderDataManager->GetVisibleSectors())
 	{
 		bool dataLoaded = sector->GetDataLoaded();
 
