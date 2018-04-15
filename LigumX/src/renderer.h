@@ -144,7 +144,6 @@ public:
     void InitPipelines();
     void init_pipelines_buildingSides();
     void init_pipelines_filledBuildings();
-    void init_pipelines_roads();
     void init_pipelines_text();
 
     void render(World* world);
@@ -223,6 +222,8 @@ public:
 
 	void  SetFragmentUniform(glm::vec3& value, const char* name, GLuint location);
 
+	void SetPipeline(ProgramPipeline* pipeline, bool force);
+	void SetPipeline(ShaderFamily family);
 	void SetPipeline(ProgramPipeline* pipeline);
 	void SetLightingUniforms();
 	void SetWorldGridUniforms();
@@ -253,7 +254,6 @@ public:
 
     // shaders
     ProgramPipeline* pPipelineLines;
-    ProgramPipeline* pPipelineRoads;
     ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
     ProgramPipeline* pPipelineGround;
@@ -425,6 +425,8 @@ private:
 	Texture* m_Debug_RockTexture;
 	Texture* m_Debug_WoodTexture;
 	Texture* m_Debug_SandTexture;
+
+	std::vector<bool> m_ShaderBeenUsedThisFrame;
 
 };
 

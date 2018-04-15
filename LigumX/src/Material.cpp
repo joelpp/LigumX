@@ -46,6 +46,7 @@ const std::string EnumValues_ShaderFamily[] =
 "SolidColor",
 "Envmap",
 "Terrain",
+"Roads",
 };
 
 const ShaderFamily Indirection_ShaderFamily[] =
@@ -54,6 +55,7 @@ const ShaderFamily Indirection_ShaderFamily[] =
 	ShaderFamily_SolidColor,
 	ShaderFamily_Envmap,
 	ShaderFamily_Terrain,
+	ShaderFamily_Roads,
 };
 
 #pragma endregion  CLASS_SOURCE Material
@@ -66,9 +68,7 @@ Material* Material::Get(std::string materialName)
 	return MaterialList.at(materialName);
 }
 
-
-
-Material::Material()
+void Material::InitializeToDefaults()
 {
 	// todo : handle this once we have default constructors from gen files
 	m_Enabled = true;
@@ -76,17 +76,37 @@ Material::Material()
 	m_EmissiveFactor = 0.0f;
 
 	m_ObjectID = g_ObjectManager->GetNewObjectID();;
+
+	SetDiffuseColor(glm::vec3(1, 0, 0));
 }
 
+Material::Material()
+{
+	InitializeToDefaults();
+}
+
+Material::Material(ProgramPipeline* programPipeline)
+{
+	InitializeToDefaults();
+
+	m_ProgramPipeline = programPipeline;
+}
 
 Material::Material(ProgramPipeline* programPipeline, glm::vec3 albedo)
 {
-	m_Enabled = true;
+	InitializeToDefaults();
+
 	m_ProgramPipeline = programPipeline;
 	SetDiffuseColor(albedo);
-
-	m_EmissiveFactor = 0.0f;
 }
+
+Material::Material(ShaderFamily family)
+{
+	InitializeToDefaults();
+
+	m_ShaderFamily = family;
+}
+
 
 void Material::SetDiffuseTextureCallback(Texture* value)
 {

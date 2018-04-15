@@ -4,6 +4,7 @@ enum ShaderFamily
 	SolidColor,
 	Envmap,
 	Terrain,
+	Roads,
 }
 
 class Material

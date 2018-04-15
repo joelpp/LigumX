@@ -8,6 +8,8 @@
 #include "Renderer.h"
 
 #include "Entity.h"
+#include "LigumX.h"
+#include "World.h"
 #include "Sector.h"
 
 #include "Node.h"
@@ -35,14 +37,15 @@ bool OSMDataProcessor::Serialize(bool writing)
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor
 
-void OSMDataProcessor::BuildRoadMeshes(Sector* sector, Way* way)
+
+Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 {
+	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> vertices;
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
-		float offset = 3.f;
 		Node* node = *nodeIt;
 		Node* nextNode = *(nodeIt + 1);
 		glm::vec3 nodePos = node->GetWorldPosition();
@@ -58,20 +61,8 @@ void OSMDataProcessor::BuildRoadMeshes(Sector* sector, Way* way)
 
 		glm::vec3 direction = glm::normalize(segment);
 		glm::vec3 right = glm::cross(direction, up);
-#if 0 
 
-		glm::vec3 right = glm::cross(direction, up);
-
-		glm::vec3 first = nodePos - offset * right;
-
-		vertices.push_back(first);
-		vertices.push_back(first + glm::vec3(offset, 0, 0) * right);
-		vertices.push_back(first + glm::vec3(0, offset, 0) * direction);
-		vertices.push_back(first + glm::vec3(offset, 0, 0) * right);
-		vertices.push_back(first + glm::vec3(0, offset, 0) * direction);
-		vertices.push_back(first + glm::vec3(offset, offset, 0) * (direction + right));
-#else
-		right *= 10.f;
+		float offset = 30.f;
 		direction *= distance;
 		glm::vec3 first = nodePos - offset * right;
 		offset *= 2;
@@ -87,37 +78,61 @@ void OSMDataProcessor::BuildRoadMeshes(Sector* sector, Way* way)
 			vertices.push_back(old);
 			vertices.push_back(first);
 			vertices.push_back(second);
+
+			uvs.push_back(glm::vec2(0, 0));
+			uvs.push_back(glm::vec2(1, 0));
+			uvs.push_back(glm::vec2(0, 1));
+			uvs.push_back(glm::vec2(1, 0));
+			uvs.push_back(glm::vec2(1, 0));
+			uvs.push_back(glm::vec2(1, 1));
 		}
 
 		vertices.push_back(first);
 		vertices.push_back(second);
 		vertices.push_back(first + direction);
 		vertices.push_back(second);
+		vertices.push_back(second + direction);
 		vertices.push_back(first + direction);
-		vertices.push_back(first + direction + right * offset);
-#endif
 
-		if (nodeIt != way->GetNodes().begin())
-		{
-
-		}
+		uvs.push_back(glm::vec2(0, 0));
+		uvs.push_back(glm::vec2(1, 0));
+		uvs.push_back(glm::vec2(0, 1));
+		uvs.push_back(glm::vec2(1, 0));
+		uvs.push_back(glm::vec2(1, 1));
+		uvs.push_back(glm::vec2(0, 1));
 	}
 
 	if (vertices.size() > 0)
 	{
-		Renderer& renderer = Renderer::GetInstance();
+		Mesh* roadMesh = new Mesh(vertices, uvs, GL::PrimitiveMode::Triangles, false);
 
-		Mesh* roadMesh = new Mesh(vertices, GL::PrimitiveMode::Triangles, false);
-		Model* roadModel = new Model();
-		roadModel->addMesh(roadMesh, new Material(renderer.pPipelineBasic, glm::vec3(1, 1, 1)));
-		roadModel->SetName("Road_Test");
-		renderer.AddToDebugModels(roadModel);
+		return roadMesh;
 	}
+
+	return nullptr;
 }
 
 void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
 {
-	BuildRoadMeshes(sector, way);
+	Mesh* roadMesh = BuildRoadMesh(sector, way);
+
+	if (roadMesh != nullptr)
+	{
+		Renderer& renderer = Renderer::GetInstance();
+
+		Model* roadModel = new Model();
+		roadModel->addMesh(roadMesh, new Material(ShaderFamily_Roads));
+		roadModel->SetName("Road_Test");
+
+		Entity* roadEntity = new Entity();
+		roadEntity->SetName("Road - " + way->GetName());
+		roadEntity->SetModel(roadModel);
+		
+		roadEntity->SetVisible(true);
+
+		World* world = LigumX::GetInstance().GetWorld();
+		world->AddTo_Entities(roadEntity);
+	}
 }
 
 void OSMDataProcessor::ProcessSector(Sector* sector)
@@ -132,7 +147,9 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 		if (isRoad)
 		{
 			ProcessRoad(sector, way);
+			break;
 			continue;
 		}
+
 	}
 }

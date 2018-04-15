@@ -20,6 +20,7 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "ShowObjectManager", PIDX_ShowObjectManager, offsetof(EditorOptions, m_ShowObjectManager), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "BackupDataOnSave", PIDX_BackupDataOnSave, offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DebugDisplay", PIDX_DebugDisplay, offsetof(EditorOptions, m_DebugDisplay), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DisplayMessages", PIDX_DisplayMessages, offsetof(EditorOptions, m_DisplayMessages), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "SaveDisabled", PIDX_SaveDisabled, offsetof(EditorOptions, m_SaveDisabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DisplayPickingTool", PIDX_DisplayPickingTool, offsetof(EditorOptions, m_DisplayPickingTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DisplayOSMTool", PIDX_DisplayOSMTool, offsetof(EditorOptions, m_DisplayOSMTool), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 

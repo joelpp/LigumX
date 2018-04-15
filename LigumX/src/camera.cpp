@@ -326,35 +326,27 @@ void Camera::qweasdzxcKeyPreset(
     (void)mods;
     (void)pWindow;
 
-    if (action == GLFW_PRESS) 
+	bool isPress = (action == GLFW_PRESS);
+
+    switch(key) 
 	{
-        switch(key) 
-		{
-        case GLFW_KEY_LEFT_SHIFT:
-            keyMovementSpeedIncreaseFactor *= 2.f;
-            break;
-        case GLFW_KEY_X:
-			keyMovementSpeedIncreaseFactor = 0.05f;
-            break;
-        case GLFW_KEY_LEFT_CONTROL:
-			keyMovementSpeedIncreaseFactor /= 2.f;
-            break;
-        }
+		case GLFW_KEY_LEFT_SHIFT:
+			keyMovementSpeedIncreaseFactor *= (isPress ? 2.f : 0.5f);
+			break;
+		case GLFW_KEY_X:
+			keyMovementSpeedIncreaseFactor = isPress ? 0.05f : keyMovementSpeedIncreaseFactor;
+			break;
+		case GLFW_KEY_LEFT_CONTROL:
+			keyMovementSpeedIncreaseFactor /= (isPress ? 2.f : 0.5f);
+			break;
+		case GLFW_KEY_KP_ADD:
+			m_MovementSpeed *= isPress ? 5.f : 1.f;
+			break; 
+		case GLFW_KEY_KP_SUBTRACT:
+			m_MovementSpeed /= isPress ? 5.f : 1.f;
+			break;
     }
 
-	if (action == GLFW_RELEASE)
-	{
-		switch (key)
-		{
-		case GLFW_KEY_LEFT_SHIFT:
-			keyMovementSpeedIncreaseFactor /= 2.f;
-			break;
-
-		case GLFW_KEY_LEFT_CONTROL:
-			keyMovementSpeedIncreaseFactor *= 2.f;
-			break;
-		}
-	}
 }
 
 void Camera::NormalizeVectors()

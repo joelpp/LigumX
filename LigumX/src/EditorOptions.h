@@ -40,6 +40,8 @@ const bool& GetBackupDataOnSave() { return m_BackupDataOnSave; };
 void SetBackupDataOnSave(bool value) { m_BackupDataOnSave = value; }; 
 const bool& GetDebugDisplay() { return m_DebugDisplay; }; 
 void SetDebugDisplay(bool value) { m_DebugDisplay = value; }; 
+const bool& GetDisplayMessages() { return m_DisplayMessages; }; 
+void SetDisplayMessages(bool value) { m_DisplayMessages = value; }; 
 const bool& GetSaveDisabled() { return m_SaveDisabled; }; 
 void SetSaveDisabled(bool value) { m_SaveDisabled = value; }; 
 const bool& GetDisplayPickingTool() { return m_DisplayPickingTool; }; 
@@ -71,6 +73,7 @@ bool m_ShowTestGUI = false;
 bool m_ShowObjectManager = false;
 bool m_BackupDataOnSave = false;
 bool m_DebugDisplay = false;
+bool m_DisplayMessages = true;
 bool m_SaveDisabled = false;
 bool m_DisplayPickingTool = false;
 bool m_DisplayOSMTool = false;
@@ -81,7 +84,7 @@ bool m_DisplayAxisGizmo = true;
 float m_MouseScrollCameraSpeed = 10.0f;
 float m_MouseScrollEntityCloseupPercent = 15.0f;
 public:
-static const int g_PropertyCount = 21;
+static const int g_PropertyCount = 22;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -98,6 +101,7 @@ PIDX_ShowTestGUI,
 PIDX_ShowObjectManager,
 PIDX_BackupDataOnSave,
 PIDX_DebugDisplay,
+PIDX_DisplayMessages,
 PIDX_SaveDisabled,
 PIDX_DisplayPickingTool,
 PIDX_DisplayOSMTool,

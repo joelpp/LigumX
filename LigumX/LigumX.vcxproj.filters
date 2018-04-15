@@ -69,9 +69,6 @@
     <ClCompile Include="src\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\roads.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\sector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -103,6 +103,7 @@ public:
 	// void addVertex(Vertex v);
 	Mesh();
 	Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode);
+	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 	Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 	

@@ -1,5 +1,6 @@
 #pragma once
 
+class Mesh;
 class Way;
 class Sector;
 
@@ -47,7 +48,7 @@ bool Serialize(bool writing);
 void ProcessSector(Sector* sector);
 
 void ProcessRoad(Sector* sector, Way* way);
-void BuildRoadMeshes(Sector* sector, Way* way);
+Mesh* BuildRoadMesh(Sector* sector, Way* way);
 
 
 

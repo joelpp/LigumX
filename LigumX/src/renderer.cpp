@@ -253,10 +253,12 @@ void Renderer::InitPipelines()
 	pPipelineAxisGizmo = new ProgramPipeline("AxisGizmo");
 	GL::OutputErrors();
 
+
 	m_Pipelines.clear();
 	for (int i = 0; i < EnumLength_ShaderFamily; ++i)
 	{
 		m_Pipelines.push_back(new ProgramPipeline(EnumValues_ShaderFamily[i]));
+		m_ShaderBeenUsedThisFrame.push_back(false);
 	}
 
 	PRINTSTRING("Successfully built all shaders!");
@@ -417,10 +419,24 @@ void Renderer::SetComputeUniform(int value, const char* name)
 //}
 
 
+void Renderer::SetPipeline(ProgramPipeline* pipeline, bool force)
+{
+	lxAssert(pipeline != nullptr);
+	if (force || activePipeline != pipeline)
+	{
+		activePipeline = pipeline;
+		activePipeline->usePipeline();
+	}
+}
+
 void Renderer::SetPipeline(ProgramPipeline* pipeline)
 {
-	activePipeline = pipeline;
-	activePipeline->usePipeline();
+	SetPipeline(pipeline, false);
+}
+
+void Renderer::SetPipeline(ShaderFamily family)
+{
+	SetPipeline(m_Pipelines[family]);
 }
 
 void Renderer::SetSkyUniforms(int skyCubemapSlot)
@@ -598,7 +614,6 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 {
 	for (int i = 0; i < model->m_meshes.size(); ++i)
 	{
-		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
 
 		Material* material = model->GetMaterials()[i];
 
@@ -607,8 +622,27 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 			continue;
 		}
 
+		SetPipeline(material->GetShaderFamily());
+
+		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+
+		if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
+		{
+			SetLightingUniforms();
+			SetViewUniforms(m_DebugCamera);
+			SetShadowMapUniforms(m_ShadowCamera);
+			SetSkyUniforms(3);
+
+			SetPostEffectsUniforms();
+			SetDebugUniforms();
+			m_ShaderBeenUsedThisFrame[material->GetShaderFamily()] = true;
+		}
+
 		DrawMesh(model->m_meshes[i], material);
+
 	}
+
+	GL::OutputErrors();
 }
 
 GLuint slots[] =
@@ -801,16 +835,6 @@ void Renderer::RenderOpaque()
 		return;
 	}
 
-	SetPipeline(m_Pipelines[ShaderFamily_Basic]);
-
-	SetLightingUniforms();
-	SetViewUniforms(m_DebugCamera);
-	SetShadowMapUniforms(m_ShadowCamera);
-	SetSkyUniforms(3);
-
-	SetPostEffectsUniforms();
-	SetDebugUniforms();
-
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
@@ -988,6 +1012,10 @@ void Renderer::BeginFrame(World* world)
 		}
 	}
 
+	for (int i = 0; i < EnumLength_ShaderFamily; ++i)
+	{
+		m_ShaderBeenUsedThisFrame[i] = false;;
+	}
 }
 
 void Renderer::ApplyEmissiveGlow()
@@ -1250,6 +1278,8 @@ void Renderer::RenderEditor()
 
 	RenderFPS();
 
+	GL::OutputErrors();
+
 	RenderMessages();
 }
 
@@ -1281,11 +1311,6 @@ void Renderer::RenderEntities(ShaderFamily family, std::vector<Entity*> entities
 	for (Entity* entity : entities)
 	{
 		if (!entity->GetVisible())
-		{
-			continue;
-		}
-
-		if (entity->GetModel()->GetMaterials()[0]->GetShaderFamily() != family)
 		{
 			continue;
 		}
@@ -1334,6 +1359,14 @@ void Renderer::HandleScreenshot()
 
 void Renderer::RenderMessages()
 {
+	if (!g_Editor->GetOptions()->GetDisplayMessages() || g_RenderDataManager->GetTimedMessages().size() == 0)
+	{
+		return;
+	}
+
+	// todo : rework how we handle gfx hw stuff here
+	SetPipeline(pPipelineText, true);
+
 	GL::SetViewport(m_Window->GetSize());
 
 	glm::vec2 startingPosition = g_EngineSettings->GetMessagesStartingPosition();
@@ -1348,7 +1381,10 @@ void Renderer::RenderMessages()
 		RenderText(message.m_Message, startingPosition.x, startingPosition.y, fontSize, glm::vec3(0.5, 0.8f, 0.2f), false);
 
 		startingPosition.y -= heightOffset;
+
+		GL::OutputErrors();
 	}
+
 }
 
 void Renderer::RenderFPS()
@@ -1357,6 +1393,8 @@ void Renderer::RenderFPS()
 	{
 		return;
 	}
+
+	SetPipeline(pPipelineText);
 
 	GL::SetViewport(m_Window->GetSize());
 
@@ -1477,8 +1515,6 @@ void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
 
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-   // Activate corresponding render state
-   SetPipeline(pPipelineText);
 
    GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
 

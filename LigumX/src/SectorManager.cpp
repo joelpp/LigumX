@@ -369,22 +369,19 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			Way* way = new Way(id);
 			way->eType = OSMElement::NOT_IMPLEMENTED;
-			lxAssert(id != "185200343");
-			lxAssert(id != "185199868");
 
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
 			{
-				if (std::string(way_child->Value()).compare("nd") == 0)
+				if (strcmp(way_child->Value(), "nd") == 0)
 				{
 					const std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
-
 
 					Node* node = m_AllNodes[ref];
 					way->AddNode(node);
 
 					node->AddWay(way);
 				}
-				else if (std::string(way_child->Value()).compare("tag") == 0)
+				else if (strcmp(way_child->Value(), "tag") == 0)
 				{
 					const std::string key = way_child->ToElement()->FindAttribute("k")->Value();
 					const std::string value = way_child->ToElement()->FindAttribute("v")->Value();

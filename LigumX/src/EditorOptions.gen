@@ -10,6 +10,7 @@ class EditorOptions
 	bool ShowObjectManager;
 	bool BackupDataOnSave;
 	bool DebugDisplay;
+	bool DisplayMessages = true;
 	bool SaveDisabled;
 
 	bool DisplayPickingTool = false;

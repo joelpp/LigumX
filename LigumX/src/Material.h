@@ -17,11 +17,12 @@ ShaderFamily_Basic,
 ShaderFamily_SolidColor,
 ShaderFamily_Envmap,
 ShaderFamily_Terrain,
+ShaderFamily_Roads,
 };
 
-extern const std::string EnumValues_ShaderFamily[4];
-extern const ShaderFamily Indirection_ShaderFamily[4];
-const int EnumLength_ShaderFamily = 4;
+extern const std::string EnumValues_ShaderFamily[5];
+extern const ShaderFamily Indirection_ShaderFamily[5];
+const int EnumLength_ShaderFamily = 5;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Material
@@ -144,8 +145,11 @@ bool Serialize(bool writing);
 public:
 
 	Material();
+	Material(ProgramPipeline* programPipeline);
 	Material(ProgramPipeline* programPipeline, glm::vec3 albedo);
+	Material(ShaderFamily family);
 
+	void InitializeToDefaults();
 
 	static void Initialize();
 	static Material* Get(std::string materialName);
