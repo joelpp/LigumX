@@ -38,6 +38,64 @@ bool OSMDataProcessor::Serialize(bool writing)
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor
 
+Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
+{
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> vertices;
+	glm::vec3 up = glm::vec3(0, 0, 1);
+
+	const float buildingHeight = 100.f;
+
+	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
+	{
+		Node* node = *nodeIt;
+		Node* nextNode = *(nodeIt + 1);
+		glm::vec3 nodePos = node->GetWorldPosition();
+		glm::vec3 nextPos = nextNode->GetWorldPosition();
+
+		glm::vec3 segment = nextPos - nodePos;
+		float distance = glm::length(segment);
+
+		if (distance == 0.f)
+		{
+			continue;
+		}
+
+		glm::vec3 direction = glm::normalize(segment);
+		glm::vec3 right = glm::cross(direction, up);
+
+		glm::vec3 first = nodePos;
+		glm::vec3 second = nodePos + up * buildingHeight;
+
+		vertices.push_back(first);
+		vertices.push_back(second);
+		vertices.push_back(first + direction * distance);
+		vertices.push_back(second);
+		vertices.push_back(second + direction * distance);
+		vertices.push_back(first + direction * distance);
+
+		uvs.push_back(glm::vec2(0, 0));
+		uvs.push_back(glm::vec2(1, 0));
+		uvs.push_back(glm::vec2(0, 1));
+		uvs.push_back(glm::vec2(1, 0));
+		uvs.push_back(glm::vec2(1, 1));
+		uvs.push_back(glm::vec2(0, 1));
+
+		break;
+
+	}
+
+	if (vertices.size() > 0)
+	{
+		Mesh* buildingMesh = new Mesh(vertices, uvs, GL::PrimitiveMode::Triangles, false);
+
+		return buildingMesh;
+	}
+
+	return nullptr;
+
+}
+
 
 Mesh* OSMDataProcessor::BuildGenericBuilding(Sector* sector, Way* way)
 {
@@ -67,25 +125,6 @@ Mesh* OSMDataProcessor::BuildGenericBuilding(Sector* sector, Way* way)
 
 		glm::vec3 first = nodePos;
 		glm::vec3 second = nodePos + up * buildingHeight;
-
-		//if (vertices.size() > 0)
-		//{
-		//	glm::vec3 old2 = vertices[vertices.size() - 2];
-		//	glm::vec3 old = vertices[vertices.size() - 1];
-		//	vertices.push_back(old);
-		//	vertices.push_back(old2);
-		//	vertices.push_back(first);
-		//	vertices.push_back(old2);
-		//	vertices.push_back(second);
-		//	vertices.push_back(first);
-
-		//	uvs.push_back(glm::vec2(0, 0));
-		//	uvs.push_back(glm::vec2(1, 0));
-		//	uvs.push_back(glm::vec2(0, 1));
-		//	uvs.push_back(glm::vec2(1, 0));
-		//	uvs.push_back(glm::vec2(1, 1));
-		//	uvs.push_back(glm::vec2(0, 1));
-		//}
 
 		vertices.push_back(first);
 		vertices.push_back(second);
@@ -251,7 +290,40 @@ void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
 
 void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 {
+	Mesh* buildingMesh = nullptr;
 
+	buildingMesh = BuildAdressInterpolationBuilding(sector, way);
+
+	int nbBuildings = 5;
+	float buildingWidth = 5.f;
+	float buildingWOffset = 5.f;;
+
+
+	if (buildingMesh != nullptr)
+	{
+		Renderer& renderer = Renderer::GetInstance();
+
+		Model* buildingModel = new Model();
+		Material* buildingMaterial = new Material(ShaderFamily_Basic);
+		buildingMaterial->SetDiffuseTexture((Texture*)(g_ObjectManager->FindObjectByID(11039, LXType_Texture, true)));
+		buildingMaterial->SetDiffuseTextureEnabled(true);
+
+		buildingModel->addMesh(buildingMesh, buildingMaterial);
+		buildingModel->SetName("AddrInterpolation_Test");
+
+
+		Entity* buildingEntity = new Entity();
+		buildingEntity->SetName("Building - " + way->GetName());
+		buildingEntity->SetModel(buildingModel);
+
+		buildingEntity->SetVisible(true);
+
+
+		//World* world = LigumX::GetInstance().GetWorld();
+		//world->AddTo_Entities(roadEntity);
+
+		sector->GetGraphicalData()->GetStaticEntities().push_back(buildingEntity);
+	}
 
 }
 

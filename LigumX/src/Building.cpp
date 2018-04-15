@@ -109,7 +109,8 @@ bool Building::GenerateModel()
 			if (p1 == p2 || p1 == p3)
 			{
 				cout << "bad precision" << std::endl;
-				lxAssert0();
+				
+				return false;
 			}
 	        vec2 v12 = p2 - p1;
 	        vec2 v13 = p3 - p1;
