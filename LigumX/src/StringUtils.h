@@ -44,5 +44,5 @@ namespace StringUtils
 
 	std::string SeparateByCapitalLetters(const std::string& str);
 
-
+	std::string Format(const std::string fmt_str, ...);
 }

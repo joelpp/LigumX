@@ -24,4 +24,6 @@ class EngineSettings
 	int MessagesPixelsOffset = 10;
 
 	bool LoadOSMData = true;
+
+	bool CullSectors = false;
 }

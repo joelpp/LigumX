@@ -762,9 +762,9 @@ void Renderer::RenderTerrain()
 
 
 
-	for (int i = 0; i < m_World->GetSectors().size(); ++i)
+	for (int i = 0; i < g_RenderDataManager->GetVisibleSectors().size(); ++i)
 	{
-		Sector* sector = m_World->GetSectors()[i];
+		Sector* sector = g_RenderDataManager->GetVisibleSectors()[i];
 
 		if (sector)
 		{
@@ -823,7 +823,7 @@ void Renderer::RenderShadowMap()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	RenderEntities(m_World->GetEntities());
+	RenderEntities(g_RenderDataManager->GetVisibleEntities());
 
 	BindFramebuffer(FramebufferType_Default);
 }
@@ -838,7 +838,7 @@ void Renderer::RenderOpaque()
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	RenderEntities(ShaderFamily_Basic, m_World->GetEntities());
+	RenderEntities(ShaderFamily_Basic, g_RenderDataManager->GetVisibleEntities());
 
 	if (g_Editor->GetOptions()->GetDebugDisplay())
 	{
@@ -938,7 +938,7 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 
 	SetVertexUniform(1, "g_UseHeightfield");
 
-	for (Sector* sector : m_World->GetSectors())
+	for (Sector* sector : g_RenderDataManager->GetVisibleSectors())
 	{
 		Entity* entity = sector->GetTerrainPatchEntity();
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
@@ -1364,9 +1364,6 @@ void Renderer::RenderMessages()
 		return;
 	}
 
-	// todo : rework how we handle gfx hw stuff here
-	SetPipeline(pPipelineText, true);
-
 	GL::SetViewport(m_Window->GetSize());
 
 	glm::vec2 startingPosition = g_EngineSettings->GetMessagesStartingPosition();
@@ -1508,13 +1505,15 @@ void Renderer::RenderText(Text t)
    GL::SetCapability(GL::CullFace, false);
 }
 
-void Renderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)
+void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)
 {
 	GL::SetCapability(GL::Capabilities::Blend,		true);
 	GL::SetCapability(GL::Capabilities::CullFace,	true);
 
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+   // todo : rework how we handle gfx hw stuff here
+   SetPipeline(pPipelineText, true);
 
    GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
 

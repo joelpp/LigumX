@@ -125,13 +125,13 @@ public:
 	glm::mat4x4 m_ModelToWorldMatrix;
 
 	template <typename T>
-	Component* GetComponent()
+	T* GetComponent()
 	{
 		for (Component* component : m_Components)
 		{
 			if ( ((T*)component)->ClassID == T::ClassID)
 			{
-				return component;
+				return (T*)component;
 			}
 		}
 

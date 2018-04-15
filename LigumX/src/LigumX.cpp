@@ -69,6 +69,8 @@ void LigumX::DoFrame()
 {
 	world->Update();
 
+	g_RenderDataManager->GatherVisibleEntities(world, m_Renderer->GetDebugCamera());
+
 	m_Renderer->render(world);
 }
 

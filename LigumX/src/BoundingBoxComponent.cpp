@@ -43,3 +43,12 @@ void BoundingBoxComponent::Update()
 
 	m_ModelToWorldMatrix = toWorld;
 }
+
+void BoundingBoxComponent::SetStartAndScale(const glm::vec3& start, const glm::vec3& scale)
+{
+	m_BoundingBox.SetStartPoint(start);
+	m_BoundingBox.SetScale(scale);
+	Update();
+
+	m_BoundingBox.UpdateVertices();
+}

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -51,11 +53,16 @@ bool Serialize(bool writing);
 #pragma endregion  HEADER AABB
 
 AABB::AABB();
+void UpdateVertices();
 
 static AABB AABB::BuildFromStartPointAndScale(const glm::vec2& startPoint, float scale);
 static AABB AABB::BuildFromStartPointAndScale(const glm::vec2& startPoint, const glm::vec3& scale);
 static AABB AABB::BuildFromStartPointAndScale(const glm::vec3& startPoint, float scale);
 static AABB AABB::BuildFromStartPointAndScale(const glm::vec3& startPoint, const glm::vec3& scale);
 
+const std::vector<glm::vec3>& GetVertices() const { return m_Vertices; }
 
+private:
+
+	std::vector<glm::vec3> m_Vertices;
 };

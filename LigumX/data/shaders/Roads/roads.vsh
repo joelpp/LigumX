@@ -11,19 +11,17 @@ uniform mat4 g_LightProjectionMatrix;
 // Include ProvidersMarker
 
 out vec2 myTexCoord;
-out vec3 vNormalWS;
-out vec4 vWorldPosition;
-out float height;
 
-out gl_PerVertex {
+
+out gl_PerVertex 
+{
     vec4 gl_Position;
 };
 
 void main() {
-	vWorldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
-	//vWorldPosition = vec4(pos, 1);
+	vec4 vWorldPosition = g_ModelToWorldMatrix * vec4(pos, 1);
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * vWorldPosition;
+
     myTexCoord = texCoord;
-	height = pos.z;
-	vNormalWS = mat3(transpose(inverse(g_ModelToWorldMatrix))) * v_Normal;
+
 }

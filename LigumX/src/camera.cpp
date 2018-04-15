@@ -7,6 +7,8 @@
 #include <iostream>
 #include "Settings.h"
 #include "LXError.h"
+#include "RenderDataManager.h"
+#include "StringUtils.h"
 
 #pragma region  CLASS_SOURCE Camera
 
@@ -340,10 +342,20 @@ void Camera::qweasdzxcKeyPreset(
 			keyMovementSpeedIncreaseFactor /= (isPress ? 2.f : 0.5f);
 			break;
 		case GLFW_KEY_KP_ADD:
-			m_MovementSpeed *= isPress ? 5.f : 1.f;
+			if (isPress)
+			{
+				m_MovementSpeed *= 5.f;
+				g_RenderDataManager->AddTimedMessage(StringUtils::Format("'+' : 5x camera speed (%f)", m_MovementSpeed));
+			}
+
 			break; 
 		case GLFW_KEY_KP_SUBTRACT:
-			m_MovementSpeed /= isPress ? 5.f : 1.f;
+			if (isPress)
+			{
+				m_MovementSpeed /= 5.f;
+				g_RenderDataManager->AddTimedMessage(StringUtils::Format("'-' : 0.2x camera speed (%f)", m_MovementSpeed));
+			}
+
 			break;
     }
 

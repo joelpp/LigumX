@@ -700,8 +700,8 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	{
 		const int maxFileNameSize = 512;
 
-		std::string* s = (std::string*) ptr;
-		ShowGUIText(*s);
+		//std::string* s = (std::string*) ptr;
+		ShowGUIText("fix strings gui");
 
 		//std::string sCopy(s->c_str());
 

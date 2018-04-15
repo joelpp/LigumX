@@ -1,21 +1,28 @@
 #include "stdafx.h"
 
+#include "BoundingBoxComponent.h"
 #include "RenderDataManager.h"
 #include "LigumX.h"
-#include "Sector.h"
+#include "StringUtils.h"
+#include "Editor.h"
+#include "EngineSettings.h"
+#include "Logging.h"
 #include "Renderer.h"
+
 #include "Way.h"
 #include "Node.h"
+
+#include "Sector.h"
 #include "World.h"
 #include "SectorData.h"
 #include "SectorGraphicalData.h"
 #include "Heightfield.h"
-#include "Logging.h"
+
+#include "Camera.h"
 #include "Mesh.h"
 #include "Model.h"
 #include "Material.h"
-#include "Editor.h"
-#include "EngineSettings.h"
+
 #include "glm/gtx/transform.hpp"
 
 #include "Building.h"
@@ -102,6 +109,7 @@ RenderDataManager::RenderDataManager()
 	Renderer::createGLBuffer(renderer.glidScreenQuadPositions, screenQuadPos);
     Renderer::createGLBuffer(renderer.glidScreenQuadTexCoords, screenQuadTexCoords);
 
+	m_VisibleEntities.reserve(m_MaxVisibleEntities);
 }
 
 void RenderDataManager::addToTerrainBuffer(Sector* newSector)
@@ -743,7 +751,12 @@ void RenderDataManager::ClearAABBJobs()
 
 void RenderDataManager::AddTimedMessage(const std::string& message)
 {
-	m_TimedMessages.push_back(TimedMessage(message, g_EngineSettings->GetMessagesDefaultFrameCount()));
+	AddTimedMessage(message, g_EngineSettings->GetMessagesDefaultFrameCount());
+}
+
+void RenderDataManager::AddTimedMessage(const std::string& message, int numFrames)
+{
+	m_TimedMessages.push_back(TimedMessage(message, numFrames));
 }
 
 void RenderDataManager::Update()
@@ -764,4 +777,203 @@ void RenderDataManager::Update()
 			messageIterator++;
 		}
 	}
+}
+
+void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entities, Camera* camera)
+{
+	for (Entity* e : entities)
+	{
+		m_VisibleEntities.push_back(e);
+		m_NumVisibleEntities++;
+
+		if (m_NumVisibleEntities == m_MaxVisibleEntities)
+		{
+			AddTimedMessage(StringUtils::Format("Hit limit of %d entities visible", m_MaxVisibleEntities));
+			break;
+		}
+	}
+}
+
+enum LeftRightTestResult
+{
+	Unknown = 0,
+	One = 1,
+	Both = 2
+};
+bool RenderDataManager::IsAABBVisible(const AABB& aabb, Camera* camera)
+{
+	const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();
+
+	glm::ivec4 plane = glm::ivec4(-9999, -9999, -9999, -9999);
+
+	bool allDotPositive = true;
+	for (int i = 0; i < 8; ++i)
+	{
+		glm::vec3 worldPosition = aabb.GetVertices()[i];
+		worldPosition.z = camera->GetPosition().z;
+
+		glm::vec3 vertexToCam = worldPosition - camera->GetPosition();
+
+		float dotProduct = glm::dot(glm::normalize(vertexToCam), camera->GetFrontVector());
+
+		if (dotProduct < 0.f)
+		{
+			allDotPositive = false;
+			break;
+		}
+	}
+
+	if (allDotPositive)
+	{
+		return false;
+	}
+
+
+	bool allUnder[4] = { true, true, true, true };
+	bool allOver[4] = { true, true, true, true };
+	std::vector<glm::vec2> ndcPositions;
+	for (int i = 0; i < 8; ++i)
+	{
+		bool isVertexVisible = false;
+
+		glm::vec4 worldPosition = glm::vec4(aabb.GetVertices()[i], 1.f);
+
+		glm::vec4 clipPos = glm::mul(vpMatrix, worldPosition);
+
+		glm::vec4 ogClipPos = clipPos;
+
+		//if (clipPos.w < 0)
+		//{
+		//	return false;
+		//}
+
+		clipPos.y *= -1;
+		clipPos /= clipPos.w;
+
+		vec2 ndc = 0.5f * (glm::vec2(clipPos) + glm::vec2(1, 1));
+		ndcPositions.push_back(ndc);
+
+		float refNDC[4] = { 0, 1, 0, 1 };
+		for (int p = 0; p < 4; ++p)
+		{
+			int n = p / 2;
+			float side = ndc[n];
+			float correctedCoord = side - refNDC[p];
+
+			if (correctedCoord > 10.f)
+			{
+				return false;
+			}
+
+			allUnder[p] &= correctedCoord < 0;
+			allOver[p] &= correctedCoord > 0;
+
+
+
+			//int n = ndcIndex[p];
+
+			//float side = ndc[n];
+
+			//float correctedCoord = side - refNDC[p];
+
+			//if (plane[p] != -9999)
+			//{
+			//	if (correctedCoord * plane[p] < 0.f)
+			//	{
+
+			//		return true;
+			//	}
+			//	else
+			//	{
+			//		plane[p] += sign(correctedCoord);
+			//	}
+			//}
+			//else
+			//{
+			//	plane[p] = sign(correctedCoord);
+			//}
+
+			//if (p == 1) break;
+
+			//break;
+		}
+
+
+
+		//if (allUnder[2] || allOver[3])
+		//{
+		//	return false;
+		//}
+
+
+	}
+
+	if (allUnder[0] || allOver[1] || allUnder[2] || allOver[3])
+	{
+		return false;
+	}
+
+	//if (plane[0] == 8 && plane[1] == -8 /*&& plane[2] == 8 && plane[3] == -8*/)
+	//{
+	//	return true;
+	//}
+
+	for (int i = 0; i < 8; ++i)
+	{
+
+	}
+
+	return true;
+}
+
+bool RenderDataManager::IsSectorVisible(Sector* sector, Camera* camera)
+{
+	const AABB& aabb = ((BoundingBoxComponent*)sector->GetTerrainPatchEntity()->GetComponent<BoundingBoxComponent>())->GetBoundingBox();
+
+	bool visible = IsAABBVisible(aabb, camera);;
+
+	return visible;
+}
+
+
+void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
+{
+	lxAssert(world);
+	lxAssert(camera);
+
+	m_VisibleEntities.clear();
+	m_NumVisibleEntities = 0;
+
+	m_VisibleSectors.clear();
+	m_NumVisibleSectors = 0;
+
+	GatherVisibleEntities(world->GetEntities(), camera);
+
+	for (Sector* sector : world->GetSectors())
+	{
+		bool sectorIsVisible = true;
+		
+		if (g_EngineSettings->GetCullSectors())
+		{
+			sectorIsVisible = IsSectorVisible(sector, camera);
+		}
+
+		if (!sectorIsVisible)
+		{
+			continue;
+		}
+		
+		m_VisibleSectors.push_back(sector);
+		m_NumVisibleSectors++;
+		if (m_NumVisibleSectors == m_MaxVisibleSectors)
+		{
+			AddTimedMessage(StringUtils::Format("Hit limit of %d sectors visible", m_MaxVisibleSectors));
+			break;
+		}
+
+		GatherVisibleEntities(sector->GetGraphicalData()->GetRoadEntities(), camera);
+
+	}
+
+	AddTimedMessage(StringUtils::Format("Sectors visible: %d", m_NumVisibleSectors), 2);
 }

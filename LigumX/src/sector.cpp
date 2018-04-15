@@ -12,6 +12,7 @@
 #include "CurlRequest.h"
 #include "LXError.h"
 #include "PerlinNoise.h"
+#include "BoundingBoxComponent.h"
 
 #pragma region  CLASS_SOURCE Sector
 
@@ -122,8 +123,9 @@ void Sector::CreateHeightfield()
 	m_TerrainPatchEntity = new Entity();
 
 	glm::mat4 mat = glm::mat4(1.0);
-	glm::vec3 scale = glm::vec3(g_EngineSettings->GetWorldScale());
-	mat = glm::translate(mat, glm::vec3(m_WorldPosition, 0));
+	glm::vec3 scale = glm::vec3(g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale(), 4.f);
+	glm::vec3 worldPosition = glm::vec3(m_WorldPosition, 0);
+	mat = glm::translate(mat, worldPosition);
 	mat = glm::scale(mat, scale);
 	m_TerrainPatchEntity->m_ModelToWorldMatrix = mat;
 
@@ -140,6 +142,9 @@ void Sector::CreateHeightfield()
 
 	Model* terrainPatchModel = new Model(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 	m_TerrainPatchEntity->SetModel(terrainPatchModel);
+
+	BoundingBoxComponent* bb = m_TerrainPatchEntity->GetComponent<BoundingBoxComponent>();
+	bb->SetStartAndScale(worldPosition, scale);
 }
 
 

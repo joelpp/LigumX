@@ -4,6 +4,8 @@ class SectorGraphicalData
 	Model* WaysModel;
 	std::vector<Model> WaysModelsVector;
 
+	std::vector<Entity> RoadEntities;
+
 	Texture* SplatMapTexture;
 	Texture* AlbedoTexture;
 }

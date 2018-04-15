@@ -25,6 +25,7 @@ bool AABB::Serialize(bool writing)
 AABB::AABB()
 {
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
+	m_Vertices.resize(8);
 }
 
 AABB AABB::BuildFromStartPointAndScale(const glm::vec2& startPoint, float scale)
@@ -61,4 +62,16 @@ AABB AABB::BuildFromStartPointAndScale(const glm::vec3& startPoint, const glm::v
 	aabb.SetStartPoint(startPoint);
 
 	return aabb;
+}
+
+void AABB::UpdateVertices()
+{
+	m_Vertices[0] = m_StartPoint + m_Scale * glm::vec3(0, 0, 0);
+	m_Vertices[1] = m_StartPoint + m_Scale * glm::vec3(0, 0, 1);
+	m_Vertices[2] = m_StartPoint + m_Scale * glm::vec3(0, 1, 0);
+	m_Vertices[3] = m_StartPoint + m_Scale * glm::vec3(0, 1, 1);
+	m_Vertices[4] = m_StartPoint + m_Scale * glm::vec3(1, 0, 0);
+	m_Vertices[5] = m_StartPoint + m_Scale * glm::vec3(1, 0, 1);
+	m_Vertices[6] = m_StartPoint + m_Scale * glm::vec3(1, 1, 0);
+	m_Vertices[7] = m_StartPoint + m_Scale * glm::vec3(1, 1, 1);
 }

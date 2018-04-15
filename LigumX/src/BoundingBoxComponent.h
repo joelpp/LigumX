@@ -53,7 +53,7 @@ bool Serialize(bool writing);
 #pragma endregion  HEADER BoundingBoxComponent
 
 BoundingBoxComponent::BoundingBoxComponent();
-
+void SetStartAndScale(const glm::vec3& start, const glm::vec3& scale);
 
 void Update();
 };

@@ -16,4 +16,5 @@ class Sector
 	Entity* TerrainPatchEntity;
 
 	std::string OSMFilename;
+
 }

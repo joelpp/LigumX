@@ -14,10 +14,13 @@
 
 extern RenderDataManager* g_RenderDataManager;
 
+class Camera;
+class World;
 class LigumX;
 class Renderer;
 class Sector;
 class Mesh;
+
 
 struct TerrainRenderingJob
 {
@@ -111,13 +114,26 @@ public:
 	void AddAABBJob(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 	void AddAABBJobCentered(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 
+	void AddTimedMessage(const std::string& message, int numFrames);
 	void AddTimedMessage(const std::string& message);
 	std::vector<TimedMessage>& GetTimedMessages() { return m_TimedMessages; }
 
 	void Update();
 
+
+	bool IsAABBVisible(const AABB& aabb, Camera* camera);
+	bool IsSectorVisible(Sector* sector, Camera* camera);
+
+
+	void GatherVisibleEntities(const std::vector<Entity*>& entities, Camera* camera);
+	void GatherVisibleEntities(World* world, Camera* camera);
 	std::vector<AABBJob>& GetAABBJobs();
 	void ClearAABBJobs();
+
+	int GetNumVisibleSectors() { return m_NumVisibleSectors; }
+	int GetNumVisibleEntities() { return m_NumVisibleEntities; }
+	const std::vector<Entity*>& GetVisibleEntities() { return m_VisibleEntities; }
+	const std::vector<Sector*>& GetVisibleSectors() { return m_VisibleSectors; }
 
 private:
 	REGISTERCLASS(RenderDataManager);
@@ -125,4 +141,13 @@ private:
 	std::vector<TimedMessage> m_TimedMessages;
 	std::vector<AABBJob> m_AABBJobs;
 
+	std::vector<Entity*> m_VisibleEntities;
+	const int m_MaxVisibleEntities = 2048;
+
+	std::vector<Sector*> m_VisibleSectors;
+	const int m_MaxVisibleSectors = 2048;
+
+
+	int m_NumVisibleEntities;
+	int m_NumVisibleSectors;
 };

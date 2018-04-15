@@ -11,6 +11,7 @@
 #include "LigumX.h"
 #include "World.h"
 #include "Sector.h"
+#include "SectorGraphicalData.h"
 
 #include "Node.h"
 #include "Way.h"
@@ -130,8 +131,10 @@ void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
 		
 		roadEntity->SetVisible(true);
 
-		World* world = LigumX::GetInstance().GetWorld();
-		world->AddTo_Entities(roadEntity);
+		//World* world = LigumX::GetInstance().GetWorld();
+		//world->AddTo_Entities(roadEntity);
+
+		sector->GetGraphicalData()->GetRoadEntities().push_back(roadEntity);
 	}
 }
 
@@ -147,7 +150,6 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 		if (isRoad)
 		{
 			ProcessRoad(sector, way);
-			break;
 			continue;
 		}
 
