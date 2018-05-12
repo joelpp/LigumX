@@ -1383,6 +1383,16 @@ void Editor::RenderImgui()
 
 		ShowProperty<Way>(&(g_SectorManager->m_AllWaysPtr), "Ways");
 
+		for (Way* way : osmTool->GetSelectedWays())
+		{
+			for (auto iter : way->tags)
+			{
+				std::stringstream text;
+				text << iter.first << " " << iter.second;
+				ShowGUIText(text.str());
+			}
+		}
+
 		g_GUI->EndWindow();
 	}
 

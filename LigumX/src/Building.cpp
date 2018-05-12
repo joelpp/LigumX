@@ -61,6 +61,10 @@ bool Building::GenerateModel()
 	        
 	    for(auto n = way->GetNodes().begin(); n != way->GetNodes().end()-1; ++n)
 	    {
+			if (way->GetNodes().size() <= 3)
+			{
+				continue;
+			}
 	        loopNodes.push_back(*n);
 	        
 	        if (way->eType == LiftableWalls)

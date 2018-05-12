@@ -6,4 +6,6 @@ class Way
 	OSMElementType OSMElementType = OSMElementType_Unknown;
 
 	int IndexInSector;
+
+	bool FilledIn = false;
 }

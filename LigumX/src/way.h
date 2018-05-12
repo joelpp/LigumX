@@ -39,6 +39,8 @@ const OSMElementType& GetOSMElementType() { return m_OSMElementType; };
 void SetOSMElementType(OSMElementType value) { m_OSMElementType = value; }; 
 const int& GetIndexInSector() { return m_IndexInSector; }; 
 void SetIndexInSector(int value) { m_IndexInSector = value; }; 
+const bool& GetFilledIn() { return m_FilledIn; }; 
+void SetFilledIn(bool value) { m_FilledIn = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -46,8 +48,9 @@ int m_OSMId = 0;
 std::vector<Node*> m_Nodes;
 OSMElementType m_OSMElementType = OSMElementType_Unknown;
 int m_IndexInSector = 0;
+bool m_FilledIn = false;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WayPIDX
@@ -58,6 +61,7 @@ PIDX_OSMId,
 PIDX_Nodes,
 PIDX_OSMElementType,
 PIDX_IndexInSector,
+PIDX_FilledIn,
 };
 bool Serialize(bool writing);
 

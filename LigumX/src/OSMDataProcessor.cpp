@@ -2,6 +2,7 @@
 
 #include "glm/glm.hpp"
 
+
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
@@ -12,6 +13,8 @@
 #include "World.h"
 #include "Sector.h"
 #include "SectorGraphicalData.h"
+
+#include "Building.h"
 
 #include "Node.h"
 #include "Way.h"
@@ -37,6 +40,23 @@ bool OSMDataProcessor::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor
+
+
+float sign(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
+{
+	return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool PointInTriangle(const glm::vec3& pt, const glm::vec3& v1, const glm::vec3& v2, const glm::vec3& v3)
+{
+	bool b1, b2, b3;
+
+	b1 = sign(pt, v1, v2) < 0.0f;
+	b2 = sign(pt, v2, v3) < 0.0f;
+	b3 = sign(pt, v3, v1) < 0.0f;
+
+	return ((b1 == b2) && (b2 == b3));
+}
 
 Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
 {
@@ -80,8 +100,6 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 		uvs.push_back(glm::vec2(1, 0));
 		uvs.push_back(glm::vec2(1, 1));
 		uvs.push_back(glm::vec2(0, 1));
-
-		break;
 
 	}
 
@@ -350,11 +368,213 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 			continue;
 		}
 
-		bool isAddressInterpolation = way->GetOSMElementType() >= OSMElementType_AddressInterpolation;
+		bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
 		if (isAddressInterpolation)
 		{
 			ProcessAddressInterpolation(sector, way);
 			continue;
 		}
+
+		World* world = LigumX::GetInstance().GetWorld();
+
+		OSMElementType wayType = way->GetOSMElementType();
+
+		bool fillFlag = (wayType == OSMElementType::OSMElementType_Building_Unmarked ||
+			wayType == OSMElementType::OSMElementType_Building_School ||
+			wayType == OSMElementType::OSMElementType_LeisurePark ||
+			wayType == OSMElementType::OSMElementType_NaturalWood ||
+			wayType == OSMElementType::OSMElementType_NaturalWater ||
+			wayType == OSMElementType::OSMElementType_Landuse);
+
+		if (false && fillFlag)
+		{
+			Building building(way);
+			bool success = building.GenerateModel();
+
+			if (success)
+			{
+				way->SetFilledIn(true);
+
+				//renderer.AddToDebugModels(building.m_Model);
+
+				Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+				lxAssert(tex != nullptr);
+
+
+				struct TerrainColorEditingJob
+				{
+					TerrainColorEditingJob() { }
+
+					TerrainColorEditingJob(Sector* sector, glm::ivec2 texelMin, glm::ivec2 texelMax)
+						: m_Sector(sector)
+						, m_TexelMin(texelMin)
+						, m_TexelMax(texelMax)
+					{
+
+					}
+
+					void Execute(const std::vector<Triangle>& triangles)
+					{
+						lxAssert(m_Sector != nullptr);
+
+						Texture* tex = m_Sector->GetGraphicalData()->GetSplatMapTexture();
+						unsigned char* val = tex->GetTextureData();
+
+						int numBytes = tex->GetNumBytes();
+						int stride = 4;
+						int dataOffset = stride * (m_TexelMin.y * tex->GetSize().x + m_TexelMin.x);
+
+						unsigned char* offsetVal = val + dataOffset;
+						for (int i = 0; i < m_TexelMax.x - m_TexelMin.x; ++i)
+						{
+							for (int j = 0; j < m_TexelMax.y - m_TexelMin.y; ++j)
+							{
+								int index = (int)(stride * (j * tex->GetSize().y + i));
+
+								if (index < 0 || index > numBytes)
+								{
+									continue;
+								}
+
+								glm::ivec2 texelSpace = m_TexelMin + glm::ivec2(i, j);
+								glm::vec2 uvSpace = (glm::vec2)texelSpace / (glm::vec2)tex->GetSize();
+								glm::vec3 worldSpace = m_Sector->GetWorldPositionForUV(uvSpace);
+
+								for (int t = 0; t < triangles.size(); ++t)
+								{
+									const Triangle& triangle = triangles[t];
+
+									glm::vec3 offset = glm::vec3(0.f);
+
+									// TODO jpp : make this work eventually...
+									//glm::vec3 barycentricCoords = Barycentric(worldSpace, 
+									//										  triangle.m_Vertices[0] - offset, 
+									//										  triangle.m_Vertices[1] - offset, 
+									//										  triangle.m_Vertices[2] - offset);
+
+									//if (glm::all(glm::lessThan(glm::vec3(1, 1, 1), barycentricCoords)))
+									//{
+									//	offsetVal[index] = (unsigned char)255;
+									//	break;
+									//}
+
+									if (PointInTriangle(worldSpace,
+										triangle.m_Vertices[0] - offset,
+										triangle.m_Vertices[1] - offset,
+										triangle.m_Vertices[2] - offset))
+									{
+										offsetVal[index] = (unsigned char)255;
+										break;
+									}
+								}
+
+							}
+						}
+
+						tex->UpdateFromData();
+					}
+
+					Sector* m_Sector;
+					glm::ivec2 m_TexelMin;
+					glm::ivec2 m_TexelMax;
+				};
+
+
+				const std::vector<Triangle> triangles = building.GetTriangles();
+
+				glm::vec2 sectorUVMin = sector->GetUVForWorldPosition(building.m_MinCoords);
+				glm::vec2 sectorUVMax = sector->GetUVForWorldPosition(building.m_MaxCoords);
+
+				glm::ivec2 texelMin = glm::ivec2(sectorUVMin * glm::vec2(tex->GetSize()));
+				glm::ivec2 texelMax = glm::ivec2(sectorUVMax * glm::vec2(tex->GetSize()));
+
+				std::vector<TerrainColorEditingJob> terrainJobs;
+
+				// todo JPP : fix this mess
+				// corners bug
+
+				if (texelMin.x < 0)
+				{
+					TerrainColorEditingJob additionalJob;
+					additionalJob.m_TexelMin.x = tex->GetSize().x + texelMin.x;
+					additionalJob.m_TexelMax.x = tex->GetSize().x;
+
+					additionalJob.m_TexelMin.y = texelMin.y;
+					additionalJob.m_TexelMax.y = texelMax.y;
+
+					texelMin.x = 0;
+
+					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
+					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(-1, 0));
+					additionalJob.m_Sector = thisSector;
+
+					terrainJobs.push_back(additionalJob);
+				}
+
+				if (texelMax.x > tex->GetSize().x)
+				{
+					TerrainColorEditingJob additionalJob;
+					additionalJob.m_TexelMin.x = 0;
+					additionalJob.m_TexelMax.x = texelMax.x;
+
+					additionalJob.m_TexelMin.y = texelMin.y;
+					additionalJob.m_TexelMax.y = texelMax.y;
+
+					texelMax.x = tex->GetSize().x;
+
+					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
+					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(1, 0));
+					additionalJob.m_Sector = thisSector;
+
+					terrainJobs.push_back(additionalJob);
+				}
+
+				if (texelMin.y < 0)
+				{
+					TerrainColorEditingJob additionalJob;
+					additionalJob.m_TexelMin.y = tex->GetSize().y + texelMin.y;
+					additionalJob.m_TexelMax.y = tex->GetSize().y;
+
+					additionalJob.m_TexelMin.x = texelMin.x;
+					additionalJob.m_TexelMax.x = texelMax.x;
+
+					texelMin.y = 0;
+
+					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
+					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(0, -1));
+					additionalJob.m_Sector = thisSector;
+
+					terrainJobs.push_back(additionalJob);
+				}
+
+				if (texelMax.y > tex->GetSize().y)
+				{
+					TerrainColorEditingJob additionalJob;
+					additionalJob.m_TexelMin.y = 0;
+					additionalJob.m_TexelMax.y = texelMax.y;
+
+					additionalJob.m_TexelMin.x = texelMin.x;
+					additionalJob.m_TexelMax.x = texelMax.x;
+
+					texelMax.y = tex->GetSize().y;
+
+					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
+					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(0, 1));
+					additionalJob.m_Sector = thisSector;
+
+					terrainJobs.push_back(additionalJob);
+				}
+
+				TerrainColorEditingJob mainJob(sector, texelMin, texelMax);
+				terrainJobs.push_back(mainJob);
+
+
+				for (TerrainColorEditingJob& job : terrainJobs)
+				{
+					job.Execute(triangles);
+				}
+			}
+		}
+
 	}
 }

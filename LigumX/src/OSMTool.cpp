@@ -1,6 +1,7 @@
 #include "LigumX.h"
 #include "Editor.h"
 #include "InputHandler.h"
+#include "StringUtils.h"
 
 #include "DefaultObjects.h"
 #include "Node.h"
@@ -14,6 +15,8 @@
 #include "SectorGraphicalData.h"
 #include "Way.h"
 #include "World.h"
+
+#include "RenderDataManager.h"
 
 #pragma region  CLASS_SOURCE OSMTool
 
@@ -93,7 +96,29 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 
 		m_SelectedNode = node;
 
+
+		for (Way* newWay : m_SelectedNode->GetWays())
+		{
+			bool found = false;
+			for (Way* oldWay : m_SelectedWays)
+			{
+				if (newWay == oldWay)
+				{
+					found = true;
+					break;
+				}
+
+			}
+
+			if (!found)
+			{
+				g_RenderDataManager->AddTimedMessage(StringUtils::Format("Selected way : %s", newWay->GetName()));
+			}
+		}
+
+
 		m_SelectedWays = std::vector<Way*>(m_SelectedNode->GetWays());
+
 
 		m_SelectedSectorIndex = normalizedSectorIndex;
 		return true;
