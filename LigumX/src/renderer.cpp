@@ -106,6 +106,15 @@ void Renderer::InitFramebuffers()
 	BindFramebuffer(FramebufferType_Default);
 }
 
+void APIENTRY OutputGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	std::stringstream ss;
+
+	ss << "OpenGL debug message : " << message;
+
+	OUTPUT_STRING_LINE(ss.str());
+}
+
 void Renderer::InitGL()
 {
 	// Initialise GLFW
@@ -118,6 +127,7 @@ void Renderer::InitGL()
 		PRINT("Initialized GLFW.");
 	}
 
+
 	m_Window = new MainWindow(75638);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -125,6 +135,13 @@ void Renderer::InitGL()
 		std::cout << "Failed to initialize OpenGL context" << std::endl;
 		//return -1;
 		exit(1);
+	}
+
+	bool enableGLDebugOutput = true;
+	if (enableGLDebugOutput)
+	{
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(OutputGLDebugMessageCallback, nullptr);
 	}
 
 	// GL Settings
@@ -143,6 +160,7 @@ void Renderer::InitGL()
 	glGenBuffers(1, &SSBO);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, 12 * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
+
 
 }
 

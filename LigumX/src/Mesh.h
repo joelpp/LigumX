@@ -40,6 +40,12 @@ public:
 	GLuint glidWayDataBuffer;
 };
 
+class ColoredPointsGPUBuffers : public GPUBuffers
+{
+public:
+	GLuint glidColorBuffer;
+};
+
 class CPUBuffers
 {
 public:
@@ -54,6 +60,12 @@ class FlatWaysCPUBuffers : public CPUBuffers
 {
 public:
 	std::vector<int> WayTypeBuffer;
+};
+
+class ColoredPointsCPUBuffers : public CPUBuffers
+{
+public:
+	std::vector<glm::vec3> ColorBuffer;
 };
 
 
@@ -108,7 +120,7 @@ public:
 	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 	
 	void padBuffer(EBufferType bufferType);
-	virtual void createBuffers();
+	virtual void CreateBuffers();
 	std::vector<int> m_indexArray;
 
 	CPUBuffers m_buffers;

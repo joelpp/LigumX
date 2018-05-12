@@ -17,6 +17,7 @@
 #include "World.h"
 
 #include "RenderDataManager.h"
+#include "OSMDataProcessor.h"
 
 #pragma region  CLASS_SOURCE OSMTool
 
@@ -37,6 +38,7 @@ const ClassPropertyData OSMTool::g_Properties[] =
 { "ShowNodes", PIDX_ShowNodes, offsetof(OSMTool, m_ShowNodes), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowWays", PIDX_ShowWays, offsetof(OSMTool, m_ShowWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "ShowFlatWays", PIDX_ShowFlatWays, offsetof(OSMTool, m_ShowFlatWays), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DebugPointInRoad", PIDX_DebugPointInRoad, offsetof(OSMTool, m_DebugPointInRoad), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool OSMTool::Serialize(bool writing)
 {
@@ -90,9 +92,27 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 
 		glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(glm::vec2(m_WorldSpacePosition));
 
-		Node* node = g_SectorManager->GetClosestNode(glm::vec2(m_WorldSpacePosition), m_SearchOnlyWithinSector);
+		Node* node = nullptr;
 
-		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
+		if (m_DebugPointInRoad)
+		{
+			Sector* sector = g_World->GetSectorByIndex(normalizedSectorIndex);
+			bool inRoad = PointInRoad(sector, m_WorldSpacePosition);
+
+			Material* material = g_DefaultObjects->DefaultManipulatorEntity->GetModel()->GetMaterials()[0];
+			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_WorldSpacePosition);
+
+			glm::vec3 diffuseColor = inRoad ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+			material->SetDiffuseColor(diffuseColor);
+			
+			return true;
+		}
+		else
+		{
+			node = g_SectorManager->GetClosestNode(glm::vec2(m_WorldSpacePosition), m_SearchOnlyWithinSector);
+			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
+		}
+
 
 		m_SelectedNode = node;
 

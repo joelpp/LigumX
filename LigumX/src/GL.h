@@ -259,6 +259,8 @@ public:
 	static void DrawArrays(PrimitiveMode mode, int startingIndex, int count);
 
 	static void OutputErrors();
+	static void OutputDebugMessages(int numMsgs);
+
 
 	static bool g_CheckGLErrors;
 

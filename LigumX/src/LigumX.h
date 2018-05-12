@@ -39,6 +39,8 @@ class RenderDataManager;
 
 #define string_pair std::pair<std::string,std::string>
 
+#define g_World LigumX::GetInstance().GetWorld()
+
 enum EApplicationState
 {
 	EApplicationState_Uninitialized,

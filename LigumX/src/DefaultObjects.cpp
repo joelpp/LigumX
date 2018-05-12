@@ -54,7 +54,7 @@ void DefaultObjects::InitializeDefaultQuad()
 	indexBuffer.push_back(1);
 	indexBuffer.push_back(3);
 
-	DefaultQuadMesh->createBuffers();
+	DefaultQuadMesh->CreateBuffers();
 	DefaultQuadMesh->SetUsesIndexBuffer(true);
 	DefaultQuadMesh->m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 
@@ -109,7 +109,7 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 		}
 	}
 
-	DefaultTerrainMesh->createBuffers();
+	DefaultTerrainMesh->CreateBuffers();
 	DefaultTerrainMesh->SetUsesIndexBuffer(true);
 	DefaultTerrainMesh->m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 
@@ -188,7 +188,7 @@ void DefaultObjects::InitializeDefaultLine()
 	UVs.push_back(glm::vec2(0, 0));
 	UVs.push_back(glm::vec2(1, 1));
 
-	DefaultLineMesh->createBuffers();
+	DefaultLineMesh->CreateBuffers();
 	DefaultLineMesh->SetUsesIndexBuffer(true);
 	DefaultLineMesh->m_PrimitiveMode = GL::PrimitiveMode::Lines;
 

@@ -45,7 +45,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMo
   m_PointRendering = false;
 
   padBuffer(VERTEX_UVS);
-  createBuffers();
+  CreateBuffers();
 }
 
 
@@ -59,7 +59,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>&
 	m_UsesIndexBuffer = false;
 	m_PointRendering = false;
 
-	createBuffers();
+	CreateBuffers();
 }
 
 
@@ -75,7 +75,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indic
 
 	padBuffer(VERTEX_UVS);
 
-	createBuffers();
+	CreateBuffers();
 }
 
 
@@ -85,7 +85,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMo
   m_PrimitiveMode = primitiveMode;
   m_PointRendering = usePointRendering;
   padBuffer(VERTEX_UVS);
-  createBuffers();
+  CreateBuffers();
 }
 
 void Mesh::padBuffer(EBufferType bufferType)
@@ -101,7 +101,7 @@ void Mesh::padBuffer(EBufferType bufferType)
   }
 }
 
-void Mesh::createBuffers()
+void Mesh::CreateBuffers()
 {
 	// TODO: I'm not quite convinced this belongs here. or does it?
     LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.vertexPositions);

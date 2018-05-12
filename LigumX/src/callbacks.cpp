@@ -98,8 +98,6 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		else if (isCtrl)
 		{
 			g_IsCtrlHeld = isPress ? true : false;
-
-			g_Editor->GetTerrainTool()->SetTerrainErasureMode(g_IsCtrlHeld);
 		}
 
 		bool maskModified = isXYZ[0] || isXYZ[1] || isXYZ[2] || isShift;

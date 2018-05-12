@@ -1,5 +1,8 @@
 #pragma once
 
+#include "glm/glm.hpp"
+
+
 class Mesh;
 class Way;
 class Sector;
@@ -12,6 +15,8 @@ class OSMDataProcessor;
 extern OSMDataProcessor* g_OSMDataProcessor;
 
 #pragma endregion  FORWARD_DECLARATIONS OSMDataProcessor
+
+bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition);
 
 class OSMDataProcessor
 {

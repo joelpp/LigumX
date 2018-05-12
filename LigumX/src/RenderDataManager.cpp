@@ -54,6 +54,38 @@ void FlatWaysMesh::CreateBuffers()
 
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayDataBuffer, m_DataBuffer);
 
+	glGenVertexArrays(1, &m_VAO);
+	glBindVertexArray(m_VAO);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+	glEnableVertexAttribArray(3);
+	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayDataBuffer);
+	glVertexAttribIPointer(3, 2, GL_INT, 0, NULL);
+}
+
+ColoredPointsMesh::ColoredPointsMesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& dataBuffer, GL::PrimitiveMode primitiveMode, bool usePointRendering)
+{
+	m_buffers.vertexPositions = vertices;
+
+	m_ColorBuffer = dataBuffer;
+	m_PrimitiveMode = primitiveMode;
+	SetPointRendering(usePointRendering);
+
+	SetUsesIndexBuffer(false);
+
+	padBuffer(VERTEX_UVS);
+
+	CreateBuffers();
+}
+
+void ColoredPointsMesh::CreateBuffers()
+{
+	// TODO: I'm not quite convinced this belongs here. or does it?
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.vertexPositions);
+
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidColorBuffer, m_ColorBuffer);
 
 	glGenVertexArrays(1, &m_VAO);
 	glBindVertexArray(m_VAO);
@@ -61,11 +93,9 @@ void FlatWaysMesh::CreateBuffers()
 	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-
 	glEnableVertexAttribArray(3);
-	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayDataBuffer);
-	glVertexAttribIPointer(3, 2, GL_INT, 0, NULL);
-
+	glBindBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidColorBuffer);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 
@@ -210,6 +240,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	SectorGraphicalData* gfxData = sector->GetGraphicalData();
 
 	std::vector<glm::vec3> nodePositions;
+	std::vector<glm::vec3> nodeColors;
 
 	World* world = LigumX::GetInstance().GetWorld();
 	Renderer& renderer = Renderer::GetInstance();
@@ -240,6 +271,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			const glm::vec3& pos = node->GetWorldPosition();
 
 			nodePositions.push_back(node->GetWorldPosition());
+			nodeColors.push_back(glm::vec3(1, 0, 0));
 
 			AddPoint(line, pos);
 
@@ -279,6 +311,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 						subdivisionPoint.z = world->SampleHeight(subdivisionPoint);
 
 						nodePositions.push_back(subdivisionPoint);
+						nodeColors.push_back(glm::vec3(1, 1, 1));
 						AddPoint(line, subdivisionPoint);
 
 						if (!newWay && index >(previousLastIndex) && (index - 1) != previousLastIndex)
@@ -311,7 +344,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	}
 
 
-	Mesh* nodeMesh = new Mesh(nodePositions, GL::PrimitiveMode::Points, true);
+	ColoredPointsMesh* nodeMesh = new ColoredPointsMesh(nodePositions, nodeColors, GL::PrimitiveMode::Points, true);
 
 	Model* nodeModel = new Model();
 	nodeModel->addMesh(nodeMesh, new Material(renderer.pPipelineNodes, glm::vec3(1, 1, 1)));

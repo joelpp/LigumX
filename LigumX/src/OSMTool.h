@@ -47,6 +47,8 @@ const bool& GetShowWays() { return m_ShowWays; };
 void SetShowWays(bool value) { m_ShowWays = value; }; 
 const bool& GetShowFlatWays() { return m_ShowFlatWays; }; 
 void SetShowFlatWays(bool value) { m_ShowFlatWays = value; }; 
+const bool& GetDebugPointInRoad() { return m_DebugPointInRoad; }; 
+void SetDebugPointInRoad(bool value) { m_DebugPointInRoad = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -59,8 +61,9 @@ glm::vec3 m_WorldSpacePosition = glm::vec3(0, 0, 0);
 bool m_ShowNodes = false;
 bool m_ShowWays = false;
 bool m_ShowFlatWays = true;
+bool m_DebugPointInRoad = false;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 12;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMToolPIDX
@@ -76,6 +79,7 @@ PIDX_WorldSpacePosition,
 PIDX_ShowNodes,
 PIDX_ShowWays,
 PIDX_ShowFlatWays,
+PIDX_DebugPointInRoad,
 };
 bool Serialize(bool writing);
 

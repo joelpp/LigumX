@@ -71,6 +71,22 @@ private:
 
 };
 
+class ColoredPointsMesh : public Mesh
+{
+public:
+	ColoredPointsMesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& colorBuffer, GL::PrimitiveMode primitiveMode, bool usePointRendering);
+
+	std::vector<glm::vec3> m_ColorBuffer;
+
+	GLuint glidTypeBuffer;
+	void CreateBuffers();
+
+	ColoredPointsGPUBuffers& GetGPUBuffers() { return m_FlatWaysGPUBuffers; }
+private:
+	ColoredPointsGPUBuffers m_FlatWaysGPUBuffers;
+
+};
+
 class RenderDataManager{
 
 public:

@@ -1,5 +1,6 @@
 #version 410 core
 layout(location=0) in vec3 pos;
+layout(location=3) in vec3 v_Color;
 
 uniform mat4 vpMat;
 
@@ -13,7 +14,7 @@ out gl_PerVertex
     float gl_PointSize;
 };
 
-flat out int vertexID;
+out vec3 v_VertexColor;
 
 void main() 
 {
@@ -22,9 +23,9 @@ void main()
 
 	float lNorm = min(l / 10.f, 1.f);
 	float f = 1.f/* - lNorm*/;
-	gl_PointSize = 2.0 * f;
+	gl_PointSize = 5.0 * f;
 
     gl_Position = vpMat * vec4(pos, 1);
 
-	vertexID = gl_VertexID;
+	v_VertexColor = v_Color;
 }

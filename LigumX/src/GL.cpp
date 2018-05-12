@@ -289,4 +289,3 @@ void GL::DepthWriteEnabled(bool enabled)
 {
 	glDepthMask(enabled);
 }
-

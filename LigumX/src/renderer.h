@@ -422,6 +422,7 @@ private:
 
 	int m_TempObjectID;
 
+	Texture* m_Debug_GrassTexture;
 	Texture* m_Debug_RockTexture;
 	Texture* m_Debug_WoodTexture;
 	Texture* m_Debug_SandTexture;

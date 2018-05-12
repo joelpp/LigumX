@@ -6,8 +6,6 @@ Options
 12466
 ActiveTool
 4
-TerrainBrushSize
-23
-SectorTool
 PickingBufferSize
 128
+SelectedNode

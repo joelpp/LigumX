@@ -1,8 +1,5 @@
 #include "OSMDataProcessor.h"
 
-#include "glm/glm.hpp"
-
-
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
@@ -58,60 +55,199 @@ bool PointInTriangle(const glm::vec3& pt, const glm::vec3& v1, const glm::vec3& 
 	return ((b1 == b2) && (b2 == b3));
 }
 
-Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
+bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 {
-	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> vertices;
-	glm::vec3 up = glm::vec3(0, 0, 1);
-
-	const float buildingHeight = 100.f;
-
-	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
+	for (Entity* entity : sector->GetGraphicalData()->GetRoadEntities())
 	{
-		Node* node = *nodeIt;
-		Node* nextNode = *(nodeIt + 1);
-		glm::vec3 nodePos = node->GetWorldPosition();
-		glm::vec3 nextPos = nextNode->GetWorldPosition();
+		Mesh* mesh = entity->GetModel()->m_meshes[0];
 
-		glm::vec3 segment = nextPos - nodePos;
-		float distance = glm::length(segment);
-
-		if (distance == 0.f)
+		int numTriangles = mesh->m_buffers.vertexPositions.size() / 3;
+		for (int i = 0; i < numTriangles; ++i)
 		{
-			continue;
+			int tIdx = i * 3;
+			const glm::vec3& v0 = mesh->m_buffers.vertexPositions[tIdx + 0];
+			const glm::vec3& v1 = mesh->m_buffers.vertexPositions[tIdx + 1];
+			const glm::vec3& v2 = mesh->m_buffers.vertexPositions[tIdx + 2];
+
+			if (PointInTriangle(worldSpacePosition, v0, v1, v2))
+			{
+				return true;
+			}
 		}
+	}
 
-		glm::vec3 direction = glm::normalize(segment);
-		glm::vec3 right = glm::cross(direction, up);
+	return false;
+}
 
-		glm::vec3 first = nodePos;
-		glm::vec3 second = nodePos + up * buildingHeight;
+void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, const glm::vec3& back, const glm::vec3& up, const glm::vec3& dimensions)
+{
+	std::vector<glm::vec2>& uvs = mesh->m_buffers.m_vertexUVs;
+	std::vector<glm::vec3>& vertices = mesh->m_buffers.vertexPositions;
 
-		vertices.push_back(first);
-		vertices.push_back(second);
-		vertices.push_back(first + direction * distance);
-		vertices.push_back(second);
-		vertices.push_back(second + direction * distance);
-		vertices.push_back(first + direction * distance);
+	glm::vec3 buildingHeight = up * dimensions.z;
+	glm::vec3 buildingLength = direction * dimensions.x;
+	glm::vec3 buildingDepth = back * dimensions.y;
 
+	glm::vec3 facade00 = start;
+	glm::vec3 facade01 = start + buildingHeight;
+
+	glm::vec3 facade10 = start + buildingLength;
+	glm::vec3 facade11 = facade10 + buildingHeight;
+
+	glm::vec3 back00 = facade00 + buildingDepth;
+	glm::vec3 back01 = back00 + buildingHeight;
+
+	glm::vec3 back10 = back00 + buildingLength;
+	glm::vec3 back11 = back10 + buildingHeight;
+
+	vertices.push_back(facade00);
+	vertices.push_back(facade01);
+	vertices.push_back(facade10);
+	vertices.push_back(facade01);
+	vertices.push_back(facade11);
+	vertices.push_back(facade10);
+
+	int numQuads = 1;
+	static volatile bool g_Debug_GenerateDepth = true;
+	if (g_Debug_GenerateDepth)
+	{
+		vertices.push_back(facade10);
+		vertices.push_back(facade11);
+		vertices.push_back(back10);
+		vertices.push_back(facade11);
+		vertices.push_back(back11);
+		vertices.push_back(back10);
+
+		vertices.push_back(back10);
+		vertices.push_back(back11);
+		vertices.push_back(back01);
+		vertices.push_back(back11);
+		vertices.push_back(back01);
+		vertices.push_back(back00);
+
+		vertices.push_back(back00);
+		vertices.push_back(back01);
+		vertices.push_back(facade00);
+		vertices.push_back(back01);
+		vertices.push_back(facade01);
+		vertices.push_back(facade00);
+
+		numQuads = 4;
+	}
+
+	for (int i = 0; i < numQuads; ++i)
+	{
 		uvs.push_back(glm::vec2(0, 0));
 		uvs.push_back(glm::vec2(1, 0));
 		uvs.push_back(glm::vec2(0, 1));
 		uvs.push_back(glm::vec2(1, 0));
 		uvs.push_back(glm::vec2(1, 1));
 		uvs.push_back(glm::vec2(0, 1));
-
 	}
+}
 
-	if (vertices.size() > 0)
+float Random0To1()
+{
+	static float fRandMax = (float)RAND_MAX;
+	return rand() / fRandMax;
+}
+
+Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
+{
+	glm::vec3 up = glm::vec3(0, 0, 1);
+
+	const float buildingHeight = 100.f;
+
+	Mesh* buildingMesh = new Mesh();
+	
+	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
-		Mesh* buildingMesh = new Mesh(vertices, uvs, GL::PrimitiveMode::Triangles, false);
+		Node* node = *nodeIt;
+		Node* nextNode = *(nodeIt + 1);
+		glm::vec3 nodePos = node->GetWorldPosition();
+		glm::vec3 nodePos2 = nextNode->GetWorldPosition();
 
-		return buildingMesh;
+		glm::vec3 wholeSegment = nodePos2 - nodePos;
+
+		float distance = glm::length(wholeSegment);
+
+		float spaceLeft = distance;
+
+		if (distance == 0.f)
+		{
+			continue;
+		}
+
+
+		float minFacadeSegmentRatio = 0.1f;
+		float maxFacadeSegmentRatio = 0.3f;
+		float facadeRatio = Random0To1() * maxFacadeSegmentRatio + minFacadeSegmentRatio;
+		float facadeLength = facadeRatio * distance;
+
+		
+		float facadeOffsetMin = 0;
+		float facadeOffsetMax = facadeLength;
+		float paddingBeforeFacade = Random0To1() * facadeOffsetMax;
+		float paddingAfterFacade = Random0To1() * facadeOffsetMax;
+
+		float spaceNeeded = paddingBeforeFacade + facadeLength + paddingAfterFacade;
+
+		glm::vec3 direction = glm::normalize(wholeSegment);
+
+		glm::vec3 startPos = nodePos + paddingBeforeFacade * direction;
+
+		while (spaceLeft > spaceNeeded)
+		{
+			glm::vec3 right = glm::cross(direction, up);
+
+			startPos += paddingBeforeFacade * direction;
+
+			if (PointInRoad(sector, startPos))
+			{
+				break;
+			}
+
+			float minDepth = 10.f;
+			float maxDepth = 30.f;
+			float depth = Random0To1() * maxDepth + minDepth;
+
+			float minHeight = 20.f;
+			float maxHeight = 50.f;
+			float height = Random0To1() * maxDepth + minDepth;
+
+			glm::vec3 dimensions = glm::vec3(facadeLength, depth, height);
+
+			float depthClearanceRatio = 1.2f;
+			glm::vec3 back = startPos + depthClearanceRatio * right * dimensions.y;
+
+			if (PointInRoad(sector, back))
+			{
+				right *= -1;
+			}
+
+			Add3DBox(buildingMesh, startPos, direction, right, up, dimensions);
+
+			startPos += (facadeLength + paddingAfterFacade) * direction;
+
+			// generate next building
+			facadeRatio = Random0To1() * maxFacadeSegmentRatio + minFacadeSegmentRatio;
+			facadeLength = facadeRatio * distance;
+
+			paddingBeforeFacade = Random0To1() * facadeOffsetMax;
+			paddingAfterFacade = Random0To1() * facadeOffsetMax;
+
+			spaceNeeded = paddingBeforeFacade + facadeLength + paddingAfterFacade;
+
+			spaceLeft -= spaceNeeded;
+
+			break;
+		}
+
 	}
 
-	return nullptr;
+	buildingMesh->CreateBuffers();
 
+	return buildingMesh;
 }
 
 
@@ -331,7 +467,7 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 
 
 		Entity* buildingEntity = new Entity();
-		buildingEntity->SetName("Building - " + way->GetName());
+		buildingEntity->SetName("OSM_GENERATED_ADDRINTERP - " + way->GetName());
 		buildingEntity->SetModel(buildingModel);
 
 		buildingEntity->SetVisible(true);

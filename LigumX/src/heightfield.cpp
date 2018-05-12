@@ -164,7 +164,7 @@ void Heightfield::generateBaseMesh()
     }
 
     
-    hfBaseMesh->createBuffers();
+    hfBaseMesh->CreateBuffers();
     hfBaseMesh->SetUsesIndexBuffer(true);
     hfBaseMesh->m_PrimitiveMode = GL::PrimitiveMode::Triangles;
 }

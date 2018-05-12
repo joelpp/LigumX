@@ -330,6 +330,11 @@ void Camera::qweasdzxcKeyPreset(
 
 	bool isPress = (action == GLFW_PRESS);
 
+	if (action == GLFW_REPEAT)
+	{
+		return;
+	}
+
     switch(key) 
 	{
 		case GLFW_KEY_LEFT_SHIFT:
@@ -358,6 +363,9 @@ void Camera::qweasdzxcKeyPreset(
 
 			break;
     }
+
+	lxAssert(keyMovementSpeedIncreaseFactor > 0.1f);
+
 
 }
 
