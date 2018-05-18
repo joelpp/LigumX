@@ -215,7 +215,7 @@ case LXType_##className : \
 	} \
 	\
 	bool mustSerialize = false; \
-	ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, type, false); \
+	char* loadedObject = (char*) g_ObjectManager->FindObjectByID<className>(objectID); \
 	\
 	##className* dptr = nullptr; \
 	if (loadedObject == nullptr) \

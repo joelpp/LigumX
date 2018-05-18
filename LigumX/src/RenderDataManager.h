@@ -168,6 +168,8 @@ private:
 	std::vector<S2DMessage> m_2DMessages;
 	std::vector<TimedMessage> m_TimedMessages;
 	std::vector<AABBJob> m_AABBJobs;
+	int m_NumMouseMessages = 0;
+
 
 	std::vector<Entity*> m_VisibleEntities;
 	const int m_MaxVisibleEntities = 2048;

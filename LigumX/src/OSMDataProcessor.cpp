@@ -16,6 +16,7 @@
 #include "Node.h"
 #include "Way.h"
 
+constexpr int g_BrickMaterialID = 17835;
 
 #pragma region  CLASS_SOURCE OSMDataProcessor
 OSMDataProcessor* g_OSMDataProcessor;
@@ -447,11 +448,11 @@ void OSMDataProcessor::ProcessGenericBuilding(Sector* sector, Way* way)
 		Renderer& renderer = Renderer::GetInstance();
 
 		Model* buildingModel = new Model();
-		Material* buildingMaterial = new Material(ShaderFamily_Basic);
-		buildingMaterial->SetDiffuseTexture((Texture*)(g_ObjectManager->FindObjectByID(11039, LXType_Texture, true)));
-		buildingMaterial->SetDiffuseTextureEnabled(true);
+		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID);
 
-		buildingModel->addMesh(buildingMesh, buildingMaterial);
+		lxAssert(brickWallMaterial);
+
+		buildingModel->addMesh(buildingMesh, brickWallMaterial);
 		buildingModel->SetName("Building_Test");
 
 
@@ -587,11 +588,11 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 		Renderer& renderer = Renderer::GetInstance();
 
 		Model* buildingModel = new Model();
-		Material* buildingMaterial = new Material(ShaderFamily_Basic);
-		buildingMaterial->SetDiffuseTexture((Texture*)(g_ObjectManager->FindObjectByID(11039, LXType_Texture, true)));
-		buildingMaterial->SetDiffuseTextureEnabled(true);
+		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID);
 
-		buildingModel->addMesh(buildingMesh, buildingMaterial);
+		lxAssert(brickWallMaterial);
+
+		buildingModel->addMesh(buildingMesh, brickWallMaterial);
 		buildingModel->SetName("AddrInterpolation_Test");
 
 

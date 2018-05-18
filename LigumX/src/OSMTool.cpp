@@ -127,20 +127,15 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 					found = true;
 					break;
 				}
-
 			}
 
 			if (!newWay->GetName().empty())
 			{
-				std::stringstream ss;
-				ss << glm::to_string(g_InputHandler->GetMousePosition()) << " " << newWay->GetName();
-				g_RenderDataManager->AddMouseMessage(ss.str());
+				g_RenderDataManager->AddMouseMessage(newWay->GetName().c_str());
 			}
 		}
 
-
 		m_SelectedWays = std::vector<Way*>(m_SelectedNode->GetWays());
-
 
 		m_SelectedSectorIndex = normalizedSectorIndex;
 		return true;

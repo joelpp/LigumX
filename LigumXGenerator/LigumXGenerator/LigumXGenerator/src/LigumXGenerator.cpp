@@ -190,8 +190,13 @@ if (type == typeName) \
 return defaultValue; \
 } \
 
-std::string DefaultValueForType(const std::string& type)
+std::string DefaultValueForType(bool isAPointer, const std::string& type)
 {
+	if (isAPointer)
+	{
+		return "nullptr";
+	}
+
 	if (type == "")
 	{
 
@@ -371,7 +376,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 				if (variable.m_DefaultValue.empty())
 				{
-					variable.m_DefaultValue = DefaultValueForType(variable.m_Type);
+					variable.m_DefaultValue = DefaultValueForType(variable.IsAPointer(), variable.m_Type);
 				}
 
 				currentClass.m_Members.push_back(variable);

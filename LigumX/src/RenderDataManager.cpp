@@ -594,8 +594,12 @@ void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec
 void RenderDataManager::AddMouseMessage(const std::string& message)
 {
 	glm::ivec2 mousePos = glm::ivec2(g_InputHandler->GetMousePosition());
-	mousePos.y = 990 - mousePos.y;
+
+	int messageHeight = (int) (g_EngineSettings->GetMessagesPixelsOffset() * 1.1f * m_NumMouseMessages);
+	mousePos.y = 990 - mousePos.y - messageHeight;
 	Add2DMessage(message, mousePos);
+
+	m_NumMouseMessages++;
 }
 
 void RenderDataManager::Update()
@@ -618,6 +622,7 @@ void RenderDataManager::Update()
 	}
 
 	m_2DMessages.clear();
+	m_NumMouseMessages = 0;
 }
 
 void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entities, Camera* camera)

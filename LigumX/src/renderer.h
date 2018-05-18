@@ -409,6 +409,7 @@ private:
 	void RenderSquare(const glm::vec3& position, const glm::vec3& size, const glm::vec3& color);
 
 	void HandleScreenshot();
+
 	// C++ 11
     // =======
     // We can use the better technique of deleting the methods

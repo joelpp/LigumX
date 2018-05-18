@@ -98,7 +98,7 @@ ObjectPtr ObjectManager::FindObjectByID(ObjectID id, LXType type, bool createIfN
 		if (createIfNotFound)
 		{
 			// todo: we need to allocate a something*. not sure about the best way to do so now.
-			return nullptr;
+			
 		}
 		else
 		{
@@ -110,6 +110,7 @@ ObjectPtr ObjectManager::FindObjectByID(ObjectID id, LXType type, bool createIfN
 		return it->second;
 	}
 }
+
 
 bool ObjectManager::AddObject(ObjectID id, LXType type, ObjectPtr ptr)
 {
@@ -126,4 +127,9 @@ bool ObjectManager::AddObject(ObjectID id, LXType type, ObjectPtr ptr)
 bool ObjectManager::FilenameIsID(std::string& s)
 {
 	return StringUtils::StringContains(s, '<');
+}
+
+void ObjectManager::IncrementObjectMapHits()
+{
+	g_EngineStats->AddTo_NumObjectMapHits(1);
 }

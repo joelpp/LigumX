@@ -48,6 +48,8 @@ public:
 
 	ObjectPtr FindObjectByID(ObjectID id, LXType type, bool createIfNotFound);
 	bool AddObject(ObjectID id, LXType type, ObjectPtr ptr);
+	
+	void IncrementObjectMapHits();
 
 	template <typename T>
 	bool AddObject(LXType type, T* ptr)
@@ -67,6 +69,49 @@ public:
 		return (T*) (m_ObjectMaps[T::Type][objectID]);
 	}
 
+	template <typename T>
+	T* LoadObject(ObjectID id)
+	{
+		T* newObject = new T();
+		newObject->SetObjectID(id);
+		newObject->Serialize(false);
+
+		return newObject;
+	}
+
+
+	template <typename T>
+	T* FindObjectByID(ObjectID id, bool createIfNotFound = true)
+	{
+		LXType type = T::Type;
+
+		if (!IsSupportedType(type))
+		{
+			return nullptr;
+		}
+
+		auto it = m_ObjectMaps[type].find(id);
+
+		IncrementObjectMapHits();
+
+		if (it == m_ObjectMaps[type].end())
+		{
+			if (createIfNotFound)
+			{
+				T* newObject = LoadObject<T>(id);
+				AddObject<T>(newObject);
+				return newObject;
+			}
+			else
+			{
+				return nullptr;
+			}
+		}
+		else
+		{
+			return (T*) it->second;
+		}
+	}
 
 private:
 	int m_NextTransientID = StartTransientIDs;
