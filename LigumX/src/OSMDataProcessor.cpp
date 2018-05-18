@@ -650,11 +650,11 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 		OSMElementType wayType = way->GetOSMElementType();
 
 		bool fillFlag = (wayType == OSMElementType::OSMElementType_Building_Unmarked ||
-			wayType == OSMElementType::OSMElementType_Building_School ||
-			wayType == OSMElementType::OSMElementType_LeisurePark ||
-			wayType == OSMElementType::OSMElementType_NaturalWood ||
-			wayType == OSMElementType::OSMElementType_NaturalWater ||
-			wayType == OSMElementType::OSMElementType_Landuse);
+						 wayType == OSMElementType::OSMElementType_Building_School ||
+						 wayType == OSMElementType::OSMElementType_LeisurePark ||
+						 wayType == OSMElementType::OSMElementType_NaturalWood ||
+						 wayType == OSMElementType::OSMElementType_NaturalWater ||
+						 wayType == OSMElementType::OSMElementType_Landuse);
 
 		if ( false && fillFlag)
 		{

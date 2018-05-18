@@ -1421,12 +1421,15 @@ void Renderer::RenderFPS()
 
 	GL::SetViewport(m_Window->GetSize());
 
-	std::stringstream fpsString;
 	float smoothing = 0.99f; // larger=more smoothing
 	fps = (fps * smoothing) + (1.f / dt * (1.f - smoothing));
+	std::stringstream fpsString;
 	fpsString << 1.f / (fps / 1000.f);
 	fpsString << " ms/frame";
-	RenderText(fpsString.str(), 695.0f, 775.0f, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
+
+	static volatile float xPos = 1150.f;
+	static volatile float yPos = 950.f;
+	RenderText(fpsString.str(), xPos, yPos, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
 
 	float new_time = (float) glfwGetTime();
 	dt = new_time - curr_time;

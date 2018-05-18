@@ -699,9 +699,10 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	case LXType_stdstring:
 	{
 		const int maxFileNameSize = 512;
+		ShowProperty((std::string*) ptr, name);
 
 		//std::string* s = (std::string*) ptr;
-		ShowGUIText("fix strings gui");
+		//ShowGUIText("fix strings gui");
 
 		//std::string sCopy(s->c_str());
 
