@@ -1377,6 +1377,14 @@ void Renderer::HandleScreenshot()
 
 void Renderer::RenderMessages()
 {
+	float fontSize = g_EngineSettings->GetMessagesFontSize();
+	for (const S2DMessage& message : g_RenderDataManager->Get2DMessages())
+	{
+		RenderText(message.m_Message, message.m_ScreenPosition.x, message.m_ScreenPosition.y, fontSize, glm::vec3(0.5, 0.8f, 0.2f), false);
+
+		GL::OutputErrors();
+
+	}
 	if (!g_Editor->GetOptions()->GetDisplayMessages() || g_RenderDataManager->GetTimedMessages().size() == 0)
 	{
 		return;
@@ -1385,7 +1393,6 @@ void Renderer::RenderMessages()
 	GL::SetViewport(m_Window->GetSize());
 
 	glm::vec2 startingPosition = g_EngineSettings->GetMessagesStartingPosition();
-	float fontSize = g_EngineSettings->GetMessagesFontSize();
 	float heightOffset = g_EngineSettings->GetMessagesPixelsOffset();
 
 	int numMessages = g_RenderDataManager->GetTimedMessages().size();
@@ -1399,6 +1406,7 @@ void Renderer::RenderMessages()
 
 		GL::OutputErrors();
 	}
+
 
 }
 
@@ -1539,7 +1547,7 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
    if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
-   else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
+   else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
 
    glActiveTexture(GL_TEXTURE0);
 

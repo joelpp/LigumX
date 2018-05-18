@@ -54,6 +54,116 @@ bool PointInTriangle(const glm::vec3& pt, const glm::vec3& v1, const glm::vec3& 
 
 	return ((b1 == b2) && (b2 == b3));
 }
+struct TerrainColorEditingJob
+{
+	TerrainColorEditingJob() { }
+
+	TerrainColorEditingJob(Sector* sector, glm::ivec2 texelMin, glm::ivec2 texelMax)
+		: m_Sector(sector)
+		, m_TexelMin(texelMin)
+		, m_TexelMax(texelMax)
+	{
+
+	}
+
+	void Execute(const std::vector<Triangle>& triangles)
+	{
+		lxAssert(m_Sector != nullptr);
+
+		Texture* tex = m_Sector->GetGraphicalData()->GetSplatMapTexture();
+		unsigned char* val = tex->GetTextureData();
+
+		int numBytes = tex->GetNumBytes();
+		int stride = 4;
+		int dataOffset = stride * (m_TexelMin.y * tex->GetSize().x + m_TexelMin.x);
+
+		unsigned char* offsetVal = val + dataOffset;
+		for (int i = 0; i < m_TexelMax.x - m_TexelMin.x; ++i)
+		{
+			for (int j = 0; j < m_TexelMax.y - m_TexelMin.y; ++j)
+			{
+				int index = (int)(stride * (j * tex->GetSize().y + i));
+
+				if (index < 0 || index > numBytes)
+				{
+					continue;
+				}
+
+				glm::ivec2 texelSpace = m_TexelMin + glm::ivec2(i, j);
+				glm::vec2 uvSpace = (glm::vec2)texelSpace / (glm::vec2)tex->GetSize();
+				glm::vec3 worldSpace = m_Sector->GetWorldPositionForUV(uvSpace);
+
+				for (int t = 0; t < triangles.size(); ++t)
+				{
+					const Triangle& triangle = triangles[t];
+
+					glm::vec3 offset = glm::vec3(0.f);
+
+					// TODO jpp : make this work eventually...
+					//glm::vec3 barycentricCoords = Barycentric(worldSpace, 
+					//										  triangle.m_Vertices[0] - offset, 
+					//										  triangle.m_Vertices[1] - offset, 
+					//										  triangle.m_Vertices[2] - offset);
+
+					//if (glm::all(glm::lessThan(glm::vec3(1, 1, 1), barycentricCoords)))
+					//{
+					//	offsetVal[index] = (unsigned char)255;
+					//	break;
+					//}
+
+					if (PointInTriangle(worldSpace,
+						triangle.m_Vertices[0] - offset,
+						triangle.m_Vertices[1] - offset,
+						triangle.m_Vertices[2] - offset))
+					{
+						offsetVal[index] = (unsigned char)255;
+						break;
+					}
+				}
+
+			}
+		}
+
+		tex->UpdateFromData();
+	}
+
+	void Execute()
+	{
+		lxAssert(m_Sector != nullptr);
+
+		Texture* tex = m_Sector->GetGraphicalData()->GetSplatMapTexture();
+		unsigned char* val = tex->GetTextureData();
+
+		glm::ivec2 texelMin = glm::min(m_TexelMin, m_TexelMax);
+		int numBytes = tex->GetNumBytes();
+		int stride = 4;
+		int dataOffset = stride * (texelMin.y * tex->GetSize().x + texelMin.x);
+
+		unsigned char* offsetVal = val + dataOffset;
+
+		for (int i = 0; i < abs(m_TexelMax.x - m_TexelMin.x); ++i)
+		{
+			for (int j = 0; j < abs(m_TexelMax.y - m_TexelMin.y); ++j)
+			{
+				int index = (int)(stride * (j * tex->GetSize().y + i));
+
+				if (index < 0 || index > numBytes)
+				{
+					continue;
+				}
+
+				offsetVal[index] = (unsigned char)255;
+			}
+		}
+
+		tex->UpdateFromData();
+	}
+
+	Sector* m_Sector;
+	glm::ivec2 m_TexelMin;
+	glm::ivec2 m_TexelMax;
+};
+
 
 bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 {
@@ -120,7 +230,7 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 
 		vertices.push_back(back10);
 		vertices.push_back(back11);
-		vertices.push_back(back01);
+		vertices.push_back(back00);
 		vertices.push_back(back11);
 		vertices.push_back(back01);
 		vertices.push_back(back00);
@@ -178,31 +288,29 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			continue;
 		}
 
-
 		float minFacadeSegmentRatio = 0.1f;
 		float maxFacadeSegmentRatio = 0.3f;
 		float facadeRatio = Random0To1() * maxFacadeSegmentRatio + minFacadeSegmentRatio;
 		float facadeLength = facadeRatio * distance;
 
-		
-		float facadeOffsetMin = 0;
-		float facadeOffsetMax = facadeLength;
-		float paddingBeforeFacade = Random0To1() * facadeOffsetMax;
-		float paddingAfterFacade = Random0To1() * facadeOffsetMax;
+		float plotLength = 2.f * facadeLength;
 
-		float spaceNeeded = paddingBeforeFacade + facadeLength + paddingAfterFacade;
+		float paddingBeforeFacade = (plotLength - facadeLength) / 2.f;
+		float paddingAfterFacade = paddingBeforeFacade;
+
+		float spaceNeeded = plotLength;
+		spaceLeft -= spaceNeeded;
 
 		glm::vec3 direction = glm::normalize(wholeSegment);
 
-		glm::vec3 startPos = nodePos + paddingBeforeFacade * direction;
-
-		while (spaceLeft > spaceNeeded)
+		glm::vec3 plotStart = nodePos;
+		while (spaceLeft > 0)
 		{
 			glm::vec3 right = glm::cross(direction, up);
 
-			startPos += paddingBeforeFacade * direction;
+			glm::vec3 buildingStart = plotStart + direction * paddingBeforeFacade;
 
-			if (PointInRoad(sector, startPos))
+			if (PointInRoad(sector, buildingStart))
 			{
 				break;
 			}
@@ -211,6 +319,8 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			float maxDepth = 30.f;
 			float depth = Random0To1() * maxDepth + minDepth;
 
+			float plotDepth = depth * 1.5f;
+
 			float minHeight = 20.f;
 			float maxHeight = 50.f;
 			float height = Random0To1() * maxDepth + minDepth;
@@ -218,25 +328,44 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			glm::vec3 dimensions = glm::vec3(facadeLength, depth, height);
 
 			float depthClearanceRatio = 1.2f;
-			glm::vec3 back = startPos + depthClearanceRatio * right * dimensions.y;
+			glm::vec3 back = buildingStart + depthClearanceRatio * right * dimensions.y;
 
 			if (PointInRoad(sector, back))
 			{
 				right *= -1;
 			}
 
-			Add3DBox(buildingMesh, startPos, direction, right, up, dimensions);
+			{
+				Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+				lxAssert(tex != nullptr);
 
-			startPos += (facadeLength + paddingAfterFacade) * direction;
+				glm::vec3 plotEnd = plotStart + plotLength * direction + depthClearanceRatio * right * plotDepth;
+
+				glm::vec2 plotUVMin = sector->GetUVForWorldPosition(plotStart);
+				glm::vec2 plotUVMax = sector->GetUVForWorldPosition(plotEnd);
+
+				glm::ivec2 texelMin = glm::ivec2(plotUVMin * glm::vec2(tex->GetSize()));
+				glm::ivec2 texelMax = glm::ivec2(plotUVMax * glm::vec2(tex->GetSize()));
+
+				TerrainColorEditingJob terrainJob(sector, texelMin, texelMax);
+				terrainJob.Execute();
+			}
+
+
+			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
+
+			plotStart += (plotLength) * direction;
 
 			// generate next building
 			facadeRatio = Random0To1() * maxFacadeSegmentRatio + minFacadeSegmentRatio;
 			facadeLength = facadeRatio * distance;
 
-			paddingBeforeFacade = Random0To1() * facadeOffsetMax;
-			paddingAfterFacade = Random0To1() * facadeOffsetMax;
+			plotLength = Random0To1() * 1.5f * facadeLength;
 
-			spaceNeeded = paddingBeforeFacade + facadeLength + paddingAfterFacade;
+			paddingBeforeFacade = plotLength - facadeLength / 2;
+			paddingAfterFacade = paddingBeforeFacade;
+
+			spaceNeeded = plotLength;
 
 			spaceLeft -= spaceNeeded;
 
@@ -481,6 +610,11 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 
 }
 
+bool OSMDataProcessor::IsRoad(Way* way)
+{
+	return way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
+}
+
 
 void OSMDataProcessor::ProcessSector(Sector* sector)
 {
@@ -490,7 +624,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 		bool hsNodes = (way->GetNodes().size() > 0);
 
-		bool isRoad = way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
+		bool isRoad = IsRoad(way);
 		if (isRoad)
 		{
 			ProcessRoad(sector, way);
@@ -522,7 +656,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 			wayType == OSMElementType::OSMElementType_NaturalWater ||
 			wayType == OSMElementType::OSMElementType_Landuse);
 
-		if (false && fillFlag)
+		if ( false && fillFlag)
 		{
 			Building building(way);
 			bool success = building.GenerateModel();
@@ -535,86 +669,6 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 				Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
 				lxAssert(tex != nullptr);
-
-
-				struct TerrainColorEditingJob
-				{
-					TerrainColorEditingJob() { }
-
-					TerrainColorEditingJob(Sector* sector, glm::ivec2 texelMin, glm::ivec2 texelMax)
-						: m_Sector(sector)
-						, m_TexelMin(texelMin)
-						, m_TexelMax(texelMax)
-					{
-
-					}
-
-					void Execute(const std::vector<Triangle>& triangles)
-					{
-						lxAssert(m_Sector != nullptr);
-
-						Texture* tex = m_Sector->GetGraphicalData()->GetSplatMapTexture();
-						unsigned char* val = tex->GetTextureData();
-
-						int numBytes = tex->GetNumBytes();
-						int stride = 4;
-						int dataOffset = stride * (m_TexelMin.y * tex->GetSize().x + m_TexelMin.x);
-
-						unsigned char* offsetVal = val + dataOffset;
-						for (int i = 0; i < m_TexelMax.x - m_TexelMin.x; ++i)
-						{
-							for (int j = 0; j < m_TexelMax.y - m_TexelMin.y; ++j)
-							{
-								int index = (int)(stride * (j * tex->GetSize().y + i));
-
-								if (index < 0 || index > numBytes)
-								{
-									continue;
-								}
-
-								glm::ivec2 texelSpace = m_TexelMin + glm::ivec2(i, j);
-								glm::vec2 uvSpace = (glm::vec2)texelSpace / (glm::vec2)tex->GetSize();
-								glm::vec3 worldSpace = m_Sector->GetWorldPositionForUV(uvSpace);
-
-								for (int t = 0; t < triangles.size(); ++t)
-								{
-									const Triangle& triangle = triangles[t];
-
-									glm::vec3 offset = glm::vec3(0.f);
-
-									// TODO jpp : make this work eventually...
-									//glm::vec3 barycentricCoords = Barycentric(worldSpace, 
-									//										  triangle.m_Vertices[0] - offset, 
-									//										  triangle.m_Vertices[1] - offset, 
-									//										  triangle.m_Vertices[2] - offset);
-
-									//if (glm::all(glm::lessThan(glm::vec3(1, 1, 1), barycentricCoords)))
-									//{
-									//	offsetVal[index] = (unsigned char)255;
-									//	break;
-									//}
-
-									if (PointInTriangle(worldSpace,
-										triangle.m_Vertices[0] - offset,
-										triangle.m_Vertices[1] - offset,
-										triangle.m_Vertices[2] - offset))
-									{
-										offsetVal[index] = (unsigned char)255;
-										break;
-									}
-								}
-
-							}
-						}
-
-						tex->UpdateFromData();
-					}
-
-					Sector* m_Sector;
-					glm::ivec2 m_TexelMin;
-					glm::ivec2 m_TexelMax;
-				};
-
 
 				const std::vector<Triangle> triangles = building.GetTriangles();
 

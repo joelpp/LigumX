@@ -130,9 +130,11 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 
 			}
 
-			if (!found)
+			if (!newWay->GetName().empty())
 			{
-				g_RenderDataManager->AddTimedMessage(StringUtils::Format("Selected way : %s", newWay->GetName()));
+				std::stringstream ss;
+				ss << glm::to_string(g_InputHandler->GetMousePosition()) << " " << newWay->GetName();
+				g_RenderDataManager->AddMouseMessage(ss.str());
 			}
 		}
 

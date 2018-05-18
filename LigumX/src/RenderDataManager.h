@@ -41,6 +41,12 @@ struct WayData
 	int IndexInSector;
 };
 
+struct S2DMessage
+{
+	std::string m_Message;
+	glm::ivec2 m_ScreenPosition;
+};
+
 struct TimedMessage
 {
 	TimedMessage(const std::string& message, int timer)
@@ -132,7 +138,12 @@ public:
 
 	void AddTimedMessage(const std::string& message, int numFrames);
 	void AddTimedMessage(const std::string& message);
+
+	void Add2DMessage(const std::string& message, const glm::ivec2& screenPosition);
+	void AddMouseMessage(const std::string& message);
+
 	std::vector<TimedMessage>& GetTimedMessages() { return m_TimedMessages; }
+	std::vector<S2DMessage>& Get2DMessages() { return m_2DMessages; }
 
 	void Update();
 
@@ -154,6 +165,7 @@ public:
 private:
 	REGISTERCLASS(RenderDataManager);
     
+	std::vector<S2DMessage> m_2DMessages;
 	std::vector<TimedMessage> m_TimedMessages;
 	std::vector<AABBJob> m_AABBJobs;
 

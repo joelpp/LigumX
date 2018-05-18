@@ -2,6 +2,7 @@
 
 #include "BoundingBoxComponent.h"
 #include "RenderDataManager.h"
+#include "InputHandler.h"
 #include "LigumX.h"
 #include "StringUtils.h"
 #include "Editor.h"
@@ -75,8 +76,6 @@ ColoredPointsMesh::ColoredPointsMesh(const std::vector<glm::vec3>& vertices, con
 
 	SetUsesIndexBuffer(false);
 
-	padBuffer(VERTEX_UVS);
-
 	CreateBuffers();
 }
 
@@ -84,7 +83,6 @@ void ColoredPointsMesh::CreateBuffers()
 {
 	// TODO: I'm not quite convinced this belongs here. or does it?
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.vertexPositions);
-
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidColorBuffer, m_ColorBuffer);
 
 	glGenVertexArrays(1, &m_VAO);
@@ -584,6 +582,22 @@ void RenderDataManager::AddTimedMessage(const std::string& message, int numFrame
 	m_TimedMessages.push_back(TimedMessage(message, numFrames));
 }
 
+void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec2& screenPosition)
+{
+	S2DMessage newMessage;
+	newMessage.m_Message = message;
+	newMessage.m_ScreenPosition = screenPosition;
+
+	m_2DMessages.push_back(newMessage);
+}
+
+void RenderDataManager::AddMouseMessage(const std::string& message)
+{
+	glm::ivec2 mousePos = glm::ivec2(g_InputHandler->GetMousePosition());
+	mousePos.y = 990 - mousePos.y;
+	Add2DMessage(message, mousePos);
+}
+
 void RenderDataManager::Update()
 {
 	auto messageIterator = m_TimedMessages.begin();
@@ -602,6 +616,8 @@ void RenderDataManager::Update()
 			messageIterator++;
 		}
 	}
+
+	m_2DMessages.clear();
 }
 
 void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entities, Camera* camera)

@@ -61,4 +61,7 @@ Mesh* BuildGenericBuilding(Sector* sector, Way* way);
 
 void ProcessGenericBuilding(Sector* sector, Way* way);
 
+static bool IsRoad(Way* way);
+
+
 };
