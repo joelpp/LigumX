@@ -1,5 +1,8 @@
 #include <string> // todo this is bs only to make the lxgen work
 
+#include "Mesh.h"
+#include "DefaultObjects.h"
+
 #pragma region  CLASS_SOURCE AABB
 
 #include "AABB.h"
@@ -64,14 +67,29 @@ AABB AABB::BuildFromStartPointAndScale(const glm::vec3& startPoint, const glm::v
 	return aabb;
 }
 
-void AABB::UpdateVertices()
+void AABB::UpdateVertices(const glm::mat4x4& toWorld)
 {
-	m_Vertices[0] = m_StartPoint + m_Scale * glm::vec3(0, 0, 0);
-	m_Vertices[1] = m_StartPoint + m_Scale * glm::vec3(0, 0, 1);
-	m_Vertices[2] = m_StartPoint + m_Scale * glm::vec3(0, 1, 0);
-	m_Vertices[3] = m_StartPoint + m_Scale * glm::vec3(0, 1, 1);
-	m_Vertices[4] = m_StartPoint + m_Scale * glm::vec3(1, 0, 0);
-	m_Vertices[5] = m_StartPoint + m_Scale * glm::vec3(1, 0, 1);
-	m_Vertices[6] = m_StartPoint + m_Scale * glm::vec3(1, 1, 0);
-	m_Vertices[7] = m_StartPoint + m_Scale * glm::vec3(1, 1, 1);
+	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
+
+	if (mesh)
+	{
+		glm::vec3 startPoint = glm::vec3(-0.5f);
+		glm::vec3 scale = glm::vec3(1.f);
+		m_Vertices[0] = startPoint + scale * glm::vec3(0, 0, 0);
+		m_Vertices[1] = startPoint + scale * glm::vec3(0, 0, 1);
+		m_Vertices[2] = startPoint + scale * glm::vec3(0, 1, 0);
+		m_Vertices[3] = startPoint + scale * glm::vec3(0, 1, 1);
+		m_Vertices[4] = startPoint + scale * glm::vec3(1, 0, 0);
+		m_Vertices[5] = startPoint + scale * glm::vec3(1, 0, 1);
+		m_Vertices[6] = startPoint + scale * glm::vec3(1, 1, 0);
+		m_Vertices[7] = startPoint + scale * glm::vec3(1, 1, 1);
+
+		for (int i = 0; i < 8; ++i)
+		{
+			m_Vertices[i] = glm::vec3(toWorld * glm::vec4(m_Vertices[i], 1.0f));
+		}
+
+
+	}
+
 }

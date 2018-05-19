@@ -55,5 +55,6 @@ bool Serialize(bool writing);
 BoundingBoxComponent::BoundingBoxComponent();
 void SetStartAndScale(const glm::vec3& start, const glm::vec3& scale);
 
+void UpdateVertices();
 void Update();
 };

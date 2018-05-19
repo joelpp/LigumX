@@ -29,6 +29,11 @@ BoundingBoxComponent::BoundingBoxComponent()
 	m_ObjectID = g_ObjectManager->GetNewObjectID();
 }
 
+void BoundingBoxComponent::UpdateVertices()
+{
+	m_BoundingBox.UpdateVertices(m_ModelToWorldMatrix);
+}
+
 void BoundingBoxComponent::Update()
 {
 	glm::vec3 position;
@@ -36,12 +41,15 @@ void BoundingBoxComponent::Update()
 	{
 		position = GetParentEntity()->GetPosition();
 	}
-	position += m_BoundingBox.GetStartPoint();
+	position += m_BoundingBox.GetStartPoint() + m_BoundingBox.GetScale() / 2.f;
 
-	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), position);
-	toWorld = glm::scale(toWorld, m_BoundingBox.GetScale());
+	glm::mat4x4 toWorld = glm::mat4(1.0f); 
+	toWorld = glm::translate(toWorld, position);
+	toWorld = glm::rotate(toWorld, GetParentEntity()->GetRotationAngle(), GetParentEntity()->GetRotationAxis());
+	toWorld = glm::scale(toWorld, GetParentEntity()->GetScale() * m_BoundingBox.GetScale());
 
 	m_ModelToWorldMatrix = toWorld;
+
 }
 
 void BoundingBoxComponent::SetStartAndScale(const glm::vec3& start, const glm::vec3& scale)
@@ -49,6 +57,4 @@ void BoundingBoxComponent::SetStartAndScale(const glm::vec3& start, const glm::v
 	m_BoundingBox.SetStartPoint(start);
 	m_BoundingBox.SetScale(scale);
 	Update();
-
-	m_BoundingBox.UpdateVertices();
 }

@@ -139,9 +139,14 @@ void DefaultObjects::InitializeDefaultSphere()
 
 DefaultObjects::DefaultObjects()
 {
+
+}
+
+void DefaultObjects::Initialize()
+{
+	InitializeDefaultCube();
 	InitializeDefaultQuad();
 	InitializeDefaultSphere();
-	InitializeDefaultCube();
 	InitializeDefaultTerrainMesh();
 	InitializeDefaultLine();
 

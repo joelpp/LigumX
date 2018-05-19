@@ -53,7 +53,7 @@ bool Serialize(bool writing);
 #pragma endregion  HEADER AABB
 
 AABB::AABB();
-void UpdateVertices();
+void UpdateVertices(const glm::mat4x4& toWorld);
 
 static AABB AABB::BuildFromStartPointAndScale(const glm::vec2& startPoint, float scale);
 static AABB AABB::BuildFromStartPointAndScale(const glm::vec2& startPoint, const glm::vec3& scale);

@@ -6,6 +6,7 @@
 #include "LigumX.h"
 #include "StringUtils.h"
 #include "Editor.h"
+#include "PickingTool.h"
 #include "EngineSettings.h"
 #include "Logging.h"
 #include "Renderer.h"
@@ -413,9 +414,30 @@ void RenderDataManager::AddAABBJob(const glm::vec3& worldPosition, int brushWidt
 	m_AABBJobs.push_back(job);
 }
 
+void RenderDataManager::AddEntityAABB(Entity* entity)
+{
+	if (!entity)
+	{
+		return;
+	}
+
+	auto it = std::find(m_EntityAABBJobs.begin(), m_EntityAABBJobs.end(), entity);
+
+	if (it == m_EntityAABBJobs.end())
+	{
+		m_EntityAABBJobs.push_back(entity);
+	}
+}
+
+
 std::vector<AABBJob>& RenderDataManager::GetAABBJobs()
 {
 	return m_AABBJobs;
+}
+
+std::vector<Entity*>& RenderDataManager::GetEntityAABBJobs()
+{
+	return m_EntityAABBJobs;
 }
 
 void RenderDataManager::ClearAABBJobs()
@@ -433,14 +455,21 @@ void RenderDataManager::AddTimedMessage(const std::string& message, int numFrame
 	m_TimedMessages.push_back(TimedMessage(message, numFrames));
 }
 
-void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec2& screenPosition)
+void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec2& screenPosition, const glm::vec3& color)
 {
 	S2DMessage newMessage;
 	newMessage.m_Message = message;
 	newMessage.m_ScreenPosition = screenPosition;
+	newMessage.m_Color = color;
 
 	m_2DMessages.push_back(newMessage);
 }
+
+void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec2& screenPosition)
+{
+	Add2DMessage(message, screenPosition, glm::vec3(0.5, 0.8f, 0.2f));
+}
+
 
 void RenderDataManager::AddMouseMessage(const std::string& message)
 {
@@ -473,6 +502,7 @@ void RenderDataManager::Update()
 	}
 
 	m_2DMessages.clear();
+	m_EntityAABBJobs.clear();
 	m_NumMouseMessages = 0;
 }
 
@@ -480,6 +510,16 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 {
 	for (Entity* e : entities)
 	{
+		bool visible = true;
+		if (g_EngineSettings->GetCullEntities() /*&& e == g_Editor->GetPickingTool()->GetPickedEntity()*/)
+		{
+			visible = IsAABBVisible(e->GetComponent<BoundingBoxComponent>()->GetBoundingBox().GetVertices(), camera);
+		}
+		if (!visible)
+		{
+			continue;
+		}
+
 		m_VisibleEntities.push_back(e);
 		m_NumVisibleEntities++;
 
@@ -497,130 +537,83 @@ enum LeftRightTestResult
 	One = 1,
 	Both = 2
 };
-bool RenderDataManager::IsAABBVisible(const AABB& aabb, Camera* camera)
+
+bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Camera* camera)
 {
 	const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();
+	bool oneVertexVisible = false;
 
-	glm::ivec4 plane = glm::ivec4(-9999, -9999, -9999, -9999);
+	bool over_lrtb[4] = { false, false, false, false };
+	bool under_lrtb[4] = { false, false, false, false };
 
-	bool allDotPositive = true;
 	for (int i = 0; i < 8; ++i)
 	{
-		glm::vec3 worldPosition = aabb.GetVertices()[i];
-		worldPosition.z = camera->GetPosition().z;
+		bool visible = false;
 
-		glm::vec3 vertexToCam = worldPosition - camera->GetPosition();
-
-		float dotProduct = glm::dot(glm::normalize(vertexToCam), camera->GetFrontVector());
-
-		if (dotProduct < 0.f)
-		{
-			allDotPositive = false;
-			break;
-		}
-	}
-
-	if (allDotPositive)
-	{
-		return false;
-	}
-
-
-	bool allUnder[4] = { true, true, true, true };
-	bool allOver[4] = { true, true, true, true };
-	std::vector<glm::vec2> ndcPositions;
-	for (int i = 0; i < 8; ++i)
-	{
-		bool isVertexVisible = false;
-
-		glm::vec4 worldPosition = glm::vec4(aabb.GetVertices()[i], 1.f);
+		glm::vec4 worldPosition = glm::vec4(vertices[i], 1.f);
 
 		glm::vec4 clipPos = glm::mul(vpMatrix, worldPosition);
 
-		glm::vec4 ogClipPos = clipPos;
-
-		//if (clipPos.w < 0)
-		//{
-		//	return false;
-		//}
-
-		//clipPos.y *= -1;
 		clipPos /= clipPos.w;
 
-		vec2 ndc = 0.5f * (glm::vec2(clipPos) + glm::vec2(1, 1));
-		ndcPositions.push_back(ndc);
+		const glm::vec2& windowSize = glm::vec2(Renderer::GetInstance().GetWindowSize());
 
-		float refNDC[4] = { 0, 1, 0, 1 };
-		for (int p = 0; p < 4; ++p)
+		glm::ivec2 ndc = glm::ivec2((0.5f * (glm::vec2(clipPos) + glm::vec2(1, 1))) * windowSize);
+		int textWidth = 15;
+
+		int edgeOffset = ndc.x + textWidth - windowSize.x;
+		ndc.x -= std::min(textWidth, std::max(edgeOffset, 0));
+
+		glm::vec4 absClip = glm::abs(clipPos);
+
+		bool inX = absClip.x <= 1.f;
+		bool inY = absClip.y <= 1.f;
+			
+		if (inX && inY)
 		{
-			int n = p / 2;
-			float side = ndc[n];
-			float correctedCoord = side - refNDC[p];
-
-			if (correctedCoord > 10.f)
-			{
-				return false;
-			}
-
-			allUnder[p] &= correctedCoord < 0;
-			allOver[p] &= correctedCoord > 0;
-
-
-
-			//int n = ndcIndex[p];
-
-			//float side = ndc[n];
-
-			//float correctedCoord = side - refNDC[p];
-
-			//if (plane[p] != -9999)
-			//{
-			//	if (correctedCoord * plane[p] < 0.f)
-			//	{
-
-			//		return true;
-			//	}
-			//	else
-			//	{
-			//		plane[p] += sign(correctedCoord);
-			//	}
-			//}
-			//else
-			//{
-			//	plane[p] = sign(correctedCoord);
-			//}
-
-			//if (p == 1) break;
-
-			//break;
+			visible = true;
 		}
 
+		//glm::vec3 msgColor = visible ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+		//std::string text = StringUtils::Format("V%d", i);
+		//Add2DMessage(text, glm::ivec2(ndc), msgColor);
 
+		oneVertexVisible = oneVertexVisible || visible;
 
-		//if (allUnder[2] || allOver[3])
-		//{
-		//	return false;
-		//}
-
-
+		over_lrtb[0] |= clipPos.x > -1;
+		under_lrtb[0] |= clipPos.x < -1;
+		over_lrtb[1] |= clipPos.x > 1;
+		under_lrtb[1] |= clipPos.x < 1;
+		over_lrtb[2] |= clipPos.y > -1;
+		under_lrtb[2] |= clipPos.y < -1;
+		over_lrtb[3] |= clipPos.y > 1;
+		under_lrtb[3] |= clipPos.y < 1;
 	}
 
-	if (allUnder[0] || allOver[1] || allUnder[2] || allOver[3])
+	static bool uselrtb = false;
+
+	if (uselrtb)
 	{
-		return false;
+		for (int i = 0; i < 4; ++i)
+		{
+			if (over_lrtb[i] && under_lrtb[i])
+			{
+				return true;
+			}
+		}
 	}
 
-	//if (plane[0] == 8 && plane[1] == -8 /*&& plane[2] == 8 && plane[3] == -8*/)
-	//{
-	//	return true;
-	//}
 
-	for (int i = 0; i < 8; ++i)
-	{
+	bool result = oneVertexVisible;
 
-	}
+	return result;
+}
 
-	return true;
+bool RenderDataManager::IsAABBVisible(const AABB& aabb, Camera* camera)
+{
+	const std::vector<glm::vec3>& vertices = aabb.GetVertices();
+
+	return IsAABBVisible(vertices, camera);
 }
 
 bool RenderDataManager::IsSectorVisible(Sector* sector, Camera* camera)
@@ -662,16 +655,14 @@ void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
 		
 		m_VisibleSectors.push_back(sector);
 		m_NumVisibleSectors++;
-		if (m_NumVisibleSectors == m_MaxVisibleSectors)
-		{
-			AddTimedMessage(StringUtils::Format("Hit limit of %d sectors visible", m_MaxVisibleSectors));
-			break;
-		}
+
 
 		GatherVisibleEntities(sector->GetGraphicalData()->GetRoadEntities(), camera);
 		GatherVisibleEntities(sector->GetGraphicalData()->GetStaticEntities(), camera);
 
 	}
 
-	AddTimedMessage(StringUtils::Format("Sectors visible: %d", m_NumVisibleSectors), 2);
+	AddTimedMessage(StringUtils::Format("Sectors visible: %d", m_NumVisibleSectors), 1);
+	AddTimedMessage(StringUtils::Format("Entities visible: %d", m_NumVisibleEntities), 1);
+
 }

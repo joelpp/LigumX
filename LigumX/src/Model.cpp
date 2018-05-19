@@ -259,3 +259,16 @@ void Model::addMesh(Mesh* mesh, Material* material)
 
 }
 
+bool Model::GetMinMax(glm::vec3& min, glm::vec3& max)
+{
+	for (Mesh* mesh : m_meshes)
+	{
+		for (const glm::vec3& pos : mesh->m_buffers.vertexPositions)
+		{
+			min = glm::min(min, pos);
+			max = glm::max(max, pos);
+		}
+	}
+
+	return true;
+}

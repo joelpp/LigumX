@@ -12,6 +12,7 @@
 #include "Renderer.h"
 #include "RenderDataManager.h"
 #include "Camera.h"
+#include "BoundingBoxComponent.h"
 
 #pragma region  CLASS_SOURCE PickingTool
 
@@ -86,58 +87,73 @@ void PickingTool::SetPickedEntityCallback(Entity* entity)
 	if (entity)
 	{
 		AddEntityMessage(entity);
+
+		if (entity != m_PickedEntity)
+		{
+			BoundingBoxComponent* bb = entity->GetComponent<BoundingBoxComponent>();
+			bb->SetUpdatesWithEntity(true);
+			entity->UpdateAABB();
+		}
 	}
+
+
 
 	m_PickedEntity = entity;
 }
 
 bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
-	if (!m_Enabled || !mouseButton1Down)
+	if (!m_Enabled )
 	{
 		return false;
 	}
 
-	bool found = false;
+	g_RenderDataManager->AddEntityAABB(m_PickedEntity);
 
-	World* world = LigumX::GetInstance().GetWorld();
-
-	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
+	if (mouseButton1Down)
 	{
-		if (CheckEntity(entity))
+		bool found = false;
+
+		World* world = LigumX::GetInstance().GetWorld();
+
+		for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 		{
-			found = true;
-
-			SetPickedEntity(entity);
-
-			break;
-		};
-	}
-
-	if (!found)
-	{
-		for (Sector* sector : g_RenderDataManager->GetVisibleSectors())
-		{
-			if (CheckEntity(sector->GetTerrainPatchEntity()))
+			if (CheckEntity(entity))
 			{
 				found = true;
 
-				SetPickedEntity(sector->GetTerrainPatchEntity());
+				SetPickedEntity(entity);
 
 				break;
 			};
 		}
+
+		if (!found)
+		{
+			for (Sector* sector : g_RenderDataManager->GetVisibleSectors())
+			{
+				if (CheckEntity(sector->GetTerrainPatchEntity()))
+				{
+					found = true;
+
+					SetPickedEntity(sector->GetTerrainPatchEntity());
+
+					break;
+				};
+			}
+		}
+
+		m_PickedSector = g_World->GetSectorByWorldPosition(m_AimingWorldPosition);
+
+		if (!found)
+		{
+			SetPickedEntity(nullptr);
+
+			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(glm::vec3(0, 0, 0));
+		}
+
+
 	}
-
-	m_PickedSector = g_World->GetSectorByWorldPosition(m_AimingWorldPosition);
-
-	if (!found)
-	{
-		SetPickedEntity(nullptr);
-
-		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(glm::vec3(0,0,0));
-	}
-
 
 
 	return true;

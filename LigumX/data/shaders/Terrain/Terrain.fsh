@@ -83,7 +83,7 @@ void main()
 		//diffuse = splatMap.rgb;
 	} 
 
-	float uvScale = 10.f;
+	float uvScale = 1.f;
 	vec2 diffuseTexCoords = pixelData.m_UVs * uvScale;
 
 

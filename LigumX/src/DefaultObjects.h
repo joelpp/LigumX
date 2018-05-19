@@ -9,6 +9,9 @@ class DefaultObjects
 {
 public:
 	DefaultObjects();
+	void Initialize();
+
+
 	Mesh* DefaultQuadMesh;
 	Mesh* DefaultSphereMesh;
 	Mesh* DefaultCubeMesh;

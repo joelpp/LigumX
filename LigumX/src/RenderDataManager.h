@@ -43,6 +43,7 @@ struct WayData
 
 struct S2DMessage
 {
+	glm::vec3 m_Color;
 	std::string m_Message;
 	glm::ivec2 m_ScreenPosition;
 };
@@ -132,6 +133,7 @@ public:
 
     std::vector<TerrainRenderingJob> terrainRenderingJobs;
 
+	void AddEntityAABB(Entity* entity);
 	void AddAABBJob(const AABB& aabb, const glm::vec3& color);
 	void AddAABBJob(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 	void AddAABBJobCentered(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
@@ -139,6 +141,7 @@ public:
 	void AddTimedMessage(const std::string& message, int numFrames);
 	void AddTimedMessage(const std::string& message);
 
+	void Add2DMessage(const std::string& message, const glm::ivec2& screenPosition, const glm::vec3& color);
 	void Add2DMessage(const std::string& message, const glm::ivec2& screenPosition);
 	void AddMouseMessage(const std::string& message);
 
@@ -148,12 +151,14 @@ public:
 	void Update();
 
 
+	bool IsAABBVisible(const std::vector<glm::vec3>& vertices, Camera* camera);
 	bool IsAABBVisible(const AABB& aabb, Camera* camera);
 	bool IsSectorVisible(Sector* sector, Camera* camera);
 
 
 	void GatherVisibleEntities(const std::vector<Entity*>& entities, Camera* camera);
 	void GatherVisibleEntities(World* world, Camera* camera);
+	std::vector<Entity*>& GetEntityAABBJobs();
 	std::vector<AABBJob>& GetAABBJobs();
 	void ClearAABBJobs();
 
@@ -168,14 +173,15 @@ private:
 	std::vector<S2DMessage> m_2DMessages;
 	std::vector<TimedMessage> m_TimedMessages;
 	std::vector<AABBJob> m_AABBJobs;
+	std::vector<Entity*> m_EntityAABBJobs;
 	int m_NumMouseMessages = 0;
 
 
 	std::vector<Entity*> m_VisibleEntities;
-	const int m_MaxVisibleEntities = 2048;
+	const int m_MaxVisibleEntities = 32768;
 
 	std::vector<Sector*> m_VisibleSectors;
-	const int m_MaxVisibleSectors = 2048;
+	const int m_MaxVisibleSectors = 4096;
 
 
 	int m_NumVisibleEntities;

@@ -20,18 +20,26 @@ const ClassPropertyData Entity::g_Properties[] =
 { "RotationAxis", PIDX_RotationAxis, offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "PickingID", PIDX_PickingID, offsetof(Entity, m_PickingID), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
-{ "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_Model, true, LXType_None, 0, 0, 0, }, 
+{ "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_Model, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "Components", PIDX_Components, offsetof(Entity, m_Components), 0, LXType_stdvector, false, LXType_Component, 0, 0, 0, }, 
 };
 bool Entity::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
+	PostSerialization(writing, success);
 	return success;
 }
 
 #pragma endregion  CLASS_SOURCE Entity
 
+void Entity::PostSerialization(bool writing, bool success)
+{
+	if (success && !writing)
+	{
+		UpdateAABB();
+	}
+}
 
 using namespace glm;
 
@@ -82,6 +90,29 @@ vec3 Entity::GetLateralVelocity() const {
     return rightVector * dot(rightVector, velocity);
 }
 
+
+void Entity::SetModelCallback(Model* model)
+{
+	m_Model = model;
+	UpdateAABB();
+}
+
+void Entity::UpdateAABB()
+{
+	glm::vec3 min = glm::vec3(9999999);
+	glm::vec3 max = glm::vec3(-9999999);;
+	bool success = m_Model->GetMinMax(min, max);
+
+	if (success)
+	{
+		BoundingBoxComponent* bbComponent = GetComponent<BoundingBoxComponent>();
+		bbComponent->SetStartAndScale(min, max - min);
+		bbComponent->Update();
+		bbComponent->UpdateVertices();
+
+	}
+}
+
 void Entity::Update(double dt) 
 {
 	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), m_Position);
@@ -94,6 +125,7 @@ void Entity::Update(double dt)
 	{
 		component->Update();
 	}
+
 
 	// todo : check out what adrien did for cars
 	// , but for now it sleeps safely in source control

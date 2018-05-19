@@ -27,5 +27,7 @@ class EngineSettings
 
 	bool CullSectors = false;
 
+	bool CullEntities = false;
+
 	float TerrainTiling = 1.f;
 }

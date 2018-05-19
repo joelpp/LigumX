@@ -140,6 +140,8 @@ void LigumX::InitializeGlobalObjects()
 	g_GUI = new GUI();
 
 	g_DefaultObjects = new DefaultObjects();
+	g_DefaultObjects->Initialize();
+
 	g_EngineStats = new EngineStats();
 	
 	g_SectorManager = new SectorManager();

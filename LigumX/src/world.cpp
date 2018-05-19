@@ -59,7 +59,14 @@ void World::PostSerialization(bool writing, bool success)
 	if (!writing)
 	{
 		m_DebugEntities.push_back(g_DefaultObjects->DefaultManipulatorEntity);
+
+		for (Entity* entity : m_Entities)
+		{
+			entity->UpdateAABB();
+		}
 	}
+
+
 }
 
 World::World(float sectorSize)

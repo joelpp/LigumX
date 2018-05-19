@@ -1520,8 +1520,6 @@ void Editor::Render()
 {
 	GetPickingTool()->UpdatePickingData();
 
-	ApplyTool();
-
 	ProcessScrolling();
 
 	RenderImgui();

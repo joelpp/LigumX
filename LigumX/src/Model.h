@@ -81,6 +81,7 @@ public:
 	void addMesh(Mesh* mesh, Material* material);
 	void addMesh(Mesh* mesh);
 
+	bool GetMinMax(glm::vec3& min, glm::vec3& max);
 
 	std::vector<Mesh* > m_meshes;
 

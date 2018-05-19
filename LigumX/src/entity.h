@@ -49,7 +49,8 @@ void SetScale(glm::vec3 value) { m_Scale = value; };
 const float& GetPickingID() { return m_PickingID; }; 
 void SetPickingID(float value) { m_PickingID = value; }; 
 Model*& GetModel() { return m_Model; }; 
-void SetModel(Model* value) { m_Model = value; }; 
+void SetModel(Model* value) { SetModelCallback(value); }; 
+void SetModelCallback(Model* value);
 const bool& GetIsLight() { return m_IsLight; }; 
 void SetIsLight(bool value) { m_IsLight = value; }; 
 std::vector<Component*>& GetComponents() { return m_Components; }; 
@@ -86,6 +87,7 @@ PIDX_IsLight,
 PIDX_Components,
 };
 bool Serialize(bool writing);
+void PostSerialization(bool writing, bool success);
 
 #pragma endregion  HEADER Entity
 friend class PlayerController;
@@ -101,7 +103,7 @@ public:
 
     // @return : true if the entity has been updated
     void Update(double dt);
-
+	void UpdateAABB();
 
     float GetForwardSpeed() const;
     glm::vec3 GetForwardVelocity() const;

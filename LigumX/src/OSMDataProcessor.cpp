@@ -506,13 +506,13 @@ void OSMDataProcessor::ProcessGenericBuilding(Sector* sector, Way* way)
 		buildingModel->addMesh(buildingMesh, brickWallMaterial);
 		buildingModel->SetName("Building_Test");
 
-
 		Entity* buildingEntity = new Entity();
 		buildingEntity->SetName("Building - " + way->GetName());
 		buildingEntity->SetModel(buildingModel);
 
 		buildingEntity->SetVisible(true);
 
+		buildingEntity->UpdateAABB();
 
 		//World* world = LigumX::GetInstance().GetWorld();
 		//world->AddTo_Entities(roadEntity);

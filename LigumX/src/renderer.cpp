@@ -106,6 +106,11 @@ void Renderer::InitFramebuffers()
 	BindFramebuffer(FramebufferType_Default);
 }
 
+glm::ivec2 Renderer::GetWindowSize()
+{
+	return m_Window->GetSize();
+}
+
 void APIENTRY OutputGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
 	std::stringstream ss;
@@ -1011,8 +1016,6 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 
 void Renderer::BeginFrame(World* world)
 {
-	g_RenderDataManager->Update();
-
 	m_DebugCamera->handlePresetNewFrame(m_Window->pWindow);
 
 	m_DebugCamera->UpdateVPMatrix();
@@ -1041,6 +1044,9 @@ void Renderer::BeginFrame(World* world)
 	{
 		m_ShaderBeenUsedThisFrame[i] = false;;
 	}
+
+	g_Editor->ApplyTool();
+
 }
 
 void Renderer::ApplyEmissiveGlow()
@@ -1191,6 +1197,11 @@ void Renderer::RenderDebugModels()
 		{
 			RenderAABB(aabb.m_AABB, aabb.m_Color);
 		}
+
+		for (Entity* entity : m_RenderDataManager->GetEntityAABBJobs())
+		{
+			RenderEntityBB(entity);
+		}
 	}
 
 
@@ -1207,6 +1218,8 @@ void Renderer::AfterWorldRender()
 
 void Renderer::FinishFrame()
 {
+	g_RenderDataManager->Update();
+
 	HandleScreenshot();
 	
 	glfwSwapBuffers(m_Window->GetHWObject());
@@ -1247,6 +1260,7 @@ void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
 {
 	GL::SetCapability(GL::Blend, true);
+	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
 	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
 
 	SetPipeline(pPipelineUVEdges);
@@ -1390,7 +1404,7 @@ void Renderer::RenderMessages()
 	float fontSize = g_EngineSettings->GetMessagesFontSize();
 	for (const S2DMessage& message : g_RenderDataManager->Get2DMessages())
 	{
-		RenderText(message.m_Message, message.m_ScreenPosition.x, message.m_ScreenPosition.y, fontSize, glm::vec3(0.5, 0.8f, 0.2f), false);
+		RenderText(message.m_Message, message.m_ScreenPosition.x, message.m_ScreenPosition.y, fontSize, message.m_Color, false);
 
 		GL::OutputErrors();
 
@@ -1544,7 +1558,7 @@ void Renderer::RenderText(Text t)
    GL::SetCapability(GL::CullFace, false);
 }
 
-void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color, bool projected)
+void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, const glm::vec3& color, bool projected)
 {
 	GL::SetCapability(GL::Capabilities::Blend,		true);
 	GL::SetCapability(GL::Capabilities::CullFace,	true);
@@ -1556,9 +1570,7 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
 
    GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
 
-
-   glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
-   glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
+   SetFragmentUniform(color, "g_TextColor");
    if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
 
