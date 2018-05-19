@@ -26,7 +26,7 @@ void SetParentEntity(Entity* value) { m_ParentEntity = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-Entity* m_ParentEntity;
+Entity* m_ParentEntity = nullptr;
 public:
 static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];

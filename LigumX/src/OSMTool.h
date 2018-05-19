@@ -53,7 +53,7 @@ private:
 int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = true;
-Node* m_SelectedNode;
+Node* m_SelectedNode = nullptr;
 std::vector<Way*> m_SelectedWays;
 bool m_SearchOnlyWithinSector = false;
 glm::ivec2 m_SelectedSectorIndex = glm::ivec2(0, 0);

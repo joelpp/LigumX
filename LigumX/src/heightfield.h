@@ -41,7 +41,7 @@ void SetWidth(int value) { m_Width = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-Texture* m_HeightDataTexture;
+Texture* m_HeightDataTexture = nullptr;
 float m_MaxHeight = 0.f;
 float m_MinHeight = 0.f;
 int m_Width = 64;

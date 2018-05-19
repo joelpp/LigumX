@@ -64,7 +64,7 @@ float m_RotationAngle = 0.f;
 glm::vec3 m_RotationAxis = glm::vec3(0, 0, 0);
 glm::vec3 m_Scale = glm::vec3(0, 0, 0);
 float m_PickingID = 0.f;
-Model* m_Model;
+Model* m_Model = nullptr;
 bool m_IsLight = false;
 std::vector<Component*> m_Components;
 public:

@@ -263,6 +263,17 @@ float Random0To1()
 	return rand() / fRandMax;
 }
 
+template <typename T>
+T GetRandomValue(T min, T max)
+{
+	return Random0To1() * (max - min) + min;
+}
+
+struct AddrInterpBuildingInfo
+{
+	float m_FacadeLength;
+};
+
 Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
 {
 	glm::vec3 up = glm::vec3(0, 0, 1);
@@ -291,12 +302,15 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 
 		float minFacadeSegmentRatio = 0.1f;
 		float maxFacadeSegmentRatio = 0.3f;
-		float facadeRatio = Random0To1() * maxFacadeSegmentRatio + minFacadeSegmentRatio;
-		float facadeLength = facadeRatio * distance;
 
-		float plotLength = 2.f * facadeLength;
+		float facadeRatio = GetRandomValue(minFacadeSegmentRatio, maxFacadeSegmentRatio);
+		float buildingFacadeLength = facadeRatio * distance;
 
-		float paddingBeforeFacade = (plotLength - facadeLength) / 2.f;
+		float minPlotLength = 1.5f * buildingFacadeLength;
+		float maxPlotLength = 2.5f * buildingFacadeLength;
+		float plotLength = GetRandomValue(minPlotLength, maxPlotLength);
+
+		float paddingBeforeFacade = (plotLength - buildingFacadeLength) / 2.f;
 		float paddingAfterFacade = paddingBeforeFacade;
 
 		float spaceNeeded = plotLength;
@@ -318,15 +332,15 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 
 			float minDepth = 10.f;
 			float maxDepth = 30.f;
-			float depth = Random0To1() * maxDepth + minDepth;
+			float depth = GetRandomValue(minDepth, maxDepth);
 
 			float plotDepth = depth * 1.5f;
 
 			float minHeight = 20.f;
 			float maxHeight = 50.f;
-			float height = Random0To1() * maxDepth + minDepth;
+			float height = GetRandomValue(minHeight, maxHeight);
 
-			glm::vec3 dimensions = glm::vec3(facadeLength, depth, height);
+			glm::vec3 dimensions = glm::vec3(buildingFacadeLength, depth, height);
 
 			float depthClearanceRatio = 1.2f;
 			glm::vec3 back = buildingStart + depthClearanceRatio * right * dimensions.y;
@@ -336,41 +350,46 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 				right *= -1;
 			}
 
-			{
-				Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
-				lxAssert(tex != nullptr);
+			Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+			lxAssert(tex != nullptr);
 
-				glm::vec3 plotEnd = plotStart + plotLength * direction + depthClearanceRatio * right * plotDepth;
 
-				glm::vec2 plotUVMin = sector->GetUVForWorldPosition(plotStart);
-				glm::vec2 plotUVMax = sector->GetUVForWorldPosition(plotEnd);
+			glm::vec3 plotEnd = plotStart + plotLength * direction + depthClearanceRatio * right * plotDepth;
 
-				glm::ivec2 texelMin = glm::ivec2(plotUVMin * glm::vec2(tex->GetSize()));
-				glm::ivec2 texelMax = glm::ivec2(plotUVMax * glm::vec2(tex->GetSize()));
+			glm::vec2 plotUVMin = sector->GetUVForWorldPosition(plotStart);
+			glm::vec2 plotUVMax = sector->GetUVForWorldPosition(plotEnd);
 
-				TerrainColorEditingJob terrainJob(sector, texelMin, texelMax);
-				terrainJob.Execute();
-			}
+			glm::ivec2 texelMin = glm::ivec2(plotUVMin * glm::vec2(tex->GetSize()));
+			glm::ivec2 texelMax = glm::ivec2(plotUVMax * glm::vec2(tex->GetSize()));
+
+			TerrainColorEditingJob terrainJob(sector, texelMin, texelMax);
+			terrainJob.Execute();
 
 
 			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
 
-			plotStart += (plotLength) * direction;
+			float minNeighborDistance = 30.f;
+			float maxNeighborDistance = 50.f;
+			float neighborDistance = GetRandomValue(minNeighborDistance, maxNeighborDistance);
+
+			// move to next building start
+			plotStart += (plotLength + neighborDistance) * direction;
+			spaceLeft -= neighborDistance;
 
 			// generate next building
-			facadeRatio = Random0To1() * maxFacadeSegmentRatio + minFacadeSegmentRatio;
-			facadeLength = facadeRatio * distance;
+			facadeRatio = GetRandomValue(minFacadeSegmentRatio, maxFacadeSegmentRatio);
+			buildingFacadeLength = facadeRatio * distance;
 
-			plotLength = Random0To1() * 1.5f * facadeLength;
+			minPlotLength = 1.5f * buildingFacadeLength;
+			maxPlotLength = 2.5f * buildingFacadeLength;
+			plotLength = GetRandomValue(minPlotLength, maxPlotLength);
 
-			paddingBeforeFacade = plotLength - facadeLength / 2;
+			paddingBeforeFacade = (plotLength - buildingFacadeLength) / 2.f;
 			paddingAfterFacade = paddingBeforeFacade;
 
 			spaceNeeded = plotLength;
 
 			spaceLeft -= spaceNeeded;
-
-			break;
 		}
 
 	}
@@ -619,6 +638,8 @@ bool OSMDataProcessor::IsRoad(Way* way)
 
 void OSMDataProcessor::ProcessSector(Sector* sector)
 {
+	std::vector<Way*> addressInterpolationWays;
+
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		Way* way = it->second;
@@ -642,7 +663,8 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 		bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
 		if (isAddressInterpolation)
 		{
-			ProcessAddressInterpolation(sector, way);
+			// process them at the end when we have all our roads
+			addressInterpolationWays.push_back(way);
 			continue;
 		}
 
@@ -767,5 +789,10 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 			}
 		}
 
+	}
+
+	for (Way* addrInterpWay : addressInterpolationWays)
+	{
+		ProcessAddressInterpolation(sector, addrInterpWay);
 	}
 }

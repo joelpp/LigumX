@@ -66,7 +66,7 @@ glm::vec4 m_XYZMask;
 glm::ivec2 m_ClickedTexel = glm::ivec2(0, 0);
 glm::ivec2 m_StartTexel = glm::ivec2(0, 0);
 int m_SplatMapIncrement = 10;
-Sector* m_ClickedSector;
+Sector* m_ClickedSector = nullptr;
 public:
 static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];

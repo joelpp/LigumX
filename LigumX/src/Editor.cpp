@@ -892,16 +892,22 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 
 	char* ptr = (char*)object + propertyData.m_Offset;;
 
-	if (propertyData.IsAPointer && (*ptr != 0))
+
+	if (propertyData.IsAPointer )
 	{
-		ptr = *(char**)ptr;
+		long long int pointedAdress = *(long long int*) ptr;
+		if (pointedAdress == NULL)
+		{
+			ShowGUIText(propertyData.m_Name + std::string(" : nullptr"));
+			return;
+		}
+		else
+		{
+			ptr = *(char**)ptr;
+		}
+
 	}
 
-	//if (propertyData.IsAPointer && ((char*)(*ptr) == nullptr))
-	//{
-	//	ShowGUIText(propertyData.m_Name + std::string(" : nullptr"));
-	//	return;
-	//}
 
 	std::string sanitizedPropertyName = StringUtils::SeparateByCapitalLetters(std::string(propertyData.m_Name));
 

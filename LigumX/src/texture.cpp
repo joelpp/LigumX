@@ -47,8 +47,6 @@ Texture::Texture()
 	, m_Format(GLPixelFormat_BGRA)
 	, m_PixelType(GLPixelType_uByte)
 {
-	m_ObjectID = g_ObjectManager->GetNewObjectID();
-	PostSerialization(false, false);
 }
 
 Texture::Texture(int objectID)

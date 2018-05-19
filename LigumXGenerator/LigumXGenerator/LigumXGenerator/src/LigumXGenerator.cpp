@@ -30,6 +30,8 @@
 
 int g_Now;
 
+bool g_ForceUpdateAllFiles = false;
+
 struct GeneratorFile
 {
 	std::string m_Name;
@@ -647,7 +649,7 @@ int main()
 				processFile = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
 			}
 
-			if (processFile)
+			if (processFile || g_ForceUpdateAllFiles)
 			{
 				std::cout << "\"" << fileName << "\" : has been updated." << std::endl;
 				generatorFiles.push_back(genFile);

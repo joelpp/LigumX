@@ -44,13 +44,13 @@ void SetAlbedoTexture(Texture* value) { m_AlbedoTexture = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-Model* m_NodesModel;
-Model* m_WaysModel;
+Model* m_NodesModel = nullptr;
+Model* m_WaysModel = nullptr;
 std::vector<Model*> m_WaysModelsVector;
 std::vector<Entity*> m_RoadEntities;
 std::vector<Entity*> m_StaticEntities;
-Texture* m_SplatMapTexture;
-Texture* m_AlbedoTexture;
+Texture* m_SplatMapTexture = nullptr;
+Texture* m_AlbedoTexture = nullptr;
 public:
 static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];

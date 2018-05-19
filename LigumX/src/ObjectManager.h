@@ -113,6 +113,18 @@ public:
 		}
 	}
 
+	template <typename T>
+	T* CreateObject()
+	{
+		ObjectID id = GetTransientID();
+
+		T* newObject = new T();
+		newObject->SetObjectID(id);
+
+		return newObject;
+	}
+	
+
 private:
 	int m_NextTransientID = StartTransientIDs;
 	int m_NextHardcodedID;

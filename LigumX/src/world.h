@@ -76,7 +76,7 @@ void AddTo_Sectors(Sector* value) { m_Sectors.push_back(value); };
 private:
 int m_ObjectID;
 std::string m_Name;
-SunLight* m_SunLight;
+SunLight* m_SunLight = nullptr;
 std::vector<Entity*> m_Entities;
 std::vector<Entity*> m_DebugEntities;
 std::vector<Sector*> m_Sectors;

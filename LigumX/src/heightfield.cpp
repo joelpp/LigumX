@@ -88,7 +88,7 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 		}
 	}
 
-	m_HeightDataTexture = new Texture();
+	m_HeightDataTexture = g_ObjectManager->CreateObject<Texture>();
 
 	m_HeightDataTexture->SetSize(glm::ivec2(m_Width));
 	m_HeightDataTexture->SetBitsPerPixel(32);

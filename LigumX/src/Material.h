@@ -103,10 +103,10 @@ bool m_Unlit = false;
 float m_RefractionIndex = 0.f;
 bool m_IsGlass = false;
 bool m_ReflectEnvironment = false;
-Texture* m_DiffuseTexture;
-Texture* m_SpecularTexture;
-Texture* m_HeightfieldTexture;
-ProgramPipeline* m_ProgramPipeline;
+Texture* m_DiffuseTexture = nullptr;
+Texture* m_SpecularTexture = nullptr;
+Texture* m_HeightfieldTexture = nullptr;
+ProgramPipeline* m_ProgramPipeline = nullptr;
 ShaderFamily m_ShaderFamily;
 public:
 static const int g_PropertyCount = 23;

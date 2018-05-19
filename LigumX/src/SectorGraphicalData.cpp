@@ -32,7 +32,9 @@ bool SectorGraphicalData::Serialize(bool writing)
 SectorGraphicalData::SectorGraphicalData()
 {
 	m_AlbedoTexture = new Texture(10691);
-	m_SplatMapTexture = new Texture();
+
+	m_SplatMapTexture = g_ObjectManager->CreateObject<Texture>();
+	m_SplatMapTexture->Initialize();
 
 	unsigned char* data = m_SplatMapTexture->GetTextureData();
 	int numBytes = 4 * m_SplatMapTexture->GetSize().x * m_SplatMapTexture->GetSize().y;

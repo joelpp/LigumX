@@ -108,12 +108,16 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		}
 	}
 
+	m_PickedSector = g_World->GetSectorByWorldPosition(m_AimingWorldPosition);
+
 	if (!found)
 	{
 		m_PickedEntity = nullptr;
 
 		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(glm::vec3(0,0,0));
 	}
+
+
 
 	return true;
 }
@@ -145,6 +149,7 @@ void PickingTool::UpdatePickingData()
 		// We need to compute aiming world position ourselves
 		m_AimingWorldPosition = RaycastingHelpers::GetAimingWorldSpacePosition();
 	}
+
 
 }
 

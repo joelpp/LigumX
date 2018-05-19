@@ -58,8 +58,8 @@ glm::vec2 m_EarthPosition = glm::vec2(0, 0);
 glm::ivec2 m_QuantizedPosition = glm::ivec2(0, 0);
 glm::ivec2 m_OffsetIndex = glm::ivec2(0, 0);
 bool m_DataLoaded = false;
-Heightfield* m_Heightfield;
-Entity* m_TerrainPatchEntity;
+Heightfield* m_Heightfield = nullptr;
+Entity* m_TerrainPatchEntity = nullptr;
 std::string m_OSMFilename;
 public:
 static const int g_PropertyCount = 10;

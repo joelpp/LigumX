@@ -43,7 +43,7 @@ float m_Time = 0.f;
 float m_Orientation = 0.f;
 float m_Speed = 0.f;
 bool m_UseSkybox = false;
-Texture* m_Skybox;
+Texture* m_Skybox = nullptr;
 public:
 static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];

@@ -52,7 +52,7 @@ private:
 int m_ObjectID;
 std::string m_Name;
 bool m_Enabled = true;
-Entity* m_PickedEntity;
+Entity* m_PickedEntity = nullptr;
 glm::vec2 m_AimingWindowPosition = glm::vec2(0, 0);
 glm::vec3 m_AimingWorldPosition = glm::vec3(0, 0, 0);
 float m_AimingID = 0.f;
@@ -62,7 +62,7 @@ float m_PickedDepth = 0.f;
 float m_PickedID = 0.f;
 bool m_PickDebugModels = false;
 float m_PickedHeight = 0.f;
-Sector* m_PickedSector;
+Sector* m_PickedSector = nullptr;
 public:
 static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];

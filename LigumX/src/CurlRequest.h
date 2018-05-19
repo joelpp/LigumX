@@ -61,7 +61,7 @@ glm::vec2 m_Coords = glm::vec2(0, 0);
 glm::vec2 m_Extent = glm::vec2(0, 0);
 std::string m_Result;
 std::string m_Filename;
-Sector* m_Sector;
+Sector* m_Sector = nullptr;
 glm::ivec2 m_SectorIndex = glm::ivec2(0, 0);
 bool m_Async = false;
 public:

@@ -78,7 +78,7 @@ void SetSelectedNode(Node* value) { m_SelectedNode = value; };
 private:
 int m_ObjectID;
 std::string m_Name;
-EditorOptions* m_Options;
+EditorOptions* m_Options = nullptr;
 EEditorTool m_ActiveTool;
 glm::vec4 m_XYZMask;
 bool m_ManipulatorDragging = false;
@@ -86,7 +86,7 @@ glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
 bool m_EditingTerrain = false;
 std::vector<EditorTool*> m_Tools;
 int m_PickingBufferSize = 0;
-Node* m_SelectedNode;
+Node* m_SelectedNode = nullptr;
 public:
 static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
