@@ -2,4 +2,6 @@
 class OSMDataProcessor
 {
 	float RoadWidth;
+
+	OSMDataProcessorSettings* Settings;
 }

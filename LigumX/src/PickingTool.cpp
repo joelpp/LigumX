@@ -24,7 +24,7 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(PickingTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(PickingTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Enabled", PIDX_Enabled, offsetof(PickingTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "PickedEntity", PIDX_PickedEntity, offsetof(PickingTool, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "PickedEntity", PIDX_PickedEntity, offsetof(PickingTool, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, }, 
 { "AimingWindowPosition", PIDX_AimingWindowPosition, offsetof(PickingTool, m_AimingWindowPosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "AimingWorldPosition", PIDX_AimingWorldPosition, offsetof(PickingTool, m_AimingWorldPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
 { "AimingID", PIDX_AimingID, offsetof(PickingTool, m_AimingID), 0, LXType_float, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
@@ -56,7 +56,7 @@ bool PickingTool::CheckEntity(Entity* entity)
 
 	if (MathUtils::FuzzyEquals(m_AimingID, entity->GetPickingID(), 0.005f))
 	{
-		m_PickedEntity = entity;
+		SetPickedEntity(entity);
 
 		SetPickedWorldPosition(m_AimingWorldPosition);
 		SetPickedID(m_AimingID);
@@ -73,6 +73,23 @@ bool PickingTool::CheckEntity(Entity* entity)
 	return false;
 }
 
+void AddEntityMessage(Entity* entity)
+{
+	std::stringstream msg;
+	msg << entity->GetName();
+	g_RenderDataManager->AddMouseMessage(msg.str());
+}
+
+void PickingTool::SetPickedEntityCallback(Entity* entity)
+{
+	// something about debug display / compile out in release
+	if (entity)
+	{
+		AddEntityMessage(entity);
+	}
+
+	m_PickedEntity = entity;
+}
 
 bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
@@ -90,7 +107,9 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		if (CheckEntity(entity))
 		{
 			found = true;
-			m_PickedEntity = entity;
+
+			SetPickedEntity(entity);
+
 			break;
 		};
 	}
@@ -102,7 +121,9 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 			if (CheckEntity(sector->GetTerrainPatchEntity()))
 			{
 				found = true;
-				m_PickedEntity = sector->GetTerrainPatchEntity();
+
+				SetPickedEntity(sector->GetTerrainPatchEntity());
+
 				break;
 			};
 		}
@@ -112,7 +133,7 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 
 	if (!found)
 	{
-		m_PickedEntity = nullptr;
+		SetPickedEntity(nullptr);
 
 		g_DefaultObjects->DefaultManipulatorEntity->SetPosition(glm::vec3(0,0,0));
 	}

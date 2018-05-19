@@ -1,4 +1,5 @@
 #include "OSMDataProcessor.h"
+#include "OSMDataProcessorSettings.h"
 
 #include "Mesh.h"
 #include "Material.h"
@@ -30,6 +31,7 @@ const ClassPropertyData OSMDataProcessor::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(OSMDataProcessor, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(OSMDataProcessor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "Settings", PIDX_Settings, offsetof(OSMDataProcessor, m_Settings), 0, LXType_OSMDataProcessorSettings, true, LXType_None, 0, 0, 0, }, 
 };
 bool OSMDataProcessor::Serialize(bool writing)
 {
@@ -38,6 +40,11 @@ bool OSMDataProcessor::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor
+
+OSMDataProcessor::OSMDataProcessor()
+{
+	m_Settings = g_ObjectManager->CreateObject<OSMDataProcessorSettings>();
+}
 
 
 float sign(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
@@ -271,14 +278,41 @@ T GetRandomValue(T min, T max)
 
 struct AddrInterpBuildingInfo
 {
-	float m_FacadeLength;
+	AddrInterpBuildingInfo(OSMDataProcessorSettings* settings)
+	{
+		m_BuildingDimensions.x = GetRandomValue(settings->GetMinFacadeLength(), settings->GetMaxFacadeLength());
+
+		float minPlotLength = settings->GetMinPlotLengthRatio() * m_BuildingDimensions.x;
+		float maxPlotLength = settings->GetMaxPlotLengthRatio() * m_BuildingDimensions.x;
+		m_PlotDimensions.x = GetRandomValue(minPlotLength, maxPlotLength);
+
+		m_PaddingBeforeFacade = (m_PlotDimensions.x - m_BuildingDimensions.x) / 2.f;
+		m_PaddingAfterFacade = m_PaddingBeforeFacade;
+
+		m_BuildingDimensions.y = GetRandomValue(settings->GetMinBuildingDepth(), settings->GetMaxBuildingDepth());
+
+		m_PlotDimensions.y = m_BuildingDimensions.y * 1.5f;
+
+		m_BuildingDimensions.z = GetRandomValue(settings->GetMinHeight(), settings->GetMaxHeight());
+
+	}
+
+	float GetPlotLength()		{ return m_PlotDimensions.x; }
+	float GetPlotDepth()		{ return m_PlotDimensions.y; }
+	float GetBuildingLength()	{ return m_BuildingDimensions.x; }
+	float GetBuildingDepth()	{ return m_BuildingDimensions.y; }
+	float GetBuildingHeight()	{ return m_BuildingDimensions.z; }
+
+	glm::vec3 m_BuildingDimensions; // (facade, depth, height)
+	glm::vec2 m_PlotDimensions; // facade, depth
+	float m_PaddingAfterFacade;
+	float m_PaddingBeforeFacade;
+
 };
 
 Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
 {
 	glm::vec3 up = glm::vec3(0, 0, 1);
-
-	const float buildingHeight = 100.f;
 
 	Mesh* buildingMesh = new Mesh();
 	
@@ -293,54 +327,31 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 
 		float distance = glm::length(wholeSegment);
 
-		float spaceLeft = distance;
-
 		if (distance == 0.f)
 		{
 			continue;
 		}
 
-		float minFacadeSegmentRatio = 0.1f;
-		float maxFacadeSegmentRatio = 0.3f;
+		float spaceLeft = distance;
 
-		float facadeRatio = GetRandomValue(minFacadeSegmentRatio, maxFacadeSegmentRatio);
-		float buildingFacadeLength = facadeRatio * distance;
-
-		float minPlotLength = 1.5f * buildingFacadeLength;
-		float maxPlotLength = 2.5f * buildingFacadeLength;
-		float plotLength = GetRandomValue(minPlotLength, maxPlotLength);
-
-		float paddingBeforeFacade = (plotLength - buildingFacadeLength) / 2.f;
-		float paddingAfterFacade = paddingBeforeFacade;
-
-		float spaceNeeded = plotLength;
-		spaceLeft -= spaceNeeded;
+		AddrInterpBuildingInfo buildingInfo(m_Settings);
+		spaceLeft -= buildingInfo.GetPlotLength();;
 
 		glm::vec3 direction = glm::normalize(wholeSegment);
+		glm::vec3 right = glm::cross(direction, up);
 
 		glm::vec3 plotStart = nodePos;
 		while (spaceLeft > 0)
 		{
-			glm::vec3 right = glm::cross(direction, up);
 
-			glm::vec3 buildingStart = plotStart + direction * paddingBeforeFacade;
+			glm::vec3 buildingStart = plotStart + direction * buildingInfo.m_PaddingBeforeFacade;
 
 			if (PointInRoad(sector, buildingStart))
 			{
 				break;
 			}
 
-			float minDepth = 10.f;
-			float maxDepth = 30.f;
-			float depth = GetRandomValue(minDepth, maxDepth);
-
-			float plotDepth = depth * 1.5f;
-
-			float minHeight = 20.f;
-			float maxHeight = 50.f;
-			float height = GetRandomValue(minHeight, maxHeight);
-
-			glm::vec3 dimensions = glm::vec3(buildingFacadeLength, depth, height);
+			const glm::vec3& dimensions = buildingInfo.m_BuildingDimensions;
 
 			float depthClearanceRatio = 1.2f;
 			glm::vec3 back = buildingStart + depthClearanceRatio * right * dimensions.y;
@@ -353,8 +364,7 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
 			lxAssert(tex != nullptr);
 
-
-			glm::vec3 plotEnd = plotStart + plotLength * direction + depthClearanceRatio * right * plotDepth;
+			glm::vec3 plotEnd = plotStart + buildingInfo.GetPlotLength() * direction + depthClearanceRatio * right * buildingInfo.GetPlotDepth();
 
 			glm::vec2 plotUVMin = sector->GetUVForWorldPosition(plotStart);
 			glm::vec2 plotUVMax = sector->GetUVForWorldPosition(plotEnd);
@@ -365,31 +375,19 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			TerrainColorEditingJob terrainJob(sector, texelMin, texelMax);
 			terrainJob.Execute();
 
-
 			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
 
-			float minNeighborDistance = 30.f;
-			float maxNeighborDistance = 50.f;
+			float minNeighborDistance = 40.f;
+			float maxNeighborDistance = 70.f;
 			float neighborDistance = GetRandomValue(minNeighborDistance, maxNeighborDistance);
 
 			// move to next building start
-			plotStart += (plotLength + neighborDistance) * direction;
+			plotStart += (buildingInfo.GetPlotLength() + neighborDistance) * direction;
 			spaceLeft -= neighborDistance;
 
-			// generate next building
-			facadeRatio = GetRandomValue(minFacadeSegmentRatio, maxFacadeSegmentRatio);
-			buildingFacadeLength = facadeRatio * distance;
+			buildingInfo = AddrInterpBuildingInfo(m_Settings);
 
-			minPlotLength = 1.5f * buildingFacadeLength;
-			maxPlotLength = 2.5f * buildingFacadeLength;
-			plotLength = GetRandomValue(minPlotLength, maxPlotLength);
-
-			paddingBeforeFacade = (plotLength - buildingFacadeLength) / 2.f;
-			paddingAfterFacade = paddingBeforeFacade;
-
-			spaceNeeded = plotLength;
-
-			spaceLeft -= spaceNeeded;
+			spaceLeft -= buildingInfo.GetPlotLength();
 		}
 
 	}
