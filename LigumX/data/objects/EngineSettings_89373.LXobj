@@ -25,3 +25,5 @@ SplatMapResolution
 512
 LoadOSMData
 1
+TerrainTiling
+32

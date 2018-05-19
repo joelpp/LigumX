@@ -5,6 +5,8 @@ in vec3 v_Normal;
 in float v_maxHeight;
 
 #define PROVIDER_Material
+#define PROVIDER_DisplayOptions
+#define PROVIDER_View
 
 // Include ProvidersMarker
 
@@ -57,17 +59,21 @@ vec3 blend(vec3 texture1, float a1, vec3 texture2, float a2)
 out vec4 o_PSOutput;
 void main() 
 {
+	PixelData pixelData;
 
-	vec3 f_Normal = v_Normal;
+	pixelData.m_UVs = v_TexCoords;
+	pixelData.m_Depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
 
 	float resolution = 1.f / 64;
-	f_Normal = ComputeNormal(v_Height, v_TexCoords, resolution);
-
+	pixelData.m_Normal = ComputeNormal(v_Height, pixelData.m_UVs, resolution);
+	
 	vec2 splatTexCoords = vec2(1 - v_TexCoords.x, v_TexCoords.y);
 	vec4 splatMap = textureLod(g_SplatMapTexture, v_TexCoords, 0.0f);
+
 	//vec3 lightDirection = normalize(vec3(0.5f, 0.5f, 1.0f));
+
 	vec3 lightDirection = normalize(vec3(0.f, 0.f, 1.0f));
-    float lightPower = dot(f_Normal, lightDirection);
+    float lightPower = dot(pixelData.m_Normal, lightDirection);
 
 	vec3 ambient = vec3(0.1f);
 	vec3 diffuse = vec3(1.0f, 1.0f, 1.0f);
@@ -78,7 +84,7 @@ void main()
 	} 
 
 	float uvScale = 10.f;
-	vec2 diffuseTexCoords = v_TexCoords * uvScale;
+	vec2 diffuseTexCoords = pixelData.m_UVs * uvScale;
 
 
 	//diffuse = splatMap.x *
@@ -99,7 +105,7 @@ void main()
 	//vec3 lerp0 = mix(neutral, grass, splatMap.x);
 	//lerp0 = mix(lerp0, Rock, splatMap.y);
 	//lerp0 = mix(lerp0, Sand, splatMap.z);
-	diffuse = mix(grass, Rock, 1.f - splatMap.z);
+	pixelData.m_DiffuseColor.rgb = mix(grass, Rock, 1.f - splatMap.z);
 
 	//diffuse = mix(diffuse, grass, splatMap.x);
 	//diffuse = mix(diffuse, Rock, splatMap.y);
@@ -135,10 +141,12 @@ void main()
 	//diffuse = vec3(0.5f * (1.f + v_Height / 300.f), 0, 0);
 	//diffuse = c0;
 
-	vec3 finalColor = diffuse * lightPower;
+	pixelData.m_FinalColor = pixelData.m_DiffuseColor * lightPower;
 	//vec3 finalColor = diffuse /** lightPower*/;
 	//finalColor *= vec3(v_TexCoords, 0);
-    o_PSOutput = vec4(finalColor, 1.0);
+
+	vec3 shaderOutput = BuildShaderOutput(pixelData);
+    o_PSOutput = vec4(shaderOutput, 1.0);
 
 	
 

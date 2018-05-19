@@ -70,6 +70,8 @@ const float& GetViewSize() { return m_ViewSize; };
 void SetViewSize(float value) { m_ViewSize = value; }; 
 const float& GetMovementSpeed() { return m_MovementSpeed; }; 
 void SetMovementSpeed(float value) { m_MovementSpeed = value; }; 
+const float& GetKeyMovementSpeedIncreaseFactor() { return m_KeyMovementSpeedIncreaseFactor; }; 
+void SetKeyMovementSpeedIncreaseFactor(float value) { m_KeyMovementSpeedIncreaseFactor = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -90,8 +92,9 @@ int m_ProjectionType = 0;
 float m_OrthoBorders = 0.f;
 float m_ViewSize = 0.f;
 float m_MovementSpeed = 0.f;
+float m_KeyMovementSpeedIncreaseFactor = 1.5f;
 public:
-static const int g_PropertyCount = 19;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -115,6 +118,7 @@ PIDX_ProjectionType,
 PIDX_OrthoBorders,
 PIDX_ViewSize,
 PIDX_MovementSpeed,
+PIDX_KeyMovementSpeedIncreaseFactor,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
@@ -146,7 +150,7 @@ public:
     glm::mat4 tempExtraRotationMat;
     glm::vec3 lookAtTargetPos, cylindricalUpVec;
     float viewMovementSpeed, defaultViewMovementSpeed;
-    float keyMovementSpeed, defaultKeyMovementSpeed, keyMovementSpeedIncreaseFactor;
+    float keyMovementSpeed, defaultKeyMovementSpeed;
     float totalViewAngleY;
     float aspectRatio;
 

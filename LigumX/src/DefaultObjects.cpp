@@ -1,9 +1,13 @@
 #include "DefaultObjects.h"
+
 #include "Entity.h"
 #include "Material.h"
+
 #include "Mesh.h"
 #include "Model.h"
+
 #include "ObjectManager.h"
+#include "EngineSettings.h"
 
 DefaultObjects* g_DefaultObjects;
 
@@ -74,6 +78,7 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 	std::vector<int>& indexBuffer = DefaultTerrainMesh->m_buffers.indexBuffer;
 
 	int iWidth = 64;
+	float uvScale = 1.f;//g_EngineSettings->GetTerrainTiling();
 
 	for (int i = 0; i < iWidth; i++)
 	{
@@ -83,7 +88,9 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 			float x = (float)i / (float)last;
 			float y = (float)j / (float)last;
 			points.push_back(glm::vec3(x, y, 0));
-			UVs.push_back(glm::vec2(x, y));
+
+			glm::vec2 uv = glm::vec2(x, y) * uvScale;
+			UVs.push_back(uv);
 		}
 	}
 

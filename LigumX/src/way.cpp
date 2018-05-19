@@ -43,7 +43,6 @@ Way::Way(std::string _id, LineSegment ls, int type)
 
     AddNode(new Node("n0", ls.p0.x, ls.p0.y));
 	AddNode(new Node("n1", ls.p1.x, ls.p1.y));
-    eType = (OSMElement::ElementType) type;
 }
 
 void Way::AddNode(Node* ref)
@@ -54,7 +53,7 @@ void Way::AddNode(Node* ref)
 std::string Way::toString()
 {
     char str[200];
-    sprintf(str, "Way ID=%s, %I64u nodes, eType: %d, ", this->id.c_str(), m_Nodes.size(), this->eType);
+    sprintf(str, "Way ID=%s, %I64u nodes, eType: %s, ", this->id.c_str(), m_Nodes.size(), EnumValues_OSMElementType[this->GetOSMElementType()]);
     std::string toReturn = std::string(str);
     for ( auto it = this->tags.begin(); it != this->tags.end(); ++it ){
         char tagstr[200];

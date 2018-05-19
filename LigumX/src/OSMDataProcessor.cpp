@@ -201,6 +201,7 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 {
 	std::vector<glm::vec2>& uvs = mesh->m_buffers.m_vertexUVs;
 	std::vector<glm::vec3>& vertices = mesh->m_buffers.vertexPositions;
+	std::vector<glm::vec3>& normals = mesh->m_buffers.m_vertexNormals;
 
 	glm::vec3 buildingHeight = up * dimensions.z;
 	glm::vec3 buildingLength = direction * dimensions.x;
@@ -225,6 +226,14 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 	vertices.push_back(facade11);
 	vertices.push_back(facade10);
 
+	glm::vec3 normal = glm::normalize(glm::cross(up, direction));
+	normals.push_back(normal);
+	normals.push_back(normal);
+	normals.push_back(normal);
+	normals.push_back(normal);
+	normals.push_back(normal);
+	normals.push_back(normal);
+
 	int numQuads = 1;
 	static volatile bool g_Debug_GenerateDepth = true;
 	if (g_Debug_GenerateDepth)
@@ -236,6 +245,14 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 		vertices.push_back(back11);
 		vertices.push_back(back10);
 
+		normal = glm::normalize(glm::cross(up, back));
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+
 		vertices.push_back(back10);
 		vertices.push_back(back11);
 		vertices.push_back(back00);
@@ -243,12 +260,28 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 		vertices.push_back(back01);
 		vertices.push_back(back00);
 
+		normal = glm::normalize(glm::cross(-direction, up));
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+
 		vertices.push_back(back00);
 		vertices.push_back(back01);
 		vertices.push_back(facade00);
 		vertices.push_back(back01);
 		vertices.push_back(facade01);
 		vertices.push_back(facade00);
+
+		normal = glm::normalize(glm::cross(back, up));
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
+		normals.push_back(normal);
 
 		numQuads = 4;
 	}
@@ -402,6 +435,7 @@ Mesh* OSMDataProcessor::BuildGenericBuilding(Sector* sector, Way* way)
 {
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec3> normals;
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
 	const float buildingHeight = 100.f;

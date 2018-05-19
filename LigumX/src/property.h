@@ -49,6 +49,7 @@ enum LXType
 	LXType_Way,
 	LXType_World,
 	LXType_OSMDataProcessorSettings,
+	LXType_DisplayMode,
 	LXType_bool,
 	LXType_float,
 	LXType_glmivec2,

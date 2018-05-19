@@ -48,6 +48,8 @@ const bool& GetLoadOSMData() { return m_LoadOSMData; };
 void SetLoadOSMData(bool value) { m_LoadOSMData = value; }; 
 const bool& GetCullSectors() { return m_CullSectors; }; 
 void SetCullSectors(bool value) { m_CullSectors = value; }; 
+const float& GetTerrainTiling() { return m_TerrainTiling; }; 
+void SetTerrainTiling(float value) { m_TerrainTiling = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -64,8 +66,9 @@ int m_MessagesDefaultFrameCount = 50;
 int m_MessagesPixelsOffset = 10;
 bool m_LoadOSMData = true;
 bool m_CullSectors = false;
+float m_TerrainTiling = 1.f;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 16;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EngineSettingsPIDX
@@ -85,6 +88,7 @@ PIDX_MessagesDefaultFrameCount,
 PIDX_MessagesPixelsOffset,
 PIDX_LoadOSMData,
 PIDX_CullSectors,
+PIDX_TerrainTiling,
 };
 bool Serialize(bool writing);
 

@@ -14,26 +14,13 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_Material
 #define PROVIDER_ShadowMap
 #define PROVIDER_Sky
+#define PROVIDER_DisplayOptions
 
 // Include ProvidersMarker
 
 layout (location = 0) out vec4 FinalColor;
 layout (location = 1) out vec4 BrightColor;
 
-
-vec4 GetDebugNormalColor(vec3 normalWS)
-{
-	return vec4(0.5f * (normalWS + vec3(1,1,1)), 1.f);
-}
-
-float LinearizeDepth(float nonLinearDepth)
-{
-	float near = g_CameraNearPlane;
-	float far = g_CameraFarPlane;
-
-	float z = nonLinearDepth * 2.0 - 1.0;
-	return (2.0 * near * far) / (far + near - z * (far - near));
-}
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS)
 {
@@ -207,40 +194,31 @@ vec3 GetSpecularLighting(int lightIndex, vec3 fragmentToLight, vec3 fragmentToCa
 	return spec * specularColor.rgb * GetLightColor(lightIndex);  
 }
 
-
 void main() 
 {
-	FinalColor.rgb = vec3(0,0,0);
+	PixelData pixelData;
 
-	vec3 fNormalWS = normalize(vNormalWS);
+	pixelData.m_UVs = myTexCoord;
+	pixelData.m_FinalColor.rgb = vec3(0,0,0);
+	pixelData.m_Normal = normalize(vNormalWS);
+	pixelData.m_Depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
+
 	vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 	
-	if (g_DebugUVEnabled > 0)
-	{
-		FinalColor = vec4(myTexCoord.x, myTexCoord.y, 0, 1.f);
-		return ;
-	}
-
-	if (g_DebugNormalsEnabled > 0)
-	{
-		FinalColor = GetDebugNormalColor(fNormalWS);
-		return ;
-	}
-
-	if (g_DebugDepthEnabled > 0)
-	{
-		float depth = 0;
-		if (g_DebugLinearizeDepth > 0)
-		{
-			depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
-		}
-		else
-		{
-			depth = gl_FragCoord.z;
-		}
-		FinalColor = vec4(depth, depth, depth, 1.f);
-		return ;
-	}
+	//if (g_DebugDepthEnabled > 0)
+	//{
+	//	float depth = 0;
+	//	if (g_DebugLinearizeDepth > 0)
+	//	{
+	//		depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
+	//	}
+	//	else
+	//	{
+	//		depth = gl_FragCoord.z;
+	//	}
+	//	FinalColor = vec4(depth, depth, depth, 1.f);
+	//	return ;
+	//}
 
 	// todo : when i do proper attenuation i need to re-visit gamma
 
@@ -269,12 +247,12 @@ void main()
 				ambientContribution *= g_DebugAmbientEnabled;
 
 
-				vec3 diffuseContribution = GetDiffuseLighting(lightIndex, fragmentToLightDir, fNormalWS);
+				vec3 diffuseContribution = GetDiffuseLighting(lightIndex, fragmentToLightDir, pixelData.m_Normal);
 
 			
-				vec3 specularContribution = GetSpecularLighting(lightIndex, fragmentToLightDir, fragmentToCamera, fNormalWS);
+				vec3 specularContribution = GetSpecularLighting(lightIndex, fragmentToLightDir, fragmentToCamera, pixelData.m_Normal);
 
-				float shadow = ShadowCalculation(FragPosLightSpace, fNormalWS);
+				float shadow = ShadowCalculation(FragPosLightSpace, pixelData.m_Normal);
 				// final 
 				//FinalColor.rgb += /*ambientContribution +*/ (1.0 - shadow) * diffuseContribution + specularContribution;
 				FinalColor.rgb += attenuation * (diffuseContribution + specularContribution);
@@ -301,11 +279,11 @@ void main()
 					vec3 F0 = vec3(0.04); 
 					F0      = mix(F0, g_Material.m_DiffuseColor, g_Material.m_Metallic);
 					vec3 F  = fresnelSchlick(max(dot(halfwayVector, fragmentToCamera), 0.0), F0);
-					float NDF = DistributionGGX(fNormalWS, halfwayVector, g_Material.m_Roughness);       
-					float G   = GeometrySmith(fNormalWS, fragmentToCamera, fragmentToLightDir, g_Material.m_Roughness);  
+					float NDF = DistributionGGX(pixelData.m_Normal, halfwayVector, g_Material.m_Roughness);       
+					float G   = GeometrySmith(pixelData.m_Normal, fragmentToCamera, fragmentToLightDir, g_Material.m_Roughness);  
 
 					vec3 nominator    = NDF * G * F;
-					float denominator = 4 * max(dot(fNormalWS, fragmentToCamera), 0.0) * max(dot(fNormalWS, fragmentToLightDir), 0.0) + 0.001; 
+					float denominator = 4 * max(dot(pixelData.m_Normal, fragmentToCamera), 0.0) * max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0) + 0.001; 
 					vec3 specular     = nominator / denominator;  
 
 					vec3 kS = F;
@@ -313,7 +291,7 @@ void main()
 					kD *= 1.0 - g_Material.m_Metallic;	  
         
 					// add to outgoing radiance Lo
-					float NdotL = max(dot(fNormalWS, fragmentToLightDir), 0.0);                
+					float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);                
 					FinalColor.rgb += (kD * GetDiffuseColor(myTexCoord).rgb / PI + specular) * radiance * NdotL; 
 					//FinalColor.rgb = NdotL * vec3(1.0); 
 			}
@@ -324,7 +302,7 @@ void main()
 
 		//if (g_Material.m_ReflectEnvironment)
 		//{
-		//	R = reflect(-fragmentToCamera, fNormalWS);
+		//	R = reflect(-fragmentToCamera, pixelData.m_Normal);
 		//	vec3 skyColor = texture(g_Skybox, R).rgb;
 
 		//	// todo handle this blend properly wow
@@ -334,7 +312,7 @@ void main()
 		
 		//if (g_Material.m_IsGlass)
 		//{
-		//	R = refract(-fragmentToCamera, normalize(fNormalWS), g_Material.m_RefractionIndex);
+		//	R = refract(-fragmentToCamera, normalize(pixelData.m_Normal), g_Material.m_RefractionIndex);
 		//	vec3 skyColor = texture(g_Skybox, R).rgb;
 		//	FinalColor = vec4(skyColor, 1.0);
 
@@ -343,17 +321,17 @@ void main()
 	}
 	else
 	{
-		vec4 diffuseColor = GetDiffuseColor(myTexCoord);
-		FinalColor = diffuseColor;
+		pixelData.m_DiffuseColor = GetDiffuseColor(myTexCoord);
+		pixelData.m_FinalColor = pixelData.m_DiffuseColor;
 	}
 
-	BrightColor = FinalColor * g_Material.m_EmissiveFactor;
+	BrightColor = pixelData.m_FinalColor * g_Material.m_EmissiveFactor;
 
 	if (g_GammaCorrectionEnabled > 0)
 	{
-		FinalColor.rgb = pow(FinalColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
+		pixelData.m_FinalColor.rgb = pow(pixelData.m_FinalColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 		BrightColor.rgb = pow(BrightColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 	}
 	
-
+	FinalColor.rgb = BuildShaderOutput(pixelData);
 }

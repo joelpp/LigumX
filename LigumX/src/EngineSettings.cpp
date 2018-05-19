@@ -24,6 +24,7 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 { "MessagesPixelsOffset", PIDX_MessagesPixelsOffset, offsetof(EngineSettings, m_MessagesPixelsOffset), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "LoadOSMData", PIDX_LoadOSMData, offsetof(EngineSettings, m_LoadOSMData), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "CullSectors", PIDX_CullSectors, offsetof(EngineSettings, m_CullSectors), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "TerrainTiling", PIDX_TerrainTiling, offsetof(EngineSettings, m_TerrainTiling), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 bool EngineSettings::Serialize(bool writing)
 {

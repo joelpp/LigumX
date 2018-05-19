@@ -233,6 +233,7 @@ public:
 	void SetMaterialUniforms(Material* material);
 	void SetPostEffectsUniforms();
 	void SetSkyUniforms(int skyCubemapSlot);
+	void SetDisplayModeUniforms();
 
 	Camera *m_ShadowCamera;
     bool drawBuildingSides;

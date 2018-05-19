@@ -368,7 +368,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			}
 
 			Way* way = new Way(id);
-			way->eType = OSMElement::NOT_IMPLEMENTED;
 
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
 			{
@@ -387,8 +386,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 					const std::string value = way_child->ToElement()->FindAttribute("v")->Value();
 					way->addTag(key, value);
 
-					OSMElement::ElementType _eType = OSMElement::GetTypeFromStrings(key, value);
-
 					if (way->GetOSMElementType() == OSMElementType_Unknown)
 					{
 						OSMElementType elementType = OSMElement::GetOSMTypeFromStrings(key, value);
@@ -398,9 +395,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 							way->SetOSMElementType(elementType);
 						}
 					}
-
-					way->eType = _eType;
-
 
 				}
 			}

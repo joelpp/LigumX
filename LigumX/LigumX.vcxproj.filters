@@ -443,9 +443,6 @@
     <ClInclude Include="src\PostEffects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="data\shaders\BasicUniforms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\SunLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>

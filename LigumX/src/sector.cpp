@@ -219,7 +219,7 @@ Texture* Sector::GetSplatMapTexture()
 
 glm::vec2 Sector::GetUVForWorldPosition(const glm::vec3& worldPosition)
 {
-	glm::vec2 uv = (glm::vec2(worldPosition) - m_WorldPosition) / g_EngineSettings->GetWorldScale();
+	glm::vec2 uv = /*g_EngineSettings->GetTerrainTiling() * */(glm::vec2(worldPosition) - m_WorldPosition) / g_EngineSettings->GetWorldScale();
 	return uv;
 }
 

@@ -37,6 +37,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, false, LXType_None, 0, 0, 2000, }, 
+{ "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 bool Camera::Serialize(bool writing)
 {
@@ -79,7 +80,7 @@ Camera::Camera()
     defaultKeyMovementSpeed = m_MovementSpeed * 0.05f;
 
     keyMovementSpeed = defaultKeyMovementSpeed;
-    keyMovementSpeedIncreaseFactor = 1.5f;
+    
     mouseIsDragging = false;
 }
 
@@ -338,13 +339,13 @@ void Camera::qweasdzxcKeyPreset(
     switch(key) 
 	{
 		case GLFW_KEY_LEFT_SHIFT:
-			keyMovementSpeedIncreaseFactor *= (isPress ? 2.f : 0.5f);
+			m_KeyMovementSpeedIncreaseFactor *= (isPress ? 2.f : 0.5f);
 			break;
 		case GLFW_KEY_X:
-			keyMovementSpeedIncreaseFactor = isPress ? 0.05f : keyMovementSpeedIncreaseFactor;
+			m_KeyMovementSpeedIncreaseFactor = isPress ? 0.05f : m_KeyMovementSpeedIncreaseFactor;
 			break;
 		case GLFW_KEY_LEFT_CONTROL:
-			keyMovementSpeedIncreaseFactor /= (isPress ? 2.f : 0.5f);
+			m_KeyMovementSpeedIncreaseFactor /= (isPress ? 2.f : 0.5f);
 			break;
 		case GLFW_KEY_KP_ADD:
 			if (isPress)
@@ -363,9 +364,6 @@ void Camera::qweasdzxcKeyPreset(
 
 			break;
     }
-
-	lxAssert(keyMovementSpeedIncreaseFactor > 0.1f);
-
 
 }
 
@@ -523,7 +521,7 @@ void Camera::continuousMousePresetCursorPos(
 
 void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
 {
-	keyMovementSpeed = m_MovementSpeed * keyMovementSpeedIncreaseFactor;
+	keyMovementSpeed = m_MovementSpeed * m_KeyMovementSpeedIncreaseFactor;
     if(cameraType == CameraType::AROUND_TARGET) 
 	{
         if(glfwGetKey(pWindow, GLFW_KEY_W) == GLFW_PRESS) 

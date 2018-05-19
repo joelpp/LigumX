@@ -5,6 +5,19 @@
 
 class DisplayOptions;
 
+enum DisplayMode
+{
+DisplayMode_Final,
+DisplayMode_Depth,
+DisplayMode_UV,
+DisplayMode_Diffuse,
+DisplayMode_Normals,
+};
+
+extern const std::string EnumValues_DisplayMode[5];
+extern const DisplayMode Indirection_DisplayMode[5];
+const int EnumLength_DisplayMode = 5;
+
 
 #pragma endregion  FORWARD_DECLARATIONS DisplayOptions
 
@@ -59,6 +72,8 @@ const bool& GetOutputGLErrors() { return m_OutputGLErrors; };
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
 const bool& GetDisplayDebugModels() { return m_DisplayDebugModels; }; 
 void SetDisplayDebugModels(bool value) { m_DisplayDebugModels = value; }; 
+const DisplayMode& GetDisplayMode() { return m_DisplayMode; }; 
+void SetDisplayMode(DisplayMode value) { m_DisplayMode = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -80,8 +95,9 @@ bool m_RenderOpaque = false;
 bool m_RenderShadows = false;
 bool m_OutputGLErrors = false;
 bool m_DisplayDebugModels = false;
+DisplayMode m_DisplayMode = DisplayMode_Final;
 public:
-static const int g_PropertyCount = 20;
+static const int g_PropertyCount = 21;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -106,6 +122,7 @@ PIDX_RenderOpaque,
 PIDX_RenderShadows,
 PIDX_OutputGLErrors,
 PIDX_DisplayDebugModels,
+PIDX_DisplayMode,
 };
 bool Serialize(bool writing);
 

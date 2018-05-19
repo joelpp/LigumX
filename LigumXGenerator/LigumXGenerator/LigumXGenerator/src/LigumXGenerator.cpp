@@ -38,8 +38,20 @@ struct GeneratorFile
 	std::vector<LXClass> m_Contained;
 };
 
+// todo : finish this
+struct TypeFileEntry
+{
+	TypeFileEntry()
+	{
+	}
 
+	TypeFileEntry(const std::string& string)
+	{
+		m_TypeName = string;
+	}
 
+	std::string m_TypeName;
+};
 
 struct LogFileEntry
 {

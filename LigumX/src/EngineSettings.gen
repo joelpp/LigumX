@@ -26,4 +26,6 @@ class EngineSettings
 	bool LoadOSMData = true;
 
 	bool CullSectors = false;
+
+	float TerrainTiling = 1.f;
 }

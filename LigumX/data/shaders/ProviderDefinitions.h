@@ -1,3 +1,6 @@
+#ifndef PROVIDER_DEFINITIONS_H
+#define PROVIDER_DEFINITIONS_H
+
 #define PI 3.141592654f
 
 #ifdef PROVIDER_Material
@@ -110,3 +113,74 @@ uniform vec2 g_MouseCoords;
 uniform float g_WorldScale;
 uniform vec3 g_SectorGridColor;
 #endif
+
+#ifdef PROVIDER_DisplayOptions
+
+// todo autogen from cpp enum...
+#define DisplayMode_Final 0
+#define DisplayMode_Depth 1
+#define DisplayMode_UV 2
+#define DisplayMode_Diffuse 3
+#define DisplayMode_Normals 4
+
+uniform int g_DisplayMode;
+#endif
+
+#ifdef PROVIDER_View
+float LinearizeDepth(float nonLinearDepth)
+{
+	float near = g_CameraNearPlane;
+	float far = g_CameraFarPlane;
+
+	float z = nonLinearDepth * 2.0 - 1.0;
+	return (2.0 * near * far) / (far + near - z * (far - near));
+}
+#endif
+
+
+vec4 GetDebugNormalColor(vec3 normalWS)
+{
+	return vec4(0.5f * (normalWS + vec3(1, 1, 1)), 1.f);
+}
+
+struct PixelData
+{
+	vec4 m_FinalColor;
+	vec4 m_DiffuseColor;
+	vec3 m_Normal;
+	float m_Depth;
+	vec2 m_UVs;
+};
+
+vec3 BuildShaderOutput(PixelData pixelData)
+{
+
+#ifdef PROVIDER_DisplayOptions
+	if (g_DisplayMode == DisplayMode_Final)
+	{
+		return pixelData.m_FinalColor.rgb;
+	}
+	else if (g_DisplayMode == DisplayMode_Depth)
+	{
+		return vec3(pixelData.m_Depth, pixelData.m_Depth, pixelData.m_Depth);
+	}
+	else if (g_DisplayMode == DisplayMode_UV)
+	{
+		return vec3(pixelData.m_UVs, 0);
+	}
+	else if (g_DisplayMode == DisplayMode_Diffuse)
+	{
+		return pixelData.m_DiffuseColor.rgb;
+	}
+	else if (g_DisplayMode == DisplayMode_Normals)
+	{
+		return GetDebugNormalColor(pixelData.m_Normal.rgb).rgb;
+	}
+#endif
+
+	return pixelData.m_FinalColor.rgb;
+}
+
+
+
+#endif // PROVIDER_DEFINITIONS_H

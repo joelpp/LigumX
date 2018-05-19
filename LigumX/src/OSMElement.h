@@ -87,7 +87,6 @@ public:
     std::unordered_map<std::string, std::string> tags;
     std::unordered_map<int, int> itags;
 
-    ElementType eType;
     std::string id;
 
     OSMElement(){};

@@ -225,7 +225,6 @@
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="data\shaders\BasicUniforms.h" />
     <ClInclude Include="error.h" />
     <ClInclude Include="include\Building.h" />
     <ClInclude Include="include\camera.h" />

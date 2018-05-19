@@ -811,6 +811,39 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_ENUM(GLPixelFormat);
 	SHOW_ENUM(EEditorTool);
 	SHOW_ENUM(TerrainEditionMode);
+	//SHOW_ENUM(DisplayMode);
+	case LXType_DisplayMode:
+	{ 
+		ShowGUIText(name); 
+		int* intPtr = (int*)ptr; 
+		ImGui::SameLine(); 
+		int index = *intPtr; 
+		for (int i = 0; i < index; ++i) 
+		{ 
+			if (Indirection_DisplayMode[i] == index) 
+			{ 
+				index = i; 
+				break; 
+			} 
+		} 
+		if (ImGui::Button((EnumValues_DisplayMode)[index].c_str())) 
+			ImGui::OpenPopup(name); 
+		if (ImGui::BeginPopup(name)) 
+		{ 
+			ImGui::Text("DisplayMode"); 
+			ImGui::Separator(); 
+			for (int i = 0; i < EnumLength_DisplayMode; i++) 
+			{ 
+				if (ImGui::Selectable((EnumValues_DisplayMode)[i].c_str())) 
+				{ 
+					*intPtr = Indirection_DisplayMode[i]; 
+					break; 
+				} 
+			} 
+			ImGui::EndPopup(); 
+		} 
+		break; 
+	}
 
 	//case LXType_GLPixelType: \
 	//{ \

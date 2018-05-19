@@ -29,12 +29,30 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "RenderShadows", PIDX_RenderShadows, offsetof(DisplayOptions, m_RenderShadows), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "OutputGLErrors", PIDX_OutputGLErrors, offsetof(DisplayOptions, m_OutputGLErrors), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DisplayDebugModels", PIDX_DisplayDebugModels, offsetof(DisplayOptions, m_DisplayDebugModels), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DisplayMode", PIDX_DisplayMode, offsetof(DisplayOptions, m_DisplayMode), 0, LXType_DisplayMode, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
 };
 bool DisplayOptions::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+const std::string EnumValues_DisplayMode[] = 
+{
+"Final",
+"Depth",
+"UV",
+"Diffuse",
+"Normals",
+};
+
+const DisplayMode Indirection_DisplayMode[] =
+{
+	DisplayMode_Final,
+	DisplayMode_Depth,
+	DisplayMode_UV,
+	DisplayMode_Diffuse,
+	DisplayMode_Normals,
+};
 
 #pragma endregion  CLASS_SOURCE DisplayOptions
 

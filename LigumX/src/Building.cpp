@@ -28,7 +28,7 @@ bool Building::GenerateModel()
 	Way* way = m_Way;
 	auto first = m_Way->GetNodes().front();
 	auto last = m_Way->GetNodes().back();
-	int LiftableWalls = OSMElement::BUILDING_UNMARKED;
+	OSMElementType LiftableWalls = OSMElementType::OSMElementType_Building_Unmarked;
 	int nbFailedLoops = 0;
 	int nbSuccessLoops = 0;
 
@@ -37,14 +37,7 @@ bool Building::GenerateModel()
 	std::vector<float> groundTriangleTextureIDs;
 	std::vector<glm::vec3> buildingTrianglePositions;
 
-
 	float height = 0;
-	if (way->eType == OSMElement::BUILDING_UNMARKED) 
-	{
-		height = 10;//game.buildingHeight /* + (rand() / RAND_MAX) * 4.f*/;
-	}
-	//            cout << "building loop" << endl;
-
 	// Note: supposed all loops are given in counter-clockwise order.
 	unsigned int nbTriangles = 0;
 
@@ -67,13 +60,13 @@ bool Building::GenerateModel()
 			}
 	        loopNodes.push_back(*n);
 	        
-	        if (way->eType == LiftableWalls)
+	        if (way->GetOSMElementType() == LiftableWalls)
 	        {
 	            buildingLines.push_back((*n)->GetWorldPosition());
 	            buildingLines.push_back((*n+1)->GetWorldPosition());
 	        }
 
-	        if (way->eType == LiftableWalls)
+	        if (way->GetOSMElementType() == LiftableWalls)
 	        {
 	            buildingLinesTexCoords.push_back(float(distance));    
 	        } 
@@ -81,7 +74,7 @@ bool Building::GenerateModel()
 	        distance += glm::distance(vec2((*n)->GetWorldPosition()),
 	                                  vec2((*n + 1)->GetWorldPosition()));
 
-	        if (way->eType == LiftableWalls)
+	        if (way->GetOSMElementType() == LiftableWalls)
 	        {
 	        	buildingLinesTexCoords.push_back(float(distance));	
 	        } 
@@ -228,7 +221,7 @@ bool Building::GenerateModel()
 
 	Mesh* mesh = new Mesh(buildingTrianglePositions, GL::PrimitiveMode::Triangles);
 
-	glm::vec3 color = renderer.typeColorMap[m_Way->eType];
+	glm::vec3 color = glm::vec3(39, 181, 51) / 255.f;
 
 	Material* material = new Material(renderer.pPipelineBasic, color);
 	m_Model->addMesh(mesh, material);

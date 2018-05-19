@@ -457,6 +457,11 @@ void Renderer::SetPipeline(ShaderFamily family)
 	SetPipeline(m_Pipelines[family]);
 }
 
+void Renderer::SetDisplayModeUniforms()
+{
+	SetFragmentUniform((int) m_DisplayOptions->GetDisplayMode(), "g_DisplayMode");
+}
+
 void Renderer::SetSkyUniforms(int skyCubemapSlot)
 {
 	SunLight* sunLight = m_World->GetSunLight();
@@ -650,6 +655,7 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 			SetViewUniforms(m_DebugCamera);
 			SetShadowMapUniforms(m_ShadowCamera);
 			SetSkyUniforms(3);
+			SetDisplayModeUniforms();
 
 			SetPostEffectsUniforms();
 			SetDebugUniforms();
@@ -760,6 +766,7 @@ void Renderer::RenderTerrain()
 	SetViewUniforms(m_DebugCamera);
 	SetShadowMapUniforms(m_ShadowCamera);
 	SetSkyUniforms(3);
+	SetDisplayModeUniforms();
 
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
@@ -1214,6 +1221,8 @@ void Renderer::RenderAABB(AABB& aabb)
 void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 {
 	GL::SetCapability(GL::Capabilities::Blend, true);
+	GL::SetCapability(GL::Capabilities::DepthTest, true);
+	glDepthMask(GL_FALSE);
 
 	SetPipeline(pPipelineUVEdges);
 
@@ -1232,6 +1241,7 @@ void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 	DrawMesh(mesh);
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
+	glDepthMask(true);
 }
 
 void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
