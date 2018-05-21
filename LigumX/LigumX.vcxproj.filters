@@ -597,5 +597,6 @@
     <None Include="src\OSMDataProcessorSettings.gen" />
     <None Include="src\CullingOptions.gen" />
     <None Include="src\RenderingStats.gen" />
+    <None Include="src\RenderDataManager.gen" />
   </ItemGroup>
 </Project>

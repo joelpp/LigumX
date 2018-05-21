@@ -13,6 +13,8 @@
 #include "Renderer.h"
 #include "Framebuffer.h"
 #include "RenderDataManager.h"
+#include "CullingOptions.h"
+#include "RenderingStats.h"
 #include "MainWindow.h"
 #include "Mesh.h"
 #include "Model.h"
@@ -748,6 +750,8 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_PROPERTY_PTR(Entity)
 	SHOW_PROPERTY_PTR(SunLight)
 	SHOW_PROPERTY_PTR(Heightfield)
+	SHOW_PROPERTY_PTR(CullingOptions)
+	SHOW_PROPERTY_PTR(RenderingStats)
 		//case LXType_Model:
 		//{
 		//	ShowPropertyGridTemplate<Model>((Model*) ptr, name);
@@ -1257,13 +1261,14 @@ void Editor::RenderImgui()
 	//if (g_Editor->GetOptions()->GetShowWorldWindow())
 	{
 		ImGui::PushID("WorldWindow");
-		g_GUI->BeginWindow(1000, 700, 0, 0, "Editor");
+		g_GUI->BeginWindow(1000, 700, 0, 0, "Main Editor Window");
 
 		ShowPropertyGridTemplate(g_InputHandler, "Input Handler");
 		ShowPropertyGridTemplate(renderer->GetPostEffects(), "Post Effects");
 		ShowPropertyGridTemplate(renderer->GetDebugCamera(), "Camera");
 		ShowPropertyGridTemplate(world->GetSunLight(), "SunLight");
 		ShowPropertyGridTemplate(world, "World");
+		ShowPropertyGridTemplate(g_RenderDataManager, "RenderDataManager");
 
 		Editor* editor = this;
 		ShowPropertyGridTemplate(editor, "Editor");

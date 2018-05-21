@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include "CullingOptions.h"
+#include "RenderingStats.h"
+
 #include "BoundingBoxComponent.h"
 #include "RenderDataManager.h"
 #include "InputHandler.h"
@@ -29,6 +32,26 @@
 
 #include "Building.h"
 RenderDataManager* g_RenderDataManager;
+#pragma region  CLASS_SOURCE RenderDataManager
+
+#include "RenderDataManager.h"
+#include "serializer.h"
+#include <cstddef>
+#include "ObjectManager.h"
+const ClassPropertyData RenderDataManager::g_Properties[] = 
+{
+{ "ObjectID", PIDX_ObjectID, offsetof(RenderDataManager, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(RenderDataManager, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_CullingOptions, true, LXType_None, 0, 0, 0, }, 
+{ "RenderingStats", PIDX_RenderingStats, offsetof(RenderDataManager, m_RenderingStats), 0, LXType_RenderingStats, true, LXType_None, 0, 0, 0, }, 
+};
+bool RenderDataManager::Serialize(bool writing)
+{
+	bool success = g_Serializer->SerializeObject(this, writing); 
+	return success;
+}
+
+#pragma endregion  CLASS_SOURCE RenderDataManager
 
 using namespace std;
 using namespace glm;
@@ -139,6 +162,9 @@ RenderDataManager::RenderDataManager()
     Renderer::createGLBuffer(renderer.glidScreenQuadTexCoords, screenQuadTexCoords);
 
 	m_VisibleEntities.reserve(m_MaxVisibleEntities);
+
+	m_CullingOptions = g_ObjectManager->CreateObject<CullingOptions>();
+	m_RenderingStats = g_ObjectManager->CreateObject<RenderingStats>();
 }
 
 void RenderDataManager::addToTerrainBuffer(Sector* newSector)
@@ -512,7 +538,7 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 	{
 		bool visible = true;
 
-		if (g_EngineSettings->GetCullEntities() /*&& e == g_Editor->GetPickingTool()->GetPickedEntity()*/)
+		if (m_CullingOptions->GetCullEntities() /*&& e == g_Editor->GetPickingTool()->GetPickedEntity()*/)
 		{
 			visible = IsAABBVisible(e->GetComponent<BoundingBoxComponent>()->GetBoundingBox().GetVertices(), camera);
 		}
@@ -523,9 +549,8 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 		}
 
 		m_VisibleEntities.push_back(e);
-		m_NumVisibleEntities++;
 
-		if (m_NumVisibleEntities == m_MaxVisibleEntities)
+		if (m_VisibleEntities.size() == m_MaxVisibleEntities)
 		{
 			AddTimedMessage(StringUtils::Format("Hit limit of %d entities visible", m_MaxVisibleEntities));
 			break;
@@ -540,99 +565,152 @@ enum LeftRightTestResult
 	Both = 2
 };
 
+glm::vec4 GetClipPosFromWorldPosition(const glm::vec4& worldPosition, Camera* camera)
+{
+	const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();
+
+	glm::vec4 clipPos = glm::mul(vpMatrix, worldPosition);
+	clipPos /= clipPos.w;
+	return clipPos;
+}
+glm::ivec2 GetNDCFromClipPos(const glm::vec4& clipPos, const glm::vec2& windowSize)
+{
+	return glm::ivec2((0.5f * (glm::vec2(clipPos) + glm::vec2(1, 1))) * windowSize);
+}
+
+glm::ivec2 GetNDCFromWorldPosition(const glm::vec4& worldPosition, Camera* camera, const glm::vec2& windowSize)
+{
+	return GetNDCFromClipPos(GetClipPosFromWorldPosition(worldPosition, camera), windowSize);
+}
+
 bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Camera* camera)
 {
-
-	bool allDotPositive = true;
-	for (int i = 0; i < 8; ++i)
+	if (m_CullingOptions->GetUseDotProduct())
 	{
-		const glm::vec3& worldPosition = vertices[i];
-
-		bool visible = false;
-
-		glm::vec3 vertexToCam = worldPosition - camera->GetPosition();
-
-		float dotProduct = glm::dot(glm::normalize(vertexToCam), camera->GetFrontVector());
-		if (dotProduct < 0.f)
+		bool allDotsBad = true;
+		for (int i = 0; i < 8; ++i)
 		{
-			allDotPositive = false;
-			break;
-		}
-	}
+			const glm::vec3& worldPosition = vertices[i];
 
-	if (allDotPositive)
-	{
-		return false;
-	}
+			glm::vec3 vertexToCam = worldPosition - camera->GetPosition();
 
+			float dotProduct = glm::dot(glm::normalize(vertexToCam), camera->GetFrontVector());
 
-	const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();
-	bool oneVertexVisible = false;
+			bool visible = dotProduct < -0.9;
 
-	bool over_lrtb[4] = { false, false, false, false };
-	bool under_lrtb[4] = { false, false, false, false };
-
-	for (int i = 0; i < 8; ++i)
-	{
-		bool visible = false;
-
-		glm::vec4 worldPosition = glm::vec4(vertices[i], 1.f);
-
-		glm::vec4 clipPos = glm::mul(vpMatrix, worldPosition);
-
-		clipPos /= clipPos.w;
-
-		const glm::vec2& windowSize = glm::vec2(Renderer::GetInstance().GetWindowSize());
-
-		glm::ivec2 ndc = glm::ivec2((0.5f * (glm::vec2(clipPos) + glm::vec2(1, 1))) * windowSize);
-		int textWidth = 15;
-
-		int edgeOffset = ndc.x + textWidth - windowSize.x;
-		ndc.x -= std::min(textWidth, std::max(edgeOffset, 0));
-
-		glm::vec4 absClip = glm::abs(clipPos);
-
-		bool inX = absClip.x <= 1.f;
-		bool inY = absClip.y <= 1.f;
-			
-		if (inX && inY)
-		{
-			visible = true;
-		}
-
-		//glm::vec3 msgColor = visible ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
-		//std::string text = StringUtils::Format("V%d", i);
-		//Add2DMessage(text, glm::ivec2(ndc), msgColor);
-
-		oneVertexVisible = oneVertexVisible || visible;
-
-		over_lrtb[0]	|= clipPos.x > -1;
-		under_lrtb[0]	|= clipPos.x < -1;
-		over_lrtb[1]	|= clipPos.x > 1;
-		under_lrtb[1]	|= clipPos.x < 1;
-		over_lrtb[2]	|= clipPos.y > -1;
-		under_lrtb[2]	|= clipPos.y < -1;
-		over_lrtb[3]	|= clipPos.y > 1;
-		under_lrtb[3]	|= clipPos.y < 1;
-	}
-
-	static bool uselrtb = false;
-
-	if (uselrtb)
-	{
-		for (int i = 0; i < 4; ++i)
-		{
-			if (over_lrtb[i] && under_lrtb[i])
+			if (m_CullingOptions->GetDebugDotProduct())
 			{
-				return true;
+				const glm::vec2& windowSize = glm::vec2(Renderer::GetInstance().GetWindowSize());
+
+				glm::ivec2 ndc = GetNDCFromWorldPosition(glm::vec4(worldPosition, 1.f), camera, windowSize);
+
+				int textWidth = 100;
+				int edgeOffset = ndc.x + textWidth - windowSize.x;
+				ndc.x -= std::min(textWidth, std::max(edgeOffset, 0));
+
+				glm::vec3 msgColor = visible ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+				std::stringstream ss;
+				ss << "V" << i << " : " << dotProduct;
+				Add2DMessage(ss.str(), glm::ivec2(ndc), msgColor);
+			}
+
+			if (dotProduct < 0.f)
+			{
+				allDotsBad = false;
+
+				if (!m_CullingOptions->GetDebugDotProduct())
+				{
+					return true;
+				}
 			}
 		}
+
+		if (allDotsBad)
+		{
+			return false;
+		}
 	}
 
+	if (m_CullingOptions->GetUseAABBClipPos())
+	{
 
-	bool result = oneVertexVisible;
+		const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();
+		bool oneVertexVisible = false;
 
-	return result;
+		bool over_lrtb[4] = { false, false, false, false };
+		bool under_lrtb[4] = { false, false, false, false };
+
+		for (int i = 0; i < 8; ++i)
+		{
+			bool visible = false;
+
+			glm::vec4 worldPosition = glm::vec4(vertices[i], 1.f);
+
+			glm::vec4 clipPos = GetClipPosFromWorldPosition(worldPosition, camera);
+
+			glm::vec4 absClip = glm::abs(clipPos);
+
+			bool inX = absClip.x <= 1.f;
+			bool inY = absClip.y <= 1.f;
+
+			if (inX && inY)
+			{
+				visible = true;
+
+				if (!m_CullingOptions->GetDebugAABBClippPos())
+				{
+					return true;
+				}
+			}
+
+			if (m_CullingOptions->GetDebugAABBClippPos())
+			{
+				const glm::vec2& windowSize = glm::vec2(Renderer::GetInstance().GetWindowSize());
+
+				glm::ivec2 ndc = GetNDCFromClipPos(clipPos, windowSize);
+
+				int textWidth = 100;
+				int edgeOffset = ndc.x + textWidth - windowSize.x;
+				ndc.x -= std::min(textWidth, std::max(edgeOffset, 0));
+
+				glm::vec3 msgColor = visible ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+				std::stringstream ss;
+				ss << "V" << i << " : " << ndc.x << " " << ndc.y;
+				Add2DMessage(ss.str(), glm::ivec2(ndc), msgColor);
+			}
+
+			oneVertexVisible = oneVertexVisible || visible;
+
+			over_lrtb[0] |= clipPos.x > -1;
+			under_lrtb[0] |= clipPos.x < -1;
+			over_lrtb[1] |= clipPos.x > 1;
+			under_lrtb[1] |= clipPos.x < 1;
+			over_lrtb[2] |= clipPos.y > -1;
+			under_lrtb[2] |= clipPos.y < -1;
+			over_lrtb[3] |= clipPos.y > 1;
+			under_lrtb[3] |= clipPos.y < 1;
+		}
+
+		static bool uselrtb = false;
+
+		if (uselrtb)
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				if (over_lrtb[i] && under_lrtb[i])
+				{
+					return true;
+				}
+			}
+		}
+
+
+		bool result = oneVertexVisible;
+
+		return result;
+	}
+
+	return true;
 }
 
 bool RenderDataManager::IsAABBVisible(const AABB& aabb, Camera* camera)
@@ -658,10 +736,7 @@ void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
 	lxAssert(camera);
 
 	m_VisibleEntities.clear();
-	m_NumVisibleEntities = 0;
-
 	m_VisibleSectors.clear();
-	m_NumVisibleSectors = 0;
 
 	GatherVisibleEntities(world->GetEntities(), camera);
 
@@ -669,7 +744,7 @@ void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
 	{
 		bool sectorIsVisible = true;
 		
-		if (g_EngineSettings->GetCullSectors())
+		if (m_CullingOptions->GetCullSectors())
 		{
 			sectorIsVisible = IsSectorVisible(sector, camera);
 		}
@@ -680,15 +755,12 @@ void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
 		}
 		
 		m_VisibleSectors.push_back(sector);
-		m_NumVisibleSectors++;
-
 
 		GatherVisibleEntities(sector->GetGraphicalData()->GetRoadEntities(), camera);
 		GatherVisibleEntities(sector->GetGraphicalData()->GetStaticEntities(), camera);
 
 	}
 
-	AddTimedMessage(StringUtils::Format("Sectors visible: %d", m_NumVisibleSectors), 1);
-	AddTimedMessage(StringUtils::Format("Entities visible: %d", m_NumVisibleEntities), 1);
-
+	m_RenderingStats->SetNumVisibleEntities(m_VisibleEntities.size());
+	m_RenderingStats->SetNumVisibleSectors(m_VisibleSectors.size());
 }

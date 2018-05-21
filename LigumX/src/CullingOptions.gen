@@ -4,4 +4,7 @@ class CullingOptions
 	bool CullSectors;
 	bool UseDotProduct;
 	bool UseAABBClipPos = true;
+
+	bool DebugAABBClippPos;
+	bool DebugDotProduct;
 }

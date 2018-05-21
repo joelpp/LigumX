@@ -28,6 +28,10 @@ const bool& GetUseDotProduct() { return m_UseDotProduct; };
 void SetUseDotProduct(bool value) { m_UseDotProduct = value; }; 
 const bool& GetUseAABBClipPos() { return m_UseAABBClipPos; }; 
 void SetUseAABBClipPos(bool value) { m_UseAABBClipPos = value; }; 
+const bool& GetDebugAABBClippPos() { return m_DebugAABBClippPos; }; 
+void SetDebugAABBClippPos(bool value) { m_DebugAABBClippPos = value; }; 
+const bool& GetDebugDotProduct() { return m_DebugDotProduct; }; 
+void SetDebugDotProduct(bool value) { m_DebugDotProduct = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -35,8 +39,10 @@ bool m_CullEntities = false;
 bool m_CullSectors = false;
 bool m_UseDotProduct = false;
 bool m_UseAABBClipPos = true;
+bool m_DebugAABBClippPos = false;
+bool m_DebugDotProduct = false;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CullingOptionsPIDX
@@ -47,6 +53,8 @@ PIDX_CullEntities,
 PIDX_CullSectors,
 PIDX_UseDotProduct,
 PIDX_UseAABBClipPos,
+PIDX_DebugAABBClippPos,
+PIDX_DebugDotProduct,
 };
 bool Serialize(bool writing);
 

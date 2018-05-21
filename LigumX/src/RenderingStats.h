@@ -22,12 +22,16 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const int& GetNumVisibleEntities() { return m_NumVisibleEntities; }; 
 void SetNumVisibleEntities(int value) { m_NumVisibleEntities = value; }; 
+void AddTo_NumVisibleEntities(int value) { m_NumVisibleEntities += value; };
 const int& GetNumVisibleSectors() { return m_NumVisibleSectors; }; 
 void SetNumVisibleSectors(int value) { m_NumVisibleSectors = value; }; 
+void AddTo_NumVisibleSectors(int value) { m_NumVisibleSectors += value; };
 const int& GetNumDebugModels() { return m_NumDebugModels; }; 
 void SetNumDebugModels(int value) { m_NumDebugModels = value; }; 
+void AddTo_NumDebugModels(int value) { m_NumDebugModels += value; };
 const int& GetNum2DMessages() { return m_Num2DMessages; }; 
 void SetNum2DMessages(int value) { m_Num2DMessages = value; }; 
+void AddTo_Num2DMessages(int value) { m_Num2DMessages += value; };
 private:
 int m_ObjectID;
 std::string m_Name;

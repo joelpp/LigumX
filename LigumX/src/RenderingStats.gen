@@ -1,8 +1,14 @@
 class RenderingStats
 {
+	[adder]
 	int NumVisibleEntities;
+	[adder]
 	int NumVisibleSectors;
 
+	[adder]
 	int NumDebugModels;
+	[adder]
 	int Num2DMessages;
+
+	float fps;
 }

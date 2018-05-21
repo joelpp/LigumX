@@ -12,6 +12,15 @@
 #include "Model.h"
 #include "Renderer.h"
 
+#pragma region  FORWARD_DECLARATIONS RenderDataManager
+#include "property.h"
+
+class RenderDataManager;
+class CullingOptions;
+class RenderingStats;
+
+
+#pragma endregion  FORWARD_DECLARATIONS RenderDataManager
 extern RenderDataManager* g_RenderDataManager;
 
 class Camera;
@@ -96,6 +105,39 @@ private:
 
 class RenderDataManager
 {
+#pragma region  HEADER RenderDataManager
+public:
+static const int ClassID = 2933429220;
+static const LXType Type = LXType_RenderDataManager;
+static constexpr const char* ClassName = "RenderDataManager";
+
+const int& GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
+CullingOptions*& GetCullingOptions() { return m_CullingOptions; }; 
+void SetCullingOptions(CullingOptions* value) { m_CullingOptions = value; }; 
+RenderingStats*& GetRenderingStats() { return m_RenderingStats; }; 
+void SetRenderingStats(RenderingStats* value) { m_RenderingStats = value; }; 
+private:
+int m_ObjectID;
+std::string m_Name;
+CullingOptions* m_CullingOptions = nullptr;
+RenderingStats* m_RenderingStats = nullptr;
+public:
+static const int g_PropertyCount = 4;
+static const ClassPropertyData g_Properties[g_PropertyCount];
+
+enum g_RenderDataManagerPIDX
+{
+PIDX_ObjectID,
+PIDX_Name,
+PIDX_CullingOptions,
+PIDX_RenderingStats,
+};
+bool Serialize(bool writing);
+
+#pragma endregion  HEADER RenderDataManager
 
 public:
     std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;
@@ -163,14 +205,10 @@ public:
 	std::vector<AABBJob>& GetAABBJobs();
 	void ClearAABBJobs();
 
-	int GetNumVisibleSectors() { return m_NumVisibleSectors; }
-	int GetNumVisibleEntities() { return m_NumVisibleEntities; }
 	const std::vector<Entity*>& GetVisibleEntities() { return m_VisibleEntities; }
 	const std::vector<Sector*>& GetVisibleSectors() { return m_VisibleSectors; }
 
 private:
-	REGISTERCLASS(RenderDataManager);
-    
 	std::vector<S2DMessage> m_2DMessages;
 	std::vector<TimedMessage> m_TimedMessages;
 	std::vector<AABBJob> m_AABBJobs;
@@ -184,7 +222,4 @@ private:
 	std::vector<Sector*> m_VisibleSectors;
 	const int m_MaxVisibleSectors = 4096;
 
-
-	int m_NumVisibleEntities;
-	int m_NumVisibleSectors;
 };

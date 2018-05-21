@@ -50,6 +50,7 @@ enum LXType
 	LXType_TerrainEditionMode,
 	LXType_TerrainTool,
 	LXType_Texture,
+	LXType_RenderDataManager,
 	LXType_Way,
 	LXType_World,
 	LXType_bool,

@@ -370,6 +370,7 @@
     <None Include="src\OSMTool.gen" />
     <None Include="src\PickingTool.gen" />
     <None Include="src\PostEffects.gen" />
+    <None Include="src\RenderDataManager.gen" />
     <None Include="src\renderer.gen" />
     <None Include="src\RenderingStats.gen" />
     <None Include="src\Sector.gen" />
