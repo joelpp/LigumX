@@ -32,6 +32,8 @@ void AddTo_NumDebugModels(int value) { m_NumDebugModels += value; };
 const int& GetNum2DMessages() { return m_Num2DMessages; }; 
 void SetNum2DMessages(int value) { m_Num2DMessages = value; }; 
 void AddTo_Num2DMessages(int value) { m_Num2DMessages += value; };
+const float& Getfps() { return m_fps; }; 
+void Setfps(float value) { m_fps = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -39,8 +41,9 @@ int m_NumVisibleEntities = 0;
 int m_NumVisibleSectors = 0;
 int m_NumDebugModels = 0;
 int m_Num2DMessages = 0;
+float m_fps = 0.f;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RenderingStatsPIDX
@@ -51,6 +54,7 @@ PIDX_NumVisibleEntities,
 PIDX_NumVisibleSectors,
 PIDX_NumDebugModels,
 PIDX_Num2DMessages,
+PIDX_fps,
 };
 bool Serialize(bool writing);
 

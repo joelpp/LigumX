@@ -36,11 +36,18 @@ void BoundingBoxComponent::UpdateVertices()
 
 void BoundingBoxComponent::Update()
 {
+	if (GetParentEntity()->GetHasMoved())
+	{
+		GetParentEntity()->UpdateAABB();
+	}
+
 	glm::vec3 position;
+
 	if (m_UpdatesWithEntity)
 	{
 		position = GetParentEntity()->GetPosition();
 	}
+
 	position += m_BoundingBox.GetStartPoint() + m_BoundingBox.GetScale() / 2.f;
 
 	glm::mat4x4 toWorld = glm::mat4(1.0f); 
@@ -50,11 +57,14 @@ void BoundingBoxComponent::Update()
 
 	m_ModelToWorldMatrix = toWorld;
 
+	if (GetParentEntity()->GetHasMoved())
+	{
+		UpdateVertices();
+	}
 }
 
 void BoundingBoxComponent::SetStartAndScale(const glm::vec3& start, const glm::vec3& scale)
 {
 	m_BoundingBox.SetStartPoint(start);
 	m_BoundingBox.SetScale(scale);
-	Update();
 }

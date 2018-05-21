@@ -15,10 +15,12 @@ const ClassPropertyData Entity::g_Properties[] =
 { "ObjectID", PIDX_ObjectID, offsetof(Entity, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
 { "Name", PIDX_Name, offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
 { "Visible", PIDX_Visible, offsetof(Entity, m_Visible), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "Position", PIDX_Position, offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
-{ "RotationAngle", PIDX_RotationAngle, offsetof(Entity, m_RotationAngle), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
-{ "RotationAxis", PIDX_RotationAxis, offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
-{ "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "ModelToWorldMatrix", PIDX_ModelToWorldMatrix, offsetof(Entity, m_ModelToWorldMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden, 0, 0, }, 
+{ "Position", PIDX_Position, offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_SetCallback | PropertyFlags_Adder, 0, 0, }, 
+{ "RotationAngle", PIDX_RotationAngle, offsetof(Entity, m_RotationAngle), 0, LXType_float, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
+{ "RotationAxis", PIDX_RotationAxis, offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
+{ "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
+{ "HasMoved", PIDX_HasMoved, offsetof(Entity, m_HasMoved), 0, LXType_bool, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "PickingID", PIDX_PickingID, offsetof(Entity, m_PickingID), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_Model, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
@@ -58,7 +60,8 @@ Entity::Entity()
 	maxBackwardSpeed(-10.f),
 	angle(0.f), 
 	turning(0), 
-	desiredSpeed(0.f)
+	desiredSpeed(0.f),
+	m_HasMoved(true)
 {
 	m_PickingID = g_NextEntityPickingID;
 	g_NextEntityPickingID += 0.5f;
@@ -90,6 +93,10 @@ vec3 Entity::GetLateralVelocity() const {
     return rightVector * dot(rightVector, velocity);
 }
 
+void Entity::SetPositionCallback(const glm::vec3& position)
+{
+	m_Position = position;
+}
 
 void Entity::SetModelCallback(Model* model)
 {
@@ -107,9 +114,6 @@ void Entity::UpdateAABB()
 	{
 		BoundingBoxComponent* bbComponent = GetComponent<BoundingBoxComponent>();
 		bbComponent->SetStartAndScale(min, max - min);
-		bbComponent->Update();
-		bbComponent->UpdateVertices();
-
 	}
 }
 
@@ -126,9 +130,7 @@ void Entity::Update(double dt)
 		component->Update();
 	}
 
-
-	// todo : check out what adrien did for cars
-	// , but for now it sleeps safely in source control
+	SetHasMoved(false);
 }
 
 

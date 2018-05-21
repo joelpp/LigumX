@@ -37,15 +37,24 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const bool& GetVisible() { return m_Visible; }; 
 void SetVisible(bool value) { m_Visible = value; }; 
+const glm::mat4& GetModelToWorldMatrix() { return m_ModelToWorldMatrix; }; 
+void SetModelToWorldMatrix(glm::mat4 value) { m_ModelToWorldMatrix = value; }; 
 const glm::vec3& GetPosition() { return m_Position; }; 
-void SetPosition(glm::vec3 value) { m_Position = value; }; 
+void SetPosition(glm::vec3 value) { SetPositionCallback(value); }; 
+void SetPositionCallback(glm::vec3 value);
 void AddTo_Position(glm::vec3 value) { m_Position += value; };
 const float& GetRotationAngle() { return m_RotationAngle; }; 
-void SetRotationAngle(float value) { m_RotationAngle = value; }; 
+void SetRotationAngle(float value) { SetRotationAngleCallback(value); }; 
+void SetRotationAngleCallback(float value);
 const glm::vec3& GetRotationAxis() { return m_RotationAxis; }; 
-void SetRotationAxis(glm::vec3 value) { m_RotationAxis = value; }; 
+void SetRotationAxis(glm::vec3 value) { SetRotationAxisCallback(value); }; 
+void SetRotationAxisCallback(glm::vec3 value);
 const glm::vec3& GetScale() { return m_Scale; }; 
-void SetScale(glm::vec3 value) { m_Scale = value; }; 
+void SetScale(glm::vec3 value) { SetScaleCallback(value); }; 
+void SetScaleCallback(glm::vec3 value);
+const bool& GetHasMoved() { return m_HasMoved; }; 
+void SetHasMoved(bool value) { SetHasMovedCallback(value); }; 
+void SetHasMovedCallback(bool value);
 const float& GetPickingID() { return m_PickingID; }; 
 void SetPickingID(float value) { m_PickingID = value; }; 
 Model*& GetModel() { return m_Model; }; 
@@ -60,16 +69,18 @@ private:
 int m_ObjectID;
 std::string m_Name;
 bool m_Visible = false;
+glm::mat4 m_ModelToWorldMatrix;
 glm::vec3 m_Position = glm::vec3(0, 0, 0);
 float m_RotationAngle = 0.f;
 glm::vec3 m_RotationAxis = glm::vec3(0, 0, 0);
 glm::vec3 m_Scale = glm::vec3(0, 0, 0);
+bool m_HasMoved = false;
 float m_PickingID = 0.f;
 Model* m_Model = nullptr;
 bool m_IsLight = false;
 std::vector<Component*> m_Components;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EntityPIDX
@@ -77,10 +88,12 @@ enum g_EntityPIDX
 PIDX_ObjectID,
 PIDX_Name,
 PIDX_Visible,
+PIDX_ModelToWorldMatrix,
 PIDX_Position,
 PIDX_RotationAngle,
 PIDX_RotationAxis,
 PIDX_Scale,
+PIDX_HasMoved,
 PIDX_PickingID,
 PIDX_Model,
 PIDX_IsLight,
@@ -123,8 +136,6 @@ public:
 
     glm::vec3 color;
     ControllerType type;
-
-	glm::mat4x4 m_ModelToWorldMatrix;
 
 	template <typename T>
 	T* GetComponent()

@@ -652,7 +652,7 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 
 		SetPipeline(material->GetShaderFamily());
 
-		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 		if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
 		{
@@ -802,7 +802,7 @@ void Renderer::RenderTerrain()
 
 			if (entity)
 			{
-				SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+				SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 				terrainMaterial = entity->GetModel()->GetMaterials()[0];
 
 				SetFragmentUniform(7, "g_AlbedoTexture");
@@ -972,7 +972,7 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	{
 		Entity* entity = sector->GetTerrainPatchEntity();
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
-		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 		SetVertexUniform(3, "g_HeightfieldTexture");
 		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
@@ -988,7 +988,7 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 	{
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
-		SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 	
 		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
 		{
@@ -1001,7 +1001,7 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 		for (Entity* entity : m_World->GetDebugEntities())
 		{
 			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
-			SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+			SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 			for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
 			{
@@ -1282,7 +1282,7 @@ void Renderer::DrawManipulator(Entity* entity)
 	SetPipeline(pPipelineSolidColor);
 
 	SetViewUniforms(m_DebugCamera);
-	SetVertexUniform(entity->m_ModelToWorldMatrix, "g_ModelToWorldMatrix");
+	SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 	SetFragmentUniform(glm::vec3(1,0,0), "g_InputColor");
 
 

@@ -3,11 +3,23 @@ class Entity
 {
 	bool Visible;
 
-	[adder]
+	[hidden]
+	glm::mat4 ModelToWorldMatrix;
+
+	[adder, setcallback]
 	glm::vec3 Position;
+	
+	[setcallback]
 	float RotationAngle;
+
+	[setcallback]
 	glm::vec3 RotationAxis;
+
+	[setcallback]
 	glm::vec3 Scale;
+
+	[setcallback]
+	bool HasMoved;
 
 	[readonly]
 	float PickingID;
@@ -18,5 +30,6 @@ class Entity
 	bool IsLight;
 
 	std::vector<Component> Components;
+
 
 }

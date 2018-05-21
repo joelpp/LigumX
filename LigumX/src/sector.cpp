@@ -127,7 +127,7 @@ void Sector::CreateHeightfield()
 	glm::vec3 worldPosition = glm::vec3(m_WorldPosition, 0);
 	mat = glm::translate(mat, worldPosition);
 	mat = glm::scale(mat, scale);
-	m_TerrainPatchEntity->m_ModelToWorldMatrix = mat;
+	m_TerrainPatchEntity->SetModelToWorldMatrix(mat);
 
 	std::stringstream name;
 	name << "Terrain Patch [";

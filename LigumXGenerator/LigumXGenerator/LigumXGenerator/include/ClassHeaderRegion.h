@@ -116,8 +116,10 @@ public:
 
 			if (var.m_PropertyFlags & PropertyFlags_SetCallback)
 			{
-				m_Stream << "void Set" << var.m_Name << "Callback(" << var.m_Type;
-				m_Stream << (ptr ? "*" : "");
+				m_Stream << "void Set" << var.m_Name << "Callback(";
+				m_Stream << ptr ? "" : "const";
+				m_Stream << var.m_Type;
+				m_Stream << (ptr ? "*" : "&");
 				m_Stream << " value);";
 				m_Stream << std::endl;
 			}

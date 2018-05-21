@@ -14,6 +14,7 @@ const ClassPropertyData RenderingStats::g_Properties[] =
 { "NumVisibleSectors", PIDX_NumVisibleSectors, offsetof(RenderingStats, m_NumVisibleSectors), 0, LXType_int, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "NumDebugModels", PIDX_NumDebugModels, offsetof(RenderingStats, m_NumDebugModels), 0, LXType_int, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
 { "Num2DMessages", PIDX_Num2DMessages, offsetof(RenderingStats, m_Num2DMessages), 0, LXType_int, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
+{ "fps", PIDX_fps, offsetof(RenderingStats, m_fps), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 bool RenderingStats::Serialize(bool writing)
 {
