@@ -1,0 +1,7 @@
+class CullingOptions
+{
+	bool CullEntities;
+	bool CullSectors;
+	bool UseDotProduct;
+	bool UseAABBClipPos = true;
+}

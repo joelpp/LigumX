@@ -511,10 +511,12 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 	for (Entity* e : entities)
 	{
 		bool visible = true;
+
 		if (g_EngineSettings->GetCullEntities() /*&& e == g_Editor->GetPickingTool()->GetPickedEntity()*/)
 		{
 			visible = IsAABBVisible(e->GetComponent<BoundingBoxComponent>()->GetBoundingBox().GetVertices(), camera);
 		}
+
 		if (!visible)
 		{
 			continue;
@@ -540,6 +542,30 @@ enum LeftRightTestResult
 
 bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Camera* camera)
 {
+
+	bool allDotPositive = true;
+	for (int i = 0; i < 8; ++i)
+	{
+		const glm::vec3& worldPosition = vertices[i];
+
+		bool visible = false;
+
+		glm::vec3 vertexToCam = worldPosition - camera->GetPosition();
+
+		float dotProduct = glm::dot(glm::normalize(vertexToCam), camera->GetFrontVector());
+		if (dotProduct < 0.f)
+		{
+			allDotPositive = false;
+			break;
+		}
+	}
+
+	if (allDotPositive)
+	{
+		return false;
+	}
+
+
 	const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();
 	bool oneVertexVisible = false;
 
@@ -580,14 +606,14 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 
 		oneVertexVisible = oneVertexVisible || visible;
 
-		over_lrtb[0] |= clipPos.x > -1;
-		under_lrtb[0] |= clipPos.x < -1;
-		over_lrtb[1] |= clipPos.x > 1;
-		under_lrtb[1] |= clipPos.x < 1;
-		over_lrtb[2] |= clipPos.y > -1;
-		under_lrtb[2] |= clipPos.y < -1;
-		over_lrtb[3] |= clipPos.y > 1;
-		under_lrtb[3] |= clipPos.y < 1;
+		over_lrtb[0]	|= clipPos.x > -1;
+		under_lrtb[0]	|= clipPos.x < -1;
+		over_lrtb[1]	|= clipPos.x > 1;
+		under_lrtb[1]	|= clipPos.x < 1;
+		over_lrtb[2]	|= clipPos.y > -1;
+		under_lrtb[2]	|= clipPos.y < -1;
+		over_lrtb[3]	|= clipPos.y > 1;
+		under_lrtb[3]	|= clipPos.y < 1;
 	}
 
 	static bool uselrtb = false;

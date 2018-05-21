@@ -94,7 +94,8 @@ private:
 
 };
 
-class RenderDataManager{
+class RenderDataManager
+{
 
 public:
     std::unordered_map<OSMElement::ElementType, std::vector<glm::vec3> > waysNodesPositionsMap;

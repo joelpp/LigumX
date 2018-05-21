@@ -1,0 +1,8 @@
+class RenderingStats
+{
+	int NumVisibleEntities;
+	int NumVisibleSectors;
+
+	int NumDebugModels;
+	int Num2DMessages;
+}
