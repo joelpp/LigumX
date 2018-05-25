@@ -5,8 +5,11 @@
 #include "Material.h"
 #include "Model.h"
 #include "Renderer.h"
+#include "Editor.h"
+#include "OSMTool.h"
 
 #include "Entity.h"
+#include "OSMElementComponent.h"	
 #include "LigumX.h"
 #include "World.h"
 #include "Sector.h"
@@ -66,10 +69,11 @@ struct TerrainColorEditingJob
 {
 	TerrainColorEditingJob() { }
 
-	TerrainColorEditingJob(Sector* sector, glm::ivec2 texelMin, glm::ivec2 texelMax)
+	TerrainColorEditingJob(Sector* sector, glm::ivec2 texelMin, glm::ivec2 texelMax, const glm::vec4& color)
 		: m_Sector(sector)
 		, m_TexelMin(texelMin)
 		, m_TexelMax(texelMax)
+		, m_Color (color)
 	{
 
 	}
@@ -160,16 +164,40 @@ struct TerrainColorEditingJob
 					continue;
 				}
 
-				offsetVal[index] = (unsigned char)255;
+				offsetVal[index]   = (unsigned char) (m_Color[0] * 255);
+				offsetVal[index+1] = (unsigned char) (m_Color[1] * 255);
+				offsetVal[index+2] = (unsigned char) (m_Color[2] * 255);
+				offsetVal[index+3] = (unsigned char) (m_Color[3] * 255);
 			}
 		}
 
 		tex->UpdateFromData();
+
+
+		if (m_LogJobs)
+		{
+			static int s_NumTerrainJobs;
+			std::stringstream ss;
+			ss << "Terrain job " << s_NumTerrainJobs << std::endl;
+			ss << "Sector : "	<< glm::to_string(m_Sector->GetOffsetIndex()) << std::endl;
+			ss << "texelMin : " << glm::to_string(texelMin) << std::endl;
+			ss << "m_TexelMax : " << glm::to_string(m_TexelMax) << std::endl;
+			ss << "m_Color : " << glm::to_string(m_Color) << std::endl;
+			ss << std::endl;
+
+			s_NumTerrainJobs++;
+
+			std::cout << ss.str();
+		}
 	}
 
 	Sector* m_Sector;
 	glm::ivec2 m_TexelMin;
 	glm::ivec2 m_TexelMax;
+
+	glm::vec4 m_Color;
+
+	bool m_LogJobs = true;
 };
 
 
@@ -405,7 +433,7 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			glm::ivec2 texelMin = glm::ivec2(plotUVMin * glm::vec2(tex->GetSize()));
 			glm::ivec2 texelMax = glm::ivec2(plotUVMax * glm::vec2(tex->GetSize()));
 
-			TerrainColorEditingJob terrainJob(sector, texelMin, texelMax);
+			TerrainColorEditingJob terrainJob(sector, texelMin, texelMax, glm::vec4(0, 1, 0, 1));
 			terrainJob.Execute();
 
 			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
@@ -514,6 +542,10 @@ void OSMDataProcessor::ProcessGenericBuilding(Sector* sector, Way* way)
 
 		buildingEntity->UpdateAABB();
 
+		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
+		osmElementComponent->SetWay(way);
+		buildingEntity->AddTo_Components(osmElementComponent);
+
 		//World* world = LigumX::GetInstance().GetWorld();
 		//world->AddTo_Entities(roadEntity);
 
@@ -616,6 +648,10 @@ void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
 		
 		roadEntity->SetVisible(true);
 
+		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
+		osmElementComponent->SetWay(way);
+		roadEntity->AddTo_Components(osmElementComponent);
+
 		//World* world = LigumX::GetInstance().GetWorld();
 		//world->AddTo_Entities(roadEntity);
 
@@ -653,7 +689,9 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 
 		buildingEntity->SetVisible(true);
 
-
+		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
+		osmElementComponent->SetWay(way);
+		buildingEntity->AddTo_Components(osmElementComponent);
 		//World* world = LigumX::GetInstance().GetWorld();
 		//world->AddTo_Entities(roadEntity);
 
@@ -711,7 +749,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 						 wayType == OSMElementType::OSMElementType_NaturalWater ||
 						 wayType == OSMElementType::OSMElementType_Landuse);
 
-		if ( false && fillFlag)
+		if (fillFlag)
 		{
 			Building building(way);
 			bool success = building.GenerateModel();
@@ -737,7 +775,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 				// todo JPP : fix this mess
 				// corners bug
-
+#if 0
 				if (texelMin.x < 0)
 				{
 					TerrainColorEditingJob additionalJob;
@@ -809,10 +847,10 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 					terrainJobs.push_back(additionalJob);
 				}
-
-				TerrainColorEditingJob mainJob(sector, texelMin, texelMax);
+#endif
+				glm::vec4 color = glm::vec4(g_Editor->GetOSMTool()->GetWayDebugColors()[way->GetOSMElementType()], 1.f);
+				TerrainColorEditingJob mainJob(sector, texelMin, texelMax, glm::vec4(color));
 				terrainJobs.push_back(mainJob);
-
 
 				for (TerrainColorEditingJob& job : terrainJobs)
 				{
@@ -823,8 +861,12 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 	}
 
-	for (Way* addrInterpWay : addressInterpolationWays)
+	if (m_Settings->GetProcessAddressInterpolation())
 	{
-		ProcessAddressInterpolation(sector, addrInterpWay);
+		for (Way* addrInterpWay : addressInterpolationWays)
+		{
+			ProcessAddressInterpolation(sector, addrInterpWay);
+		}
 	}
+	
 }

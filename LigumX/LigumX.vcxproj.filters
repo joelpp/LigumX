@@ -228,6 +228,9 @@
     <ClCompile Include="src\RenderingStats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\OSMElementComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -551,6 +554,9 @@
     <ClInclude Include="src\RenderingStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\OSMElementComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -598,5 +604,6 @@
     <None Include="src\CullingOptions.gen" />
     <None Include="src\RenderingStats.gen" />
     <None Include="src\RenderDataManager.gen" />
+    <None Include="src\OSMElementComponent.gen" />
   </ItemGroup>
 </Project>

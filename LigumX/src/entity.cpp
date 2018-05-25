@@ -96,6 +96,35 @@ vec3 Entity::GetLateralVelocity() const {
 void Entity::SetPositionCallback(const glm::vec3& position)
 {
 	m_Position = position;
+	SetHasMoved(true);
+}
+
+void Entity::SetHasMovedCallback(const bool& value)
+{
+	m_HasMoved = value;
+
+	if (m_HasMoved)
+	{
+		UpdateAABB();
+	}
+}
+
+void Entity::SetScaleCallback(const glm::vec3& value)
+{
+	m_Scale = value;
+	SetHasMoved(true);
+}
+
+void Entity::SetRotationAxisCallback(const glm::vec3& value)
+{
+	m_RotationAxis = value;
+	SetHasMoved(true);
+}
+
+void Entity::SetRotationAngleCallback(const float& value)
+{
+	m_RotationAngle = value;
+	SetHasMoved(true);
 }
 
 void Entity::SetModelCallback(Model* model)
@@ -119,11 +148,14 @@ void Entity::UpdateAABB()
 
 void Entity::Update(double dt) 
 {
-	glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), m_Position);
-	toWorld = glm::rotate(toWorld, m_RotationAngle, m_RotationAxis);
-	toWorld = glm::scale(toWorld, m_Scale);
+	if (m_HasMoved)
+	{
+		glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), m_Position);
+		toWorld = glm::rotate(toWorld, m_RotationAngle, m_RotationAxis);
+		toWorld = glm::scale(toWorld, m_Scale);
 
-	m_ModelToWorldMatrix = toWorld;
+		m_ModelToWorldMatrix = toWorld;
+	}
 
 	for (Component* component : m_Components)
 	{

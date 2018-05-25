@@ -106,6 +106,7 @@ void main()
 	//lerp0 = mix(lerp0, Rock, splatMap.y);
 	//lerp0 = mix(lerp0, Sand, splatMap.z);
 	pixelData.m_DiffuseColor.rgb = mix(grass, Rock, 1.f - splatMap.z);
+	pixelData.m_DiffuseColor.rgb = splatMap.rgb * splatMap.a + Rock * (1 - splatMap.a);
 
 	//diffuse = mix(diffuse, grass, splatMap.x);
 	//diffuse = mix(diffuse, Rock, splatMap.y);

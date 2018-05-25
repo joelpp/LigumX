@@ -14,4 +14,6 @@ class OSMDataProcessorSettings
 	
 	float MinNeighborDistance = 40.f;
 	float MaxNeighborDistance = 70.f;
+
+	bool ProcessAddressInterpolation = true;
 }

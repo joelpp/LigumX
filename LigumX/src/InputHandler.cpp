@@ -85,18 +85,18 @@ void InputHandler::HandleKeyboardInput(int key, int scancode, int action, int mo
 }
 
 
-void InputHandler::SetMousePositionCallback(glm::vec2 value)
+void InputHandler::SetMousePositionCallback(const glm::vec2& value)
 {
 	m_MousePosition = value;
 }
 
-void InputHandler::SetMouseClickPositionCallback(glm::vec2 value)
+void InputHandler::SetMouseClickPositionCallback(const glm::vec2& value)
 {
 	m_LastMouseClickPosition = m_MouseClickPosition;
 	m_MouseClickPosition = value;
 }
 
-void InputHandler::SetMouse1PressedCallback(bool value)
+void InputHandler::SetMouse1PressedCallback(const bool& value)
 {
 	m_Mouse1Pressed = value;
 }

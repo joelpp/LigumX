@@ -116,6 +116,20 @@ Sector::Sector(const glm::ivec2& index)
 	CreateHeightfield();
 }
 
+void UpdateEntityList2(const std::vector<Entity*>& entityList)
+{
+	for (Entity* entity : entityList)
+	{
+		entity->Update(0);
+	}
+}
+
+void Sector::Update()
+{
+	UpdateEntityList2(m_Data->GetGraphicalData()->GetRoadEntities());
+	UpdateEntityList2(m_Data->GetGraphicalData()->GetStaticEntities());
+}
+
 void Sector::CreateHeightfield()
 {
 	m_Heightfield = new Heightfield(glm::vec2(m_OffsetIndex));

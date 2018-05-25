@@ -96,8 +96,6 @@ void PickingTool::SetPickedEntityCallback(Entity* entity)
 		}
 	}
 
-
-
 	m_PickedEntity = entity;
 }
 

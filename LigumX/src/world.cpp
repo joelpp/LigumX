@@ -259,15 +259,22 @@ std::vector<Way*> World::getAllContourLines(SectorList* sectors)
 	return contours;
 }
 
-void World::Update()
+void UpdateEntityList(const std::vector<Entity*>& entityList)
 {
-	for (Entity* entity : m_Entities)
+	for (Entity* entity : entityList)
 	{
 		entity->Update(0);
 	}
-	for (Entity* entity : m_DebugEntities)
+}
+
+void World::Update()
+{
+	UpdateEntityList(m_Entities);
+	UpdateEntityList(m_DebugEntities);
+
+	for (Sector* sector : m_Sectors)
 	{
-		entity->Update(0);
+		sector->Update();
 	}
 }
 

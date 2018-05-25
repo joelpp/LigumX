@@ -16,6 +16,7 @@ const ClassPropertyData CullingOptions::g_Properties[] =
 { "UseAABBClipPos", PIDX_UseAABBClipPos, offsetof(CullingOptions, m_UseAABBClipPos), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DebugAABBClippPos", PIDX_DebugAABBClippPos, offsetof(CullingOptions, m_DebugAABBClippPos), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 { "DebugDotProduct", PIDX_DebugDotProduct, offsetof(CullingOptions, m_DebugDotProduct), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
+{ "DebugDotProductMaxDistance", PIDX_DebugDotProductMaxDistance, offsetof(CullingOptions, m_DebugDotProductMaxDistance), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 };
 bool CullingOptions::Serialize(bool writing)
 {

@@ -35,6 +35,7 @@ enum LXType
 	LXType_Node,
 	LXType_OSMDataProcessor,
 	LXType_OSMDataProcessorSettings,
+	LXType_OSMElementComponent,
 	LXType_OSMElementType,
 	LXType_OSMTool,
 	LXType_PickingTool,

@@ -1,3 +1,6 @@
+#include "OSMDataProcessorSettings.h"
+
+
 #pragma region  CLASS_SOURCE OSMDataProcessorSettings
 
 #include "OSMDataProcessorSettings.h"
@@ -18,6 +21,7 @@ const ClassPropertyData OSMDataProcessorSettings::g_Properties[] =
 { "MaxHeight", PIDX_MaxHeight, offsetof(OSMDataProcessorSettings, m_MaxHeight), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "MinNeighborDistance", PIDX_MinNeighborDistance, offsetof(OSMDataProcessorSettings, m_MinNeighborDistance), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "MaxNeighborDistance", PIDX_MaxNeighborDistance, offsetof(OSMDataProcessorSettings, m_MaxNeighborDistance), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "ProcessAddressInterpolation", PIDX_ProcessAddressInterpolation, offsetof(OSMDataProcessorSettings, m_ProcessAddressInterpolation), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
 };
 bool OSMDataProcessorSettings::Serialize(bool writing)
 {

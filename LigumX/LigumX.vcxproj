@@ -193,6 +193,7 @@
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\OSMDataProcessor.cpp" />
     <ClCompile Include="src\OSMDataProcessorSettings.cpp" />
+    <ClCompile Include="src\OSMElementComponent.cpp" />
     <ClCompile Include="src\OSMTool.cpp" />
     <ClCompile Include="src\OSMElement.cpp" />
     <ClCompile Include="src\PerlinNoise.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="src\ObjectManager.h" />
     <ClInclude Include="src\OSMDataProcessor.h" />
     <ClInclude Include="src\OSMDataProcessorSettings.h" />
+    <ClInclude Include="src\OSMElementComponent.h" />
     <ClInclude Include="src\OSMTool.h" />
     <ClInclude Include="src\OSMElement.h" />
     <ClInclude Include="src\PerlinNoise.h" />
@@ -367,6 +369,7 @@
     <None Include="src\OSMDataProcessorSettings.gen" />
     <None Include="src\OSMElement.gen" />
     <None Include="src\OSMDataProcessor.gen" />
+    <None Include="src\OSMElementComponent.gen" />
     <None Include="src\OSMTool.gen" />
     <None Include="src\PickingTool.gen" />
     <None Include="src\PostEffects.gen" />

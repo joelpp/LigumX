@@ -39,26 +39,20 @@ void BoundingBoxComponent::Update()
 	if (GetParentEntity()->GetHasMoved())
 	{
 		GetParentEntity()->UpdateAABB();
-	}
 
-	glm::vec3 position;
+		glm::vec3 position;
 
-	if (m_UpdatesWithEntity)
-	{
 		position = GetParentEntity()->GetPosition();
-	}
 
-	position += m_BoundingBox.GetStartPoint() + m_BoundingBox.GetScale() / 2.f;
+		position += m_BoundingBox.GetStartPoint() + m_BoundingBox.GetScale() / 2.f;
 
-	glm::mat4x4 toWorld = glm::mat4(1.0f); 
-	toWorld = glm::translate(toWorld, position);
-	toWorld = glm::rotate(toWorld, GetParentEntity()->GetRotationAngle(), GetParentEntity()->GetRotationAxis());
-	toWorld = glm::scale(toWorld, GetParentEntity()->GetScale() * m_BoundingBox.GetScale());
+		glm::mat4x4 toWorld = glm::mat4(1.0f); 
+		toWorld = glm::translate(toWorld, position);
+		toWorld = glm::rotate(toWorld, GetParentEntity()->GetRotationAngle(), GetParentEntity()->GetRotationAxis());
+		toWorld = glm::scale(toWorld, GetParentEntity()->GetScale() * m_BoundingBox.GetScale());
 
-	m_ModelToWorldMatrix = toWorld;
+		m_ModelToWorldMatrix = toWorld;
 
-	if (GetParentEntity()->GetHasMoved())
-	{
 		UpdateVertices();
 	}
 }

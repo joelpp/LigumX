@@ -101,6 +101,8 @@ public:
 
 	~Sector();
 
+	void Update();
+
 	static glm::ivec2 GetNormalizedSectorIndex(const glm::vec2& position);
 	static glm::vec2 GetStartPosition(glm::vec2 position);
 

@@ -7,4 +7,5 @@ class CullingOptions
 
 	bool DebugAABBClippPos;
 	bool DebugDotProduct;
+	float DebugDotProductMaxDistance = 30.f;
 }

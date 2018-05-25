@@ -596,9 +596,9 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 
 			float dotProduct = glm::dot(glm::normalize(vertexToCam), camera->GetFrontVector());
 
-			bool visible = dotProduct < -0.9;
+			bool visible = dotProduct < -0.8;
 
-			if (m_CullingOptions->GetDebugDotProduct())
+			if (m_CullingOptions->GetDebugDotProduct() && vertexToCam.length() < m_CullingOptions->GetDebugDotProductMaxDistance())
 			{
 				const glm::vec2& windowSize = glm::vec2(Renderer::GetInstance().GetWindowSize());
 
@@ -614,7 +614,7 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 				Add2DMessage(ss.str(), glm::ivec2(ndc), msgColor);
 			}
 
-			if (dotProduct < 0.f)
+			if (visible)
 			{
 				allDotsBad = false;
 

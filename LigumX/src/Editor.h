@@ -60,7 +60,7 @@ const EEditorTool& GetActiveTool() { return m_ActiveTool; };
 void SetActiveTool(EEditorTool value) { m_ActiveTool = value; }; 
 const glm::vec4& GetXYZMask() { return m_XYZMask; }; 
 void SetXYZMask(glm::vec4 value) { SetXYZMaskCallback(value); }; 
-void SetXYZMaskCallback(glm::vec4 value);
+void SetXYZMaskCallback(const glm::vec4& value);
 void AddTo_XYZMask(glm::vec4 value) { m_XYZMask += value; };
 const bool& GetManipulatorDragging() { return m_ManipulatorDragging; }; 
 void SetManipulatorDragging(bool value) { m_ManipulatorDragging = value; }; 

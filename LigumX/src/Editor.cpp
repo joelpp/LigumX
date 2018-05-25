@@ -23,12 +23,15 @@
 #include "SunLight.h"
 #include "EngineStats.h"
 #include "BoundingBoxComponent.h"
+#include "OSMElementComponent.h"
 #include "PostEffects.h"
 #include "Texture.h"
 
 #include "SectorManager.h"
 #include "Sector.h"
 #include "Heightfield.h"
+#include "OSMDataProcessor.h"
+#include "OSMDataProcessorSettings.h"
 
 #include "Node.h"
 #include "Way.h"
@@ -270,7 +273,7 @@ void Editor::UpdateTerrainEditor()
 
 }
 
-void Editor::SetXYZMaskCallback(glm::vec4 value)
+void Editor::SetXYZMaskCallback(const glm::vec4& value)
 {
 	m_XYZMask = value;
 }
@@ -752,6 +755,9 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_PROPERTY_PTR(Heightfield)
 	SHOW_PROPERTY_PTR(CullingOptions)
 	SHOW_PROPERTY_PTR(RenderingStats)
+	SHOW_PROPERTY_PTR(OSMElementComponent)
+	SHOW_PROPERTY_PTR(BoundingBoxComponent)
+	SHOW_PROPERTY_PTR(OSMDataProcessorSettings)
 		//case LXType_Model:
 		//{
 		//	ShowPropertyGridTemplate<Model>((Model*) ptr, name);
@@ -798,16 +804,6 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 
 		//	break;
 		//}
-
-	case LXType_Component:
-	{
-		if (ptr)
-		{
-			ShowPropertyGridTemplate<BoundingBoxComponent>((BoundingBoxComponent *&)ptr, name);
-		}
-
-		break;
-	}
 
 
 	SHOW_ENUM(ShaderFamily);
@@ -1269,6 +1265,7 @@ void Editor::RenderImgui()
 		ShowPropertyGridTemplate(world->GetSunLight(), "SunLight");
 		ShowPropertyGridTemplate(world, "World");
 		ShowPropertyGridTemplate(g_RenderDataManager, "RenderDataManager");
+		ShowPropertyGridTemplate(g_OSMDataProcessor, "OSMDataProcessor");
 
 		Editor* editor = this;
 		ShowPropertyGridTemplate(editor, "Editor");
