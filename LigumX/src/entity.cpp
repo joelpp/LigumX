@@ -20,6 +20,10 @@ const ClassPropertyData Entity::g_Properties[] =
 { "RotationAngle", PIDX_RotationAngle, offsetof(Entity, m_RotationAngle), 0, LXType_float, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "RotationAxis", PIDX_RotationAxis, offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
+{ "PreviousPosition", PIDX_PreviousPosition, offsetof(Entity, m_PreviousPosition), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "PreviousScale", PIDX_PreviousScale, offsetof(Entity, m_PreviousScale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
+{ "PreviousRotationAngle", PIDX_PreviousRotationAngle, offsetof(Entity, m_PreviousRotationAngle), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
+{ "PreviousRotationAxis", PIDX_PreviousRotationAxis, offsetof(Entity, m_PreviousRotationAxis), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, }, 
 { "HasMoved", PIDX_HasMoved, offsetof(Entity, m_HasMoved), 0, LXType_bool, false, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
 { "PickingID", PIDX_PickingID, offsetof(Entity, m_PickingID), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
 { "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_Model, true, LXType_None, PropertyFlags_SetCallback, 0, 0, }, 
@@ -146,8 +150,39 @@ void Entity::UpdateAABB()
 	}
 }
 
+// horrible hack but as long as I can't detect imgui inputs that's what happens.
+void Entity::CheckHasMoved()
+{
+	bool hasMoved = false;
+
+	if (m_Position != m_PreviousPosition)
+	{
+		m_PreviousPosition = m_Position;
+		hasMoved = true;
+	}
+	if (m_RotationAngle != m_PreviousRotationAngle)
+	{
+		m_PreviousRotationAngle = m_RotationAngle;
+		hasMoved = true;
+	}
+	if (m_RotationAxis != m_PreviousRotationAxis)
+	{
+		m_PreviousRotationAxis = m_RotationAxis;
+		hasMoved = true;
+	}
+	if (m_Scale != m_PreviousScale)
+	{
+		m_PreviousScale = m_Scale;
+		hasMoved = true;
+	}
+
+	SetHasMoved(hasMoved);
+}
+
 void Entity::Update(double dt) 
 {
+	CheckHasMoved();
+
 	if (m_HasMoved)
 	{
 		glm::mat4x4 toWorld = glm::translate(glm::mat4(1.0), m_Position);

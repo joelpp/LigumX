@@ -52,6 +52,14 @@ void SetRotationAxisCallback(const glm::vec3& value);
 const glm::vec3& GetScale() { return m_Scale; }; 
 void SetScale(glm::vec3 value) { SetScaleCallback(value); }; 
 void SetScaleCallback(const glm::vec3& value);
+const glm::vec3& GetPreviousPosition() { return m_PreviousPosition; }; 
+void SetPreviousPosition(glm::vec3 value) { m_PreviousPosition = value; }; 
+const glm::vec3& GetPreviousScale() { return m_PreviousScale; }; 
+void SetPreviousScale(glm::vec3 value) { m_PreviousScale = value; }; 
+const float& GetPreviousRotationAngle() { return m_PreviousRotationAngle; }; 
+void SetPreviousRotationAngle(float value) { m_PreviousRotationAngle = value; }; 
+const glm::vec3& GetPreviousRotationAxis() { return m_PreviousRotationAxis; }; 
+void SetPreviousRotationAxis(glm::vec3 value) { m_PreviousRotationAxis = value; }; 
 const bool& GetHasMoved() { return m_HasMoved; }; 
 void SetHasMoved(bool value) { SetHasMovedCallback(value); }; 
 void SetHasMovedCallback(const bool& value);
@@ -74,13 +82,17 @@ glm::vec3 m_Position = glm::vec3(0, 0, 0);
 float m_RotationAngle = 0.f;
 glm::vec3 m_RotationAxis = glm::vec3(0, 0, 0);
 glm::vec3 m_Scale = glm::vec3(0, 0, 0);
+glm::vec3 m_PreviousPosition = glm::vec3(0, 0, 0);
+glm::vec3 m_PreviousScale = glm::vec3(0, 0, 0);
+float m_PreviousRotationAngle = 0.f;
+glm::vec3 m_PreviousRotationAxis = glm::vec3(0, 0, 0);
 bool m_HasMoved = false;
 float m_PickingID = 0.f;
 Model* m_Model = nullptr;
 bool m_IsLight = false;
 std::vector<Component*> m_Components;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 17;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EntityPIDX
@@ -93,6 +105,10 @@ PIDX_Position,
 PIDX_RotationAngle,
 PIDX_RotationAxis,
 PIDX_Scale,
+PIDX_PreviousPosition,
+PIDX_PreviousScale,
+PIDX_PreviousRotationAngle,
+PIDX_PreviousRotationAxis,
 PIDX_HasMoved,
 PIDX_PickingID,
 PIDX_Model,
@@ -151,6 +167,7 @@ public:
 		return nullptr;
 	}
 
+	void CheckHasMoved();
 
 
 

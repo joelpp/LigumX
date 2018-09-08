@@ -136,6 +136,7 @@ public:
 				+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
 				+ (var.m_MinValue.size() > 0 ? var.m_MinValue : "0") + ", "
 				+ (var.m_MaxValue.size() > 0 ? var.m_MaxValue : "0") + ", "
+				+ "0, "
 				+ "}, ");
 		}
 

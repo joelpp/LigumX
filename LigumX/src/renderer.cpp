@@ -644,7 +644,6 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 	{
 
 		Material* material = model->GetMaterials()[i];
-
 		if (!material->GetEnabled())
 		{
 			continue;
