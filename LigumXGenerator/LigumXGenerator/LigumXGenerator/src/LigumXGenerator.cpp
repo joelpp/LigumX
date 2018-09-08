@@ -30,8 +30,6 @@
 
 int g_Now;
 
-bool g_ForceUpdateAllFiles = false;
-
 struct GeneratorFile
 {
 	std::string m_Name;
@@ -166,6 +164,16 @@ LogFile g_LogFile;
 
 
 
+void PrintLine(const char * line)
+{
+	std::cout << line << std::endl;
+}
+
+void PrintEmptyLine()
+{
+	std::cout << std::endl;
+}
+
 void AddToTypesMap(std::map<std::string, int>& map, std::string type)
 {
 	StringList toRemoveFromFoundTypes = { "::" };
@@ -215,12 +223,12 @@ std::string DefaultValueForType(bool isAPointer, const std::string& type)
 	{
 
 	}
-	ELSE_RETURN_DEFAULT("bool",			"false")
-	ELSE_RETURN_DEFAULT("int",			"0")
-	ELSE_RETURN_DEFAULT("float",		"0.f")
-	ELSE_RETURN_DEFAULT("glm::ivec2",	"glm::ivec2(0, 0)")
-	ELSE_RETURN_DEFAULT("glm::vec2",	"glm::vec2(0, 0)")
-	ELSE_RETURN_DEFAULT("glm::vec3",	"glm::vec3(0, 0, 0)")
+	ELSE_RETURN_DEFAULT("bool", "false")
+		ELSE_RETURN_DEFAULT("int", "0")
+		ELSE_RETURN_DEFAULT("float", "0.f")
+		ELSE_RETURN_DEFAULT("glm::ivec2", "glm::ivec2(0, 0)")
+		ELSE_RETURN_DEFAULT("glm::vec2", "glm::vec2(0, 0)")
+		ELSE_RETURN_DEFAULT("glm::vec3", "glm::vec3(0, 0, 0)")
 	else
 	{
 		return "";
@@ -384,9 +392,9 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 				unsigned int sizeWithDefautValue = 4;
 				unsigned int defaultValueTokenIndex = 3;
-				variable.m_DefaultValue = tokens.size() == sizeWithDefautValue ? 
-														   tokens[defaultValueTokenIndex] : 
-														   "";
+				variable.m_DefaultValue = tokens.size() == sizeWithDefautValue ?
+					tokens[defaultValueTokenIndex] :
+					"";
 
 				if (variable.m_DefaultValue.empty())
 				{
@@ -481,15 +489,15 @@ void InitializeGenerator()
 	g_AllowedTypesForGUI.push_back("bool");
 	g_AllowedTypesForGUI.push_back("glm::vec3");
 
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden,			"hidden");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly,		"readonly");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_SetCallback,	"setcallback");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_MinValue,		"min");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_MaxValue,		"max");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Transient,		"transient");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_NonEditable,	"noneditable");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Adder,			"adder");
-	EMPLACE_PROPERTY_FLAG(PropertyFlags_Enum,			"enum");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden, "hidden");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly, "readonly");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_SetCallback, "setcallback");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_MinValue, "min");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_MaxValue, "max");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Transient, "transient");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_NonEditable, "noneditable");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Adder, "adder");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_Enum, "enum");
 
 	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
 	g_ClassPropertyFlagsStringMap.emplace("globalinstance", ClassPropertyFlags_GlobalInstance);
@@ -512,7 +520,7 @@ void GeneratePropertyFile()
 	std::string propertyFileName = "property.h";
 	std::string filePath = g_GenerationRootDir + propertyFileName;
 
-	std::fstream propertyFile (filePath, std::fstream::out);
+	std::fstream propertyFile(filePath, std::fstream::out);
 	if (propertyFile.is_open())
 	{
 		WriteLineToFile(propertyFile, "#pragma once");
@@ -553,7 +561,7 @@ void GeneratePropertyFile()
 		// Property flags
 		WriteLineToFile(propertyFile, "enum PropertyFlags");
 		WriteLineToFile(propertyFile, "{");
-		
+
 		int power = 1;
 		for (auto& it = g_PropertyFlagsNames.begin(); it != g_PropertyFlagsNames.end(); ++it)
 		{
@@ -590,39 +598,17 @@ struct ClassPropertyData
 
 }
 
-
-int main()
+void DoMainProcessing(bool forceUpdateAll)
 {
-	const unsigned len = GetCurrentDirectory(0, 0);
-	if (!len)
-		return 1;
-	std::string currentDir(len, '\0');
-	if (!GetCurrentDirectoryA(len, &currentDir[0]))
-		return 1;
-
-	currentDir = currentDir.substr(0, currentDir.size() - 1);
-
-	std::string projectName = "LigumX";
-	
-	std::string generationOffset = "\\..\\..\\..\\";
-	
-	g_GenerationRootDir = currentDir + generationOffset + projectName + "\\src\\";
-	std::replace(g_GenerationRootDir.begin(), g_GenerationRootDir.end(), '\\', '/');
-
-	std::cout << "Current dir : " << currentDir << std::endl;
-	std::cout << "Generation root dir : " << g_GenerationRootDir << std::endl;
-
-	InitializeGenerator();
-
 	HANDLE hFind;
 	WIN32_FIND_DATA data;
 
 	std::vector<std::string> srcFileList;
 
-	hFind = FindFirstFile("C:/Users/Joel/Documents/LigumX/LigumXGenerator/LigumXGenerator/LigumXGenerator/../../../LigumX/src/*"/*generationRootDir.c_str()*/, &data);
-	if (hFind != INVALID_HANDLE_VALUE) 
+	hFind = FindFirstFile("../../../LigumX/src/*", &data);
+	if (hFind != INVALID_HANDLE_VALUE)
 	{
-		do 
+		do
 		{
 			srcFileList.push_back(data.cFileName);
 		} while (FindNextFile(hFind, &data));
@@ -645,7 +631,7 @@ int main()
 		if (type == FileType_Invalid)
 		{
 			continue;
-		} 
+		}
 		else if (type == FileType_Generator)
 		{
 			GeneratorFile genFile;
@@ -657,11 +643,11 @@ int main()
 
 			if (stat((g_GenerationRootDir + genFile.m_Name).c_str(), &result) == 0)
 			{
-				timeLastModified = (int) result.st_mtime;
+				timeLastModified = (int)result.st_mtime;
 				processFile = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
 			}
 
-			if (processFile || g_ForceUpdateAllFiles)
+			if (processFile || forceUpdateAll)
 			{
 				std::cout << "\"" << fileName << "\" : has been updated." << std::endl;
 				generatorFiles.push_back(genFile);
@@ -685,6 +671,71 @@ int main()
 	processGeneratorFiles(generatorFiles);
 
 	g_LogFile.Save();
+
+	PrintLine("Finished!");
+	PrintLine("");
+}
+
+
+void OpenLogFile()
+{
+	std::stringstream cmd;
+	cmd << "\"C:\\Program Files\\Sublime Text 3\\sublime_text.exe\" ";
+	cmd << g_LogFile.m_FileName;
+	system(cmd.str().c_str());
+}
+
+void MainLoop()
+{
+	char command = 0;
+
+	while (command != 'q')
+	{
+		PrintLine("Input command.");
+		PrintLine("Options : (p)rocess | (f)orce process all | open (l)og file | (q)uit");
+
+		std::cin >> command;
+
+		if (command == 'p')
+		{
+			DoMainProcessing(false);
+		}
+		else if (command == 'f')
+		{
+			DoMainProcessing(true);
+		}
+		else if (command == 'l')
+		{
+			OpenLogFile();
+		}
+
+	}
+}
+
+int main()
+{
+	const unsigned len = GetCurrentDirectory(0, 0);
+	if (!len)
+		return 1;
+	std::string currentDir(len, '\0');
+	if (!GetCurrentDirectoryA(len, &currentDir[0]))
+		return 1;
+
+	currentDir = currentDir.substr(0, currentDir.size() - 1);
+
+	std::string projectName = "LigumX";
+
+	std::string generationOffset = "\\..\\..\\..\\";
+
+	g_GenerationRootDir = currentDir + generationOffset + projectName + "\\src\\";
+	std::replace(g_GenerationRootDir.begin(), g_GenerationRootDir.end(), '\\', '/');
+
+	std::cout << "Current dir : " << currentDir << std::endl;
+	std::cout << "Generation root dir : " << g_GenerationRootDir << std::endl;
+
+	InitializeGenerator();
+
+	MainLoop();
 
 	//GeneratePropertyFile();
 
