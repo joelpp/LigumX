@@ -51,17 +51,17 @@ Editor* g_Editor;
 #include "ObjectManager.h"
 const ClassPropertyData Editor::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Editor, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(Editor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
-{ "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, 0, }, 
-{ "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_EEditorTool, false, LXType_None, PropertyFlags_Enum, 0, 0, 0, }, 
-{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_SetCallback | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, 0, }, 
-{ "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
-{ "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
-{ "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
-{ "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, false, LXType_EditorTool, PropertyFlags_Transient, 0, 0, 0, }, 
-{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Editor, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Name", PIDX_Name, offsetof(Editor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, 0,}, 
+{ "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_EEditorTool, false, LXType_None, PropertyFlags_Enum, 0, 0, 0,}, 
+{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_SetCallback | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, 0,}, 
+{ "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, false, LXType_EditorTool, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, 0,}, 
 };
 bool Editor::Serialize(bool writing)
 {
@@ -404,24 +404,26 @@ void Editor::ShowPropertyGridMacro(T* object, const char* name)
 	ShowPropertyGrid(object, name);
 }
 
-void Editor::ShowProperty(int* value, const char* name)
+bool Editor::ShowProperty(int* value, const char* name)
 {
 	ShowVariableAsText(*value, name);
+
+	return false;
 }
 
-void Editor::ShowProperty(int* value, const char* name, int min, int max)
+bool Editor::ShowProperty(int* value, const char* name, int min, int max)
 {
-	ImGui::SliderInt(name, value, min, max);
+	return ImGui::SliderInt(name, value, min, max);
 }
 
-void Editor::ShowProperty(bool* value, const char* name)
+bool Editor::ShowProperty(bool* value, const char* name)
 {
-	ImGui::Checkbox(name, value);
+	return ImGui::Checkbox(name, value);
 }
 
-void Editor::ShowProperty(bool& value, const char* name)
+bool Editor::ShowProperty(bool& value, const char* name)
 {
-	ImGui::Checkbox(name, &value);
+	return ImGui::Checkbox(name, &value);
 }
 //
 //void Editor::ShowProperty(std::vector<bool>::reference value, const char* name)
@@ -430,71 +432,73 @@ void Editor::ShowProperty(bool& value, const char* name)
 //}
 
 
-void Editor::ShowProperty(float* value, const char* name, float min, float max)
+bool Editor::ShowProperty(float* value, const char* name, float min, float max)
 {
 	if (min == 0 && max == 0)
 	{
-		ImGui::DragFloat(name, (float*)value);
+		return ImGui::DragFloat(name, (float*)value);
 	}
 	else
 	{
-		ImGui::SliderFloat(name, value, min, max);
+		return ImGui::SliderFloat(name, value, min, max);
 	}
 
 }
 
-void Editor::ShowProperty(glm::vec2* value, const char* name, float min, float max)
+bool Editor::ShowProperty(glm::vec2* value, const char* name, float min, float max)
 {
 	if (min == 0 && max == 0)
 	{
-		ImGui::DragFloat2(name, (float*)value);
+		return ImGui::DragFloat2(name, (float*)value);
 	}
 	else
 	{
-		ImGui::SliderFloat2(name, (float*)value, min, max);
+		return ImGui::SliderFloat2(name, (float*)value, min, max);
 	}
 }
 
 
-void Editor::ShowProperty(glm::vec3* value, const char* name, float min, float max)
+bool Editor::ShowProperty(glm::vec3* value, const char* name, float min, float max)
 {
 	if (min == 0 && max == 0)
 	{
-		ImGui::DragFloat3(name, (float*)value);
+		return ImGui::DragFloat3(name, (float*)value);
 	}
 	else
 	{
-		ImGui::SliderFloat3(name, (float*)value, min, max);
+		return ImGui::SliderFloat3(name, (float*)value, min, max);
 	}
 }
 
-void Editor::ShowProperty(glm::vec4* value, const char* name, float min, float max)
+bool Editor::ShowProperty(glm::vec4* value, const char* name, float min, float max)
 {
 	if (min == 0 && max == 0)
 	{
-		ImGui::DragFloat4(name, (float*)value);
+		return ImGui::DragFloat4(name, (float*)value);
 	}
 	else
 	{
-		ImGui::SliderFloat4(name, (float*)value, min, max);
+		return ImGui::SliderFloat4(name, (float*)value, min, max);
 	}
 }
 
-void Editor::ShowProperty(glm::ivec2* value, const char* name, float min, float max)
+bool Editor::ShowProperty(glm::ivec2* value, const char* name, float min, float max)
 {
 	if (min == 0 && max == 0)
 	{
-		ImGui::DragInt2(name, (int*)value);
+		return ImGui::DragInt2(name, (int*)value);
 	}
 	else
 	{
-		ImGui::SliderInt2(name, (int*)value, (int) min, (int) max);
+		return ImGui::SliderInt2(name, (int*)value, (int) min, (int) max);
 	}
 }
 
-void Editor::ShowProperty(std::string* value, const char* name)
+bool Editor::ShowProperty(std::string* value, const char* name)
 {
 	ShowGUIText(value, name);
+	return false;
+
 }
 
 bool Editor::ShowEditableProperty(int* ptr, const char* name)
@@ -516,7 +520,7 @@ bool Editor::ShowEditableProperty(int* ptr, const char* name)
 }
 
 template <typename T>
-void Editor::ShowProperty(std::map<int, char*>* map, const char* name)
+bool Editor::ShowProperty(std::map<int, char*>* map, const char* name)
 {
 	ImGui::PushID(name);
 	if (ImGui::TreeNode(name))
@@ -530,10 +534,12 @@ void Editor::ShowProperty(std::map<int, char*>* map, const char* name)
 		ImGui::TreePop();
 	}
 	ImGui::PopID();
+
+	return false;
 }
 
 template <typename T>
-void Editor::ShowProperty(std::map<int, T*>* map, const char* name)
+bool Editor::ShowProperty(std::map<int, T*>* map, const char* name)
 {
 	ImGui::PushID(name);
 	if (ImGui::TreeNode(name))
@@ -547,10 +553,13 @@ void Editor::ShowProperty(std::map<int, T*>* map, const char* name)
 		ImGui::TreePop();
 	}
 	ImGui::PopID();
+
+	return false;
+
 }
 
 template <typename T>
-void Editor::ShowProperty(std::unordered_map<int, char*>* map, const char* name)
+bool Editor::ShowProperty(std::unordered_map<int, char*>* map, const char* name)
 {
 	ImGui::PushID(name);
 	if (ImGui::TreeNode(name))
@@ -564,10 +573,13 @@ void Editor::ShowProperty(std::unordered_map<int, char*>* map, const char* name)
 		ImGui::TreePop();
 	}
 	ImGui::PopID();
+
+	return false;
+
 }
 
 template <typename T>
-void Editor::ShowProperty(std::unordered_map<int, T*>* map, const char* name)
+bool Editor::ShowProperty(std::unordered_map<int, T*>* map, const char* name)
 {
 	ImGui::PushID(name);
 	if (ImGui::TreeNode(name))
@@ -581,6 +593,8 @@ void Editor::ShowProperty(std::unordered_map<int, T*>* map, const char* name)
 		ImGui::TreePop();
 	}
 	ImGui::PopID();
+
+	return false;
 }
 
 #define SHOW_ENUM(type) \
@@ -687,8 +701,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	}
 	case LXType_glmvec3:
 	{
-		ShowProperty((glm::vec3*) ptr, name, min, max);
-		break;
+		return ShowProperty((glm::vec3*) ptr, name, min, max);
 	}
 	case LXType_glmvec2:
 	{
@@ -975,7 +988,13 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 	else
 	{
 		char* oldptr = ptr;
-		ShowPropertyTemplate(ptr, sanitizedPropertyName.c_str(), propertyData.m_Type, min, max, noneditable);
+		bool valueChanged = ShowPropertyTemplate(ptr, sanitizedPropertyName.c_str(), propertyData.m_Type, min, max, noneditable);
+
+		if (valueChanged)
+		{
+			char* objectPtr = (char*)object;
+			propertyData.m_WriteCallback(objectPtr, (char*)(objectPtr + propertyData.m_Offset));
+		}
 
 		if (oldptr != ptr)
 		{

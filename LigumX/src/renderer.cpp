@@ -43,11 +43,11 @@
 #include "ObjectManager.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(Renderer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
-{ "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, 0, }, 
-{ "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, 0, }, 
-{ "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_Camera, true, LXType_None, 0, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Renderer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Name", PIDX_Name, offsetof(Renderer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_DisplayOptions, true, LXType_None, 0, 0, 0, 0,}, 
+{ "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_PostEffects, true, LXType_None, 0, 0, 0, 0,}, 
+{ "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_Camera, true, LXType_None, 0, 0, 0, 0,}, 
 };
 bool Renderer::Serialize(bool writing)
 {

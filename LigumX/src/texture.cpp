@@ -12,17 +12,17 @@
 #include "ObjectManager.h"
 const ClassPropertyData Texture::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Texture, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(Texture, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
-{ "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
-{ "IsCubeMap", PIDX_IsCubeMap, offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0, }, 
-{ "HWObject", PIDX_HWObject, offsetof(Texture, m_HWObject), 0, LXType_GLuint, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
-{ "NumChannels", PIDX_NumChannels, offsetof(Texture, m_NumChannels), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "BitsPerPixel", PIDX_BitsPerPixel, offsetof(Texture, m_BitsPerPixel), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_GLPixelFormat, false, LXType_None, PropertyFlags_Enum, 0, 0, 0, }, 
-{ "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_GLPixelFormat, false, LXType_None, PropertyFlags_Enum, 0, 0, 0, }, 
-{ "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_GLPixelType, false, LXType_None, PropertyFlags_Enum, 0, 0, 0, }, 
-{ "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Texture, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Name", PIDX_Name, offsetof(Texture, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "IsCubeMap", PIDX_IsCubeMap, offsetof(Texture, m_IsCubeMap), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "HWObject", PIDX_HWObject, offsetof(Texture, m_HWObject), 0, LXType_GLuint, false, LXType_None, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "NumChannels", PIDX_NumChannels, offsetof(Texture, m_NumChannels), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "BitsPerPixel", PIDX_BitsPerPixel, offsetof(Texture, m_BitsPerPixel), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_GLPixelFormat, false, LXType_None, PropertyFlags_Enum, 0, 0, 0,}, 
+{ "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_GLPixelFormat, false, LXType_None, PropertyFlags_Enum, 0, 0, 0,}, 
+{ "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_GLPixelType, false, LXType_None, PropertyFlags_Enum, 0, 0, 0,}, 
+{ "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, 0,}, 
 };
 bool Texture::Serialize(bool writing)
 {

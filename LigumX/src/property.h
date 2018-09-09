@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <functional>
 // This file is auto generated. Any modification will be deleted on next LXGenerator run.
 
 enum LXType
@@ -82,6 +83,20 @@ enum PropertyFlags
 	PropertyFlags_Enum = 256,
 };
 
+template <class T> class LXFunctor
+{
+private:
+	T* ObjectPtr;
+	void (T::*MemberFunction) ();
+public:
+	void operator () ()
+	{
+		return (*this->ObjectPtr.*this->MemberFunction)();
+	}
+};
+
+#define WriteSetCallbackFunction(className, varName, varType) [](char* e, char* v) { ((className*)e)->Set##varName(*((varType*)v)); }
+
 
 // todo handle structs in .gen files
 struct ClassPropertyData
@@ -112,6 +127,6 @@ struct ClassPropertyData
 	float m_MinValue;
 	float m_MaxValue;
 
-	void* m_WriteCallback;
+	std::function<void(char*, char*)> m_WriteCallback;
 };
 		

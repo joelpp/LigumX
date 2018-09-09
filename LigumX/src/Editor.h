@@ -177,32 +177,32 @@ void ShowGUIText(const std::string& text);
 void ShowGUIText(const std::string& text, const char* variableName);
 
 
-void ShowProperty(int* value, const char* name);
-void ShowProperty(bool* value, const char* name);
-void ShowProperty(bool& value, const char* name);
-void ShowProperty(int* value, const char* name, int min, int max);
+bool ShowProperty(int* value, const char* name);
+bool ShowProperty(bool* value, const char* name);
+bool ShowProperty(bool& value, const char* name);
+bool ShowProperty(int* value, const char* name, int min, int max);
 
-void ShowProperty(std::vector<bool>::reference value, const char* name);
+bool ShowProperty(std::vector<bool>::reference value, const char* name);
 
 
-void ShowProperty(float* value, const char* name, float min, float max);
-void ShowProperty(glm::vec4* value, const char* name, float min, float max);
-void ShowProperty(glm::vec3* value, const char* name, float min, float max);
-void ShowProperty(glm::vec2* value, const char* name, float min, float max);
-void ShowProperty(glm::ivec2* value, const char* name, float min, float max);
-void ShowProperty(std::string* value, const char* name);
-
-template <typename T>
-void ShowProperty(std::map<int, char *>* map, const char* name);
+bool ShowProperty(float* value, const char* name, float min, float max);
+bool ShowProperty(glm::vec4* value, const char* name, float min, float max);
+bool ShowProperty(glm::vec3* value, const char* name, float min, float max);
+bool ShowProperty(glm::vec2* value, const char* name, float min, float max);
+bool ShowProperty(glm::ivec2* value, const char* name, float min, float max);
+bool ShowProperty(std::string* value, const char* name);
 
 template <typename T>
-void ShowProperty(std::map<int, T*>* map, const char* name);
+bool ShowProperty(std::map<int, char *>* map, const char* name);
 
 template <typename T>
-void ShowProperty(std::unordered_map<int, char *>* map, const char* name);
+bool ShowProperty(std::map<int, T*>* map, const char* name);
 
 template <typename T>
-void ShowProperty(std::unordered_map<int, T*>* map, const char* name);
+bool ShowProperty(std::unordered_map<int, char *>* map, const char* name);
+
+template <typename T>
+bool ShowProperty(std::unordered_map<int, T*>* map, const char* name);
 
 bool ShowEditableProperty(int* value, const char* name);
 void BackupData();

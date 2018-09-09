@@ -40,10 +40,10 @@ RenderDataManager* g_RenderDataManager;
 #include "ObjectManager.h"
 const ClassPropertyData RenderDataManager::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(RenderDataManager, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(RenderDataManager, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
-{ "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_CullingOptions, true, LXType_None, 0, 0, 0, 0, }, 
-{ "RenderingStats", PIDX_RenderingStats, offsetof(RenderDataManager, m_RenderingStats), 0, LXType_RenderingStats, true, LXType_None, 0, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(RenderDataManager, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Name", PIDX_Name, offsetof(RenderDataManager, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_CullingOptions, true, LXType_None, 0, 0, 0, 0,}, 
+{ "RenderingStats", PIDX_RenderingStats, offsetof(RenderDataManager, m_RenderingStats), 0, LXType_RenderingStats, true, LXType_None, 0, 0, 0, 0,}, 
 };
 bool RenderDataManager::Serialize(bool writing)
 {

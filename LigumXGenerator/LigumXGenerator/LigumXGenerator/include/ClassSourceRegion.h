@@ -125,6 +125,24 @@ public:
 			Variable& var = m_Class.m_Members[i];
 			std::string&  varName = var.m_Name;
 			std::string&  varType = var.m_Type;
+
+			std::stringstream writeCallbackStream;
+			bool writePtr = (var.m_PropertyFlags & PropertyFlags_SetCallback) && 
+							(var.m_Type == "glm::vec3") && 
+							(var.m_Name == "Position");
+
+			if (writePtr)
+			{
+				writeCallbackStream << "WriteSetCallbackFunction(" << m_Class.m_Name << ", "
+																   << var.m_Name << ", "
+																   << var.m_Type << ")";
+			}
+			else
+			{
+				writeCallbackStream << "0";
+			}
+
+
 			// warning! if you change anything here mirror it in property.h in LigumX
 			WriteLine("{ \"" + varName + "\", "
 				+ "PIDX_" + varName + ", "
@@ -136,7 +154,7 @@ public:
 				+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
 				+ (var.m_MinValue.size() > 0 ? var.m_MinValue : "0") + ", "
 				+ (var.m_MaxValue.size() > 0 ? var.m_MaxValue : "0") + ", "
-				+ "0, "
+				+ writeCallbackStream.str() + ","
 				+ "}, ");
 		}
 

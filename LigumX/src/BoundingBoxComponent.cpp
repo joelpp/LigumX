@@ -8,11 +8,11 @@
 #include "ObjectManager.h"
 const ClassPropertyData BoundingBoxComponent::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(BoundingBoxComponent, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(BoundingBoxComponent, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
-{ "BoundingBox", PIDX_BoundingBox, offsetof(BoundingBoxComponent, m_BoundingBox), 0, LXType_AABB, false, LXType_None, 0, 0, 0, 0, }, 
-{ "UpdatesWithEntity", PIDX_UpdatesWithEntity, offsetof(BoundingBoxComponent, m_UpdatesWithEntity), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0, }, 
-{ "ModelToWorldMatrix", PIDX_ModelToWorldMatrix, offsetof(BoundingBoxComponent, m_ModelToWorldMatrix), 0, LXType_glmmat4, false, LXType_None, 0, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(BoundingBoxComponent, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Name", PIDX_Name, offsetof(BoundingBoxComponent, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "BoundingBox", PIDX_BoundingBox, offsetof(BoundingBoxComponent, m_BoundingBox), 0, LXType_AABB, false, LXType_None, 0, 0, 0, 0,}, 
+{ "UpdatesWithEntity", PIDX_UpdatesWithEntity, offsetof(BoundingBoxComponent, m_UpdatesWithEntity), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "ModelToWorldMatrix", PIDX_ModelToWorldMatrix, offsetof(BoundingBoxComponent, m_ModelToWorldMatrix), 0, LXType_glmmat4, false, LXType_None, 0, 0, 0, 0,}, 
 };
 bool BoundingBoxComponent::Serialize(bool writing)
 {
