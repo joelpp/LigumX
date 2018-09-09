@@ -749,6 +749,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 						 wayType == OSMElementType::OSMElementType_NaturalWater ||
 						 wayType == OSMElementType::OSMElementType_Landuse);
 
+		// todo : dont uncomment this it crashes everything :(
 		if (false && fillFlag)
 		{
 			Building building(way);

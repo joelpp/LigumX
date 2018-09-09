@@ -98,18 +98,20 @@ public:
 
 static bool g_LogsetFunctionCallbacks = false;
 
+#define LX_ENABLE_WRITECALLBACK 1
+
+#if LX_ENABLE_WRITECALLBACK
 #define WriteSetFunction(className, varName, varType) \
 [](char* e, char* v) \
 { \
-	if (g_LogsetFunctionCallbacks) \
-	{ \
-		std::stringstream ss; \
-		ss << "Called set callback for " << #className << "::" << #varName <<"." << std::endl; \
-		PRINTSTRING(ss.str()); \
-	} \
-	((className*)e)->Set##varName(*((varType*)v)); \
-} \
-
+((className*)e)->Set##varName(*((varType*)v)); \
+}
+#else
+#define WriteSetFunction(className, varName, varType) \
+[](char* e, char* v) \
+{ \
+}
+#endif
 
 // todo handle structs in .gen files
 struct ClassPropertyData
