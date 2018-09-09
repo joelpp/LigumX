@@ -197,7 +197,7 @@ struct TerrainColorEditingJob
 
 	glm::vec4 m_Color;
 
-	bool m_LogJobs = true;
+	bool m_LogJobs = false;
 };
 
 

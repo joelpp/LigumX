@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <sstream>
 #include <functional>
 // This file is auto generated. Any modification will be deleted on next LXGenerator run.
 
@@ -95,7 +96,19 @@ public:
 	}
 };
 
-#define WriteSetFunction(className, varName, varType) [](char* e, char* v) { ((className*)e)->Set##varName(*((varType*)v)); }
+static bool g_LogsetFunctionCallbacks = false;
+
+#define WriteSetFunction(className, varName, varType) \
+[](char* e, char* v) \
+{ \
+	if (g_LogsetFunctionCallbacks) \
+	{ \
+		std::stringstream ss; \
+		ss << "Called set callback for " << #className << "::" << #varName <<"." << std::endl; \
+		PRINTSTRING(ss.str()); \
+	} \
+	((className*)e)->Set##varName(*((varType*)v)); \
+} \
 
 
 // todo handle structs in .gen files

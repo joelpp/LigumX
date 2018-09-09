@@ -682,6 +682,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 		if (m_RenderingMenu)
 		{
 			ImGui::MenuItem(name, NULL, (bool*)ptr);
+			break;
 		}
 		else
 		{
