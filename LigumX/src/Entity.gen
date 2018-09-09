@@ -18,12 +18,6 @@ class Entity
 	[setcallback]
 	glm::vec3 Scale;
 
-	glm::vec3 PreviousPosition;
-	glm::vec3 PreviousScale;
-	float PreviousRotationAngle;
-	glm::vec3 PreviousRotationAxis;
-
-
 	[setcallback]
 	bool HasMoved;
 

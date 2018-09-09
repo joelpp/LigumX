@@ -133,7 +133,7 @@ public:
 			{
 				writeCallbackStream << "WriteSetFunction(" << m_Class.m_Name << ", "
 														   << var.m_Name << ", "
-														   << var.m_Type << ")";
+														   << var.m_Type << (var.IsAPointer() ? "*" : "") << ")";
 			}
 			else
 			{
