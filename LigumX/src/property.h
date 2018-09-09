@@ -95,7 +95,7 @@ public:
 	}
 };
 
-#define WriteSetCallbackFunction(className, varName, varType) [](char* e, char* v) { ((className*)e)->Set##varName(*((varType*)v)); }
+#define WriteSetFunction(className, varName, varType) [](char* e, char* v) { ((className*)e)->Set##varName(*((varType*)v)); }
 
 
 // todo handle structs in .gen files

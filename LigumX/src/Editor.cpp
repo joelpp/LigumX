@@ -990,7 +990,7 @@ void Editor::ShowGenericProperty(T*& object, const ClassPropertyData& propertyDa
 		char* oldptr = ptr;
 		bool valueChanged = ShowPropertyTemplate(ptr, sanitizedPropertyName.c_str(), propertyData.m_Type, min, max, noneditable);
 
-		if (valueChanged)
+		if ((propertyData.m_PropertyFlags & PropertyFlags_SetCallback) && valueChanged)
 		{
 			char* objectPtr = (char*)object;
 			propertyData.m_WriteCallback(objectPtr, (char*)(objectPtr + propertyData.m_Offset));

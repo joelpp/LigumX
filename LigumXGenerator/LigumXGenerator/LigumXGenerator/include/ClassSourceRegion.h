@@ -127,15 +127,13 @@ public:
 			std::string&  varType = var.m_Type;
 
 			std::stringstream writeCallbackStream;
-			bool writePtr = (var.m_PropertyFlags & PropertyFlags_SetCallback) && 
-							(var.m_Type == "glm::vec3") && 
-							(var.m_Name == "Position");
+			bool writePtr = (var.m_PropertyFlags & PropertyFlags_SetCallback);
 
 			if (writePtr)
 			{
-				writeCallbackStream << "WriteSetCallbackFunction(" << m_Class.m_Name << ", "
-																   << var.m_Name << ", "
-																   << var.m_Type << ")";
+				writeCallbackStream << "WriteSetFunction(" << m_Class.m_Name << ", "
+														   << var.m_Name << ", "
+														   << var.m_Type << ")";
 			}
 			else
 			{
