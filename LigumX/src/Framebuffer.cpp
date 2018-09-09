@@ -11,16 +11,16 @@
 #include "ObjectManager.h"
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Framebuffer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Width", PIDX_Width, offsetof(Framebuffer, m_Width), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Height", PIDX_Height, offsetof(Framebuffer, m_Height), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "ColorTexture", PIDX_ColorTexture, offsetof(Framebuffer, m_ColorTexture), 0, LXType_GLuint, false, LXType_None, 0, 0, 0, }, 
-{ "DepthTexture", PIDX_DepthTexture, offsetof(Framebuffer, m_DepthTexture), 0, LXType_GLuint, false, LXType_None, 0, 0, 0, }, 
-{ "PixelFormat", PIDX_PixelFormat, offsetof(Framebuffer, m_PixelFormat), 0, LXType_GLPixelFormat, false, LXType_None, 0, 0, 0, }, 
-{ "InternalPixelFormat", PIDX_InternalPixelFormat, offsetof(Framebuffer, m_InternalPixelFormat), 0, LXType_GLPixelFormat, false, LXType_None, 0, 0, 0, }, 
-{ "HasDepth", PIDX_HasDepth, offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "NumColorTargets", PIDX_NumColorTargets, offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Framebuffer, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Framebuffer, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Width", PIDX_Width, offsetof(Framebuffer, m_Width), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Height", PIDX_Height, offsetof(Framebuffer, m_Height), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "ColorTexture", PIDX_ColorTexture, offsetof(Framebuffer, m_ColorTexture), 0, LXType_GLuint, false, LXType_None, 0, 0, 0, 0, }, 
+{ "DepthTexture", PIDX_DepthTexture, offsetof(Framebuffer, m_DepthTexture), 0, LXType_GLuint, false, LXType_None, 0, 0, 0, 0, }, 
+{ "PixelFormat", PIDX_PixelFormat, offsetof(Framebuffer, m_PixelFormat), 0, LXType_GLPixelFormat, false, LXType_None, 0, 0, 0, 0, }, 
+{ "InternalPixelFormat", PIDX_InternalPixelFormat, offsetof(Framebuffer, m_InternalPixelFormat), 0, LXType_GLPixelFormat, false, LXType_None, 0, 0, 0, 0, }, 
+{ "HasDepth", PIDX_HasDepth, offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0, }, 
+{ "NumColorTargets", PIDX_NumColorTargets, offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
 };
 bool Framebuffer::Serialize(bool writing)
 {

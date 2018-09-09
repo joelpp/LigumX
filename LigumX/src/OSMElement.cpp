@@ -116,6 +116,7 @@ const OSMElementType Indirection_OSMElementType[] =
 
 
 
+
 using namespace std;
 
 std::string OSMElement::getValue(std::string key){

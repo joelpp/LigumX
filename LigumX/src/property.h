@@ -86,15 +86,32 @@ enum PropertyFlags
 // todo handle structs in .gen files
 struct ClassPropertyData
 {
+	// member name
 	const char* m_Name;
+
+	// member index
 	int m_Index;
+
+	// member byte offset
 	int m_Offset;
+
+	// ??
 	int debug;
+
+	// todo : change this to ptr, primitive types, object only.
 	LXType m_Type;
+
+	// 
 	bool IsAPointer;
+
+	// inheritance?
 	LXType m_AssociatedType;
+
+	// 
 	int m_PropertyFlags;
 	float m_MinValue;
 	float m_MaxValue;
+
+	void* m_WriteCallback;
 };
 		

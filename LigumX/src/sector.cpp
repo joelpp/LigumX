@@ -22,16 +22,16 @@
 #include "ObjectManager.h"
 const ClassPropertyData Sector::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Sector, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(Sector, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
-{ "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, }, 
-{ "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
-{ "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, }, 
-{ "DataLoaded", PIDX_DataLoaded, offsetof(Sector, m_DataLoaded), 0, LXType_bool, false, LXType_None, 0, 0, 0, }, 
-{ "Heightfield", PIDX_Heightfield, offsetof(Sector, m_Heightfield), 0, LXType_Heightfield, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "TerrainPatchEntity", PIDX_TerrainPatchEntity, offsetof(Sector, m_TerrainPatchEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "OSMFilename", PIDX_OSMFilename, offsetof(Sector, m_OSMFilename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Sector, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Sector, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
+{ "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0, }, 
+{ "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0, }, 
+{ "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, 0, }, 
+{ "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, 0, }, 
+{ "DataLoaded", PIDX_DataLoaded, offsetof(Sector, m_DataLoaded), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Heightfield", PIDX_Heightfield, offsetof(Sector, m_Heightfield), 0, LXType_Heightfield, true, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
+{ "TerrainPatchEntity", PIDX_TerrainPatchEntity, offsetof(Sector, m_TerrainPatchEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
+{ "OSMFilename", PIDX_OSMFilename, offsetof(Sector, m_OSMFilename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
 };
 bool Sector::Serialize(bool writing)
 {

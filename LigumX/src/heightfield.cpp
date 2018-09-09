@@ -21,12 +21,12 @@ using namespace std;
 #include "ObjectManager.h"
 const ClassPropertyData Heightfield::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Heightfield, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(Heightfield, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "HeightDataTexture", PIDX_HeightDataTexture, offsetof(Heightfield, m_HeightDataTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, }, 
-{ "MaxHeight", PIDX_MaxHeight, offsetof(Heightfield, m_MaxHeight), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
-{ "MinHeight", PIDX_MinHeight, offsetof(Heightfield, m_MinHeight), 0, LXType_float, false, LXType_None, 0, 0, 0, }, 
-{ "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Heightfield, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Heightfield, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
+{ "HeightDataTexture", PIDX_HeightDataTexture, offsetof(Heightfield, m_HeightDataTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, 0, }, 
+{ "MaxHeight", PIDX_MaxHeight, offsetof(Heightfield, m_MaxHeight), 0, LXType_float, false, LXType_None, 0, 0, 0, 0, }, 
+{ "MinHeight", PIDX_MinHeight, offsetof(Heightfield, m_MinHeight), 0, LXType_float, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
 };
 bool Heightfield::Serialize(bool writing)
 {

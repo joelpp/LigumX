@@ -17,10 +17,10 @@
 #include "ObjectManager.h"
 const ClassPropertyData Model::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Model, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(Model, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(Model, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, 0, }, 
 };
 bool Model::Serialize(bool writing)
 {

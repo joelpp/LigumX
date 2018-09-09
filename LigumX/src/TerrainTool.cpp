@@ -24,16 +24,16 @@
 #include "ObjectManager.h"
 const ClassPropertyData TerrainTool::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(TerrainTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(TerrainTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
-{ "Mode", PIDX_Mode, offsetof(TerrainTool, m_Mode), 0, LXType_TerrainEditionMode, false, LXType_None, PropertyFlags_Enum, 0, 0, }, 
-{ "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(TerrainTool, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(TerrainTool, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, }, 
-{ "XYZMask", PIDX_XYZMask, offsetof(TerrainTool, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "ClickedTexel", PIDX_ClickedTexel, offsetof(TerrainTool, m_ClickedTexel), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "StartTexel", PIDX_StartTexel, offsetof(TerrainTool, m_StartTexel), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, }, 
-{ "SplatMapIncrement", PIDX_SplatMapIncrement, offsetof(TerrainTool, m_SplatMapIncrement), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "ClickedSector", PIDX_ClickedSector, offsetof(TerrainTool, m_ClickedSector), 0, LXType_Sector, true, LXType_None, PropertyFlags_Transient, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(TerrainTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(TerrainTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Mode", PIDX_Mode, offsetof(TerrainTool, m_Mode), 0, LXType_TerrainEditionMode, false, LXType_None, PropertyFlags_Enum, 0, 0, 0, }, 
+{ "TerrainErasureMode", PIDX_TerrainErasureMode, offsetof(TerrainTool, m_TerrainErasureMode), 0, LXType_bool, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
+{ "TerrainBrushSize", PIDX_TerrainBrushSize, offsetof(TerrainTool, m_TerrainBrushSize), 0, LXType_float, false, LXType_None, PropertyFlags_Adder, 0, 0, 0, }, 
+{ "XYZMask", PIDX_XYZMask, offsetof(TerrainTool, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
+{ "ClickedTexel", PIDX_ClickedTexel, offsetof(TerrainTool, m_ClickedTexel), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
+{ "StartTexel", PIDX_StartTexel, offsetof(TerrainTool, m_StartTexel), 0, LXType_glmivec2, false, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
+{ "SplatMapIncrement", PIDX_SplatMapIncrement, offsetof(TerrainTool, m_SplatMapIncrement), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "ClickedSector", PIDX_ClickedSector, offsetof(TerrainTool, m_ClickedSector), 0, LXType_Sector, true, LXType_None, PropertyFlags_Transient, 0, 0, 0, }, 
 };
 bool TerrainTool::Serialize(bool writing)
 {

@@ -12,8 +12,8 @@
 #include "ObjectManager.h"
 const ClassPropertyData GL::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(GL, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, }, 
-{ "Name", PIDX_Name, offsetof(GL, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, }, 
+{ "ObjectID", PIDX_ObjectID, offsetof(GL, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0, }, 
+{ "Name", PIDX_Name, offsetof(GL, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, }, 
 };
 bool GL::Serialize(bool writing)
 {
