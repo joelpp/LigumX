@@ -749,7 +749,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 						 wayType == OSMElementType::OSMElementType_NaturalWater ||
 						 wayType == OSMElementType::OSMElementType_Landuse);
 
-		if (fillFlag)
+		if (false && fillFlag)
 		{
 			Building building(way);
 			bool success = building.GenerateModel();
