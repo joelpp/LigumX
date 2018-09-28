@@ -37,7 +37,7 @@ bool Building::GenerateModel()
 	std::vector<float> groundTriangleTextureIDs;
 	std::vector<glm::vec3> buildingTrianglePositions;
 
-	float height = 0;
+	float height = 0.01f;
 	// Note: supposed all loops are given in counter-clockwise order.
 	unsigned int nbTriangles = 0;
 
@@ -102,36 +102,36 @@ bool Building::GenerateModel()
 	        Node* n2 = *(nodeIt2);
 	        Node* n3 = *(nodeIt3);
 
-	        vec2 p1 = vec2(n1->GetWorldPosition());
-	        vec2 p2 = vec2(n2->GetWorldPosition());
-	        vec2 p3 = vec2(n3->GetWorldPosition());
+	        vec3 p1 = n1->GetWorldPosition();
+	        vec3 p2 = n2->GetWorldPosition();
+	        vec3 p3 = n3->GetWorldPosition();
 			if (p1 == p2 || p1 == p3)
 			{
 				cout << "bad precision" << std::endl;
 				
 				return false;
 			}
-	        vec2 v12 = p2 - p1;
-	        vec2 v13 = p3 - p1;
+	        vec3 v12 = p2 - p1;
+	        vec3 v31 = p3 - p1;
 
-	        vec3 v12_3D = vec3(v12.x, v12.y, 0);
-	        vec3 v23_3D = vec3(p3.x - p2.x, p3.y - p2.y, 0);
-	        vec3 v31_3D = vec3(p1.x - p3.x, p1.y - p3.y, 0);
+	        vec3 v23 = p3 - p2;
+	        vec3 v13 = p1 - p3;
 
 	        bool isGoodTriangle;
 	        // check clockwiseness
-	        isGoodTriangle = clockwiseness * glm::cross(vec3(v12.x, v12.y, 0.f) , vec3(v13.x, v13.y, 0.f)).z > 0.f;
+	        isGoodTriangle = clockwiseness * glm::cross(v12, v31).z > 0.f;
 	        if(isGoodTriangle) 
 	        {
 	            // make sure it doesn't include another active node
 	            for(Node* node : loopNodes) 
 	            {
 	                if(node == n1 || node == n2 || node == n3) continue;
-	                //vec3 n_3D = vec3(node->latitude, node->longitude, 0);
+
 					vec3 n_3D = node->GetWorldPosition();
-	                if(clockwiseness * glm::cross(v12_3D, n_3D - vec3(p1.x, p1.y, 0)).z > 0.f &&
-	                   clockwiseness * glm::cross(v23_3D, n_3D - vec3(p2.x, p2.y, 0)).z > 0.f &&
-	                   clockwiseness * glm::cross(v31_3D, n_3D - vec3(p3.x, p3.y, 0)).z > 0.f ) 
+
+	                if(clockwiseness * glm::cross(v12, n_3D - p1).z > 0.f &&
+	                   clockwiseness * glm::cross(v23, n_3D - p2).z > 0.f &&
+	                   clockwiseness * glm::cross(v13, n_3D - p3).z > 0.f )
 	                {
 	                    isGoodTriangle = false;
 	                    break;

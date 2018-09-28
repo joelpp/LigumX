@@ -86,5 +86,11 @@ public:
     bool loops();
 
     static WayPair findCommon(const std::vector<Way*> firstNodeWays, const std::vector<Way*> secondNodeWays);
+
+	bool IsLandUse() { return m_OSMElementType >= OSMElementType_LanduseRetail && m_OSMElementType <= OSMElementType_LanduseIndustrial; }
+	bool IsPark() { return m_OSMElementType == OSMElementType_LeisurePark; }
+	bool IsRoad() { return m_OSMElementType >= OSMElementType_HighwayUnclassified && m_OSMElementType <= OSMElementType_HighwayTrunk; }
+	bool IsWater() { return m_OSMElementType == OSMElementType_NaturalWater; }
+	bool IsWood() { return m_OSMElementType == OSMElementType_NaturalWood; }
 };
 

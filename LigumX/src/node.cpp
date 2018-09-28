@@ -44,6 +44,15 @@ Node::Node(std::string _id, float _longitude, float _latitude)
     this->elevation = 0;
 }
 
+Node::Node(std::string _id, float _longitude, float _latitude, float _height)
+{
+	this->id = _id;
+	this->latitude = _latitude;
+	this->longitude = _longitude;
+	this->elevation = _height;
+}
+
+
 
 std::string Node::toString()
 {

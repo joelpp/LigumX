@@ -263,6 +263,7 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 	}
 }
 
+
 void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType)
 {
 	World *world = LigumX::GetInstance().world;
@@ -400,6 +401,34 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 						if (elementType != OSMElementType_Unknown)
 						{
 							way->SetOSMElementType(elementType);
+
+							float nodeHeight = 0.01f;
+							if (way->IsPark())
+							{
+								nodeHeight *= 2.f;
+							}
+
+							if (way->IsWater())
+							{
+								nodeHeight *= 3.f;
+							}
+
+							if (way->IsRoad())
+							{
+								nodeHeight *= 4.f;
+							}
+
+							for (int n = 0; n < way->GetNodes().size(); ++n)
+							{
+								Node* node = way->GetNodes()[n];
+
+								// HACK
+								glm::vec3 nodePosition = node->GetWorldPosition();
+								nodePosition.z = nodeHeight;
+								node->SetWorldPosition(nodePosition);
+							}
+
+
 						}
 					}
 

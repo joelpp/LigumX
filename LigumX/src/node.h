@@ -77,6 +77,8 @@ public:
     Node();
     Node(glm::vec2 latLong);
     Node(std::string id, float longitude, float latitude);
+	Node(std::string _id, float _longitude, float _latitude, float _height);
+
     std::string toString();
     glm::vec2 getLatLong();
     glm::vec3 getLatLongEle();

@@ -459,8 +459,8 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			glm::ivec2 texelMin = glm::ivec2(plotUVMin * glm::vec2(tex->GetSize()));
 			glm::ivec2 texelMax = glm::ivec2(plotUVMax * glm::vec2(tex->GetSize()));
 
-			TerrainColorEditingJob terrainJob(sector, texelMin, texelMax, glm::vec4(0, 72, 120, 255) / 255.f);
-			terrainJob.Execute();
+			//TerrainColorEditingJob terrainJob(sector, texelMin, texelMax, glm::vec4(0, 72, 120, 255) / 255.f);
+			//terrainJob.Execute();
 
 			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
 			Add3DBox(buildingMesh,	   plotStart, direction, right, up, glm::vec3(buildingInfo.GetPlotLength(), buildingInfo.GetPlotDepth(), 1.f));
@@ -799,13 +799,15 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 				// corners bug (see in source control)
 
 				glm::vec4 color = glm::vec4(g_Editor->GetOSMTool()->GetWayDebugColors()[way->GetOSMElementType()], 1.f);
-				TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);
-				terrainJobs.push_back(mainJob);
 
-				for (TerrainColorEditingJob& job : terrainJobs)
-				{
-					job.Execute(triangles);
-				}
+				// todo : revive terrain color editing jobs.
+				//TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);
+				//terrainJobs.push_back(mainJob);
+
+				//for (TerrainColorEditingJob& job : terrainJobs)
+				//{
+				//	job.Execute(triangles);
+				//}
 
 				sector->GetBuildings().push_back(building);
 
