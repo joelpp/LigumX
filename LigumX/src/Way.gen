@@ -8,4 +8,7 @@ class Way
 	int IndexInSector;
 
 	bool FilledIn = false;
+
+	[adder]
+	std::string AllTags;
 }

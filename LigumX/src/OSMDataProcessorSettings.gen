@@ -3,8 +3,8 @@ class OSMDataProcessorSettings
 	float MinFacadeLength = 25.f;
 	float MaxFacadeLength = 50.f;
 
-	float MinPlotLengthRatio = 1.1f;
-	float MaxPlotLengthRatio = 1.3f;
+	float MinPlotLengthRatio = 1.7f;
+	float MaxPlotLengthRatio = 2.5f;
 
 	float MinBuildingDepth = 25.f;
 	float MaxBuildingDepth = 50.f;
@@ -12,7 +12,7 @@ class OSMDataProcessorSettings
 	float MinHeight = 20.f;
 	float MaxHeight = 50.f;
 	
-	float MinNeighborDistance = 40.f;
+	float MinNeighborDistance = 30.f;
 	float MaxNeighborDistance = 70.f;
 
 	bool ProcessAddressInterpolation = true;

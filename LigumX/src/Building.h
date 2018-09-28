@@ -34,11 +34,13 @@ public:
 	bool GenerateModel();
 
 	const std::vector<Triangle>& GetTriangles() { return m_Triangles; }
+	const std::vector<glm::vec3>& GetVertices() { return m_FlatVertices; }
 
 	glm::vec3 m_MinCoords;
 	glm::vec3 m_MaxCoords;
 private:
 	std::vector<Triangle> m_Triangles;
+	std::vector<glm::vec3> m_FlatVertices;
 
 
 

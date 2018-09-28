@@ -1,6 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "SectorData.h"
+#include "Building.h"
 
 #pragma region  FORWARD_DECLARATIONS Sector
 #include "property.h"
@@ -128,4 +129,8 @@ public:
 
 	glm::vec2 GetUVForWorldPosition(const glm::vec3& worldPosition);
 	glm::vec3 GetWorldPositionForUV(const glm::vec2& uv);
+
+	std::vector<Building>& GetBuildings() { return m_Buildings; }
+	private:
+		std::vector<Building> m_Buildings;
 };

@@ -50,6 +50,7 @@ bool OSMTool::Serialize(bool writing)
 
 OSMTool::OSMTool()
 {
+	m_WayDebugColors.resize(OSMElementType_Count);
 	m_WayDisplayToggles.resize(OSMElementType_Count);
 
 	for (int i = 0; i < OSMElementType_Count; ++i)
@@ -57,30 +58,29 @@ OSMTool::OSMTool()
 		m_WayDisplayToggles[i] = true;
 	}
 
-	m_WayDebugColors =
-	{
-		vec3(1.0, 1.0, 1.0),	// HighwayTrunk,
-		vec3(0.9, 0.9, 0.9),	// HighwayPrimary,
-		vec3(0.8, 0.8, 0.8),	// HighwaySecondary,
-		vec3(0.7, 0.7, 0.7),	// HighwayTertiary,
-		vec3(0.6, 0.6, 0.6),	// HighwayResidential,
-		vec3(0.5, 0.5, 0.5),	// HighwayService,
-		vec3(0.4, 0.4, 0.4),	// HighwayUnclassified,
-		vec3(1.0, 0.0, 1.0),	// Sidewalk,
-		vec3(1.0, 1.0, 1.0),	// Contour,
-		vec3(0.0, 0.0, 1.0),	// Building_Unmarked,
-		vec3(0.0, 0.0, 1.0),	// Building_School,
-		vec3(0.0, 0.5, 0.0),	// Building_Addressinterpolation,
-		vec3(0.0, 0.0, 0.5),	// Boundary,
-		vec3(0.1, 1.0, 0.1),	// LeisurePark,
-		vec3(0.0, 1.0, 0.0),	// NaturalWood,
-		vec3(0.0, 0.2, 0.8),	// NaturalWater,
-		vec3(1.0, 1.0, 1.0),	// Landuse,
-		vec3(1.0, 1.0, 1.0),	// RailwaySubway,
-		vec3(0.0, 0.8, 1.0),	// AddressInterpolation,
-		vec3(1.0, 1.0, 1.0),	// NotImplemented,
-		vec3(1.0, 0.1, 0.1)		// Unknown,
-	};
+	m_WayDebugColors[OSMElementType_HighwayTrunk]						= vec3(1.0, 1.0, 1.0);	
+	m_WayDebugColors[OSMElementType_HighwayPrimary]						= vec3(0.9, 0.9, 0.9);	
+	m_WayDebugColors[OSMElementType_HighwaySecondary]					= vec3(0.8, 0.8, 0.8);	
+	m_WayDebugColors[OSMElementType_HighwayTertiary] 					= vec3(0.7, 0.7, 0.7);	
+	m_WayDebugColors[OSMElementType_HighwayResidential]					= vec3(0.6, 0.6, 0.6);	
+	m_WayDebugColors[OSMElementType_HighwayService]						= vec3(0.5, 0.5, 0.5);	
+	m_WayDebugColors[OSMElementType_HighwayUnclassified]				= vec3(0.4, 0.4, 0.4);	
+	m_WayDebugColors[OSMElementType_Sidewalk]							= vec3(1.0, 0.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Contour]							= vec3(1.0, 1.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Building_Unmarked]					= vec3(0.0, 0.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Building_School]					= vec3(0.0, 0.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Building_Addressinterpolation]		= vec3(0.0, 0.5, 0.0);	
+	m_WayDebugColors[OSMElementType_Boundary]							= vec3(0.0, 0.0, 0.5);	
+	m_WayDebugColors[OSMElementType_LeisurePark]						= vec3(0.1, 1.0, 0.1);	
+	m_WayDebugColors[OSMElementType_NaturalWood]						= vec3(0.0, 1.0, 0.0);	
+	m_WayDebugColors[OSMElementType_NaturalWater]						= vec3(0.0, 0.2, 0.8);	
+	m_WayDebugColors[OSMElementType_LanduseRetail]						= vec3(0.86, 0.86, 0.86);
+	m_WayDebugColors[OSMElementType_LanduseIndustrial]					= vec3(91, 47, 82) / 255.f;
+	m_WayDebugColors[OSMElementType_RailwaySubway]						= vec3(0.0, 0.8, 1.0);	
+	m_WayDebugColors[OSMElementType_AddressInterpolation]				= vec3(1.0, 1.0, 1.0);	
+	m_WayDebugColors[OSMElementType_NotImplemented]						= vec3(1.0, 0.1, 0.1);		
+	m_WayDebugColors[OSMElementType_Unknown]							= vec3(1.0, 0.0, 0.0);
+	
 }
 
 

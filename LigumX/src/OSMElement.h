@@ -29,7 +29,8 @@ OSMElementType_Boundary,
 OSMElementType_LeisurePark,
 OSMElementType_NaturalWood,
 OSMElementType_NaturalWater,
-OSMElementType_Landuse,
+OSMElementType_LanduseRetail,
+OSMElementType_LanduseIndustrial,
 OSMElementType_RailwaySubway,
 OSMElementType_AddressInterpolation,
 OSMElementType_NotImplemented,
@@ -37,9 +38,9 @@ OSMElementType_Unknown,
 OSMElementType_Count,
 };
 
-extern const std::string EnumValues_OSMElementType[22];
-extern const OSMElementType Indirection_OSMElementType[22];
-const int EnumLength_OSMElementType = 22;
+extern const std::string EnumValues_OSMElementType[23];
+extern const OSMElementType Indirection_OSMElementType[23];
+const int EnumLength_OSMElementType = 23;
 
 
 #pragma endregion  FORWARD_DECLARATIONS OSMElement

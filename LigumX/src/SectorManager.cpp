@@ -274,6 +274,9 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
 
+	std::fstream logFile("C:/temp/log.txt", std::fstream::out);
+
+
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
 		std::string childValue = std::string(child->Value());
@@ -384,7 +387,11 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				{
 					const std::string key = way_child->ToElement()->FindAttribute("k")->Value();
 					const std::string value = way_child->ToElement()->FindAttribute("v")->Value();
+
+					way->AddTo_AllTags(key + " " + value + " ");
 					way->addTag(key, value);
+
+					logFile << key << " " << value << "\n";
 
 					if (way->GetOSMElementType() == OSMElementType_Unknown)
 					{
@@ -425,7 +432,10 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			request->GetSector()->m_Data->m_AllWaysPtr[intID] = way;
 			m_AllWaysPtr[intID] = way;
 		}
+
 	}
+	logFile.close();
+
 }
 
 void SectorManager::AddSector(Sector* sector)

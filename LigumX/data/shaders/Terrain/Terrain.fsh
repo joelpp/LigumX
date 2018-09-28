@@ -69,6 +69,7 @@ void main()
 	
 	vec2 splatTexCoords = vec2(1 - v_TexCoords.x, v_TexCoords.y);
 	vec4 splatMap = textureLod(g_SplatMapTexture, v_TexCoords, 0.0f);
+	//vec4 splatMap = texture(g_SplatMapTexture, v_TexCoords);
 
 	//vec3 lightDirection = normalize(vec3(0.5f, 0.5f, 1.0f));
 
@@ -107,6 +108,7 @@ void main()
 	//lerp0 = mix(lerp0, Sand, splatMap.z);
 	pixelData.m_DiffuseColor.rgb = mix(grass, Rock, 1.f - splatMap.z);
 	pixelData.m_DiffuseColor.rgb = splatMap.rgb * splatMap.a + Rock * (1 - splatMap.a);
+	pixelData.m_DiffuseColor = splatMap.rgba;
 
 	//diffuse = mix(diffuse, grass, splatMap.x);
 	//diffuse = mix(diffuse, Rock, splatMap.y);

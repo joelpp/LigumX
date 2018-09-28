@@ -86,6 +86,11 @@ public:
 	Texture::Texture();
 	Texture::Texture(int objectID);
 	Texture(std::string filename, bool isCubeMap = false);
+	
+	void GenerateMipMaps();
+	void UnbindTexture(GLuint bindingTarget);
+	void BindTexture(GLuint bindingTarget);
+
 
 	void LoadFromFile(GLuint target, std::string filename);
 	void SaveToFile(std::string fileName);

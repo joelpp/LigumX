@@ -22,6 +22,19 @@
 
 constexpr int g_BrickMaterialID = 17835;
 
+float Random0To1()
+{
+	static float fRandMax = (float)RAND_MAX;
+	return rand() / fRandMax;
+}
+
+template <typename T>
+T GetRandomValue(T min, T max)
+{
+	return Random0To1() * (max - min) + min;
+}
+
+
 #pragma region  CLASS_SOURCE OSMDataProcessor
 OSMDataProcessor* g_OSMDataProcessor;
 
@@ -85,6 +98,9 @@ struct TerrainColorEditingJob
 		Texture* tex = m_Sector->GetGraphicalData()->GetSplatMapTexture();
 		unsigned char* val = tex->GetTextureData();
 
+		m_TexelMax = min(tex->GetSize(), m_TexelMax);
+		m_TexelMin = max(glm::ivec2(0, 0), m_TexelMin);
+
 		int numBytes = tex->GetNumBytes();
 		int stride = 4;
 		int dataOffset = stride * (m_TexelMin.y * tex->GetSize().x + m_TexelMin.x);
@@ -128,7 +144,10 @@ struct TerrainColorEditingJob
 						triangle.m_Vertices[1] - offset,
 						triangle.m_Vertices[2] - offset))
 					{
-						offsetVal[index] = (unsigned char)255;
+						offsetVal[index] = (unsigned char)(m_Color[0] * 255);
+						offsetVal[index + 1] = (unsigned char)(m_Color[1] * 255);
+						offsetVal[index + 2] = (unsigned char)(m_Color[2] * 255);
+						offsetVal[index + 3] = (unsigned char)(m_Color[3] * 255);
 						break;
 					}
 				}
@@ -200,7 +219,30 @@ struct TerrainColorEditingJob
 	bool m_LogJobs = false;
 };
 
+bool PointInBuilding(Sector* sector, const glm::vec3& worldSpacePosition)
+{
+	for (Building& building : sector->GetBuildings())
+	{
+		//Mesh* mesh = entity->GetModel()->m_meshes[0];
 
+		//int numTriangles = mesh->m_buffers.vertexPositions.size() / 3;
+		//for (int i = 0; i < numTriangles; ++i)
+		//{
+		//	int tIdx = i * 3;
+		//	const glm::vec3& v0 = mesh->m_buffers.vertexPositions[tIdx + 0];
+		//	const glm::vec3& v1 = mesh->m_buffers.vertexPositions[tIdx + 1];
+		//	const glm::vec3& v2 = mesh->m_buffers.vertexPositions[tIdx + 2];
+		for (const Triangle& t : building.GetTriangles())
+		{
+			if (PointInTriangle(worldSpacePosition, t.m_Vertices[0], t.m_Vertices[1], t.m_Vertices[2]))
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
 bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 {
 	for (Entity* entity : sector->GetGraphicalData()->GetRoadEntities())
@@ -325,57 +367,28 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 	}
 }
 
-float Random0To1()
+void OSMDataProcessor::PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo, const glm::vec3& direction, float& spaceLeft, glm::vec3& plotStart)
 {
-	static float fRandMax = (float)RAND_MAX;
-	return rand() / fRandMax;
+	float minNeighborDistance = 10.f;
+	float maxNeighborDistance = 70.f;
+	float neighborDistance = GetRandomValue(minNeighborDistance, maxNeighborDistance);
+
+	// move to next building start
+	plotStart += (buildingInfo.GetPlotLength() + neighborDistance) * direction;
+	spaceLeft -= neighborDistance;
+
+	buildingInfo = AddrInterpBuildingInfo(m_Settings);
+
+	spaceLeft -= buildingInfo.GetPlotLength();
 }
 
-template <typename T>
-T GetRandomValue(T min, T max)
-{
-	return Random0To1() * (max - min) + min;
-}
-
-struct AddrInterpBuildingInfo
-{
-	AddrInterpBuildingInfo(OSMDataProcessorSettings* settings)
-	{
-		m_BuildingDimensions.x = GetRandomValue(settings->GetMinFacadeLength(), settings->GetMaxFacadeLength());
-
-		float minPlotLength = settings->GetMinPlotLengthRatio() * m_BuildingDimensions.x;
-		float maxPlotLength = settings->GetMaxPlotLengthRatio() * m_BuildingDimensions.x;
-		m_PlotDimensions.x = GetRandomValue(minPlotLength, maxPlotLength);
-
-		m_PaddingBeforeFacade = (m_PlotDimensions.x - m_BuildingDimensions.x) / 2.f;
-		m_PaddingAfterFacade = m_PaddingBeforeFacade;
-
-		m_BuildingDimensions.y = GetRandomValue(settings->GetMinBuildingDepth(), settings->GetMaxBuildingDepth());
-
-		m_PlotDimensions.y = m_BuildingDimensions.y * 1.5f;
-
-		m_BuildingDimensions.z = GetRandomValue(settings->GetMinHeight(), settings->GetMaxHeight());
-
-	}
-
-	float GetPlotLength()		{ return m_PlotDimensions.x; }
-	float GetPlotDepth()		{ return m_PlotDimensions.y; }
-	float GetBuildingLength()	{ return m_BuildingDimensions.x; }
-	float GetBuildingDepth()	{ return m_BuildingDimensions.y; }
-	float GetBuildingHeight()	{ return m_BuildingDimensions.z; }
-
-	glm::vec3 m_BuildingDimensions; // (facade, depth, height)
-	glm::vec2 m_PlotDimensions; // facade, depth
-	float m_PaddingAfterFacade;
-	float m_PaddingBeforeFacade;
-
-};
 
 Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
 {
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
 	Mesh* buildingMesh = new Mesh();
+	Mesh* plotMesh = new Mesh();
 	
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
@@ -402,24 +415,37 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 		glm::vec3 right = glm::cross(direction, up);
 
 		glm::vec3 plotStart = nodePos;
-		while (spaceLeft > 0)
+		while (spaceLeft > m_Settings->GetMinFacadeLength())
 		{
 
 			glm::vec3 buildingStart = plotStart + direction * buildingInfo.m_PaddingBeforeFacade;
 
 			if (PointInRoad(sector, buildingStart))
 			{
+				PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
+				break;
+			}
+
+			if (PointInBuilding(sector, buildingStart))
+			{
+				PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
 				break;
 			}
 
 			const glm::vec3& dimensions = buildingInfo.m_BuildingDimensions;
 
-			float depthClearanceRatio = 1.2f;
+			float depthClearanceRatio = 1.5f;
 			glm::vec3 back = buildingStart + depthClearanceRatio * right * dimensions.y;
 
 			if (PointInRoad(sector, back))
 			{
 				right *= -1;
+			}
+
+			if (PointInBuilding(sector, back))
+			{
+				PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
+				break;
 			}
 
 			Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
@@ -433,22 +459,13 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			glm::ivec2 texelMin = glm::ivec2(plotUVMin * glm::vec2(tex->GetSize()));
 			glm::ivec2 texelMax = glm::ivec2(plotUVMax * glm::vec2(tex->GetSize()));
 
-			TerrainColorEditingJob terrainJob(sector, texelMin, texelMax, glm::vec4(0, 1, 0, 1));
+			TerrainColorEditingJob terrainJob(sector, texelMin, texelMax, glm::vec4(0, 72, 120, 255) / 255.f);
 			terrainJob.Execute();
 
 			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
+			Add3DBox(buildingMesh,	   plotStart, direction, right, up, glm::vec3(buildingInfo.GetPlotLength(), buildingInfo.GetPlotDepth(), 1.f));
 
-			float minNeighborDistance = 40.f;
-			float maxNeighborDistance = 70.f;
-			float neighborDistance = GetRandomValue(minNeighborDistance, maxNeighborDistance);
-
-			// move to next building start
-			plotStart += (buildingInfo.GetPlotLength() + neighborDistance) * direction;
-			spaceLeft -= neighborDistance;
-
-			buildingInfo = AddrInterpBuildingInfo(m_Settings);
-
-			spaceLeft -= buildingInfo.GetPlotLength();
+			PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
 		}
 
 	}
@@ -742,15 +759,19 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 		OSMElementType wayType = way->GetOSMElementType();
 
-		bool fillFlag = (wayType == OSMElementType::OSMElementType_Building_Unmarked ||
-						 wayType == OSMElementType::OSMElementType_Building_School ||
-						 wayType == OSMElementType::OSMElementType_LeisurePark ||
-						 wayType == OSMElementType::OSMElementType_NaturalWood ||
-						 wayType == OSMElementType::OSMElementType_NaturalWater ||
-						 wayType == OSMElementType::OSMElementType_Landuse);
+		//bool fillFlag = (wayType == OSMElementType::OSMElementType_Building_Unmarked ||
+		//				 wayType == OSMElementType::OSMElementType_Building_School ||
+		//				 wayType == OSMElementType::OSMElementType_LeisurePark ||
+		//				 wayType == OSMElementType::OSMElementType_NaturalWood ||
+		//				 wayType == OSMElementType::OSMElementType_NaturalWater ||
+		//				 wayType == OSMElementType::OSMElementType_Landuse);
+		bool isPark = (wayType == OSMElementType::OSMElementType_LeisurePark || 
+					   wayType == OSMElementType::OSMElementType_LanduseRetail ||
+					   wayType == OSMElementType::OSMElementType_NaturalWater ||
+					   wayType == OSMElementType::OSMElementType_LanduseIndustrial);
 
 		// todo : dont uncomment this it crashes everything :(
-		if (false && fillFlag)
+		if (isPark)
 		{
 			Building building(way);
 			bool success = building.GenerateModel();
@@ -775,88 +796,28 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 				std::vector<TerrainColorEditingJob> terrainJobs;
 
 				// todo JPP : fix this mess
-				// corners bug
-#if 0
-				if (texelMin.x < 0)
-				{
-					TerrainColorEditingJob additionalJob;
-					additionalJob.m_TexelMin.x = tex->GetSize().x + texelMin.x;
-					additionalJob.m_TexelMax.x = tex->GetSize().x;
+				// corners bug (see in source control)
 
-					additionalJob.m_TexelMin.y = texelMin.y;
-					additionalJob.m_TexelMax.y = texelMax.y;
-
-					texelMin.x = 0;
-
-					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
-					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(-1, 0));
-					additionalJob.m_Sector = thisSector;
-
-					terrainJobs.push_back(additionalJob);
-				}
-
-				if (texelMax.x > tex->GetSize().x)
-				{
-					TerrainColorEditingJob additionalJob;
-					additionalJob.m_TexelMin.x = 0;
-					additionalJob.m_TexelMax.x = texelMax.x;
-
-					additionalJob.m_TexelMin.y = texelMin.y;
-					additionalJob.m_TexelMax.y = texelMax.y;
-
-					texelMax.x = tex->GetSize().x;
-
-					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
-					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(1, 0));
-					additionalJob.m_Sector = thisSector;
-
-					terrainJobs.push_back(additionalJob);
-				}
-
-				if (texelMin.y < 0)
-				{
-					TerrainColorEditingJob additionalJob;
-					additionalJob.m_TexelMin.y = tex->GetSize().y + texelMin.y;
-					additionalJob.m_TexelMax.y = tex->GetSize().y;
-
-					additionalJob.m_TexelMin.x = texelMin.x;
-					additionalJob.m_TexelMax.x = texelMax.x;
-
-					texelMin.y = 0;
-
-					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
-					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(0, -1));
-					additionalJob.m_Sector = thisSector;
-
-					terrainJobs.push_back(additionalJob);
-				}
-
-				if (texelMax.y > tex->GetSize().y)
-				{
-					TerrainColorEditingJob additionalJob;
-					additionalJob.m_TexelMin.y = 0;
-					additionalJob.m_TexelMax.y = texelMax.y;
-
-					additionalJob.m_TexelMin.x = texelMin.x;
-					additionalJob.m_TexelMax.x = texelMax.x;
-
-					texelMax.y = tex->GetSize().y;
-
-					glm::ivec2 sectorNormalizedIndex = sector->GetOffsetIndex();
-					Sector* thisSector = world->GetSectorByIndex(sectorNormalizedIndex + glm::ivec2(0, 1));
-					additionalJob.m_Sector = thisSector;
-
-					terrainJobs.push_back(additionalJob);
-				}
-#endif
 				glm::vec4 color = glm::vec4(g_Editor->GetOSMTool()->GetWayDebugColors()[way->GetOSMElementType()], 1.f);
-				TerrainColorEditingJob mainJob(sector, texelMin, texelMax, glm::vec4(color));
+				TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);
 				terrainJobs.push_back(mainJob);
 
 				for (TerrainColorEditingJob& job : terrainJobs)
 				{
 					job.Execute(triangles);
 				}
+
+				sector->GetBuildings().push_back(building);
+
+				Entity* footprintEntity = new Entity();
+				footprintEntity->SetName("Building - " + way->GetName());
+				footprintEntity->SetModel(building.m_Model);
+				footprintEntity->GetModel()->GetMaterials()[0]->SetDiffuseColor((glm::vec3) color);
+
+				footprintEntity->SetVisible(true);
+
+				footprintEntity->UpdateAABB();
+				sector->GetGraphicalData()->AddTo_StaticEntities(footprintEntity);
 			}
 		}
 
@@ -870,4 +831,8 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 		}
 	}
 	
+
+	Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+	tex->GenerateMipMaps();
+
 }

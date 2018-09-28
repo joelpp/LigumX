@@ -41,6 +41,9 @@ const int& GetIndexInSector() { return m_IndexInSector; };
 void SetIndexInSector(int value) { m_IndexInSector = value; }; 
 const bool& GetFilledIn() { return m_FilledIn; }; 
 void SetFilledIn(bool value) { m_FilledIn = value; }; 
+const std::string& GetAllTags() { return m_AllTags; }; 
+void SetAllTags(std::string value) { m_AllTags = value; }; 
+void AddTo_AllTags(std::string value) { m_AllTags += value; };
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -49,8 +52,9 @@ std::vector<Node*> m_Nodes;
 OSMElementType m_OSMElementType = OSMElementType_Unknown;
 int m_IndexInSector = 0;
 bool m_FilledIn = false;
+std::string m_AllTags;
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WayPIDX
@@ -62,6 +66,7 @@ PIDX_Nodes,
 PIDX_OSMElementType,
 PIDX_IndexInSector,
 PIDX_FilledIn,
+PIDX_AllTags,
 };
 bool Serialize(bool writing);
 

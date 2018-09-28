@@ -47,13 +47,13 @@ int m_ObjectID;
 std::string m_Name;
 float m_MinFacadeLength = 25.f;
 float m_MaxFacadeLength = 50.f;
-float m_MinPlotLengthRatio = 1.1f;
-float m_MaxPlotLengthRatio = 1.3f;
+float m_MinPlotLengthRatio = 1.7f;
+float m_MaxPlotLengthRatio = 2.5f;
 float m_MinBuildingDepth = 25.f;
 float m_MaxBuildingDepth = 50.f;
 float m_MinHeight = 20.f;
 float m_MaxHeight = 50.f;
-float m_MinNeighborDistance = 40.f;
+float m_MinNeighborDistance = 30.f;
 float m_MaxNeighborDistance = 70.f;
 bool m_ProcessAddressInterpolation = true;
 public:

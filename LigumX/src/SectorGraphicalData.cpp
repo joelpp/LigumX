@@ -34,6 +34,7 @@ SectorGraphicalData::SectorGraphicalData()
 	m_AlbedoTexture = new Texture(10691);
 
 	m_SplatMapTexture = g_ObjectManager->CreateObject<Texture>();
+	m_SplatMapTexture->SetSize(glm::ivec2(512, 512));
 	m_SplatMapTexture->Initialize();
 
 	unsigned char* data = m_SplatMapTexture->GetTextureData();

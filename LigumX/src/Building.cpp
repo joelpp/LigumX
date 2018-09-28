@@ -43,6 +43,8 @@ bool Building::GenerateModel()
 
 	// first try clockwise loops, then try counterclockwise if it failed.
 	std::vector<vec3> tempTriangleVertices;
+	m_FlatVertices.clear();
+
 	bool failedLoop;
 	for(int clockwiseness=-1; clockwiseness<=1; clockwiseness += 2) 
 	{
@@ -150,7 +152,7 @@ bool Building::GenerateModel()
 	            tempTriangleVertices.push_back(point);
 	            point = p3;
 	            tempTriangleVertices.push_back(point);
-
+				m_FlatVertices.push_back(p1);
 	            // delete node from loop. std::vector reassigns positions to all elements after the one deleted, so we must reassign the iterators acordingly.
 	            if(nodeIt2 == loopNodes.begin()) 
 	            {
@@ -187,6 +189,7 @@ bool Building::GenerateModel()
 	    } 
 		else 
 	    {
+			m_FlatVertices.clear();
 	        tempTriangleVertices.clear();
 	    }
 	}

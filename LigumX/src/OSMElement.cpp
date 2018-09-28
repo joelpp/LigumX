@@ -21,7 +21,8 @@ const std::string EnumValues_OSMElementType[] =
 "LeisurePark",
 "NaturalWood",
 "NaturalWater",
-"Landuse",
+"LanduseRetail",
+"LanduseIndustrial",
 "RailwaySubway",
 "AddressInterpolation",
 "NotImplemented",
@@ -47,7 +48,8 @@ const OSMElementType Indirection_OSMElementType[] =
 	OSMElementType_LeisurePark,
 	OSMElementType_NaturalWood,
 	OSMElementType_NaturalWater,
-	OSMElementType_Landuse,
+	OSMElementType_LanduseRetail,
+	OSMElementType_LanduseIndustrial,
 	OSMElementType_RailwaySubway,
 	OSMElementType_AddressInterpolation,
 	OSMElementType_NotImplemented,
@@ -55,6 +57,8 @@ const OSMElementType Indirection_OSMElementType[] =
 	OSMElementType_Count,
 };
 #pragma endregion  CLASS_SOURCE OSMElement
+
+
 
 
 
@@ -298,8 +302,12 @@ OSMElementType OSMElement::GetOSMTypeFromStrings(const std::string& key, const s
 		ADD_VALUE(park, OSMElementType_LeisurePark)
 	END_KEY(leisure)
 
+	ELSE_BEGIN_KEY(landuse)
+		ADD_VALUE(retail, OSMElementType_LanduseRetail)
+		ELSE_ADD_VALUE(industrial, OSMElementType_LanduseIndustrial)
+	END_KEY(landuse)
+
 	ADD_SINGLE_KEY(addr:interpolation,	OSMElementType_AddressInterpolation)
-	ADD_SINGLE_KEY(landuse,				OSMElementType_Landuse)
 	ADD_SINGLE_KEY(boundary,			OSMElementType_Boundary)
 	ADD_SINGLE_KEY(contour,				OSMElementType_Contour)
 

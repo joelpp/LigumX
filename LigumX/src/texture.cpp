@@ -140,6 +140,24 @@ void Texture::Initialize()
 	glBindTexture(bindingTarget, 0);
 }
 
+void Texture::BindTexture(GLuint bindingTarget)
+{
+	glBindTexture(bindingTarget, m_HWObject);
+}
+
+void Texture::UnbindTexture(GLuint bindingTarget)
+{
+	glBindTexture(bindingTarget, 0);
+}
+
+void Texture::GenerateMipMaps()
+{
+	GLuint bindingTarget = m_IsCubeMap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
+	BindTexture(bindingTarget);
+	glGenerateMipmap(bindingTarget);
+	UnbindTexture(bindingTarget);
+}
+
 void Texture::LoadFromFile(GLuint target, std::string filename)
 {
 	std::string fullName = g_PathTextures + filename;

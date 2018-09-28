@@ -19,6 +19,7 @@ const ClassPropertyData Way::g_Properties[] =
 { "OSMElementType", PIDX_OSMElementType, offsetof(Way, m_OSMElementType), 0, LXType_OSMElementType, false, LXType_None, 0, 0, 0, 0,}, 
 { "IndexInSector", PIDX_IndexInSector, offsetof(Way, m_IndexInSector), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
 { "FilledIn", PIDX_FilledIn, offsetof(Way, m_FilledIn), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "AllTags", PIDX_AllTags, offsetof(Way, m_AllTags), 0, LXType_stdstring, false, LXType_None, PropertyFlags_Adder, 0, 0, 0,}, 
 };
 bool Way::Serialize(bool writing)
 {

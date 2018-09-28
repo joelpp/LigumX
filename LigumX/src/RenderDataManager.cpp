@@ -618,10 +618,12 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 			{
 				allDotsBad = false;
 
-				if (!m_CullingOptions->GetDebugDotProduct())
-				{
-					return true;
-				}
+				//if (!m_CullingOptions->GetDebugDotProduct())
+				//{
+				//	return true;
+				//}
+
+				break;
 			}
 		}
 
@@ -662,6 +664,8 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 					return true;
 				}
 			}
+
+
 
 			if (m_CullingOptions->GetDebugAABBClippPos())
 			{

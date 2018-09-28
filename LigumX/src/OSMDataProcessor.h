@@ -1,8 +1,49 @@
 #pragma once
 
 #include "glm/glm.hpp"
+#include "OSMDataProcessorSettings.h"
 
 
+float Random0To1();
+
+
+template <typename T>
+T GetRandomValue(T min, T max);
+
+
+struct AddrInterpBuildingInfo
+{
+	AddrInterpBuildingInfo(OSMDataProcessorSettings* settings)
+	{
+		m_BuildingDimensions.x = GetRandomValue(settings->GetMinFacadeLength(), settings->GetMaxFacadeLength());
+
+		float minPlotLength = settings->GetMinPlotLengthRatio() * m_BuildingDimensions.x;
+		float maxPlotLength = settings->GetMaxPlotLengthRatio() * m_BuildingDimensions.x;
+		m_PlotDimensions.x = GetRandomValue(minPlotLength, maxPlotLength);
+
+		m_PaddingBeforeFacade = (m_PlotDimensions.x - m_BuildingDimensions.x) / 2.f;
+		m_PaddingAfterFacade = m_PaddingBeforeFacade;
+
+		m_BuildingDimensions.y = GetRandomValue(settings->GetMinBuildingDepth(), settings->GetMaxBuildingDepth());
+
+		m_PlotDimensions.y = m_BuildingDimensions.y * 1.5f;
+
+		m_BuildingDimensions.z = GetRandomValue(settings->GetMinHeight(), settings->GetMaxHeight());
+
+	}
+
+	float GetPlotLength() { return m_PlotDimensions.x; }
+	float GetPlotDepth() { return m_PlotDimensions.y; }
+	float GetBuildingLength() { return m_BuildingDimensions.x; }
+	float GetBuildingDepth() { return m_BuildingDimensions.y; }
+	float GetBuildingHeight() { return m_BuildingDimensions.z; }
+
+	glm::vec3 m_BuildingDimensions; // (facade, depth, height)
+	glm::vec2 m_PlotDimensions; // facade, depth
+	float m_PaddingAfterFacade;
+	float m_PaddingBeforeFacade;
+
+};
 class Mesh;
 class Way;
 class Sector;
@@ -63,6 +104,7 @@ void ProcessSector(Sector* sector);
 void ProcessRoad(Sector* sector, Way* way);
 Mesh* BuildRoadMesh(Sector* sector, Way* way);
 
+void PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo, const glm::vec3& direction, float& spaceLeft, glm::vec3& plotStart);
 Mesh* BuildAdressInterpolationBuilding(Sector* sector, Way* way);
 void ProcessAddressInterpolation(Sector* sector, Way* way);
 Mesh* BuildGenericBuilding(Sector* sector, Way* way);
