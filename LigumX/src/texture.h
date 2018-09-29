@@ -45,8 +45,8 @@ const GLPixelFormat& GetFormat() { return m_Format; };
 void SetFormat(GLPixelFormat value) { m_Format = value; }; 
 const GLPixelType& GetPixelType() { return m_PixelType; }; 
 void SetPixelType(GLPixelType value) { m_PixelType = value; }; 
-const glm::ivec2& GetSize() { return m_Size; }; 
-void SetSize(glm::ivec2 value) { m_Size = value; }; 
+glm::ivec2& GetSize() { return m_Size; }; 
+void SetSize(const glm::ivec2& value) { m_Size = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;

@@ -73,23 +73,35 @@ public:
 			// Write getter
 			bool ptr = var.IsAPointer();
 			bool vector = var.m_IsTemplate;
-			m_Stream << ((ptr || vector) ? "" : "const ");
-			m_Stream << (var.m_Type);
+			bool glmObject = var.IsGLMType();
+
+			std::stringstream getterStream;
+
+			getterStream << ((ptr || vector || glmObject) ? "" : "const ");
+			getterStream << (var.m_Type);
 
 			if (var.m_IsTemplate)
 			{
-				m_Stream << "<";
-				m_Stream << var.m_AssociatedType << "*";
-				m_Stream << ">";
+				getterStream << "<";
+				getterStream << var.m_AssociatedType << "*";
+				getterStream << ">";
 			}
 
-			m_Stream << (ptr ? "*&" : "&");
-			m_Stream << (" ");
-			m_Stream << "Get" << var.m_Name << "() { return m_" << var.m_Name << "; }; ";
-			m_Stream << std::endl;
+			getterStream << (ptr ? "*&" : "&");
+			getterStream << (" ");
+			getterStream << "Get" << var.m_Name << "() { return m_" << var.m_Name << "; }; ";
+			getterStream << std::endl;
+
+			std::string getterString = getterStream.str();
+
+			m_Stream << getterString;
 
 			// Write setter
-			m_Stream << "void Set" << var.m_Name << "(" << var.m_Type;
+			m_Stream << "void Set" << var.m_Name << "(";
+				
+			m_Stream << (glmObject ? "const " : "");
+
+			m_Stream << var.m_Type;
 
 			if (var.m_IsTemplate)
 			{
@@ -99,6 +111,7 @@ public:
 			}
 
 			m_Stream << (ptr ? "*" : "");
+			m_Stream << (glmObject ? "&" : "");
 			m_Stream << " value) { ";
 
 			if (var.m_PropertyFlags & PropertyFlags_SetCallback)

@@ -24,10 +24,10 @@ const std::string& GetName() { return m_Name; };
 void SetName(std::string value) { m_Name = value; }; 
 const bool& GetInFocus() { return m_InFocus; }; 
 void SetInFocus(bool value) { m_InFocus = value; }; 
-const glm::vec2& GetPosition() { return m_Position; }; 
-void SetPosition(glm::vec2 value) { m_Position = value; }; 
-const glm::ivec2& GetSize() { return m_Size; }; 
-void SetSize(glm::ivec2 value) { m_Size = value; }; 
+glm::vec2& GetPosition() { return m_Position; }; 
+void SetPosition(const glm::vec2& value) { m_Position = value; }; 
+glm::ivec2& GetSize() { return m_Size; }; 
+void SetSize(const glm::ivec2& value) { m_Size = value; }; 
 const std::string& GetTitle() { return m_Title; }; 
 void SetTitle(std::string value) { m_Title = value; }; 
 private:

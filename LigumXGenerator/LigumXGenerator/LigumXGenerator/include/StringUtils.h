@@ -23,9 +23,14 @@ std::vector<std::string> readFileLines(const char* fileName)
 	return values;
 }
 
-bool stringContains(std::string s, char val)
+bool stringContains(const std::string& s, char val)
 {
 	return s.find(val) != std::string::npos;
+}
+
+bool stringContains(const std::string& baseString, const std::string& searchedString)
+{
+	return baseString.find(searchedString) != std::string::npos;
 }
 
 bool stringArrayContains(std::vector<std::string>& s, std::string& val)
@@ -66,7 +71,7 @@ constexpr unsigned int str2int(const char* str, int h = 0)
 	return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 }
 
-std::string RemoveSubstrings(std::string& baseString, std::string substring)
+std::string RemoveSubstrings(std::string& baseString, const std::string& substring)
 {
 	//std::regex pattern(substring);
 

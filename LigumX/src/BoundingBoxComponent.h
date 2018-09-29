@@ -28,8 +28,8 @@ const AABB& GetBoundingBox() { return m_BoundingBox; };
 void SetBoundingBox(AABB value) { m_BoundingBox = value; }; 
 const bool& GetUpdatesWithEntity() { return m_UpdatesWithEntity; }; 
 void SetUpdatesWithEntity(bool value) { m_UpdatesWithEntity = value; }; 
-const glm::mat4& GetModelToWorldMatrix() { return m_ModelToWorldMatrix; }; 
-void SetModelToWorldMatrix(glm::mat4 value) { m_ModelToWorldMatrix = value; }; 
+glm::mat4& GetModelToWorldMatrix() { return m_ModelToWorldMatrix; }; 
+void SetModelToWorldMatrix(const glm::mat4& value) { m_ModelToWorldMatrix = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;

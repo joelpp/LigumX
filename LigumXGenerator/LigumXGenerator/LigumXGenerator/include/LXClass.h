@@ -33,6 +33,11 @@ struct Variable
 		return m_IsPtr;
 	}
 
+	bool IsGLMType() const
+	{
+		return stringContains(m_Type, "glm");
+	}
+
 	bool HasDefaultValue() const
 	{
 		return !(m_DefaultValue.empty());
