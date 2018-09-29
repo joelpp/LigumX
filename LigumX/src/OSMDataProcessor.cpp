@@ -15,6 +15,8 @@
 #include "Sector.h"
 #include "SectorGraphicalData.h"
 
+#include "DefaultTextureHolder.h"
+
 #include "Building.h"
 
 #include "Node.h"
@@ -820,7 +822,16 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 				Entity* footprintEntity = new Entity();
 				footprintEntity->SetName("Building - " + way->GetName());
 				footprintEntity->SetModel(building.m_Model);
-				footprintEntity->GetModel()->GetMaterials()[0]->SetDiffuseColor((glm::vec3) color);
+
+				Material* material = footprintEntity->GetModel()->GetMaterials()[0];
+				material->SetDiffuseColor((glm::vec3) color);
+
+
+				if (way->IsPark())
+				{
+					material->SetDiffuseTexture(g_DefaultTextureHolder->GetGrassTexture());
+				}
+
 
 				footprintEntity->SetVisible(true);
 

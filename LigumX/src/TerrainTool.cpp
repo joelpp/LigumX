@@ -219,7 +219,7 @@ bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 		int startPoint = 0;
 		glTexSubImage2D(GL_TEXTURE_2D, 0, startPoint, startPoint, texSize.x, texSize.y, format, type, val);
 
-		renderer->Bind2DTexture(0, 0);
+		renderer->FreeBoundTexture(0);
 	}
 
 	return false;

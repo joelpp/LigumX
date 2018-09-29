@@ -13,6 +13,7 @@ enum LXType
 	LXType_CullingOptions,
 	LXType_CurlRequest,
 	LXType_DebugRenderer,
+	LXType_DefaultTextureHolder,
 	LXType_DisplayMode,
 	LXType_DisplayOptions,
 	LXType_EEditorTool,

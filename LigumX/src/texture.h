@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <iostream>
+#include <vector>
 //#include "FreeImage\Dist\x64\FreeImage.h"
 #include "FreeImage/Dist/x64/FreeImage.h"
 #include "glm/glm.hpp"

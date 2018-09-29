@@ -190,6 +190,8 @@ public:
 	void BindFramebuffer(FramebufferType buffer);
 	void BindCubemap(int slot, GLuint HWObject);
 	void Bind2DTexture(int slot, GLuint HWObject);
+	void Bind2DTexture(int slot, Texture* texture);
+	void FreeBoundTexture(int slot);
 	void FreeBoundTexture();
 
 	void SetUniform(int value, const char* name, GLuint location);
@@ -427,11 +429,6 @@ private:
 	int m_NumLights;
 
 	int m_TempObjectID;
-
-	Texture* m_Debug_GrassTexture;
-	Texture* m_Debug_RockTexture;
-	Texture* m_Debug_WoodTexture;
-	Texture* m_Debug_SandTexture;
 
 	std::vector<bool> m_ShaderBeenUsedThisFrame;
 

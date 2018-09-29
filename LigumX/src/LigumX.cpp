@@ -1,32 +1,36 @@
 #include "stdafx.h"
 
-
 #include "glm/gtc/random.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 
 #include "LigumX.h"
-#include "ObjectManager.h"
-#include "SectorData.h"
-#include "Settings.h"
-#include "RenderDataManager.h"
-#include "World.h"
-#include "Sector.h"
-#include "Heightfield.h"
 #include "Editor.h"
-#include "EngineStats.h"
-#include "Mesh.h"
-#include "Serializer.h"
 #include "InputHandler.h"
 #include "EngineSettings.h"
-#include "MainWindow.h"
-#include "GUI.h"
+#include "EngineStats.h"
+#include "Serializer.h"
+#include "ObjectManager.h"
+#include "Settings.h"
+
+#include "Mesh.h"
+#include "DefaultTextureHolder.h"
+#include "RenderDataManager.h"
+
+#include "Heightfield.h"
+#include "Sector.h"
+#include "World.h"
+#include "SectorData.h"
 #include "SectorManager.h"
+
 #include "OSMDataProcessor.h"
 
+#include "MainWindow.h"
+#include "GUI.h"
 
 #include "imgui_impl_glfw_gl3.h"
 #include "imgui.h"
+
 using namespace glm;
 using namespace std;
 
@@ -120,6 +124,9 @@ void LigumX::Initialize()
 
     m_RenderDataManager = new RenderDataManager();
     renderer.setDataSource(m_RenderDataManager);
+
+	g_DefaultTextureHolder = new DefaultTextureHolder();
+
 
 	SetApplicationState(EApplicationState_Running);
 }

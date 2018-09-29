@@ -8,6 +8,7 @@
 
 #include "SectorGraphicalData.h"
 #include "DefaultObjects.h"
+#include "DefaultTextureHolder.h"
 #include "Framebuffer.h"
 
 #include "TerrainTool.h"
@@ -313,9 +314,6 @@ void Renderer::Initialize()
 
 	g_Editor->Initialize();
 
-	m_Debug_RockTexture = new Texture(10692);
-	m_Debug_SandTexture = new Texture(10693);
-	m_Debug_WoodTexture = new Texture(11039);
 }
 
 void Renderer::Shutdown()
@@ -704,6 +702,11 @@ void Renderer::Bind2DTexture(int slot, GLuint HWObject)
 	glBindTexture(GL_TEXTURE_2D, HWObject);
 }
 
+void Renderer::Bind2DTexture(int slot, Texture* texture)
+{
+	Bind2DTexture(slot, texture->GetHWObject());
+}
+
 void Renderer::BindCubemap(int slot, GLuint HWObject)
 {
 	GLuint theSlot = slots[slot];
@@ -715,6 +718,13 @@ void Renderer::BindCubemap(int slot, GLuint HWObject)
 void Renderer::FreeBoundTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Renderer::FreeBoundTexture(int slot)
+{
+	glActiveTexture(slot);
+	FreeBoundTexture();
+	glActiveTexture(0);
 }
 
 void Renderer::DrawMesh(Mesh* mesh)
@@ -792,13 +802,13 @@ void Renderer::RenderTerrain()
 	Material* terrainMaterial = nullptr;
 
 	SetFragmentUniform(4, "g_RockTexture");
-	Bind2DTexture(4, m_Debug_RockTexture->GetHWObject());
+	Bind2DTexture(4, g_DefaultTextureHolder->GetRockTexture());
 
 	SetFragmentUniform(5, "g_SandTexture");
-	Bind2DTexture(5, m_Debug_SandTexture->GetHWObject());
+	Bind2DTexture(5, g_DefaultTextureHolder->GetSandTexture());
 
 	SetFragmentUniform(6, "g_WoodTexture");
-	Bind2DTexture(6, m_Debug_WoodTexture->GetHWObject());
+	Bind2DTexture(6, g_DefaultTextureHolder->GetWoodTexture());
 
 
 

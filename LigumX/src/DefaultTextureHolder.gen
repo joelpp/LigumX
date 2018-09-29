@@ -1,0 +1,9 @@
+[globalinstance]
+class DefaultTextureHolder
+{
+	Texture* GrassTexture;
+	Texture* RockTexture;
+	Texture* WoodTexture;
+	Texture* SandTexture;
+
+}
