@@ -48,6 +48,8 @@ bool GetUseLighting() { return m_UseLighting; };
 void SetUseLighting(bool value) { m_UseLighting = value; }; 
 bool GetShowNormals() { return m_ShowNormals; }; 
 void SetShowNormals(bool value) { m_ShowNormals = value; }; 
+bool GetShowUVs() { return m_ShowUVs; }; 
+void SetShowUVs(bool value) { m_ShowUVs = value; }; 
 bool GetShowSpecular() { return m_ShowSpecular; }; 
 void SetShowSpecular(bool value) { m_ShowSpecular = value; }; 
 bool GetShowDiffuse() { return m_ShowDiffuse; }; 
@@ -83,6 +85,7 @@ bool m_DrawSky = false;
 bool m_WireframeRendering = false;
 bool m_UseLighting = false;
 bool m_ShowNormals = false;
+bool m_ShowUVs = false;
 bool m_ShowSpecular = false;
 bool m_ShowDiffuse = false;
 bool m_ShowAmbient = false;
@@ -97,7 +100,7 @@ bool m_OutputGLErrors = false;
 bool m_DisplayDebugModels = false;
 DisplayMode m_DisplayMode = DisplayMode_Final;
 public:
-static const int g_PropertyCount = 21;
+static const int g_PropertyCount = 22;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -110,6 +113,7 @@ PIDX_DrawSky,
 PIDX_WireframeRendering,
 PIDX_UseLighting,
 PIDX_ShowNormals,
+PIDX_ShowUVs,
 PIDX_ShowSpecular,
 PIDX_ShowDiffuse,
 PIDX_ShowAmbient,

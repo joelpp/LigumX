@@ -15,6 +15,7 @@ class DisplayOptions
 	bool WireframeRendering;
 	bool UseLighting;
 	bool ShowNormals;
+	bool ShowUVs;
 	bool ShowSpecular;
 	bool ShowDiffuse;
 	bool ShowAmbient;

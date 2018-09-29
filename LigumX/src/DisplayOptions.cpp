@@ -17,6 +17,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "WireframeRendering", PIDX_WireframeRendering, offsetof(DisplayOptions, m_WireframeRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "UseLighting", PIDX_UseLighting, offsetof(DisplayOptions, m_UseLighting), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "ShowNormals", PIDX_ShowNormals, offsetof(DisplayOptions, m_ShowNormals), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "ShowUVs", PIDX_ShowUVs, offsetof(DisplayOptions, m_ShowUVs), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "ShowSpecular", PIDX_ShowSpecular, offsetof(DisplayOptions, m_ShowSpecular), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "ShowDiffuse", PIDX_ShowDiffuse, offsetof(DisplayOptions, m_ShowDiffuse), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "ShowAmbient", PIDX_ShowAmbient, offsetof(DisplayOptions, m_ShowAmbient), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 

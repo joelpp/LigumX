@@ -204,6 +204,14 @@ void main()
 	pixelData.m_Depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
 
 	vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
+
+	if (g_DebugUVsEnabled > 0)
+	{
+		vec2 fractUV = fract(pixelData.m_UVs);
+		FinalColor = vec4(fractUV.r, fractUV.g, 0.f, 1.f);
+		return;
+	}
+
 	
 	//if (g_DebugDepthEnabled > 0)
 	//{

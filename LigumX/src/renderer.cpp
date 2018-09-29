@@ -641,7 +641,8 @@ void Renderer::SetDebugUniforms()
 	SetFragmentUniform(ambientEnabled,	"g_DebugAmbientEnabled");
 	SetFragmentUniform(specularEnabled, "g_DebugSpecularEnabled");
 	SetFragmentUniform(depthEnabled,	"g_DebugDepthEnabled");
-	SetFragmentUniform(normalsEnabled,	"g_DebugNormalsEnabled");
+	SetFragmentUniform(normalsEnabled, "g_DebugNormalsEnabled");
+	SetFragmentUniform(m_DisplayOptions->GetShowUVs(),	"g_DebugUVsEnabled");
 	SetFragmentUniform(linearizeDepth, "g_DebugLinearizeDepth");
 	//SetFragmentUniform(gammaCorrection, "g_GammaCorrection");
 

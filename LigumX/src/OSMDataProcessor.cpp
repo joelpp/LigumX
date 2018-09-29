@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "OSMElementComponent.h"	
 #include "LigumX.h"
+#include "EngineSettings.h"
 #include "World.h"
 #include "Sector.h"
 #include "SectorGraphicalData.h"
@@ -306,6 +307,15 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 	normals.push_back(normal);
 	normals.push_back(normal);
 
+	
+
+	uvs.push_back(glm::vec2(0, 0));
+	uvs.push_back(glm::vec2(0, dimensions.z));
+	uvs.push_back(glm::vec2(dimensions.x, 0));
+	uvs.push_back(glm::vec2(0, dimensions.z));
+	uvs.push_back(glm::vec2(dimensions.x, dimensions.z));
+	uvs.push_back(glm::vec2(dimensions.x, 0));
+
 	int numQuads = 1;
 	static volatile bool g_Debug_GenerateDepth = true;
 	if (g_Debug_GenerateDepth)
@@ -316,6 +326,13 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 		vertices.push_back(facade11);
 		vertices.push_back(back11);
 		vertices.push_back(back10);
+
+		uvs.push_back(glm::vec2(0, 0));
+		uvs.push_back(glm::vec2(dimensions.x, 0));
+		uvs.push_back(glm::vec2(0, dimensions.x));
+		uvs.push_back(glm::vec2(dimensions.x, 0));
+		uvs.push_back(glm::vec2(dimensions.x, dimensions.x));
+		uvs.push_back(glm::vec2(0, dimensions.x));
 
 		normal = glm::normalize(glm::cross(up, back));
 		normals.push_back(normal);
@@ -332,6 +349,13 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 		vertices.push_back(back01);
 		vertices.push_back(back00);
 
+		uvs.push_back(glm::vec2(0, 0));
+		uvs.push_back(glm::vec2(dimensions.x, 0));
+		uvs.push_back(glm::vec2(0, dimensions.x));
+		uvs.push_back(glm::vec2(dimensions.x, 0));
+		uvs.push_back(glm::vec2(dimensions.x, dimensions.x));
+		uvs.push_back(glm::vec2(0, dimensions.x));
+
 		normal = glm::normalize(glm::cross(-direction, up));
 		normals.push_back(normal);
 		normals.push_back(normal);
@@ -347,6 +371,13 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 		vertices.push_back(facade01);
 		vertices.push_back(facade00);
 
+		uvs.push_back(glm::vec2(0, 0));
+		uvs.push_back(glm::vec2(dimensions.y, 0));
+		uvs.push_back(glm::vec2(0, dimensions.y));
+		uvs.push_back(glm::vec2(dimensions.y, 0));
+		uvs.push_back(glm::vec2(dimensions.y, dimensions.y));
+		uvs.push_back(glm::vec2(0, dimensions.y));
+
 		normal = glm::normalize(glm::cross(back, up));
 		normals.push_back(normal);
 		normals.push_back(normal);
@@ -358,15 +389,6 @@ void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, co
 		numQuads = 4;
 	}
 
-	for (int i = 0; i < numQuads; ++i)
-	{
-		uvs.push_back(glm::vec2(0, 0));
-		uvs.push_back(glm::vec2(1, 0));
-		uvs.push_back(glm::vec2(0, 1));
-		uvs.push_back(glm::vec2(1, 0));
-		uvs.push_back(glm::vec2(1, 1));
-		uvs.push_back(glm::vec2(0, 1));
-	}
 }
 
 void OSMDataProcessor::PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo, const glm::vec3& direction, float& spaceLeft, glm::vec3& plotStart)
@@ -840,7 +862,10 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 				{
 					material->SetDiffuseTexture(g_DefaultTextureHolder->GetRockTexture());
 				}
-
+				else if (way->IsLandUseRetail() || way->IsLandUseIndustrial())
+				{
+					material->SetDiffuseTexture(g_DefaultTextureHolder->GetAsphaltTexture());
+				}
 
 				footprintEntity->SetVisible(true);
 

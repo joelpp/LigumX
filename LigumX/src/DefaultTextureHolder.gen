@@ -1,6 +1,7 @@
 [globalinstance]
 class DefaultTextureHolder
 {
+	Texture* AsphaltTexture;
 	Texture* DirtTexture;
 	Texture* GrassTexture;
 	Texture* RockTexture;

@@ -12,6 +12,7 @@ const ClassPropertyData DefaultTextureHolder::g_Properties[] =
 {
 { "ObjectID", PIDX_ObjectID, offsetof(DefaultTextureHolder, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
 { "Name", PIDX_Name, offsetof(DefaultTextureHolder, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "AsphaltTexture", PIDX_AsphaltTexture, offsetof(DefaultTextureHolder, m_AsphaltTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, 0,}, 
 { "DirtTexture", PIDX_DirtTexture, offsetof(DefaultTextureHolder, m_DirtTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, 0,}, 
 { "GrassTexture", PIDX_GrassTexture, offsetof(DefaultTextureHolder, m_GrassTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, 0,}, 
 { "RockTexture", PIDX_RockTexture, offsetof(DefaultTextureHolder, m_RockTexture), 0, LXType_Texture, true, LXType_None, 0, 0, 0, 0,}, 
@@ -29,6 +30,7 @@ bool DefaultTextureHolder::Serialize(bool writing)
 
 DefaultTextureHolder::DefaultTextureHolder()
 {
+	m_AsphaltTexture = new Texture(95736);
 	m_DirtTexture = new Texture(239767);
 	m_WaterTexture = new Texture(7256);
 	m_GrassTexture = new Texture(10691);
