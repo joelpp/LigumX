@@ -108,7 +108,7 @@ Material::Material(ShaderFamily family)
 }
 
 
-void Material::SetDiffuseTextureCallback(Texture* value)
+void Material::SetDiffuseTexture_Callback(Texture* value)
 {
 	m_DiffuseTexture = value;
 
@@ -116,7 +116,7 @@ void Material::SetDiffuseTextureCallback(Texture* value)
 }
 
 
-void Material::SetSpecularTextureCallback(Texture* value)
+void Material::SetSpecularTexture_Callback(Texture* value)
 {
 	m_SpecularTexture = value;
 

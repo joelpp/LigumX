@@ -93,36 +93,36 @@ vec3 Entity::GetLateralVelocity() const {
     return rightVector * dot(rightVector, velocity);
 }
 
-void Entity::SetPositionCallback(const glm::vec3& position)
+void Entity::SetPosition_Callback(const glm::vec3& position)
 {
 	m_Position = position;
 	SetHasMoved(true);
 }
 
-void Entity::SetHasMovedCallback(const bool& value)
+void Entity::SetHasMoved_Callback(const bool& value)
 {
 	m_HasMoved = value;
 }
 
-void Entity::SetScaleCallback(const glm::vec3& value)
+void Entity::SetScale_Callback(const glm::vec3& value)
 {
 	m_Scale = value;
 	SetHasMoved(true);
 }
 
-void Entity::SetRotationAxisCallback(const glm::vec3& value)
+void Entity::SetRotationAxis_Callback(const glm::vec3& value)
 {
 	m_RotationAxis = value;
 	SetHasMoved(true);
 }
 
-void Entity::SetRotationAngleCallback(const float& value)
+void Entity::SetRotationAngle_Callback(const float& value)
 {
 	m_RotationAngle = value;
 	SetHasMoved(true);
 }
 
-void Entity::SetModelCallback(Model* model)
+void Entity::SetModel_Callback(Model* model)
 {
 	m_Model = model;
 	UpdateAABB();

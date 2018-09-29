@@ -29,7 +29,7 @@ class Camera
 	[transient, hidden]
 	glm::mat4 ViewProjectionMatrixInverse;
 
-	[min=0.1]
+	[min=0.1, ]
 	float NearPlane
 
 	float FarPlane

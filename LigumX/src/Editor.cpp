@@ -273,7 +273,7 @@ void Editor::UpdateTerrainEditor()
 
 }
 
-void Editor::SetXYZMaskCallback(const glm::vec4& value)
+void Editor::SetXYZMask_Callback(const glm::vec4& value)
 {
 	m_XYZMask = value;
 }

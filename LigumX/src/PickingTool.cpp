@@ -81,7 +81,7 @@ void AddEntityMessage(Entity* entity)
 	g_RenderDataManager->AddMouseMessage(msg.str());
 }
 
-void PickingTool::SetPickedEntityCallback(Entity* entity)
+void PickingTool::SetPickedEntity_Callback(Entity* entity)
 {
 	// something about debug display / compile out in release
 	if (entity)
