@@ -92,5 +92,6 @@ public:
 	bool IsRoad() { return m_OSMElementType >= OSMElementType_HighwayTrunk && m_OSMElementType <= OSMElementType_HighwayUnclassified; }
 	bool IsWater() { return m_OSMElementType == OSMElementType_NaturalWater; }
 	bool IsWood() { return m_OSMElementType == OSMElementType_NaturalWood; }
+	bool IsBareRock() { return m_OSMElementType == OSMElementType_NaturalBareRock; }
 };
 

@@ -1,9 +1,11 @@
 [globalinstance]
 class DefaultTextureHolder
 {
+	Texture* DirtTexture;
 	Texture* GrassTexture;
 	Texture* RockTexture;
 	Texture* WoodTexture;
 	Texture* SandTexture;
+	Texture* WaterTexture;
 
 }

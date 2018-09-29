@@ -14,7 +14,7 @@ layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 layout(binding = 1) uniform sampler2D g_SplatMapTexture;
 
 
-layout(binding = 4) uniform sampler2D g_RockTexture;
+layout(binding = 4) uniform sampler2D g_DirtTexture;
 layout(binding = 5) uniform sampler2D g_SandTexture;
 layout(binding = 6) uniform sampler2D g_WoodTexture;
 layout(binding = 7) uniform sampler2D g_AlbedoTexture;
@@ -94,7 +94,7 @@ void main()
 	//		+ splatMap.w * texture(g_WoodTexture, diffuseTexCoords).rgb;
 	
 	vec3 grass =  texture(g_Material.m_DiffuseTexture, diffuseTexCoords).rgb;
-	vec3 Rock =  texture(g_RockTexture, diffuseTexCoords).rgb;
+	vec3 Dirt =  texture(g_DirtTexture, diffuseTexCoords).rgb;
 	//vec3 Sand =  texture(g_SandTexture, diffuseTexCoords).rgb;
 	//vec3 Wood =  texture(g_WoodTexture, diffuseTexCoords).rgb;
 	//vec3 neutral = vec3(0.2, 0.1, 0.3);
@@ -106,7 +106,7 @@ void main()
 	//vec3 lerp0 = mix(neutral, grass, splatMap.x);
 	//lerp0 = mix(lerp0, Rock, splatMap.y);
 	//lerp0 = mix(lerp0, Sand, splatMap.z);
-	pixelData.m_DiffuseColor.rgb = mix(grass, Rock, 1.f - splatMap.z);
+	pixelData.m_DiffuseColor.rgb = mix(grass, Dirt, 1.f - splatMap.z);
 	//pixelData.m_DiffuseColor.rgb = splatMap.rgb * splatMap.a + Rock * (1 - splatMap.a);
 	//pixelData.m_DiffuseColor = splatMap.rgba;
 

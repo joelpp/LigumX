@@ -801,8 +801,8 @@ void Renderer::RenderTerrain()
 
 	Material* terrainMaterial = nullptr;
 
-	SetFragmentUniform(4, "g_RockTexture");
-	Bind2DTexture(4, g_DefaultTextureHolder->GetRockTexture());
+	SetFragmentUniform(4, "g_DirtTexture");
+	Bind2DTexture(4, g_DefaultTextureHolder->GetDirtTexture());
 
 	SetFragmentUniform(5, "g_SandTexture");
 	Bind2DTexture(5, g_DefaultTextureHolder->GetSandTexture());

@@ -776,6 +776,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 		bool isPark = (wayType == OSMElementType::OSMElementType_LeisurePark || 
 					   wayType == OSMElementType::OSMElementType_LanduseRetail ||
 					   wayType == OSMElementType::OSMElementType_NaturalWater ||
+					   wayType == OSMElementType::OSMElementType_NaturalBareRock ||
 					   wayType == OSMElementType::OSMElementType_LanduseIndustrial);
 
 		// todo : dont uncomment this it crashes everything :(
@@ -830,6 +831,14 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 				if (way->IsPark())
 				{
 					material->SetDiffuseTexture(g_DefaultTextureHolder->GetGrassTexture());
+				}
+				else if (way->IsWater())
+				{
+					material->SetDiffuseTexture(g_DefaultTextureHolder->GetWaterTexture());
+				}
+				else if (way->IsBareRock())
+				{
+					material->SetDiffuseTexture(g_DefaultTextureHolder->GetRockTexture());
 				}
 
 

@@ -304,7 +304,8 @@ OSMElementType OSMElement::GetOSMTypeFromStrings(const std::string& key, const s
 
 	ELSE_BEGIN_KEY(natural)
 		ADD_VALUE(wood,			OSMElementType_NaturalWood)
-		ELSE_ADD_VALUE(water,	OSMElementType_NaturalWater)
+		ELSE_ADD_VALUE(water, OSMElementType_NaturalWater)
+		ELSE_ADD_VALUE(bare_rock, OSMElementType_NaturalBareRock)
 	END_KEY(natural)
 
 	ELSE_BEGIN_KEY(building)
