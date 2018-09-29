@@ -58,7 +58,8 @@ glm::mat4& GetProjectionMatrixInverse() { return m_ProjectionMatrixInverse; };
 void SetProjectionMatrixInverse(const glm::mat4& value) { m_ProjectionMatrixInverse = value; }; 
 glm::mat4& GetViewProjectionMatrixInverse() { return m_ViewProjectionMatrixInverse; }; 
 void SetViewProjectionMatrixInverse(const glm::mat4& value) { m_ViewProjectionMatrixInverse = value; }; 
-const float& GetNearPlane() { return m_NearPlane; }; 
+const float& GetNearPlane() { return GetNearPlane_Callback(); }
+const float& GetNearPlane_Callback();
 void SetNearPlane(float value) { m_NearPlane = value; }; 
 const float& GetFarPlane() { return m_FarPlane; }; 
 void SetFarPlane(float value) { m_FarPlane = value; }; 

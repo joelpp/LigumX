@@ -95,7 +95,7 @@ public:
 
 			if (var.m_PropertyFlags & PropertyFlags_GetCallback)
 			{
-				getterStream << "Get" << var.m_Name << "_Callback();";
+				getterStream << "return Get" << var.m_Name << "_Callback(); }";
 			}
 			else
 			{
