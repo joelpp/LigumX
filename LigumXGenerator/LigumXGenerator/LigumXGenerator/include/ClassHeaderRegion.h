@@ -77,24 +77,44 @@ public:
 
 			std::stringstream getterStream;
 
-			getterStream << ((ptr || vector || glmObject) ? "" : "const ");
-			getterStream << (var.m_Type);
+			std::stringstream returnTypeStream;
+
+			returnTypeStream << ((ptr || vector || glmObject) ? "" : "const ");
+			returnTypeStream << (var.m_Type);
 
 			if (var.m_IsTemplate)
 			{
-				getterStream << "<";
-				getterStream << var.m_AssociatedType << "*";
-				getterStream << ">";
+				returnTypeStream << "<";
+				returnTypeStream << var.m_AssociatedType << "*";
+				returnTypeStream << ">";
 			}
 
-			getterStream << (ptr ? "*&" : "&");
-			getterStream << (" ");
-			getterStream << "Get" << var.m_Name << "() { return m_" << var.m_Name << "; }; ";
+			returnTypeStream << (ptr ? "*&" : "&");
+			returnTypeStream << (" ");
+			getterStream << "Get" << var.m_Name << "() {";
+
+			if (var.m_PropertyFlags & PropertyFlags_GetCallback)
+			{
+				getterStream << "Get" << var.m_Name << "Callback();";
+			}
+			else
+			{
+				getterStream << "return m_" << var.m_Name << "; }; ";
+			}
+
 			getterStream << std::endl;
 
-			std::string getterString = getterStream.str();
+			std::stringstream callbackFuncStream;
+			if (var.m_PropertyFlags & PropertyFlags_GetCallback)
+			{
+				callbackFuncStream << "Get" << var.m_Name << "Callback();";
+				callbackFuncStream << std::endl;
+			}
 
+			std::string getterString = returnTypeStream.str() + getterStream.str();
+			std::string callbackFuncString  = returnTypeStream.str() + callbackFuncStream.str();
 			m_Stream << getterString;
+			m_Stream << callbackFuncString;
 
 			// Write setter
 			m_Stream << "void Set" << var.m_Name << "(";

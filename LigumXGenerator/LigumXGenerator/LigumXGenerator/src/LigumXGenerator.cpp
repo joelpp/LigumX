@@ -492,6 +492,7 @@ void InitializeGenerator()
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_Hidden, "hidden");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_ReadOnly, "readonly");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_SetCallback, "setcallback");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_GetCallback, "getcallback");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_MinValue, "min");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_MaxValue, "max");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_Transient, "transient");

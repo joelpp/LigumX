@@ -31,7 +31,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ViewMatrixInverse", PIDX_ViewMatrixInverse, offsetof(Camera, m_ViewMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ProjectionMatrixInverse", PIDX_ProjectionMatrixInverse, offsetof(Camera, m_ProjectionMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ViewProjectionMatrixInverse", PIDX_ViewProjectionMatrixInverse, offsetof(Camera, m_ViewProjectionMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
-{ "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
+{ "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None, 0, 0.1, 0, 0,}, 
 { "FarPlane", PIDX_FarPlane, offsetof(Camera, m_FarPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
 { "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
 { "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 

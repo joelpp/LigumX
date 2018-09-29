@@ -73,15 +73,16 @@ enum LXType
 
 enum PropertyFlags
 {
-	PropertyFlags_Hidden = 1,
-	PropertyFlags_ReadOnly = 2,
-	PropertyFlags_SetCallback = 4,
-	PropertyFlags_NonEditable = 8,
-	PropertyFlags_Adder = 16,
-	PropertyFlags_Transient = 32,
-	PropertyFlags_MaxValue = 64,
-	PropertyFlags_MinValue = 128,
-	PropertyFlags_Enum = 256,
+	PropertyFlags_Hidden			= 1 << 0,
+	PropertyFlags_ReadOnly			= 1 << 1,
+	PropertyFlags_SetCallback		= 1 << 2,
+	PropertyFlags_GetCallback		= 1 << 3,
+	PropertyFlags_MinValue			= 1 << 4,
+	PropertyFlags_MaxValue			= 1 << 5,
+	PropertyFlags_Transient			= 1 << 6,
+	PropertyFlags_NonEditable		= 1 << 7,
+	PropertyFlags_Adder				= 1 << 8,
+	PropertyFlags_Enum				= 1 << 9,
 };
 
 template <class T> class LXFunctor
