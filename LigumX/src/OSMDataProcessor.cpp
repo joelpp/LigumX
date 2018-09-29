@@ -407,13 +407,13 @@ void OSMDataProcessor::PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo,
 }
 
 
-Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way)
+Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way, Mesh*& groundMesh)
 {
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
 	Mesh* buildingMesh = new Mesh();
-	Mesh* plotMesh = new Mesh();
-	
+	CPUBuffers fullBuffers;
+
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
 		Node* node = *nodeIt;
@@ -439,6 +439,7 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 		glm::vec3 right = glm::cross(direction, up);
 
 		glm::vec3 plotStart = nodePos;
+		int buildingIndex = 0;
 		while (spaceLeft > m_Settings->GetMinFacadeLength())
 		{
 
@@ -481,7 +482,9 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
 			lxAssert(tex != nullptr);
 
-			glm::vec3 plotEnd = plotStart + buildingInfo.GetPlotLength() * direction + depthClearanceRatio * right * buildingInfo.GetPlotDepth();
+			glm::vec3 plotForward = buildingInfo.GetPlotLength() * direction;
+			glm::vec3 plotBack = depthClearanceRatio * right * buildingInfo.GetPlotDepth();
+			glm::vec3 plotEnd = plotStart + plotForward + plotBack;
 
 			glm::vec2 plotUVMin = sector->GetUVForWorldPosition(plotStart);
 			glm::vec2 plotUVMax = sector->GetUVForWorldPosition(plotEnd);
@@ -493,7 +496,41 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 			//terrainJob.Execute();
 
 			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
-			Add3DBox(buildingMesh,	   plotStart, direction, right, up, glm::vec3(buildingInfo.GetPlotLength(), buildingInfo.GetPlotDepth(), 1.f));
+	
+
+			glm::vec3 v0 = plotStart;
+			glm::vec3 v1 = plotStart + plotForward;
+			glm::vec3 v2 = plotEnd;
+			glm::vec3 v3 = plotStart + plotBack;
+
+			CPUBuffers groundBuffers;
+
+			groundBuffers.m_VertexPositions.push_back(v0);
+			groundBuffers.m_VertexPositions.push_back(v1);
+			groundBuffers.m_VertexPositions.push_back(v2);
+			groundBuffers.m_VertexPositions.push_back(v3);
+
+			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
+			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
+			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
+			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
+
+			groundBuffers.m_vertexUVs.push_back(glm::vec2(0, 0));
+			groundBuffers.m_vertexUVs.push_back(glm::vec2(0, 1));
+			groundBuffers.m_vertexUVs.push_back(glm::vec2(1, 1));
+			groundBuffers.m_vertexUVs.push_back(glm::vec2(1, 0));
+
+			int baseIndex = buildingIndex * 4;
+			groundBuffers.indexBuffer.push_back(baseIndex + 0);
+			groundBuffers.indexBuffer.push_back(baseIndex + 1);
+			groundBuffers.indexBuffer.push_back(baseIndex + 2);
+			groundBuffers.indexBuffer.push_back(baseIndex + 2);
+			groundBuffers.indexBuffer.push_back(baseIndex + 3);
+			groundBuffers.indexBuffer.push_back(baseIndex + 0);
+
+			fullBuffers.AppendBuffer(groundBuffers);
+
+			buildingIndex++;
 
 			PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
 		}
@@ -501,6 +538,8 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 	}
 
 	buildingMesh->CreateBuffers();
+
+	groundMesh = new Mesh(fullBuffers, GL::PrimitiveMode::Triangles, false);
 
 	return buildingMesh;
 }
@@ -710,7 +749,8 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 {
 	Mesh* buildingMesh = nullptr;
 
-	buildingMesh = BuildAdressInterpolationBuilding(sector, way);
+	Mesh* groundMesh = nullptr;
+	buildingMesh = BuildAdressInterpolationBuilding(sector, way, groundMesh);
 
 	int nbBuildings = 5;
 	float buildingWidth = 5.f;
@@ -743,6 +783,32 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 		//world->AddTo_Entities(roadEntity);
 
 		sector->GetGraphicalData()->GetStaticEntities().push_back(buildingEntity);
+	}
+
+	if (groundMesh != nullptr)
+	{
+		Renderer& renderer = Renderer::GetInstance();
+
+		Model* groundModel = new Model();
+		Material* groundMaterial = new Material();
+		groundMaterial->SetDiffuseTexture(g_DefaultTextureHolder->GetGrassTexture());
+
+		groundModel->addMesh(groundMesh, groundMaterial);
+		groundModel->SetName("AddrInterpolation_Test_Ground");
+
+		Entity* groundEntity = new Entity();
+		groundEntity->SetName("OSM_GENERATED_Ground_ADDRINTERP - " + way->GetName());
+		groundEntity->SetModel(groundModel);
+
+		groundEntity->SetVisible(true);
+
+		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
+		osmElementComponent->SetWay(way);
+		groundEntity->AddTo_Components(osmElementComponent);
+		//World* world = LigumX::GetInstance().GetWorld();
+		//world->AddTo_Entities(roadEntity);
+
+		sector->GetGraphicalData()->GetStaticEntities().push_back(groundEntity);
 	}
 
 }
