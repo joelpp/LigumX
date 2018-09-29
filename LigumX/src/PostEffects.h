@@ -20,17 +20,17 @@ static const int ClassID = 3178515267;
 static const LXType Type = LXType_PostEffects;
 static constexpr const char* ClassName = "PostEffects";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const bool& GetGammaCorrectionEnabled() { return m_GammaCorrectionEnabled; }; 
+bool GetGammaCorrectionEnabled() { return m_GammaCorrectionEnabled; }; 
 void SetGammaCorrectionEnabled(bool value) { m_GammaCorrectionEnabled = value; }; 
-const float& GetGammaExponent() { return m_GammaExponent; }; 
+float GetGammaExponent() { return m_GammaExponent; }; 
 void SetGammaExponent(float value) { m_GammaExponent = value; }; 
-const bool& GetToneMappingEnabled() { return m_ToneMappingEnabled; }; 
+bool GetToneMappingEnabled() { return m_ToneMappingEnabled; }; 
 void SetToneMappingEnabled(bool value) { m_ToneMappingEnabled = value; }; 
-const bool& GetEmissiveGlowEnabled() { return m_EmissiveGlowEnabled; }; 
+bool GetEmissiveGlowEnabled() { return m_EmissiveGlowEnabled; }; 
 void SetEmissiveGlowEnabled(bool value) { m_EmissiveGlowEnabled = value; }; 
 private:
 int m_ObjectID;

@@ -69,13 +69,13 @@ static const int ClassID = 3101510658;
 static const LXType Type = LXType_OSMDataProcessor;
 static constexpr const char* ClassName = "OSMDataProcessor";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const float& GetRoadWidth() { return m_RoadWidth; }; 
+float GetRoadWidth() { return m_RoadWidth; }; 
 void SetRoadWidth(float value) { m_RoadWidth = value; }; 
-OSMDataProcessorSettings*& GetSettings() { return m_Settings; }; 
+OSMDataProcessorSettings* GetSettings() { return m_Settings; }; 
 void SetSettings(OSMDataProcessorSettings* value) { m_Settings = value; }; 
 private:
 int m_ObjectID;

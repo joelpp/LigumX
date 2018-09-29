@@ -20,13 +20,13 @@ static const int ClassID = 1140622857;
 static const LXType Type = LXType_BoundingBoxComponent;
 static constexpr const char* ClassName = "BoundingBoxComponent";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const AABB& GetBoundingBox() { return m_BoundingBox; }; 
+AABB GetBoundingBox() { return m_BoundingBox; }; 
 void SetBoundingBox(AABB value) { m_BoundingBox = value; }; 
-const bool& GetUpdatesWithEntity() { return m_UpdatesWithEntity; }; 
+bool GetUpdatesWithEntity() { return m_UpdatesWithEntity; }; 
 void SetUpdatesWithEntity(bool value) { m_UpdatesWithEntity = value; }; 
 glm::mat4& GetModelToWorldMatrix() { return m_ModelToWorldMatrix; }; 
 void SetModelToWorldMatrix(const glm::mat4& value) { m_ModelToWorldMatrix = value; }; 

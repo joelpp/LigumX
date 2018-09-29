@@ -31,7 +31,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ViewMatrixInverse", PIDX_ViewMatrixInverse, offsetof(Camera, m_ViewMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ProjectionMatrixInverse", PIDX_ProjectionMatrixInverse, offsetof(Camera, m_ProjectionMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ViewProjectionMatrixInverse", PIDX_ViewProjectionMatrixInverse, offsetof(Camera, m_ViewProjectionMatrixInverse), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
-{ "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None, 0, 0.1, 0, 0,}, 
+{ "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, false, LXType_None, 0, 0.01, 0, 0,}, 
 { "FarPlane", PIDX_FarPlane, offsetof(Camera, m_FarPlane), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
 { "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
 { "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
@@ -59,7 +59,7 @@ Camera::Camera()
     angle = 0;
     totalViewAngleY = 45;
     aspectRatio = 1; // TODO: change to window's aspect ratio.
-    m_NearPlane = 0.001f;
+    m_NearPlane = 0.01f;
     m_FarPlane = 1000.f;
 
     cameraType = CameraType::CYLINDRICAL;
@@ -158,14 +158,14 @@ void Camera::UpdateVPMatrix()
 	// but also it might do
 	if (m_ProjectionType == ProjectionType_Perspective)
 	{
-		m_ViewProjectionMatrix = perspective(totalViewAngleY, aspectRatio, m_NearPlane, m_FarPlane) * m_ViewProjectionMatrix;
-		m_ProjectionMatrix = perspective(totalViewAngleY, aspectRatio, m_NearPlane, m_FarPlane);
+		m_ViewProjectionMatrix = perspective(totalViewAngleY, aspectRatio, GetNearPlane(), m_FarPlane) * m_ViewProjectionMatrix;
+		m_ProjectionMatrix = perspective(totalViewAngleY, aspectRatio, GetNearPlane(), m_FarPlane);
 	}
 	else
 	{
 		float borders = m_OrthoBorders;
-		m_ViewProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane) * m_ViewProjectionMatrix;
-		m_ProjectionMatrix = ortho(-borders, borders, -borders, borders, m_NearPlane, m_FarPlane);
+		m_ViewProjectionMatrix = ortho(-borders, borders, -borders, borders, GetNearPlane(), m_FarPlane) * m_ViewProjectionMatrix;
+		m_ProjectionMatrix = ortho(-borders, borders, -borders, borders, GetNearPlane(), m_FarPlane);
 	}
 
 	m_ViewMatrixInverse = glm::inverse(m_ViewMatrix);
@@ -599,3 +599,9 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
         }
     }
 }
+
+float Camera::GetNearPlane_Callback()
+{
+	return min(m_NearPlane, 0.01f);
+}
+
