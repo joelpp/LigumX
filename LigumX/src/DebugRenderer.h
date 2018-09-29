@@ -17,11 +17,11 @@ static const int ClassID = 1763775919;
 static const LXType Type = LXType_DebugRenderer;
 static constexpr const char* ClassName = "DebugRenderer";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const bool& GetEnabled() { return m_Enabled; }; 
+bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 private:
 int m_ObjectID;

@@ -71,6 +71,7 @@ constexpr unsigned int str2int(const char* str, int h = 0)
 	return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ str[h];
 }
 
+
 std::string RemoveSubstrings(std::string& baseString, const std::string& substring)
 {
 	//std::regex pattern(substring);
@@ -85,6 +86,13 @@ std::string RemoveSubstrings(std::string& baseString, const std::string& substri
 	}
 
 	return baseString;
+}
+
+
+std::string RemoveSubstrings(const std::string& baseString, const std::string& substring)
+{
+	std::string str2 = baseString;
+	return RemoveSubstrings(str2, substring);
 }
 
 std::string RemoveSubstrings(std::string& baseString, StringList& substrings)

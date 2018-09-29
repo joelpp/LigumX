@@ -31,7 +31,7 @@ static const int ClassID = 3880549230;
 static const LXType Type = LXType_Camera;
 static constexpr const char* ClassName = "Camera";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
@@ -58,20 +58,20 @@ glm::mat4& GetProjectionMatrixInverse() { return m_ProjectionMatrixInverse; };
 void SetProjectionMatrixInverse(const glm::mat4& value) { m_ProjectionMatrixInverse = value; }; 
 glm::mat4& GetViewProjectionMatrixInverse() { return m_ViewProjectionMatrixInverse; }; 
 void SetViewProjectionMatrixInverse(const glm::mat4& value) { m_ViewProjectionMatrixInverse = value; }; 
-const float& GetNearPlane() { return GetNearPlane_Callback(); }
-const float& GetNearPlane_Callback();
+float GetNearPlane() { return GetNearPlane_Callback(); }
+float GetNearPlane_Callback();
 void SetNearPlane(float value) { m_NearPlane = value; }; 
-const float& GetFarPlane() { return m_FarPlane; }; 
+float GetFarPlane() { return m_FarPlane; }; 
 void SetFarPlane(float value) { m_FarPlane = value; }; 
-const int& GetProjectionType() { return m_ProjectionType; }; 
+int GetProjectionType() { return m_ProjectionType; }; 
 void SetProjectionType(int value) { m_ProjectionType = value; }; 
-const float& GetOrthoBorders() { return m_OrthoBorders; }; 
+float GetOrthoBorders() { return m_OrthoBorders; }; 
 void SetOrthoBorders(float value) { m_OrthoBorders = value; }; 
-const float& GetViewSize() { return m_ViewSize; }; 
+float GetViewSize() { return m_ViewSize; }; 
 void SetViewSize(float value) { m_ViewSize = value; }; 
-const float& GetMovementSpeed() { return m_MovementSpeed; }; 
+float GetMovementSpeed() { return m_MovementSpeed; }; 
 void SetMovementSpeed(float value) { m_MovementSpeed = value; }; 
-const float& GetKeyMovementSpeedIncreaseFactor() { return m_KeyMovementSpeedIncreaseFactor; }; 
+float GetKeyMovementSpeedIncreaseFactor() { return m_KeyMovementSpeedIncreaseFactor; }; 
 void SetKeyMovementSpeedIncreaseFactor(float value) { m_KeyMovementSpeedIncreaseFactor = value; }; 
 private:
 int m_ObjectID;

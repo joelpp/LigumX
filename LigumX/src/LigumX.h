@@ -112,6 +112,7 @@ private:
 
 	EApplicationState m_ApplicationState = EApplicationState_Uninitialized;
 
+	int m_SystemFrame = 0;
     REGISTERCLASS(LigumX);
 
     LigumX() {};                   // Constructor? (the {} brackets) are needed here.

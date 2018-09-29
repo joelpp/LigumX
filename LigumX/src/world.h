@@ -58,7 +58,7 @@ static const int ClassID = 3714116915;
 static const LXType Type = LXType_World;
 static constexpr const char* ClassName = "World";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 

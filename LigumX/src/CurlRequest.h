@@ -33,11 +33,11 @@ static const int ClassID = 2618865284;
 static const LXType Type = LXType_CurlRequest;
 static constexpr const char* ClassName = "CurlRequest";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-const int& GetState() { return m_State; }; 
+int GetState() { return m_State; }; 
 void SetState(int value) { m_State = value; }; 
 glm::vec2& GetCoords() { return m_Coords; }; 
 void SetCoords(const glm::vec2& value) { m_Coords = value; }; 
@@ -51,7 +51,7 @@ Sector*& GetSector() { return m_Sector; };
 void SetSector(Sector* value) { m_Sector = value; }; 
 glm::ivec2& GetSectorIndex() { return m_SectorIndex; }; 
 void SetSectorIndex(const glm::ivec2& value) { m_SectorIndex = value; }; 
-const bool& GetAsync() { return m_Async; }; 
+bool GetAsync() { return m_Async; }; 
 void SetAsync(bool value) { m_Async = value; }; 
 private:
 int m_ObjectID;

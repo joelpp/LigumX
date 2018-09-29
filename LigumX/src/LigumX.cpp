@@ -63,6 +63,8 @@ void LigumX::BeginFrame()
 	physic_accumulator += dt;
 
 	g_InputHandler->FrameUpdate();
+
+	m_SystemFrame++;
 }
 
 void LigumX::DoFrame()

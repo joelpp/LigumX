@@ -600,8 +600,7 @@ void Camera::qweasdzxcKeyHoldPreset(GLFWwindow *pWindow)
     }
 }
 
-const float& Camera::GetNearPlane_Callback()
+float Camera::GetNearPlane_Callback()
 {
-	//return max(m_NearPlane, 0.01f);
-	return m_NearPlane;
+	return max(m_NearPlane, 0.01f);
 }

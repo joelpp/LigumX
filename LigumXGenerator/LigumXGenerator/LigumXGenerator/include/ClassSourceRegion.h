@@ -124,7 +124,7 @@ public:
 		{
 			Variable& var = m_Class.m_Members[i];
 			std::string&  varName = var.m_Name;
-			std::string&  varType = var.m_Type;
+			const std::string&  varType = var.GetType();
 
 			std::stringstream writeCallbackStream;
 			bool writePtr = (var.m_PropertyFlags & PropertyFlags_SetCallback);
@@ -133,7 +133,7 @@ public:
 			{
 				writeCallbackStream << "WriteSetFunction(" << m_Class.m_Name << ", "
 														   << var.m_Name << ", "
-														   << var.m_Type << (var.IsAPointer() ? "*" : "") << ")";
+														   << var.GetType() << (var.IsAPointer() ? "*" : "") << ")";
 			}
 			else
 			{
@@ -145,7 +145,7 @@ public:
 			WriteLine("{ \"" + varName + "\", "
 				+ "PIDX_" + varName + ", "
 				+ "offsetof(" + m_Class.m_Name + ", m_" + varName + "), "
-				+ (m_Class.m_Members[i].m_Type == "\tbool" ? "1" : "0") + ", "
+				+ (m_Class.m_Members[i].GetType() == "\tbool" ? "1" : "0") + ", "
 				+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
 				+ (var.IsAPointer() ? "true" : "false") + ", "
 				+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "

@@ -20,7 +20,7 @@ static const int ClassID = 879231789;
 static const LXType Type = LXType_Node;
 static constexpr const char* ClassName = "Node";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
@@ -30,7 +30,7 @@ glm::vec2& GetLongLat() { return m_LongLat; };
 void SetLongLat(const glm::vec2& value) { m_LongLat = value; }; 
 glm::vec3& GetWorldPosition() { return m_WorldPosition; }; 
 void SetWorldPosition(const glm::vec3& value) { m_WorldPosition = value; }; 
-const float& GetElevation() { return m_Elevation; }; 
+float GetElevation() { return m_Elevation; }; 
 void SetElevation(float value) { m_Elevation = value; }; 
 std::vector<Way*>& GetWays() { return m_Ways; }; 
 void SetWays(std::vector<Way*> value) { m_Ways = value; }; 

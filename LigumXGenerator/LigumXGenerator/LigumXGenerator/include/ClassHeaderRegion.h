@@ -74,13 +74,16 @@ public:
 			bool ptr = var.IsAPointer();
 			bool vector = var.m_IsTemplate;
 			bool glmObject = var.IsGLMType();
+			bool isString = var.IsString();
+
+			bool isPrimitive = var.IsPrimitive();
 
 			std::stringstream getterStream;
 
 			std::stringstream returnTypeStream;
 
-			returnTypeStream << ((ptr || vector || glmObject) ? "" : "const ");
-			returnTypeStream << (var.m_Type);
+			returnTypeStream << ((ptr || vector || glmObject || isPrimitive) ? "" : "const ");
+			returnTypeStream << (var.GetType());
 
 			if (var.m_IsTemplate)
 			{
@@ -89,7 +92,15 @@ public:
 				returnTypeStream << ">";
 			}
 
-			returnTypeStream << (ptr ? "*&" : "&");
+			if (ptr)
+			{
+				returnTypeStream << "*&";
+			}
+			else if (!isPrimitive)
+			{
+				returnTypeStream << "&";
+			}
+
 			returnTypeStream << (" ");
 			getterStream << "Get" << var.m_Name << "() { ";
 
@@ -122,7 +133,7 @@ public:
 				
 			m_Stream << (glmObject ? "const " : "");
 
-			m_Stream << var.m_Type;
+			m_Stream << var.GetType();
 
 			if (var.m_IsTemplate)
 			{
@@ -152,7 +163,7 @@ public:
 			{
 				m_Stream << "void Set" << var.m_Name << "_Callback(";
 				m_Stream << (ptr ? "" : "const ");
-				m_Stream << var.m_Type;
+				m_Stream << var.GetType();
 				m_Stream << (ptr ? "*" : "&");
 				m_Stream << " value);";
 				m_Stream << std::endl;
@@ -160,7 +171,7 @@ public:
 
 			if (var.m_PropertyFlags & PropertyFlags_Adder)
 			{
-				m_Stream << "void AddTo_" << var.m_Name << "(" << var.m_Type;
+				m_Stream << "void AddTo_" << var.m_Name << "(" << var.GetType();
 				m_Stream << " value) { m_" << var.m_Name << " += value; };";
 				m_Stream << std::endl;
 			}
@@ -226,7 +237,7 @@ public:
 		m_Stream << "private:" << std::endl;
 		for (const Variable& var : m_Class.m_Members)
 		{
-			m_Stream << var.m_Type;
+			m_Stream << var.GetType();
 
 			if (var.m_IsTemplate)
 			{

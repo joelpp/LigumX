@@ -305,7 +305,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				objectIDVar.m_IsPtr = false;
 				objectIDVar.m_IsTemplate = false;
 				objectIDVar.m_Name = "ObjectID";
-				objectIDVar.m_Type = "int";
+				objectIDVar.SetType("int");
 				objectIDVar.m_PropertyFlags = 0;
 				currentClass.m_Members.push_back(objectIDVar);
 
@@ -313,7 +313,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				nameVar.m_IsPtr = false;
 				nameVar.m_IsTemplate = false;
 				nameVar.m_Name = "Name";
-				nameVar.m_Type = "std::string";
+				nameVar.SetType("std::string");
 				nameVar.m_PropertyFlags = 0;
 				currentClass.m_Members.push_back(nameVar);
 
@@ -376,17 +376,20 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				}
 
 				std::string& varType = tokens[0];
+				variable.m_IsPtr = stringContains(varType, '*');
+
+				RemoveSubstrings(varType, "*");
 				variable.SetType(varType);
 
 				variable.m_Name = tokens[1];
 
-				variable.m_IsPtr = stringContains(variable.m_Type, '*');
 
 				variable.CheckForTemplate();
 
-				variable.m_Type.erase(std::remove(variable.m_Type.begin(), variable.m_Type.end(), '*'), variable.m_Type.end());
 
-				AddToTypesMap(g_FoundTypes, variable.m_Type);
+				//variable.GetType().erase(std::remove(variable.GetType().begin(), variable.GetType().end(), '*'), variable.GetType().end());
+
+				//AddToTypesMap(g_FoundTypes, variable.GetType());
 
 				variable.m_PropertyFlags = varPropertyFlags;
 
@@ -398,7 +401,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 				if (variable.m_DefaultValue.empty())
 				{
-					variable.m_DefaultValue = DefaultValueForType(variable.IsAPointer(), variable.m_Type);
+					variable.m_DefaultValue = DefaultValueForType(variable.IsAPointer(), variable.GetType());
 				}
 
 				currentClass.m_Members.push_back(variable);
@@ -516,6 +519,7 @@ void WriteLineToFile(std::fstream& file, std::string& line)
 	WriteLineToFile(file, line.c_str());
 }
 
+#if 0
 void GeneratePropertyFile()
 {
 	std::string propertyFileName = "property.h";
@@ -598,6 +602,7 @@ struct ClassPropertyData
 	}
 
 }
+#endif
 
 void DoMainProcessing(bool forceUpdateAll)
 {

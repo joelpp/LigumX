@@ -42,7 +42,7 @@ public:
 				}
 				else
 				{
-					type = v.m_Type;
+					type = v.GetType();
 				}
 
 

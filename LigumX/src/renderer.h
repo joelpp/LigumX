@@ -94,7 +94,7 @@ static const int ClassID = 1498036510;
 static const LXType Type = LXType_Renderer;
 static constexpr const char* ClassName = "Renderer";
 
-const int& GetObjectID() { return m_ObjectID; }; 
+int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
@@ -193,6 +193,7 @@ public:
 	void FreeBoundTexture();
 
 	void SetUniform(int value, const char* name, GLuint location);
+	void SetUniform(float value, const char* name, GLuint location);
 
 	void SetUniform(glm::vec3& value, const char* name, GLuint location);
 	void SetUniform(const glm::vec3& value, const char* name, GLuint location);
@@ -205,10 +206,11 @@ public:
 
 	void SetUniform(const glm::ivec2& value, const char* name, GLuint location);
 
-	void SetUniform(float value, const char* name, GLuint location);
 
 	void SetVertexUniform(int value, const char* name);
 	void SetFragmentUniform(int value, const char* name);
+	void SetFragmentUniform(float value, const char* name);
+	void SetFragmentUniform(bool value, const char* name);
 	void SetFragmentUniform(const std::vector<int>& values, const char* name);
 	void SetFragmentUniformArray(const std::vector<glm::vec3>& values, const char* name);
 

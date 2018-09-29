@@ -407,6 +407,18 @@ void Renderer::SetFragmentUniform(int value, const char* name)
 	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
 }
 
+void Renderer::SetFragmentUniform(float value, const char* name)
+{
+	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	glProgramUniform1f(prog, glGetUniformLocation(prog, name), value);
+}
+
+void Renderer::SetFragmentUniform(bool value, const char* name)
+{
+	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	glProgramUniform1i(prog, glGetUniformLocation(prog, name), (value ? 1 : 0));
+}
+
 void Renderer::SetFragmentUniform(const std::vector<int>& values, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
@@ -609,7 +621,6 @@ void Renderer::SetViewUniforms(Camera* cam)
 	SetFragmentUniform(cam->GetViewProjectionMatrixInverse(), "g_ViewProjectionMatrixInverse");
 	SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewMatrixInverse");
 	SetFragmentUniform(cam->GetProjectionMatrixInverse(), "g_ProjectionMatrixInverse");
-
 	SetFragmentUniform(cam->GetPosition(),	"g_CameraPosition");
 	SetFragmentUniform(cam->GetNearPlane(),	"g_CameraNearPlane");
 	SetFragmentUniform(cam->GetFarPlane(), "g_CameraFarPlane");

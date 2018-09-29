@@ -38,15 +38,26 @@ struct Variable
 	{
 		return stringContains(m_Type, "glm");
 	}
+	bool IsPrimitive() const
+	{
+		return m_IsPrimitive;
+	}
+
+	bool IsString() const
+	{
+		return m_Type == "std::string";
+	}
 
 	bool HasDefaultValue() const
 	{
 		return !(m_DefaultValue.empty());
 	}
 
-	void SetType(std::string fullTypeName)
+	void SetType(const std::string& fullTypeName)
 	{
 		m_Type = fullTypeName;
+
+		m_IsPrimitive = (m_Type == "float") || (m_Type == "int") || (m_Type == "bool");
 	}
 
 	void RemoveTemplateDeclaration()
@@ -72,19 +83,24 @@ struct Variable
 
 	}
 
+	const std::string& GetType() const { return m_Type; }
+
 	// todo : add .gen files to this project!
 //private:
 	std::string m_Name;
-	std::string m_Type;
 	std::string m_AssociatedType;
 	bool m_IsPtr;
 	bool m_IsTemplate;
+	bool m_IsPrimitive = false;
 	int m_PropertyFlags;
 
 	std::string m_MinValue;
 	std::string m_MaxValue;
 
 	std::string m_DefaultValue;
+
+private:
+	std::string m_Type;
 };
 typedef std::vector<Variable> VariableList;
 typedef std::vector<LXEnum> EnumList;
