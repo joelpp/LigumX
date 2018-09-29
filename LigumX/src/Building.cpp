@@ -10,6 +10,7 @@
 #include "Material.h"
 #include "LigumX.h"
 #include "LXError.h"
+#include "EngineSettings.h"
 
 using namespace glm;
 using namespace std;
@@ -220,7 +221,21 @@ bool Building::GenerateModel()
 	m_Model = new Model();
 	m_Model->SetName("Building");
 
-	Mesh* mesh = new Mesh(buildingTrianglePositions, GL::PrimitiveMode::Triangles);
+	CPUBuffers cpuBuffers;
+	cpuBuffers.m_VertexPositions = buildingTrianglePositions;
+
+	glm::vec3 scale = m_MaxCoords - m_MinCoords;
+	for (int k = 0; k < cpuBuffers.m_VertexPositions.size(); k++)
+	{
+		const glm::vec3& point = cpuBuffers.m_VertexPositions[k];
+		glm::vec2 uv = glm::vec2((point - m_MinCoords) / scale);
+
+		uv /= g_EngineSettings->GetExtent();
+
+		cpuBuffers.m_vertexUVs.push_back(uv);
+	}
+
+	Mesh* mesh = new Mesh(cpuBuffers, GL::PrimitiveMode::Triangles, false);
 
 	glm::vec3 color = glm::vec3(39, 181, 51) / 255.f;
 

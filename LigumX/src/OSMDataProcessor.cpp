@@ -251,13 +251,13 @@ bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 	{
 		Mesh* mesh = entity->GetModel()->m_meshes[0];
 
-		int numTriangles = mesh->m_buffers.vertexPositions.size() / 3;
+		int numTriangles = mesh->m_buffers.m_VertexPositions.size() / 3;
 		for (int i = 0; i < numTriangles; ++i)
 		{
 			int tIdx = i * 3;
-			const glm::vec3& v0 = mesh->m_buffers.vertexPositions[tIdx + 0];
-			const glm::vec3& v1 = mesh->m_buffers.vertexPositions[tIdx + 1];
-			const glm::vec3& v2 = mesh->m_buffers.vertexPositions[tIdx + 2];
+			const glm::vec3& v0 = mesh->m_buffers.m_VertexPositions[tIdx + 0];
+			const glm::vec3& v1 = mesh->m_buffers.m_VertexPositions[tIdx + 1];
+			const glm::vec3& v2 = mesh->m_buffers.m_VertexPositions[tIdx + 2];
 
 			if (PointInTriangle(worldSpacePosition, v0, v1, v2))
 			{
@@ -272,7 +272,7 @@ bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, const glm::vec3& back, const glm::vec3& up, const glm::vec3& dimensions)
 {
 	std::vector<glm::vec2>& uvs = mesh->m_buffers.m_vertexUVs;
-	std::vector<glm::vec3>& vertices = mesh->m_buffers.vertexPositions;
+	std::vector<glm::vec3>& vertices = mesh->m_buffers.m_VertexPositions;
 	std::vector<glm::vec3>& normals = mesh->m_buffers.m_vertexNormals;
 
 	glm::vec3 buildingHeight = up * dimensions.z;

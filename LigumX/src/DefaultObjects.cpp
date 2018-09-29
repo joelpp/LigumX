@@ -31,7 +31,7 @@ void DefaultObjects::InitializeDefaultQuad()
 	DefaultQuadMesh = new Mesh();
 
 	// todo try morgan's cube obj in here
-	std::vector<glm::vec3>& points = DefaultQuadMesh->m_buffers.vertexPositions;
+	std::vector<glm::vec3>& points = DefaultQuadMesh->m_buffers.m_VertexPositions;
 	std::vector<glm::vec2>& UVs = DefaultQuadMesh->m_buffers.m_vertexUVs;
 	std::vector<glm::vec3>& normals = DefaultQuadMesh->m_buffers.m_vertexNormals;
 	std::vector<int>& indexBuffer = DefaultQuadMesh->m_buffers.indexBuffer;
@@ -72,7 +72,7 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 	DefaultTerrainMesh = new Mesh();
 
 	// todo try morgan's cube obj in here
-	std::vector<glm::vec3>& points = DefaultTerrainMesh->m_buffers.vertexPositions;
+	std::vector<glm::vec3>& points = DefaultTerrainMesh->m_buffers.m_VertexPositions;
 	std::vector<glm::vec2>& UVs = DefaultTerrainMesh->m_buffers.m_vertexUVs;
 	std::vector<glm::vec3>& normals = DefaultTerrainMesh->m_buffers.m_vertexNormals;
 	std::vector<int>& indexBuffer = DefaultTerrainMesh->m_buffers.indexBuffer;
@@ -191,7 +191,7 @@ void DefaultObjects::InitializeDefaultLine()
 	DefaultLineMesh = new Mesh();
 
 	// todo try morgan's cube obj in here
-	std::vector<glm::vec3>& points = DefaultLineMesh->m_buffers.vertexPositions;
+	std::vector<glm::vec3>& points = DefaultLineMesh->m_buffers.m_VertexPositions;
 	std::vector<glm::vec2>& UVs =	 DefaultLineMesh->m_buffers.m_vertexUVs;
 
 	points.push_back(glm::vec3(0, 0, 0));

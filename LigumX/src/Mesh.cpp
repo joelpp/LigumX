@@ -37,7 +37,7 @@ Mesh::Mesh()
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode)
 {
-  m_buffers.vertexPositions = vertices;
+  m_buffers.m_VertexPositions = vertices;
 
   m_PrimitiveMode = primitiveMode;
   m_WireframeRendering = false;
@@ -52,7 +52,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMo
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
 	m_buffers.m_vertexUVs = uvs;
-	m_buffers.vertexPositions = vertices;
+	m_buffers.m_VertexPositions = vertices;
 
 	m_PrimitiveMode = primitiveMode;
 	m_WireframeRendering = false;
@@ -65,7 +65,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>&
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
-	m_buffers.vertexPositions = vertices;
+	m_buffers.m_VertexPositions = vertices;
 	m_buffers.indexBuffer = indices;
 
 	m_PrimitiveMode = primitiveMode;
@@ -81,7 +81,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indic
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
-  m_buffers.vertexPositions = vertices;
+  m_buffers.m_VertexPositions = vertices;
   m_PrimitiveMode = primitiveMode;
   m_PointRendering = usePointRendering;
   padBuffer(VERTEX_UVS);
@@ -93,7 +93,7 @@ void Mesh::padBuffer(EBufferType bufferType)
   int numToFill;
   if (bufferType == VERTEX_UVS)
   {
-    numToFill = (int) (m_buffers.vertexPositions.size() - m_buffers.m_vertexUVs.size());
+    numToFill = (int) (m_buffers.m_VertexPositions.size() - m_buffers.m_vertexUVs.size());
     for (int i = 0; i < numToFill; ++i)
     {
       m_buffers.m_vertexUVs.push_back(glm::vec2(0,0));
@@ -101,10 +101,29 @@ void Mesh::padBuffer(EBufferType bufferType)
   }
 }
 
+Mesh::Mesh(const CPUBuffers& cpuBuffers, GL::PrimitiveMode primitiveMode, bool usePointRendering)
+{
+	m_buffers = cpuBuffers;
+
+	m_PrimitiveMode = primitiveMode;
+	m_PointRendering = usePointRendering;
+	m_WireframeRendering = false;
+
+	m_UsesIndexBuffer = m_buffers.indexBuffer.size() > 0;
+
+	if (m_buffers.m_vertexUVs.size() == 0)
+	{
+		padBuffer(VERTEX_UVS);
+	}
+
+	CreateBuffers();
+}
+
+
 void Mesh::CreateBuffers()
 {
 	// TODO: I'm not quite convinced this belongs here. or does it?
-    LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.vertexPositions);
+    LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.m_VertexPositions);
     // Renderer::createGLBuffer(m_VBOs.glidNormals,   m_buffers.m_vertexNormals);
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs,			m_buffers.m_vertexUVs);
 	

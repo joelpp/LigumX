@@ -122,7 +122,7 @@ Heightfield::Heightfield(vec2 startPoint, float sideLength)
 void Heightfield::generateBaseMesh()
 {
     hfBaseMesh = new Mesh();
-    std::vector<glm::vec3>& points = hfBaseMesh->m_buffers.vertexPositions;
+    std::vector<glm::vec3>& points = hfBaseMesh->m_buffers.m_VertexPositions;
     std::vector<glm::vec2>& UVs = hfBaseMesh->m_buffers.m_vertexUVs;
     std::vector<int>& indexBuffer = hfBaseMesh->m_buffers.indexBuffer;
     

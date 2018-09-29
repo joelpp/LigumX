@@ -220,7 +220,7 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
 		position.x = assimpMesh->mVertices[i].x;
 		position.y = assimpMesh->mVertices[i].y;
 		position.z = assimpMesh->mVertices[i].z; 
-		newMesh->m_buffers.vertexPositions.push_back(position);
+		newMesh->m_buffers.m_VertexPositions.push_back(position);
 
 		glm::vec2 texCoords;
 		texCoords.x = assimpMesh->mTextureCoords[0][i].x;
@@ -263,7 +263,7 @@ bool Model::GetMinMax(glm::vec3& min, glm::vec3& max)
 {
 	for (Mesh* mesh : m_meshes)
 	{
-		for (const glm::vec3& pos : mesh->m_buffers.vertexPositions)
+		for (const glm::vec3& pos : mesh->m_buffers.m_VertexPositions)
 		{
 			min = glm::min(min, pos);
 			max = glm::max(max, pos);

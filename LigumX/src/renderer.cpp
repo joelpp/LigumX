@@ -739,7 +739,7 @@ void Renderer::DrawMesh(Mesh* mesh)
 	}
 	else
 	{
-		glDrawArrays(mesh->m_PrimitiveMode, 0, (int) mesh->m_buffers.vertexPositions.size());
+		glDrawArrays(mesh->m_PrimitiveMode, 0, (int) mesh->m_buffers.m_VertexPositions.size());
 		GL::OutputErrors();
 	}
 

@@ -27,6 +27,7 @@ bool DefaultTextureHolder::Serialize(bool writing)
 
 DefaultTextureHolder::DefaultTextureHolder()
 {
+	m_GrassTexture = new Texture(10691);
 	m_RockTexture = new Texture(10692);
 	m_SandTexture = new Texture(10693);
 	m_WoodTexture = new Texture(11039);

@@ -59,7 +59,7 @@ using namespace glm;
 
 FlatWaysMesh::FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::vector<WayData>& dataBuffer, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
-	m_buffers.vertexPositions = vertices;
+	m_buffers.m_VertexPositions = vertices;
 
 	m_DataBuffer = dataBuffer;
 	m_PrimitiveMode = primitiveMode;
@@ -75,7 +75,7 @@ FlatWaysMesh::FlatWaysMesh(const std::vector<glm::vec3>& vertices, const std::ve
 void FlatWaysMesh::CreateBuffers()
 {
 	// TODO: I'm not quite convinced this belongs here. or does it?
-	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.vertexPositions);
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.m_VertexPositions);
 
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidWayDataBuffer, m_DataBuffer);
 
@@ -92,7 +92,7 @@ void FlatWaysMesh::CreateBuffers()
 
 ColoredPointsMesh::ColoredPointsMesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec3>& dataBuffer, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
-	m_buffers.vertexPositions = vertices;
+	m_buffers.m_VertexPositions = vertices;
 
 	m_ColorBuffer = dataBuffer;
 	m_PrimitiveMode = primitiveMode;
@@ -106,7 +106,7 @@ ColoredPointsMesh::ColoredPointsMesh(const std::vector<glm::vec3>& vertices, con
 void ColoredPointsMesh::CreateBuffers()
 {
 	// TODO: I'm not quite convinced this belongs here. or does it?
-	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.vertexPositions);
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidPositions, m_buffers.m_VertexPositions);
 	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, GetGPUBuffers().glidColorBuffer, m_ColorBuffer);
 
 	glGenVertexArrays(1, &m_VAO);

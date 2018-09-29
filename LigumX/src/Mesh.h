@@ -50,7 +50,7 @@ class CPUBuffers
 {
 public:
 
-	std::vector<glm::vec3> vertexPositions;
+	std::vector<glm::vec3> m_VertexPositions;
 	std::vector<glm::vec3> m_vertexNormals;
 	std::vector<glm::vec2> m_vertexUVs;
 	std::vector<int> indexBuffer;
@@ -118,7 +118,8 @@ public:
 	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 	Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode, bool usePointRendering);
 	Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GL::PrimitiveMode primitiveMode, bool usePointRendering);
-	
+	Mesh(const CPUBuffers& cpuBuffers, GL::PrimitiveMode primitiveMode, bool usePointRendering);
+
 	void padBuffer(EBufferType bufferType);
 	virtual void CreateBuffers();
 	std::vector<int> m_indexArray;
