@@ -20,11 +20,11 @@ static const int ClassID = 4268435202;
 static const LXType Type = LXType_EditorTool;
 static constexpr const char* ClassName = "EditorTool";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-bool GetActive() { return m_Active; }; 
+const bool& GetActive() { return m_Active; }; 
 void SetActive(bool value) { m_Active = value; }; 
 private:
 int m_ObjectID;

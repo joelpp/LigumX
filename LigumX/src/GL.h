@@ -70,7 +70,7 @@ static const int ClassID = 1657862494;
 static const LXType Type = LXType_GL;
 static constexpr const char* ClassName = "GL";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 

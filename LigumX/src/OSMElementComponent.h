@@ -19,11 +19,11 @@ static const int ClassID = 3716861205;
 static const LXType Type = LXType_OSMElementComponent;
 static constexpr const char* ClassName = "OSMElementComponent";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-Way* GetWay() { return m_Way; }; 
+Way*& GetWay() { return m_Way; }; 
 void SetWay(Way* value) { m_Way = value; }; 
 private:
 int m_ObjectID;

@@ -19,21 +19,21 @@ static const int ClassID = 2842600075;
 static const LXType Type = LXType_SunLight;
 static constexpr const char* ClassName = "SunLight";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-bool GetUseShadowMap() { return m_UseShadowMap; }; 
+const bool& GetUseShadowMap() { return m_UseShadowMap; }; 
 void SetUseShadowMap(bool value) { m_UseShadowMap = value; }; 
-float GetTime() { return m_Time; }; 
+const float& GetTime() { return m_Time; }; 
 void SetTime(float value) { m_Time = value; }; 
-float GetOrientation() { return m_Orientation; }; 
+const float& GetOrientation() { return m_Orientation; }; 
 void SetOrientation(float value) { m_Orientation = value; }; 
-float GetSpeed() { return m_Speed; }; 
+const float& GetSpeed() { return m_Speed; }; 
 void SetSpeed(float value) { m_Speed = value; }; 
-bool GetUseSkybox() { return m_UseSkybox; }; 
+const bool& GetUseSkybox() { return m_UseSkybox; }; 
 void SetUseSkybox(bool value) { m_UseSkybox = value; }; 
-Texture* GetSkybox() { return m_Skybox; }; 
+Texture*& GetSkybox() { return m_Skybox; }; 
 void SetSkybox(Texture* value) { m_Skybox = value; }; 
 private:
 int m_ObjectID;

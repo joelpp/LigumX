@@ -39,11 +39,6 @@ struct Variable
 		return stringContains(m_Type, "glm");
 	}
 
-	bool IsString() const
-	{
-		return m_Type == "std::string";
-	}
-
 	bool HasDefaultValue() const
 	{
 		return !(m_DefaultValue.empty());

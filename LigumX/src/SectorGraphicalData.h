@@ -20,13 +20,13 @@ static const int ClassID = 1523090688;
 static const LXType Type = LXType_SectorGraphicalData;
 static constexpr const char* ClassName = "SectorGraphicalData";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-Model* GetNodesModel() { return m_NodesModel; }; 
+Model*& GetNodesModel() { return m_NodesModel; }; 
 void SetNodesModel(Model* value) { m_NodesModel = value; }; 
-Model* GetWaysModel() { return m_WaysModel; }; 
+Model*& GetWaysModel() { return m_WaysModel; }; 
 void SetWaysModel(Model* value) { m_WaysModel = value; }; 
 std::vector<Model*>& GetWaysModelsVector() { return m_WaysModelsVector; }; 
 void SetWaysModelsVector(std::vector<Model*> value) { m_WaysModelsVector = value; }; 
@@ -37,9 +37,9 @@ void AddTo_RoadEntities(Entity* value) { m_RoadEntities.push_back(value); };
 std::vector<Entity*>& GetStaticEntities() { return m_StaticEntities; }; 
 void SetStaticEntities(std::vector<Entity*> value) { m_StaticEntities = value; }; 
 void AddTo_StaticEntities(Entity* value) { m_StaticEntities.push_back(value); };
-Texture* GetSplatMapTexture() { return m_SplatMapTexture; }; 
+Texture*& GetSplatMapTexture() { return m_SplatMapTexture; }; 
 void SetSplatMapTexture(Texture* value) { m_SplatMapTexture = value; }; 
-Texture* GetAlbedoTexture() { return m_AlbedoTexture; }; 
+Texture*& GetAlbedoTexture() { return m_AlbedoTexture; }; 
 void SetAlbedoTexture(Texture* value) { m_AlbedoTexture = value; }; 
 private:
 int m_ObjectID;

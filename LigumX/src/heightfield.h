@@ -26,17 +26,17 @@ static const int ClassID = 3816013350;
 static const LXType Type = LXType_Heightfield;
 static constexpr const char* ClassName = "Heightfield";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-Texture* GetHeightDataTexture() { return m_HeightDataTexture; }; 
+Texture*& GetHeightDataTexture() { return m_HeightDataTexture; }; 
 void SetHeightDataTexture(Texture* value) { m_HeightDataTexture = value; }; 
-float GetMaxHeight() { return m_MaxHeight; }; 
+const float& GetMaxHeight() { return m_MaxHeight; }; 
 void SetMaxHeight(float value) { m_MaxHeight = value; }; 
-float GetMinHeight() { return m_MinHeight; }; 
+const float& GetMinHeight() { return m_MinHeight; }; 
 void SetMinHeight(float value) { m_MinHeight = value; }; 
-int GetWidth() { return m_Width; }; 
+const int& GetWidth() { return m_Width; }; 
 void SetWidth(int value) { m_Width = value; }; 
 private:
 int m_ObjectID;

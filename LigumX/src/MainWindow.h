@@ -18,11 +18,11 @@ static const int ClassID = 2995597492;
 static const LXType Type = LXType_MainWindow;
 static constexpr const char* ClassName = "MainWindow";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-bool GetInFocus() { return m_InFocus; }; 
+const bool& GetInFocus() { return m_InFocus; }; 
 void SetInFocus(bool value) { m_InFocus = value; }; 
 glm::vec2& GetPosition() { return m_Position; }; 
 void SetPosition(const glm::vec2& value) { m_Position = value; }; 

@@ -77,15 +77,15 @@ static const int ClassID = 132142556;
 static const LXType Type = LXType_Mesh;
 static constexpr const char* ClassName = "Mesh";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-bool GetUsesIndexBuffer() { return m_UsesIndexBuffer; }; 
+const bool& GetUsesIndexBuffer() { return m_UsesIndexBuffer; }; 
 void SetUsesIndexBuffer(bool value) { m_UsesIndexBuffer = value; }; 
-bool GetWireframeRendering() { return m_WireframeRendering; }; 
+const bool& GetWireframeRendering() { return m_WireframeRendering; }; 
 void SetWireframeRendering(bool value) { m_WireframeRendering = value; }; 
-bool GetPointRendering() { return m_PointRendering; }; 
+const bool& GetPointRendering() { return m_PointRendering; }; 
 void SetPointRendering(bool value) { m_PointRendering = value; }; 
 private:
 int m_ObjectID;

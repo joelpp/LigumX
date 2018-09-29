@@ -33,11 +33,11 @@ static const int ClassID = 2618865284;
 static const LXType Type = LXType_CurlRequest;
 static constexpr const char* ClassName = "CurlRequest";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-int GetState() { return m_State; }; 
+const int& GetState() { return m_State; }; 
 void SetState(int value) { m_State = value; }; 
 glm::vec2& GetCoords() { return m_Coords; }; 
 void SetCoords(const glm::vec2& value) { m_Coords = value; }; 
@@ -47,11 +47,11 @@ const std::string& GetResult() { return m_Result; };
 void SetResult(std::string value) { m_Result = value; }; 
 const std::string& GetFilename() { return m_Filename; }; 
 void SetFilename(std::string value) { m_Filename = value; }; 
-Sector* GetSector() { return m_Sector; }; 
+Sector*& GetSector() { return m_Sector; }; 
 void SetSector(Sector* value) { m_Sector = value; }; 
 glm::ivec2& GetSectorIndex() { return m_SectorIndex; }; 
 void SetSectorIndex(const glm::ivec2& value) { m_SectorIndex = value; }; 
-bool GetAsync() { return m_Async; }; 
+const bool& GetAsync() { return m_Async; }; 
 void SetAsync(bool value) { m_Async = value; }; 
 private:
 int m_ObjectID;

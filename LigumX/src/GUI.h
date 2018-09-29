@@ -20,13 +20,13 @@ static const int ClassID = 2047816512;
 static const LXType Type = LXType_GUI;
 static constexpr const char* ClassName = "GUI";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-bool Getm_Enabled() { return m_m_Enabled; }; 
+const bool& Getm_Enabled() { return m_m_Enabled; }; 
 void Setm_Enabled(bool value) { m_m_Enabled = value; }; 
-int GetNumActiveWindows() { return m_NumActiveWindows; }; 
+const int& GetNumActiveWindows() { return m_NumActiveWindows; }; 
 void SetNumActiveWindows(int value) { m_NumActiveWindows = value; }; 
 private:
 int m_ObjectID;

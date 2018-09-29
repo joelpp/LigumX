@@ -17,14 +17,14 @@ static const int ClassID = 2882477190;
 static const LXType Type = LXType_EngineStats;
 static constexpr const char* ClassName = "EngineStats";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 
-int GetNumObjectMapHits() { return m_NumObjectMapHits; }; 
+const int& GetNumObjectMapHits() { return m_NumObjectMapHits; }; 
 void SetNumObjectMapHits(int value) { m_NumObjectMapHits = value; }; 
 void AddTo_NumObjectMapHits(int value) { m_NumObjectMapHits += value; };
-int GetNumDrawCalls() { return m_NumDrawCalls; }; 
+const int& GetNumDrawCalls() { return m_NumDrawCalls; }; 
 void SetNumDrawCalls(int value) { m_NumDrawCalls = value; }; 
 void AddTo_NumDrawCalls(int value) { m_NumDrawCalls += value; };
 private:

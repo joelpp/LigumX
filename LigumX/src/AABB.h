@@ -24,7 +24,7 @@ static const int ClassID = 1726995287;
 static const LXType Type = LXType_AABB;
 static constexpr const char* ClassName = "AABB";
 
-int GetObjectID() { return m_ObjectID; }; 
+const int& GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
 const std::string& GetName() { return m_Name; }; 
 void SetName(std::string value) { m_Name = value; }; 

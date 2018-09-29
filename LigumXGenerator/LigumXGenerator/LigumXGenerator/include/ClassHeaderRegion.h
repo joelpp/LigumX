@@ -74,12 +74,12 @@ public:
 			bool ptr = var.IsAPointer();
 			bool vector = var.m_IsTemplate;
 			bool glmObject = var.IsGLMType();
-			bool stringVar = var.IsString();
 
+			std::stringstream getterStream;
 
 			std::stringstream returnTypeStream;
 
-			returnTypeStream << (stringVar ? "const " : "");
+			returnTypeStream << ((ptr || vector || glmObject) ? "" : "const ");
 			returnTypeStream << (var.m_Type);
 
 			if (var.m_IsTemplate)
@@ -89,16 +89,13 @@ public:
 				returnTypeStream << ">";
 			}
 
-			returnTypeStream << (ptr ? "*" : "");
-			returnTypeStream << ((vector || glmObject || stringVar) ? "&" : "");
+			returnTypeStream << (ptr ? "*&" : "&");
 			returnTypeStream << (" ");
-
-			std::stringstream getterStream;
-			getterStream << "Get" << var.m_Name << "() { ";
+			getterStream << "Get" << var.m_Name << "() {";
 
 			if (var.m_PropertyFlags & PropertyFlags_GetCallback)
 			{
-				getterStream << "return Get" << var.m_Name << "_Callback(); }";
+				getterStream << "Get" << var.m_Name << "Callback();";
 			}
 			else
 			{
@@ -107,20 +104,17 @@ public:
 
 			getterStream << std::endl;
 
-			std::string getterString = returnTypeStream.str() + getterStream.str();
-			m_Stream << getterString;
-
+			std::stringstream callbackFuncStream;
 			if (var.m_PropertyFlags & PropertyFlags_GetCallback)
 			{
-				std::stringstream callbackFuncStream;
-				callbackFuncStream << "Get" << var.m_Name << "_Callback();";
+				callbackFuncStream << "Get" << var.m_Name << "Callback();";
 				callbackFuncStream << std::endl;
-
-				std::string callbackFuncString = returnTypeStream.str() + callbackFuncStream.str();
-				m_Stream << callbackFuncString;
 			}
 
-
+			std::string getterString = returnTypeStream.str() + getterStream.str();
+			std::string callbackFuncString  = returnTypeStream.str() + callbackFuncStream.str();
+			m_Stream << getterString;
+			m_Stream << callbackFuncString;
 
 			// Write setter
 			m_Stream << "void Set" << var.m_Name << "(";
@@ -142,7 +136,7 @@ public:
 
 			if (var.m_PropertyFlags & PropertyFlags_SetCallback)
 			{
-				m_Stream << "Set" << var.m_Name << "_Callback(value);";
+				m_Stream << "Set" << var.m_Name << "Callback(value);";
 			}
 			else
 			{
@@ -155,7 +149,7 @@ public:
 
 			if (var.m_PropertyFlags & PropertyFlags_SetCallback)
 			{
-				m_Stream << "void Set" << var.m_Name << "_Callback(";
+				m_Stream << "void Set" << var.m_Name << "Callback(";
 				m_Stream << (ptr ? "" : "const ");
 				m_Stream << var.m_Type;
 				m_Stream << (ptr ? "*" : "&");
