@@ -402,18 +402,16 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 						{
 							way->SetOSMElementType(elementType);
 
-							float nodeHeight = 0.01f;
+							float nodeHeight = 0.1f;
 							if (way->IsPark())
 							{
 								nodeHeight *= 2.f;
 							}
-
-							if (way->IsWater())
+							else if (way->IsWater())
 							{
 								nodeHeight *= 3.f;
 							}
-
-							if (way->IsRoad())
+							else if (way->IsRoad())
 							{
 								nodeHeight *= 4.f;
 							}
@@ -421,11 +419,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 							for (int n = 0; n < way->GetNodes().size(); ++n)
 							{
 								Node* node = way->GetNodes()[n];
-
-								// HACK
-								glm::vec3 nodePosition = node->GetWorldPosition();
-								nodePosition.z = nodeHeight;
-								node->SetWorldPosition(nodePosition);
+								node->GetWorldPosition().z = nodeHeight;
 							}
 
 

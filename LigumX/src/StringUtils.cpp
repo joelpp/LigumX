@@ -48,7 +48,12 @@ std::vector<std::string> StringUtils::ReadFileLines(const char* fileName)
 	return values;
 }
 
-bool StringUtils::StringContains(std::string s, char val)
+bool StringUtils::StringContains(const std::string& baseString, const std::string& searchedString)
+{
+	return baseString.find(searchedString) != std::string::npos;
+}
+
+bool StringUtils::StringContains(const std::string& s, char val)
 {
 	return s.find(val) != std::string::npos;
 }

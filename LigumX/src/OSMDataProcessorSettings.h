@@ -42,6 +42,10 @@ const float& GetMaxNeighborDistance() { return m_MaxNeighborDistance; };
 void SetMaxNeighborDistance(float value) { m_MaxNeighborDistance = value; }; 
 const bool& GetProcessAddressInterpolation() { return m_ProcessAddressInterpolation; }; 
 void SetProcessAddressInterpolation(bool value) { m_ProcessAddressInterpolation = value; }; 
+const bool& GetCheckPointInRoad() { return m_CheckPointInRoad; }; 
+void SetCheckPointInRoad(bool value) { m_CheckPointInRoad = value; }; 
+const bool& GetCheckPointInBuilding() { return m_CheckPointInBuilding; }; 
+void SetCheckPointInBuilding(bool value) { m_CheckPointInBuilding = value; }; 
 private:
 int m_ObjectID;
 std::string m_Name;
@@ -56,8 +60,10 @@ float m_MaxHeight = 50.f;
 float m_MinNeighborDistance = 30.f;
 float m_MaxNeighborDistance = 70.f;
 bool m_ProcessAddressInterpolation = true;
+bool m_CheckPointInRoad = false;
+bool m_CheckPointInBuilding = false;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMDataProcessorSettingsPIDX
@@ -75,6 +81,8 @@ PIDX_MaxHeight,
 PIDX_MinNeighborDistance,
 PIDX_MaxNeighborDistance,
 PIDX_ProcessAddressInterpolation,
+PIDX_CheckPointInRoad,
+PIDX_CheckPointInBuilding,
 };
 bool Serialize(bool writing);
 

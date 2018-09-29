@@ -89,7 +89,7 @@ public:
 
 	bool IsLandUse() { return m_OSMElementType >= OSMElementType_LanduseRetail && m_OSMElementType <= OSMElementType_LanduseIndustrial; }
 	bool IsPark() { return m_OSMElementType == OSMElementType_LeisurePark; }
-	bool IsRoad() { return m_OSMElementType >= OSMElementType_HighwayUnclassified && m_OSMElementType <= OSMElementType_HighwayTrunk; }
+	bool IsRoad() { return m_OSMElementType >= OSMElementType_HighwayTrunk && m_OSMElementType <= OSMElementType_HighwayUnclassified; }
 	bool IsWater() { return m_OSMElementType == OSMElementType_NaturalWater; }
 	bool IsWood() { return m_OSMElementType == OSMElementType_NaturalWood; }
 };

@@ -16,4 +16,7 @@ class OSMDataProcessorSettings
 	float MaxNeighborDistance = 70.f;
 
 	bool ProcessAddressInterpolation = true;
+
+	bool CheckPointInRoad = false;
+	bool CheckPointInBuilding = false;
 }

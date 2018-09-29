@@ -16,7 +16,8 @@ namespace StringUtils
 
 	std::vector<std::string> ReadFileLines(const char* fileName);
 
-	bool StringContains(std::string s, char val);
+	bool StringContains(const std::string& baseString, const std::string& searchedString);
+	bool StringContains(const std::string& s, char val);
 
 	bool StringArrayContains(std::vector<std::string>& s, std::string& val);
 

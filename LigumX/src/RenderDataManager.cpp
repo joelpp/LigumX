@@ -318,6 +318,9 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 			if (i != nodes.size() - 1)
 			{
 				Node* nextNode = nodes[i + 1];
+
+				float heightSlope = nextNode->GetWorldPosition().z - pos.z;
+
 				const glm::vec3& nextPos = nextNode->GetWorldPosition();
 
 				glm::vec3 distance = nextPos - pos;
@@ -331,9 +334,12 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 					for (int j = 0; j < numsubdivisions; ++j)
 					{
 						glm::vec3 subdivisionPoint;
-						subdivisionPoint = pos + (float)(j + 1) * direction * length / factor;
 
-						subdivisionPoint.z = world->SampleHeight(subdivisionPoint);
+						float lerpFactor = (float)(j + 1) / factor;
+						subdivisionPoint = pos + lerpFactor * direction * length ;
+
+						//subdivisionPoint.z = world->SampleHeight(subdivisionPoint);
+						//subdivisionPoint.z = lerpFactor * heightSlope;
 
 						nodePositions.push_back(subdivisionPoint);
 						nodeColors.push_back(glm::vec3(1, 1, 1));

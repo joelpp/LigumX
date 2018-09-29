@@ -37,7 +37,6 @@ bool Building::GenerateModel()
 	std::vector<float> groundTriangleTextureIDs;
 	std::vector<glm::vec3> buildingTrianglePositions;
 
-	float height = 0.01f;
 	// Note: supposed all loops are given in counter-clockwise order.
 	unsigned int nbTriangles = 0;
 
@@ -202,7 +201,6 @@ bool Building::GenerateModel()
 	// keep and copy the triangles we created
 	for (vec3& v : tempTriangleVertices)
 	{
-		v.z = height;
 		buildingTrianglePositions.push_back(v);
 
 		m_MaxCoords = glm::max(v, m_MaxCoords);

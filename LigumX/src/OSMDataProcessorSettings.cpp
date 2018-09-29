@@ -22,6 +22,8 @@ const ClassPropertyData OSMDataProcessorSettings::g_Properties[] =
 { "MinNeighborDistance", PIDX_MinNeighborDistance, offsetof(OSMDataProcessorSettings, m_MinNeighborDistance), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
 { "MaxNeighborDistance", PIDX_MaxNeighborDistance, offsetof(OSMDataProcessorSettings, m_MaxNeighborDistance), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
 { "ProcessAddressInterpolation", PIDX_ProcessAddressInterpolation, offsetof(OSMDataProcessorSettings, m_ProcessAddressInterpolation), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "CheckPointInRoad", PIDX_CheckPointInRoad, offsetof(OSMDataProcessorSettings, m_CheckPointInRoad), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "CheckPointInBuilding", PIDX_CheckPointInBuilding, offsetof(OSMDataProcessorSettings, m_CheckPointInBuilding), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 };
 bool OSMDataProcessorSettings::Serialize(bool writing)
 {

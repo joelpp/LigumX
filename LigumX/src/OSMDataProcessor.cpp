@@ -420,16 +420,22 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 
 			glm::vec3 buildingStart = plotStart + direction * buildingInfo.m_PaddingBeforeFacade;
 
-			if (PointInRoad(sector, buildingStart))
+			if (m_Settings->GetCheckPointInRoad())
 			{
-				PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
-				break;
+				if (PointInRoad(sector, buildingStart))
+				{
+					PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
+					break;
+				}
 			}
 
-			if (PointInBuilding(sector, buildingStart))
+			if (m_Settings->GetCheckPointInBuilding())
 			{
-				PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
-				break;
+				if (PointInBuilding(sector, buildingStart))
+				{
+					PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
+					break;
+				}
 			}
 
 			const glm::vec3& dimensions = buildingInfo.m_BuildingDimensions;
