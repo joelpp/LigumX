@@ -24,6 +24,7 @@
 #include "SectorManager.h"
 
 #include "OSMDataProcessor.h"
+#include "OSMElementTypeDataStore.h"
 
 #include "MainWindow.h"
 #include "GUI.h"
@@ -155,6 +156,7 @@ void LigumX::InitializeGlobalObjects()
 	
 	g_SectorManager = new SectorManager();
 	g_OSMDataProcessor = new OSMDataProcessor();
+	g_OSMElementTypeDataStore = new OSMElementTypeDataStore();
 
 }
 

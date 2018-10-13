@@ -1,5 +1,6 @@
 #include "OSMDataProcessor.h"
 #include "OSMDataProcessorSettings.h"
+#include "OSMElementTypeDataStore.h"
 
 #include "Mesh.h"
 #include "Material.h"
@@ -834,7 +835,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 			continue;
 		}
 
-		bool isGenericBuilding = way->GetOSMElementType() >= OSMElementType_Building_Unmarked && way->GetOSMElementType() <= OSMElementType_Building_School;
+		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()].GetIsBuilding();
 		if (isGenericBuilding)
 		{
 			ProcessGenericBuilding(sector, way);
@@ -853,20 +854,10 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 		OSMElementType wayType = way->GetOSMElementType();
 
-		//bool fillFlag = (wayType == OSMElementType::OSMElementType_Building_Unmarked ||
-		//				 wayType == OSMElementType::OSMElementType_Building_School ||
-		//				 wayType == OSMElementType::OSMElementType_LeisurePark ||
-		//				 wayType == OSMElementType::OSMElementType_NaturalWood ||
-		//				 wayType == OSMElementType::OSMElementType_NaturalWater ||
-		//				 wayType == OSMElementType::OSMElementType_Landuse);
-		bool isPark = (wayType == OSMElementType::OSMElementType_LeisurePark || 
-					   wayType == OSMElementType::OSMElementType_LanduseRetail ||
-					   wayType == OSMElementType::OSMElementType_NaturalWater ||
-					   wayType == OSMElementType::OSMElementType_NaturalBareRock ||
-					   wayType == OSMElementType::OSMElementType_LanduseIndustrial);
+		bool fillIn = g_OSMElementTypeDataStore->GetData()[wayType].GetFillIn();
 
 		// todo : dont uncomment this it crashes everything :(
-		if (isPark)
+		if (fillIn)
 		{
 			Building building(way);
 			bool success = building.GenerateModel();
@@ -893,7 +884,8 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 				// todo JPP : fix this mess
 				// corners bug (see in source control)
 
-				glm::vec4 color = glm::vec4(g_Editor->GetOSMTool()->GetWayDebugColors()[way->GetOSMElementType()], 1.f);
+
+				glm::vec4 color = glm::vec4(g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()].GetDebugColor(), 1.f);
 
 				// todo : revive terrain color editing jobs.
 				//TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);

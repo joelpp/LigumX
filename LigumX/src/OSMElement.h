@@ -14,6 +14,14 @@ class OSMElement;
 
 enum OSMElementType
 {
+OSMElementType_AmenityLibrary,
+OSMElementType_AmenityParking,
+OSMElementType_AmenityTheatre,
+OSMElementType_AmenityPlaceOfWorship,
+OSMElementType_AmenityPolice,
+OSMElementType_AmenityTownhall,
+OSMElementType_AmenityUniversity,
+OSMElementType_Boundary,
 OSMElementType_HighwayTrunk,
 OSMElementType_HighwayPrimary,
 OSMElementType_HighwaySecondary,
@@ -23,16 +31,25 @@ OSMElementType_HighwayService,
 OSMElementType_HighwayUnclassified,
 OSMElementType_Sidewalk,
 OSMElementType_Contour,
+OSMElementType_Building_Commercial,
+OSMElementType_Building_Dormitory,
 OSMElementType_Building_Unmarked,
+OSMElementType_Building_Hospital,
 OSMElementType_Building_School,
+OSMElementType_Building_ShopSupermarket,
 OSMElementType_Building_Addressinterpolation,
-OSMElementType_Boundary,
+OSMElementType_LanduseIndustrial,
+OSMElementType_LanduseRetail,
 OSMElementType_LeisurePark,
+OSMElementType_LeisurePlayground,
+OSMElementType_LeisureSportsCentre,
+OSMElementType_LeisureSwimmingPool,
+OSMElementType_LeisureBaseball,
 OSMElementType_NaturalBareRock,
+OSMElementType_NaturalBeach,
+OSMElementType_NaturalScrub,
 OSMElementType_NaturalWood,
 OSMElementType_NaturalWater,
-OSMElementType_LanduseRetail,
-OSMElementType_LanduseIndustrial,
 OSMElementType_RailwaySubway,
 OSMElementType_AddressInterpolation,
 OSMElementType_NotImplemented,
@@ -40,9 +57,9 @@ OSMElementType_Unknown,
 OSMElementType_Count,
 };
 
-extern const std::string EnumValues_OSMElementType[24];
-extern const OSMElementType Indirection_OSMElementType[24];
-const int EnumLength_OSMElementType = 24;
+extern const std::string EnumValues_OSMElementType[41];
+extern const OSMElementType Indirection_OSMElementType[41];
+const int EnumLength_OSMElementType = 41;
 
 
 #pragma endregion  FORWARD_DECLARATIONS OSMElement

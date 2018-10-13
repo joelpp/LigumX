@@ -5,6 +5,14 @@
 #pragma region  CLASS_SOURCE OSMElement
 const std::string EnumValues_OSMElementType[] = 
 {
+"AmenityLibrary",
+"AmenityParking",
+"AmenityTheatre",
+"AmenityPlaceOfWorship",
+"AmenityPolice",
+"AmenityTownhall",
+"AmenityUniversity",
+"Boundary",
 "HighwayTrunk",
 "HighwayPrimary",
 "HighwaySecondary",
@@ -14,16 +22,25 @@ const std::string EnumValues_OSMElementType[] =
 "HighwayUnclassified",
 "Sidewalk",
 "Contour",
+"Building_Commercial",
+"Building_Dormitory",
 "Building_Unmarked",
+"Building_Hospital",
 "Building_School",
+"Building_ShopSupermarket",
 "Building_Addressinterpolation",
-"Boundary",
+"LanduseIndustrial",
+"LanduseRetail",
 "LeisurePark",
+"LeisurePlayground",
+"LeisureSportsCentre",
+"LeisureSwimmingPool",
+"LeisureBaseball",
 "NaturalBareRock",
+"NaturalBeach",
+"NaturalScrub",
 "NaturalWood",
 "NaturalWater",
-"LanduseRetail",
-"LanduseIndustrial",
 "RailwaySubway",
 "AddressInterpolation",
 "NotImplemented",
@@ -33,6 +50,14 @@ const std::string EnumValues_OSMElementType[] =
 
 const OSMElementType Indirection_OSMElementType[] =
 {
+	OSMElementType_AmenityLibrary,
+	OSMElementType_AmenityParking,
+	OSMElementType_AmenityTheatre,
+	OSMElementType_AmenityPlaceOfWorship,
+	OSMElementType_AmenityPolice,
+	OSMElementType_AmenityTownhall,
+	OSMElementType_AmenityUniversity,
+	OSMElementType_Boundary,
 	OSMElementType_HighwayTrunk,
 	OSMElementType_HighwayPrimary,
 	OSMElementType_HighwaySecondary,
@@ -42,16 +67,25 @@ const OSMElementType Indirection_OSMElementType[] =
 	OSMElementType_HighwayUnclassified,
 	OSMElementType_Sidewalk,
 	OSMElementType_Contour,
+	OSMElementType_Building_Commercial,
+	OSMElementType_Building_Dormitory,
 	OSMElementType_Building_Unmarked,
+	OSMElementType_Building_Hospital,
 	OSMElementType_Building_School,
+	OSMElementType_Building_ShopSupermarket,
 	OSMElementType_Building_Addressinterpolation,
-	OSMElementType_Boundary,
+	OSMElementType_LanduseIndustrial,
+	OSMElementType_LanduseRetail,
 	OSMElementType_LeisurePark,
+	OSMElementType_LeisurePlayground,
+	OSMElementType_LeisureSportsCentre,
+	OSMElementType_LeisureSwimmingPool,
+	OSMElementType_LeisureBaseball,
 	OSMElementType_NaturalBareRock,
+	OSMElementType_NaturalBeach,
+	OSMElementType_NaturalScrub,
 	OSMElementType_NaturalWood,
 	OSMElementType_NaturalWater,
-	OSMElementType_LanduseRetail,
-	OSMElementType_LanduseIndustrial,
 	OSMElementType_RailwaySubway,
 	OSMElementType_AddressInterpolation,
 	OSMElementType_NotImplemented,
@@ -59,6 +93,17 @@ const OSMElementType Indirection_OSMElementType[] =
 	OSMElementType_Count,
 };
 #pragma endregion  CLASS_SOURCE OSMElement
+
+
+
+
+
+
+
+
+
+
+
 
 
 

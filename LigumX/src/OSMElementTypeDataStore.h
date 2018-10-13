@@ -1,0 +1,45 @@
+#pragma once
+
+#include "OSMElementTypeData.h"
+#include <vector>
+
+#pragma region  FORWARD_DECLARATIONS OSMElementTypeDataStore
+#include "property.h"
+#include "LXObject.h"
+
+class OSMElementTypeDataStore;
+class OSMElementTypeData;
+
+extern OSMElementTypeDataStore* g_OSMElementTypeDataStore;
+
+#pragma endregion  FORWARD_DECLARATIONS OSMElementTypeDataStore
+
+#pragma region  HEADER OSMElementTypeDataStore
+class OSMElementTypeDataStore : public LXObject
+{
+public:
+static const int ClassID = 231333735;
+static const LXType Type = LXType_OSMElementTypeDataStore;
+static constexpr const char* ClassName = "OSMElementTypeDataStore";
+
+std::vector<OSMElementTypeData>& GetData() { return m_Data; }; 
+void SetData(std::vector<OSMElementTypeData> value) { m_Data = value; }; 
+void AddTo_Data(OSMElementTypeData value) { m_Data.push_back(value); };
+private:
+std::vector<OSMElementTypeData> m_Data;
+public:
+static const int g_PropertyCount = 1;
+static const ClassPropertyData g_Properties[g_PropertyCount];
+
+enum g_OSMElementTypeDataStorePIDX
+{
+PIDX_Data,
+};
+bool Serialize(bool writing);
+
+#pragma endregion  HEADER OSMElementTypeDataStore
+
+OSMElementTypeDataStore();
+OSMElementType GetWayType(Way* way);
+
+};

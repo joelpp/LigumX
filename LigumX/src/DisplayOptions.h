@@ -68,6 +68,8 @@ bool GetOutputGLErrors() { return m_OutputGLErrors; };
 void SetOutputGLErrors(bool value) { m_OutputGLErrors = value; }; 
 bool GetDisplayDebugModels() { return m_DisplayDebugModels; }; 
 void SetDisplayDebugModels(bool value) { m_DisplayDebugModels = value; }; 
+bool GetPickingEnabled() { return m_PickingEnabled; }; 
+void SetPickingEnabled(bool value) { m_PickingEnabled = value; }; 
 const DisplayMode& GetDisplayMode() { return m_DisplayMode; }; 
 void SetDisplayMode(DisplayMode value) { m_DisplayMode = value; }; 
 private:
@@ -90,9 +92,10 @@ bool m_RenderOpaque = false;
 bool m_RenderShadows = false;
 bool m_OutputGLErrors = false;
 bool m_DisplayDebugModels = false;
+bool m_PickingEnabled = true;
 DisplayMode m_DisplayMode = DisplayMode_Final;
 public:
-static const int g_PropertyCount = 20;
+static const int g_PropertyCount = 21;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -116,6 +119,7 @@ PIDX_RenderOpaque,
 PIDX_RenderShadows,
 PIDX_OutputGLErrors,
 PIDX_DisplayDebugModels,
+PIDX_PickingEnabled,
 PIDX_DisplayMode,
 };
 bool Serialize(bool writing);

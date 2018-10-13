@@ -1532,7 +1532,12 @@ void Editor::DisplayAxisGizmo()
 
 void Editor::Render()
 {
-	GetPickingTool()->UpdatePickingData();
+	Renderer* renderer = LigumX::GetRenderer();
+
+	if (renderer->GetDisplayOptions()->GetPickingEnabled())
+	{
+		GetPickingTool()->UpdatePickingData();
+	}
 
 	ProcessScrolling();
 

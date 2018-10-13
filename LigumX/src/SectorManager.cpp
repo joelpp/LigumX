@@ -13,6 +13,7 @@
 #include "LXError.h"
 #include "StringUtils.h"
 #include "OSMDataProcessor.h"
+#include "OSMElementTypeDataStore.h"
 
 SectorManager* g_SectorManager;
 
@@ -393,39 +394,6 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 					way->addTag(key, value);
 
 					logFile << key << " " << value << "\n";
-
-					if (way->GetOSMElementType() == OSMElementType_Unknown)
-					{
-						OSMElementType elementType = OSMElement::GetOSMTypeFromStrings(key, value);
-
-						if (elementType != OSMElementType_Unknown)
-						{
-							way->SetOSMElementType(elementType);
-
-							float nodeHeight = 0.1f;
-							if (way->IsPark())
-							{
-								nodeHeight *= 2.f;
-							}
-							else if (way->IsWater())
-							{
-								nodeHeight *= 3.f;
-							}
-							else if (way->IsRoad())
-							{
-								nodeHeight *= 4.f;
-							}
-
-							for (int n = 0; n < way->GetNodes().size(); ++n)
-							{
-								Node* node = way->GetNodes()[n];
-								node->GetWorldPosition().z = nodeHeight;
-							}
-
-
-						}
-					}
-
 				}
 			}
 
@@ -444,7 +412,37 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				}
 			}
 
+			if (way->GetOSMElementType() == OSMElementType_Unknown)
+			{
+				OSMElementType elementType = g_OSMElementTypeDataStore->GetWayType(way);
 
+				if (elementType != OSMElementType_Unknown)
+				{
+					way->SetOSMElementType(elementType);
+
+					float nodeHeight = 0.1f;
+					if (way->IsPark())
+					{
+						nodeHeight *= 2.f;
+					}
+					else if (way->IsWater())
+					{
+						nodeHeight *= 3.f;
+					}
+					else if (way->IsRoad())
+					{
+						nodeHeight *= 4.f;
+					}
+
+					for (int n = 0; n < way->GetNodes().size(); ++n)
+					{
+						Node* node = way->GetNodes()[n];
+						node->GetWorldPosition().z = nodeHeight;
+					}
+
+
+				}
+			}
 			std::unordered_map<std::string, Way*>& ways = request->GetSector()->m_Data->ways;
 			ways.emplace(id, way);
 

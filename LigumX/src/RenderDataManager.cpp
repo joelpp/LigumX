@@ -600,7 +600,7 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 
 			float dotProduct = glm::dot(glm::normalize(vertexToCam), camera->GetFrontVector());
 
-			bool visible = dotProduct < -0.8;
+			bool behind = dotProduct > 0;
 
 			if (m_CullingOptions->GetDebugDotProduct() && vertexToCam.length() < m_CullingOptions->GetDebugDotProductMaxDistance())
 			{
@@ -612,13 +612,13 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 				int edgeOffset = ndc.x + textWidth - windowSize.x;
 				ndc.x -= std::min(textWidth, std::max(edgeOffset, 0));
 
-				glm::vec3 msgColor = visible ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+				glm::vec3 msgColor = behind ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
 				std::stringstream ss;
 				ss << "V" << i << " : " << dotProduct;
 				Add2DMessage(ss.str(), glm::ivec2(ndc), msgColor);
 			}
 
-			if (visible)
+			if (!behind)
 			{
 				allDotsBad = false;
 

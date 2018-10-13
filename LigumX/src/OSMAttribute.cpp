@@ -8,8 +8,8 @@
 #include "ObjectManager.h"
 const ClassPropertyData OSMAttribute::g_Properties[] = 
 {
-{ "key", PIDX_key, offsetof(OSMAttribute, m_key), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "value", PIDX_value, offsetof(OSMAttribute, m_value), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "Key", PIDX_Key, offsetof(OSMAttribute, m_Key), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "Value", PIDX_Value, offsetof(OSMAttribute, m_Value), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
 bool OSMAttribute::Serialize(bool writing)
 {
@@ -18,3 +18,11 @@ bool OSMAttribute::Serialize(bool writing)
 }
 
 #pragma endregion  CLASS_SOURCE OSMAttribute
+
+
+OSMAttribute::OSMAttribute(const std::string& _key, const std::string& _value)
+	: m_Key(_key)
+	, m_Value(_value)
+{
+
+}

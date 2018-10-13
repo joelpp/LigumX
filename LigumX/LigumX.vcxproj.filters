@@ -234,6 +234,15 @@
     <ClCompile Include="src\DefaultTextureHolder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\OSMAttribute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OSMElementTypeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OSMElementTypeDataStore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -566,6 +575,15 @@
     <ClInclude Include="src\LXObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\OSMAttribute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OSMElementTypeData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OSMElementTypeDataStore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -615,5 +633,8 @@
     <None Include="src\RenderDataManager.gen" />
     <None Include="src\OSMElementComponent.gen" />
     <None Include="src\DefaultTextureHolder.gen" />
+    <None Include="src\OSMAttribute.gen" />
+    <None Include="src\OSMElementTypeData.gen" />
+    <None Include="src\OSMElementTypeDataStore.gen" />
   </ItemGroup>
 </Project>

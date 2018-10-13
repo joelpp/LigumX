@@ -103,7 +103,7 @@ public:
 			if (var.m_IsTemplate)
 			{
 				returnTypeStream << "<";
-				returnTypeStream << var.m_AssociatedType << "*";
+				returnTypeStream << var.m_AssociatedType << (var.m_AssociatedPtr ? "*" : "");
 				returnTypeStream << ">";
 			}
 
@@ -153,7 +153,7 @@ public:
 			if (var.m_IsTemplate)
 			{
 				m_Stream << "<";
-				m_Stream << var.m_AssociatedType << "*";
+				m_Stream << var.m_AssociatedType << (var.m_AssociatedPtr ? "*" : "");
 				m_Stream << ">";
 			}
 

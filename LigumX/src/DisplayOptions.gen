@@ -28,6 +28,7 @@ class DisplayOptions
 	bool RenderShadows;
 	bool OutputGLErrors;
 	bool DisplayDebugModels;
+	bool PickingEnabled = true;
 
 	DisplayMode DisplayMode = DisplayMode_Final;
 }

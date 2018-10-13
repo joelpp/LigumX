@@ -1,5 +1,5 @@
 class OSMAttribute
 {
-	std::string key;
-	std::string value;
+	std::string Key;
+	std::string Value;
 }
