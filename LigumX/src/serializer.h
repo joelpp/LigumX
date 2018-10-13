@@ -64,8 +64,10 @@ public:
 	template <typename T>
 	void SerializeObjectOut(T* object, std::fstream& objectStream)
 	{
-		SerializeOnePropertyOut(object, idData, objectStream);
-		SerializeOnePropertyOut(object, nameData, objectStream);
+		objectStream << "ObjectID" << std::endl;
+		objectStream << object->GetObjectID() << std::endl;
+		objectStream << "Name" << std::endl;
+		objectStream << object->GetName() << std::endl;
 
 		for (int i = 0; i < object->g_PropertyCount; ++i)
 		{
