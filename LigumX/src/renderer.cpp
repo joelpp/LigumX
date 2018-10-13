@@ -102,6 +102,11 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_PingPong1]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_PingPong1]->Initialize();
 
+	m_Framebuffers[FramebufferType_GBuffer] = new Framebuffer("GBuffer", windowWidth, windowHeight, GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_GBuffer]->SetHasDepth(true);
+	m_Framebuffers[FramebufferType_GBuffer]->SetNumColorTargets(4);
+	m_Framebuffers[FramebufferType_GBuffer]->Initialize();
+
 	BindFramebuffer(FramebufferType_Default);
 }
 

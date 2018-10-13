@@ -54,6 +54,7 @@ enum FramebufferType
 	FramebufferType_Picking,
 	FramebufferType_PingPong0,
 	FramebufferType_PingPong1,
+	FramebufferType_GBuffer,
 	NBFramebuffers
 };
 
