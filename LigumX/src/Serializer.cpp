@@ -55,7 +55,7 @@ break; \
 } \
 
 
-void Serializer::SerializePropertyOut(const char* ptr, const char* name, const LXType& type, std::fstream& objectStream)
+void Serializer::SerializePropertyOut(const char* ptr, const char* name, const LXType& type, const LXType& simpleType, std::fstream& objectStream)
 {
 	switch (type)
 	{
@@ -250,7 +250,7 @@ objectStream >> *((##nameSpace::##type *)ptr); \
 break; \
 } \
 
-void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, std::fstream& objectStream)
+void Serializer::SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, const LXType& simpleType, std::fstream& objectStream)
 {
 	switch (type)
 	{

@@ -8,9 +8,9 @@
 #include "ObjectManager.h"
 const ClassPropertyData BoundingBoxComponent::g_Properties[] = 
 {
-{ "BoundingBox", PIDX_BoundingBox, offsetof(BoundingBoxComponent, m_BoundingBox), 0, LXType_AABB, false, LXType_None, 0, 0, 0, 0,}, 
-{ "UpdatesWithEntity", PIDX_UpdatesWithEntity, offsetof(BoundingBoxComponent, m_UpdatesWithEntity), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
-{ "ModelToWorldMatrix", PIDX_ModelToWorldMatrix, offsetof(BoundingBoxComponent, m_ModelToWorldMatrix), 0, LXType_glmmat4, false, LXType_None, 0, 0, 0, 0,}, 
+{ "BoundingBox", PIDX_BoundingBox, offsetof(BoundingBoxComponent, m_BoundingBox), 0, LXType_Object, sizeof(AABB), LXType_AABB, false, LXType_None, 0, 0, 0, 0,}, 
+{ "UpdatesWithEntity", PIDX_UpdatesWithEntity, offsetof(BoundingBoxComponent, m_UpdatesWithEntity), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "ModelToWorldMatrix", PIDX_ModelToWorldMatrix, offsetof(BoundingBoxComponent, m_ModelToWorldMatrix), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, 0, 0, 0, 0,}, 
 };
 bool BoundingBoxComponent::Serialize(bool writing)
 {

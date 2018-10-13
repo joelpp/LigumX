@@ -11,8 +11,8 @@
 #include "ObjectManager.h"
 const ClassPropertyData AABB::g_Properties[] = 
 {
-{ "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 
+{ "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 
 };
 bool AABB::Serialize(bool writing)
 {

@@ -47,8 +47,8 @@ OSMDataProcessor* g_OSMDataProcessor;
 #include "ObjectManager.h"
 const ClassPropertyData OSMDataProcessor::g_Properties[] = 
 {
-{ "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Settings", PIDX_Settings, offsetof(OSMDataProcessor, m_Settings), 0, LXType_OSMDataProcessorSettings, true, LXType_None, 0, 0, 0, 0,}, 
+{ "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Settings", PIDX_Settings, offsetof(OSMDataProcessor, m_Settings), 0, LXType_ObjectPtr, sizeof(OSMDataProcessorSettings*), LXType_OSMDataProcessorSettings, true, LXType_None, 0, 0, 0, 0,}, 
 };
 bool OSMDataProcessor::Serialize(bool writing)
 {

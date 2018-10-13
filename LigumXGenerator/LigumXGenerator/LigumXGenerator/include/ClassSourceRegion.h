@@ -142,12 +142,45 @@ public:
 					writeCallbackStream << "0";
 				}
 
+				std::string simpleType;
+				if (var.IsAPointer())
+				{
+					simpleType = "LXType_ObjectPtr";
+				}
+				else if ((var.GetType() == "bool") 
+					  || (var.GetType() == "int") 
+					  || (var.GetType() == "float") 
+					  || (var.GetType() == "double") 
+					  || (var.GetType().find("std::") != std::string::npos)
+					  || (var.GetType().find("glm::") != std::string::npos))
+				{
+					std::string sanitizedType = RemoveSubstrings(var.GetType(), "::");
+					simpleType = "LXType_" + sanitizedType;
+				}
+				else
+				{
+					simpleType = "LXType_Object";
+				}
+
+				std::string sizeProperty = "sizeof(" + var.GetType();
+				
+				if (!var.m_AssociatedType.empty())
+				{
+					sizeProperty += "<" + var.m_AssociatedType + "*>";
+				}
+				if (var.IsAPointer())
+				{
+					sizeProperty += "*";
+				}
+				sizeProperty += ")";
 
 				// warning! if you change anything here mirror it in property.h in LigumX
 				WriteLine("{ \"" + varName + "\", "
 					+ "PIDX_" + varName + ", "
 					+ "offsetof(" + m_Class.m_Name + ", m_" + varName + "), "
 					+ (m_Class.m_Members[i].GetType() == "\tbool" ? "1" : "0") + ", "
+					+ simpleType + ", "
+					+  sizeProperty+ ", "
 					+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
 					+ (var.IsAPointer() ? "true" : "false") + ", "
 					+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "

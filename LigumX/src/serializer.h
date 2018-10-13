@@ -12,8 +12,8 @@
 
 class Serializer
 {
-	ClassPropertyData idData = { "ObjectID", 0, 0, 0, LXType_int, false, LXType_None, 0, 0, 0, 0, };
-	ClassPropertyData nameData = { "Name", 0, 0, 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, };
+	ClassPropertyData idData = { "ObjectID", 0, 0, 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, 0, 0, 0, 0, };
+	ClassPropertyData nameData = { "Name", 0, 0, 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, 0, 0, 0, 0, };
 
 
 public:
@@ -45,7 +45,7 @@ public:
 
 			for (int i = 0; i < v->size(); ++i)
 			{
-				SerializePropertyOut((*v)[i], propertyData.m_Name, propertyData.m_AssociatedType, objectStream);
+				SerializePropertyOut((*v)[i], propertyData.m_Name, propertyData.m_AssociatedType, propertyData.m_SimpleType, objectStream);
 			}
 		}
 		else
@@ -56,7 +56,7 @@ public:
 			}
 
 			objectStream << propertyData.m_Name << std::endl;
-			SerializePropertyOut(ptr, propertyData.m_Name, lxType, objectStream);
+			SerializePropertyOut(ptr, propertyData.m_Name, lxType, propertyData.m_SimpleType, objectStream);
 		}
 
 	}
@@ -93,7 +93,7 @@ public:
 		{
 			char* ptr = (char*)object + propertyData.m_Offset;
 
-			SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, objectStream);
+			SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, propertyData.m_SimpleType, objectStream);
 			return false;
 		}
 		else
@@ -109,7 +109,7 @@ public:
 				{
 					char* ptr = (char*)(&((*v)[i]));
 
-					SerializePropertyIn(ptr, propertyData.m_AssociatedType, LXType_None, objectStream);
+					SerializePropertyIn(ptr, propertyData.m_AssociatedType, LXType_None, propertyData.m_SimpleType, objectStream);
 				}
 
 				return false;
@@ -125,7 +125,7 @@ public:
 					lxType = LXType_int;
 				}
 
-				SerializePropertyIn(ptr, lxType, propertyData.m_AssociatedType, objectStream);
+				SerializePropertyIn(ptr, lxType, propertyData.m_AssociatedType, propertyData.m_SimpleType, objectStream);
 				return false;
 			}
 		}
@@ -215,8 +215,8 @@ public:
 
 	void BackupData();
 private:
-	void SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, std::fstream& objectStream);
-	void SerializePropertyOut(const char* ptr, const char* name, const LXType& type, std::fstream& objectStream);
+	void SerializePropertyIn(char*& ptr, const LXType& type, const LXType& associatedType, const LXType& simpleType, std::fstream& objectStream);
+	void SerializePropertyOut(const char* ptr, const char* name, const LXType& type, const LXType& simpleType, std::fstream& objectStream);
 };
 
 extern Serializer* g_Serializer;

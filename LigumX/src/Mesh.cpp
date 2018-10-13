@@ -13,9 +13,9 @@ using namespace std;
 #include "ObjectManager.h"
 const ClassPropertyData Mesh::g_Properties[] = 
 {
-{ "UsesIndexBuffer", PIDX_UsesIndexBuffer, offsetof(Mesh, m_UsesIndexBuffer), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
-{ "WireframeRendering", PIDX_WireframeRendering, offsetof(Mesh, m_WireframeRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
-{ "PointRendering", PIDX_PointRendering, offsetof(Mesh, m_PointRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "UsesIndexBuffer", PIDX_UsesIndexBuffer, offsetof(Mesh, m_UsesIndexBuffer), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "WireframeRendering", PIDX_WireframeRendering, offsetof(Mesh, m_WireframeRendering), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "PointRendering", PIDX_PointRendering, offsetof(Mesh, m_PointRendering), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 };
 bool Mesh::Serialize(bool writing)
 {

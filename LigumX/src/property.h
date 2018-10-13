@@ -68,6 +68,8 @@ enum LXType
 	LXType_stdstring,
 	LXType_stdvector,
 	LXType_char,
+	LXType_Object,
+	LXType_ObjectPtr,
 	LXType_None,
 };
 
@@ -130,7 +132,12 @@ struct ClassPropertyData
 	int debug;
 
 	// todo : change this to ptr, primitive types, object only.
+	LXType m_SimpleType;
+
+	std::size_t m_SimpleTypeSize;
+
 	LXType m_Type;
+
 
 	// 
 	bool IsAPointer;

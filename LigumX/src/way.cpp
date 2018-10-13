@@ -12,12 +12,12 @@
 #include "ObjectManager.h"
 const ClassPropertyData Way::g_Properties[] = 
 {
-{ "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Nodes", PIDX_Nodes, offsetof(Way, m_Nodes), 0, LXType_stdvector, false, LXType_Node, 0, 0, 0, 0,}, 
-{ "OSMElementType", PIDX_OSMElementType, offsetof(Way, m_OSMElementType), 0, LXType_OSMElementType, false, LXType_None, 0, 0, 0, 0,}, 
-{ "IndexInSector", PIDX_IndexInSector, offsetof(Way, m_IndexInSector), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "FilledIn", PIDX_FilledIn, offsetof(Way, m_FilledIn), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
-{ "AllTags", PIDX_AllTags, offsetof(Way, m_AllTags), 0, LXType_stdstring, false, LXType_None, PropertyFlags_Adder, 0, 0, 0,}, 
+{ "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Nodes", PIDX_Nodes, offsetof(Way, m_Nodes), 0, LXType_stdvector, sizeof(std::vector<Node*>), LXType_stdvector, false, LXType_Node, 0, 0, 0, 0,}, 
+{ "OSMElementType", PIDX_OSMElementType, offsetof(Way, m_OSMElementType), 0, LXType_Object, sizeof(OSMElementType), LXType_OSMElementType, false, LXType_None, 0, 0, 0, 0,}, 
+{ "IndexInSector", PIDX_IndexInSector, offsetof(Way, m_IndexInSector), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
+{ "FilledIn", PIDX_FilledIn, offsetof(Way, m_FilledIn), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
+{ "AllTags", PIDX_AllTags, offsetof(Way, m_AllTags), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, PropertyFlags_Adder, 0, 0, 0,}, 
 };
 bool Way::Serialize(bool writing)
 {

@@ -94,6 +94,12 @@ const GLPixelFormat Indirection_GLPixelFormat[] =
 #pragma endregion  CLASS_SOURCE GL
 
 
+
+
+
+
+
+
 bool GL::g_CheckGLErrors = false;
 
 void GL::SetDepthFunction(GL::DepthFunction func)

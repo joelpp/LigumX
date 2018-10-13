@@ -8,7 +8,7 @@
 #include "ObjectManager.h"
 const ClassPropertyData Component::g_Properties[] = 
 {
-{ "ParentEntity", PIDX_ParentEntity, offsetof(Component, m_ParentEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "ParentEntity", PIDX_ParentEntity, offsetof(Component, m_ParentEntity), 0, LXType_ObjectPtr, sizeof(Entity*), LXType_Entity, true, LXType_None, PropertyFlags_Transient, 0, 0, 0,}, 
 };
 bool Component::Serialize(bool writing)
 {

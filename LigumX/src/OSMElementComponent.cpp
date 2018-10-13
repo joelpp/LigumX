@@ -8,7 +8,7 @@
 #include "ObjectManager.h"
 const ClassPropertyData OSMElementComponent::g_Properties[] = 
 {
-{ "Way", PIDX_Way, offsetof(OSMElementComponent, m_Way), 0, LXType_Way, true, LXType_None, 0, 0, 0, 0,}, 
+{ "Way", PIDX_Way, offsetof(OSMElementComponent, m_Way), 0, LXType_ObjectPtr, sizeof(Way*), LXType_Way, true, LXType_None, 0, 0, 0, 0,}, 
 };
 bool OSMElementComponent::Serialize(bool writing)
 {

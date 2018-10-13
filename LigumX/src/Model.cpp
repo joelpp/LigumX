@@ -17,8 +17,8 @@
 #include "ObjectManager.h"
 const ClassPropertyData Model::g_Properties[] = 
 {
-{ "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, false, LXType_Material, 0, 0, 0, 0,}, 
+{ "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
+{ "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, sizeof(std::vector<Material*>), LXType_stdvector, false, LXType_Material, 0, 0, 0, 0,}, 
 };
 bool Model::Serialize(bool writing)
 {
