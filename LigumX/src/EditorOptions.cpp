@@ -8,8 +8,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData EditorOptions::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(EditorOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(EditorOptions, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Enabled", PIDX_Enabled, offsetof(EditorOptions, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "ShowWorldWindow", PIDX_ShowWorldWindow, offsetof(EditorOptions, m_ShowWorldWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "ShowMaterialWindow", PIDX_ShowMaterialWindow, offsetof(EditorOptions, m_ShowMaterialWindow), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
@@ -41,5 +39,5 @@ bool EditorOptions::Serialize(bool writing)
 
 EditorOptions::EditorOptions()
 {
-	m_ObjectID = g_ObjectManager->GetNewObjectID();
+	SetObjectID(g_ObjectManager->GetNewObjectID());
 }

@@ -18,6 +18,7 @@ class TerrainTool;
 
 #pragma region  FORWARD_DECLARATIONS Editor
 #include "property.h"
+#include "LXObject.h"
 
 class Editor;
 class EditorOptions;
@@ -42,18 +43,14 @@ const int EnumLength_EEditorTool = 6;
 
 #pragma endregion  FORWARD_DECLARATIONS Editor
 
-class Editor
-{
 #pragma region  HEADER Editor
+class Editor : public LXObject
+{
 public:
 static const int ClassID = 1231601560;
 static const LXType Type = LXType_Editor;
 static constexpr const char* ClassName = "Editor";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 EditorOptions*& GetOptions() { return m_Options; }; 
 void SetOptions(EditorOptions* value) { m_Options = value; }; 
 const EEditorTool& GetActiveTool() { return m_ActiveTool; }; 
@@ -76,8 +73,6 @@ void SetPickingBufferSize(int value) { m_PickingBufferSize = value; };
 Node*& GetSelectedNode() { return m_SelectedNode; }; 
 void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 EditorOptions* m_Options = nullptr;
 EEditorTool m_ActiveTool;
 glm::vec4 m_XYZMask;
@@ -88,13 +83,11 @@ std::vector<EditorTool*> m_Tools;
 int m_PickingBufferSize = 0;
 Node* m_SelectedNode = nullptr;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Options,
 PIDX_ActiveTool,
 PIDX_XYZMask,

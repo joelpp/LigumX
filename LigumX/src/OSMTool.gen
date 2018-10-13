@@ -1,4 +1,4 @@
-class OSMTool
+class OSMTool : EditorTool
 {
 	bool Enabled = true;
 

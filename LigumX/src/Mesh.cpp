@@ -13,8 +13,6 @@ using namespace std;
 #include "ObjectManager.h"
 const ClassPropertyData Mesh::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Mesh, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(Mesh, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "UsesIndexBuffer", PIDX_UsesIndexBuffer, offsetof(Mesh, m_UsesIndexBuffer), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "WireframeRendering", PIDX_WireframeRendering, offsetof(Mesh, m_WireframeRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "PointRendering", PIDX_PointRendering, offsetof(Mesh, m_PointRendering), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 

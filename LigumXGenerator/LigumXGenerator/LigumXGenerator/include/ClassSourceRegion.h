@@ -117,47 +117,50 @@ public:
 		std::string propertyCountVarName = "g_PropertyCount";
 		int numProperties = m_Class.m_Members.size();
 
-		WriteLine("const ClassPropertyData " + m_Class.m_Name + "::g_Properties[] = ");
-		WriteLine("{");
-
-		for (int i = 0; i < numProperties; ++i)
+		if (numProperties > 0)
 		{
-			Variable& var = m_Class.m_Members[i];
-			std::string&  varName = var.m_Name;
-			const std::string&  varType = var.GetType();
+			WriteLine("const ClassPropertyData " + m_Class.m_Name + "::g_Properties[] = ");
+			WriteLine("{");
 
-			std::stringstream writeCallbackStream;
-			bool writePtr = (var.m_PropertyFlags & PropertyFlags_SetCallback);
-
-			if (writePtr)
+			for (int i = 0; i < numProperties; ++i)
 			{
-				writeCallbackStream << "WriteSetFunction(" << m_Class.m_Name << ", "
-														   << var.m_Name << ", "
-														   << var.GetType() << (var.IsAPointer() ? "*" : "") << ")";
-			}
-			else
-			{
-				writeCallbackStream << "0";
+				Variable& var = m_Class.m_Members[i];
+				std::string&  varName = var.m_Name;
+				const std::string&  varType = var.GetType();
+
+				std::stringstream writeCallbackStream;
+				bool writePtr = (var.m_PropertyFlags & PropertyFlags_SetCallback);
+
+				if (writePtr)
+				{
+					writeCallbackStream << "WriteSetFunction(" << m_Class.m_Name << ", "
+						<< var.m_Name << ", "
+						<< var.GetType() << (var.IsAPointer() ? "*" : "") << ")";
+				}
+				else
+				{
+					writeCallbackStream << "0";
+				}
+
+
+				// warning! if you change anything here mirror it in property.h in LigumX
+				WriteLine("{ \"" + varName + "\", "
+					+ "PIDX_" + varName + ", "
+					+ "offsetof(" + m_Class.m_Name + ", m_" + varName + "), "
+					+ (m_Class.m_Members[i].GetType() == "\tbool" ? "1" : "0") + ", "
+					+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
+					+ (var.IsAPointer() ? "true" : "false") + ", "
+					+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "
+					+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
+					+ (var.m_MinValue.size() > 0 ? var.m_MinValue : "0") + ", "
+					+ (var.m_MaxValue.size() > 0 ? var.m_MaxValue : "0") + ", "
+					+ writeCallbackStream.str() + ","
+					+ "}, ");
 			}
 
 
-			// warning! if you change anything here mirror it in property.h in LigumX
-			WriteLine("{ \"" + varName + "\", "
-				+ "PIDX_" + varName + ", "
-				+ "offsetof(" + m_Class.m_Name + ", m_" + varName + "), "
-				+ (m_Class.m_Members[i].GetType() == "\tbool" ? "1" : "0") + ", "
-				+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
-				+ (var.IsAPointer() ? "true" : "false") + ", "
-				+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "
-				+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
-				+ (var.m_MinValue.size() > 0 ? var.m_MinValue : "0") + ", "
-				+ (var.m_MaxValue.size() > 0 ? var.m_MaxValue : "0") + ", "
-				+ writeCallbackStream.str() + ","
-				+ "}, ");
+			WriteLine("};");
 		}
-
-
-		WriteLine("};");
 	}
 
 	void WriteSerializer()

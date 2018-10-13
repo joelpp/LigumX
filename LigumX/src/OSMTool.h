@@ -8,6 +8,7 @@ class Sector;
 
 #pragma region  FORWARD_DECLARATIONS OSMTool
 #include "property.h"
+#include "LXObject.h"
 
 class OSMTool;
 class Node;
@@ -16,18 +17,14 @@ class Way;
 
 #pragma endregion  FORWARD_DECLARATIONS OSMTool
 
+#pragma region  HEADER OSMTool
 class OSMTool : public EditorTool
 {
-#pragma region  HEADER OSMTool
 public:
 static const int ClassID = 878880296;
 static const LXType Type = LXType_OSMTool;
 static constexpr const char* ClassName = "OSMTool";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 Node*& GetSelectedNode() { return m_SelectedNode; }; 
@@ -50,8 +47,6 @@ void SetShowFlatWays(bool value) { m_ShowFlatWays = value; };
 bool GetDebugPointInRoad() { return m_DebugPointInRoad; }; 
 void SetDebugPointInRoad(bool value) { m_DebugPointInRoad = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_Enabled = true;
 Node* m_SelectedNode = nullptr;
 std::vector<Way*> m_SelectedWays;
@@ -63,13 +58,11 @@ bool m_ShowWays = false;
 bool m_ShowFlatWays = true;
 bool m_DebugPointInRoad = false;
 public:
-static const int g_PropertyCount = 12;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMToolPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Enabled,
 PIDX_SelectedNode,
 PIDX_SelectedWays,

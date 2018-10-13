@@ -9,8 +9,6 @@ EngineSettings* g_EngineSettings;
 #include "ObjectManager.h"
 const ClassPropertyData EngineSettings::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(EngineSettings, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(EngineSettings, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "WorldScale", PIDX_WorldScale, offsetof(EngineSettings, m_WorldScale), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
 { "StartLonLat", PIDX_StartLonLat, offsetof(EngineSettings, m_StartLonLat), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0,}, 
 { "Extent", PIDX_Extent, offsetof(EngineSettings, m_Extent), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
@@ -39,7 +37,7 @@ EngineSettings::EngineSettings()
 
 EngineSettings::EngineSettings(int id)
 {
-	m_ObjectID = id;
+	SetObjectID(id);
 
 	Serialize(false);
 }

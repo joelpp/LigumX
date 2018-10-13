@@ -51,8 +51,6 @@ Editor* g_Editor;
 #include "ObjectManager.h"
 const ClassPropertyData Editor::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Editor, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(Editor, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_EditorOptions, true, LXType_None, 0, 0, 0, 0,}, 
 { "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_EEditorTool, false, LXType_None, PropertyFlags_Enum, 0, 0, 0,}, 
 { "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, false, LXType_None, PropertyFlags_Hidden | PropertyFlags_SetCallback | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, WriteSetFunction(Editor, XYZMask, glm::vec4),}, 
@@ -1024,43 +1022,43 @@ void Editor::ShowPropertyGridObject(T*& object, const char* name)
 		for (const ClassPropertyData& propertyData : object->g_Properties)
 		{
 			bool display = !editing;
-			if (g_ObjectManager->IsSupportedType(T::Type))
-			{
-				if (propertyData.m_Index == T::PIDX_ObjectID)
-				{
-					int objectID = object->GetObjectID();
+			//if (g_ObjectManager->IsSupportedType(T::Type))
+			//{
+			//	if (propertyData.m_Index == T::PIDX_ObjectID)
+			//	{
+			//		int objectID = object->GetObjectID();
 
-					std::string sanitizedPropertyName = StringUtils::SeparateByCapitalLetters(std::string(propertyData.m_Name));
-					// todo :  the contents of this is shared with serializer.cpp and should go in its own function asap
-					// rename ObjectManager to just ObjectManager?
-					if (ShowEditableProperty(&objectID, sanitizedPropertyName.c_str()))
-					{
-						ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, T::Type, false);
-						if (loadedObject == nullptr)
-						{
-							//PRINT("Object " + std::to_string(objectID) + " not found in ObjectManager. Trying to serialize from file.");
-							std::cout << "Object " + std::to_string(objectID) + " not found in ObjectManager. Trying to serialize from file." << std::endl;
-							T* newObject = new T();
-							newObject->SetObjectID(objectID);
-							bool success = newObject->Serialize(false);
+			//		std::string sanitizedPropertyName = StringUtils::SeparateByCapitalLetters(std::string(propertyData.m_Name));
+			//		// todo :  the contents of this is shared with serializer.cpp and should go in its own function asap
+			//		// rename ObjectManager to just ObjectManager?
+			//		if (ShowEditableProperty(&objectID, sanitizedPropertyName.c_str()))
+			//		{
+			//			ObjectPtr loadedObject = g_ObjectManager->FindObjectByID(objectID, T::Type, false);
+			//			if (loadedObject == nullptr)
+			//			{
+			//				//PRINT("Object " + std::to_string(objectID) + " not found in ObjectManager. Trying to serialize from file.");
+			//				std::cout << "Object " + std::to_string(objectID) + " not found in ObjectManager. Trying to serialize from file." << std::endl;
+			//				T* newObject = new T();
+			//				newObject->SetObjectID(objectID);
+			//				bool success = newObject->Serialize(false);
 
-							if (success)
-							{
-								object = newObject;
-								g_ObjectManager->AddObject(newObject);
-							}
-						}
-						else
-						{
-							object = (T*)loadedObject;
-						}
-					}
+			//				if (success)
+			//				{
+			//					object = newObject;
+			//					g_ObjectManager->AddObject(newObject);
+			//				}
+			//			}
+			//			else
+			//			{
+			//				object = (T*)loadedObject;
+			//			}
+			//		}
 
-					editing = ImGui::IsItemActive();
+			//		editing = ImGui::IsItemActive();
 
-					display = false;
-				}
-			}
+			//		display = false;
+			//	}
+			//}
 
 			if (display)
 			{

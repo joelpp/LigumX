@@ -9,8 +9,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData OSMDataProcessorSettings::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(OSMDataProcessorSettings, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(OSMDataProcessorSettings, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "MinFacadeLength", PIDX_MinFacadeLength, offsetof(OSMDataProcessorSettings, m_MinFacadeLength), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
 { "MaxFacadeLength", PIDX_MaxFacadeLength, offsetof(OSMDataProcessorSettings, m_MaxFacadeLength), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 
 { "MinPlotLengthRatio", PIDX_MinPlotLengthRatio, offsetof(OSMDataProcessorSettings, m_MinPlotLengthRatio), 0, LXType_float, false, LXType_None, 0, 0, 0, 0,}, 

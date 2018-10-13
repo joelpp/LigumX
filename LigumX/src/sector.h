@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Sector
 #include "property.h"
+#include "LXObject.h"
 
 class Sector;
 class Heightfield;
@@ -23,18 +24,14 @@ class Entity;
 
 typedef std::pair<int, int> IntPair;
 
-class Sector
-{
 #pragma region  HEADER Sector
+class Sector : public LXObject
+{
 public:
 static const int ClassID = 749113007;
 static const LXType Type = LXType_Sector;
 static constexpr const char* ClassName = "Sector";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 glm::vec2& GetWorldPosition() { return m_WorldPosition; }; 
 void SetWorldPosition(const glm::vec2& value) { m_WorldPosition = value; }; 
 glm::vec2& GetEarthPosition() { return m_EarthPosition; }; 
@@ -52,8 +49,6 @@ void SetTerrainPatchEntity(Entity* value) { m_TerrainPatchEntity = value; };
 const std::string& GetOSMFilename() { return m_OSMFilename; }; 
 void SetOSMFilename(std::string value) { m_OSMFilename = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 glm::vec2 m_WorldPosition = glm::vec2(0, 0);
 glm::vec2 m_EarthPosition = glm::vec2(0, 0);
 glm::ivec2 m_QuantizedPosition = glm::ivec2(0, 0);
@@ -63,13 +58,11 @@ Heightfield* m_Heightfield = nullptr;
 Entity* m_TerrainPatchEntity = nullptr;
 std::string m_OSMFilename;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_WorldPosition,
 PIDX_EarthPosition,
 PIDX_QuantizedPosition,

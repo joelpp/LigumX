@@ -2,27 +2,22 @@
 
 #pragma region  FORWARD_DECLARATIONS SunLight
 #include "property.h"
+#include "LXObject.h"
 
 class SunLight;
 class Texture;
 
 
 #pragma endregion  FORWARD_DECLARATIONS SunLight
-class SunLight
-{
-public:
-public:
-public:
+
 #pragma region  HEADER SunLight
+class SunLight : public LXObject
+{
 public:
 static const int ClassID = 2842600075;
 static const LXType Type = LXType_SunLight;
 static constexpr const char* ClassName = "SunLight";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetUseShadowMap() { return m_UseShadowMap; }; 
 void SetUseShadowMap(bool value) { m_UseShadowMap = value; }; 
 float GetTime() { return m_Time; }; 
@@ -36,8 +31,6 @@ void SetUseSkybox(bool value) { m_UseSkybox = value; };
 Texture*& GetSkybox() { return m_Skybox; }; 
 void SetSkybox(Texture* value) { m_Skybox = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_UseShadowMap = false;
 float m_Time = 0.f;
 float m_Orientation = 0.f;
@@ -45,14 +38,12 @@ float m_Speed = 0.f;
 bool m_UseSkybox = false;
 Texture* m_Skybox = nullptr;
 public:
-static const int g_PropertyCount = 8;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 SunLight::SunLight();
 enum g_SunLightPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_UseShadowMap,
 PIDX_Time,
 PIDX_Orientation,

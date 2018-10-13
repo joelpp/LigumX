@@ -6,6 +6,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Heightfield
 #include "property.h"
+#include "LXObject.h"
 
 class Heightfield;
 class Texture;
@@ -18,18 +19,14 @@ class Node;
 class PerlinNoise;
 
 
-class Heightfield
-{
 #pragma region  HEADER Heightfield
+class Heightfield : public LXObject
+{
 public:
 static const int ClassID = 3816013350;
 static const LXType Type = LXType_Heightfield;
 static constexpr const char* ClassName = "Heightfield";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 Texture*& GetHeightDataTexture() { return m_HeightDataTexture; }; 
 void SetHeightDataTexture(Texture* value) { m_HeightDataTexture = value; }; 
 float GetMaxHeight() { return m_MaxHeight; }; 
@@ -39,20 +36,16 @@ void SetMinHeight(float value) { m_MinHeight = value; };
 int GetWidth() { return m_Width; }; 
 void SetWidth(int value) { m_Width = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 Texture* m_HeightDataTexture = nullptr;
 float m_MaxHeight = 0.f;
 float m_MinHeight = 0.f;
 int m_Width = 64;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_HeightfieldPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_HeightDataTexture,
 PIDX_MaxHeight,
 PIDX_MinHeight,

@@ -4,6 +4,7 @@
 
 #pragma region  FORWARD_DECLARATIONS PickingTool
 #include "property.h"
+#include "LXObject.h"
 
 class PickingTool;
 class Entity;
@@ -12,18 +13,14 @@ class Sector;
 
 #pragma endregion  FORWARD_DECLARATIONS PickingTool
 
+#pragma region  HEADER PickingTool
 class PickingTool : public EditorTool
 {
-#pragma region  HEADER PickingTool
 public:
 static const int ClassID = 395171594;
 static const LXType Type = LXType_PickingTool;
 static constexpr const char* ClassName = "PickingTool";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 Entity*& GetPickedEntity() { return m_PickedEntity; }; 
@@ -50,8 +47,6 @@ void SetPickedHeight(float value) { m_PickedHeight = value; };
 Sector*& GetPickedSector() { return m_PickedSector; }; 
 void SetPickedSector(Sector* value) { m_PickedSector = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_Enabled = true;
 Entity* m_PickedEntity = nullptr;
 glm::vec2 m_AimingWindowPosition = glm::vec2(0, 0);
@@ -65,13 +60,11 @@ bool m_PickDebugModels = false;
 float m_PickedHeight = 0.f;
 Sector* m_PickedSector = nullptr;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 12;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_PickingToolPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Enabled,
 PIDX_PickedEntity,
 PIDX_AimingWindowPosition,

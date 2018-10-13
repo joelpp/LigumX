@@ -19,6 +19,7 @@ const std::string EnumValues_OSMElementType[] =
 "Building_Addressinterpolation",
 "Boundary",
 "LeisurePark",
+"NaturalBareRock",
 "NaturalWood",
 "NaturalWater",
 "LanduseRetail",
@@ -46,6 +47,7 @@ const OSMElementType Indirection_OSMElementType[] =
 	OSMElementType_Building_Addressinterpolation,
 	OSMElementType_Boundary,
 	OSMElementType_LeisurePark,
+	OSMElementType_NaturalBareRock,
 	OSMElementType_NaturalWood,
 	OSMElementType_NaturalWater,
 	OSMElementType_LanduseRetail,
@@ -57,6 +59,14 @@ const OSMElementType Indirection_OSMElementType[] =
 	OSMElementType_Count,
 };
 #pragma endregion  CLASS_SOURCE OSMElement
+
+
+
+
+
+
+
+
 
 
 

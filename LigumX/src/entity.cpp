@@ -12,8 +12,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData Entity::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Entity, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(Entity, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Visible", PIDX_Visible, offsetof(Entity, m_Visible), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "ModelToWorldMatrix", PIDX_ModelToWorldMatrix, offsetof(Entity, m_ModelToWorldMatrix), 0, LXType_glmmat4, false, LXType_None, PropertyFlags_Hidden, 0, 0, 0,}, 
 { "Position", PIDX_Position, offsetof(Entity, m_Position), 0, LXType_glmvec3, false, LXType_None, PropertyFlags_SetCallback | PropertyFlags_Adder, 0, 0, WriteSetFunction(Entity, Position, glm::vec3),}, 
@@ -73,9 +71,7 @@ Entity::Entity()
 	bb->SetParentEntity(this);
 	m_Components.push_back(bb);
 
-	m_ObjectID = g_ObjectManager->GetNewObjectID();
-
-	//m_Model = new Model();
+	SetObjectID(g_ObjectManager->GetNewObjectID());
 }
 
 

@@ -11,8 +11,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData CurlRequest::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(CurlRequest, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(CurlRequest, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "State", PIDX_State, offsetof(CurlRequest, m_State), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
 { "Coords", PIDX_Coords, offsetof(CurlRequest, m_Coords), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0,}, 
 { "Extent", PIDX_Extent, offsetof(CurlRequest, m_Extent), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0,}, 

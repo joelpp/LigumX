@@ -51,6 +51,21 @@ public:
 	void WriteHeader()
 	{
 		WriteLine(m_CodeRegionBeginString);
+		Write("class ");
+		Write(m_Class.m_Name);
+
+		if (m_Class.m_ParentName.empty())
+		{
+			Write(" : public LXObject\n");
+		}
+		else
+		{
+			Write(" : public ");
+			Write(m_Class.m_ParentName);
+			Write("\n");
+
+		}
+		WriteLine("{");
 		WriteLine("public:");
 		m_Stream << "static const int ClassID = " << std::hash_value(m_Class.m_Name) << ";" << std::endl;
 
@@ -68,7 +83,7 @@ public:
 
 	void WriteClassVariableGettersAndSetters()
 	{
-		for (Variable var : m_Class.m_Members)
+		for (Variable& var : m_Class.m_Members)
 		{
 			// Write getter
 			bool ptr = var.IsAPointer();

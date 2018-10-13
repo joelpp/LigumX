@@ -2,24 +2,21 @@
 
 #pragma region  FORWARD_DECLARATIONS OSMDataProcessorSettings
 #include "property.h"
+#include "LXObject.h"
 
 class OSMDataProcessorSettings;
 
 
 #pragma endregion  FORWARD_DECLARATIONS OSMDataProcessorSettings
 
-class OSMDataProcessorSettings
-{
 #pragma region  HEADER OSMDataProcessorSettings
+class OSMDataProcessorSettings : public LXObject
+{
 public:
 static const int ClassID = 1877541511;
 static const LXType Type = LXType_OSMDataProcessorSettings;
 static constexpr const char* ClassName = "OSMDataProcessorSettings";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 float GetMinFacadeLength() { return m_MinFacadeLength; }; 
 void SetMinFacadeLength(float value) { m_MinFacadeLength = value; }; 
 float GetMaxFacadeLength() { return m_MaxFacadeLength; }; 
@@ -47,8 +44,6 @@ void SetCheckPointInRoad(bool value) { m_CheckPointInRoad = value; };
 bool GetCheckPointInBuilding() { return m_CheckPointInBuilding; }; 
 void SetCheckPointInBuilding(bool value) { m_CheckPointInBuilding = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 float m_MinFacadeLength = 25.f;
 float m_MaxFacadeLength = 50.f;
 float m_MinPlotLengthRatio = 1.7f;
@@ -63,13 +58,11 @@ bool m_ProcessAddressInterpolation = true;
 bool m_CheckPointInRoad = false;
 bool m_CheckPointInBuilding = false;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMDataProcessorSettingsPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_MinFacadeLength,
 PIDX_MaxFacadeLength,
 PIDX_MinPlotLengthRatio,

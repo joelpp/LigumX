@@ -2,24 +2,21 @@
 
 #pragma region  FORWARD_DECLARATIONS RenderingStats
 #include "property.h"
+#include "LXObject.h"
 
 class RenderingStats;
 
 
 #pragma endregion  FORWARD_DECLARATIONS RenderingStats
 
-class RenderingStats
-{
 #pragma region  HEADER RenderingStats
+class RenderingStats : public LXObject
+{
 public:
 static const int ClassID = 2949050158;
 static const LXType Type = LXType_RenderingStats;
 static constexpr const char* ClassName = "RenderingStats";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 int GetNumVisibleEntities() { return m_NumVisibleEntities; }; 
 void SetNumVisibleEntities(int value) { m_NumVisibleEntities = value; }; 
 void AddTo_NumVisibleEntities(int value) { m_NumVisibleEntities += value; };
@@ -35,21 +32,17 @@ void AddTo_Num2DMessages(int value) { m_Num2DMessages += value; };
 float Getfps() { return m_fps; }; 
 void Setfps(float value) { m_fps = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 int m_NumVisibleEntities = 0;
 int m_NumVisibleSectors = 0;
 int m_NumDebugModels = 0;
 int m_Num2DMessages = 0;
 float m_fps = 0.f;
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RenderingStatsPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_NumVisibleEntities,
 PIDX_NumVisibleSectors,
 PIDX_NumDebugModels,

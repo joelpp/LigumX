@@ -6,7 +6,7 @@ enum TerrainEditionMode
 }
 
 
-class TerrainTool
+class TerrainTool : EditorTool
 {
 
 	TerrainEditionMode Mode;

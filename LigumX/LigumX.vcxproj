@@ -294,6 +294,7 @@
     <ClInclude Include="src\LigumX.h" />
     <ClInclude Include="src\linesegment.h" />
     <ClInclude Include="src\Logging.h" />
+    <ClInclude Include="src\LXObject.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Math.h" />

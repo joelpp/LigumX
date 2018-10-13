@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS DisplayOptions
 #include "property.h"
+#include "LXObject.h"
 
 class DisplayOptions;
 
@@ -21,21 +22,14 @@ const int EnumLength_DisplayMode = 5;
 
 #pragma endregion  FORWARD_DECLARATIONS DisplayOptions
 
-class DisplayOptions
-{
-public:
-public:
-public:
 #pragma region  HEADER DisplayOptions
+class DisplayOptions : public LXObject
+{
 public:
 static const int ClassID = 2473594549;
 static const LXType Type = LXType_DisplayOptions;
 static constexpr const char* ClassName = "DisplayOptions";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetUseSkyLighting() { return m_UseSkyLighting; }; 
 void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 
 bool GetRenderTerrain() { return m_RenderTerrain; }; 
@@ -77,8 +71,6 @@ void SetDisplayDebugModels(bool value) { m_DisplayDebugModels = value; };
 const DisplayMode& GetDisplayMode() { return m_DisplayMode; }; 
 void SetDisplayMode(DisplayMode value) { m_DisplayMode = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_UseSkyLighting = false;
 bool m_RenderTerrain = false;
 bool m_DrawSky = false;
@@ -100,13 +92,11 @@ bool m_OutputGLErrors = false;
 bool m_DisplayDebugModels = false;
 DisplayMode m_DisplayMode = DisplayMode_Final;
 public:
-static const int g_PropertyCount = 22;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_UseSkyLighting,
 PIDX_RenderTerrain,
 PIDX_DrawSky,

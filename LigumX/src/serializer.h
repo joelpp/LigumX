@@ -12,61 +12,137 @@
 
 class Serializer
 {
+	ClassPropertyData idData = { "ObjectID", 0, 0, 0, LXType_int, false, LXType_None, 0, 0, 0, 0, };
+	ClassPropertyData nameData = { "Name", 0, 0, 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0, };
+
 
 public:
 	Serializer::Serializer();
 
 	template <typename T>
+	void SerializeOnePropertyOut(T* object, const ClassPropertyData& propertyData, std::fstream& objectStream)
+	{
+		LXType lxType = propertyData.m_Type;
+
+		if (propertyData.m_PropertyFlags & PropertyFlags_Transient)
+		{
+			return;
+		}
+
+		char* ptr = (char*)object + propertyData.m_Offset;;
+
+		if (propertyData.IsAPointer)
+		{
+			ptr = *(char**)ptr;
+		}
+
+		if (lxType == LXType_stdvector)
+		{
+			std::vector<char*>* v = (std::vector<char*>*) ((char*)object + propertyData.m_Offset);
+
+			objectStream << propertyData.m_Name << std::endl;
+			objectStream << v->size() << std::endl;
+
+			for (int i = 0; i < v->size(); ++i)
+			{
+				SerializePropertyOut((*v)[i], propertyData.m_Name, propertyData.m_AssociatedType, objectStream);
+			}
+		}
+		else
+		{
+			if (propertyData.m_PropertyFlags & PropertyFlags_Enum)
+			{
+				lxType = LXType_int;
+			}
+
+			objectStream << propertyData.m_Name << std::endl;
+			SerializePropertyOut(ptr, propertyData.m_Name, lxType, objectStream);
+		}
+
+	}
+
+	template <typename T>
 	void SerializeObjectOut(T* object, std::fstream& objectStream)
 	{
+		SerializeOnePropertyOut(object, idData, objectStream);
+		SerializeOnePropertyOut(object, nameData, objectStream);
+
 		for (int i = 0; i < object->g_PropertyCount; ++i)
 		{
 			const ClassPropertyData& propertyData = object->g_Properties[i];
 
-			LXType lxType = propertyData.m_Type;
+			SerializeOnePropertyOut(object, propertyData, objectStream);
+		}
+	}
 
-			if (propertyData.m_PropertyFlags & PropertyFlags_Transient)
+	template <typename T>
+	bool SerializeOnePropertyIn(T* object, std::string& line, const ClassPropertyData& propertyData, std::fstream& objectStream)
+	{
+		if (propertyData.m_PropertyFlags & PropertyFlags_Transient)
+		{
+			return true;
+		}
+		if (line != propertyData.m_Name)
+		{
+			return true;
+		}
+
+		if (propertyData.IsAPointer)
+		{
+			char* ptr = (char*)object + propertyData.m_Offset;
+
+			SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, objectStream);
+			return false;
+		}
+		else
+		{
+			if (propertyData.m_Type == LXType_stdvector)
 			{
-				continue;
-			}
+				std::getline(objectStream, line);
+				int numItems = std::atoi(line.c_str());
 
-			char* ptr = (char*)object + propertyData.m_Offset;;
-
-			if (propertyData.IsAPointer)
-			{
-				ptr = *(char**)ptr;
-			}
-
-			if (lxType == LXType_stdvector)
-			{
 				std::vector<char*>* v = (std::vector<char*>*) ((char*)object + propertyData.m_Offset);
-
-				objectStream << propertyData.m_Name << std::endl;
-				objectStream << v->size() << std::endl;
-
-				for (int i = 0; i < v->size(); ++i)
+				v->resize(numItems);
+				for (int i = 0; i < numItems; ++i)
 				{
-					SerializePropertyOut((*v)[i], propertyData.m_Name, propertyData.m_AssociatedType, objectStream);
+					char* ptr = (char*)(&((*v)[i]));
+
+					SerializePropertyIn(ptr, propertyData.m_AssociatedType, LXType_None, objectStream);
 				}
+
+				return false;
 			}
 			else
 			{
+				char* ptr = (char*)object + propertyData.m_Offset;;
+
+				LXType lxType = propertyData.m_Type;
+
 				if (propertyData.m_PropertyFlags & PropertyFlags_Enum)
 				{
 					lxType = LXType_int;
 				}
 
-				objectStream << propertyData.m_Name << std::endl;
-				SerializePropertyOut(ptr, propertyData.m_Name, lxType, objectStream);
+				SerializePropertyIn(ptr, lxType, propertyData.m_AssociatedType, objectStream);
+				return false;
 			}
-
 		}
+
 	}
+
 
 	template <typename T>
 	void SerializeObjectIn(T* object, std::fstream& objectStream)
 	{
 		std::string line;
+
+		std::getline(objectStream, line); // ObjectID
+		std::getline(objectStream, line); // ObjectID value
+		object->SetObjectID(std::atoi(line.c_str()));
+		std::getline(objectStream, line); // name
+		std::getline(objectStream, line); // name value
+		object->SetName(line);
+
 		while (std::getline(objectStream, line))
 		{
 			if (line == "")
@@ -77,57 +153,17 @@ public:
 			for (int i = 0; i < object->g_PropertyCount; ++i)
 			{
 				const ClassPropertyData& propertyData = object->g_Properties[i];
-				if (propertyData.m_PropertyFlags & PropertyFlags_Transient)
+				
+				bool shouldContinue = SerializeOnePropertyIn(object, line, propertyData, objectStream);
+
+				if (shouldContinue)
 				{
 					continue;
-				}
-				if (line != propertyData.m_Name)
-				{
-					continue;
-				}
-
-				if (propertyData.IsAPointer)
-				{
-					char* ptr = (char*)object + propertyData.m_Offset;
-
-					SerializePropertyIn(ptr, propertyData.m_Type, propertyData.m_AssociatedType, objectStream);
-					break;
 				}
 				else
 				{
-					if (propertyData.m_Type == LXType_stdvector)
-					{
-						std::getline(objectStream, line);
-						int numItems = std::atoi(line.c_str());
-
-						std::vector<char*>* v = (std::vector<char*>*) ((char*)object + propertyData.m_Offset);
-						v->resize(numItems);
-						for (int i = 0; i < numItems; ++i)
-						{
-							char* ptr = (char*)(&((*v)[i]));
-
-							SerializePropertyIn(ptr, propertyData.m_AssociatedType, LXType_None, objectStream);
-						}
-
-						break;
-					}
-					else
-					{
-						char* ptr = (char*)object + propertyData.m_Offset;;
-
-						LXType lxType = propertyData.m_Type;
-
-						if (propertyData.m_PropertyFlags & PropertyFlags_Enum)
-						{
-							lxType = LXType_int;
-						}
-
-						SerializePropertyIn(ptr, lxType, propertyData.m_AssociatedType, objectStream);
-						break;
-					}
+					break;
 				}
-				
-
 			}
 		}
 	}

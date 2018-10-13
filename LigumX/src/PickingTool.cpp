@@ -22,8 +22,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData PickingTool::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(PickingTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(PickingTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Enabled", PIDX_Enabled, offsetof(PickingTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "PickedEntity", PIDX_PickedEntity, offsetof(PickingTool, m_PickedEntity), 0, LXType_Entity, true, LXType_None, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(PickingTool, PickedEntity, Entity*),}, 
 { "AimingWindowPosition", PIDX_AimingWindowPosition, offsetof(PickingTool, m_AimingWindowPosition), 0, LXType_glmvec2, false, LXType_None, PropertyFlags_Transient, 0, 0, 0,}, 

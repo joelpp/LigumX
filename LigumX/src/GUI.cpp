@@ -11,8 +11,6 @@ GUI* g_GUI;
 #include "ObjectManager.h"
 const ClassPropertyData GUI::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(GUI, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(GUI, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "m_Enabled", PIDX_m_Enabled, offsetof(GUI, m_m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "NumActiveWindows", PIDX_NumActiveWindows, offsetof(GUI, m_NumActiveWindows), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
 };

@@ -2,24 +2,21 @@
 
 #pragma region  FORWARD_DECLARATIONS EditorOptions
 #include "property.h"
+#include "LXObject.h"
 
 class EditorOptions;
 
 
 #pragma endregion  FORWARD_DECLARATIONS EditorOptions
 
-class EditorOptions
-{
 #pragma region  HEADER EditorOptions
+class EditorOptions : public LXObject
+{
 public:
 static const int ClassID = 3240762054;
 static const LXType Type = LXType_EditorOptions;
 static constexpr const char* ClassName = "EditorOptions";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 bool GetShowWorldWindow() { return m_ShowWorldWindow; }; 
@@ -61,8 +58,6 @@ void SetMouseScrollCameraSpeed(float value) { m_MouseScrollCameraSpeed = value; 
 float GetMouseScrollEntityCloseupPercent() { return m_MouseScrollEntityCloseupPercent; }; 
 void SetMouseScrollEntityCloseupPercent(float value) { m_MouseScrollEntityCloseupPercent = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_Enabled = false;
 bool m_ShowWorldWindow = false;
 bool m_ShowMaterialWindow = false;
@@ -84,13 +79,11 @@ bool m_DisplayAxisGizmo = true;
 float m_MouseScrollCameraSpeed = 10.0f;
 float m_MouseScrollEntityCloseupPercent = 15.0f;
 public:
-static const int g_PropertyCount = 22;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Enabled,
 PIDX_ShowWorldWindow,
 PIDX_ShowMaterialWindow,

@@ -1,4 +1,4 @@
-class BoundingBoxComponent
+class BoundingBoxComponent : Component
 {
 	AABB BoundingBox;
 	bool UpdatesWithEntity;

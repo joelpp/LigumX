@@ -42,8 +42,3 @@ DepthStencil = GL_DEPTH_STENCIL,
 RGBA16F = GL_RGBA16F,
 R32F = GL_R32F,
 };
-
-class GL
-{
-
-}

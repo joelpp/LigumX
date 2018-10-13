@@ -7,6 +7,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Way
 #include "property.h"
+#include "LXObject.h"
 
 class Way;
 class Node;
@@ -18,18 +19,15 @@ class OSMElement;
 class Node;
 typedef std::pair<int, int> WayPair;
 
+
+#pragma region  HEADER Way
 class Way : public OSMElement
 {
-#pragma region  HEADER Way
 public:
 static const int ClassID = 2137978372;
 static const LXType Type = LXType_Way;
 static constexpr const char* ClassName = "Way";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 int GetOSMId() { return m_OSMId; }; 
 void SetOSMId(int value) { m_OSMId = value; }; 
 std::vector<Node*>& GetNodes() { return m_Nodes; }; 
@@ -45,8 +43,6 @@ const std::string& GetAllTags() { return m_AllTags; };
 void SetAllTags(std::string value) { m_AllTags = value; }; 
 void AddTo_AllTags(std::string value) { m_AllTags += value; };
 private:
-int m_ObjectID;
-std::string m_Name;
 int m_OSMId = 0;
 std::vector<Node*> m_Nodes;
 OSMElementType m_OSMElementType = OSMElementType_Unknown;
@@ -54,13 +50,11 @@ int m_IndexInSector = 0;
 bool m_FilledIn = false;
 std::string m_AllTags;
 public:
-static const int g_PropertyCount = 8;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WayPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_OSMId,
 PIDX_Nodes,
 PIDX_OSMElementType,

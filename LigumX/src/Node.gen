@@ -1,4 +1,4 @@
-class Node
+class Node : OSMElement
 {
 	long OSMId;
 	glm::vec2 LongLat;

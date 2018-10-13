@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS InputHandler
 #include "property.h"
+#include "LXObject.h"
 
 class InputHandler;
 
@@ -12,18 +13,14 @@ extern InputHandler* g_InputHandler;
 
 #pragma endregion  FORWARD_DECLARATIONS InputHandler
 
-class InputHandler
-{
 #pragma region  HEADER InputHandler
+class InputHandler : public LXObject
+{
 public:
 static const int ClassID = 2115103629;
 static const LXType Type = LXType_InputHandler;
 static constexpr const char* ClassName = "InputHandler";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetMouse1Pressed() { return m_Mouse1Pressed; }; 
 void SetMouse1Pressed(bool value) { SetMouse1Pressed_Callback(value); }; 
 void SetMouse1Pressed_Callback(const bool& value);
@@ -56,8 +53,6 @@ glm::vec2& GetMouseScroll() { return m_MouseScroll; };
 void SetMouseScroll(const glm::vec2& value) { m_MouseScroll = value; }; 
 void AddTo_MouseScroll(glm::vec2 value) { m_MouseScroll += value; };
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_Mouse1Pressed = false;
 bool m_Mouse2Pressed = false;
 bool m_CtrlHeld = false;
@@ -72,13 +67,11 @@ glm::vec2 m_MousePosition = glm::vec2(0, 0);
 glm::vec2 m_LastMousePosition = glm::vec2(0, 0);
 glm::vec2 m_MouseScroll = glm::vec2(0, 0);
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_InputHandlerPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Mouse1Pressed,
 PIDX_Mouse2Pressed,
 PIDX_CtrlHeld,

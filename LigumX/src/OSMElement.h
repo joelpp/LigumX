@@ -8,6 +8,7 @@
 
 #pragma region  FORWARD_DECLARATIONS OSMElement
 #include "property.h"
+#include "LXObject.h"
 
 class OSMElement;
 
@@ -27,9 +28,9 @@ OSMElementType_Building_School,
 OSMElementType_Building_Addressinterpolation,
 OSMElementType_Boundary,
 OSMElementType_LeisurePark,
+OSMElementType_NaturalBareRock,
 OSMElementType_NaturalWood,
 OSMElementType_NaturalWater,
-OSMElementType_NaturalBareRock,
 OSMElementType_LanduseRetail,
 OSMElementType_LanduseIndustrial,
 OSMElementType_RailwaySubway,
@@ -39,9 +40,9 @@ OSMElementType_Unknown,
 OSMElementType_Count,
 };
 
-extern const std::string EnumValues_OSMElementType[23];
-extern const OSMElementType Indirection_OSMElementType[23];
-const int EnumLength_OSMElementType = 23;
+extern const std::string EnumValues_OSMElementType[24];
+extern const OSMElementType Indirection_OSMElementType[24];
+const int EnumLength_OSMElementType = 24;
 
 
 #pragma endregion  FORWARD_DECLARATIONS OSMElement
@@ -49,7 +50,7 @@ class Way;
 class Node;
 
 
-class OSMElement
+class OSMElement : public LXObject
 {
 
 private:

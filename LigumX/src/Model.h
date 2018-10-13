@@ -12,6 +12,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Model
 #include "property.h"
+#include "LXObject.h"
 
 class Model;
 class Material;
@@ -23,39 +24,29 @@ class Texture;
 class ProgramPipeline;
 class Material;
 
-class Model
-{
-public:
-public:
-public:
+
 #pragma region  HEADER Model
+class Model : public LXObject
+{
 public:
 static const int ClassID = 2189814010;
 static const LXType Type = LXType_Model;
 static constexpr const char* ClassName = "Model";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 const std::string& GetFilename() { return m_Filename; }; 
 void SetFilename(std::string value) { m_Filename = value; }; 
 std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
 void AddTo_Materials(Material* value) { m_Materials.push_back(value); };
 private:
-int m_ObjectID;
-std::string m_Name;
 std::string m_Filename;
 std::vector<Material*> m_Materials;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 2;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ModelPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Filename,
 PIDX_Materials,
 };

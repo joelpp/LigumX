@@ -29,7 +29,7 @@ class Entity
 
 	bool IsLight;
 
-	std::vector<Component> Components;
+	std::vector<Component*> Components;
 
 
 }

@@ -17,6 +17,7 @@ enum ThreadState
 
 #pragma region  FORWARD_DECLARATIONS CurlRequest
 #include "property.h"
+#include "LXObject.h"
 
 class CurlRequest;
 class Sector;
@@ -24,19 +25,14 @@ class Sector;
 
 #pragma endregion  FORWARD_DECLARATIONS CurlRequest
 
-
-class CurlRequest
-{
 #pragma region  HEADER CurlRequest
+class CurlRequest : public LXObject
+{
 public:
 static const int ClassID = 2618865284;
 static const LXType Type = LXType_CurlRequest;
 static constexpr const char* ClassName = "CurlRequest";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 int GetState() { return m_State; }; 
 void SetState(int value) { m_State = value; }; 
 glm::vec2& GetCoords() { return m_Coords; }; 
@@ -54,8 +50,6 @@ void SetSectorIndex(const glm::ivec2& value) { m_SectorIndex = value; };
 bool GetAsync() { return m_Async; }; 
 void SetAsync(bool value) { m_Async = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 int m_State = 0;
 glm::vec2 m_Coords = glm::vec2(0, 0);
 glm::vec2 m_Extent = glm::vec2(0, 0);
@@ -65,13 +59,11 @@ Sector* m_Sector = nullptr;
 glm::ivec2 m_SectorIndex = glm::ivec2(0, 0);
 bool m_Async = false;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CurlRequestPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_State,
 PIDX_Coords,
 PIDX_Extent,

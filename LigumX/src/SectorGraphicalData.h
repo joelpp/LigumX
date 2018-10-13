@@ -3,6 +3,7 @@
 
 #pragma region  FORWARD_DECLARATIONS SectorGraphicalData
 #include "property.h"
+#include "LXObject.h"
 
 class SectorGraphicalData;
 class Model;
@@ -12,18 +13,14 @@ class Texture;
 
 #pragma endregion  FORWARD_DECLARATIONS SectorGraphicalData
 
-class SectorGraphicalData
-{
 #pragma region  HEADER SectorGraphicalData
+class SectorGraphicalData : public LXObject
+{
 public:
 static const int ClassID = 1523090688;
 static const LXType Type = LXType_SectorGraphicalData;
 static constexpr const char* ClassName = "SectorGraphicalData";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 Model*& GetNodesModel() { return m_NodesModel; }; 
 void SetNodesModel(Model* value) { m_NodesModel = value; }; 
 Model*& GetWaysModel() { return m_WaysModel; }; 
@@ -42,8 +39,6 @@ void SetSplatMapTexture(Texture* value) { m_SplatMapTexture = value; };
 Texture*& GetAlbedoTexture() { return m_AlbedoTexture; }; 
 void SetAlbedoTexture(Texture* value) { m_AlbedoTexture = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 Model* m_NodesModel = nullptr;
 Model* m_WaysModel = nullptr;
 std::vector<Model*> m_WaysModelsVector;
@@ -52,13 +47,11 @@ std::vector<Entity*> m_StaticEntities;
 Texture* m_SplatMapTexture = nullptr;
 Texture* m_AlbedoTexture = nullptr;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorGraphicalDataPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_NodesModel,
 PIDX_WaysModel,
 PIDX_WaysModelsVector,

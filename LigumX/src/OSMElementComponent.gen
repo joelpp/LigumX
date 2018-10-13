@@ -1,4 +1,4 @@
-class OSMElementComponent
+class OSMElementComponent : Component
 {
 	Way* Way;
 }

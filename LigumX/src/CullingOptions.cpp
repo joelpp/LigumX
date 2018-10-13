@@ -8,8 +8,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData CullingOptions::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(CullingOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(CullingOptions, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "CullEntities", PIDX_CullEntities, offsetof(CullingOptions, m_CullEntities), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "CullSectors", PIDX_CullSectors, offsetof(CullingOptions, m_CullSectors), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "UseDotProduct", PIDX_UseDotProduct, offsetof(CullingOptions, m_UseDotProduct), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 

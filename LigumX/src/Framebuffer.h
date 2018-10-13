@@ -6,27 +6,21 @@ typedef unsigned int GLuint;
 
 #pragma region  FORWARD_DECLARATIONS Framebuffer
 #include "property.h"
+#include "LXObject.h"
 
 class Framebuffer;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Framebuffer
 
-class Framebuffer
-{
-public:
-public:
-public:
 #pragma region  HEADER Framebuffer
+class Framebuffer : public LXObject
+{
 public:
 static const int ClassID = 199658736;
 static const LXType Type = LXType_Framebuffer;
 static constexpr const char* ClassName = "Framebuffer";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 int GetWidth() { return m_Width; }; 
 void SetWidth(int value) { m_Width = value; }; 
 int GetHeight() { return m_Height; }; 
@@ -44,8 +38,6 @@ void SetHasDepth(bool value) { m_HasDepth = value; };
 int GetNumColorTargets() { return m_NumColorTargets; }; 
 void SetNumColorTargets(int value) { m_NumColorTargets = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 int m_Width = 0;
 int m_Height = 0;
 GLuint m_ColorTexture;
@@ -55,13 +47,11 @@ GLPixelFormat m_InternalPixelFormat;
 bool m_HasDepth = false;
 int m_NumColorTargets = 0;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_FramebufferPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Width,
 PIDX_Height,
 PIDX_ColorTexture,
@@ -76,7 +66,7 @@ bool Serialize(bool writing);
 #pragma endregion  HEADER Framebuffer
 
 Framebuffer();
-Framebuffer(std::string name, int width, int height,  GLPixelFormat internalpixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType);
+Framebuffer(const std::string& name, int width, int height,  GLPixelFormat internalpixelFormat, GLPixelFormat pixelFormat, GLPixelType pixelType);
 
 void Initialize();
 

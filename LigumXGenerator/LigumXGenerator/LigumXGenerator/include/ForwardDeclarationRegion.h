@@ -24,6 +24,7 @@ public:
 		classesToDeclare.push_back(m_Class.m_Name);
 
 		WriteLine("#include \"property.h\"");
+		WriteLine("#include \"LXObject.h\"");
 
 		WriteLine("");
 

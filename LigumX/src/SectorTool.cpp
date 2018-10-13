@@ -28,8 +28,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData SectorTool::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(SectorTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(SectorTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 
 { "HighlightedSectorUV", PIDX_HighlightedSectorUV, offsetof(SectorTool, m_HighlightedSectorUV), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0,}, 

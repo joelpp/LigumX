@@ -1,0 +1,4 @@
+class OSMElementTypeData
+{
+	std::vector<OSMAttribute*> Attributes;
+}

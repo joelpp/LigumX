@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS GL
 #include "property.h"
+#include "LXObject.h"
 
 class GL;
 
@@ -62,35 +63,13 @@ const int EnumLength_GLPixelFormat = 17;
 
 
 #pragma endregion  FORWARD_DECLARATIONS GL
+
 class GL
 {
-#pragma region  HEADER GL
 public:
-static const int ClassID = 1657862494;
-static const LXType Type = LXType_GL;
 static constexpr const char* ClassName = "GL";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
-private:
-int m_ObjectID;
-std::string m_Name;
 public:
-static const int g_PropertyCount = 2;
-static const ClassPropertyData g_Properties[g_PropertyCount];
-
-enum g_GLPIDX
-{
-PIDX_ObjectID,
-PIDX_Name,
-};
-bool Serialize(bool writing);
-
-#pragma endregion  HEADER GL
-public:
-
 	enum PrimitiveMode
 	{
 		Points					= GL_POINTS,

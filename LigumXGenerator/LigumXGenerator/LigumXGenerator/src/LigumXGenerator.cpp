@@ -296,26 +296,26 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				generatingClass = true;
 
 				int numTokensForInclude = 3;
-				if (tokens.size() == numTokensForInclude)
+				if (tokens.size() > 2)
 				{
-					currentClass.m_ParentName = tokens[numTokensForInclude - 1];
+					currentClass.m_ParentName = tokens[tokens.size() - 1];
 				}
 
-				Variable objectIDVar;
-				objectIDVar.m_IsPtr = false;
-				objectIDVar.m_IsTemplate = false;
-				objectIDVar.m_Name = "ObjectID";
-				objectIDVar.SetType("int");
-				objectIDVar.m_PropertyFlags = 0;
-				currentClass.m_Members.push_back(objectIDVar);
+				//Variable objectIDVar;
+				//objectIDVar.m_IsPtr = false;
+				//objectIDVar.m_IsTemplate = false;
+				//objectIDVar.m_Name = "ObjectID";
+				//objectIDVar.SetType("int");
+				//objectIDVar.m_PropertyFlags = 0;
+				//currentClass.m_Members.push_back(objectIDVar);
 
-				Variable nameVar;
-				nameVar.m_IsPtr = false;
-				nameVar.m_IsTemplate = false;
-				nameVar.m_Name = "Name";
-				nameVar.SetType("std::string");
-				nameVar.m_PropertyFlags = 0;
-				currentClass.m_Members.push_back(nameVar);
+				//Variable nameVar;
+				//nameVar.m_IsPtr = false;
+				//nameVar.m_IsTemplate = false;
+				//nameVar.m_Name = "Name";
+				//nameVar.SetType("std::string");
+				//nameVar.m_PropertyFlags = 0;
+				//currentClass.m_Members.push_back(nameVar);
 
 
 				//g_DebugClassNameBreak = "SectorTool";
@@ -376,7 +376,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				}
 
 				std::string& varType = tokens[0];
-				variable.m_IsPtr = stringContains(varType, '*');
+				variable.m_IsPtr = stringContains(varType, '*') && !stringContains(varType, "*>");
 
 				RemoveSubstrings(varType, "*");
 				variable.SetType(varType);

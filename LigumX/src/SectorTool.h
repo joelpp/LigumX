@@ -12,6 +12,7 @@ class SectorGraphicalData;
 
 #pragma region  FORWARD_DECLARATIONS SectorTool
 #include "property.h"
+#include "LXObject.h"
 
 class SectorTool;
 class Sector;
@@ -19,18 +20,14 @@ class Sector;
 
 #pragma endregion  FORWARD_DECLARATIONS SectorTool
 
+#pragma region  HEADER SectorTool
 class SectorTool : public EditorTool
 {
-#pragma region  HEADER SectorTool
 public:
 static const int ClassID = 2610247209;
 static const LXType Type = LXType_SectorTool;
 static constexpr const char* ClassName = "SectorTool";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 glm::vec3& GetHighlightedWorldCoordinates() { return m_HighlightedWorldCoordinates; }; 
@@ -58,8 +55,6 @@ void SetLoadSectorsOnClick(bool value) { m_LoadSectorsOnClick = value; };
 int GetSelectedWayIndex() { return m_SelectedWayIndex; }; 
 void SetSelectedWayIndex(int value) { m_SelectedWayIndex = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_Enabled = true;
 glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
 glm::vec2 m_HighlightedSectorUV = glm::vec2(0, 0);
@@ -74,13 +69,11 @@ bool m_HighlightSelectedSector = true;
 bool m_LoadSectorsOnClick = true;
 int m_SelectedWayIndex = 0;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Enabled,
 PIDX_HighlightedWorldCoordinates,
 PIDX_HighlightedSectorUV,

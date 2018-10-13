@@ -12,6 +12,7 @@
 
 #pragma region  FORWARD_DECLARATIONS World
 #include "property.h"
+#include "LXObject.h"
 
 class World;
 class SunLight;
@@ -50,18 +51,15 @@ typedef std::vector<Sector*> SectorList;
 //    };
 //};
 
-class World
-{
+
 #pragma region  HEADER World
+class World : public LXObject
+{
 public:
 static const int ClassID = 3714116915;
 static const LXType Type = LXType_World;
 static constexpr const char* ClassName = "World";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 SunLight*& GetSunLight() { return m_SunLight; }; 
 void SetSunLight(SunLight* value) { m_SunLight = value; }; 
 std::vector<Entity*>& GetEntities() { return m_Entities; }; 
@@ -74,20 +72,16 @@ std::vector<Sector*>& GetSectors() { return m_Sectors; };
 void SetSectors(std::vector<Sector*> value) { m_Sectors = value; }; 
 void AddTo_Sectors(Sector* value) { m_Sectors.push_back(value); };
 private:
-int m_ObjectID;
-std::string m_Name;
 SunLight* m_SunLight = nullptr;
 std::vector<Entity*> m_Entities;
 std::vector<Entity*> m_DebugEntities;
 std::vector<Sector*> m_Sectors;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WorldPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_SunLight,
 PIDX_Entities,
 PIDX_DebugEntities,

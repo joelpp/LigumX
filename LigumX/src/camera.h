@@ -7,6 +7,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Camera
 #include "property.h"
+#include "LXObject.h"
 
 class Camera;
 
@@ -20,21 +21,14 @@ enum ProjectionType
 	ProjectionType_Orthographic
 };
 
-class Camera
-{
-public:
-public:
-public:
 #pragma region  HEADER Camera
+class Camera : public LXObject
+{
 public:
 static const int ClassID = 3880549230;
 static const LXType Type = LXType_Camera;
 static constexpr const char* ClassName = "Camera";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(const glm::vec3& value) { m_Position = value; }; 
 void AddTo_Position(glm::vec3 value) { m_Position += value; };
@@ -74,8 +68,6 @@ void SetMovementSpeed(float value) { m_MovementSpeed = value; };
 float GetKeyMovementSpeedIncreaseFactor() { return m_KeyMovementSpeedIncreaseFactor; }; 
 void SetKeyMovementSpeedIncreaseFactor(float value) { m_KeyMovementSpeedIncreaseFactor = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 glm::vec3 m_Position = glm::vec3(0, 0, 0);
 glm::vec3 m_FrontVector = glm::vec3(0, 0, 0);
 glm::vec3 m_RightVector = glm::vec3(0, 0, 0);
@@ -95,13 +87,11 @@ float m_ViewSize = 0.f;
 float m_MovementSpeed = 0.f;
 float m_KeyMovementSpeedIncreaseFactor = 1.5f;
 public:
-static const int g_PropertyCount = 20;
+static const int g_PropertyCount = 18;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Position,
 PIDX_FrontVector,
 PIDX_RightVector,

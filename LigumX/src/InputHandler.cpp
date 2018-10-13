@@ -9,8 +9,6 @@ InputHandler* g_InputHandler;
 #include "ObjectManager.h"
 const ClassPropertyData InputHandler::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(InputHandler, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(InputHandler, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Mouse1Pressed", PIDX_Mouse1Pressed, offsetof(InputHandler, m_Mouse1Pressed), 0, LXType_bool, false, LXType_None, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(InputHandler, Mouse1Pressed, bool),}, 
 { "Mouse2Pressed", PIDX_Mouse2Pressed, offsetof(InputHandler, m_Mouse2Pressed), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "CtrlHeld", PIDX_CtrlHeld, offsetof(InputHandler, m_CtrlHeld), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 

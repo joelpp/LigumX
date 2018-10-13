@@ -22,8 +22,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData Sector::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Sector, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(Sector, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0,}, 
 { "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0,}, 
 { "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, false, LXType_None, 0, 0, 0, 0,}, 
@@ -79,7 +77,7 @@ glm::vec2 Sector::EarthToWorld(const glm::vec2& earthPosition)
 Sector::Sector(CurlRequest* curlRequest)
 	: m_DataLoaded(false)
 {
-	m_ObjectID = g_ObjectManager->GetTransientID();
+	SetObjectID(g_ObjectManager->GetTransientID());
 
 	m_Data = new SectorData();
 
@@ -102,7 +100,7 @@ Sector::Sector(CurlRequest* curlRequest)
 
 Sector::Sector(const glm::ivec2& index)
 {
-	m_ObjectID = g_ObjectManager->GetTransientID();
+	SetObjectID(g_ObjectManager->GetTransientID());
 
 	m_Data = new SectorData();
 

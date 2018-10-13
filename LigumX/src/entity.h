@@ -14,6 +14,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Entity
 #include "property.h"
+#include "LXObject.h"
 
 class Entity;
 class Model;
@@ -21,20 +22,16 @@ class Component;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Entity
-class Entity;
 class Model;
-class Entity {
 
 #pragma region  HEADER Entity
+class Entity : public LXObject
+{
 public:
 static const int ClassID = 3231396602;
 static const LXType Type = LXType_Entity;
 static constexpr const char* ClassName = "Entity";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetVisible() { return m_Visible; }; 
 void SetVisible(bool value) { m_Visible = value; }; 
 glm::mat4& GetModelToWorldMatrix() { return m_ModelToWorldMatrix; }; 
@@ -66,8 +63,6 @@ std::vector<Component*>& GetComponents() { return m_Components; };
 void SetComponents(std::vector<Component*> value) { m_Components = value; }; 
 void AddTo_Components(Component* value) { m_Components.push_back(value); };
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_Visible = false;
 glm::mat4 m_ModelToWorldMatrix;
 glm::vec3 m_Position = glm::vec3(0, 0, 0);
@@ -80,13 +75,11 @@ Model* m_Model = nullptr;
 bool m_IsLight = false;
 std::vector<Component*> m_Components;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EntityPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Visible,
 PIDX_ModelToWorldMatrix,
 PIDX_Position,

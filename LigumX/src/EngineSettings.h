@@ -3,6 +3,7 @@
 #include "glm\glm.hpp"
 #pragma region  FORWARD_DECLARATIONS EngineSettings
 #include "property.h"
+#include "LXObject.h"
 
 class EngineSettings;
 
@@ -10,18 +11,14 @@ extern EngineSettings* g_EngineSettings;
 
 #pragma endregion  FORWARD_DECLARATIONS EngineSettings
 
-class EngineSettings
-{
 #pragma region  HEADER EngineSettings
+class EngineSettings : public LXObject
+{
 public:
 static const int ClassID = 513733670;
 static const LXType Type = LXType_EngineSettings;
 static constexpr const char* ClassName = "EngineSettings";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 float GetWorldScale() { return m_WorldScale; }; 
 void SetWorldScale(float value) { m_WorldScale = value; }; 
 glm::vec2& GetStartLonLat() { return m_StartLonLat; }; 
@@ -49,8 +46,6 @@ void SetLoadOSMData(bool value) { m_LoadOSMData = value; };
 float GetTerrainTiling() { return m_TerrainTiling; }; 
 void SetTerrainTiling(float value) { m_TerrainTiling = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 float m_WorldScale = 0.f;
 glm::vec2 m_StartLonLat = glm::vec2(0, 0);
 float m_Extent = 0.f;
@@ -65,13 +60,11 @@ int m_MessagesPixelsOffset = 10;
 bool m_LoadOSMData = true;
 float m_TerrainTiling = 1.f;
 public:
-static const int g_PropertyCount = 15;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EngineSettingsPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_WorldScale,
 PIDX_StartLonLat,
 PIDX_Extent,

@@ -9,8 +9,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(DisplayOptions, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(DisplayOptions, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "UseSkyLighting", PIDX_UseSkyLighting, offsetof(DisplayOptions, m_UseSkyLighting), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "RenderTerrain", PIDX_RenderTerrain, offsetof(DisplayOptions, m_RenderTerrain), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "DrawSky", PIDX_DrawSky, offsetof(DisplayOptions, m_DrawSky), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
@@ -59,7 +57,7 @@ const DisplayMode Indirection_DisplayMode[] =
 
 DisplayOptions::DisplayOptions()
 {
-	m_ObjectID = g_ObjectManager->GetNewObjectID();
+	SetObjectID(g_ObjectManager->GetNewObjectID());
 }
 
 //void DisplayOptions::Serialize(bool writing)

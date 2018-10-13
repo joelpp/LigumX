@@ -11,8 +11,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData Material::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Material, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(Material, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Enabled", PIDX_Enabled, offsetof(Material, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "AmbientColor", PIDX_AmbientColor, offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 1, 0,}, 
 { "DiffuseColor", PIDX_DiffuseColor, offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, false, LXType_None, 0, 0, 1, 0,}, 
@@ -75,7 +73,7 @@ void Material::InitializeToDefaults()
 
 	m_EmissiveFactor = 0.0f;
 
-	m_ObjectID = g_ObjectManager->GetNewObjectID();;
+	SetObjectID(g_ObjectManager->GetNewObjectID());
 
 	SetDiffuseColor(glm::vec3(1, 0, 0));
 }

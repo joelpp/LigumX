@@ -27,8 +27,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData OSMTool::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(OSMTool, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(OSMTool, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "Enabled", PIDX_Enabled, offsetof(OSMTool, m_Enabled), 0, LXType_bool, false, LXType_None, 0, 0, 0, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(OSMTool, m_SelectedNode), 0, LXType_Node, true, LXType_None, 0, 0, 0, 0,}, 
 { "SelectedWays", PIDX_SelectedWays, offsetof(OSMTool, m_SelectedWays), 0, LXType_stdvector, false, LXType_Way, 0, 0, 0, 0,}, 

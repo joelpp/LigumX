@@ -9,6 +9,7 @@ class Texture;
 
 #pragma region  FORWARD_DECLARATIONS TerrainTool
 #include "property.h"
+#include "LXObject.h"
 
 class TerrainTool;
 class Sector;
@@ -27,18 +28,14 @@ const int EnumLength_TerrainEditionMode = 3;
 
 #pragma endregion  FORWARD_DECLARATIONS TerrainTool
 
+#pragma region  HEADER TerrainTool
 class TerrainTool : public EditorTool
 {
-#pragma region  HEADER TerrainTool
 public:
 static const int ClassID = 2789929640;
 static const LXType Type = LXType_TerrainTool;
 static constexpr const char* ClassName = "TerrainTool";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 const TerrainEditionMode& GetMode() { return m_Mode; }; 
 void SetMode(TerrainEditionMode value) { m_Mode = value; }; 
 bool GetTerrainErasureMode() { return m_TerrainErasureMode; }; 
@@ -57,8 +54,6 @@ void SetSplatMapIncrement(int value) { m_SplatMapIncrement = value; };
 Sector*& GetClickedSector() { return m_ClickedSector; }; 
 void SetClickedSector(Sector* value) { m_ClickedSector = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 TerrainEditionMode m_Mode;
 bool m_TerrainErasureMode = false;
 float m_TerrainBrushSize = 10;
@@ -68,13 +63,11 @@ glm::ivec2 m_StartTexel = glm::ivec2(0, 0);
 int m_SplatMapIncrement = 10;
 Sector* m_ClickedSector = nullptr;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_TerrainToolPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Mode,
 PIDX_TerrainErasureMode,
 PIDX_TerrainBrushSize,

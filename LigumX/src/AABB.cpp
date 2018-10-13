@@ -11,8 +11,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData AABB::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(AABB, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(AABB, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 
 { "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 
 };
@@ -27,7 +25,7 @@ bool AABB::Serialize(bool writing)
 
 AABB::AABB()
 {
-	m_ObjectID = g_ObjectManager->GetNewObjectID();
+	SetObjectID(g_ObjectManager->GetNewObjectID());
 	m_Vertices.resize(8);
 }
 

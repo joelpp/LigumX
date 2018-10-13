@@ -9,8 +9,6 @@ EngineStats* g_EngineStats;
 #include "ObjectManager.h"
 const ClassPropertyData EngineStats::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(EngineStats, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(EngineStats, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "NumObjectMapHits", PIDX_NumObjectMapHits, offsetof(EngineStats, m_NumObjectMapHits), 0, LXType_int, false, LXType_None, PropertyFlags_Adder, 0, 0, 0,}, 
 { "NumDrawCalls", PIDX_NumDrawCalls, offsetof(EngineStats, m_NumDrawCalls), 0, LXType_int, false, LXType_None, PropertyFlags_Adder, 0, 0, 0,}, 
 };

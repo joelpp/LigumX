@@ -1,4 +1,4 @@
-class Way
+class Way : OSMElement
 {
 	int OSMId;
 	std::vector<Node> Nodes;

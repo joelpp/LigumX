@@ -9,8 +9,6 @@
 #include "ObjectManager.h"
 const ClassPropertyData Node::g_Properties[] = 
 {
-{ "ObjectID", PIDX_ObjectID, offsetof(Node, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(Node, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
 { "OSMId", PIDX_OSMId, offsetof(Node, m_OSMId), 0, LXType_long, false, LXType_None, 0, 0, 0, 0,}, 
 { "LongLat", PIDX_LongLat, offsetof(Node, m_LongLat), 0, LXType_glmvec2, false, LXType_None, 0, 0, 0, 0,}, 
 { "WorldPosition", PIDX_WorldPosition, offsetof(Node, m_WorldPosition), 0, LXType_glmvec3, false, LXType_None, 0, 0, 0, 0,}, 

@@ -13,23 +13,21 @@
 
 #pragma region  FORWARD_DECLARATIONS Texture
 #include "property.h"
+#include "LXObject.h"
 
 class Texture;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Texture
-class Texture
-{
+
 #pragma region  HEADER Texture
+class Texture : public LXObject
+{
 public:
 static const int ClassID = 2571916692;
 static const LXType Type = LXType_Texture;
 static constexpr const char* ClassName = "Texture";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 const std::string& GetFilename() { return m_Filename; }; 
 void SetFilename(std::string value) { m_Filename = value; }; 
 bool GetIsCubeMap() { return m_IsCubeMap; }; 
@@ -49,8 +47,6 @@ void SetPixelType(GLPixelType value) { m_PixelType = value; };
 glm::ivec2& GetSize() { return m_Size; }; 
 void SetSize(const glm::ivec2& value) { m_Size = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 std::string m_Filename;
 bool m_IsCubeMap = false;
 GLuint m_HWObject;
@@ -61,13 +57,11 @@ GLPixelFormat m_Format;
 GLPixelType m_PixelType;
 glm::ivec2 m_Size = glm::ivec2(0, 0);
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_TexturePIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Filename,
 PIDX_IsCubeMap,
 PIDX_HWObject,

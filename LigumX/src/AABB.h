@@ -7,44 +7,34 @@
 
 #pragma region  FORWARD_DECLARATIONS AABB
 #include "property.h"
+#include "LXObject.h"
 
 class AABB;
 
 
 #pragma endregion  FORWARD_DECLARATIONS AABB
 
-class AABB
-{
-public:
-public:
-public:
 #pragma region  HEADER AABB
+class AABB : public LXObject
+{
 public:
 static const int ClassID = 1726995287;
 static const LXType Type = LXType_AABB;
 static constexpr const char* ClassName = "AABB";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 glm::vec3& GetStartPoint() { return m_StartPoint; }; 
 void SetStartPoint(const glm::vec3& value) { m_StartPoint = value; }; 
 glm::vec3& GetScale() { return m_Scale; }; 
 void SetScale(const glm::vec3& value) { m_Scale = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 glm::vec3 m_StartPoint = glm::vec3(0, 0, 0);
 glm::vec3 m_Scale = glm::vec3(0, 0, 0);
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 2;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_AABBPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_StartPoint,
 PIDX_Scale,
 };

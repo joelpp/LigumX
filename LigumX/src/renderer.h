@@ -28,6 +28,7 @@ class SectorGraphicalData;
 
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "property.h"
+#include "LXObject.h"
 
 class Renderer;
 class DisplayOptions;
@@ -83,21 +84,15 @@ struct Text {
 };
 
 
-class Renderer{
 
-public:
-public:
-public:
 #pragma region  HEADER Renderer
+class Renderer : public LXObject
+{
 public:
 static const int ClassID = 1498036510;
 static const LXType Type = LXType_Renderer;
 static constexpr const char* ClassName = "Renderer";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 DisplayOptions*& GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
 PostEffects*& GetPostEffects() { return m_PostEffects; }; 
@@ -105,19 +100,15 @@ void SetPostEffects(PostEffects* value) { m_PostEffects = value; };
 Camera*& GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 DisplayOptions* m_DisplayOptions = nullptr;
 PostEffects* m_PostEffects = nullptr;
 Camera* m_DebugCamera = nullptr;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_DebugCamera,

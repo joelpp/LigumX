@@ -8,6 +8,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Mesh
 #include "property.h"
+#include "LXObject.h"
 
 class Mesh;
 
@@ -89,18 +90,14 @@ public:
 };
 
 
-class Mesh
-{
 #pragma region  HEADER Mesh
+class Mesh : public LXObject
+{
 public:
 static const int ClassID = 132142556;
 static const LXType Type = LXType_Mesh;
 static constexpr const char* ClassName = "Mesh";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetUsesIndexBuffer() { return m_UsesIndexBuffer; }; 
 void SetUsesIndexBuffer(bool value) { m_UsesIndexBuffer = value; }; 
 bool GetWireframeRendering() { return m_WireframeRendering; }; 
@@ -108,19 +105,15 @@ void SetWireframeRendering(bool value) { m_WireframeRendering = value; };
 bool GetPointRendering() { return m_PointRendering; }; 
 void SetPointRendering(bool value) { m_PointRendering = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_UsesIndexBuffer = false;
 bool m_WireframeRendering = false;
 bool m_PointRendering = false;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MeshPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_UsesIndexBuffer,
 PIDX_WireframeRendering,
 PIDX_PointRendering,

@@ -6,6 +6,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Material
 #include "property.h"
+#include "LXObject.h"
 
 class Material;
 class Texture;
@@ -27,19 +28,15 @@ const int EnumLength_ShaderFamily = 5;
 
 #pragma endregion  FORWARD_DECLARATIONS Material
 
-class Material
-{
 
 #pragma region  HEADER Material
+class Material : public LXObject
+{
 public:
 static const int ClassID = 3419754368;
 static const LXType Type = LXType_Material;
 static constexpr const char* ClassName = "Material";
 
-int GetObjectID() { return m_ObjectID; }; 
-void SetObjectID(int value) { m_ObjectID = value; }; 
-const std::string& GetName() { return m_Name; }; 
-void SetName(std::string value) { m_Name = value; }; 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 
 glm::vec3& GetAmbientColor() { return m_AmbientColor; }; 
@@ -85,8 +82,6 @@ void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; };
 const ShaderFamily& GetShaderFamily() { return m_ShaderFamily; }; 
 void SetShaderFamily(ShaderFamily value) { m_ShaderFamily = value; }; 
 private:
-int m_ObjectID;
-std::string m_Name;
 bool m_Enabled = false;
 glm::vec3 m_AmbientColor = glm::vec3(0, 0, 0);
 glm::vec3 m_DiffuseColor = glm::vec3(0, 0, 0);
@@ -109,13 +104,11 @@ Texture* m_HeightfieldTexture = nullptr;
 ProgramPipeline* m_ProgramPipeline = nullptr;
 ShaderFamily m_ShaderFamily;
 public:
-static const int g_PropertyCount = 23;
+static const int g_PropertyCount = 21;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MaterialPIDX
 {
-PIDX_ObjectID,
-PIDX_Name,
 PIDX_Enabled,
 PIDX_AmbientColor,
 PIDX_DiffuseColor,

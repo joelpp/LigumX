@@ -5,21 +5,6 @@
 #include <sstream>
 
 #pragma region  CLASS_SOURCE GL
-
-#include "GL.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
-const ClassPropertyData GL::g_Properties[] = 
-{
-{ "ObjectID", PIDX_ObjectID, offsetof(GL, m_ObjectID), 0, LXType_int, false, LXType_None, 0, 0, 0, 0,}, 
-{ "Name", PIDX_Name, offsetof(GL, m_Name), 0, LXType_stdstring, false, LXType_None, 0, 0, 0, 0,}, 
-};
-bool GL::Serialize(bool writing)
-{
-	bool success = g_Serializer->SerializeObject(this, writing); 
-	return success;
-}
 const std::string EnumValues_GLPixelType[] = 
 {
 "uByte",
@@ -106,8 +91,8 @@ const GLPixelFormat Indirection_GLPixelFormat[] =
 	GLPixelFormat_RGBA16F,
 	GLPixelFormat_R32F,
 };
-
 #pragma endregion  CLASS_SOURCE GL
+
 
 bool GL::g_CheckGLErrors = false;
 
