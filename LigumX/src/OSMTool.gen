@@ -3,7 +3,7 @@ class OSMTool : EditorTool
 	bool Enabled = true;
 
 	Node* SelectedNode;
-	std::vector<Way> SelectedWays;
+	std::vector<Way*> SelectedWays;
 
 	bool SearchOnlyWithinSector = false;
 

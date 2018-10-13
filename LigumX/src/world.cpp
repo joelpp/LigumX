@@ -27,10 +27,10 @@
 #include "ObjectManager.h"
 const ClassPropertyData World::g_Properties[] = 
 {
-{ "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_ObjectPtr, sizeof(SunLight*), LXType_SunLight, true, LXType_None, 0, 0, 0, 0,}, 
-{ "Entities", PIDX_Entities, offsetof(World, m_Entities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, 0, 0, 0, 0,}, 
-{ "DebugEntities", PIDX_DebugEntities, offsetof(World, m_DebugEntities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "Sectors", PIDX_Sectors, offsetof(World, m_Sectors), 0, LXType_stdvector, sizeof(std::vector<Sector*>), LXType_stdvector, false, LXType_Sector, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_ObjectPtr, sizeof(SunLight*), LXType_SunLight, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "Entities", PIDX_Entities, offsetof(World, m_Entities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, true, 0, 0, 0, 0,}, 
+{ "DebugEntities", PIDX_DebugEntities, offsetof(World, m_DebugEntities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, true, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "Sectors", PIDX_Sectors, offsetof(World, m_Sectors), 0, LXType_stdvector, sizeof(std::vector<Sector*>), LXType_stdvector, false, LXType_Sector, true, PropertyFlags_Transient, 0, 0, 0,}, 
 };
 bool World::Serialize(bool writing)
 {

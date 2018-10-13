@@ -376,15 +376,18 @@ ClassList createLXClass(std::vector<std::string>& lines)
 				}
 
 				std::string& varType = tokens[0];
+				variable.SetType(varType);
 				variable.m_IsPtr = stringContains(varType, '*') && !stringContains(varType, "*>");
 
+				variable.CheckForTemplate();
+				
 				RemoveSubstrings(varType, "*");
 				variable.SetType(varType);
+				variable.RemoveTemplateDeclaration();
 
 				variable.m_Name = tokens[1];
 
 
-				variable.CheckForTemplate();
 
 
 				//variable.GetType().erase(std::remove(variable.GetType().begin(), variable.GetType().end(), '*'), variable.GetType().end());

@@ -2,10 +2,10 @@ class SectorGraphicalData
 {
 	Model* NodesModel;
 	Model* WaysModel;
-	std::vector<Model> WaysModelsVector;
+	std::vector<Model*> WaysModelsVector;
 
-	std::vector<Entity> RoadEntities;
-	std::vector<Entity> StaticEntities;
+	std::vector<Entity*> RoadEntities;
+	std::vector<Entity*> StaticEntities;
 
 	Texture* SplatMapTexture;
 	Texture* AlbedoTexture;

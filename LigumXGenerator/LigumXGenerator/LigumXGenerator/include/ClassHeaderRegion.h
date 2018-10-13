@@ -193,7 +193,7 @@ public:
 
 			if (vector)
 			{
-				m_Stream << "void AddTo_" << var.m_Name << "(" << var.m_AssociatedType << "*";
+				m_Stream << "void AddTo_" << var.m_Name << "(" << var.m_AssociatedType << (var.m_AssociatedPtr ? "*" : "");
 				m_Stream << " value) { m_" << var.m_Name << ".push_back(value); };";
 				m_Stream << std::endl;
 			}
@@ -257,7 +257,7 @@ public:
 			if (var.m_IsTemplate)
 			{
 				m_Stream << "<";
-				m_Stream << var.m_AssociatedType << "*";
+				m_Stream << var.m_AssociatedType << (var.m_AssociatedPtr ? "*" : "");
 				m_Stream << ">";
 			}
 

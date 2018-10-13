@@ -8,7 +8,7 @@
 #include "ObjectManager.h"
 const ClassPropertyData OSMElementTypeData::g_Properties[] = 
 {
-{ "Attributes", PIDX_Attributes, offsetof(OSMElementTypeData, m_Attributes), 0, LXType_stdvector, sizeof(std::vector<OSMAttribute*>), LXType_stdvector, false, LXType_OSMAttribute, 0, 0, 0, 0,}, 
+{ "Attributes", PIDX_Attributes, offsetof(OSMElementTypeData, m_Attributes), 0, LXType_stdvector, sizeof(std::vector<OSMAttribute*>), LXType_stdvector, false, LXType_OSMAttribute, true, 0, 0, 0, 0,}, 
 };
 bool OSMElementTypeData::Serialize(bool writing)
 {

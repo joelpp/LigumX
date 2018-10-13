@@ -65,7 +65,10 @@ struct Variable
 		size_t start = m_Type.find('<');
 		size_t end = m_Type.find('>');
 
-		m_Type.erase(start, end+1);
+		if (start != std::string::npos)
+		{
+			m_Type.erase(start, end + 1);
+		}
 	}
 
 	void CheckForTemplate()
@@ -76,6 +79,12 @@ struct Variable
 		{
 			// for now we'll assume the associated type is always a pointer.
 			m_AssociatedType = getSubstringBetweenCharacters(m_Type, '<', '>');
+
+			if (m_AssociatedType.find('*') != std::string::npos)
+			{
+				m_AssociatedPtr = true;
+				m_AssociatedType = RemoveSubstrings(m_AssociatedType, "*");
+			}
 
 			// remove template declaration from string
 			RemoveTemplateDeclaration();
@@ -89,6 +98,7 @@ struct Variable
 //private:
 	std::string m_Name;
 	std::string m_AssociatedType;
+	bool m_AssociatedPtr = false;
 	bool m_IsPtr;
 	bool m_IsTemplate;
 	bool m_IsPrimitive = false;

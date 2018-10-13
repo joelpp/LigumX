@@ -2,11 +2,11 @@
 class World
 {
 	SunLight* SunLight;
-	std::vector<Entity> Entities;
+	std::vector<Entity*> Entities;
 
 	[transient]
-	std::vector<Entity> DebugEntities;
+	std::vector<Entity*> DebugEntities;
 
 	[transient]
-	std::vector<Sector> Sectors;
+	std::vector<Sector*> Sectors;
 }

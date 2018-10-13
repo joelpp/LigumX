@@ -138,12 +138,12 @@ struct ClassPropertyData
 
 	LXType m_Type;
 
-
 	// 
 	bool IsAPointer;
 
 	// inheritance?
 	LXType m_AssociatedType;
+	bool m_AssociatedPtr;
 
 	// 
 	int m_PropertyFlags;

@@ -28,7 +28,7 @@ class Editor
 	bool EditingTerrain;
 
 	[transient]
-	std::vector<EditorTool> Tools;
+	std::vector<EditorTool*> Tools;
 
 	int PickingBufferSize;
 

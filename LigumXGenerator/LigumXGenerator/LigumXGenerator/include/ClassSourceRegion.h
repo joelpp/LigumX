@@ -166,13 +166,14 @@ public:
 				
 				if (!var.m_AssociatedType.empty())
 				{
-					sizeProperty += "<" + var.m_AssociatedType + "*>";
+					sizeProperty += "<" + var.m_AssociatedType + (var.m_AssociatedPtr ? "*" : "") + ">";
 				}
 				if (var.IsAPointer())
 				{
 					sizeProperty += "*";
 				}
 				sizeProperty += ")";
+
 
 				// warning! if you change anything here mirror it in property.h in LigumX
 				WriteLine("{ \"" + varName + "\", "
@@ -184,6 +185,7 @@ public:
 					+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
 					+ (var.IsAPointer() ? "true" : "false") + ", "
 					+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "
+					+ (var.m_AssociatedPtr ? "true" : "false") + ", "
 					+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
 					+ (var.m_MinValue.size() > 0 ? var.m_MinValue : "0") + ", "
 					+ (var.m_MaxValue.size() > 0 ? var.m_MaxValue : "0") + ", "

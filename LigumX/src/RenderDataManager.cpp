@@ -40,8 +40,8 @@ RenderDataManager* g_RenderDataManager;
 #include "ObjectManager.h"
 const ClassPropertyData RenderDataManager::g_Properties[] = 
 {
-{ "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_ObjectPtr, sizeof(CullingOptions*), LXType_CullingOptions, true, LXType_None, 0, 0, 0, 0,}, 
-{ "RenderingStats", PIDX_RenderingStats, offsetof(RenderDataManager, m_RenderingStats), 0, LXType_ObjectPtr, sizeof(RenderingStats*), LXType_RenderingStats, true, LXType_None, 0, 0, 0, 0,}, 
+{ "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_ObjectPtr, sizeof(CullingOptions*), LXType_CullingOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "RenderingStats", PIDX_RenderingStats, offsetof(RenderDataManager, m_RenderingStats), 0, LXType_ObjectPtr, sizeof(RenderingStats*), LXType_RenderingStats, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 bool RenderDataManager::Serialize(bool writing)
 {

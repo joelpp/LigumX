@@ -1,7 +1,7 @@
 class Way : OSMElement
 {
 	int OSMId;
-	std::vector<Node> Nodes;
+	std::vector<Node*> Nodes;
 
 	OSMElementType OSMElementType = OSMElementType_Unknown;
 
