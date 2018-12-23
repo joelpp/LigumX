@@ -54,6 +54,10 @@ bool RenderDataManager::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("RenderingStats", m_RenderingStats);
 	return true;
 }
+const char* RenderDataManager::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE RenderDataManager
 

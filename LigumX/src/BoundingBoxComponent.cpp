@@ -20,6 +20,10 @@ bool BoundingBoxComponent::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("UpdatesWithEntity", m_UpdatesWithEntity);
 	return true;
 }
+const char* BoundingBoxComponent::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE BoundingBoxComponent
 

@@ -61,6 +61,10 @@ bool Renderer::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("DebugCamera", m_DebugCamera);
 	return true;
 }
+const char* Renderer::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Renderer
 

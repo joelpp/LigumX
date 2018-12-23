@@ -37,6 +37,10 @@ bool CurlRequest::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("Async", m_Async);
 	return true;
 }
+const char* CurlRequest::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE CurlRequest
 

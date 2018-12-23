@@ -76,6 +76,7 @@ PIDX_DebugPointInRoad,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER OSMTool
 

@@ -53,6 +53,7 @@ PIDX_Materials,
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Model
 

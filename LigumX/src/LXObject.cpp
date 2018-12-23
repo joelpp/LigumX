@@ -19,5 +19,11 @@ bool LXObject::ShowPropertyGrid()
 	LXIMGUI_SHOW_STRING("Name", m_Name);
 	return true;
 }
+const char* LXObject::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE LXObject
+
+

@@ -37,6 +37,7 @@ PIDX_Data,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER OSMElementTypeDataStore
 

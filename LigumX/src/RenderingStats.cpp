@@ -26,5 +26,9 @@ bool RenderingStats::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("fps", m_fps, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
+const char* RenderingStats::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE RenderingStats

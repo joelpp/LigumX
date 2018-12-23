@@ -32,6 +32,10 @@ bool Way::ShowPropertyGrid()
 	LXIMGUI_SHOW_STRING("AllTags", m_AllTags);
 	return true;
 }
+const char* Way::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Way
 Way::Way()

@@ -23,6 +23,10 @@ bool GUI::ShowPropertyGrid()
 	LXIMGUI_SHOW_INT("NumActiveWindows", m_NumActiveWindows, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;
 }
+const char* GUI::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE GUI
 

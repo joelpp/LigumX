@@ -63,6 +63,7 @@ PIDX_NumColorTargets,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Framebuffer
 

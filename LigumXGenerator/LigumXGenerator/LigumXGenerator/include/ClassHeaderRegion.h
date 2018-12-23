@@ -253,6 +253,11 @@ public:
 		WriteLine("virtual bool ShowPropertyGrid();");
 	}
 
+	void WriteGetTypeNameDeclaration()
+	{
+		WriteLine("virtual const char* GetTypeName();");
+	}
+
 	void WriteBody()
 	{
 		WriteClassVariableGettersAndSetters();
@@ -291,6 +296,7 @@ public:
 		WriteSerializerDeclaration();
 
 		WriteShowImguiDeclaration();
+		WriteGetTypeNameDeclaration();
 	}
 
 

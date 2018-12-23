@@ -20,6 +20,10 @@ bool OSMAttribute::ShowPropertyGrid()
 	LXIMGUI_SHOW_STRING("Value", m_Value);
 	return true;
 }
+const char* OSMAttribute::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE OSMAttribute
 

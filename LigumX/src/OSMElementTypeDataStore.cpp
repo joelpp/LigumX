@@ -23,6 +23,10 @@ bool OSMElementTypeDataStore::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECT_VECTOR("Data", m_Data);
 	return true;
 }
+const char* OSMElementTypeDataStore::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE OSMElementTypeDataStore
 

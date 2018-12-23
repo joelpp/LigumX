@@ -24,6 +24,10 @@ bool PostEffects::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("EmissiveGlowEnabled", m_EmissiveGlowEnabled);
 	return true;
 }
+const char* PostEffects::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE PostEffects
 

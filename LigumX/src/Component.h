@@ -34,6 +34,7 @@ PIDX_ParentEntity,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Component
 

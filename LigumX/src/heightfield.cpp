@@ -38,6 +38,10 @@ bool Heightfield::ShowPropertyGrid()
 	LXIMGUI_SHOW_INT("Width", m_Width, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;
 }
+const char* Heightfield::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Heightfield
 using namespace glm;

@@ -3,18 +3,10 @@
 
 // #define GLFW_INCLUDE_GLCOREARB
 
-#include <sstream>
-#include <cstdarg>
-#include <unordered_map>
-#include <chrono>
-#include <typeinfo>
-#include <stdlib.h>
-#include <map>
+#include "LXSystem.h"
 
 #include "renderer.h"
-#include "glm/glm.hpp"
-#include "glm/ext.hpp"
-#include "Logging.h"
+
 #include "entity.h"
 #include "DefaultObjects.h"
 #include "settings.h"

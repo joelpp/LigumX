@@ -31,6 +31,10 @@ bool Model::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Materials", m_Materials);
 	return true;
 }
+const char* Model::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Model
 

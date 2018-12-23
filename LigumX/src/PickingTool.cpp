@@ -56,6 +56,10 @@ bool PickingTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("PickedSector", m_PickedSector);
 	return true;
 }
+const char* PickingTool::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE PickingTool
 

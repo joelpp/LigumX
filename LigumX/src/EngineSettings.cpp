@@ -43,6 +43,10 @@ bool EngineSettings::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("TerrainTiling", m_TerrainTiling, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
+const char* EngineSettings::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE EngineSettings
 

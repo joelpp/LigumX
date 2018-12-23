@@ -31,6 +31,10 @@ bool Node::ShowPropertyGrid()
 	LXIMGUI_SHOW_VEC2("SectorOffset", m_SectorOffset, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
+const char* Node::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Node
 Node::Node()

@@ -34,6 +34,10 @@ bool SunLight::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("Skybox", m_Skybox);
 	return true;
 }
+const char* SunLight::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE SunLight
 SunLight::SunLight()

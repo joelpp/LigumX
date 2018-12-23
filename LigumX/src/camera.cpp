@@ -56,6 +56,10 @@ bool Camera::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
+const char* Camera::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Camera
 #define PI (3.14159265359)

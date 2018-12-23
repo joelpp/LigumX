@@ -43,6 +43,10 @@ bool InputHandler::ShowPropertyGrid()
 	LXIMGUI_SHOW_VEC2("MouseScroll", m_MouseScroll, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
+const char* InputHandler::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE InputHandler
 

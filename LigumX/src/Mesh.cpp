@@ -27,6 +27,10 @@ bool Mesh::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("PointRendering", m_PointRendering);
 	return true;
 }
+const char* Mesh::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Mesh
 

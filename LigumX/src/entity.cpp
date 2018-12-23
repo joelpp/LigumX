@@ -44,6 +44,10 @@ bool Entity::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Components", m_Components);
 	return true;
 }
+const char* Entity::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Entity
 

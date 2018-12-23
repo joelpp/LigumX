@@ -1,9 +1,5 @@
 #pragma once
 
-#include <vector>
-
-#include "glm/glm.hpp"
-#include "EditorTool.h"
 
 class Texture;
 
@@ -26,6 +22,9 @@ const int EnumLength_TerrainEditionMode = 3;
 
 
 #pragma endregion  FORWARD_DECLARATIONS TerrainTool
+
+#include "EditorTool.h"
+
 
 #pragma region  HEADER TerrainTool
 class TerrainTool : public EditorTool
@@ -79,6 +78,7 @@ PIDX_ClickedSector,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER TerrainTool
 

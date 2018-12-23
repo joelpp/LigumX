@@ -167,12 +167,12 @@ namespace ImguiHelpers
 				T& objectRef = values[i];
 
 				char thisObjectType[256];
-				sprintf(thisObjectType, "%s", objectRef.ClassName);
+				sprintf(thisObjectType, "%s", objectRef.GetTypeName());
 
 				char elementName[256];
 				sprintf(elementName, "[%d] : %s (%s)", i, objectRef.GetName().c_str(), thisObjectType);
 
-				ShowObjectPtr(name, &objectRef);
+				ShowObjectPtr(elementName, &objectRef);
 			}
 		}
 
@@ -201,12 +201,12 @@ namespace ImguiHelpers
 					T* objectPtr = values[i];
 
 					char thisObjectType[256];
-					sprintf(thisObjectType, "%s", objectPtr->ClassName);
+					sprintf(thisObjectType, "%s", objectPtr->GetTypeName());
 
 					char elementName[256];
-					sprintf(elementName, "[%d] : %s (%s)", i, objectPtr->GetName(), thisObjectType);
+					sprintf(elementName, "[%d] : (%s)", i, /*objectPtr->GetName(),*/ thisObjectType);
 
-					ShowObjectPtr(name, objectPtr);
+					ShowObjectPtr(elementName, objectPtr);
 				}
 			}
 		}

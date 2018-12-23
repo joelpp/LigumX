@@ -223,6 +223,14 @@ public:
 		WriteLine("}");
 	}
 
+	void WriteGetTypeName()
+	{
+		WriteLine("const char* " + m_Class.m_Name + "::GetTypeName()");
+		WriteLine("{");
+		WriteLine("\treturn ClassName;");
+		WriteLine("}");
+
+	}
 	void WriteShowImgui()
 	{
 		WriteLine("bool " + m_Class.m_Name + "::ShowPropertyGrid()");
@@ -363,6 +371,7 @@ public:
 
 		WriteSerializer();
 		WriteShowImgui();
+		WriteGetTypeName();
 	}
 
 	void WriteFooter()

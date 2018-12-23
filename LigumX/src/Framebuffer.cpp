@@ -31,6 +31,10 @@ bool Framebuffer::ShowPropertyGrid()
 	LXIMGUI_SHOW_INT("NumColorTargets", m_NumColorTargets, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;
 }
+const char* Framebuffer::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Framebuffer
 

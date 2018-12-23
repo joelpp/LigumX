@@ -61,6 +61,10 @@ bool OSMDataProcessor::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("Settings", m_Settings);
 	return true;
 }
+const char* OSMDataProcessor::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor
 

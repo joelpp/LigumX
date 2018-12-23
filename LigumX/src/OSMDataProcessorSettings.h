@@ -79,6 +79,7 @@ PIDX_CheckPointInBuilding,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER OSMDataProcessorSettings
 

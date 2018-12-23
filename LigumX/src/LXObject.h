@@ -34,6 +34,7 @@ PIDX_Name,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER LXObject
 

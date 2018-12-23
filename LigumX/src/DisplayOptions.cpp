@@ -58,6 +58,10 @@ bool DisplayOptions::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("PickingEnabled", m_PickingEnabled);
 	return true;
 }
+const char* DisplayOptions::GetTypeName()
+{
+	return ClassName;
+}
 const std::string EnumValues_DisplayMode[] = 
 {
 "Final",

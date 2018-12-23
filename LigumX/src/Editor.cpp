@@ -80,6 +80,10 @@ bool Editor::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode);
 	return true;
 }
+const char* Editor::GetTypeName()
+{
+	return ClassName;
+}
 const std::string EnumValues_EEditorTool[] = 
 {
 "TerrainTool",

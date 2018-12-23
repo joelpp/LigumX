@@ -19,6 +19,10 @@ bool OSMElementComponent::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("Way", m_Way);
 	return true;
 }
+const char* OSMElementComponent::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE OSMElementComponent
 

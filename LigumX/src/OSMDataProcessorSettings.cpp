@@ -43,5 +43,9 @@ bool OSMDataProcessorSettings::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("CheckPointInBuilding", m_CheckPointInBuilding);
 	return true;
 }
+const char* OSMDataProcessorSettings::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessorSettings

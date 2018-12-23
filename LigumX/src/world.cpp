@@ -1,24 +1,11 @@
 #include "stdafx.h"
 
-#include "world.h"
-#include "sector.h"
+
 #include "EngineSettings.h"
+#include "DefaultObjects.h"
+#include "SectorManager.h"
 #include "Way.h"
 #include "Node.h"
-#include "Math.h"
-#include "SectorData.h"
-#include "vec2i.h"
-#include "Entity.h"
-#include "SectorManager.h"
-#include "Material.h"
-#include "Model.h"
-#include "SunLight.h"
-#include "GL.h"
-#include "Texture.h"
-#include "Mesh.h"
-#include "DefaultObjects.h"
-#include "LXError.h"
-
 #pragma region  CLASS_SOURCE World
 
 #include "World.h"
@@ -46,6 +33,10 @@ bool World::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTPTR_VECTOR("DebugEntities", m_DebugEntities);
 	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Sectors", m_Sectors);
 	return true;
+}
+const char* World::GetTypeName()
+{
+	return ClassName;
 }
 
 #pragma endregion  CLASS_SOURCE World

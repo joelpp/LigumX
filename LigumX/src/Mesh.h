@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "GL.h"
 #pragma region  FORWARD_DECLARATIONS Mesh
 #include "LXSystem.h"
 
@@ -8,9 +8,6 @@ class Mesh;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Mesh
-
-#include "GL.h"
-
 
 enum EBufferType
 {
@@ -115,6 +112,7 @@ PIDX_PointRendering,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Mesh
 

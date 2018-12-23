@@ -24,6 +24,10 @@ bool OSMElementTypeData::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECT_VECTOR("Attributes", m_Attributes);
 	return true;
 }
+const char* OSMElementTypeData::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE OSMElementTypeData
 

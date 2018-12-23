@@ -36,6 +36,10 @@ bool SectorGraphicalData::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("AlbedoTexture", m_AlbedoTexture);
 	return true;
 }
+const char* SectorGraphicalData::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE SectorGraphicalData
 

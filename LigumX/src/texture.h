@@ -1,15 +1,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <functional>
-#include <iostream>
-#include <vector>
-//#include "FreeImage\Dist\x64\FreeImage.h"
 #include "FreeImage/Dist/x64/FreeImage.h"
-#include "glm/glm.hpp"
 #include "GL.h"
-
-#include <string>
 
 #pragma region  FORWARD_DECLARATIONS Texture
 #include "LXSystem.h"
@@ -75,6 +68,7 @@ PIDX_Size,
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Texture
 

@@ -59,6 +59,10 @@ bool Material::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("HeightfieldTexture", m_HeightfieldTexture);
 	return true;
 }
+const char* Material::GetTypeName()
+{
+	return ClassName;
+}
 const std::string EnumValues_ShaderFamily[] = 
 {
 "Basic",

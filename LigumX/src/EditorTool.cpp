@@ -18,5 +18,9 @@ bool EditorTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("Active", m_Active);
 	return true;
 }
+const char* EditorTool::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE EditorTool

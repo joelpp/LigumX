@@ -19,6 +19,10 @@ bool Component::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("ParentEntity", m_ParentEntity);
 	return true;
 }
+const char* Component::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Component
 

@@ -1,14 +1,7 @@
 #ifndef WORLD
 #define WORLD
 
-#include <unordered_map>
-#include <sstream>
-#include <vector>
 
-#include "glm/glm.hpp"
-#include "tinyxml2.h"
-
-#include "Logging.h"
 
 #pragma region  FORWARD_DECLARATIONS World
 #include "LXSystem.h"
@@ -90,6 +83,7 @@ PIDX_Sectors,
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER World
 

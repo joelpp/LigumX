@@ -21,6 +21,10 @@ bool EngineStats::ShowPropertyGrid()
 	LXIMGUI_SHOW_INT("NumDrawCalls", m_NumDrawCalls, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;
 }
+const char* EngineStats::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE EngineStats
 

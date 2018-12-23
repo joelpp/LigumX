@@ -1,7 +1,4 @@
 #pragma once
-#include "glm/glm.hpp"
-#include "SectorData.h"
-#include "Building.h"
 
 #pragma region  FORWARD_DECLARATIONS Sector
 #include "LXSystem.h"
@@ -12,14 +9,17 @@ class Entity;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Sector
+
+#include "SectorData.h"
+#include "Building.h"
+
+
 class SectorData;
-class Heightfield;
 class vec2i;
 class CurlRequest;
 class SectorGraphicalData;
 class PerlinNoise;
 class Texture;
-class Entity;
 
 typedef std::pair<int, int> IntPair;
 
@@ -74,6 +74,7 @@ PIDX_OSMFilename,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Sector
 

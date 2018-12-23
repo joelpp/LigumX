@@ -88,6 +88,7 @@ PIDX_Settings,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER OSMDataProcessor
 

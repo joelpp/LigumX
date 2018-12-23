@@ -1,18 +1,15 @@
 #include "TerrainTool.h"
 
-#include <algorithm>
-
 #include "EngineSettings.h"
 #include "Editor.h"
-#include "Sector.h"
 #include "Heightfield.h"
 #include "PickingTool.h"
 #include "Logging.h"
 #include "World.h"
-#include "LigumX.h"
 #include "InputHandler.h"
 #include "Texture.h"
 #include "RenderDataManager.h"
+#include "LigumX.h"
 
 #include "RaycastingHelpers.h"
 
@@ -47,6 +44,10 @@ bool TerrainTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_INT("SplatMapIncrement", m_SplatMapIncrement, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_OBJECTREF("ClickedSector", m_ClickedSector);
 	return true;
+}
+const char* TerrainTool::GetTypeName()
+{
+	return ClassName;
 }
 const std::string EnumValues_TerrainEditionMode[] = 
 {

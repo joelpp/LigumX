@@ -57,6 +57,10 @@ bool OSMTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("DebugPointInRoad", m_DebugPointInRoad);
 	return true;
 }
+const char* OSMTool::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE OSMTool
 

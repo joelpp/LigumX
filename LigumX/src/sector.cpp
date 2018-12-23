@@ -1,16 +1,11 @@
 #include "stdafx.h"
-#include "sector.h"
-#include "heightfield.h"
 #include "LigumX.h"
-#include "Logging.h"
 #include "SectorManager.h"
 #include "SectorData.h"
 #include "SectorGraphicalData.h"
 #include "RenderDataManager.h"
-#include "ObjectManager.h"
 #include "EngineSettings.h"
 #include "CurlRequest.h"
-#include "LXError.h"
 #include "PerlinNoise.h"
 #include "BoundingBoxComponent.h"
 
@@ -47,6 +42,10 @@ bool Sector::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("TerrainPatchEntity", m_TerrainPatchEntity);
 	LXIMGUI_SHOW_STRING("OSMFilename", m_OSMFilename);
 	return true;
+}
+const char* Sector::GetTypeName()
+{
+	return ClassName;
 }
 
 #pragma endregion  CLASS_SOURCE Sector

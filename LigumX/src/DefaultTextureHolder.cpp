@@ -33,6 +33,10 @@ bool DefaultTextureHolder::ShowPropertyGrid()
 	LXIMGUI_SHOW_OBJECTREF("WaterTexture", m_WaterTexture);
 	return true;
 }
+const char* DefaultTextureHolder::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE DefaultTextureHolder
 

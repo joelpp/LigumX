@@ -35,6 +35,10 @@ bool Texture::ShowPropertyGrid()
 	LXIMGUI_SHOW_IVEC2("Size", m_Size, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;
 }
+const char* Texture::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE Texture
 using namespace std;

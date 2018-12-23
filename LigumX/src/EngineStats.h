@@ -38,6 +38,7 @@ PIDX_NumDrawCalls,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER EngineStats
 

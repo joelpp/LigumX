@@ -27,6 +27,10 @@ bool MainWindow::ShowPropertyGrid()
 	LXIMGUI_SHOW_STRING("Title", m_Title);
 	return true;
 }
+const char* MainWindow::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE MainWindow
 

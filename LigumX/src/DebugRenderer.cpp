@@ -19,5 +19,9 @@ bool DebugRenderer::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	return true;
 }
+const char* DebugRenderer::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE DebugRenderer

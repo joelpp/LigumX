@@ -34,6 +34,7 @@ PIDX_Active,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER EditorTool
 

@@ -80,6 +80,7 @@ PIDX_PickedSector,
 };
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual const char* GetTypeName();
 
 #pragma endregion  HEADER PickingTool
 

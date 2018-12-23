@@ -56,6 +56,10 @@ bool EditorOptions::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
+const char* EditorOptions::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE EditorOptions
 

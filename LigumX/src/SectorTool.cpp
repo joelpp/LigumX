@@ -63,6 +63,10 @@ bool SectorTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_INT("SelectedWayIndex", m_SelectedWayIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;
 }
+const char* SectorTool::GetTypeName()
+{
+	return ClassName;
+}
 
 #pragma endregion  CLASS_SOURCE SectorTool
 
