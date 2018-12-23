@@ -1,13 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "glm/glm.hpp"
-#include "GLFW/glfw3.h"
-#include "Logging.h"
-
 #pragma region  FORWARD_DECLARATIONS Camera
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Camera;
 
@@ -113,6 +108,7 @@ PIDX_KeyMovementSpeedIncreaseFactor,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Camera
 

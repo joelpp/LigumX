@@ -36,6 +36,29 @@ bool DisplayOptions::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void DisplayOptions::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("UseSkyLighting", m_UseSkyLighting);
+	LXIMGUI_SHOW_BOOL("RenderTerrain", m_RenderTerrain);
+	LXIMGUI_SHOW_BOOL("DrawSky", m_DrawSky);
+	LXIMGUI_SHOW_BOOL("WireframeRendering", m_WireframeRendering);
+	LXIMGUI_SHOW_BOOL("UseLighting", m_UseLighting);
+	LXIMGUI_SHOW_BOOL("ShowNormals", m_ShowNormals);
+	LXIMGUI_SHOW_BOOL("ShowUVs", m_ShowUVs);
+	LXIMGUI_SHOW_BOOL("ShowSpecular", m_ShowSpecular);
+	LXIMGUI_SHOW_BOOL("ShowDiffuse", m_ShowDiffuse);
+	LXIMGUI_SHOW_BOOL("ShowAmbient", m_ShowAmbient);
+	LXIMGUI_SHOW_BOOL("ShowFPS", m_ShowFPS);
+	LXIMGUI_SHOW_BOOL("ShowDepth", m_ShowDepth);
+	LXIMGUI_SHOW_BOOL("LinearizeDepth", m_LinearizeDepth);
+	LXIMGUI_SHOW_BOOL("BlinnPhongShading", m_BlinnPhongShading);
+	LXIMGUI_SHOW_BOOL("RenderTextureOverlay", m_RenderTextureOverlay);
+	LXIMGUI_SHOW_BOOL("RenderOpaque", m_RenderOpaque);
+	LXIMGUI_SHOW_BOOL("RenderShadows", m_RenderShadows);
+	LXIMGUI_SHOW_BOOL("OutputGLErrors", m_OutputGLErrors);
+	LXIMGUI_SHOW_BOOL("DisplayDebugModels", m_DisplayDebugModels);
+	LXIMGUI_SHOW_BOOL("PickingEnabled", m_PickingEnabled);
+}
 const std::string EnumValues_DisplayMode[] = 
 {
 "Final",

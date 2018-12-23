@@ -7,8 +7,7 @@
 #include "common.h"
 
 #pragma region  FORWARD_DECLARATIONS OSMElement
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMElement;
 

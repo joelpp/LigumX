@@ -38,6 +38,12 @@ bool TerrainTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void TerrainTool::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("TerrainErasureMode", m_TerrainErasureMode);
+	LXIMGUI_SHOW_FLOAT("TerrainBrushSize", m_TerrainBrushSize);
+	LXIMGUI_SHOW_INT("SplatMapIncrement", m_SplatMapIncrement);
+}
 const std::string EnumValues_TerrainEditionMode[] = 
 {
 "None",

@@ -120,9 +120,6 @@
     <ClCompile Include="src\imgui_impl_glfw_gl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Source.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\DisplayOptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

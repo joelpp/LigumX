@@ -43,6 +43,16 @@ bool Camera::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
+void Camera::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_FLOAT("NearPlane", m_NearPlane);
+	LXIMGUI_SHOW_FLOAT("FarPlane", m_FarPlane);
+	LXIMGUI_SHOW_INT("ProjectionType", m_ProjectionType);
+	LXIMGUI_SHOW_FLOAT("OrthoBorders", m_OrthoBorders);
+	LXIMGUI_SHOW_FLOAT("ViewSize", m_ViewSize);
+	LXIMGUI_SHOW_FLOAT("MovementSpeed", m_MovementSpeed);
+	LXIMGUI_SHOW_FLOAT("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor);
+}
 
 #pragma endregion  CLASS_SOURCE Camera
 #define PI (3.14159265359)

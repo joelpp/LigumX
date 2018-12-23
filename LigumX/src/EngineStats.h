@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS EngineStats
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class EngineStats;
 
@@ -37,6 +36,7 @@ PIDX_NumObjectMapHits,
 PIDX_NumDrawCalls,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER EngineStats
 

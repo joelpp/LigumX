@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS DisplayOptions
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class DisplayOptions;
 
@@ -123,6 +122,7 @@ PIDX_PickingEnabled,
 PIDX_DisplayMode,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER DisplayOptions
 

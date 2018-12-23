@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS DefaultTextureHolder
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class DefaultTextureHolder;
 class Texture;
@@ -56,6 +55,7 @@ PIDX_SandTexture,
 PIDX_WaterTexture,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER DefaultTextureHolder
 

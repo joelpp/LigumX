@@ -17,6 +17,10 @@ bool BoundingBoxComponent::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void BoundingBoxComponent::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("UpdatesWithEntity", m_UpdatesWithEntity);
+}
 
 #pragma endregion  CLASS_SOURCE BoundingBoxComponent
 

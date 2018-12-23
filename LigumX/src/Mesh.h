@@ -7,8 +7,7 @@
 #include <iostream>
 
 #pragma region  FORWARD_DECLARATIONS Mesh
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Mesh;
 
@@ -119,6 +118,7 @@ PIDX_WireframeRendering,
 PIDX_PointRendering,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Mesh
 

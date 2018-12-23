@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS CullingOptions
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class CullingOptions;
 
@@ -54,6 +53,7 @@ PIDX_DebugDotProduct,
 PIDX_DebugDotProductMaxDistance,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER CullingOptions
 

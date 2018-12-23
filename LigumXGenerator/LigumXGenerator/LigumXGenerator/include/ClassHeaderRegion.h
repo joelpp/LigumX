@@ -244,6 +244,11 @@ public:
 		}
 	}
 
+	void WriteShowImguiDeclaration()
+	{
+		WriteLine("void ShowPropertyGrid();");
+	}
+
 	void WriteBody()
 	{
 		WriteClassVariableGettersAndSetters();
@@ -280,6 +285,8 @@ public:
 		WritePropertyIndexEnum();
 
 		WriteSerializerDeclaration();
+
+		WriteShowImguiDeclaration();
 	}
 
 

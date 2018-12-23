@@ -12,8 +12,7 @@
 #include <string>
 
 #pragma region  FORWARD_DECLARATIONS Texture
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Texture;
 
@@ -74,6 +73,7 @@ PIDX_Size,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Texture
 

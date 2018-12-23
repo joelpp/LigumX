@@ -26,6 +26,9 @@ bool Model::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
+void Model::ShowPropertyGrid()
+{
+}
 
 #pragma endregion  CLASS_SOURCE Model
 

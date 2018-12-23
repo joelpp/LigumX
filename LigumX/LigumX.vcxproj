@@ -219,7 +219,6 @@
     <ClCompile Include="src\SectorTool.cpp" />
     <ClCompile Include="src\Serializer.cpp" />
     <ClCompile Include="src\Settings.cpp" />
-    <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>

@@ -1,13 +1,7 @@
 #pragma once
 
-#include <vector>
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-
 #pragma region  FORWARD_DECLARATIONS AABB
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class AABB;
 
@@ -39,6 +33,7 @@ PIDX_StartPoint,
 PIDX_Scale,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER AABB
 

@@ -2,11 +2,9 @@
 
 #include "Component.h"
 #include "AABB.h"
-#include "glm\glm.hpp"
 
 #pragma region  FORWARD_DECLARATIONS BoundingBoxComponent
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class BoundingBoxComponent;
 
@@ -42,6 +40,7 @@ PIDX_UpdatesWithEntity,
 PIDX_ModelToWorldMatrix,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER BoundingBoxComponent
 

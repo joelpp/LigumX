@@ -5,8 +5,7 @@
 #include "Renderer.h"
 
 #pragma region  FORWARD_DECLARATIONS Heightfield
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Heightfield;
 class Texture;
@@ -52,6 +51,7 @@ PIDX_MinHeight,
 PIDX_Width,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Heightfield
 

@@ -4,8 +4,7 @@
 #include "Building.h"
 
 #pragma region  FORWARD_DECLARATIONS Sector
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Sector;
 class Heightfield;
@@ -73,6 +72,7 @@ PIDX_TerrainPatchEntity,
 PIDX_OSMFilename,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Sector
 

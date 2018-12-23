@@ -1,8 +1,8 @@
 #include "CurlRequest.h"
+
 #include "tinyxml2\tinyxml2.h"
 #include "curl/curl.h"
-#include "Logging.h"
-#include "StringUtils.h"
+
 #pragma region  CLASS_SOURCE CurlRequest
 
 #include "CurlRequest.h"
@@ -24,6 +24,11 @@ bool CurlRequest::Serialize(bool writing)
 {
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
+}
+void CurlRequest::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_INT("State", m_State);
+	LXIMGUI_SHOW_BOOL("Async", m_Async);
 }
 
 #pragma endregion  CLASS_SOURCE CurlRequest

@@ -15,6 +15,9 @@ bool Component::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Component::ShowPropertyGrid()
+{
+}
 
 #pragma endregion  CLASS_SOURCE Component
 

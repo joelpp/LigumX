@@ -38,6 +38,22 @@ bool Material::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Material::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_BOOL("IsPBR", m_IsPBR);
+	LXIMGUI_SHOW_FLOAT("Shininess", m_Shininess);
+	LXIMGUI_SHOW_FLOAT("Metallic", m_Metallic);
+	LXIMGUI_SHOW_FLOAT("Roughness", m_Roughness);
+	LXIMGUI_SHOW_FLOAT("AO", m_AO);
+	LXIMGUI_SHOW_FLOAT("EmissiveFactor", m_EmissiveFactor);
+	LXIMGUI_SHOW_BOOL("DiffuseTextureEnabled", m_DiffuseTextureEnabled);
+	LXIMGUI_SHOW_BOOL("SpecularTextureEnabled", m_SpecularTextureEnabled);
+	LXIMGUI_SHOW_BOOL("Unlit", m_Unlit);
+	LXIMGUI_SHOW_FLOAT("RefractionIndex", m_RefractionIndex);
+	LXIMGUI_SHOW_BOOL("IsGlass", m_IsGlass);
+	LXIMGUI_SHOW_BOOL("ReflectEnvironment", m_ReflectEnvironment);
+}
 const std::string EnumValues_ShaderFamily[] = 
 {
 "Basic",

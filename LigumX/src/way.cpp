@@ -24,6 +24,12 @@ bool Way::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Way::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_INT("OSMId", m_OSMId);
+	LXIMGUI_SHOW_INT("IndexInSector", m_IndexInSector);
+	LXIMGUI_SHOW_BOOL("FilledIn", m_FilledIn);
+}
 
 #pragma endregion  CLASS_SOURCE Way
 Way::Way()

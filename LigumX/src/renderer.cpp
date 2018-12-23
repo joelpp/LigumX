@@ -54,6 +54,9 @@ bool Renderer::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
+void Renderer::ShowPropertyGrid()
+{
+}
 
 #pragma endregion  CLASS_SOURCE Renderer
 

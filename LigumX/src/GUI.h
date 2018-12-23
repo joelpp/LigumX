@@ -4,8 +4,7 @@
 #include <vector>
 
 #pragma region  FORWARD_DECLARATIONS GUI
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class GUI;
 
@@ -38,6 +37,7 @@ PIDX_m_Enabled,
 PIDX_NumActiveWindows,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER GUI
 

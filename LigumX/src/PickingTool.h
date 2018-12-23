@@ -3,8 +3,7 @@
 #include "EditorTool.h"
 
 #pragma region  FORWARD_DECLARATIONS PickingTool
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class PickingTool;
 class Entity;
@@ -79,6 +78,7 @@ PIDX_PickedHeight,
 PIDX_PickedSector,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER PickingTool
 

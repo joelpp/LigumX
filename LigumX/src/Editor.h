@@ -17,8 +17,7 @@ class TerrainTool;
 
 
 #pragma region  FORWARD_DECLARATIONS Editor
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Editor;
 class EditorOptions;
@@ -99,6 +98,7 @@ PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Editor
 

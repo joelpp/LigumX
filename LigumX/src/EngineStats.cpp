@@ -17,6 +17,11 @@ bool EngineStats::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void EngineStats::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_INT("NumObjectMapHits", m_NumObjectMapHits);
+	LXIMGUI_SHOW_INT("NumDrawCalls", m_NumDrawCalls);
+}
 
 #pragma endregion  CLASS_SOURCE EngineStats
 

@@ -50,8 +50,7 @@ class Sector;
 class OSMDataProcessorSettings;
 
 #pragma region  FORWARD_DECLARATIONS OSMDataProcessor
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMDataProcessor;
 class OSMDataProcessorSettings;
@@ -87,6 +86,7 @@ PIDX_RoadWidth,
 PIDX_Settings,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMDataProcessor
 

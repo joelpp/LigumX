@@ -4,8 +4,7 @@
 #include <vector>
 
 #pragma region  FORWARD_DECLARATIONS OSMElementTypeDataStore
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMElementTypeDataStore;
 class OSMElementTypeData;
@@ -36,6 +35,7 @@ enum g_OSMElementTypeDataStorePIDX
 PIDX_Data,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMElementTypeDataStore
 

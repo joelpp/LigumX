@@ -25,6 +25,13 @@ bool Framebuffer::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Framebuffer::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_INT("Width", m_Width);
+	LXIMGUI_SHOW_INT("Height", m_Height);
+	LXIMGUI_SHOW_BOOL("HasDepth", m_HasDepth);
+	LXIMGUI_SHOW_INT("NumColorTargets", m_NumColorTargets);
+}
 
 #pragma endregion  CLASS_SOURCE Framebuffer
 

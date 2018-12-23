@@ -31,6 +31,12 @@ bool Heightfield::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Heightfield::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_FLOAT("MaxHeight", m_MaxHeight);
+	LXIMGUI_SHOW_FLOAT("MinHeight", m_MinHeight);
+	LXIMGUI_SHOW_INT("Width", m_Width);
+}
 
 #pragma endregion  CLASS_SOURCE Heightfield
 using namespace glm;
@@ -79,8 +85,8 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 
 			z *= 500.f;
 
-			m_MaxHeight = max(m_MaxHeight, z);
-			m_MinHeight = min(m_MinHeight, z);
+			m_MaxHeight = glm::max(m_MaxHeight, z);
+			m_MinHeight = glm::min(m_MinHeight, z);
 
 			m_HeightData[j * m_Width + i] = z;
 		}

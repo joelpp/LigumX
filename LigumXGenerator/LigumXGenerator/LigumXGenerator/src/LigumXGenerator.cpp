@@ -509,7 +509,9 @@ void InitializeGenerator()
 	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
 	g_ClassPropertyFlagsStringMap.emplace("globalinstance", ClassPropertyFlags_GlobalInstance);
 
-
+	g_LXTypeToImguiCallName.emplace("bool", "BOOL");
+	g_LXTypeToImguiCallName.emplace("int", "INT");
+	g_LXTypeToImguiCallName.emplace("float", "FLOAT");
 }
 
 void WriteLineToFile(std::fstream& file, const char* line)

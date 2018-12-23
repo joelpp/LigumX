@@ -21,5 +21,15 @@ bool CullingOptions::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void CullingOptions::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("CullEntities", m_CullEntities);
+	LXIMGUI_SHOW_BOOL("CullSectors", m_CullSectors);
+	LXIMGUI_SHOW_BOOL("UseDotProduct", m_UseDotProduct);
+	LXIMGUI_SHOW_BOOL("UseAABBClipPos", m_UseAABBClipPos);
+	LXIMGUI_SHOW_BOOL("DebugAABBClippPos", m_DebugAABBClippPos);
+	LXIMGUI_SHOW_BOOL("DebugDotProduct", m_DebugDotProduct);
+	LXIMGUI_SHOW_FLOAT("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance);
+}
 
 #pragma endregion  CLASS_SOURCE CullingOptions

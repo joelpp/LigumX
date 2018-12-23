@@ -5,8 +5,7 @@
 typedef unsigned int GLuint;
 
 #pragma region  FORWARD_DECLARATIONS Framebuffer
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Framebuffer;
 
@@ -62,6 +61,7 @@ PIDX_HasDepth,
 PIDX_NumColorTargets,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Framebuffer
 

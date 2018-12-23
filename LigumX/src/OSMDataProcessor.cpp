@@ -56,6 +56,10 @@ bool OSMDataProcessor::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void OSMDataProcessor::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_FLOAT("RoadWidth", m_RoadWidth);
+}
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor
 

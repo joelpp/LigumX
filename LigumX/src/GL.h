@@ -4,8 +4,7 @@
 #include "glm/glm.hpp"
 
 #pragma region  FORWARD_DECLARATIONS GL
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class GL;
 

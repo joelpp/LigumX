@@ -11,8 +11,7 @@ class SectorGraphicalData;
 
 
 #pragma region  FORWARD_DECLARATIONS SectorTool
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class SectorTool;
 class Sector;
@@ -89,6 +88,7 @@ PIDX_LoadSectorsOnClick,
 PIDX_SelectedWayIndex,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER SectorTool
 

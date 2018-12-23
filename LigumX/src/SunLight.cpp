@@ -25,6 +25,14 @@ bool SunLight::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void SunLight::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("UseShadowMap", m_UseShadowMap);
+	LXIMGUI_SHOW_FLOAT("Time", m_Time);
+	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation);
+	LXIMGUI_SHOW_FLOAT("Speed", m_Speed);
+	LXIMGUI_SHOW_BOOL("UseSkybox", m_UseSkybox);
+}
 
 #pragma endregion  CLASS_SOURCE SunLight
 SunLight::SunLight()
@@ -36,15 +44,4 @@ glm::vec3 SunLight::GetSunDirection()
 {
 	glm::vec2 sunDirFlat = glm::vec2(cos(m_Orientation), sin(m_Orientation));
 	return cos(m_Time) * glm::vec3(0, 0, 1) + sin(m_Time) * glm::vec3(sunDirFlat.x, sunDirFlat.y, 0);
-}
-
-
-void SunLight::ShowPropertyGrid()
-{
-	LXIMGUI_SHOW_BOOL("UseShadowMap", m_UseShadowMap);
-	LXIMGUI_SHOW_FLOAT("Time", m_Time);
-	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation);
-	LXIMGUI_SHOW_FLOAT("Speed", m_Speed);
-	LXIMGUI_SHOW_BOOL("UseSkybox", m_UseSkybox);
-	LXIMGUI_SHOW_OBJECTPTR("Skybox", m_Skybox);
 }

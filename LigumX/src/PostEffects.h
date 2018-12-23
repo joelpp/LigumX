@@ -3,8 +3,7 @@
 #include "stdafx.h"
 
 #pragma region  FORWARD_DECLARATIONS PostEffects
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class PostEffects;
 
@@ -44,6 +43,7 @@ PIDX_ToneMappingEnabled,
 PIDX_EmissiveGlowEnabled,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER PostEffects
 PostEffects::PostEffects();

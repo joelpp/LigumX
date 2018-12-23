@@ -7,8 +7,7 @@
 class Sector;
 
 #pragma region  FORWARD_DECLARATIONS OSMTool
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMTool;
 class Node;
@@ -75,6 +74,7 @@ PIDX_ShowFlatWays,
 PIDX_DebugPointInRoad,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMTool
 

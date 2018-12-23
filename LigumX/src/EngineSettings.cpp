@@ -28,6 +28,19 @@ bool EngineSettings::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void EngineSettings::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_FLOAT("WorldScale", m_WorldScale);
+	LXIMGUI_SHOW_FLOAT("Extent", m_Extent);
+	LXIMGUI_SHOW_INT("OSMQuantizationScale", m_OSMQuantizationScale);
+	LXIMGUI_SHOW_BOOL("GenerateFlatTerrain", m_GenerateFlatTerrain);
+	LXIMGUI_SHOW_FLOAT("WayTessellationFactor", m_WayTessellationFactor);
+	LXIMGUI_SHOW_FLOAT("MessagesFontSize", m_MessagesFontSize);
+	LXIMGUI_SHOW_INT("MessagesDefaultFrameCount", m_MessagesDefaultFrameCount);
+	LXIMGUI_SHOW_INT("MessagesPixelsOffset", m_MessagesPixelsOffset);
+	LXIMGUI_SHOW_BOOL("LoadOSMData", m_LoadOSMData);
+	LXIMGUI_SHOW_FLOAT("TerrainTiling", m_TerrainTiling);
+}
 
 #pragma endregion  CLASS_SOURCE EngineSettings
 

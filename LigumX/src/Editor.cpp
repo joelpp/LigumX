@@ -66,6 +66,12 @@ bool Editor::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Editor::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);
+	LXIMGUI_SHOW_BOOL("EditingTerrain", m_EditingTerrain);
+	LXIMGUI_SHOW_INT("PickingBufferSize", m_PickingBufferSize);
+}
 const std::string EnumValues_EEditorTool[] = 
 {
 "TerrainTool",

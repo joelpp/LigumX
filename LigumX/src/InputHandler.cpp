@@ -28,6 +28,13 @@ bool InputHandler::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void InputHandler::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("Mouse1Pressed", m_Mouse1Pressed);
+	LXIMGUI_SHOW_BOOL("Mouse2Pressed", m_Mouse2Pressed);
+	LXIMGUI_SHOW_BOOL("CtrlHeld", m_CtrlHeld);
+	LXIMGUI_SHOW_BOOL("Dragging", m_Dragging);
+}
 
 #pragma endregion  CLASS_SOURCE InputHandler
 

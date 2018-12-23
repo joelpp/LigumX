@@ -21,6 +21,10 @@ bool MainWindow::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
+void MainWindow::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("InFocus", m_InFocus);
+}
 
 #pragma endregion  CLASS_SOURCE MainWindow
 

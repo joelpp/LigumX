@@ -2,8 +2,7 @@
 
 #include "glm\glm.hpp"
 #pragma region  FORWARD_DECLARATIONS EngineSettings
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class EngineSettings;
 
@@ -80,6 +79,7 @@ PIDX_LoadOSMData,
 PIDX_TerrainTiling,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER EngineSettings
 

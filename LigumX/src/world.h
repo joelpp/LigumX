@@ -11,8 +11,7 @@
 #include "Logging.h"
 
 #pragma region  FORWARD_DECLARATIONS World
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class World;
 class SunLight;
@@ -89,6 +88,7 @@ PIDX_Sectors,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER World
 

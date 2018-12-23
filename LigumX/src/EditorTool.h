@@ -4,8 +4,7 @@
 #include "LXError.h"
 
 #pragma region  FORWARD_DECLARATIONS EditorTool
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class EditorTool;
 
@@ -33,6 +32,7 @@ enum g_EditorToolPIDX
 PIDX_Active,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER EditorTool
 

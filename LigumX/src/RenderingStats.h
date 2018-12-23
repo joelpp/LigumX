@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS RenderingStats
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class RenderingStats;
 
@@ -50,6 +49,7 @@ PIDX_Num2DMessages,
 PIDX_fps,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER RenderingStats
 

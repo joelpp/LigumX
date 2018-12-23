@@ -1,12 +1,6 @@
 #pragma once
 
-#include <sstream>
-#include <thread>
-#include <iostream>
-#include <fstream>
-#include "glm/glm.hpp"
 #include "Settings.h"
-#include "Logging.h"
 
 enum ThreadState
 {
@@ -16,8 +10,7 @@ enum ThreadState
 };
 
 #pragma region  FORWARD_DECLARATIONS CurlRequest
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class CurlRequest;
 class Sector;
@@ -74,6 +67,7 @@ PIDX_SectorIndex,
 PIDX_Async,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER CurlRequest
 

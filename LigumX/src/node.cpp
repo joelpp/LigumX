@@ -22,6 +22,10 @@ bool Node::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Node::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_FLOAT("Elevation", m_Elevation);
+}
 
 #pragma endregion  CLASS_SOURCE Node
 Node::Node()

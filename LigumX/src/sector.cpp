@@ -36,6 +36,10 @@ bool Sector::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void Sector::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("DataLoaded", m_DataLoaded);
+}
 
 #pragma endregion  CLASS_SOURCE Sector
 

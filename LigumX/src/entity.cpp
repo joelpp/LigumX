@@ -30,6 +30,14 @@ bool Entity::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
+void Entity::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("Visible", m_Visible);
+	LXIMGUI_SHOW_FLOAT("RotationAngle", m_RotationAngle);
+	LXIMGUI_SHOW_BOOL("HasMoved", m_HasMoved);
+	LXIMGUI_SHOW_FLOAT("PickingID", m_PickingID);
+	LXIMGUI_SHOW_BOOL("IsLight", m_IsLight);
+}
 
 #pragma endregion  CLASS_SOURCE Entity
 

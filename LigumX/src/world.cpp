@@ -38,6 +38,9 @@ bool World::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
+void World::ShowPropertyGrid()
+{
+}
 
 #pragma endregion  CLASS_SOURCE World
 using namespace std;

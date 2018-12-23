@@ -27,8 +27,7 @@ class SectorGraphicalData;
 
 
 #pragma region  FORWARD_DECLARATIONS Renderer
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Renderer;
 class DisplayOptions;
@@ -116,6 +115,7 @@ PIDX_DebugCamera,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Renderer
 public:

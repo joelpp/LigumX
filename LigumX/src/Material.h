@@ -5,8 +5,7 @@
 #include "glm/glm.hpp"
 
 #pragma region  FORWARD_DECLARATIONS Material
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Material;
 class Texture;
@@ -132,6 +131,7 @@ PIDX_ProgramPipeline,
 PIDX_ShaderFamily,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Material
 

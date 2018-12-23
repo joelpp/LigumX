@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-#include "LXSystem.h"
 #include "Building.h"
 #include "Way.h"
 #include "Model.h"

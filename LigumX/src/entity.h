@@ -13,8 +13,7 @@
 #include "AABB.h"
 
 #pragma region  FORWARD_DECLARATIONS Entity
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Entity;
 class Model;
@@ -94,6 +93,7 @@ PIDX_Components,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Entity
 friend class PlayerController;

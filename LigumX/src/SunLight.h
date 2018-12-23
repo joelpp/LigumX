@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS SunLight
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class SunLight;
 class Texture;
@@ -52,10 +51,9 @@ PIDX_UseSkybox,
 PIDX_Skybox,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER SunLight
-
-void ShowPropertyGrid();
 
 glm::vec3 GetSunDirection();
 

@@ -3,8 +3,7 @@
 #include <string>
 
 #pragma region  FORWARD_DECLARATIONS OSMAttribute
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMAttribute;
 
@@ -36,6 +35,7 @@ PIDX_Key,
 PIDX_Value,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMAttribute
 

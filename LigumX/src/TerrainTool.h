@@ -8,8 +8,7 @@
 class Texture;
 
 #pragma region  FORWARD_DECLARATIONS TerrainTool
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class TerrainTool;
 class Sector;
@@ -78,6 +77,7 @@ PIDX_SplatMapIncrement,
 PIDX_ClickedSector,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER TerrainTool
 

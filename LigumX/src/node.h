@@ -5,8 +5,7 @@
 #include "OSMElement.h"
 
 #pragma region  FORWARD_DECLARATIONS Node
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Node;
 class Way;
@@ -60,6 +59,7 @@ PIDX_SectorIndex,
 PIDX_SectorOffset,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Node
 

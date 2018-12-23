@@ -6,8 +6,7 @@
 #include "glm\glm.hpp"
 
 #pragma region  FORWARD_DECLARATIONS OSMElementTypeData
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMElementTypeData;
 class OSMAttribute;
@@ -49,6 +48,7 @@ PIDX_DebugColor,
 PIDX_Attributes,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMElementTypeData
 

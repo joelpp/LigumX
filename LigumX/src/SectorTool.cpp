@@ -47,6 +47,18 @@ bool SectorTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void SectorTool::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_BOOL("AsyncSectorLoading", m_AsyncSectorLoading);
+	LXIMGUI_SHOW_FLOAT("NodeSize", m_NodeSize);
+	LXIMGUI_SHOW_INT("LoadingRingSize", m_LoadingRingSize);
+	LXIMGUI_SHOW_BOOL("ShowSectorAABBs", m_ShowSectorAABBs);
+	LXIMGUI_SHOW_BOOL("ShowGrid", m_ShowGrid);
+	LXIMGUI_SHOW_BOOL("HighlightSelectedSector", m_HighlightSelectedSector);
+	LXIMGUI_SHOW_BOOL("LoadSectorsOnClick", m_LoadSectorsOnClick);
+	LXIMGUI_SHOW_INT("SelectedWayIndex", m_SelectedWayIndex);
+}
 
 #pragma endregion  CLASS_SOURCE SectorTool
 

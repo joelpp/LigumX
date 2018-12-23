@@ -19,6 +19,9 @@ bool AABB::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void AABB::ShowPropertyGrid()
+{
+}
 
 #pragma endregion  CLASS_SOURCE AABB
 

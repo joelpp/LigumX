@@ -2,8 +2,7 @@
 #include <vector>
 
 #pragma region  FORWARD_DECLARATIONS SectorGraphicalData
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class SectorGraphicalData;
 class Model;
@@ -61,6 +60,7 @@ PIDX_SplatMapTexture,
 PIDX_AlbedoTexture,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER SectorGraphicalData
 

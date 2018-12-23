@@ -19,6 +19,11 @@ bool GUI::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void GUI::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("m_Enabled", m_m_Enabled);
+	LXIMGUI_SHOW_INT("NumActiveWindows", m_NumActiveWindows);
+}
 
 #pragma endregion  CLASS_SOURCE GUI
 

@@ -3,8 +3,7 @@
 #include "Component.h"
 
 #pragma region  FORWARD_DECLARATIONS OSMElementComponent
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMElementComponent;
 class Way;
@@ -33,6 +32,7 @@ enum g_OSMElementComponentPIDX
 PIDX_Way,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMElementComponent
 

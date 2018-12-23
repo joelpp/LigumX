@@ -3,8 +3,7 @@
 #include "GL.h"
 
 #pragma region  FORWARD_DECLARATIONS MainWindow
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class MainWindow;
 
@@ -45,6 +44,7 @@ PIDX_Title,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER MainWindow
 

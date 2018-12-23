@@ -1,9 +1,6 @@
 #pragma once
 
-#include <vector>
-#include "glm/glm.hpp"
-#include "Logging.h"
-#include "LXError.h"
+#include "LXSystem.h"
 
 class Model;
 class Way;

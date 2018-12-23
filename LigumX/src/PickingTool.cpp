@@ -40,6 +40,15 @@ bool PickingTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void PickingTool::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_FLOAT("AimingID", m_AimingID);
+	LXIMGUI_SHOW_FLOAT("PickedDepth", m_PickedDepth);
+	LXIMGUI_SHOW_FLOAT("PickedID", m_PickedID);
+	LXIMGUI_SHOW_BOOL("PickDebugModels", m_PickDebugModels);
+	LXIMGUI_SHOW_FLOAT("PickedHeight", m_PickedHeight);
+}
 
 #pragma endregion  CLASS_SOURCE PickingTool
 

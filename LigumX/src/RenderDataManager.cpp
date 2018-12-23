@@ -48,6 +48,9 @@ bool RenderDataManager::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void RenderDataManager::ShowPropertyGrid()
+{
+}
 
 #pragma endregion  CLASS_SOURCE RenderDataManager
 

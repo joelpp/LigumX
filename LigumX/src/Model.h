@@ -11,8 +11,7 @@
 #include "assimp/postprocess.h"
 
 #pragma region  FORWARD_DECLARATIONS Model
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Model;
 class Material;
@@ -52,6 +51,7 @@ PIDX_Materials,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Model
 

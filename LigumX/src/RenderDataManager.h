@@ -13,8 +13,7 @@
 #include "Renderer.h"
 
 #pragma region  FORWARD_DECLARATIONS RenderDataManager
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class RenderDataManager;
 class CullingOptions;
@@ -129,6 +128,7 @@ PIDX_CullingOptions,
 PIDX_RenderingStats,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER RenderDataManager
 

@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS OSMDataProcessorSettings
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class OSMDataProcessorSettings;
 
@@ -78,6 +77,7 @@ PIDX_CheckPointInRoad,
 PIDX_CheckPointInBuilding,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMDataProcessorSettings
 

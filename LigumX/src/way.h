@@ -1,13 +1,9 @@
 #pragma once
+
 #include "OSMElement.h"
-#include <vector>
-#include "glm/glm.hpp"
-#include <string>
-#include <iostream>
 
 #pragma region  FORWARD_DECLARATIONS Way
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Way;
 class Node;
@@ -63,6 +59,7 @@ PIDX_FilledIn,
 PIDX_AllTags,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Way
 

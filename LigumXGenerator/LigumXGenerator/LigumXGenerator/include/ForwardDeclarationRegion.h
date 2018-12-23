@@ -23,13 +23,12 @@ public:
 		std::vector<std::string> classesToDeclare;
 		classesToDeclare.push_back(m_Class.m_Name);
 
-		WriteLine("#include \"property.h\"");
-		WriteLine("#include \"LXObject.h\"");
+		WriteLine("#include \"LXSystem.h\"");
 
 		WriteLine("");
 
 		// todo : add autoincludes from this
-		for (Variable v : m_Class.m_Members)
+		for (const Variable& v : m_Class.m_Members)
 		{
 			bool isTemplate = v.m_IsTemplate;
 

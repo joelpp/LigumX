@@ -43,6 +43,15 @@ bool OSMTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void OSMTool::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_BOOL("SearchOnlyWithinSector", m_SearchOnlyWithinSector);
+	LXIMGUI_SHOW_BOOL("ShowNodes", m_ShowNodes);
+	LXIMGUI_SHOW_BOOL("ShowWays", m_ShowWays);
+	LXIMGUI_SHOW_BOOL("ShowFlatWays", m_ShowFlatWays);
+	LXIMGUI_SHOW_BOOL("DebugPointInRoad", m_DebugPointInRoad);
+}
 
 #pragma endregion  CLASS_SOURCE OSMTool
 

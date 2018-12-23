@@ -1,9 +1,9 @@
 #pragma once
+
 #include "Entity.h"
 
 #pragma region  FORWARD_DECLARATIONS Component
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class Component;
 class Entity;
@@ -32,6 +32,7 @@ enum g_ComponentPIDX
 PIDX_ParentEntity,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER Component
 

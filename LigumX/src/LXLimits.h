@@ -1,3 +1,5 @@
+#pragma once
+
 #define LX_LIMITS_INT_MIN INT_MIN
 #define LX_LIMITS_INT_MAX INT_MAX
 

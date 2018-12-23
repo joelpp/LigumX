@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS EditorOptions
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class EditorOptions;
 
@@ -106,6 +105,7 @@ PIDX_MouseScrollCameraSpeed,
 PIDX_MouseScrollEntityCloseupPercent,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER EditorOptions
 

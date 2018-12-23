@@ -16,5 +16,9 @@ bool DebugRenderer::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
+void DebugRenderer::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+}
 
 #pragma endregion  CLASS_SOURCE DebugRenderer

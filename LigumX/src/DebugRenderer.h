@@ -1,8 +1,7 @@
 #pragma once
 
 #pragma region  FORWARD_DECLARATIONS DebugRenderer
-#include "property.h"
-#include "LXObject.h"
+#include "LXSystem.h"
 
 class DebugRenderer;
 
@@ -31,6 +30,7 @@ enum g_DebugRendererPIDX
 PIDX_Enabled,
 };
 bool Serialize(bool writing);
+void ShowPropertyGrid();
 
 #pragma endregion  HEADER DebugRenderer
 

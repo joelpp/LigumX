@@ -25,6 +25,8 @@ if (flags & propertyflag) \
 } \
 
 
+
+
 class ClassSourceRegion : public CodeRegion
 {
 public:
@@ -212,6 +214,51 @@ public:
 		WriteLine("}");
 	}
 
+	void WriteShowImgui()
+	{
+		WriteLine("void " + m_Class.m_Name + "::ShowPropertyGrid()");
+		WriteLine("{");
+
+		int numProperties = m_Class.m_Members.size();
+
+		if (numProperties > 0)
+		{
+			for (int i = 0; i < numProperties; ++i)
+			{
+				Variable& var = m_Class.m_Members[i];
+				std::string&  varName = var.m_Name;
+				const std::string& varType = var.GetType();
+
+				auto findResult = g_LXTypeToImguiCallName.find(varType);
+
+				if (findResult != g_LXTypeToImguiCallName.end())
+				{
+					// found
+					std::string typeToWrite = findResult->second;
+					std::string var = "m_" + varName;
+					std::string extraArgs = "";
+
+					//if (var.m_MinValue != "0" || var.m_MaxValue != "0")
+					//{
+					//	// has limits
+					//	typeToWrite += "_Limits"
+					//}
+					//else
+					//{
+					//}
+					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\"," + var + extraArgs + ");");
+				}
+				else
+				{
+					// not found
+					continue;
+				}
+			}
+		}
+		WriteLine("}");
+	}
+
+
 	void WriteBody()
 	{
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
@@ -223,6 +270,7 @@ public:
 
 
 		WriteSerializer();
+		WriteShowImgui();
 	}
 
 	void WriteFooter()

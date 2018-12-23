@@ -28,6 +28,12 @@ bool Texture::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
+void Texture::ShowPropertyGrid()
+{
+	LXIMGUI_SHOW_BOOL("IsCubeMap", m_IsCubeMap);
+	LXIMGUI_SHOW_INT("NumChannels", m_NumChannels);
+	LXIMGUI_SHOW_INT("BitsPerPixel", m_BitsPerPixel);
+}
 
 #pragma endregion  CLASS_SOURCE Texture
 using namespace std;
