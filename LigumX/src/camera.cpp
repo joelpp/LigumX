@@ -18,10 +18,10 @@
 #include "ObjectManager.h"
 const ClassPropertyData Camera::g_Properties[] = 
 {
-{ "Position", PIDX_Position, offsetof(Camera, m_Position), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Adder, 0, 0, 0,}, 
-{ "FrontVector", PIDX_FrontVector, offsetof(Camera, m_FrontVector), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "RightVector", PIDX_RightVector, offsetof(Camera, m_RightVector), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "UpVector", PIDX_UpVector, offsetof(Camera, m_UpVector), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "Position", PIDX_Position, offsetof(Camera, m_Position), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "FrontVector", PIDX_FrontVector, offsetof(Camera, m_FrontVector), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "RightVector", PIDX_RightVector, offsetof(Camera, m_RightVector), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "UpVector", PIDX_UpVector, offsetof(Camera, m_UpVector), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "ViewMatrix", PIDX_ViewMatrix, offsetof(Camera, m_ViewMatrix), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ViewMatrixNoTranslation", PIDX_ViewMatrixNoTranslation, offsetof(Camera, m_ViewMatrixNoTranslation), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ProjectionMatrix", PIDX_ProjectionMatrix, offsetof(Camera, m_ProjectionMatrix), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
@@ -45,10 +45,10 @@ bool Camera::Serialize(bool writing)
 }
 bool Camera::ShowPropertyGrid()
 {
-	LXIMGUI_SHOW_VEC3("Position", m_Position, 0, 0);
-	LXIMGUI_SHOW_VEC3("FrontVector", m_FrontVector, 0, 0);
-	LXIMGUI_SHOW_VEC3("RightVector", m_RightVector, 0, 0);
-	LXIMGUI_SHOW_VEC3("UpVector", m_UpVector, 0, 0);
+	LXIMGUI_SHOW_VEC3("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("FrontVector", m_FrontVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("RightVector", m_RightVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("UpVector", m_UpVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("NearPlane", m_NearPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("FarPlane", m_FarPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_INT("ProjectionType", m_ProjectionType, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);

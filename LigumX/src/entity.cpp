@@ -15,10 +15,10 @@ const ClassPropertyData Entity::g_Properties[] =
 {
 { "Visible", PIDX_Visible, offsetof(Entity, m_Visible), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "ModelToWorldMatrix", PIDX_ModelToWorldMatrix, offsetof(Entity, m_ModelToWorldMatrix), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, false, PropertyFlags_Hidden, 0, 0, 0,}, 
-{ "Position", PIDX_Position, offsetof(Entity, m_Position), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Adder, 0, 0, WriteSetFunction(Entity, Position, glm::vec3),}, 
+{ "Position", PIDX_Position, offsetof(Entity, m_Position), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Entity, Position, glm::vec3),}, 
 { "RotationAngle", PIDX_RotationAngle, offsetof(Entity, m_RotationAngle), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Entity, RotationAngle, float),}, 
-{ "RotationAxis", PIDX_RotationAxis, offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, RotationAxis, glm::vec3),}, 
-{ "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, Scale, glm::vec3),}, 
+{ "RotationAxis", PIDX_RotationAxis, offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Entity, RotationAxis, glm::vec3),}, 
+{ "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Entity, Scale, glm::vec3),}, 
 { "HasMoved", PIDX_HasMoved, offsetof(Entity, m_HasMoved), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, HasMoved, bool),}, 
 { "PickingID", PIDX_PickingID, offsetof(Entity, m_PickingID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, Model, Model*),}, 
@@ -34,10 +34,10 @@ bool Entity::Serialize(bool writing)
 bool Entity::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Visible", m_Visible);
-	LXIMGUI_SHOW_VEC3("Position", m_Position, 0, 0);
+	LXIMGUI_SHOW_VEC3("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("RotationAngle", m_RotationAngle, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("RotationAxis", m_RotationAxis, 0, 0);
-	LXIMGUI_SHOW_VEC3("Scale", m_Scale, 0, 0);
+	LXIMGUI_SHOW_VEC3("RotationAxis", m_RotationAxis, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("Scale", m_Scale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("HasMoved", m_HasMoved);
 	LXIMGUI_SHOW_FLOAT("PickingID", m_PickingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_OBJECTREF("Model", m_Model, Model);

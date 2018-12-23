@@ -30,10 +30,10 @@
 const ClassPropertyData SectorTool::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "HighlightedSectorUV", PIDX_HighlightedSectorUV, offsetof(SectorTool, m_HighlightedSectorUV), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "HighlightedSectorUV", PIDX_HighlightedSectorUV, offsetof(SectorTool, m_HighlightedSectorUV), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, 0, 0, 0, 0,}, 
-{ "SectorGridColor", PIDX_SectorGridColor, offsetof(SectorTool, m_SectorGridColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "SectorGridColor", PIDX_SectorGridColor, offsetof(SectorTool, m_SectorGridColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "AsyncSectorLoading", PIDX_AsyncSectorLoading, offsetof(SectorTool, m_AsyncSectorLoading), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "NodeSize", PIDX_NodeSize, offsetof(SectorTool, m_NodeSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "LoadingRingSize", PIDX_LoadingRingSize, offsetof(SectorTool, m_LoadingRingSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
@@ -51,10 +51,10 @@ bool SectorTool::Serialize(bool writing)
 bool SectorTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_VEC3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates, 0, 0);
-	LXIMGUI_SHOW_VEC2("HighlightedSectorUV", m_HighlightedSectorUV, 0, 0);
+	LXIMGUI_SHOW_VEC3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("HighlightedSectorUV", m_HighlightedSectorUV, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_OBJECTREF("HighlightedSector", m_HighlightedSector, Sector);
-	LXIMGUI_SHOW_VEC3("SectorGridColor", m_SectorGridColor, 0, 0);
+	LXIMGUI_SHOW_VEC3("SectorGridColor", m_SectorGridColor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("AsyncSectorLoading", m_AsyncSectorLoading);
 	LXIMGUI_SHOW_FLOAT("NodeSize", m_NodeSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_INT("LoadingRingSize", m_LoadingRingSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);

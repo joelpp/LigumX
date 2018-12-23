@@ -9,16 +9,17 @@
 #define LXIMGUI_SHOW_BOOL(name, value) ImguiHelpers::ShowBool(name, value)
 #define LXIMGUI_SHOW_INT(name, value, min, max) ImguiHelpers::ShowInt(name, value, min, max)
 #define LXIMGUI_SHOW_FLOAT(name, value, min, max) ImguiHelpers::ShowFloat(name, value, min, max)
-#define LXIMGUI_SHOW_VEC2(name, value, min, max)
-#define LXIMGUI_SHOW_VEC3(name, value, min, max)
-#define LXIMGUI_SHOW_VEC4(name, value, min, max)
-#define LXIMGUI_SHOW_STRING(name, value)
+#define LXIMGUI_SHOW_VEC2(name, value, min, max) ImguiHelpers::ShowVec2(name, value, min, max)
+#define LXIMGUI_SHOW_VEC3(name, value, min, max) ImguiHelpers::ShowVec3(name, value, min, max)
+#define LXIMGUI_SHOW_VEC4(name, value, min, max) ImguiHelpers::ShowVec4(name, value, min, max)
+#define LXIMGUI_SHOW_STRING(name, value) ImguiHelpers::ShowString(name, value)
 
-#define LXIMGUI_SHOW_OBJECTREF(name, value, type) ImguiHelpers::ShowObjectPtr(name, value);
+#define LXIMGUI_SHOW_OBJECTREF(name, value, type) ImguiHelpers::ShowObjectPtr(name, value, #type);
 
 class ImguiIDScope
 {
 public: 
+
 	ImguiIDScope(const char* name)
 	{
 		ImGui::PushID(name);
@@ -30,6 +31,28 @@ public:
 	}
 
 
+};
+
+class ImguiTreeNodeScope
+{
+public:
+	ImguiTreeNodeScope(const char* name)
+		: m_IDScope(name)
+		, m_Opened(ImGui::TreeNode(name))
+	{
+		
+	}
+
+	~ImguiTreeNodeScope()
+	{
+		if (m_Opened)
+		{
+			ImGui::TreePop();
+		}
+	}
+
+	bool m_Opened;
+	ImguiIDScope m_IDScope;
 };
 
 namespace ImguiHelpers
@@ -52,20 +75,26 @@ namespace ImguiHelpers
 	bool ShowVec4(const char* name, glm::vec4& value, float min, float max);
 	bool ShowVec4(LXString& name, glm::vec4& value, float min, float max);
 
+	bool ShowString(const char* name, LXString& value);
+	bool ShowString(LXString& name, LXString& value);
+
 	bool BeginPropertyTree(const char* name);
 
 	void EndPropertyTree();
 
 	template <typename T>
-	bool ShowObjectPtr(const char* name, T* value)
+	bool ShowObjectPtr(const char* name, T* value, const char* type)
 	{
-		ImguiIDScope idScope(name);
+		char treeNodeName[256];
+		sprintf(treeNodeName, "%s (%s)", name, type);
 
-		bool success = false;
-		if (success = BeginPropertyTree(name))
+		ImguiTreeNodeScope scope(treeNodeName);
+
+		bool success = scope.m_Opened;
+		
+		if (success)
 		{
 			success = value->ShowPropertyGrid();
-			EndPropertyTree();
 		}
 
 		return success;

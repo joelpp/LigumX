@@ -24,8 +24,8 @@
 #include "Entity.h"
 const ClassPropertyData Sector::g_Properties[] = 
 {
-{ "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DataLoaded", PIDX_DataLoaded, offsetof(Sector, m_DataLoaded), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -40,8 +40,8 @@ bool Sector::Serialize(bool writing)
 }
 bool Sector::ShowPropertyGrid()
 {
-	LXIMGUI_SHOW_VEC2("WorldPosition", m_WorldPosition, 0, 0);
-	LXIMGUI_SHOW_VEC2("EarthPosition", m_EarthPosition, 0, 0);
+	LXIMGUI_SHOW_VEC2("WorldPosition", m_WorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("EarthPosition", m_EarthPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("DataLoaded", m_DataLoaded);
 	LXIMGUI_SHOW_OBJECTREF("Heightfield", m_Heightfield, Heightfield);
 	LXIMGUI_SHOW_OBJECTREF("TerrainPatchEntity", m_TerrainPatchEntity, Entity);

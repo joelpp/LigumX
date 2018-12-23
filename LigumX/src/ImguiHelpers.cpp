@@ -64,6 +64,18 @@ bool ImguiHelpers::ShowVec4(LXString& name, glm::vec4& value, float min, float m
 }
 
 
+bool ImguiHelpers::ShowString(const char* name, LXString& value)
+{
+	ImGui::Text("%s : %s", name, value.c_str());
+	return true;
+}
+
+bool ImguiHelpers::ShowString(LXString& name, LXString& value)
+{
+	return ImguiHelpers::ShowString(name.c_str(), value);
+}
+
+
 bool ImguiHelpers::BeginPropertyTree(const char* name)
 {
 	// one could have see having an enum to control how the property grid will be rendered

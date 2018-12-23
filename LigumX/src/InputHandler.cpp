@@ -13,15 +13,15 @@ const ClassPropertyData InputHandler::g_Properties[] =
 { "Mouse2Pressed", PIDX_Mouse2Pressed, offsetof(InputHandler, m_Mouse2Pressed), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "CtrlHeld", PIDX_CtrlHeld, offsetof(InputHandler, m_CtrlHeld), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Dragging", PIDX_Dragging, offsetof(InputHandler, m_Dragging), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "DragDistance", PIDX_DragDistance, offsetof(InputHandler, m_DragDistance), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "LastDragDistance", PIDX_LastDragDistance, offsetof(InputHandler, m_LastDragDistance), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "DragAccumulator", PIDX_DragAccumulator, offsetof(InputHandler, m_DragAccumulator), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_Adder, 0, 0, 0,}, 
-{ "MouseClickPosition", PIDX_MouseClickPosition, offsetof(InputHandler, m_MouseClickPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(InputHandler, MouseClickPosition, glm::vec2),}, 
-{ "LastMouseClickPosition", PIDX_LastMouseClickPosition, offsetof(InputHandler, m_LastMouseClickPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "MouseReleasePosition", PIDX_MouseReleasePosition, offsetof(InputHandler, m_MouseReleasePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "MousePosition", PIDX_MousePosition, offsetof(InputHandler, m_MousePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(InputHandler, MousePosition, glm::vec2),}, 
-{ "LastMousePosition", PIDX_LastMousePosition, offsetof(InputHandler, m_LastMousePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "MouseScroll", PIDX_MouseScroll, offsetof(InputHandler, m_MouseScroll), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_Adder, 0, 0, 0,}, 
+{ "DragDistance", PIDX_DragDistance, offsetof(InputHandler, m_DragDistance), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "LastDragDistance", PIDX_LastDragDistance, offsetof(InputHandler, m_LastDragDistance), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "DragAccumulator", PIDX_DragAccumulator, offsetof(InputHandler, m_DragAccumulator), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "MouseClickPosition", PIDX_MouseClickPosition, offsetof(InputHandler, m_MouseClickPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(InputHandler, MouseClickPosition, glm::vec2),}, 
+{ "LastMouseClickPosition", PIDX_LastMouseClickPosition, offsetof(InputHandler, m_LastMouseClickPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "MouseReleasePosition", PIDX_MouseReleasePosition, offsetof(InputHandler, m_MouseReleasePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "MousePosition", PIDX_MousePosition, offsetof(InputHandler, m_MousePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(InputHandler, MousePosition, glm::vec2),}, 
+{ "LastMousePosition", PIDX_LastMousePosition, offsetof(InputHandler, m_LastMousePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "MouseScroll", PIDX_MouseScroll, offsetof(InputHandler, m_MouseScroll), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 bool InputHandler::Serialize(bool writing)
 {
@@ -34,15 +34,15 @@ bool InputHandler::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("Mouse2Pressed", m_Mouse2Pressed);
 	LXIMGUI_SHOW_BOOL("CtrlHeld", m_CtrlHeld);
 	LXIMGUI_SHOW_BOOL("Dragging", m_Dragging);
-	LXIMGUI_SHOW_VEC2("DragDistance", m_DragDistance, 0, 0);
-	LXIMGUI_SHOW_VEC2("LastDragDistance", m_LastDragDistance, 0, 0);
-	LXIMGUI_SHOW_VEC2("DragAccumulator", m_DragAccumulator, 0, 0);
-	LXIMGUI_SHOW_VEC2("MouseClickPosition", m_MouseClickPosition, 0, 0);
-	LXIMGUI_SHOW_VEC2("LastMouseClickPosition", m_LastMouseClickPosition, 0, 0);
-	LXIMGUI_SHOW_VEC2("MouseReleasePosition", m_MouseReleasePosition, 0, 0);
-	LXIMGUI_SHOW_VEC2("MousePosition", m_MousePosition, 0, 0);
-	LXIMGUI_SHOW_VEC2("LastMousePosition", m_LastMousePosition, 0, 0);
-	LXIMGUI_SHOW_VEC2("MouseScroll", m_MouseScroll, 0, 0);
+	LXIMGUI_SHOW_VEC2("DragDistance", m_DragDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("LastDragDistance", m_LastDragDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("DragAccumulator", m_DragAccumulator, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("MouseClickPosition", m_MouseClickPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("LastMouseClickPosition", m_LastMouseClickPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("MouseReleasePosition", m_MouseReleasePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("MousePosition", m_MousePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("LastMousePosition", m_LastMousePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("MouseScroll", m_MouseScroll, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
 

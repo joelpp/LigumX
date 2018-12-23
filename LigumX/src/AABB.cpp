@@ -11,8 +11,8 @@
 #include "ObjectManager.h"
 const ClassPropertyData AABB::g_Properties[] = 
 {
-{ "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 bool AABB::Serialize(bool writing)
 {
@@ -21,8 +21,8 @@ bool AABB::Serialize(bool writing)
 }
 bool AABB::ShowPropertyGrid()
 {
-	LXIMGUI_SHOW_VEC3("StartPoint", m_StartPoint, 0, 0);
-	LXIMGUI_SHOW_VEC3("Scale", m_Scale, 0, 0);
+	LXIMGUI_SHOW_VEC3("StartPoint", m_StartPoint, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("Scale", m_Scale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;
 }
 

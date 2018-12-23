@@ -55,9 +55,9 @@ const ClassPropertyData Editor::g_Properties[] =
 {
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_ObjectPtr, sizeof(EditorOptions*), LXType_EditorOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "ActiveTool", PIDX_ActiveTool, offsetof(Editor, m_ActiveTool), 0, LXType_Object, sizeof(EEditorTool), LXType_EEditorTool, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
-{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, sizeof(glm::vec4), LXType_glmvec4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_SetCallback | PropertyFlags_Transient | PropertyFlags_Adder, 0, 0, WriteSetFunction(Editor, XYZMask, glm::vec4),}, 
+{ "XYZMask", PIDX_XYZMask, offsetof(Editor, m_XYZMask), 0, LXType_glmvec4, sizeof(glm::vec4), LXType_glmvec4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_SetCallback | PropertyFlags_Transient | PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Editor, XYZMask, glm::vec4),}, 
 { "ManipulatorDragging", PIDX_ManipulatorDragging, offsetof(Editor, m_ManipulatorDragging), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, sizeof(std::vector<EditorTool*>), LXType_stdvector, false, LXType_EditorTool, true, PropertyFlags_Transient, 0, 0, 0,}, 
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
@@ -71,9 +71,9 @@ bool Editor::Serialize(bool writing)
 bool Editor::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_OBJECTREF("Options", m_Options, EditorOptions);
-	LXIMGUI_SHOW_VEC3("XYZMask", m_XYZMask, 0, 0);
+	LXIMGUI_SHOW_VEC4("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);
-	LXIMGUI_SHOW_VEC3("ManipulatorStartPosition", m_ManipulatorStartPosition, 0, 0);
+	LXIMGUI_SHOW_VEC3("ManipulatorStartPosition", m_ManipulatorStartPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("EditingTerrain", m_EditingTerrain);
 	LXIMGUI_SHOW_INT("PickingBufferSize", m_PickingBufferSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode, Node);
