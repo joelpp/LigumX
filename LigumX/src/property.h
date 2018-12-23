@@ -30,6 +30,7 @@ enum LXType
 	LXType_GUI,
 	LXType_Heightfield,
 	LXType_InputHandler,
+	LXType_LXObject,
 	LXType_MainWindow,
 	LXType_Material,
 	LXType_Mesh,

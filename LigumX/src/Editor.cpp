@@ -11,6 +11,7 @@
 
 #include "GL.h"
 #include "Renderer.h"
+#include "DisplayOptions.h"
 #include "Framebuffer.h"
 #include "RenderDataManager.h"
 #include "CullingOptions.h"

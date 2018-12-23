@@ -6,7 +6,6 @@
 
 #include "property.h"
 #include "ObjectManager.h"
-#include "DisplayOptions.h"
 #include "Logging.h"
 
 

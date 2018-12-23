@@ -186,6 +186,7 @@
     <ClCompile Include="src\InputHandler.cpp" />
     <ClCompile Include="src\LigumX.cpp" />
     <ClCompile Include="src\linesegment.cpp" />
+    <ClCompile Include="src\LXObject.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\MathUtils.cpp" />
@@ -375,6 +376,7 @@
     <None Include="src\GUI.gen" />
     <None Include="src\Heightfield.gen" />
     <None Include="src\InputHandler.gen" />
+    <None Include="src\LXObject.gen" />
     <None Include="src\MainWindow.gen" />
     <None Include="src\Material.gen" />
     <None Include="src\Mesh.gen" />

@@ -1,10 +1,5 @@
 #pragma once
 
-#include <vector>
-#include "glm/glm.hpp"
-#include "GL.h"
-#include "Logging.h"
-#include <iostream>
 
 #pragma region  FORWARD_DECLARATIONS Mesh
 #include "LXSystem.h"
@@ -13,9 +8,9 @@ class Mesh;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Mesh
-class Texture;
-class Material;
-class Vertex;
+
+#include "GL.h"
+
 
 enum EBufferType
 {

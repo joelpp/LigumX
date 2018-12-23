@@ -1,15 +1,40 @@
 #pragma once
 
+#pragma region  FORWARD_DECLARATIONS LXObject
 #include "LXSystem.h"
 
+class LXObject;
+
+
+#pragma endregion  FORWARD_DECLARATIONS LXObject
+
+#pragma region  HEADER LXObject
 class LXObject
 {
 public:
-	int GetObjectID() { return m_ObjectID; };
-	void SetObjectID(int objectID) { m_ObjectID = objectID; };
-	const LXString& GetName() { return m_Name; }
-	void SetName(const LXString& name) { m_Name = name; }
+static const int ClassID = 147228134;
+static const LXType Type = LXType_LXObject;
+static constexpr const char* ClassName = "LXObject";
+
+int GetObjectID() { return m_ObjectID; }; 
+void SetObjectID(int value) { m_ObjectID = value; }; 
+const std::string& GetName() { return m_Name; }; 
+void SetName(std::string value) { m_Name = value; }; 
 private:
-	int m_ObjectID;
-	LXString m_Name;
+int m_ObjectID = 0;
+std::string m_Name;
+public:
+static const int g_PropertyCount = 2;
+static const ClassPropertyData g_Properties[g_PropertyCount];
+
+enum g_LXObjectPIDX
+{
+PIDX_ObjectID,
+PIDX_Name,
+};
+bool Serialize(bool writing);
+bool ShowPropertyGrid();
+
+#pragma endregion  HEADER LXObject
+
 };

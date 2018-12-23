@@ -56,15 +56,18 @@ public:
 
 		if (m_Class.m_ParentName.empty())
 		{
-			Write(" : public LXObject\n");
+			if (!(m_Class.IsLXObject()))
+			{
+				Write(" : public LXObject");
+			}
 		}
 		else
 		{
 			Write(" : public ");
 			Write(m_Class.m_ParentName);
-			Write("\n");
 
 		}
+		Write("\n");
 		WriteLine("{");
 		WriteLine("public:");
 		m_Stream << "static const int ClassID = " << std::hash_value(m_Class.m_Name) << ";" << std::endl;

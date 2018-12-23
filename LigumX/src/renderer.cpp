@@ -20,7 +20,6 @@
 #include "LXError.h"
 #include "EngineStats.h"
 #include "EngineSettings.h"
-#include "DisplayOptions.h"
 
 #include "PostEffects.h"
 

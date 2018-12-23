@@ -1,0 +1,6 @@
+	class LXObject
+	{
+		int ObjectID;
+		std::string Name;
+	}
+	

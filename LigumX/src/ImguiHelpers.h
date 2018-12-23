@@ -110,6 +110,7 @@ namespace ImguiHelpers
 			return success;
 		}
 
+		return true;
 	}
 
 }

@@ -185,6 +185,11 @@ struct LXClass
 	VariableList m_Members;
 	EnumList m_Enums;
 	bool m_IsValid = false;
+
+	bool IsLXObject() 
+	{
+		return m_Name == "LXObject";
+	}
 };
 
 typedef std::vector<LXClass> ClassList;
