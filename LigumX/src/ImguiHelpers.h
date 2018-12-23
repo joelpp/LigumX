@@ -78,6 +78,9 @@ namespace ImguiHelpers
 	bool ShowString(const char* name, LXString& value);
 	bool ShowString(LXString& name, LXString& value);
 
+	bool ShowRawString(const char* str);
+	bool ShowRawString(LXString& str);
+
 	bool BeginPropertyTree(const char* name);
 
 	void EndPropertyTree();
@@ -85,19 +88,28 @@ namespace ImguiHelpers
 	template <typename T>
 	bool ShowObjectPtr(const char* name, T* value, const char* type)
 	{
+		bool isNull = (value == nullptr);
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (%s)", name, type);
+		sprintf(treeNodeName, "%s (%s)%s", name, type, (isNull ? " (nullptr)" : ""));
 
-		ImguiTreeNodeScope scope(treeNodeName);
-
-		bool success = scope.m_Opened;
-		
-		if (success)
+		if (value == nullptr)
 		{
-			success = value->ShowPropertyGrid();
+			ShowRawString(treeNodeName);
+		}
+		else
+		{
+			ImguiTreeNodeScope scope(treeNodeName);
+
+			bool success = scope.m_Opened;
+
+			if (success)
+			{
+				success = value->ShowPropertyGrid();
+			}
+
+			return success;
 		}
 
-		return success;
 	}
 
 }

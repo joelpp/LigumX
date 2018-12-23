@@ -75,6 +75,19 @@ bool ImguiHelpers::ShowString(LXString& name, LXString& value)
 	return ImguiHelpers::ShowString(name.c_str(), value);
 }
 
+bool ImguiHelpers::ShowRawString(const char* str)
+{
+	ImGui::Text("%s", str);
+	return true;
+}
+
+bool ImguiHelpers::ShowRawString(LXString& str)
+{
+	return ShowRawString(str.c_str());
+}
+
+
+
 
 bool ImguiHelpers::BeginPropertyTree(const char* name)
 {
