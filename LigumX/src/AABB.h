@@ -33,7 +33,7 @@ PIDX_StartPoint,
 PIDX_Scale,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER AABB
 

@@ -49,6 +49,8 @@ Editor* g_Editor;
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "EditorOptions.h"
+#include "Node.h"
 const ClassPropertyData Editor::g_Properties[] = 
 {
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_ObjectPtr, sizeof(EditorOptions*), LXType_EditorOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -66,11 +68,16 @@ bool Editor::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Editor::ShowPropertyGrid()
+bool Editor::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_OBJECTREF("Options", m_Options, EditorOptions);
+	LXIMGUI_SHOW_VEC3("XYZMask", m_XYZMask, 0, 0);
 	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);
+	LXIMGUI_SHOW_VEC3("ManipulatorStartPosition", m_ManipulatorStartPosition, 0, 0);
 	LXIMGUI_SHOW_BOOL("EditingTerrain", m_EditingTerrain);
 	LXIMGUI_SHOW_INT("PickingBufferSize", m_PickingBufferSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode, Node);
+	return true;
 }
 const std::string EnumValues_EEditorTool[] = 
 {
@@ -1313,16 +1320,16 @@ void Editor::RenderImgui()
 		ImGui::PushID("WorldWindow");
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Main Editor Window");
 
-		ShowPropertyGridTemplate(g_InputHandler, "Input Handler");
-		ShowPropertyGridTemplate(renderer->GetPostEffects(), "Post Effects");
-		ShowPropertyGridTemplate(renderer->GetDebugCamera(), "Camera");
+		ShowPropertyGridForObject(g_InputHandler, "Input Handler");
+		ShowPropertyGridForObject(renderer->GetPostEffects(), "Post Effects");
+		ShowPropertyGridForObject(renderer->GetDebugCamera(), "Camera");
 		ShowPropertyGridForObject(world->GetSunLight(), "SunLight");
-		ShowPropertyGridTemplate(world, "World");
-		ShowPropertyGridTemplate(g_RenderDataManager, "RenderDataManager");
-		ShowPropertyGridTemplate(g_OSMDataProcessor, "OSMDataProcessor");
+		ShowPropertyGridForObject(world, "World");
+		ShowPropertyGridForObject(g_RenderDataManager, "RenderDataManager");
+		ShowPropertyGridForObject(g_OSMDataProcessor, "OSMDataProcessor");
 
 		Editor* editor = this;
-		ShowPropertyGridTemplate(editor, "Editor");
+		ShowPropertyGridForObject(editor, "Editor");
 
 		
 		g_GUI->EndWindow();

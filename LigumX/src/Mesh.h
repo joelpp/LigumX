@@ -118,7 +118,7 @@ PIDX_WireframeRendering,
 PIDX_PointRendering,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Mesh
 

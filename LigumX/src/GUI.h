@@ -37,7 +37,7 @@ PIDX_m_Enabled,
 PIDX_NumActiveWindows,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER GUI
 

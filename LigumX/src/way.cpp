@@ -24,11 +24,13 @@ bool Way::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Way::ShowPropertyGrid()
+bool Way::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_INT("OSMId", m_OSMId, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("IndexInSector", m_IndexInSector, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("FilledIn", m_FilledIn);
+	LXIMGUI_SHOW_STRING("AllTags", m_AllTags);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Way

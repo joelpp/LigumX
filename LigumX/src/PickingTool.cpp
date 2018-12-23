@@ -20,6 +20,8 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Entity.h"
+#include "Sector.h"
 const ClassPropertyData PickingTool::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(PickingTool, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -40,14 +42,21 @@ bool PickingTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void PickingTool::ShowPropertyGrid()
+bool PickingTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_OBJECTREF("PickedEntity", m_PickedEntity, Entity);
+	LXIMGUI_SHOW_VEC2("AimingWindowPosition", m_AimingWindowPosition, 0, 0);
+	LXIMGUI_SHOW_VEC3("AimingWorldPosition", m_AimingWorldPosition, 0, 0);
 	LXIMGUI_SHOW_FLOAT("AimingID", m_AimingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("PickedWorldPosition", m_PickedWorldPosition, 0, 0);
+	LXIMGUI_SHOW_VEC3("PickingData", m_PickingData, 0, 0);
 	LXIMGUI_SHOW_FLOAT("PickedDepth", m_PickedDepth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("PickedID", m_PickedID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("PickDebugModels", m_PickDebugModels);
 	LXIMGUI_SHOW_FLOAT("PickedHeight", m_PickedHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_OBJECTREF("PickedSector", m_PickedSector, Sector);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE PickingTool

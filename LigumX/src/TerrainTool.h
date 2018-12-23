@@ -77,7 +77,7 @@ PIDX_SplatMapIncrement,
 PIDX_ClickedSector,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER TerrainTool
 

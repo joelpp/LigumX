@@ -28,7 +28,7 @@ bool OSMDataProcessorSettings::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void OSMDataProcessorSettings::ShowPropertyGrid()
+bool OSMDataProcessorSettings::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_FLOAT("MinFacadeLength", m_MinFacadeLength, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("MaxFacadeLength", m_MaxFacadeLength, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
@@ -43,6 +43,7 @@ void OSMDataProcessorSettings::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("ProcessAddressInterpolation", m_ProcessAddressInterpolation);
 	LXIMGUI_SHOW_BOOL("CheckPointInRoad", m_CheckPointInRoad);
 	LXIMGUI_SHOW_BOOL("CheckPointInBuilding", m_CheckPointInBuilding);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessorSettings

@@ -32,7 +32,7 @@ enum g_OSMElementComponentPIDX
 PIDX_Way,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMElementComponent
 

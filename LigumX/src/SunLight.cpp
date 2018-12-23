@@ -11,6 +11,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Texture.h"
 const ClassPropertyData SunLight::g_Properties[] = 
 {
 { "UseShadowMap", PIDX_UseShadowMap, offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -25,13 +26,15 @@ bool SunLight::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void SunLight::ShowPropertyGrid()
+bool SunLight::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("UseShadowMap", m_UseShadowMap);
 	LXIMGUI_SHOW_FLOAT("Time", m_Time, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("Speed", m_Speed, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("UseSkybox", m_UseSkybox);
+	LXIMGUI_SHOW_OBJECTREF("Skybox", m_Skybox, Texture);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE SunLight

@@ -19,8 +19,9 @@ bool OSMElementTypeDataStore::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void OSMElementTypeDataStore::ShowPropertyGrid()
+bool OSMElementTypeDataStore::ShowPropertyGrid()
 {
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE OSMElementTypeDataStore

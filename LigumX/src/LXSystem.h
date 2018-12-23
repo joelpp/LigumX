@@ -16,11 +16,14 @@
 #include <iostream>
 #include <fstream>
 #include <cstddef>
+#include <unordered_map>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "glfw\glfw3.h"
+
+#include "tinyxml2\tinyxml2.h"
 
 /*
 	GLOBAL INTERNAL INCLUDES

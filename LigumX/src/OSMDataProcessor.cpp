@@ -46,6 +46,7 @@ OSMDataProcessor* g_OSMDataProcessor;
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "OSMDataProcessorSettings.h"
 const ClassPropertyData OSMDataProcessor::g_Properties[] = 
 {
 { "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
@@ -56,9 +57,11 @@ bool OSMDataProcessor::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void OSMDataProcessor::ShowPropertyGrid()
+bool OSMDataProcessor::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_FLOAT("RoadWidth", m_RoadWidth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_OBJECTREF("Settings", m_Settings, OSMDataProcessorSettings);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor

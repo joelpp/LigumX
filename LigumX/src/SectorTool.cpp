@@ -26,6 +26,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Sector.h"
 const ClassPropertyData SectorTool::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -47,9 +48,13 @@ bool SectorTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void SectorTool::ShowPropertyGrid()
+bool SectorTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_VEC3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates, 0, 0);
+	LXIMGUI_SHOW_VEC2("HighlightedSectorUV", m_HighlightedSectorUV, 0, 0);
+	LXIMGUI_SHOW_OBJECTREF("HighlightedSector", m_HighlightedSector, Sector);
+	LXIMGUI_SHOW_VEC3("SectorGridColor", m_SectorGridColor, 0, 0);
 	LXIMGUI_SHOW_BOOL("AsyncSectorLoading", m_AsyncSectorLoading);
 	LXIMGUI_SHOW_FLOAT("NodeSize", m_NodeSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_INT("LoadingRingSize", m_LoadingRingSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
@@ -58,6 +63,7 @@ void SectorTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("HighlightSelectedSector", m_HighlightSelectedSector);
 	LXIMGUI_SHOW_BOOL("LoadSectorsOnClick", m_LoadSectorsOnClick);
 	LXIMGUI_SHOW_INT("SelectedWayIndex", m_SelectedWayIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE SectorTool

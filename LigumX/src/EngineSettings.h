@@ -79,7 +79,7 @@ PIDX_LoadOSMData,
 PIDX_TerrainTiling,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER EngineSettings
 

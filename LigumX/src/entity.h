@@ -93,7 +93,7 @@ PIDX_Components,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Entity
 friend class PlayerController;

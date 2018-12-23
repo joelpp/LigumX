@@ -59,7 +59,7 @@ PIDX_SectorIndex,
 PIDX_SectorOffset,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Node
 

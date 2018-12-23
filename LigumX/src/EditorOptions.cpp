@@ -34,7 +34,7 @@ bool EditorOptions::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void EditorOptions::ShowPropertyGrid()
+bool EditorOptions::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_BOOL("ShowWorldWindow", m_ShowWorldWindow);
@@ -56,6 +56,7 @@ void EditorOptions::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("DisplayAxisGizmo", m_DisplayAxisGizmo);
 	LXIMGUI_SHOW_FLOAT("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE EditorOptions

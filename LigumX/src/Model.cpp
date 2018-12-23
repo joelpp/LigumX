@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "Material.h"
-#include "program_pipeline.h"
+#include "ProgramPipeline.h"
 #include "DefaultObjects.h"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -26,8 +26,10 @@ bool Model::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
-void Model::ShowPropertyGrid()
+bool Model::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_STRING("Filename", m_Filename);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Model

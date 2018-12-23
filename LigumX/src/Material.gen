@@ -51,8 +51,5 @@ class Material
 
 	Texture* HeightfieldTexture;
 
-	[transient]
-	ProgramPipeline* ProgramPipeline;
-
 	ShaderFamily ShaderFamily;
 }

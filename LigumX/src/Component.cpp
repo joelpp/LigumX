@@ -6,6 +6,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Entity.h"
 const ClassPropertyData Component::g_Properties[] = 
 {
 { "ParentEntity", PIDX_ParentEntity, offsetof(Component, m_ParentEntity), 0, LXType_ObjectPtr, sizeof(Entity*), LXType_Entity, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
@@ -15,8 +16,10 @@ bool Component::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Component::ShowPropertyGrid()
+bool Component::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_OBJECTREF("ParentEntity", m_ParentEntity, Entity);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Component

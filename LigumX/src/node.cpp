@@ -22,9 +22,13 @@ bool Node::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Node::ShowPropertyGrid()
+bool Node::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_VEC2("LongLat", m_LongLat, 0, 0);
+	LXIMGUI_SHOW_VEC3("WorldPosition", m_WorldPosition, 0, 0);
 	LXIMGUI_SHOW_FLOAT("Elevation", m_Elevation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("SectorOffset", m_SectorOffset, 0, 0);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Node

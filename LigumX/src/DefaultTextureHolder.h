@@ -55,7 +55,7 @@ PIDX_SandTexture,
 PIDX_WaterTexture,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER DefaultTextureHolder
 

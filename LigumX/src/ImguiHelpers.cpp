@@ -30,3 +30,48 @@ bool ImguiHelpers::ShowFloat(LXString& name, float& value, float min, float max)
 {
 	return ImguiHelpers::ShowFloat(name.c_str(), value, min, max);
 }
+
+bool ImguiHelpers::ShowVec2(const char* name, glm::vec2& value, float min, float max)
+{
+	return ImGui::DragFloat2(name, (float*)&value, 1.f, min, max);
+}
+
+bool ImguiHelpers::ShowVec2(LXString& name, glm::vec2& value, float min, float max)
+{
+	return ImguiHelpers::ShowVec2(name.c_str(), value, min, max);
+}
+
+
+bool ImguiHelpers::ShowVec3(const char* name, glm::vec3& value, float min, float max)
+{
+	return ImGui::DragFloat3(name, (float*)&value, 1.f, min, max);
+}
+
+bool ImguiHelpers::ShowVec3(LXString& name, glm::vec3& value, float min, float max)
+{
+	return ImguiHelpers::ShowVec3(name.c_str(), value, min, max);
+}
+
+
+bool ImguiHelpers::ShowVec4(const char* name, glm::vec4& value, float min, float max)
+{
+	return ImGui::DragFloat4(name, (float*)&value, 1.f, min, max);
+}
+
+bool ImguiHelpers::ShowVec4(LXString& name, glm::vec4& value, float min, float max)
+{
+	return ImguiHelpers::ShowVec4(name.c_str(), value, min, max);
+}
+
+
+bool ImguiHelpers::BeginPropertyTree(const char* name)
+{
+	// one could have see having an enum to control how the property grid will be rendered
+	// i.e. menu, own window with treenode, treenode only, __just the properties__
+	return ImGui::TreeNode(name);
+}
+
+void ImguiHelpers::EndPropertyTree()
+{
+	ImGui::TreePop();
+}

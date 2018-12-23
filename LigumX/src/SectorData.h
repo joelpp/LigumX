@@ -1,18 +1,11 @@
 #ifndef _SECTOR_DATA_
 #define _SECTOR_DATA_
 
-#include <sstream>
-#include <map>
-#include <unordered_map>
-
-#include "glm/glm.hpp"
-#include "tinyxml2.h"
+#include "LXSystem.h"
+#include "CurlRequest.h"
 
 #include "Math.h"
-#include "Logging.h"
-#include <string>
 #include "OSMElement.h"
-#include "CurlRequest.h"
 
 // class OSMElement;
 class Way;

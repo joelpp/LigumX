@@ -35,7 +35,7 @@ enum g_OSMElementTypeDataStorePIDX
 PIDX_Data,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMElementTypeDataStore
 

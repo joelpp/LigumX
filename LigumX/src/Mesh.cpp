@@ -22,11 +22,12 @@ bool Mesh::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Mesh::ShowPropertyGrid()
+bool Mesh::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("UsesIndexBuffer", m_UsesIndexBuffer);
 	LXIMGUI_SHOW_BOOL("WireframeRendering", m_WireframeRendering);
 	LXIMGUI_SHOW_BOOL("PointRendering", m_PointRendering);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Mesh

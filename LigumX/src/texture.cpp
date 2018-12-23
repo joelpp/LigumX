@@ -28,11 +28,13 @@ bool Texture::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
-void Texture::ShowPropertyGrid()
+bool Texture::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_STRING("Filename", m_Filename);
 	LXIMGUI_SHOW_BOOL("IsCubeMap", m_IsCubeMap);
 	LXIMGUI_SHOW_INT("NumChannels", m_NumChannels, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("BitsPerPixel", m_BitsPerPixel, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Texture

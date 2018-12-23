@@ -246,7 +246,7 @@ public:
 
 	void WriteShowImguiDeclaration()
 	{
-		WriteLine("void ShowPropertyGrid();");
+		WriteLine("bool ShowPropertyGrid();");
 	}
 
 	void WriteBody()

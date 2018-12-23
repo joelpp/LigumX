@@ -14,6 +14,7 @@
 #include "StringUtils.h"
 #include "OSMDataProcessor.h"
 #include "OSMElementTypeDataStore.h"
+#include "tinyxml2\tinyxml2.h"
 
 SectorManager* g_SectorManager;
 
@@ -289,15 +290,15 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 		else if (childValue == "node")
 		{
-			const std::string id = child->ToElement()->FindAttribute("id")->Value();
+			const std::string& id = child->ToElement()->Attribute("id");
 
 			if (m_AllNodes.find(id) != m_AllNodes.end())
 			{
 				continue;
 			}
 
-			float longitude = (float)atof(child->ToElement()->FindAttribute("lon")->Value());
-			float latitude = (float)atof(child->ToElement()->FindAttribute("lat")->Value());
+			float longitude = (float)atof(child->ToElement()->Attribute("lon"));
+			float latitude = (float)atof(child->ToElement()->Attribute("lat"));
 
 			Node* node = new Node(id, longitude, latitude);
 
@@ -305,8 +306,8 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
 			{
-				std::string key = tag->ToElement()->FindAttribute("k")->Value();
-				std::string value = tag->ToElement()->FindAttribute("v")->Value();
+				const std::string& key = tag->ToElement()->Attribute("k");
+				const std::string& value = tag->ToElement()->Attribute("v");
 				node->addTag(key, value);
 			}
 
@@ -365,7 +366,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 		else if (childValue == "way")
 		{
-			const std::string id = child->ToElement()->FindAttribute("id")->Value();
+			const std::string& id = child->ToElement()->Attribute("id");
 
 			if (m_AllWays.find(id) != m_AllWays.end())
 			{
@@ -378,7 +379,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			{
 				if (strcmp(way_child->Value(), "nd") == 0)
 				{
-					const std::string ref = way_child->ToElement()->FindAttribute("ref")->Value();
+					const std::string& ref = way_child->ToElement()->Attribute("ref");
 
 					Node* node = m_AllNodes[ref];
 					way->AddNode(node);
@@ -387,8 +388,8 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				}
 				else if (strcmp(way_child->Value(), "tag") == 0)
 				{
-					const std::string key = way_child->ToElement()->FindAttribute("k")->Value();
-					const std::string value = way_child->ToElement()->FindAttribute("v")->Value();
+					const std::string& key = way_child->ToElement()->Attribute("k");
+					const std::string& value = way_child->ToElement()->Attribute("v");
 
 					way->AddTo_AllTags(key + " " + value + " ");
 					way->addTag(key, value);

@@ -9,6 +9,8 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Model.h"
+#include "Texture.h"
 const ClassPropertyData SectorGraphicalData::g_Properties[] = 
 {
 { "NodesModel", PIDX_NodesModel, offsetof(SectorGraphicalData, m_NodesModel), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -24,8 +26,13 @@ bool SectorGraphicalData::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void SectorGraphicalData::ShowPropertyGrid()
+bool SectorGraphicalData::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_OBJECTREF("NodesModel", m_NodesModel, Model);
+	LXIMGUI_SHOW_OBJECTREF("WaysModel", m_WaysModel, Model);
+	LXIMGUI_SHOW_OBJECTREF("SplatMapTexture", m_SplatMapTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("AlbedoTexture", m_AlbedoTexture, Texture);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE SectorGraphicalData

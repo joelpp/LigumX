@@ -36,7 +36,7 @@ bool DisplayOptions::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void DisplayOptions::ShowPropertyGrid()
+bool DisplayOptions::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("UseSkyLighting", m_UseSkyLighting);
 	LXIMGUI_SHOW_BOOL("RenderTerrain", m_RenderTerrain);
@@ -58,6 +58,7 @@ void DisplayOptions::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("OutputGLErrors", m_OutputGLErrors);
 	LXIMGUI_SHOW_BOOL("DisplayDebugModels", m_DisplayDebugModels);
 	LXIMGUI_SHOW_BOOL("PickingEnabled", m_PickingEnabled);
+	return true;
 }
 const std::string EnumValues_DisplayMode[] = 
 {

@@ -86,7 +86,7 @@ PIDX_RoadWidth,
 PIDX_Settings,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMDataProcessor
 

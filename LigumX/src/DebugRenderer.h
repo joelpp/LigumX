@@ -30,7 +30,7 @@ enum g_DebugRendererPIDX
 PIDX_Enabled,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER DebugRenderer
 

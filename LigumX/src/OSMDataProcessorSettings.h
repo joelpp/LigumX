@@ -77,7 +77,7 @@ PIDX_CheckPointInRoad,
 PIDX_CheckPointInBuilding,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMDataProcessorSettings
 

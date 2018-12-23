@@ -25,12 +25,13 @@ bool Framebuffer::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Framebuffer::ShowPropertyGrid()
+bool Framebuffer::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_INT("Width", m_Width, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("Height", m_Height, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("HasDepth", m_HasDepth);
 	LXIMGUI_SHOW_INT("NumColorTargets", m_NumColorTargets, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Framebuffer

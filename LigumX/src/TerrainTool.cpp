@@ -22,6 +22,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Sector.h"
 const ClassPropertyData TerrainTool::g_Properties[] = 
 {
 { "Mode", PIDX_Mode, offsetof(TerrainTool, m_Mode), 0, LXType_Object, sizeof(TerrainEditionMode), LXType_TerrainEditionMode, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
@@ -38,11 +39,14 @@ bool TerrainTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void TerrainTool::ShowPropertyGrid()
+bool TerrainTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("TerrainErasureMode", m_TerrainErasureMode);
 	LXIMGUI_SHOW_FLOAT("TerrainBrushSize", m_TerrainBrushSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("XYZMask", m_XYZMask, 0, 0);
 	LXIMGUI_SHOW_INT("SplatMapIncrement", m_SplatMapIncrement, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	LXIMGUI_SHOW_OBJECTREF("ClickedSector", m_ClickedSector, Sector);
+	return true;
 }
 const std::string EnumValues_TerrainEditionMode[] = 
 {

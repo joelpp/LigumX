@@ -59,7 +59,7 @@ PIDX_FilledIn,
 PIDX_AllTags,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Way
 

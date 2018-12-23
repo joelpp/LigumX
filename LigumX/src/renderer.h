@@ -15,7 +15,7 @@
 #include <map>
 #include <iostream>
 
-#include "program_pipeline.h"
+#include "ProgramPipeline.h"
 #include "texture.h"
 #include "camera.h"
 #include "OSMElement.h"
@@ -115,7 +115,7 @@ PIDX_DebugCamera,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Renderer
 public:

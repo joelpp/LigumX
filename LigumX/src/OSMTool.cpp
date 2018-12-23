@@ -25,6 +25,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Node.h"
 const ClassPropertyData OSMTool::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(OSMTool, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -43,14 +44,17 @@ bool OSMTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void OSMTool::ShowPropertyGrid()
+bool OSMTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode, Node);
 	LXIMGUI_SHOW_BOOL("SearchOnlyWithinSector", m_SearchOnlyWithinSector);
+	LXIMGUI_SHOW_VEC3("WorldSpacePosition", m_WorldSpacePosition, 0, 0);
 	LXIMGUI_SHOW_BOOL("ShowNodes", m_ShowNodes);
 	LXIMGUI_SHOW_BOOL("ShowWays", m_ShowWays);
 	LXIMGUI_SHOW_BOOL("ShowFlatWays", m_ShowFlatWays);
 	LXIMGUI_SHOW_BOOL("DebugPointInRoad", m_DebugPointInRoad);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE OSMTool

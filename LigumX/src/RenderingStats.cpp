@@ -19,13 +19,14 @@ bool RenderingStats::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void RenderingStats::ShowPropertyGrid()
+bool RenderingStats::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_INT("NumVisibleEntities", m_NumVisibleEntities, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("NumVisibleSectors", m_NumVisibleSectors, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("NumDebugModels", m_NumDebugModels, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("Num2DMessages", m_Num2DMessages, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_FLOAT("fps", m_fps, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE RenderingStats

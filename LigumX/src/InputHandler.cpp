@@ -28,12 +28,22 @@ bool InputHandler::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void InputHandler::ShowPropertyGrid()
+bool InputHandler::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Mouse1Pressed", m_Mouse1Pressed);
 	LXIMGUI_SHOW_BOOL("Mouse2Pressed", m_Mouse2Pressed);
 	LXIMGUI_SHOW_BOOL("CtrlHeld", m_CtrlHeld);
 	LXIMGUI_SHOW_BOOL("Dragging", m_Dragging);
+	LXIMGUI_SHOW_VEC2("DragDistance", m_DragDistance, 0, 0);
+	LXIMGUI_SHOW_VEC2("LastDragDistance", m_LastDragDistance, 0, 0);
+	LXIMGUI_SHOW_VEC2("DragAccumulator", m_DragAccumulator, 0, 0);
+	LXIMGUI_SHOW_VEC2("MouseClickPosition", m_MouseClickPosition, 0, 0);
+	LXIMGUI_SHOW_VEC2("LastMouseClickPosition", m_LastMouseClickPosition, 0, 0);
+	LXIMGUI_SHOW_VEC2("MouseReleasePosition", m_MouseReleasePosition, 0, 0);
+	LXIMGUI_SHOW_VEC2("MousePosition", m_MousePosition, 0, 0);
+	LXIMGUI_SHOW_VEC2("LastMousePosition", m_LastMousePosition, 0, 0);
+	LXIMGUI_SHOW_VEC2("MouseScroll", m_MouseScroll, 0, 0);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE InputHandler

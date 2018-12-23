@@ -43,8 +43,12 @@ bool Camera::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
-void Camera::ShowPropertyGrid()
+bool Camera::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_VEC3("Position", m_Position, 0, 0);
+	LXIMGUI_SHOW_VEC3("FrontVector", m_FrontVector, 0, 0);
+	LXIMGUI_SHOW_VEC3("RightVector", m_RightVector, 0, 0);
+	LXIMGUI_SHOW_VEC3("UpVector", m_UpVector, 0, 0);
 	LXIMGUI_SHOW_FLOAT("NearPlane", m_NearPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("FarPlane", m_FarPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_INT("ProjectionType", m_ProjectionType, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
@@ -52,6 +56,7 @@ void Camera::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("ViewSize", m_ViewSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("MovementSpeed", m_MovementSpeed, 0, 2000);
 	LXIMGUI_SHOW_FLOAT("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Camera

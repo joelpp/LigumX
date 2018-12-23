@@ -1,11 +1,6 @@
 #pragma once
 
-// #include <pair>
-#include <map>
-#include <unordered_map>
-#include <vector>
-#include "glm/glm.hpp"
-#include "Logging.h"
+#include "LXSystem.h"
 #include "SectorData.h"
 
 

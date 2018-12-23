@@ -60,7 +60,7 @@ PIDX_SplatMapTexture,
 PIDX_AlbedoTexture,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER SectorGraphicalData
 

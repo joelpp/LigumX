@@ -43,7 +43,7 @@ PIDX_ToneMappingEnabled,
 PIDX_EmissiveGlowEnabled,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER PostEffects
 PostEffects::PostEffects();

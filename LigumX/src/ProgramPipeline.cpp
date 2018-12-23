@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "program_pipeline.h"
+#include "ProgramPipeline.h"
 #include "renderer.h"
 #include "ObjectManager.h"
 #include "LXError.h"

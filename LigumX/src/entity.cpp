@@ -10,6 +10,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Model.h"
 const ClassPropertyData Entity::g_Properties[] = 
 {
 { "Visible", PIDX_Visible, offsetof(Entity, m_Visible), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -30,13 +31,18 @@ bool Entity::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
-void Entity::ShowPropertyGrid()
+bool Entity::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Visible", m_Visible);
+	LXIMGUI_SHOW_VEC3("Position", m_Position, 0, 0);
 	LXIMGUI_SHOW_FLOAT("RotationAngle", m_RotationAngle, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC3("RotationAxis", m_RotationAxis, 0, 0);
+	LXIMGUI_SHOW_VEC3("Scale", m_Scale, 0, 0);
 	LXIMGUI_SHOW_BOOL("HasMoved", m_HasMoved);
 	LXIMGUI_SHOW_FLOAT("PickingID", m_PickingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_OBJECTREF("Model", m_Model, Model);
 	LXIMGUI_SHOW_BOOL("IsLight", m_IsLight);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Entity

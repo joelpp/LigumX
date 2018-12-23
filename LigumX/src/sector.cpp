@@ -20,6 +20,8 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Heightfield.h"
+#include "Entity.h"
 const ClassPropertyData Sector::g_Properties[] = 
 {
 { "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -36,9 +38,15 @@ bool Sector::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Sector::ShowPropertyGrid()
+bool Sector::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_VEC2("WorldPosition", m_WorldPosition, 0, 0);
+	LXIMGUI_SHOW_VEC2("EarthPosition", m_EarthPosition, 0, 0);
 	LXIMGUI_SHOW_BOOL("DataLoaded", m_DataLoaded);
+	LXIMGUI_SHOW_OBJECTREF("Heightfield", m_Heightfield, Heightfield);
+	LXIMGUI_SHOW_OBJECTREF("TerrainPatchEntity", m_TerrainPatchEntity, Entity);
+	LXIMGUI_SHOW_STRING("OSMFilename", m_OSMFilename);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Sector

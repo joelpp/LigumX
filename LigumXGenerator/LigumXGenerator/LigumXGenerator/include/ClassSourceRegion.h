@@ -224,10 +224,12 @@ public:
 
 	void WriteShowImgui()
 	{
-		WriteLine("void " + m_Class.m_Name + "::ShowPropertyGrid()");
+		WriteLine("bool " + m_Class.m_Name + "::ShowPropertyGrid()");
 		WriteLine("{");
 
 		int numProperties = m_Class.m_Members.size();
+
+		std::string tabStop = "\t";
 
 		if (numProperties > 0)
 		{
@@ -237,42 +239,85 @@ public:
 				std::string&  varName = var.m_Name;
 				const std::string& varType = var.GetType();
 
-				auto findResult = g_LXTypeToImguiCallName.find(varType);
 
-				if (findResult != g_LXTypeToImguiCallName.end())
+				if (var.m_IsPtr)
 				{
 					// found
-					std::string typeToWrite = findResult->second;
+					std::string typeToWrite = "OBJECTREF";
 					std::string varValue = "m_" + varName;
-					std::string extraArgs = "";
+					std::string extraArgs = ", " + var.GetType();
 
-					if (VarTypeSupportsLimits(var))
-					{
-						// has limits
-						extraArgs += ", " + var.GetMinValue() + ", " + var.GetMaxValue();
-					}
-					else
-					{
-					}
 					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue + extraArgs + ");");
 				}
 				else
 				{
-					// not found
-					continue;
+					// not a ref to another object. maybe a primitive type? 
+					auto findResult = g_LXTypeToImguiCallName.find(varType);
+
+					if (findResult != g_LXTypeToImguiCallName.end())
+					{
+						// found
+						std::string typeToWrite = findResult->second;
+						std::string varValue = "m_" + varName;
+						std::string extraArgs = "";
+
+						if (VarTypeSupportsLimits(var))
+						{
+							// has limits
+							extraArgs += ", " + var.GetMinValue() + ", " + var.GetMaxValue();
+						}
+						else
+						{
+						}
+						WriteLine(tabStop + "LXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue + extraArgs + ");");
+					}
+					else
+					{
+						// not found
+						continue;
+					}
 				}
 			}
 		}
+		WriteLine(tabStop + std::string("return true;"));
 		WriteLine("}");
 	}
 
-
-	void WriteBody()
+	void WriteIncludes()
 	{
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
 		WriteLine("#include \"serializer.h\"");
 		WriteLine("#include <cstddef>");
 		WriteLine("#include \"ObjectManager.h\"");
+
+		StringList neededIncludes;
+		for (const Variable& var : m_Class.m_Members)
+		{
+			if (var.m_IsPtr)
+			{
+				const std::string& varType = var.GetType();
+
+				auto findResult = std::find(neededIncludes.begin(), neededIncludes.end(), varType);
+
+				if (findResult == neededIncludes.end())
+				{
+					neededIncludes.push_back(varType);
+				}
+			}
+		}
+
+		for (const std::string& include : neededIncludes)
+		{
+			WriteLine("#include \"" + include + ".h\"");
+		}
+	}
+
+
+
+	void WriteBody()
+	{
+		WriteIncludes();
+
 		
 		WritePropertyArray();
 

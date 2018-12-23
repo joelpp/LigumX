@@ -2,6 +2,7 @@
 
 #include "tinyxml2\tinyxml2.h"
 #include "curl/curl.h"
+#include "Sector.h"
 
 #pragma region  CLASS_SOURCE CurlRequest
 
@@ -9,6 +10,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Sector.h"
 const ClassPropertyData CurlRequest::g_Properties[] = 
 {
 { "State", PIDX_State, offsetof(CurlRequest, m_State), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
@@ -25,10 +27,16 @@ bool CurlRequest::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void CurlRequest::ShowPropertyGrid()
+bool CurlRequest::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_INT("State", m_State, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	LXIMGUI_SHOW_VEC2("Coords", m_Coords, 0, 0);
+	LXIMGUI_SHOW_VEC2("Extent", m_Extent, 0, 0);
+	LXIMGUI_SHOW_STRING("Result", m_Result);
+	LXIMGUI_SHOW_STRING("Filename", m_Filename);
+	LXIMGUI_SHOW_OBJECTREF("Sector", m_Sector, Sector);
 	LXIMGUI_SHOW_BOOL("Async", m_Async);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE CurlRequest

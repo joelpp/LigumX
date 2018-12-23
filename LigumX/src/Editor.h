@@ -98,7 +98,7 @@ PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Editor
 

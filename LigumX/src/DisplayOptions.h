@@ -122,7 +122,7 @@ PIDX_PickingEnabled,
 PIDX_DisplayMode,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER DisplayOptions
 

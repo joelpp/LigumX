@@ -9,6 +9,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Texture.h"
 const ClassPropertyData Material::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(Material, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -30,7 +31,6 @@ const ClassPropertyData Material::g_Properties[] =
 { "DiffuseTexture", PIDX_DiffuseTexture, offsetof(Material, m_DiffuseTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Material, DiffuseTexture, Texture*),}, 
 { "SpecularTexture", PIDX_SpecularTexture, offsetof(Material, m_SpecularTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Material, SpecularTexture, Texture*),}, 
 { "HeightfieldTexture", PIDX_HeightfieldTexture, offsetof(Material, m_HeightfieldTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
-{ "ProgramPipeline", PIDX_ProgramPipeline, offsetof(Material, m_ProgramPipeline), 0, LXType_ObjectPtr, sizeof(ProgramPipeline*), LXType_ProgramPipeline, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_Object, sizeof(ShaderFamily), LXType_ShaderFamily, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 };
 bool Material::Serialize(bool writing)
@@ -38,9 +38,12 @@ bool Material::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void Material::ShowPropertyGrid()
+bool Material::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
+	LXIMGUI_SHOW_VEC3("AmbientColor", m_AmbientColor, 0, 1);
+	LXIMGUI_SHOW_VEC3("DiffuseColor", m_DiffuseColor, 0, 1);
+	LXIMGUI_SHOW_VEC3("SpecularColor", m_SpecularColor, 0, 1);
 	LXIMGUI_SHOW_BOOL("IsPBR", m_IsPBR);
 	LXIMGUI_SHOW_FLOAT("Shininess", m_Shininess, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("Metallic", m_Metallic, 0, 1);
@@ -53,6 +56,10 @@ void Material::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("RefractionIndex", m_RefractionIndex, 0, 1);
 	LXIMGUI_SHOW_BOOL("IsGlass", m_IsGlass);
 	LXIMGUI_SHOW_BOOL("ReflectEnvironment", m_ReflectEnvironment);
+	LXIMGUI_SHOW_OBJECTREF("DiffuseTexture", m_DiffuseTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("SpecularTexture", m_SpecularTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("HeightfieldTexture", m_HeightfieldTexture, Texture);
+	return true;
 }
 const std::string EnumValues_ShaderFamily[] = 
 {

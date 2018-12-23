@@ -512,6 +512,10 @@ void InitializeGenerator()
 	g_LXTypeToImguiCallName.emplace("bool", "BOOL");
 	g_LXTypeToImguiCallName.emplace("int", "INT");
 	g_LXTypeToImguiCallName.emplace("float", "FLOAT");
+	g_LXTypeToImguiCallName.emplace("glm::vec2", "VEC2");
+	g_LXTypeToImguiCallName.emplace("glm::vec3", "VEC3");
+	g_LXTypeToImguiCallName.emplace("glm::vec4", "VEC3");
+	g_LXTypeToImguiCallName.emplace("std::string", "STRING");
 
 	g_DefaultMinForType.emplace("float", "LX_LIMITS_FLOAT_MIN");
 	g_DefaultMinForType.emplace("int", "LX_LIMITS_INT_MIN");

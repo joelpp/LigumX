@@ -19,8 +19,11 @@ bool AABB::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void AABB::ShowPropertyGrid()
+bool AABB::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_VEC3("StartPoint", m_StartPoint, 0, 0);
+	LXIMGUI_SHOW_VEC3("Scale", m_Scale, 0, 0);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE AABB

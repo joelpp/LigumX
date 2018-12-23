@@ -16,8 +16,11 @@ bool OSMAttribute::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void OSMAttribute::ShowPropertyGrid()
+bool OSMAttribute::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_STRING("Key", m_Key);
+	LXIMGUI_SHOW_STRING("Value", m_Value);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE OSMAttribute

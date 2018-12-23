@@ -108,7 +108,7 @@ PIDX_KeyMovementSpeedIncreaseFactor,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Camera
 

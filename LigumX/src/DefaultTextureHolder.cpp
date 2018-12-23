@@ -8,6 +8,7 @@ DefaultTextureHolder* g_DefaultTextureHolder;
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "Texture.h"
 const ClassPropertyData DefaultTextureHolder::g_Properties[] = 
 {
 { "AsphaltTexture", PIDX_AsphaltTexture, offsetof(DefaultTextureHolder, m_AsphaltTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -23,8 +24,16 @@ bool DefaultTextureHolder::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void DefaultTextureHolder::ShowPropertyGrid()
+bool DefaultTextureHolder::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_OBJECTREF("AsphaltTexture", m_AsphaltTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("DirtTexture", m_DirtTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("GrassTexture", m_GrassTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("RockTexture", m_RockTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("WoodTexture", m_WoodTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("SandTexture", m_SandTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("WaterTexture", m_WaterTexture, Texture);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE DefaultTextureHolder

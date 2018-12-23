@@ -38,6 +38,8 @@ RenderDataManager* g_RenderDataManager;
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "CullingOptions.h"
+#include "RenderingStats.h"
 const ClassPropertyData RenderDataManager::g_Properties[] = 
 {
 { "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_ObjectPtr, sizeof(CullingOptions*), LXType_CullingOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -48,8 +50,11 @@ bool RenderDataManager::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void RenderDataManager::ShowPropertyGrid()
+bool RenderDataManager::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_OBJECTREF("CullingOptions", m_CullingOptions, CullingOptions);
+	LXIMGUI_SHOW_OBJECTREF("RenderingStats", m_RenderingStats, RenderingStats);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE RenderDataManager

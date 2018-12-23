@@ -28,18 +28,21 @@ bool EngineSettings::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void EngineSettings::ShowPropertyGrid()
+bool EngineSettings::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_FLOAT("WorldScale", m_WorldScale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("StartLonLat", m_StartLonLat, 0, 0);
 	LXIMGUI_SHOW_FLOAT("Extent", m_Extent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_INT("OSMQuantizationScale", m_OSMQuantizationScale, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("GenerateFlatTerrain", m_GenerateFlatTerrain);
 	LXIMGUI_SHOW_FLOAT("WayTessellationFactor", m_WayTessellationFactor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2("MessagesStartingPosition", m_MessagesStartingPosition, 0, 0);
 	LXIMGUI_SHOW_FLOAT("MessagesFontSize", m_MessagesFontSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_INT("MessagesDefaultFrameCount", m_MessagesDefaultFrameCount, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("MessagesPixelsOffset", m_MessagesPixelsOffset, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("LoadOSMData", m_LoadOSMData);
 	LXIMGUI_SHOW_FLOAT("TerrainTiling", m_TerrainTiling, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE EngineSettings

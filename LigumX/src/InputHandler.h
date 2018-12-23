@@ -86,7 +86,7 @@ PIDX_LastMousePosition,
 PIDX_MouseScroll,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER InputHandler
 

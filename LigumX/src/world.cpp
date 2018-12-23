@@ -25,6 +25,7 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "SunLight.h"
 const ClassPropertyData World::g_Properties[] = 
 {
 { "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_ObjectPtr, sizeof(SunLight*), LXType_SunLight, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -38,8 +39,10 @@ bool World::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
-void World::ShowPropertyGrid()
+bool World::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_OBJECTREF("SunLight", m_SunLight, SunLight);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE World

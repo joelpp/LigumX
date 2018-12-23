@@ -15,9 +15,10 @@ bool EditorTool::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void EditorTool::ShowPropertyGrid()
+bool EditorTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Active", m_Active);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE EditorTool

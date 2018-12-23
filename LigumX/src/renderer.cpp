@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "renderer.h"
 
-#include "program_pipeline.h"
+#include "ProgramPipeline.h"
 #include "RenderDataManager.h"
 #include "GL.h"
 #include "MainWindow.h"
@@ -42,6 +42,9 @@
 #include "serializer.h"
 #include <cstddef>
 #include "ObjectManager.h"
+#include "DisplayOptions.h"
+#include "PostEffects.h"
+#include "Camera.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
 { "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_ObjectPtr, sizeof(DisplayOptions*), LXType_DisplayOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -54,8 +57,12 @@ bool Renderer::Serialize(bool writing)
 	PostSerialization(writing, success);
 	return success;
 }
-void Renderer::ShowPropertyGrid()
+bool Renderer::ShowPropertyGrid()
 {
+	LXIMGUI_SHOW_OBJECTREF("DisplayOptions", m_DisplayOptions, DisplayOptions);
+	LXIMGUI_SHOW_OBJECTREF("PostEffects", m_PostEffects, PostEffects);
+	LXIMGUI_SHOW_OBJECTREF("DebugCamera", m_DebugCamera, Camera);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE Renderer

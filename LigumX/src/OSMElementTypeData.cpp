@@ -18,9 +18,11 @@ bool OSMElementTypeData::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void OSMElementTypeData::ShowPropertyGrid()
+bool OSMElementTypeData::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("FillIn", m_FillIn);
+	LXIMGUI_SHOW_VEC3("DebugColor", m_DebugColor, 0, 0);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE OSMElementTypeData

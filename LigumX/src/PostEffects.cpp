@@ -18,12 +18,13 @@ bool PostEffects::Serialize(bool writing)
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
-void PostEffects::ShowPropertyGrid()
+bool PostEffects::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("GammaCorrectionEnabled", m_GammaCorrectionEnabled);
 	LXIMGUI_SHOW_FLOAT("GammaExponent", m_GammaExponent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("ToneMappingEnabled", m_ToneMappingEnabled);
 	LXIMGUI_SHOW_BOOL("EmissiveGlowEnabled", m_EmissiveGlowEnabled);
+	return true;
 }
 
 #pragma endregion  CLASS_SOURCE PostEffects

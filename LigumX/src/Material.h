@@ -1,15 +1,11 @@
 #pragma once
 
-#include <unordered_map>
-#include <string>
-#include "glm/glm.hpp"
 
 #pragma region  FORWARD_DECLARATIONS Material
 #include "LXSystem.h"
 
 class Material;
 class Texture;
-class ProgramPipeline;
 
 enum ShaderFamily
 {
@@ -27,6 +23,7 @@ const int EnumLength_ShaderFamily = 5;
 
 #pragma endregion  FORWARD_DECLARATIONS Material
 
+class ProgramPipeline;
 
 #pragma region  HEADER Material
 class Material : public LXObject
@@ -76,8 +73,6 @@ void SetSpecularTexture(Texture* value) { SetSpecularTexture_Callback(value); };
 void SetSpecularTexture_Callback(Texture* value);
 Texture*& GetHeightfieldTexture() { return m_HeightfieldTexture; }; 
 void SetHeightfieldTexture(Texture* value) { m_HeightfieldTexture = value; }; 
-ProgramPipeline*& GetProgramPipeline() { return m_ProgramPipeline; }; 
-void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; }; 
 const ShaderFamily& GetShaderFamily() { return m_ShaderFamily; }; 
 void SetShaderFamily(ShaderFamily value) { m_ShaderFamily = value; }; 
 private:
@@ -100,10 +95,9 @@ bool m_ReflectEnvironment = false;
 Texture* m_DiffuseTexture = nullptr;
 Texture* m_SpecularTexture = nullptr;
 Texture* m_HeightfieldTexture = nullptr;
-ProgramPipeline* m_ProgramPipeline = nullptr;
 ShaderFamily m_ShaderFamily;
 public:
-static const int g_PropertyCount = 21;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MaterialPIDX
@@ -127,11 +121,10 @@ PIDX_ReflectEnvironment,
 PIDX_DiffuseTexture,
 PIDX_SpecularTexture,
 PIDX_HeightfieldTexture,
-PIDX_ProgramPipeline,
 PIDX_ShaderFamily,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Material
 
@@ -148,7 +141,13 @@ public:
 	static Material* Get(std::string materialName);
 	static void Add(std::string materialName, Material* material);
 
+	ProgramPipeline*& GetProgramPipeline() { return m_ProgramPipeline; };
+	void SetProgramPipeline(ProgramPipeline* value) { m_ProgramPipeline = value; };
+
 private:
+
+	ProgramPipeline* m_ProgramPipeline = nullptr;
+
 
 	static std::unordered_map<std::string, Material*> MaterialList;
 };

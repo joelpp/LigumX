@@ -36,7 +36,7 @@ PIDX_NumObjectMapHits,
 PIDX_NumDrawCalls,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER EngineStats
 

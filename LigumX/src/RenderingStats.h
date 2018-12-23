@@ -49,7 +49,7 @@ PIDX_Num2DMessages,
 PIDX_fps,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER RenderingStats
 

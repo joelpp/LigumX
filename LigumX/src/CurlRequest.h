@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Settings.h"
 
 enum ThreadState
 {
@@ -17,6 +16,10 @@ class Sector;
 
 
 #pragma endregion  FORWARD_DECLARATIONS CurlRequest
+
+#include "Settings.h"
+
+
 
 #pragma region  HEADER CurlRequest
 class CurlRequest : public LXObject
@@ -67,7 +70,7 @@ PIDX_SectorIndex,
 PIDX_Async,
 };
 bool Serialize(bool writing);
-void ShowPropertyGrid();
+bool ShowPropertyGrid();
 
 #pragma endregion  HEADER CurlRequest
 
