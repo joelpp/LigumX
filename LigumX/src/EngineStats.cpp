@@ -4,9 +4,6 @@
 EngineStats* g_EngineStats;
 
 #include "EngineStats.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData EngineStats::g_Properties[] = 
 {
 { "NumObjectMapHits", PIDX_NumObjectMapHits, offsetof(EngineStats, m_NumObjectMapHits), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 

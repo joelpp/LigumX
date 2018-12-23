@@ -22,17 +22,15 @@
 #pragma region  CLASS_SOURCE OSMTool
 
 #include "OSMTool.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Node.h"
+#include "Way.h"
 const ClassPropertyData OSMTool::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(OSMTool, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(OSMTool, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "SelectedWays", PIDX_SelectedWays, offsetof(OSMTool, m_SelectedWays), 0, LXType_stdvector, sizeof(std::vector<Way*>), LXType_stdvector, false, LXType_Way, true, 0, 0, 0, 0,}, 
 { "SearchOnlyWithinSector", PIDX_SearchOnlyWithinSector, offsetof(OSMTool, m_SearchOnlyWithinSector), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "SelectedSectorIndex", PIDX_SelectedSectorIndex, offsetof(OSMTool, m_SelectedSectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "SelectedSectorIndex", PIDX_SelectedSectorIndex, offsetof(OSMTool, m_SelectedSectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "WorldSpacePosition", PIDX_WorldSpacePosition, offsetof(OSMTool, m_WorldSpacePosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "ShowNodes", PIDX_ShowNodes, offsetof(OSMTool, m_ShowNodes), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShowWays", PIDX_ShowWays, offsetof(OSMTool, m_ShowWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -48,8 +46,10 @@ bool OSMTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode, Node);
+	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("SelectedWays", m_SelectedWays);
 	LXIMGUI_SHOW_BOOL("SearchOnlyWithinSector", m_SearchOnlyWithinSector);
+	LXIMGUI_SHOW_IVEC2("SelectedSectorIndex", m_SelectedSectorIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_VEC3("WorldSpacePosition", m_WorldSpacePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("ShowNodes", m_ShowNodes);
 	LXIMGUI_SHOW_BOOL("ShowWays", m_ShowWays);

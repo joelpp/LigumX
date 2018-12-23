@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE RenderingStats
 
 #include "RenderingStats.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData RenderingStats::g_Properties[] = 
 {
 { "NumVisibleEntities", PIDX_NumVisibleEntities, offsetof(RenderingStats, m_NumVisibleEntities), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 

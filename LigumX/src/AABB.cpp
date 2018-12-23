@@ -6,9 +6,6 @@
 #pragma region  CLASS_SOURCE AABB
 
 #include "AABB.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData AABB::g_Properties[] = 
 {
 { "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 

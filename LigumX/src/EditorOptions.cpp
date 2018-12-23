@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE EditorOptions
 
 #include "EditorOptions.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData EditorOptions::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(EditorOptions, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 

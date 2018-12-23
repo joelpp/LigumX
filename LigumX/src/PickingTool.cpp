@@ -17,9 +17,6 @@
 #pragma region  CLASS_SOURCE PickingTool
 
 #include "PickingTool.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Entity.h"
 #include "Sector.h"
 const ClassPropertyData PickingTool::g_Properties[] = 
@@ -46,7 +43,7 @@ bool PickingTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_OBJECTREF("PickedEntity", m_PickedEntity, Entity);
+	LXIMGUI_SHOW_OBJECTREF("PickedEntity", m_PickedEntity);
 	LXIMGUI_SHOW_VEC2("AimingWindowPosition", m_AimingWindowPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC3("AimingWorldPosition", m_AimingWorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("AimingID", m_AimingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
@@ -56,7 +53,7 @@ bool PickingTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("PickedID", m_PickedID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("PickDebugModels", m_PickDebugModels);
 	LXIMGUI_SHOW_FLOAT("PickedHeight", m_PickedHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("PickedSector", m_PickedSector, Sector);
+	LXIMGUI_SHOW_OBJECTREF("PickedSector", m_PickedSector);
 	return true;
 }
 

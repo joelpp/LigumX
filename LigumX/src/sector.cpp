@@ -17,17 +17,14 @@
 #pragma region  CLASS_SOURCE Sector
 
 #include "Sector.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Heightfield.h"
 #include "Entity.h"
 const ClassPropertyData Sector::g_Properties[] = 
 {
 { "WorldPosition", PIDX_WorldPosition, offsetof(Sector, m_WorldPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "EarthPosition", PIDX_EarthPosition, offsetof(Sector, m_EarthPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
-{ "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "QuantizedPosition", PIDX_QuantizedPosition, offsetof(Sector, m_QuantizedPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "OffsetIndex", PIDX_OffsetIndex, offsetof(Sector, m_OffsetIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "DataLoaded", PIDX_DataLoaded, offsetof(Sector, m_DataLoaded), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Heightfield", PIDX_Heightfield, offsetof(Sector, m_Heightfield), 0, LXType_ObjectPtr, sizeof(Heightfield*), LXType_Heightfield, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "TerrainPatchEntity", PIDX_TerrainPatchEntity, offsetof(Sector, m_TerrainPatchEntity), 0, LXType_ObjectPtr, sizeof(Entity*), LXType_Entity, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
@@ -43,9 +40,11 @@ bool Sector::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_VEC2("WorldPosition", m_WorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("EarthPosition", m_EarthPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_IVEC2("QuantizedPosition", m_QuantizedPosition, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	LXIMGUI_SHOW_IVEC2("OffsetIndex", m_OffsetIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("DataLoaded", m_DataLoaded);
-	LXIMGUI_SHOW_OBJECTREF("Heightfield", m_Heightfield, Heightfield);
-	LXIMGUI_SHOW_OBJECTREF("TerrainPatchEntity", m_TerrainPatchEntity, Entity);
+	LXIMGUI_SHOW_OBJECTREF("Heightfield", m_Heightfield);
+	LXIMGUI_SHOW_OBJECTREF("TerrainPatchEntity", m_TerrainPatchEntity);
 	LXIMGUI_SHOW_STRING("OSMFilename", m_OSMFilename);
 	return true;
 }

@@ -6,9 +6,6 @@
 #pragma region  CLASS_SOURCE Material
 
 #include "Material.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Texture.h"
 const ClassPropertyData Material::g_Properties[] = 
 {
@@ -57,9 +54,9 @@ bool Material::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("RefractionIndex", m_RefractionIndex, 0, 1);
 	LXIMGUI_SHOW_BOOL("IsGlass", m_IsGlass);
 	LXIMGUI_SHOW_BOOL("ReflectEnvironment", m_ReflectEnvironment);
-	LXIMGUI_SHOW_OBJECTREF("DiffuseTexture", m_DiffuseTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("SpecularTexture", m_SpecularTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("HeightfieldTexture", m_HeightfieldTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("DiffuseTexture", m_DiffuseTexture);
+	LXIMGUI_SHOW_OBJECTREF("SpecularTexture", m_SpecularTexture);
+	LXIMGUI_SHOW_OBJECTREF("HeightfieldTexture", m_HeightfieldTexture);
 	return true;
 }
 const std::string EnumValues_ShaderFamily[] = 

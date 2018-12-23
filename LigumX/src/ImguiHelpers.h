@@ -8,13 +8,20 @@
 
 #define LXIMGUI_SHOW_BOOL(name, value) ImguiHelpers::ShowBool(name, value)
 #define LXIMGUI_SHOW_INT(name, value, min, max) ImguiHelpers::ShowInt(name, value, min, max)
+#define LXIMGUI_SHOW_LONG(name, value, min, max) ImguiHelpers::ShowLong(name, value, min, max)
+#define LXIMGUI_SHOW_IVEC2(name, value, min, max) ImguiHelpers::ShowIVec2(name, value, min, max)
+
+
 #define LXIMGUI_SHOW_FLOAT(name, value, min, max) ImguiHelpers::ShowFloat(name, value, min, max)
 #define LXIMGUI_SHOW_VEC2(name, value, min, max) ImguiHelpers::ShowVec2(name, value, min, max)
 #define LXIMGUI_SHOW_VEC3(name, value, min, max) ImguiHelpers::ShowVec3(name, value, min, max)
 #define LXIMGUI_SHOW_VEC4(name, value, min, max) ImguiHelpers::ShowVec4(name, value, min, max)
 #define LXIMGUI_SHOW_STRING(name, value) ImguiHelpers::ShowString(name, value)
 
-#define LXIMGUI_SHOW_OBJECTREF(name, value, type) ImguiHelpers::ShowObjectPtr(name, value, #type);
+#define LXIMGUI_SHOW_OBJECTPTR_VECTOR(name, value) ImguiHelpers::ShowVector(name, value)
+#define LXIMGUI_SHOW_OBJECT_VECTOR(name, value) ImguiHelpers::ShowVector(name, value)
+
+#define LXIMGUI_SHOW_OBJECTREF(name, value) ImguiHelpers::ShowObjectPtr(name, value);
 
 class ImguiIDScope
 {
@@ -63,6 +70,12 @@ namespace ImguiHelpers
 	bool ShowInt(const char* name, int& value, int min, int max);
 	bool ShowInt(LXString& name, int& value, int min, int max);
 
+	bool ShowLong(const char* name, long& value, long min, long max);
+	bool ShowLong(LXString& name, long& value, long min, long max);
+
+	bool ShowIVec2(const char* name, glm::ivec2& value, float min, float max);
+	bool ShowIVec2(LXString& name, glm::ivec2& value, float min, float max);
+
 	bool ShowFloat(const char* name, float& value, float min, float max);
 	bool ShowFloat(LXString& name, float& value, float min, float max);
 
@@ -86,11 +99,11 @@ namespace ImguiHelpers
 	void EndPropertyTree();
 
 	template <typename T>
-	bool ShowObjectPtr(const char* name, T* value, const char* type)
+	bool ShowObjectPtr(const char* name, T* value)
 	{
 		bool isNull = (value == nullptr);
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (%s)%s", name, type, (isNull ? " (nullptr)" : ""));
+		sprintf(treeNodeName, "%s (%s)%s", name, value->ClassName, (isNull ? " (nullptr)" : ""));
 
 		if (value == nullptr)
 		{
@@ -108,6 +121,73 @@ namespace ImguiHelpers
 			}
 
 			return success;
+		}
+
+		return true;
+	}
+
+
+	template <typename T>
+	bool ShowVector(const char* name, std::vector<T>& values)
+	{
+		size_t numElements = values.size();
+		char treeNodeName[256];
+		sprintf(treeNodeName, "%s (List<%s>, size = %d)", name, T::ClassName, numElements);
+
+		if (numElements == 0)
+		{
+			ShowRawString(treeNodeName);
+		}
+		else
+		{
+			ImguiTreeNodeScope scope(treeNodeName);
+			for (int i = 0; i < numElements; ++i)
+			{
+				T& objectRef = values[i];
+
+				char thisObjectType[256];
+				sprintf(thisObjectType, "%s", objectRef.ClassName);
+
+				char elementName[256];
+				sprintf(elementName, "[%d] : %s (%s)", i, objectRef.GetName().c_str(), thisObjectType);
+
+				ShowObjectPtr(name, &objectRef);
+			}
+		}
+
+		return true;
+	}
+
+	template <typename T>
+	bool ShowVector(const char* name, std::vector<T*>& values)
+	{
+		int numElements = values.size();
+		char treeNodeName[256];
+		sprintf(treeNodeName, "%s (List<%s>, size = %d)", name, T::ClassName, numElements);
+
+		if (numElements == 0)
+		{
+			ShowRawString(treeNodeName);
+		}
+		else
+		{
+			ImguiTreeNodeScope scope(treeNodeName);
+
+			if (scope.m_Opened)
+			{
+				for (int i = 0; i < numElements; ++i)
+				{
+					T* objectPtr = values[i];
+
+					char thisObjectType[256];
+					sprintf(thisObjectType, "%s", objectPtr->ClassName);
+
+					char elementName[256];
+					sprintf(elementName, "[%d] : %s (%s)", i, objectPtr->GetName(), thisObjectType);
+
+					ShowObjectPtr(name, objectPtr);
+				}
+			}
 		}
 
 		return true;

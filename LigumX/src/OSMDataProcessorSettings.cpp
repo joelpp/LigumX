@@ -4,9 +4,6 @@
 #pragma region  CLASS_SOURCE OSMDataProcessorSettings
 
 #include "OSMDataProcessorSettings.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData OSMDataProcessorSettings::g_Properties[] = 
 {
 { "MinFacadeLength", PIDX_MinFacadeLength, offsetof(OSMDataProcessorSettings, m_MinFacadeLength), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 

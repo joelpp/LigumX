@@ -43,9 +43,6 @@ T GetRandomValue(T min, T max)
 OSMDataProcessor* g_OSMDataProcessor;
 
 #include "OSMDataProcessor.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "OSMDataProcessorSettings.h"
 const ClassPropertyData OSMDataProcessor::g_Properties[] = 
 {
@@ -61,7 +58,7 @@ bool OSMDataProcessor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_FLOAT("RoadWidth", m_RoadWidth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("Settings", m_Settings, OSMDataProcessorSettings);
+	LXIMGUI_SHOW_OBJECTREF("Settings", m_Settings);
 	return true;
 }
 

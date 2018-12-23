@@ -7,10 +7,8 @@
 #pragma region  CLASS_SOURCE Entity
 
 #include "Entity.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Model.h"
+#include "Component.h"
 const ClassPropertyData Entity::g_Properties[] = 
 {
 { "Visible", PIDX_Visible, offsetof(Entity, m_Visible), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -41,8 +39,9 @@ bool Entity::ShowPropertyGrid()
 	LXIMGUI_SHOW_VEC3("Scale", m_Scale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("HasMoved", m_HasMoved);
 	LXIMGUI_SHOW_FLOAT("PickingID", m_PickingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("Model", m_Model, Model);
+	LXIMGUI_SHOW_OBJECTREF("Model", m_Model);
 	LXIMGUI_SHOW_BOOL("IsLight", m_IsLight);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Components", m_Components);
 	return true;
 }
 

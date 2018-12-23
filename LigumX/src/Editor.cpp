@@ -47,10 +47,8 @@
 Editor* g_Editor;
 
 #include "Editor.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "EditorOptions.h"
+#include "EditorTool.h"
 #include "Node.h"
 const ClassPropertyData Editor::g_Properties[] = 
 {
@@ -72,13 +70,14 @@ bool Editor::Serialize(bool writing)
 bool Editor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("Options", m_Options, EditorOptions);
+	LXIMGUI_SHOW_OBJECTREF("Options", m_Options);
 	LXIMGUI_SHOW_VEC4("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);
 	LXIMGUI_SHOW_VEC3("ManipulatorStartPosition", m_ManipulatorStartPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("EditingTerrain", m_EditingTerrain);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Tools", m_Tools);
 	LXIMGUI_SHOW_INT("PickingBufferSize", m_PickingBufferSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode, Node);
+	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode);
 	return true;
 }
 const std::string EnumValues_EEditorTool[] = 
@@ -1506,7 +1505,7 @@ void Editor::RenderImgui()
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Picking Tool");
 
 		PickingTool* pickingTool = GetPickingTool();
-		ShowPropertyGridObject(pickingTool, "Picking Tool");
+		pickingTool->ShowPropertyGrid();
 
 		g_GUI->EndWindow();
 	}

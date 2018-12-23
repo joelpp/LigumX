@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE OSMElementComponent
 
 #include "OSMElementComponent.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Way.h"
 const ClassPropertyData OSMElementComponent::g_Properties[] = 
 {
@@ -19,7 +16,7 @@ bool OSMElementComponent::Serialize(bool writing)
 bool OSMElementComponent::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("Way", m_Way, Way);
+	LXIMGUI_SHOW_OBJECTREF("Way", m_Way);
 	return true;
 }
 

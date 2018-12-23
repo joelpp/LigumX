@@ -3,9 +3,7 @@
 #pragma region  CLASS_SOURCE OSMElementTypeData
 
 #include "OSMElementTypeData.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
+#include "OSMAttribute.h"
 const ClassPropertyData OSMElementTypeData::g_Properties[] = 
 {
 { "Type", PIDX_Type, offsetof(OSMElementTypeData, m_Type), 0, LXType_Object, sizeof(OSMElementType), LXType_OSMElementType, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -23,6 +21,7 @@ bool OSMElementTypeData::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("FillIn", m_FillIn);
 	LXIMGUI_SHOW_VEC3("DebugColor", m_DebugColor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_OBJECT_VECTOR("Attributes", m_Attributes);
 	return true;
 }
 

@@ -7,9 +7,6 @@
 #pragma region  CLASS_SOURCE Texture
 
 #include "Texture.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData Texture::g_Properties[] = 
 {
 { "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -20,7 +17,7 @@ const ClassPropertyData Texture::g_Properties[] =
 { "InternalFormat", PIDX_InternalFormat, offsetof(Texture, m_InternalFormat), 0, LXType_Object, sizeof(GLPixelFormat), LXType_GLPixelFormat, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 { "Format", PIDX_Format, offsetof(Texture, m_Format), 0, LXType_Object, sizeof(GLPixelFormat), LXType_GLPixelFormat, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 { "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_Object, sizeof(GLPixelType), LXType_GLPixelType, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
-{ "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
 bool Texture::Serialize(bool writing)
 {
@@ -35,6 +32,7 @@ bool Texture::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("IsCubeMap", m_IsCubeMap);
 	LXIMGUI_SHOW_INT("NumChannels", m_NumChannels, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("BitsPerPixel", m_BitsPerPixel, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	LXIMGUI_SHOW_IVEC2("Size", m_Size, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;
 }
 

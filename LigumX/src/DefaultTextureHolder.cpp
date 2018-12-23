@@ -5,9 +5,6 @@
 DefaultTextureHolder* g_DefaultTextureHolder;
 
 #include "DefaultTextureHolder.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Texture.h"
 const ClassPropertyData DefaultTextureHolder::g_Properties[] = 
 {
@@ -27,13 +24,13 @@ bool DefaultTextureHolder::Serialize(bool writing)
 bool DefaultTextureHolder::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("AsphaltTexture", m_AsphaltTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("DirtTexture", m_DirtTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("GrassTexture", m_GrassTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("RockTexture", m_RockTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("WoodTexture", m_WoodTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("SandTexture", m_SandTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("WaterTexture", m_WaterTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("AsphaltTexture", m_AsphaltTexture);
+	LXIMGUI_SHOW_OBJECTREF("DirtTexture", m_DirtTexture);
+	LXIMGUI_SHOW_OBJECTREF("GrassTexture", m_GrassTexture);
+	LXIMGUI_SHOW_OBJECTREF("RockTexture", m_RockTexture);
+	LXIMGUI_SHOW_OBJECTREF("WoodTexture", m_WoodTexture);
+	LXIMGUI_SHOW_OBJECTREF("SandTexture", m_SandTexture);
+	LXIMGUI_SHOW_OBJECTREF("WaterTexture", m_WaterTexture);
 	return true;
 }
 

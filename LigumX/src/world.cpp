@@ -22,10 +22,9 @@
 #pragma region  CLASS_SOURCE World
 
 #include "World.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "SunLight.h"
+#include "Entity.h"
+#include "Sector.h"
 const ClassPropertyData World::g_Properties[] = 
 {
 { "SunLight", PIDX_SunLight, offsetof(World, m_SunLight), 0, LXType_ObjectPtr, sizeof(SunLight*), LXType_SunLight, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -42,7 +41,10 @@ bool World::Serialize(bool writing)
 bool World::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("SunLight", m_SunLight, SunLight);
+	LXIMGUI_SHOW_OBJECTREF("SunLight", m_SunLight);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Entities", m_Entities);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("DebugEntities", m_DebugEntities);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Sectors", m_Sectors);
 	return true;
 }
 

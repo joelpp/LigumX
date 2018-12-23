@@ -13,9 +13,6 @@
 #pragma region  CLASS_SOURCE Camera
 
 #include "Camera.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData Camera::g_Properties[] = 
 {
 { "Position", PIDX_Position, offsetof(Camera, m_Position), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 

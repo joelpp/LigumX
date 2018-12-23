@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE Component
 
 #include "Component.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Entity.h"
 const ClassPropertyData Component::g_Properties[] = 
 {
@@ -19,7 +16,7 @@ bool Component::Serialize(bool writing)
 bool Component::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("ParentEntity", m_ParentEntity, Entity);
+	LXIMGUI_SHOW_OBJECTREF("ParentEntity", m_ParentEntity);
 	return true;
 }
 

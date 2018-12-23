@@ -23,9 +23,6 @@
 #pragma region  CLASS_SOURCE SectorTool
 
 #include "SectorTool.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Sector.h"
 const ClassPropertyData SectorTool::g_Properties[] = 
 {
@@ -54,7 +51,7 @@ bool SectorTool::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_VEC3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("HighlightedSectorUV", m_HighlightedSectorUV, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("HighlightedSector", m_HighlightedSector, Sector);
+	LXIMGUI_SHOW_OBJECTREF("HighlightedSector", m_HighlightedSector);
 	LXIMGUI_SHOW_VEC3("SectorGridColor", m_SectorGridColor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("AsyncSectorLoading", m_AsyncSectorLoading);
 	LXIMGUI_SHOW_FLOAT("NodeSize", m_NodeSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

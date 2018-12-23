@@ -12,9 +12,7 @@
 #pragma region  CLASS_SOURCE Model
 
 #include "Model.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
+#include "Material.h"
 const ClassPropertyData Model::g_Properties[] = 
 {
 { "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -30,6 +28,7 @@ bool Model::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_STRING("Filename", m_Filename);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Materials", m_Materials);
 	return true;
 }
 

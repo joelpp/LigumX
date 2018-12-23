@@ -8,9 +8,6 @@
 #pragma region  CLASS_SOURCE SunLight
 
 #include "SunLight.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Texture.h"
 const ClassPropertyData SunLight::g_Properties[] = 
 {
@@ -34,7 +31,7 @@ bool SunLight::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("Speed", m_Speed, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("UseSkybox", m_UseSkybox);
-	LXIMGUI_SHOW_OBJECTREF("Skybox", m_Skybox, Texture);
+	LXIMGUI_SHOW_OBJECTREF("Skybox", m_Skybox);
 	return true;
 }
 

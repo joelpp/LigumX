@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE BoundingBoxComponent
 
 #include "BoundingBoxComponent.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData BoundingBoxComponent::g_Properties[] = 
 {
 { "BoundingBox", PIDX_BoundingBox, offsetof(BoundingBoxComponent, m_BoundingBox), 0, LXType_Object, sizeof(AABB), LXType_AABB, false, LXType_None, false, 0, 0, 0, 0,}, 

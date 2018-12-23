@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE PostEffects
 
 #include "PostEffects.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData PostEffects::g_Properties[] = 
 {
 { "GammaCorrectionEnabled", PIDX_GammaCorrectionEnabled, offsetof(PostEffects, m_GammaCorrectionEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 

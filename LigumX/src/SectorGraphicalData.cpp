@@ -6,10 +6,8 @@
 #pragma region  CLASS_SOURCE SectorGraphicalData
 
 #include "SectorGraphicalData.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Model.h"
+#include "Entity.h"
 #include "Texture.h"
 const ClassPropertyData SectorGraphicalData::g_Properties[] = 
 {
@@ -29,10 +27,13 @@ bool SectorGraphicalData::Serialize(bool writing)
 bool SectorGraphicalData::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("NodesModel", m_NodesModel, Model);
-	LXIMGUI_SHOW_OBJECTREF("WaysModel", m_WaysModel, Model);
-	LXIMGUI_SHOW_OBJECTREF("SplatMapTexture", m_SplatMapTexture, Texture);
-	LXIMGUI_SHOW_OBJECTREF("AlbedoTexture", m_AlbedoTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("NodesModel", m_NodesModel);
+	LXIMGUI_SHOW_OBJECTREF("WaysModel", m_WaysModel);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("WaysModelsVector", m_WaysModelsVector);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("RoadEntities", m_RoadEntities);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("StaticEntities", m_StaticEntities);
+	LXIMGUI_SHOW_OBJECTREF("SplatMapTexture", m_SplatMapTexture);
+	LXIMGUI_SHOW_OBJECTREF("AlbedoTexture", m_AlbedoTexture);
 	return true;
 }
 

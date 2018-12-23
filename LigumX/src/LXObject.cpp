@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE LXObject
 
 #include "LXObject.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData LXObject::g_Properties[] = 
 {
 { "ObjectID", PIDX_ObjectID, offsetof(LXObject, m_ObjectID), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 

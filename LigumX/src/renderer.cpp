@@ -38,9 +38,6 @@
 #pragma region  CLASS_SOURCE Renderer
 
 #include "Renderer.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "DisplayOptions.h"
 #include "PostEffects.h"
 #include "Camera.h"
@@ -59,9 +56,9 @@ bool Renderer::Serialize(bool writing)
 bool Renderer::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("DisplayOptions", m_DisplayOptions, DisplayOptions);
-	LXIMGUI_SHOW_OBJECTREF("PostEffects", m_PostEffects, PostEffects);
-	LXIMGUI_SHOW_OBJECTREF("DebugCamera", m_DebugCamera, Camera);
+	LXIMGUI_SHOW_OBJECTREF("DisplayOptions", m_DisplayOptions);
+	LXIMGUI_SHOW_OBJECTREF("PostEffects", m_PostEffects);
+	LXIMGUI_SHOW_OBJECTREF("DebugCamera", m_DebugCamera);
 	return true;
 }
 

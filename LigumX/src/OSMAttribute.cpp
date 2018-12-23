@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE OSMAttribute
 
 #include "OSMAttribute.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData OSMAttribute::g_Properties[] = 
 {
 { "Key", PIDX_Key, offsetof(OSMAttribute, m_Key), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 

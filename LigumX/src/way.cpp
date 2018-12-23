@@ -7,9 +7,7 @@
 #pragma region  CLASS_SOURCE Way
 
 #include "Way.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
+#include "Node.h"
 const ClassPropertyData Way::g_Properties[] = 
 {
 { "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
@@ -28,6 +26,7 @@ bool Way::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_INT("OSMId", m_OSMId, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Nodes", m_Nodes);
 	LXIMGUI_SHOW_INT("IndexInSector", m_IndexInSector, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("FilledIn", m_FilledIn);
 	LXIMGUI_SHOW_STRING("AllTags", m_AllTags);

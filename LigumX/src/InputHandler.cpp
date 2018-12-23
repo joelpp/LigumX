@@ -4,9 +4,6 @@
 InputHandler* g_InputHandler;
 
 #include "InputHandler.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData InputHandler::g_Properties[] = 
 {
 { "Mouse1Pressed", PIDX_Mouse1Pressed, offsetof(InputHandler, m_Mouse1Pressed), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(InputHandler, Mouse1Pressed, bool),}, 

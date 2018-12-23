@@ -7,9 +7,7 @@
 OSMElementTypeDataStore* g_OSMElementTypeDataStore;
 
 #include "OSMElementTypeDataStore.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
+#include "OSMElementTypeData.h"
 const ClassPropertyData OSMElementTypeDataStore::g_Properties[] = 
 {
 { "Data", PIDX_Data, offsetof(OSMElementTypeDataStore, m_Data), 0, LXType_stdvector, sizeof(std::vector<OSMElementTypeData>), LXType_stdvector, false, LXType_OSMElementTypeData, false, 0, 0, 0, 0,}, 
@@ -22,6 +20,7 @@ bool OSMElementTypeDataStore::Serialize(bool writing)
 bool OSMElementTypeDataStore::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
+	LXIMGUI_SHOW_OBJECT_VECTOR("Data", m_Data);
 	return true;
 }
 

@@ -16,9 +16,6 @@ using namespace std;
 #pragma region  CLASS_SOURCE Heightfield
 
 #include "Heightfield.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Texture.h"
 const ClassPropertyData Heightfield::g_Properties[] = 
 {
@@ -35,7 +32,7 @@ bool Heightfield::Serialize(bool writing)
 bool Heightfield::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("HeightDataTexture", m_HeightDataTexture, Texture);
+	LXIMGUI_SHOW_OBJECTREF("HeightDataTexture", m_HeightDataTexture);
 	LXIMGUI_SHOW_FLOAT("MaxHeight", m_MaxHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("MinHeight", m_MinHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_INT("Width", m_Width, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);

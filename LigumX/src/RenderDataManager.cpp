@@ -35,9 +35,6 @@ RenderDataManager* g_RenderDataManager;
 #pragma region  CLASS_SOURCE RenderDataManager
 
 #include "RenderDataManager.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "CullingOptions.h"
 #include "RenderingStats.h"
 const ClassPropertyData RenderDataManager::g_Properties[] = 
@@ -53,8 +50,8 @@ bool RenderDataManager::Serialize(bool writing)
 bool RenderDataManager::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("CullingOptions", m_CullingOptions, CullingOptions);
-	LXIMGUI_SHOW_OBJECTREF("RenderingStats", m_RenderingStats, RenderingStats);
+	LXIMGUI_SHOW_OBJECTREF("CullingOptions", m_CullingOptions);
+	LXIMGUI_SHOW_OBJECTREF("RenderingStats", m_RenderingStats);
 	return true;
 }
 

@@ -6,9 +6,6 @@
 #pragma region  CLASS_SOURCE Framebuffer
 
 #include "Framebuffer.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
 { "Width", PIDX_Width, offsetof(Framebuffer, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 

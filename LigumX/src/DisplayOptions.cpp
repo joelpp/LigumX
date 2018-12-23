@@ -4,9 +4,6 @@
 #pragma region  CLASS_SOURCE DisplayOptions
 
 #include "DisplayOptions.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
 { "UseSkyLighting", PIDX_UseSkyLighting, offsetof(DisplayOptions, m_UseSkyLighting), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 

@@ -20,6 +20,27 @@ bool ImguiHelpers::ShowInt(LXString& name, int& value, int min, int max)
 	return ShowInt(name.c_str(), value, min, max);
 }
 
+bool ImguiHelpers::ShowLong(const char* name, long& value, long min, long max)
+{
+	// todo fix this...
+	return ImGui::DragInt(name, (int*)&value, 1.f, min, max);
+}
+
+bool ImguiHelpers::ShowLong(LXString& name, long& value, long min, long max)
+{
+	return ShowLong(name.c_str(), value, min, max);
+}
+
+bool ImguiHelpers::ShowIVec2(const char* name, glm::ivec2& value, float min, float max)
+{
+	return ImGui::DragInt2(name, (int*)&value, 1.f, min, max);
+}
+
+bool ImguiHelpers::ShowIVec2(LXString& name, glm::ivec2& value, float min, float max)
+{
+	return ShowIVec2(name.c_str(), value, min, max);
+}
+
 
 bool ImguiHelpers::ShowFloat(const char* name, float& value, float min, float max)
 {

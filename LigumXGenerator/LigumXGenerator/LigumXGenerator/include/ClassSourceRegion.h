@@ -29,6 +29,7 @@ bool VarTypeSupportsLimits(const Variable& var)
 {
 	const std::string& varType = var.GetType();
 	return (varType == "int")
+		|| (varType == "long")
 		|| (varType == "float")
 		|| (varType == "double")
 		|| (var.IsGLMType());
@@ -245,14 +246,40 @@ public:
 				const std::string& varType = var.GetType();
 
 
-				if (var.m_IsPtr)
+				if (var.m_IsPtr || var.m_IsTemplate)
 				{
 					// found
-					std::string typeToWrite = "OBJECTREF";
-					std::string varValue = "m_" + varName;
-					std::string extraArgs = ", " + var.GetType();
+					std::string typeToWrite;
+					
+					if (var.m_IsTemplate)
+					{
+						if (var.m_AssociatedPtr)
+						{
+							typeToWrite = "OBJECTPTR_VECTOR";
+						}
+						else
+						{
+							typeToWrite = "OBJECT_VECTOR";
+						}
+					}
+					else
+					{
+						typeToWrite = "OBJECTREF";
+					}
 
-					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue + extraArgs + ");");
+					std::string varValue = "m_" + varName;
+					std::string extraArgs;
+					
+					if (var.m_IsTemplate)
+					{
+						extraArgs = ", " + var.m_AssociatedType;
+					}
+					else
+					{
+						extraArgs = ", " + var.GetType();
+					}
+
+					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue /*+ extraArgs*/ + ");");
 				}
 				else
 				{
@@ -291,17 +318,24 @@ public:
 	void WriteIncludes()
 	{
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
-		WriteLine("#include \"serializer.h\"");
-		WriteLine("#include <cstddef>");
-		WriteLine("#include \"ObjectManager.h\"");
 
 		StringList neededIncludes;
 		for (const Variable& var : m_Class.m_Members)
 		{
+			std::string varType;
 			if (var.m_IsPtr)
 			{
-				const std::string& varType = var.GetType();
+				varType = var.GetType();
 
+
+			}
+			else if (var.m_IsTemplate)
+			{
+				varType = var.m_AssociatedType;
+			}
+
+			if (!varType.empty())
+			{
 				auto findResult = std::find(neededIncludes.begin(), neededIncludes.end(), varType);
 
 				if (findResult == neededIncludes.end())

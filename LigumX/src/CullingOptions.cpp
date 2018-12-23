@@ -3,9 +3,6 @@
 #pragma region  CLASS_SOURCE CullingOptions
 
 #include "CullingOptions.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData CullingOptions::g_Properties[] = 
 {
 { "CullEntities", PIDX_CullEntities, offsetof(CullingOptions, m_CullEntities), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 

@@ -7,9 +7,6 @@
 #pragma region  CLASS_SOURCE CurlRequest
 
 #include "CurlRequest.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 #include "Sector.h"
 const ClassPropertyData CurlRequest::g_Properties[] = 
 {
@@ -19,7 +16,7 @@ const ClassPropertyData CurlRequest::g_Properties[] =
 { "Result", PIDX_Result, offsetof(CurlRequest, m_Result), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Filename", PIDX_Filename, offsetof(CurlRequest, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Sector", PIDX_Sector, offsetof(CurlRequest, m_Sector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, 0, 0, 0, 0,}, 
-{ "SectorIndex", PIDX_SectorIndex, offsetof(CurlRequest, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "SectorIndex", PIDX_SectorIndex, offsetof(CurlRequest, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "Async", PIDX_Async, offsetof(CurlRequest, m_Async), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
 bool CurlRequest::Serialize(bool writing)
@@ -35,7 +32,8 @@ bool CurlRequest::ShowPropertyGrid()
 	LXIMGUI_SHOW_VEC2("Extent", m_Extent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_STRING("Result", m_Result);
 	LXIMGUI_SHOW_STRING("Filename", m_Filename);
-	LXIMGUI_SHOW_OBJECTREF("Sector", m_Sector, Sector);
+	LXIMGUI_SHOW_OBJECTREF("Sector", m_Sector);
+	LXIMGUI_SHOW_IVEC2("SectorIndex", m_SectorIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("Async", m_Async);
 	return true;
 }

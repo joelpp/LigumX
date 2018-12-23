@@ -8,9 +8,6 @@ using namespace std;
 #pragma region  CLASS_SOURCE Mesh
 
 #include "Mesh.h"
-#include "serializer.h"
-#include <cstddef>
-#include "ObjectManager.h"
 const ClassPropertyData Mesh::g_Properties[] = 
 {
 { "UsesIndexBuffer", PIDX_UsesIndexBuffer, offsetof(Mesh, m_UsesIndexBuffer), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
