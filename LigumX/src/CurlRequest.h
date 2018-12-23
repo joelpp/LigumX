@@ -71,7 +71,7 @@ PIDX_SectorIndex,
 PIDX_Async,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER CurlRequest
 

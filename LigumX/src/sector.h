@@ -73,7 +73,7 @@ PIDX_TerrainPatchEntity,
 PIDX_OSMFilename,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Sector
 

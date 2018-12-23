@@ -89,7 +89,7 @@ PIDX_Sectors,
 };
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER World
 

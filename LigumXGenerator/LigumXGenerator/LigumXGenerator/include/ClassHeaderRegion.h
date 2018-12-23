@@ -250,7 +250,7 @@ public:
 
 	void WriteShowImguiDeclaration()
 	{
-		WriteLine("bool ShowPropertyGrid();");
+		WriteLine("virtual bool ShowPropertyGrid();");
 	}
 
 	void WriteBody()

@@ -33,7 +33,7 @@ enum g_ComponentPIDX
 PIDX_ParentEntity,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Component
 

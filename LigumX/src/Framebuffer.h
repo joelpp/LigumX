@@ -62,7 +62,7 @@ PIDX_HasDepth,
 PIDX_NumColorTargets,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Framebuffer
 

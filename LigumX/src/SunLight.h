@@ -52,7 +52,7 @@ PIDX_UseSkybox,
 PIDX_Skybox,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER SunLight
 

@@ -33,7 +33,7 @@ enum g_EditorToolPIDX
 PIDX_Active,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER EditorTool
 

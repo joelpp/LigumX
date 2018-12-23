@@ -125,7 +125,7 @@ PIDX_HeightfieldTexture,
 PIDX_ShaderFamily,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Material
 

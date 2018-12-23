@@ -79,7 +79,7 @@ PIDX_PickedHeight,
 PIDX_PickedSector,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER PickingTool
 

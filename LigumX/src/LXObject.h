@@ -33,7 +33,7 @@ PIDX_ObjectID,
 PIDX_Name,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER LXObject
 

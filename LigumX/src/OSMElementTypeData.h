@@ -49,7 +49,7 @@ PIDX_DebugColor,
 PIDX_Attributes,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMElementTypeData
 

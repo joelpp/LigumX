@@ -75,7 +75,7 @@ PIDX_ShowFlatWays,
 PIDX_DebugPointInRoad,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMTool
 

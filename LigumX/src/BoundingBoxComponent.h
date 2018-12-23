@@ -41,7 +41,7 @@ PIDX_UpdatesWithEntity,
 PIDX_ModelToWorldMatrix,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER BoundingBoxComponent
 

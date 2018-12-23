@@ -52,7 +52,7 @@ PIDX_MinHeight,
 PIDX_Width,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER Heightfield
 

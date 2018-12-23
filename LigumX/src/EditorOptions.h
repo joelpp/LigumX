@@ -106,7 +106,7 @@ PIDX_MouseScrollCameraSpeed,
 PIDX_MouseScrollEntityCloseupPercent,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER EditorOptions
 

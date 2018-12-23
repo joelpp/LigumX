@@ -89,7 +89,7 @@ PIDX_LoadSectorsOnClick,
 PIDX_SelectedWayIndex,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER SectorTool
 

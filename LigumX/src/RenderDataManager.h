@@ -129,7 +129,7 @@ PIDX_CullingOptions,
 PIDX_RenderingStats,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER RenderDataManager
 

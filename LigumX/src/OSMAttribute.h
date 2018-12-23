@@ -36,7 +36,7 @@ PIDX_Key,
 PIDX_Value,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER OSMAttribute
 

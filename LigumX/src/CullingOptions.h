@@ -54,7 +54,7 @@ PIDX_DebugDotProduct,
 PIDX_DebugDotProductMaxDistance,
 };
 bool Serialize(bool writing);
-bool ShowPropertyGrid();
+virtual bool ShowPropertyGrid();
 
 #pragma endregion  HEADER CullingOptions
 
