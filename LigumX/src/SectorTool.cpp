@@ -34,13 +34,13 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "SectorGridColor", PIDX_SectorGridColor, offsetof(SectorTool, m_SectorGridColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "AsyncSectorLoading", PIDX_AsyncSectorLoading, offsetof(SectorTool, m_AsyncSectorLoading), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "NodeSize", PIDX_NodeSize, offsetof(SectorTool, m_NodeSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "LoadingRingSize", PIDX_LoadingRingSize, offsetof(SectorTool, m_LoadingRingSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "NodeSize", PIDX_NodeSize, offsetof(SectorTool, m_NodeSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "LoadingRingSize", PIDX_LoadingRingSize, offsetof(SectorTool, m_LoadingRingSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "ShowSectorAABBs", PIDX_ShowSectorAABBs, offsetof(SectorTool, m_ShowSectorAABBs), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShowGrid", PIDX_ShowGrid, offsetof(SectorTool, m_ShowGrid), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "HighlightSelectedSector", PIDX_HighlightSelectedSector, offsetof(SectorTool, m_HighlightSelectedSector), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "LoadSectorsOnClick", PIDX_LoadSectorsOnClick, offsetof(SectorTool, m_LoadSectorsOnClick), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "SelectedWayIndex", PIDX_SelectedWayIndex, offsetof(SectorTool, m_SelectedWayIndex), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "SelectedWayIndex", PIDX_SelectedWayIndex, offsetof(SectorTool, m_SelectedWayIndex), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
 bool SectorTool::Serialize(bool writing)
 {
@@ -51,13 +51,13 @@ void SectorTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_BOOL("AsyncSectorLoading", m_AsyncSectorLoading);
-	LXIMGUI_SHOW_FLOAT("NodeSize", m_NodeSize);
-	LXIMGUI_SHOW_INT("LoadingRingSize", m_LoadingRingSize);
+	LXIMGUI_SHOW_FLOAT("NodeSize", m_NodeSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_INT("LoadingRingSize", m_LoadingRingSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("ShowSectorAABBs", m_ShowSectorAABBs);
 	LXIMGUI_SHOW_BOOL("ShowGrid", m_ShowGrid);
 	LXIMGUI_SHOW_BOOL("HighlightSelectedSector", m_HighlightSelectedSector);
 	LXIMGUI_SHOW_BOOL("LoadSectorsOnClick", m_LoadSectorsOnClick);
-	LXIMGUI_SHOW_INT("SelectedWayIndex", m_SelectedWayIndex);
+	LXIMGUI_SHOW_INT("SelectedWayIndex", m_SelectedWayIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 }
 
 #pragma endregion  CLASS_SOURCE SectorTool

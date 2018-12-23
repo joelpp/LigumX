@@ -23,13 +23,69 @@ enum PropertyFlags
 	PropertyFlags_Enum				= 1 << 9,
 };
 
+
 std::unordered_map<std::string, PropertyFlags> g_PropertyFlagsStringMap;
 std::unordered_map<PropertyFlags, std::string> g_PropertyFlagsNames;
 std::unordered_map<std::string, ClassPropertyFlags> g_ClassPropertyFlagsStringMap;
 std::unordered_map<std::string, std::string> g_LXTypeToImguiCallName;
+std::unordered_map<std::string, std::string> g_DefaultMinForType;
+std::unordered_map<std::string, std::string> g_DefaultMaxForType;
+
 
 struct Variable
 {
+	Variable()
+	{
+
+	}
+	void SetMinValue(const std::string& value)
+	{
+		m_MinValue = value;
+	}
+
+	void SetMaxValue(const std::string& value)
+	{
+		m_MaxValue = value;
+	}
+
+	std::string GetMinValue()
+	{
+		if (!m_MinValue.empty())
+		{
+			return m_MinValue;
+		}
+
+		auto defaultMinIt = g_DefaultMinForType.find(m_Type);
+
+		if (defaultMinIt == g_DefaultMinForType.end())
+		{
+			return "0";
+		}
+		else
+		{
+			return defaultMinIt->second;
+		}
+	}
+
+	std::string GetMaxValue()
+	{
+		if (!m_MaxValue.empty()) 
+		{
+			return m_MaxValue;
+		}
+
+		auto defaultMaxIt = g_DefaultMaxForType.find(m_Type);
+
+		if (defaultMaxIt == g_DefaultMaxForType.end())
+		{
+			return "0";
+		}
+		else
+		{
+			return defaultMaxIt->second;
+		}
+	}
+
 	bool IsAPointer() const
 	{
 		return m_IsPtr;
@@ -59,6 +115,9 @@ struct Variable
 		m_Type = fullTypeName;
 
 		m_IsPrimitive = (m_Type == "float") || (m_Type == "int") || (m_Type == "bool");
+
+		m_MinValue = GetMinValue();
+		m_MaxValue = GetMaxValue();
 	}
 
 	void RemoveTemplateDeclaration()
@@ -105,13 +164,13 @@ struct Variable
 	bool m_IsPrimitive = false;
 	int m_PropertyFlags;
 
-	std::string m_MinValue;
-	std::string m_MaxValue;
-
 	std::string m_DefaultValue;
 
 private:
 	std::string m_Type;
+	std::string m_MinValue;
+	std::string m_MaxValue;
+
 };
 typedef std::vector<Variable> VariableList;
 typedef std::vector<LXEnum> EnumList;
@@ -170,12 +229,12 @@ int GetVarPropertyFlags(TokenList& tokens, Variable& variable)
 
 			if (flagName == "min")
 			{
-				variable.m_MinValue = list[1];
+				variable.SetMinValue(list[1]);
 			}
 
 			if (flagName == "max")
 			{
-				variable.m_MaxValue = list[1];
+				variable.SetMaxValue(list[1]);
 			}
 		}
 

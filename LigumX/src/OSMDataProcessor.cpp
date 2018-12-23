@@ -48,7 +48,7 @@ OSMDataProcessor* g_OSMDataProcessor;
 #include "ObjectManager.h"
 const ClassPropertyData OSMDataProcessor::g_Properties[] = 
 {
-{ "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Settings", PIDX_Settings, offsetof(OSMDataProcessor, m_Settings), 0, LXType_ObjectPtr, sizeof(OSMDataProcessorSettings*), LXType_OSMDataProcessorSettings, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 bool OSMDataProcessor::Serialize(bool writing)
@@ -58,7 +58,7 @@ bool OSMDataProcessor::Serialize(bool writing)
 }
 void OSMDataProcessor::ShowPropertyGrid()
 {
-	LXIMGUI_SHOW_FLOAT("RoadWidth", m_RoadWidth);
+	LXIMGUI_SHOW_FLOAT("RoadWidth", m_RoadWidth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 }
 
 #pragma endregion  CLASS_SOURCE OSMDataProcessor

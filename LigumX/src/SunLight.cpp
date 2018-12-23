@@ -14,9 +14,9 @@
 const ClassPropertyData SunLight::g_Properties[] = 
 {
 { "UseShadowMap", PIDX_UseShadowMap, offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "Time", PIDX_Time, offsetof(SunLight, m_Time), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "Orientation", PIDX_Orientation, offsetof(SunLight, m_Orientation), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "Speed", PIDX_Speed, offsetof(SunLight, m_Speed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "Time", PIDX_Time, offsetof(SunLight, m_Time), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "Orientation", PIDX_Orientation, offsetof(SunLight, m_Orientation), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "Speed", PIDX_Speed, offsetof(SunLight, m_Speed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "UseSkybox", PIDX_UseSkybox, offsetof(SunLight, m_UseSkybox), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Skybox", PIDX_Skybox, offsetof(SunLight, m_Skybox), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_Hidden, 0, 0, 0,}, 
 };
@@ -28,9 +28,9 @@ bool SunLight::Serialize(bool writing)
 void SunLight::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("UseShadowMap", m_UseShadowMap);
-	LXIMGUI_SHOW_FLOAT("Time", m_Time);
-	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation);
-	LXIMGUI_SHOW_FLOAT("Speed", m_Speed);
+	LXIMGUI_SHOW_FLOAT("Time", m_Time, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("Speed", m_Speed, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("UseSkybox", m_UseSkybox);
 }
 

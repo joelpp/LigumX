@@ -22,9 +22,9 @@ using namespace std;
 const ClassPropertyData Heightfield::g_Properties[] = 
 {
 { "HeightDataTexture", PIDX_HeightDataTexture, offsetof(Heightfield, m_HeightDataTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
-{ "MaxHeight", PIDX_MaxHeight, offsetof(Heightfield, m_MaxHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "MinHeight", PIDX_MinHeight, offsetof(Heightfield, m_MinHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "MaxHeight", PIDX_MaxHeight, offsetof(Heightfield, m_MaxHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "MinHeight", PIDX_MinHeight, offsetof(Heightfield, m_MinHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
 bool Heightfield::Serialize(bool writing)
 {
@@ -33,9 +33,9 @@ bool Heightfield::Serialize(bool writing)
 }
 void Heightfield::ShowPropertyGrid()
 {
-	LXIMGUI_SHOW_FLOAT("MaxHeight", m_MaxHeight);
-	LXIMGUI_SHOW_FLOAT("MinHeight", m_MinHeight);
-	LXIMGUI_SHOW_INT("Width", m_Width);
+	LXIMGUI_SHOW_FLOAT("MaxHeight", m_MaxHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("MinHeight", m_MinHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_INT("Width", m_Width, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 }
 
 #pragma endregion  CLASS_SOURCE Heightfield

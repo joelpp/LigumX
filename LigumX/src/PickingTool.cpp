@@ -26,13 +26,13 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "PickedEntity", PIDX_PickedEntity, offsetof(PickingTool, m_PickedEntity), 0, LXType_ObjectPtr, sizeof(Entity*), LXType_Entity, true, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(PickingTool, PickedEntity, Entity*),}, 
 { "AimingWindowPosition", PIDX_AimingWindowPosition, offsetof(PickingTool, m_AimingWindowPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "AimingWorldPosition", PIDX_AimingWorldPosition, offsetof(PickingTool, m_AimingWorldPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "AimingID", PIDX_AimingID, offsetof(PickingTool, m_AimingID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "AimingID", PIDX_AimingID, offsetof(PickingTool, m_AimingID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "PickedWorldPosition", PIDX_PickedWorldPosition, offsetof(PickingTool, m_PickedWorldPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "PickingData", PIDX_PickingData, offsetof(PickingTool, m_PickingData), 0, LXType_glmvec4, sizeof(glm::vec4), LXType_glmvec4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
-{ "PickedDepth", PIDX_PickedDepth, offsetof(PickingTool, m_PickedDepth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "PickedID", PIDX_PickedID, offsetof(PickingTool, m_PickedID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "PickedDepth", PIDX_PickedDepth, offsetof(PickingTool, m_PickedDepth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "PickedID", PIDX_PickedID, offsetof(PickingTool, m_PickedID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "PickDebugModels", PIDX_PickDebugModels, offsetof(PickingTool, m_PickDebugModels), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "PickedHeight", PIDX_PickedHeight, offsetof(PickingTool, m_PickedHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "PickedHeight", PIDX_PickedHeight, offsetof(PickingTool, m_PickedHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "PickedSector", PIDX_PickedSector, offsetof(PickingTool, m_PickedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
 bool PickingTool::Serialize(bool writing)
@@ -43,11 +43,11 @@ bool PickingTool::Serialize(bool writing)
 void PickingTool::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_FLOAT("AimingID", m_AimingID);
-	LXIMGUI_SHOW_FLOAT("PickedDepth", m_PickedDepth);
-	LXIMGUI_SHOW_FLOAT("PickedID", m_PickedID);
+	LXIMGUI_SHOW_FLOAT("AimingID", m_AimingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("PickedDepth", m_PickedDepth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("PickedID", m_PickedID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("PickDebugModels", m_PickDebugModels);
-	LXIMGUI_SHOW_FLOAT("PickedHeight", m_PickedHeight);
+	LXIMGUI_SHOW_FLOAT("PickedHeight", m_PickedHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 }
 
 #pragma endregion  CLASS_SOURCE PickingTool

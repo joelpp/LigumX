@@ -58,7 +58,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, sizeof(std::vector<EditorTool*>), LXType_stdvector, false, LXType_EditorTool, true, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 bool Editor::Serialize(bool writing)
@@ -70,7 +70,7 @@ void Editor::ShowPropertyGrid()
 {
 	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);
 	LXIMGUI_SHOW_BOOL("EditingTerrain", m_EditingTerrain);
-	LXIMGUI_SHOW_INT("PickingBufferSize", m_PickingBufferSize);
+	LXIMGUI_SHOW_INT("PickingBufferSize", m_PickingBufferSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 }
 const std::string EnumValues_EEditorTool[] = 
 {
@@ -438,7 +438,7 @@ bool Editor::ShowProperty(bool& value, const char* name)
 
 bool Editor::ShowProperty(float* value, const char* name, float min, float max)
 {
-	if (min == 0 && max == 0)
+	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
 		return ImGui::DragFloat(name, (float*)value);
 	}
@@ -451,7 +451,7 @@ bool Editor::ShowProperty(float* value, const char* name, float min, float max)
 
 bool Editor::ShowProperty(glm::vec2* value, const char* name, float min, float max)
 {
-	if (min == 0 && max == 0)
+	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
 		return ImGui::DragFloat2(name, (float*)value);
 	}
@@ -464,7 +464,7 @@ bool Editor::ShowProperty(glm::vec2* value, const char* name, float min, float m
 
 bool Editor::ShowProperty(glm::vec3* value, const char* name, float min, float max)
 {
-	if (min == 0 && max == 0)
+	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
 		return ImGui::DragFloat3(name, (float*)value);
 	}
@@ -476,7 +476,7 @@ bool Editor::ShowProperty(glm::vec3* value, const char* name, float min, float m
 
 bool Editor::ShowProperty(glm::vec4* value, const char* name, float min, float max)
 {
-	if (min == 0 && max == 0)
+	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
 		return ImGui::DragFloat4(name, (float*)value);
 	}
@@ -488,7 +488,7 @@ bool Editor::ShowProperty(glm::vec4* value, const char* name, float min, float m
 
 bool Editor::ShowProperty(glm::ivec2* value, const char* name, float min, float max)
 {
-	if (min == 0 && max == 0)
+	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
 		return ImGui::DragInt2(name, (int*)value);
 	}

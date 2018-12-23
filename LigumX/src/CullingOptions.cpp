@@ -14,7 +14,7 @@ const ClassPropertyData CullingOptions::g_Properties[] =
 { "UseAABBClipPos", PIDX_UseAABBClipPos, offsetof(CullingOptions, m_UseAABBClipPos), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugAABBClippPos", PIDX_DebugAABBClippPos, offsetof(CullingOptions, m_DebugAABBClippPos), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugDotProduct", PIDX_DebugDotProduct, offsetof(CullingOptions, m_DebugDotProduct), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "DebugDotProductMaxDistance", PIDX_DebugDotProductMaxDistance, offsetof(CullingOptions, m_DebugDotProductMaxDistance), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "DebugDotProductMaxDistance", PIDX_DebugDotProductMaxDistance, offsetof(CullingOptions, m_DebugDotProductMaxDistance), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 bool CullingOptions::Serialize(bool writing)
 {
@@ -29,7 +29,7 @@ void CullingOptions::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("UseAABBClipPos", m_UseAABBClipPos);
 	LXIMGUI_SHOW_BOOL("DebugAABBClippPos", m_DebugAABBClippPos);
 	LXIMGUI_SHOW_BOOL("DebugDotProduct", m_DebugDotProduct);
-	LXIMGUI_SHOW_FLOAT("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance);
+	LXIMGUI_SHOW_FLOAT("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 }
 
 #pragma endregion  CLASS_SOURCE CullingOptions

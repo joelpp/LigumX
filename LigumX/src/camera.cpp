@@ -29,13 +29,13 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ViewMatrixInverse", PIDX_ViewMatrixInverse, offsetof(Camera, m_ViewMatrixInverse), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ProjectionMatrixInverse", PIDX_ProjectionMatrixInverse, offsetof(Camera, m_ProjectionMatrixInverse), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
 { "ViewProjectionMatrixInverse", PIDX_ViewProjectionMatrixInverse, offsetof(Camera, m_ViewProjectionMatrixInverse), 0, LXType_glmmat4, sizeof(glm::mat4), LXType_glmmat4, false, LXType_None, false, PropertyFlags_Hidden | PropertyFlags_Transient, 0, 0, 0,}, 
-{ "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "FarPlane", PIDX_FarPlane, offsetof(Camera, m_FarPlane), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "FarPlane", PIDX_FarPlane, offsetof(Camera, m_FarPlane), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 2000, 0,}, 
-{ "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 bool Camera::Serialize(bool writing)
 {
@@ -45,13 +45,13 @@ bool Camera::Serialize(bool writing)
 }
 void Camera::ShowPropertyGrid()
 {
-	LXIMGUI_SHOW_FLOAT("NearPlane", m_NearPlane);
-	LXIMGUI_SHOW_FLOAT("FarPlane", m_FarPlane);
-	LXIMGUI_SHOW_INT("ProjectionType", m_ProjectionType);
-	LXIMGUI_SHOW_FLOAT("OrthoBorders", m_OrthoBorders);
-	LXIMGUI_SHOW_FLOAT("ViewSize", m_ViewSize);
-	LXIMGUI_SHOW_FLOAT("MovementSpeed", m_MovementSpeed);
-	LXIMGUI_SHOW_FLOAT("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor);
+	LXIMGUI_SHOW_FLOAT("NearPlane", m_NearPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("FarPlane", m_FarPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_INT("ProjectionType", m_ProjectionType, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	LXIMGUI_SHOW_FLOAT("OrthoBorders", m_OrthoBorders, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("ViewSize", m_ViewSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("MovementSpeed", m_MovementSpeed, 0, 2000);
+	LXIMGUI_SHOW_FLOAT("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 }
 
 #pragma endregion  CLASS_SOURCE Camera

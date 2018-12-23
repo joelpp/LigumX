@@ -25,7 +25,15 @@ if (flags & propertyflag) \
 } \
 
 
+bool VarTypeSupportsLimits(const Variable& var)
+{
+	const std::string& varType = var.GetType();
+	return (varType == "int")
+		|| (varType == "float")
+		|| (varType == "double")
+		|| (var.IsGLMType());
 
+}
 
 class ClassSourceRegion : public CodeRegion
 {
@@ -189,8 +197,8 @@ public:
 					+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "
 					+ (var.m_AssociatedPtr ? "true" : "false") + ", "
 					+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
-					+ (var.m_MinValue.size() > 0 ? var.m_MinValue : "0") + ", "
-					+ (var.m_MaxValue.size() > 0 ? var.m_MaxValue : "0") + ", "
+					+ var.GetMinValue() + ", "
+					+ var.GetMaxValue() + ", "
 					+ writeCallbackStream.str() + ","
 					+ "}, ");
 			}
@@ -235,18 +243,18 @@ public:
 				{
 					// found
 					std::string typeToWrite = findResult->second;
-					std::string var = "m_" + varName;
+					std::string varValue = "m_" + varName;
 					std::string extraArgs = "";
 
-					//if (var.m_MinValue != "0" || var.m_MaxValue != "0")
-					//{
-					//	// has limits
-					//	typeToWrite += "_Limits"
-					//}
-					//else
-					//{
-					//}
-					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\"," + var + extraArgs + ");");
+					if (VarTypeSupportsLimits(var))
+					{
+						// has limits
+						extraArgs += ", " + var.GetMinValue() + ", " + var.GetMaxValue();
+					}
+					else
+					{
+					}
+					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue + extraArgs + ");");
 				}
 				else
 				{

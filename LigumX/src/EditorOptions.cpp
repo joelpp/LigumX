@@ -26,8 +26,8 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "DisplayFramebufferTool", PIDX_DisplayFramebufferTool, offsetof(EditorOptions, m_DisplayFramebufferTool), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayTerrainTool", PIDX_DisplayTerrainTool, offsetof(EditorOptions, m_DisplayTerrainTool), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayAxisGizmo", PIDX_DisplayAxisGizmo, offsetof(EditorOptions, m_DisplayAxisGizmo), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "MouseScrollCameraSpeed", PIDX_MouseScrollCameraSpeed, offsetof(EditorOptions, m_MouseScrollCameraSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "MouseScrollEntityCloseupPercent", PIDX_MouseScrollEntityCloseupPercent, offsetof(EditorOptions, m_MouseScrollEntityCloseupPercent), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "MouseScrollCameraSpeed", PIDX_MouseScrollCameraSpeed, offsetof(EditorOptions, m_MouseScrollCameraSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "MouseScrollEntityCloseupPercent", PIDX_MouseScrollEntityCloseupPercent, offsetof(EditorOptions, m_MouseScrollEntityCloseupPercent), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 bool EditorOptions::Serialize(bool writing)
 {
@@ -54,8 +54,8 @@ void EditorOptions::ShowPropertyGrid()
 	LXIMGUI_SHOW_BOOL("DisplayFramebufferTool", m_DisplayFramebufferTool);
 	LXIMGUI_SHOW_BOOL("DisplayTerrainTool", m_DisplayTerrainTool);
 	LXIMGUI_SHOW_BOOL("DisplayAxisGizmo", m_DisplayAxisGizmo);
-	LXIMGUI_SHOW_FLOAT("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed);
-	LXIMGUI_SHOW_FLOAT("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent);
+	LXIMGUI_SHOW_FLOAT("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_FLOAT("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 }
 
 #pragma endregion  CLASS_SOURCE EditorOptions

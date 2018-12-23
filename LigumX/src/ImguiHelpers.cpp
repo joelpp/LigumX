@@ -11,22 +11,22 @@ bool ImguiHelpers::ShowBool(LXString& name, bool& value)
 }
 
 
-bool ImguiHelpers::ShowInt_NoLimits(const char* name, int& value)
+bool ImguiHelpers::ShowInt(const char* name, int& value, int min, int max)
 {
-	return ImGui::DragInt(name, &value);
+	return ImGui::DragInt(name, &value, 1.f, min, max);
 }
-bool ImguiHelpers::ShowInt_NoLimits(LXString& name, int& value)
+bool ImguiHelpers::ShowInt(LXString& name, int& value, int min, int max)
 {
-	return ShowInt_NoLimits(name.c_str(), value);
-}
-
-
-bool ImguiHelpers::ShowFloat_NoLimits(const char* name, float& value)
-{
-	return ImGui::DragFloat2(name, &value);
+	return ShowInt(name.c_str(), value, min, max);
 }
 
-bool ImguiHelpers::ShowFloat_NoLimits(LXString& name, float& value)
+
+bool ImguiHelpers::ShowFloat(const char* name, float& value, float min, float max)
 {
-	return ImguiHelpers::ShowFloat_NoLimits(name.c_str(), value);
+	return ImGui::DragFloat(name, &value, 1.f, min, max);
+}
+
+bool ImguiHelpers::ShowFloat(LXString& name, float& value, float min, float max)
+{
+	return ImguiHelpers::ShowFloat(name.c_str(), value, min, max);
 }

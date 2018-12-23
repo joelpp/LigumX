@@ -11,7 +11,7 @@
 #include "ObjectManager.h"
 const ClassPropertyData CurlRequest::g_Properties[] = 
 {
-{ "State", PIDX_State, offsetof(CurlRequest, m_State), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "State", PIDX_State, offsetof(CurlRequest, m_State), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "Coords", PIDX_Coords, offsetof(CurlRequest, m_Coords), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Extent", PIDX_Extent, offsetof(CurlRequest, m_Extent), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Result", PIDX_Result, offsetof(CurlRequest, m_Result), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -27,7 +27,7 @@ bool CurlRequest::Serialize(bool writing)
 }
 void CurlRequest::ShowPropertyGrid()
 {
-	LXIMGUI_SHOW_INT("State", m_State);
+	LXIMGUI_SHOW_INT("State", m_State, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("Async", m_Async);
 }
 

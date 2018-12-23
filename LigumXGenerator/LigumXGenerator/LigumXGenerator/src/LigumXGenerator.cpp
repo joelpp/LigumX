@@ -512,6 +512,12 @@ void InitializeGenerator()
 	g_LXTypeToImguiCallName.emplace("bool", "BOOL");
 	g_LXTypeToImguiCallName.emplace("int", "INT");
 	g_LXTypeToImguiCallName.emplace("float", "FLOAT");
+
+	g_DefaultMinForType.emplace("float", "LX_LIMITS_FLOAT_MIN");
+	g_DefaultMinForType.emplace("int", "LX_LIMITS_INT_MIN");
+
+	g_DefaultMaxForType.emplace("float", "LX_LIMITS_FLOAT_MAX");
+	g_DefaultMaxForType.emplace("int", "LX_LIMITS_INT_MAX");
 }
 
 void WriteLineToFile(std::fstream& file, const char* line)
