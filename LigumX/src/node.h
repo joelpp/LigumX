@@ -20,6 +20,7 @@ public:
 static const int ClassID = 879231789;
 static const LXType Type = LXType_Node;
 static constexpr const char* ClassName = "Node";
+typedef OSMElement super;
 
 const long& GetOSMId() { return m_OSMId; }; 
 void SetOSMId(long value) { m_OSMId = value; }; 

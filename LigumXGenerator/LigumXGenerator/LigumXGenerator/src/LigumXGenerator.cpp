@@ -340,6 +340,12 @@ ClassList createLXClass(std::vector<std::string>& lines)
 					//		AddToTypesMap(g_AdditionalEnums, var.m_Type);
 					//	}
 					//}
+
+					if (currentClass.m_ParentName.empty() && currentClass.m_Name != "LXObject")
+					{
+						currentClass.m_ParentName = "LXObject";
+					}
+
 					currentClass.m_IsValid = true;
 					classes.push_back(currentClass);
 					currentClass = LXClass();

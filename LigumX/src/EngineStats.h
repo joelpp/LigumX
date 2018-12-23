@@ -16,6 +16,7 @@ public:
 static const int ClassID = 2882477190;
 static const LXType Type = LXType_EngineStats;
 static constexpr const char* ClassName = "EngineStats";
+typedef LXObject super;
 
 int GetNumObjectMapHits() { return m_NumObjectMapHits; }; 
 void SetNumObjectMapHits(int value) { m_NumObjectMapHits = value; }; 

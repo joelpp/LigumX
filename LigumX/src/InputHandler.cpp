@@ -30,6 +30,7 @@ bool InputHandler::Serialize(bool writing)
 }
 bool InputHandler::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Mouse1Pressed", m_Mouse1Pressed);
 	LXIMGUI_SHOW_BOOL("Mouse2Pressed", m_Mouse2Pressed);
 	LXIMGUI_SHOW_BOOL("CtrlHeld", m_CtrlHeld);

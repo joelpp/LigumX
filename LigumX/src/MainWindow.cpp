@@ -23,6 +23,7 @@ bool MainWindow::Serialize(bool writing)
 }
 bool MainWindow::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("InFocus", m_InFocus);
 	LXIMGUI_SHOW_VEC2("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_STRING("Title", m_Title);

@@ -40,6 +40,7 @@ bool Material::Serialize(bool writing)
 }
 bool Material::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_VEC3("AmbientColor", m_AmbientColor, 0, 1);
 	LXIMGUI_SHOW_VEC3("DiffuseColor", m_DiffuseColor, 0, 1);

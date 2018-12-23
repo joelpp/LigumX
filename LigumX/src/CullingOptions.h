@@ -15,6 +15,7 @@ public:
 static const int ClassID = 188449055;
 static const LXType Type = LXType_CullingOptions;
 static constexpr const char* ClassName = "CullingOptions";
+typedef LXObject super;
 
 bool GetCullEntities() { return m_CullEntities; }; 
 void SetCullEntities(bool value) { m_CullEntities = value; }; 

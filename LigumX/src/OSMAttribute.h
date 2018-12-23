@@ -17,6 +17,7 @@ public:
 static const int ClassID = 3768964154;
 static const LXType Type = LXType_OSMAttribute;
 static constexpr const char* ClassName = "OSMAttribute";
+typedef LXObject super;
 
 const std::string& GetKey() { return m_Key; }; 
 void SetKey(std::string value) { m_Key = value; }; 

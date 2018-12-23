@@ -21,6 +21,7 @@ bool OSMElementTypeDataStore::Serialize(bool writing)
 }
 bool OSMElementTypeDataStore::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	return true;
 }
 

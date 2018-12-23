@@ -18,6 +18,7 @@ public:
 static const int ClassID = 4268435202;
 static const LXType Type = LXType_EditorTool;
 static constexpr const char* ClassName = "EditorTool";
+typedef LXObject super;
 
 bool GetActive() { return m_Active; }; 
 void SetActive(bool value) { m_Active = value; }; 

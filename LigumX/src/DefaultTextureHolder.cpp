@@ -26,6 +26,7 @@ bool DefaultTextureHolder::Serialize(bool writing)
 }
 bool DefaultTextureHolder::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("AsphaltTexture", m_AsphaltTexture, Texture);
 	LXIMGUI_SHOW_OBJECTREF("DirtTexture", m_DirtTexture, Texture);
 	LXIMGUI_SHOW_OBJECTREF("GrassTexture", m_GrassTexture, Texture);

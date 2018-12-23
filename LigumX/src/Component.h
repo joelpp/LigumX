@@ -18,6 +18,7 @@ public:
 static const int ClassID = 718440320;
 static const LXType Type = LXType_Component;
 static constexpr const char* ClassName = "Component";
+typedef LXObject super;
 
 Entity*& GetParentEntity() { return m_ParentEntity; }; 
 void SetParentEntity(Entity* value) { m_ParentEntity = value; }; 

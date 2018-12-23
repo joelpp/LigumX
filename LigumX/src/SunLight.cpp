@@ -28,6 +28,7 @@ bool SunLight::Serialize(bool writing)
 }
 bool SunLight::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("UseShadowMap", m_UseShadowMap);
 	LXIMGUI_SHOW_FLOAT("Time", m_Time, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

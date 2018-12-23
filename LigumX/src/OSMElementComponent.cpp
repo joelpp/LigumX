@@ -18,6 +18,7 @@ bool OSMElementComponent::Serialize(bool writing)
 }
 bool OSMElementComponent::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("Way", m_Way, Way);
 	return true;
 }

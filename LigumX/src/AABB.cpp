@@ -21,6 +21,7 @@ bool AABB::Serialize(bool writing)
 }
 bool AABB::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_VEC3("StartPoint", m_StartPoint, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC3("Scale", m_Scale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;

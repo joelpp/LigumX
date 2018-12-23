@@ -17,6 +17,7 @@ bool EditorTool::Serialize(bool writing)
 }
 bool EditorTool::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Active", m_Active);
 	return true;
 }

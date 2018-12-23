@@ -17,6 +17,7 @@ public:
 static const int ClassID = 2995597492;
 static const LXType Type = LXType_MainWindow;
 static constexpr const char* ClassName = "MainWindow";
+typedef LXObject super;
 
 bool GetInFocus() { return m_InFocus; }; 
 void SetInFocus(bool value) { m_InFocus = value; }; 

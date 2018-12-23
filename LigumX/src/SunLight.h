@@ -16,6 +16,7 @@ public:
 static const int ClassID = 2842600075;
 static const LXType Type = LXType_SunLight;
 static constexpr const char* ClassName = "SunLight";
+typedef LXObject super;
 
 bool GetUseShadowMap() { return m_UseShadowMap; }; 
 void SetUseShadowMap(bool value) { m_UseShadowMap = value; }; 

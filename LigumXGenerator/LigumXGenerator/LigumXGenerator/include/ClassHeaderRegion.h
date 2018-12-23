@@ -54,19 +54,12 @@ public:
 		Write("class ");
 		Write(m_Class.m_Name);
 
-		if (m_Class.m_ParentName.empty())
-		{
-			if (!(m_Class.IsLXObject()))
-			{
-				Write(" : public LXObject");
-			}
-		}
-		else
+		if (!(m_Class.IsLXObject()))
 		{
 			Write(" : public ");
 			Write(m_Class.m_ParentName);
-
 		}
+
 		Write("\n");
 		WriteLine("{");
 		WriteLine("public:");
@@ -75,6 +68,14 @@ public:
 
 		m_Stream << "static const LXType Type = LXType_" << m_Class.m_Name << ";" << std::endl;
 		m_Stream << "static constexpr const char* ClassName = \"" << m_Class.m_Name << "\";" << std::endl;
+
+
+		if (!(m_Class.IsLXObject()))
+		{
+			WriteLine("typedef " + m_Class.m_ParentName + " super;");
+		}
+
+
 		m_Stream << std::endl;
 	}
 

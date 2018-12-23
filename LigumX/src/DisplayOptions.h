@@ -28,6 +28,7 @@ public:
 static const int ClassID = 2473594549;
 static const LXType Type = LXType_DisplayOptions;
 static constexpr const char* ClassName = "DisplayOptions";
+typedef LXObject super;
 
 bool GetUseSkyLighting() { return m_UseSkyLighting; }; 
 void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 

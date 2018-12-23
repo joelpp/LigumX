@@ -19,6 +19,7 @@ public:
 static const int ClassID = 395171594;
 static const LXType Type = LXType_PickingTool;
 static constexpr const char* ClassName = "PickingTool";
+typedef EditorTool super;
 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 

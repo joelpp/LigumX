@@ -40,6 +40,7 @@ bool Sector::Serialize(bool writing)
 }
 bool Sector::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_VEC2("WorldPosition", m_WorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("EarthPosition", m_EarthPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("DataLoaded", m_DataLoaded);

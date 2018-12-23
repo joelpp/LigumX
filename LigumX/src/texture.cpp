@@ -30,6 +30,7 @@ bool Texture::Serialize(bool writing)
 }
 bool Texture::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_STRING("Filename", m_Filename);
 	LXIMGUI_SHOW_BOOL("IsCubeMap", m_IsCubeMap);
 	LXIMGUI_SHOW_INT("NumChannels", m_NumChannels, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);

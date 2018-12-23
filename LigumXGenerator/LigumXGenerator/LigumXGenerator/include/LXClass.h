@@ -188,7 +188,7 @@ struct LXClass
 
 	bool IsLXObject() 
 	{
-		return m_Name == "LXObject";
+		return m_ParentName.empty();
 	}
 };
 

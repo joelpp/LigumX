@@ -24,6 +24,7 @@ bool Node::Serialize(bool writing)
 }
 bool Node::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_VEC2("LongLat", m_LongLat, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC3("WorldPosition", m_WorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("Elevation", m_Elevation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

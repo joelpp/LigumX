@@ -34,6 +34,7 @@ bool Heightfield::Serialize(bool writing)
 }
 bool Heightfield::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("HeightDataTexture", m_HeightDataTexture, Texture);
 	LXIMGUI_SHOW_FLOAT("MaxHeight", m_MaxHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("MinHeight", m_MinHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

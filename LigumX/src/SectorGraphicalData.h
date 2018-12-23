@@ -19,6 +19,7 @@ public:
 static const int ClassID = 1523090688;
 static const LXType Type = LXType_SectorGraphicalData;
 static constexpr const char* ClassName = "SectorGraphicalData";
+typedef LXObject super;
 
 Model*& GetNodesModel() { return m_NodesModel; }; 
 void SetNodesModel(Model* value) { m_NodesModel = value; }; 

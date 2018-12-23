@@ -18,6 +18,7 @@ bool OSMAttribute::Serialize(bool writing)
 }
 bool OSMAttribute::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_STRING("Key", m_Key);
 	LXIMGUI_SHOW_STRING("Value", m_Value);
 	return true;

@@ -15,6 +15,7 @@ public:
 static const int ClassID = 1877541511;
 static const LXType Type = LXType_OSMDataProcessorSettings;
 static constexpr const char* ClassName = "OSMDataProcessorSettings";
+typedef LXObject super;
 
 float GetMinFacadeLength() { return m_MinFacadeLength; }; 
 void SetMinFacadeLength(float value) { m_MinFacadeLength = value; }; 

@@ -19,6 +19,7 @@ public:
 static const int ClassID = 199658736;
 static const LXType Type = LXType_Framebuffer;
 static constexpr const char* ClassName = "Framebuffer";
+typedef LXObject super;
 
 int GetWidth() { return m_Width; }; 
 void SetWidth(int value) { m_Width = value; }; 

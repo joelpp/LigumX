@@ -19,6 +19,7 @@ public:
 static const int ClassID = 2115103629;
 static const LXType Type = LXType_InputHandler;
 static constexpr const char* ClassName = "InputHandler";
+typedef LXObject super;
 
 bool GetMouse1Pressed() { return m_Mouse1Pressed; }; 
 void SetMouse1Pressed(bool value) { SetMouse1Pressed_Callback(value); }; 

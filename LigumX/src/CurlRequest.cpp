@@ -29,6 +29,7 @@ bool CurlRequest::Serialize(bool writing)
 }
 bool CurlRequest::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_INT("State", m_State, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_VEC2("Coords", m_Coords, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("Extent", m_Extent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

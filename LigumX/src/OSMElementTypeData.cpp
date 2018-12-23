@@ -20,6 +20,7 @@ bool OSMElementTypeData::Serialize(bool writing)
 }
 bool OSMElementTypeData::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("FillIn", m_FillIn);
 	LXIMGUI_SHOW_VEC3("DebugColor", m_DebugColor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;

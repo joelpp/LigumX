@@ -19,6 +19,7 @@ public:
 static const int ClassID = 2047816512;
 static const LXType Type = LXType_GUI;
 static constexpr const char* ClassName = "GUI";
+typedef LXObject super;
 
 bool Getm_Enabled() { return m_m_Enabled; }; 
 void Setm_Enabled(bool value) { m_m_Enabled = value; }; 

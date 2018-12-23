@@ -34,6 +34,7 @@ public:
 static const int ClassID = 2789929640;
 static const LXType Type = LXType_TerrainTool;
 static constexpr const char* ClassName = "TerrainTool";
+typedef EditorTool super;
 
 const TerrainEditionMode& GetMode() { return m_Mode; }; 
 void SetMode(TerrainEditionMode value) { m_Mode = value; }; 

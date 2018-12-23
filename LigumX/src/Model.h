@@ -31,6 +31,7 @@ public:
 static const int ClassID = 2189814010;
 static const LXType Type = LXType_Model;
 static constexpr const char* ClassName = "Model";
+typedef LXObject super;
 
 const std::string& GetFilename() { return m_Filename; }; 
 void SetFilename(std::string value) { m_Filename = value; }; 

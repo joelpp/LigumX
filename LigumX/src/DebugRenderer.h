@@ -16,6 +16,7 @@ public:
 static const int ClassID = 1763775919;
 static const LXType Type = LXType_DebugRenderer;
 static constexpr const char* ClassName = "DebugRenderer";
+typedef LXObject super;
 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 

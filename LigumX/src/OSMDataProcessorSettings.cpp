@@ -30,6 +30,7 @@ bool OSMDataProcessorSettings::Serialize(bool writing)
 }
 bool OSMDataProcessorSettings::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_FLOAT("MinFacadeLength", m_MinFacadeLength, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("MaxFacadeLength", m_MaxFacadeLength, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("MinPlotLengthRatio", m_MinPlotLengthRatio, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

@@ -33,6 +33,7 @@ bool Entity::Serialize(bool writing)
 }
 bool Entity::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Visible", m_Visible);
 	LXIMGUI_SHOW_VEC3("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("RotationAngle", m_RotationAngle, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

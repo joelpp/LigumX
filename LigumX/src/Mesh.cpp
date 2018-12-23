@@ -24,6 +24,7 @@ bool Mesh::Serialize(bool writing)
 }
 bool Mesh::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("UsesIndexBuffer", m_UsesIndexBuffer);
 	LXIMGUI_SHOW_BOOL("WireframeRendering", m_WireframeRendering);
 	LXIMGUI_SHOW_BOOL("PointRendering", m_PointRendering);

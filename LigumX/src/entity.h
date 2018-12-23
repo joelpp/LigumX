@@ -30,6 +30,7 @@ public:
 static const int ClassID = 3231396602;
 static const LXType Type = LXType_Entity;
 static constexpr const char* ClassName = "Entity";
+typedef LXObject super;
 
 bool GetVisible() { return m_Visible; }; 
 void SetVisible(bool value) { m_Visible = value; }; 

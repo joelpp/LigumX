@@ -30,6 +30,7 @@ public:
 static const int ClassID = 749113007;
 static const LXType Type = LXType_Sector;
 static constexpr const char* ClassName = "Sector";
+typedef LXObject super;
 
 glm::vec2& GetWorldPosition() { return m_WorldPosition; }; 
 void SetWorldPosition(const glm::vec2& value) { m_WorldPosition = value; }; 

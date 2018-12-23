@@ -18,6 +18,7 @@ bool Component::Serialize(bool writing)
 }
 bool Component::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("ParentEntity", m_ParentEntity, Entity);
 	return true;
 }

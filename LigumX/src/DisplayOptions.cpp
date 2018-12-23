@@ -38,6 +38,7 @@ bool DisplayOptions::Serialize(bool writing)
 }
 bool DisplayOptions::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("UseSkyLighting", m_UseSkyLighting);
 	LXIMGUI_SHOW_BOOL("RenderTerrain", m_RenderTerrain);
 	LXIMGUI_SHOW_BOOL("DrawSky", m_DrawSky);

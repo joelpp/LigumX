@@ -50,6 +50,7 @@ bool SectorTool::Serialize(bool writing)
 }
 bool SectorTool::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_VEC3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("HighlightedSectorUV", m_HighlightedSectorUV, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

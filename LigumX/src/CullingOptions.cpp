@@ -23,6 +23,7 @@ bool CullingOptions::Serialize(bool writing)
 }
 bool CullingOptions::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("CullEntities", m_CullEntities);
 	LXIMGUI_SHOW_BOOL("CullSectors", m_CullSectors);
 	LXIMGUI_SHOW_BOOL("UseDotProduct", m_UseDotProduct);

@@ -71,6 +71,7 @@ bool Editor::Serialize(bool writing)
 }
 bool Editor::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("Options", m_Options, EditorOptions);
 	LXIMGUI_SHOW_VEC4("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);

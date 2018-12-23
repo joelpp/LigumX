@@ -59,6 +59,7 @@ bool OSMDataProcessor::Serialize(bool writing)
 }
 bool OSMDataProcessor::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_FLOAT("RoadWidth", m_RoadWidth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_OBJECTREF("Settings", m_Settings, OSMDataProcessorSettings);
 	return true;

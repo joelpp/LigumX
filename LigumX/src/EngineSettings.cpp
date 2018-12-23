@@ -30,6 +30,7 @@ bool EngineSettings::Serialize(bool writing)
 }
 bool EngineSettings::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_FLOAT("WorldScale", m_WorldScale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("StartLonLat", m_StartLonLat, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("Extent", m_Extent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

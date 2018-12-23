@@ -17,6 +17,7 @@ public:
 static const int ClassID = 513733670;
 static const LXType Type = LXType_EngineSettings;
 static constexpr const char* ClassName = "EngineSettings";
+typedef LXObject super;
 
 float GetWorldScale() { return m_WorldScale; }; 
 void SetWorldScale(float value) { m_WorldScale = value; }; 

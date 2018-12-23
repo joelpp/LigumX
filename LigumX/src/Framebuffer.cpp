@@ -27,6 +27,7 @@ bool Framebuffer::Serialize(bool writing)
 }
 bool Framebuffer::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_INT("Width", m_Width, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("Height", m_Height, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("HasDepth", m_HasDepth);

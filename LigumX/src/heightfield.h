@@ -25,6 +25,7 @@ public:
 static const int ClassID = 3816013350;
 static const LXType Type = LXType_Heightfield;
 static constexpr const char* ClassName = "Heightfield";
+typedef LXObject super;
 
 Texture*& GetHeightDataTexture() { return m_HeightDataTexture; }; 
 void SetHeightDataTexture(Texture* value) { m_HeightDataTexture = value; }; 

@@ -26,6 +26,7 @@ bool Way::Serialize(bool writing)
 }
 bool Way::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_INT("OSMId", m_OSMId, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("IndexInSector", m_IndexInSector, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_BOOL("FilledIn", m_FilledIn);

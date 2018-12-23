@@ -26,6 +26,7 @@ public:
 static const int ClassID = 2610247209;
 static const LXType Type = LXType_SectorTool;
 static constexpr const char* ClassName = "SectorTool";
+typedef EditorTool super;
 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 

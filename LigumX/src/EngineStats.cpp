@@ -19,6 +19,7 @@ bool EngineStats::Serialize(bool writing)
 }
 bool EngineStats::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_INT("NumObjectMapHits", m_NumObjectMapHits, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("NumDrawCalls", m_NumDrawCalls, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;

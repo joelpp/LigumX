@@ -21,6 +21,7 @@ public:
 static const int ClassID = 3454283446;
 static const LXType Type = LXType_OSMElementTypeData;
 static constexpr const char* ClassName = "OSMElementTypeData";
+typedef LXObject super;
 
 const OSMElementType& GetType() { return m_Type; }; 
 void SetType(OSMElementType value) { m_Type = value; }; 

@@ -52,6 +52,7 @@ bool RenderDataManager::Serialize(bool writing)
 }
 bool RenderDataManager::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("CullingOptions", m_CullingOptions, CullingOptions);
 	LXIMGUI_SHOW_OBJECTREF("RenderingStats", m_RenderingStats, RenderingStats);
 	return true;

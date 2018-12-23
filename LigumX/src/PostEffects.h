@@ -17,6 +17,7 @@ public:
 static const int ClassID = 3178515267;
 static const LXType Type = LXType_PostEffects;
 static constexpr const char* ClassName = "PostEffects";
+typedef LXObject super;
 
 bool GetGammaCorrectionEnabled() { return m_GammaCorrectionEnabled; }; 
 void SetGammaCorrectionEnabled(bool value) { m_GammaCorrectionEnabled = value; }; 

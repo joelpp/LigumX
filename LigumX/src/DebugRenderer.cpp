@@ -18,6 +18,7 @@ bool DebugRenderer::Serialize(bool writing)
 }
 bool DebugRenderer::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	return true;
 }

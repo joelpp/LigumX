@@ -58,6 +58,7 @@ public:
 static const int ClassID = 3714116915;
 static const LXType Type = LXType_World;
 static constexpr const char* ClassName = "World";
+typedef LXObject super;
 
 SunLight*& GetSunLight() { return m_SunLight; }; 
 void SetSunLight(SunLight* value) { m_SunLight = value; }; 

@@ -36,6 +36,7 @@ bool EditorOptions::Serialize(bool writing)
 }
 bool EditorOptions::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_BOOL("ShowWorldWindow", m_ShowWorldWindow);
 	LXIMGUI_SHOW_BOOL("ShowMaterialWindow", m_ShowMaterialWindow);

@@ -23,6 +23,7 @@ public:
 static const int ClassID = 3880549230;
 static const LXType Type = LXType_Camera;
 static constexpr const char* ClassName = "Camera";
+typedef LXObject super;
 
 glm::vec3& GetPosition() { return m_Position; }; 
 void SetPosition(const glm::vec3& value) { m_Position = value; }; 

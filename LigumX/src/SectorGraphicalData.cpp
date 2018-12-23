@@ -28,6 +28,7 @@ bool SectorGraphicalData::Serialize(bool writing)
 }
 bool SectorGraphicalData::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("NodesModel", m_NodesModel, Model);
 	LXIMGUI_SHOW_OBJECTREF("WaysModel", m_WaysModel, Model);
 	LXIMGUI_SHOW_OBJECTREF("SplatMapTexture", m_SplatMapTexture, Texture);

@@ -41,6 +41,7 @@ bool TerrainTool::Serialize(bool writing)
 }
 bool TerrainTool::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("TerrainErasureMode", m_TerrainErasureMode);
 	LXIMGUI_SHOW_FLOAT("TerrainBrushSize", m_TerrainBrushSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC4("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

@@ -92,6 +92,7 @@ public:
 static const int ClassID = 1498036510;
 static const LXType Type = LXType_Renderer;
 static constexpr const char* ClassName = "Renderer";
+typedef LXObject super;
 
 DisplayOptions*& GetDisplayOptions() { return m_DisplayOptions; }; 
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 

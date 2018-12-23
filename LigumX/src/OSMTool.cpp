@@ -46,6 +46,7 @@ bool OSMTool::Serialize(bool writing)
 }
 bool OSMTool::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode, Node);
 	LXIMGUI_SHOW_BOOL("SearchOnlyWithinSector", m_SearchOnlyWithinSector);

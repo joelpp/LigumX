@@ -28,6 +28,7 @@ bool Model::Serialize(bool writing)
 }
 bool Model::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_STRING("Filename", m_Filename);
 	return true;
 }

@@ -23,6 +23,7 @@ public:
 static const int ClassID = 2137978372;
 static const LXType Type = LXType_Way;
 static constexpr const char* ClassName = "Way";
+typedef OSMElement super;
 
 int GetOSMId() { return m_OSMId; }; 
 void SetOSMId(int value) { m_OSMId = value; }; 

@@ -28,6 +28,7 @@ public:
 static const int ClassID = 2618865284;
 static const LXType Type = LXType_CurlRequest;
 static constexpr const char* ClassName = "CurlRequest";
+typedef LXObject super;
 
 int GetState() { return m_State; }; 
 void SetState(int value) { m_State = value; }; 

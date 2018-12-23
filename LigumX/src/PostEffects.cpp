@@ -20,6 +20,7 @@ bool PostEffects::Serialize(bool writing)
 }
 bool PostEffects::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("GammaCorrectionEnabled", m_GammaCorrectionEnabled);
 	LXIMGUI_SHOW_FLOAT("GammaExponent", m_GammaExponent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("ToneMappingEnabled", m_ToneMappingEnabled);

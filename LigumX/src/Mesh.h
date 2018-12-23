@@ -91,6 +91,7 @@ public:
 static const int ClassID = 132142556;
 static const LXType Type = LXType_Mesh;
 static constexpr const char* ClassName = "Mesh";
+typedef LXObject super;
 
 bool GetUsesIndexBuffer() { return m_UsesIndexBuffer; }; 
 void SetUsesIndexBuffer(bool value) { m_UsesIndexBuffer = value; }; 

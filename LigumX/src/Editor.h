@@ -49,6 +49,7 @@ public:
 static const int ClassID = 1231601560;
 static const LXType Type = LXType_Editor;
 static constexpr const char* ClassName = "Editor";
+typedef LXObject super;
 
 EditorOptions*& GetOptions() { return m_Options; }; 
 void SetOptions(EditorOptions* value) { m_Options = value; }; 

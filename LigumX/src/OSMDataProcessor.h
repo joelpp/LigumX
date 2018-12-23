@@ -68,6 +68,7 @@ public:
 static const int ClassID = 3101510658;
 static const LXType Type = LXType_OSMDataProcessor;
 static constexpr const char* ClassName = "OSMDataProcessor";
+typedef LXObject super;
 
 float GetRoadWidth() { return m_RoadWidth; }; 
 void SetRoadWidth(float value) { m_RoadWidth = value; }; 

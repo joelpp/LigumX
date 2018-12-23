@@ -19,6 +19,7 @@ bool BoundingBoxComponent::Serialize(bool writing)
 }
 bool BoundingBoxComponent::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("UpdatesWithEntity", m_UpdatesWithEntity);
 	return true;
 }

@@ -227,9 +227,14 @@ public:
 		WriteLine("bool " + m_Class.m_Name + "::ShowPropertyGrid()");
 		WriteLine("{");
 
-		int numProperties = m_Class.m_Members.size();
-
 		std::string tabStop = "\t";
+
+		if (!m_Class.IsLXObject())
+		{
+			WriteLine(tabStop + "super::ShowPropertyGrid();");
+		}
+
+		int numProperties = m_Class.m_Members.size();
 
 		if (numProperties > 0)
 		{

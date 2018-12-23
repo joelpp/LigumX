@@ -15,6 +15,7 @@ public:
 static const int ClassID = 2949050158;
 static const LXType Type = LXType_RenderingStats;
 static constexpr const char* ClassName = "RenderingStats";
+typedef LXObject super;
 
 int GetNumVisibleEntities() { return m_NumVisibleEntities; }; 
 void SetNumVisibleEntities(int value) { m_NumVisibleEntities = value; }; 

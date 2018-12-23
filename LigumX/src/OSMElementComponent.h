@@ -18,6 +18,7 @@ public:
 static const int ClassID = 3716861205;
 static const LXType Type = LXType_OSMElementComponent;
 static constexpr const char* ClassName = "OSMElementComponent";
+typedef Component super;
 
 Way*& GetWay() { return m_Way; }; 
 void SetWay(Way* value) { m_Way = value; }; 

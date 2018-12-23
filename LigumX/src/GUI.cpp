@@ -21,6 +21,7 @@ bool GUI::Serialize(bool writing)
 }
 bool GUI::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("m_Enabled", m_m_Enabled);
 	LXIMGUI_SHOW_INT("NumActiveWindows", m_NumActiveWindows, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	return true;

@@ -18,6 +18,7 @@ public:
 static const int ClassID = 1140622857;
 static const LXType Type = LXType_BoundingBoxComponent;
 static constexpr const char* ClassName = "BoundingBoxComponent";
+typedef Component super;
 
 const AABB& GetBoundingBox() { return m_BoundingBox; }; 
 void SetBoundingBox(AABB value) { m_BoundingBox = value; }; 

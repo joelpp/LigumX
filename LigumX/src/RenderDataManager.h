@@ -110,6 +110,7 @@ public:
 static const int ClassID = 2933429220;
 static const LXType Type = LXType_RenderDataManager;
 static constexpr const char* ClassName = "RenderDataManager";
+typedef LXObject super;
 
 CullingOptions*& GetCullingOptions() { return m_CullingOptions; }; 
 void SetCullingOptions(CullingOptions* value) { m_CullingOptions = value; }; 

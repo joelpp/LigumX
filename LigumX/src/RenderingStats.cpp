@@ -21,6 +21,7 @@ bool RenderingStats::Serialize(bool writing)
 }
 bool RenderingStats::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_INT("NumVisibleEntities", m_NumVisibleEntities, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("NumVisibleSectors", m_NumVisibleSectors, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
 	LXIMGUI_SHOW_INT("NumDebugModels", m_NumDebugModels, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);

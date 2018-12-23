@@ -41,6 +41,7 @@ bool World::Serialize(bool writing)
 }
 bool World::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("SunLight", m_SunLight, SunLight);
 	return true;
 }

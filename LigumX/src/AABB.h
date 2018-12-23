@@ -15,6 +15,7 @@ public:
 static const int ClassID = 1726995287;
 static const LXType Type = LXType_AABB;
 static constexpr const char* ClassName = "AABB";
+typedef LXObject super;
 
 glm::vec3& GetStartPoint() { return m_StartPoint; }; 
 void SetStartPoint(const glm::vec3& value) { m_StartPoint = value; }; 

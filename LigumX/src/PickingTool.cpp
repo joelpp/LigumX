@@ -44,6 +44,7 @@ bool PickingTool::Serialize(bool writing)
 }
 bool PickingTool::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
 	LXIMGUI_SHOW_OBJECTREF("PickedEntity", m_PickedEntity, Entity);
 	LXIMGUI_SHOW_VEC2("AimingWindowPosition", m_AimingWindowPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

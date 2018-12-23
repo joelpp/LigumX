@@ -23,6 +23,7 @@ public:
 static const int ClassID = 878880296;
 static const LXType Type = LXType_OSMTool;
 static constexpr const char* ClassName = "OSMTool";
+typedef EditorTool super;
 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 

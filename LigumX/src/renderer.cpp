@@ -58,6 +58,7 @@ bool Renderer::Serialize(bool writing)
 }
 bool Renderer::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("DisplayOptions", m_DisplayOptions, DisplayOptions);
 	LXIMGUI_SHOW_OBJECTREF("PostEffects", m_PostEffects, PostEffects);
 	LXIMGUI_SHOW_OBJECTREF("DebugCamera", m_DebugCamera, Camera);

@@ -32,6 +32,7 @@ public:
 static const int ClassID = 3419754368;
 static const LXType Type = LXType_Material;
 static constexpr const char* ClassName = "Material";
+typedef LXObject super;
 
 bool GetEnabled() { return m_Enabled; }; 
 void SetEnabled(bool value) { m_Enabled = value; }; 

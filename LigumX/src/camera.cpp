@@ -45,6 +45,7 @@ bool Camera::Serialize(bool writing)
 }
 bool Camera::ShowPropertyGrid()
 {
+	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_VEC3("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC3("FrontVector", m_FrontVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC3("RightVector", m_RightVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
