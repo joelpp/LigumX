@@ -1283,8 +1283,21 @@ void Editor::RenderImgui()
 			ImGui::EndMenu();
 		}
 
-		ShowPropertyGridTemplate<DisplayOptions>(renderer->GetDisplayOptions(), "Display options");
-		ShowPropertyGridTemplate<EditorOptions>(GetOptions(), "Editor options");
+		{
+			ImguiMenuScope scope("Display Options");
+			if (scope.m_Opened)
+			{
+				renderer->GetDisplayOptions()->ShowPropertyGrid();
+			}
+		}
+
+		{
+			ImguiMenuScope scope("Editor options");
+			if (scope.m_Opened)
+			{
+				GetOptions()->ShowPropertyGrid();
+			}
+		}
 
 		{
 			const char* name = "Tools";

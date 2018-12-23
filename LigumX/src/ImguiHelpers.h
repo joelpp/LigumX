@@ -62,6 +62,27 @@ public:
 	ImguiIDScope m_IDScope;
 };
 
+class ImguiMenuScope
+{
+public:
+	ImguiMenuScope(const char* name)
+		: m_IDScope(name)
+	{
+		m_Opened = ImGui::BeginMenu(name);
+	}
+
+	~ImguiMenuScope()
+	{
+		if (m_Opened)
+		{
+			ImGui::EndMenu();
+		}
+	}
+
+	bool m_Opened;
+	ImguiIDScope m_IDScope;
+};
+
 namespace ImguiHelpers
 {
 	bool ShowBool(const char* name, bool& value);
@@ -73,8 +94,8 @@ namespace ImguiHelpers
 	bool ShowLong(const char* name, long& value, long min, long max);
 	bool ShowLong(LXString& name, long& value, long min, long max);
 
-	bool ShowIVec2(const char* name, glm::ivec2& value, float min, float max);
-	bool ShowIVec2(LXString& name, glm::ivec2& value, float min, float max);
+	bool ShowIVec2(const char* name, glm::ivec2& value, int min, int max);
+	bool ShowIVec2(LXString& name, glm::ivec2& value, int min, int max);
 
 	bool ShowFloat(const char* name, float& value, float min, float max);
 	bool ShowFloat(LXString& name, float& value, float min, float max);
