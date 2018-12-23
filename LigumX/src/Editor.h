@@ -141,6 +141,9 @@ bool ShowPropertyGridPtr(T** object, const char* name);
 template <typename T>
 bool ShowPropertyGridTemplate(T*& object, const char* name);
 
+template <typename T>
+bool ShowPropertyGridForObject(T*& object, const char* name);
+
 template<typename T>
 void ShowGenericProperty(T*& object, const ClassPropertyData& propertyData);
 

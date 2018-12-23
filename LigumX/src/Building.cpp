@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "LXSystem.h"
 #include "Building.h"
 #include "Way.h"
 #include "Model.h"
@@ -9,7 +10,6 @@
 #include "Renderer.h"
 #include "Material.h"
 #include "LigumX.h"
-#include "LXError.h"
 #include "EngineSettings.h"
 
 using namespace glm;

@@ -1111,6 +1111,42 @@ bool Editor::ShowPropertyGridTemplate(T*& object, const char* name)
 	return readyToDisplay;
 }
 
+template<typename T>
+bool Editor::ShowPropertyGridForObject(T*& object, const char* name)
+{
+	ImGui::PushID(name);
+
+	// one could have see having an enum to control how the property grid will be rendered
+	// i.e. menu, own window with treenode, treenode only, __just the properties__
+	bool readyToDisplay = false;
+	if (m_RenderingMenu)
+	{
+		readyToDisplay = ImGui::BeginMenu(name);
+	}
+	else
+	{
+		readyToDisplay = ImGui::TreeNode(name);
+	}
+
+	if (readyToDisplay)
+	{
+		object->ShowPropertyGrid();
+
+		if (m_RenderingMenu)
+		{
+			ImGui::EndMenu();
+		}
+		else
+		{
+			ImGui::TreePop();
+		}
+	}
+
+	ImGui::PopID();
+
+	return readyToDisplay;
+}
+
 
 
 template<typename T>
@@ -1274,7 +1310,7 @@ void Editor::RenderImgui()
 		ShowPropertyGridTemplate(g_InputHandler, "Input Handler");
 		ShowPropertyGridTemplate(renderer->GetPostEffects(), "Post Effects");
 		ShowPropertyGridTemplate(renderer->GetDebugCamera(), "Camera");
-		ShowPropertyGridTemplate(world->GetSunLight(), "SunLight");
+		ShowPropertyGridForObject(world->GetSunLight(), "SunLight");
 		ShowPropertyGridTemplate(world, "World");
 		ShowPropertyGridTemplate(g_RenderDataManager, "RenderDataManager");
 		ShowPropertyGridTemplate(g_OSMDataProcessor, "OSMDataProcessor");

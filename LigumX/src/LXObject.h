@@ -1,15 +1,15 @@
 #pragma once
 
-#include <string>
+#include "LXSystem.h"
 
 class LXObject
 {
 public:
 	int GetObjectID() { return m_ObjectID; };
 	void SetObjectID(int objectID) { m_ObjectID = objectID; };
-	const std::string& GetName() { return m_Name; }
-	void SetName(const std::string& name) { m_Name = name; }
+	const LXString& GetName() { return m_Name; }
+	void SetName(const LXString& name) { m_Name = name; }
 private:
 	int m_ObjectID;
-	std::string m_Name;
+	LXString m_Name;
 };

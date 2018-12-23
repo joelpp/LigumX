@@ -55,6 +55,10 @@ bool Serialize(bool writing);
 
 #pragma endregion  HEADER SunLight
 
+void ShowPropertyGrid();
+
 glm::vec3 GetSunDirection();
+
+
 
 };

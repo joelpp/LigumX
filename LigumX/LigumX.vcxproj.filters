@@ -243,6 +243,9 @@
     <ClCompile Include="src\OSMElementTypeDataStore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ImguiHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -582,6 +585,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\OSMElementTypeDataStore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImguiHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LXSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LXTypeDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LXLimits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

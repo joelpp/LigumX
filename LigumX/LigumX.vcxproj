@@ -179,6 +179,7 @@
     <ClCompile Include="src\GUI.cpp" />
     <ClCompile Include="src\heightfield.cpp" />
     <ClCompile Include="src\imgui.cpp" />
+    <ClCompile Include="src\ImguiHelpers.cpp" />
     <ClCompile Include="src\imgui_demo.cpp" />
     <ClCompile Include="src\imgui_draw.cpp" />
     <ClCompile Include="src\imgui_impl_glfw_gl3.cpp" />
@@ -284,6 +285,7 @@
     <ClInclude Include="src\EngineStats.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\FileUtils.h" />
+    <ClInclude Include="src\ImguiHelpers.h" />
     <ClInclude Include="src\LXError.h" />
     <ClInclude Include="src\Framebuffer.h" />
     <ClInclude Include="src\GL.h" />
@@ -297,7 +299,10 @@
     <ClInclude Include="src\LigumX.h" />
     <ClInclude Include="src\linesegment.h" />
     <ClInclude Include="src\Logging.h" />
+    <ClInclude Include="src\LXLimits.h" />
     <ClInclude Include="src\LXObject.h" />
+    <ClInclude Include="src\LXSystem.h" />
+    <ClInclude Include="src\LXTypeDefinition.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Math.h" />

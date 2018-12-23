@@ -1,0 +1,1 @@
+#define LXString std::string
