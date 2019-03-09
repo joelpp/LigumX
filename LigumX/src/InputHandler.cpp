@@ -28,17 +28,17 @@ bool InputHandler::Serialize(bool writing)
 bool InputHandler::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("Mouse1Pressed", m_Mouse1Pressed);
+	LXIMGUI_SHOW_BOOL_SETCALLBACK("Mouse1Pressed", m_Mouse1Pressed);
 	LXIMGUI_SHOW_BOOL("Mouse2Pressed", m_Mouse2Pressed);
 	LXIMGUI_SHOW_BOOL("CtrlHeld", m_CtrlHeld);
 	LXIMGUI_SHOW_BOOL("Dragging", m_Dragging);
 	LXIMGUI_SHOW_VEC2("DragDistance", m_DragDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("LastDragDistance", m_LastDragDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("DragAccumulator", m_DragAccumulator, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("MouseClickPosition", m_MouseClickPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2_SETCALLBACK("MouseClickPosition", m_MouseClickPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("LastMouseClickPosition", m_LastMouseClickPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("MouseReleasePosition", m_MouseReleasePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("MousePosition", m_MousePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC2_SETCALLBACK("MousePosition", m_MousePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("LastMousePosition", m_LastMousePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC2("MouseScroll", m_MouseScroll, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	return true;

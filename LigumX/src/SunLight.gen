@@ -5,7 +5,9 @@ class SunLight
 	float Orientation;
 	float Speed;
 
+	[setcallback]
 	bool UseSkybox;
+
 	[hidden]
 	Texture* Skybox;
 }

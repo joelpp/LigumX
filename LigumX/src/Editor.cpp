@@ -71,7 +71,7 @@ bool Editor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_OBJECTREF("Options", m_Options);
-	LXIMGUI_SHOW_VEC4("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	LXIMGUI_SHOW_VEC4_SETCALLBACK("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);
 	LXIMGUI_SHOW_VEC3("ManipulatorStartPosition", m_ManipulatorStartPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_BOOL("EditingTerrain", m_EditingTerrain);

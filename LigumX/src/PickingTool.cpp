@@ -43,7 +43,7 @@ bool PickingTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_OBJECTREF("PickedEntity", m_PickedEntity);
+	LXIMGUI_SHOW_OBJECTREF_SETCALLBACK("PickedEntity", m_PickedEntity);
 	LXIMGUI_SHOW_VEC2("AimingWindowPosition", m_AimingWindowPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_VEC3("AimingWorldPosition", m_AimingWorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
 	LXIMGUI_SHOW_FLOAT("AimingID", m_AimingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);

@@ -27,7 +27,8 @@ void SetOrientation(float value) { m_Orientation = value; };
 float GetSpeed() { return m_Speed; }; 
 void SetSpeed(float value) { m_Speed = value; }; 
 bool GetUseSkybox() { return m_UseSkybox; }; 
-void SetUseSkybox(bool value) { m_UseSkybox = value; }; 
+void SetUseSkybox(bool value) { SetUseSkybox_Callback(value); }; 
+void SetUseSkybox_Callback(const bool& value);
 Texture*& GetSkybox() { return m_Skybox; }; 
 void SetSkybox(Texture* value) { m_Skybox = value; }; 
 private:

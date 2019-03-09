@@ -40,5 +40,7 @@ OutputGLErrors
 1
 DisplayDebugModels
 1
+PickingEnabled
+1
 DisplayMode
 0

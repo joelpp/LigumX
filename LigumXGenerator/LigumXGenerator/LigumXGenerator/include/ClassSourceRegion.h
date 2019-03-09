@@ -287,6 +287,11 @@ public:
 						extraArgs = ", " + var.GetType();
 					}
 
+					if (var.m_PropertyFlags & PropertyFlags_SetCallback)
+					{
+						typeToWrite += "_SETCALLBACK";
+					}
+
 					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue /*+ extraArgs*/ + ");");
 				}
 				else
@@ -308,6 +313,12 @@ public:
 						}
 						else
 						{
+						}
+
+
+						if (var.m_PropertyFlags & PropertyFlags_SetCallback)
+						{
+							typeToWrite += "_SETCALLBACK";
 						}
 						WriteLine(tabStop + "LXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue + extraArgs + ");");
 					}

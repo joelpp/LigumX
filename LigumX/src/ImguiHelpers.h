@@ -7,21 +7,28 @@
 // todo : overload macros based on number of arguments? 
 
 #define LXIMGUI_SHOW_BOOL(name, value) ImguiHelpers::ShowBool(name, value)
+#define LXIMGUI_SHOW_BOOL_SETCALLBACK(name, value) ImguiHelpers::ShowBool(name, value)
+
 #define LXIMGUI_SHOW_INT(name, value, min, max) ImguiHelpers::ShowInt(name, value, min, max)
 #define LXIMGUI_SHOW_LONG(name, value, min, max) ImguiHelpers::ShowLong(name, value, min, max)
 #define LXIMGUI_SHOW_IVEC2(name, value, min, max) ImguiHelpers::ShowIVec2(name, value, min, max)
 
 
 #define LXIMGUI_SHOW_FLOAT(name, value, min, max) ImguiHelpers::ShowFloat(name, value, min, max)
+#define LXIMGUI_SHOW_FLOAT_SETCALLBACK(name, value, min, max) ImguiHelpers::ShowFloat(name, value, min, max)
 #define LXIMGUI_SHOW_VEC2(name, value, min, max) ImguiHelpers::ShowVec2(name, value, min, max)
+#define LXIMGUI_SHOW_VEC2_SETCALLBACK(name, value, min, max) ImguiHelpers::ShowVec2(name, value, min, max)
 #define LXIMGUI_SHOW_VEC3(name, value, min, max) ImguiHelpers::ShowVec3(name, value, min, max)
+#define LXIMGUI_SHOW_VEC3_SETCALLBACK(name, value, min, max) ImguiHelpers::ShowVec3(name, value, min, max)
 #define LXIMGUI_SHOW_VEC4(name, value, min, max) ImguiHelpers::ShowVec4(name, value, min, max)
+#define LXIMGUI_SHOW_VEC4_SETCALLBACK(name, value, min, max) ImguiHelpers::ShowVec4(name, value, min, max)
 #define LXIMGUI_SHOW_STRING(name, value) ImguiHelpers::ShowString(name, value)
 
 #define LXIMGUI_SHOW_OBJECTPTR_VECTOR(name, value) ImguiHelpers::ShowVector(name, value)
 #define LXIMGUI_SHOW_OBJECT_VECTOR(name, value) ImguiHelpers::ShowVector(name, value)
 
 #define LXIMGUI_SHOW_OBJECTREF(name, value) ImguiHelpers::ShowObjectPtr(name, value);
+#define LXIMGUI_SHOW_OBJECTREF_SETCALLBACK(name, value) ImguiHelpers::ShowObjectPtr(name, value);
 
 class ImguiIDScope
 {

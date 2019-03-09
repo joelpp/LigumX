@@ -54,8 +54,8 @@ bool Material::ShowPropertyGrid()
 	LXIMGUI_SHOW_FLOAT("RefractionIndex", m_RefractionIndex, 0, 1);
 	LXIMGUI_SHOW_BOOL("IsGlass", m_IsGlass);
 	LXIMGUI_SHOW_BOOL("ReflectEnvironment", m_ReflectEnvironment);
-	LXIMGUI_SHOW_OBJECTREF("DiffuseTexture", m_DiffuseTexture);
-	LXIMGUI_SHOW_OBJECTREF("SpecularTexture", m_SpecularTexture);
+	LXIMGUI_SHOW_OBJECTREF_SETCALLBACK("DiffuseTexture", m_DiffuseTexture);
+	LXIMGUI_SHOW_OBJECTREF_SETCALLBACK("SpecularTexture", m_SpecularTexture);
 	LXIMGUI_SHOW_OBJECTREF("HeightfieldTexture", m_HeightfieldTexture);
 	return true;
 }
