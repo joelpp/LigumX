@@ -145,7 +145,7 @@ public:
 	virtual void Process() = 0;
 	virtual bool GenerateFileStub(std::string& stub) { return false; }
 	
-	virtual bool IsBeginMarker(TokenList& token) { return false; }
+	virtual bool IsBeginMarker(TokenList& token, bool createStub) { return false; }
 
 protected:
 	std::stringstream m_Stream;
