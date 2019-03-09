@@ -1,0 +1,10 @@
+class Serializer
+{
+
+	bool writing = false;
+
+	bool IsValid = false;
+
+	std::string Filename;
+
+}

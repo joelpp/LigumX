@@ -101,9 +101,9 @@ bool Building::GenerateModel()
 	        Node* n2 = *(nodeIt2);
 	        Node* n3 = *(nodeIt3);
 
-	        vec3 p1 = n1->GetWorldPosition();
-	        vec3 p2 = n2->GetWorldPosition();
-	        vec3 p3 = n3->GetWorldPosition();
+	        const vec3& p1 = n1->GetWorldPosition();
+	        const vec3& p2 = n2->GetWorldPosition();
+	        const vec3& p3 = n3->GetWorldPosition();
 			if (p1 == p2 || p1 == p3)
 			{
 				cout << "bad precision" << std::endl;
@@ -140,12 +140,11 @@ bool Building::GenerateModel()
 	    	if(isGoodTriangle) 
 	    	{
 	        	// create triangle
-	            vec3 p1 = n1->GetWorldPosition();
-	            vec3 p2 = n2->GetWorldPosition();
-	            vec3 p3 = n3->GetWorldPosition();
+	            const vec3& p1 = n1->GetWorldPosition();
+	            const vec3& p2 = n2->GetWorldPosition();
+	            const vec3& p3 = n3->GetWorldPosition();
 
-	            vec3 point;
-	            point = p1;
+				vec3 point = p1;
 	            tempTriangleVertices.push_back(point);
 	            point = p2;
 	            tempTriangleVertices.push_back(point);
