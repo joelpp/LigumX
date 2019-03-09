@@ -24,7 +24,7 @@ public:
 		ss << "\n";
 		ss << "\n";
 
-		ss << "class " << m_Class.m_Name << " : public LXObject";
+		ss << "class " << m_Class.m_Name;
 		ss << "\n";
 		ss << "{";
 		ss << "\n";
@@ -51,11 +51,22 @@ public:
 	void WriteHeader()
 	{
 		WriteLine(m_CodeRegionBeginString);
+		Write("class ");
+		Write(m_Class.m_Name);
 
+		if (!(m_Class.IsLXObject()))
+		{
+			Write(" : public ");
+			Write(m_Class.m_ParentName);
+		}
+
+		Write("\n");
+		WriteLine("{");
 		WriteLine("public:");
 		m_Stream << "static const int ClassID = " << std::hash_value(m_Class.m_Name) << ";" << std::endl;
 
 
+		m_Stream << "static const LXType Type = LXType_" << m_Class.m_Name << ";" << std::endl;
 		m_Stream << "static constexpr const char* ClassName = \"" << m_Class.m_Name << "\";" << std::endl;
 
 
