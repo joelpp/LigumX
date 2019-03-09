@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS EditorOptions
 #include "LXSystem.h"
+class Serializer2;
 
 class EditorOptions;
 
@@ -105,6 +106,7 @@ PIDX_DisplayAxisGizmo,
 PIDX_MouseScrollCameraSpeed,
 PIDX_MouseScrollEntityCloseupPercent,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

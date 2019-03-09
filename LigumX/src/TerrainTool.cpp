@@ -16,6 +16,7 @@
 #pragma region  CLASS_SOURCE TerrainTool
 
 #include "TerrainTool.h"
+#include "serializer.h"
 #include "Sector.h"
 const ClassPropertyData TerrainTool::g_Properties[] = 
 {
@@ -28,8 +29,15 @@ const ClassPropertyData TerrainTool::g_Properties[] =
 { "SplatMapIncrement", PIDX_SplatMapIncrement, offsetof(TerrainTool, m_SplatMapIncrement), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "ClickedSector", PIDX_ClickedSector, offsetof(TerrainTool, m_ClickedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
+bool TerrainTool::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool TerrainTool::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

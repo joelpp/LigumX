@@ -5,6 +5,7 @@
 #pragma region  CLASS_SOURCE MainWindow
 
 #include "MainWindow.h"
+#include "serializer.h"
 const ClassPropertyData MainWindow::g_Properties[] = 
 {
 { "InFocus", PIDX_InFocus, offsetof(MainWindow, m_InFocus), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -12,8 +13,15 @@ const ClassPropertyData MainWindow::g_Properties[] =
 { "Size", PIDX_Size, offsetof(MainWindow, m_Size), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "Title", PIDX_Title, offsetof(MainWindow, m_Title), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool MainWindow::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool MainWindow::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;

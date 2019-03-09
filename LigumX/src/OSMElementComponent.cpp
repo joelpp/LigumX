@@ -3,13 +3,21 @@
 #pragma region  CLASS_SOURCE OSMElementComponent
 
 #include "OSMElementComponent.h"
+#include "serializer.h"
 #include "Way.h"
 const ClassPropertyData OSMElementComponent::g_Properties[] = 
 {
 { "Way", PIDX_Way, offsetof(OSMElementComponent, m_Way), 0, LXType_ObjectPtr, sizeof(Way*), LXType_Way, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool OSMElementComponent::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool OSMElementComponent::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

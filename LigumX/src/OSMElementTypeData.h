@@ -7,6 +7,7 @@
 
 #pragma region  FORWARD_DECLARATIONS OSMElementTypeData
 #include "LXSystem.h"
+class Serializer2;
 
 class OSMElementTypeData;
 class OSMAttribute;
@@ -48,6 +49,7 @@ PIDX_FillIn,
 PIDX_DebugColor,
 PIDX_Attributes,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

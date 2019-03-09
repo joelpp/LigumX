@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS OSMElementTypeDataStore
 #include "LXSystem.h"
+class Serializer2;
 
 class OSMElementTypeDataStore;
 class OSMElementTypeData;
@@ -35,6 +36,7 @@ enum g_OSMElementTypeDataStorePIDX
 {
 PIDX_Data,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

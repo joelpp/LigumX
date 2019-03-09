@@ -6,6 +6,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Heightfield
 #include "LXSystem.h"
+class Serializer2;
 
 class Heightfield;
 class Texture;
@@ -51,6 +52,7 @@ PIDX_MaxHeight,
 PIDX_MinHeight,
 PIDX_Width,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -8,6 +8,7 @@
 #pragma region  CLASS_SOURCE SunLight
 
 #include "SunLight.h"
+#include "serializer.h"
 #include "Texture.h"
 const ClassPropertyData SunLight::g_Properties[] = 
 {
@@ -18,8 +19,15 @@ const ClassPropertyData SunLight::g_Properties[] =
 { "UseSkybox", PIDX_UseSkybox, offsetof(SunLight, m_UseSkybox), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(SunLight, UseSkybox, bool),}, 
 { "Skybox", PIDX_Skybox, offsetof(SunLight, m_Skybox), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_Hidden, 0, 0, 0,}, 
 };
+bool SunLight::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool SunLight::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

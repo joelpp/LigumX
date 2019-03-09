@@ -10,6 +10,7 @@ enum ThreadState
 
 #pragma region  FORWARD_DECLARATIONS CurlRequest
 #include "LXSystem.h"
+class Serializer2;
 
 class CurlRequest;
 class Sector;
@@ -70,6 +71,7 @@ PIDX_Sector,
 PIDX_SectorIndex,
 PIDX_Async,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

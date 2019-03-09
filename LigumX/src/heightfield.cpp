@@ -16,6 +16,7 @@ using namespace std;
 #pragma region  CLASS_SOURCE Heightfield
 
 #include "Heightfield.h"
+#include "serializer.h"
 #include "Texture.h"
 const ClassPropertyData Heightfield::g_Properties[] = 
 {
@@ -24,8 +25,15 @@ const ClassPropertyData Heightfield::g_Properties[] =
 { "MinHeight", PIDX_MinHeight, offsetof(Heightfield, m_MinHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
+bool Heightfield::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Heightfield::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

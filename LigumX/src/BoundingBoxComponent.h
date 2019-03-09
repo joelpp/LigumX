@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS BoundingBoxComponent
 #include "LXSystem.h"
+class Serializer2;
 
 class BoundingBoxComponent;
 
@@ -40,6 +41,7 @@ PIDX_BoundingBox,
 PIDX_UpdatesWithEntity,
 PIDX_ModelToWorldMatrix,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

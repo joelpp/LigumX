@@ -12,14 +12,22 @@
 #pragma region  CLASS_SOURCE Model
 
 #include "Model.h"
+#include "serializer.h"
 #include "Material.h"
 const ClassPropertyData Model::g_Properties[] = 
 {
 { "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, sizeof(std::vector<Material*>), LXType_stdvector, false, LXType_Material, true, 0, 0, 0, 0,}, 
 };
+bool Model::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Model::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;

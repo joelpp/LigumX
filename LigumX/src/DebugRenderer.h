@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS DebugRenderer
 #include "LXSystem.h"
+class Serializer2;
 
 class DebugRenderer;
 
@@ -30,6 +31,7 @@ enum g_DebugRendererPIDX
 {
 PIDX_Enabled,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

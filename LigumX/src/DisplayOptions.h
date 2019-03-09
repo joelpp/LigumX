@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS DisplayOptions
 #include "LXSystem.h"
+class Serializer2;
 
 class DisplayOptions;
 
@@ -122,6 +123,7 @@ PIDX_DisplayDebugModels,
 PIDX_PickingEnabled,
 PIDX_DisplayMode,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

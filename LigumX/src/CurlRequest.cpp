@@ -7,6 +7,7 @@
 #pragma region  CLASS_SOURCE CurlRequest
 
 #include "CurlRequest.h"
+#include "serializer.h"
 #include "Sector.h"
 const ClassPropertyData CurlRequest::g_Properties[] = 
 {
@@ -19,8 +20,15 @@ const ClassPropertyData CurlRequest::g_Properties[] =
 { "SectorIndex", PIDX_SectorIndex, offsetof(CurlRequest, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "Async", PIDX_Async, offsetof(CurlRequest, m_Async), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool CurlRequest::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool CurlRequest::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

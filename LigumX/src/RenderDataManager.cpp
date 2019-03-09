@@ -35,6 +35,7 @@ RenderDataManager* g_RenderDataManager;
 #pragma region  CLASS_SOURCE RenderDataManager
 
 #include "RenderDataManager.h"
+#include "serializer.h"
 #include "CullingOptions.h"
 #include "RenderingStats.h"
 const ClassPropertyData RenderDataManager::g_Properties[] = 
@@ -42,8 +43,15 @@ const ClassPropertyData RenderDataManager::g_Properties[] =
 { "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_ObjectPtr, sizeof(CullingOptions*), LXType_CullingOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "RenderingStats", PIDX_RenderingStats, offsetof(RenderDataManager, m_RenderingStats), 0, LXType_ObjectPtr, sizeof(RenderingStats*), LXType_RenderingStats, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool RenderDataManager::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool RenderDataManager::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

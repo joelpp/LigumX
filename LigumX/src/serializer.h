@@ -7,6 +7,7 @@
 #include "property.h"
 #include "ObjectManager.h"
 #include "Logging.h"
+#include "Serializer2.h"
 
 
 class Serializer

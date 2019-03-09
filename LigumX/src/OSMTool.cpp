@@ -22,6 +22,7 @@
 #pragma region  CLASS_SOURCE OSMTool
 
 #include "OSMTool.h"
+#include "serializer.h"
 #include "Node.h"
 #include "Way.h"
 const ClassPropertyData OSMTool::g_Properties[] = 
@@ -37,8 +38,15 @@ const ClassPropertyData OSMTool::g_Properties[] =
 { "ShowFlatWays", PIDX_ShowFlatWays, offsetof(OSMTool, m_ShowFlatWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugPointInRoad", PIDX_DebugPointInRoad, offsetof(OSMTool, m_DebugPointInRoad), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool OSMTool::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool OSMTool::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

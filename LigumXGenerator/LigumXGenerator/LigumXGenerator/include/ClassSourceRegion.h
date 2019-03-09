@@ -211,8 +211,16 @@ public:
 
 	void WriteSerializer()
 	{
+		WriteLine("bool " + m_Class.m_Name + "::Serialize(Serializer2& serializer)");
+		WriteLine("{");
+		WriteLine("	return true;");
+		WriteLine("}");
+
 		WriteLine("bool " + m_Class.m_Name + "::Serialize(bool writing)");
 		WriteLine("{");
+		WriteLine(R"(	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); )");
+		WriteLine(R"(	Serialize(serializer2); )");
+		WriteLine("");
 		WriteLine(R"(	bool success = g_Serializer->SerializeObject(this, writing); )");
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
@@ -231,12 +239,109 @@ public:
 		WriteLine("}");
 
 	}
+
+	enum OutputType
+	{
+		Imgui = 0,
+		File
+	};
+
+	//struct OutputParams
+	//{
+
+	//	const char* m_PtrVector;
+	//	const char* m_Vector;
+	//	const char* m_Reference;
+	//	const char* m_Reference;
+	//};
+
+	void WriteImguiVariable(Variable& var)
+	{
+		std::string prefix = "LXImgui_Show";
+		std::string tabStop = "\t";
+
+		std::string& varName = var.m_Name;
+		std::string varValue = "m_" + varName;
+		std::string extraArgs;
+		std::string typeToWrite;
+
+		const std::string& varType = var.GetType();
+
+		bool write = false;
+
+		if (var.m_IsPtr || var.m_IsTemplate)
+		{
+			// found
+			write = true;
+
+			if (var.m_IsTemplate)
+			{
+				if (var.m_AssociatedPtr)
+				{
+					typeToWrite = "ObjectPtrVector";
+				}
+				else
+				{
+					typeToWrite = "ObjectVector";
+				}
+			}
+			else
+			{
+				typeToWrite = "ObjectPtr";
+			}
+
+
+			if (var.m_IsTemplate)
+			{
+				extraArgs = ", " + var.m_AssociatedType;
+			}
+			else
+			{
+				extraArgs = ", " + var.GetType();
+			}
+
+
+		}
+		else
+		{
+			// not a ref to another object. maybe a primitive type? 
+			auto findResult = g_LXTypeToImguiCallName.find(varType);
+
+			if (findResult != g_LXTypeToImguiCallName.end())
+			{
+				// found
+				write = true;
+
+				std::string typeToWrite = findResult->second;
+
+				if (VarTypeSupportsLimits(var))
+				{
+					// has limits
+					extraArgs += ", " + var.GetMinValue() + ", " + var.GetMaxValue();
+				}
+				else
+				{
+				}
+
+			}
+		}
+
+		if (var.m_PropertyFlags & PropertyFlags_SetCallback)
+		{
+			typeToWrite += "_SetCallback";
+		}
+
+		if (write)
+		{
+			WriteLine(tabStop + prefix + typeToWrite + "(\"" + varName + "\", " + varValue + ");");
+		}
+	}
+
 	void WriteShowImgui()
 	{
 		WriteLine("bool " + m_Class.m_Name + "::ShowPropertyGrid()");
 		WriteLine("{");
 
-		std::string tabStop = "\t";
 
 		if (!m_Class.IsLXObject())
 		{
@@ -250,84 +355,7 @@ public:
 			for (int i = 0; i < numProperties; ++i)
 			{
 				Variable& var = m_Class.m_Members[i];
-				std::string&  varName = var.m_Name;
-				const std::string& varType = var.GetType();
-
-
-				if (var.m_IsPtr || var.m_IsTemplate)
-				{
-					// found
-					std::string typeToWrite;
-					
-					if (var.m_IsTemplate)
-					{
-						if (var.m_AssociatedPtr)
-						{
-							typeToWrite = "OBJECTPTR_VECTOR";
-						}
-						else
-						{
-							typeToWrite = "OBJECT_VECTOR";
-						}
-					}
-					else
-					{
-						typeToWrite = "OBJECTREF";
-					}
-
-					std::string varValue = "m_" + varName;
-					std::string extraArgs;
-					
-					if (var.m_IsTemplate)
-					{
-						extraArgs = ", " + var.m_AssociatedType;
-					}
-					else
-					{
-						extraArgs = ", " + var.GetType();
-					}
-
-					if (var.m_PropertyFlags & PropertyFlags_SetCallback)
-					{
-						typeToWrite += "_SETCALLBACK";
-					}
-
-					WriteLine("\tLXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue /*+ extraArgs*/ + ");");
-				}
-				else
-				{
-					// not a ref to another object. maybe a primitive type? 
-					auto findResult = g_LXTypeToImguiCallName.find(varType);
-
-					if (findResult != g_LXTypeToImguiCallName.end())
-					{
-						// found
-						std::string typeToWrite = findResult->second;
-						std::string varValue = "m_" + varName;
-						std::string extraArgs = "";
-
-						if (VarTypeSupportsLimits(var))
-						{
-							// has limits
-							extraArgs += ", " + var.GetMinValue() + ", " + var.GetMaxValue();
-						}
-						else
-						{
-						}
-
-
-						if (var.m_PropertyFlags & PropertyFlags_SetCallback)
-						{
-							typeToWrite += "_SETCALLBACK";
-						}
-						WriteLine(tabStop + "LXIMGUI_SHOW_" + typeToWrite + "(\"" + varName + "\", " + varValue + extraArgs + ");");
-					}
-					else
-					{
-						// not found
-						continue;
-					}
-				}
+				
 			}
 		}
 		WriteLine(tabStop + std::string("return true;"));
@@ -337,6 +365,8 @@ public:
 	void WriteIncludes()
 	{
 		WriteLine("#include \"" + m_Class.m_Name + ".h\"");
+		WriteLine("#include \"serializer.h\"");
+
 
 		StringList neededIncludes;
 		for (const Variable& var : m_Class.m_Members)

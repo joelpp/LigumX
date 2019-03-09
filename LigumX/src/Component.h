@@ -4,6 +4,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Component
 #include "LXSystem.h"
+class Serializer2;
 
 class Component;
 class Entity;
@@ -32,6 +33,7 @@ enum g_ComponentPIDX
 {
 PIDX_ParentEntity,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

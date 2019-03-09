@@ -48,5 +48,4 @@
 #include "property.h"
 #include "LXObject.h"
 
-#include "serializer.h"
 #include "ObjectManager.h"

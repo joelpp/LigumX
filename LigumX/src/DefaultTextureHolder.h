@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS DefaultTextureHolder
 #include "LXSystem.h"
+class Serializer2;
 
 class DefaultTextureHolder;
 class Texture;
@@ -55,6 +56,7 @@ PIDX_WoodTexture,
 PIDX_SandTexture,
 PIDX_WaterTexture,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

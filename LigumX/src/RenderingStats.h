@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS RenderingStats
 #include "LXSystem.h"
+class Serializer2;
 
 class RenderingStats;
 
@@ -49,6 +50,7 @@ PIDX_NumDebugModels,
 PIDX_Num2DMessages,
 PIDX_fps,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

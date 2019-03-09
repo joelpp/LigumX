@@ -3,6 +3,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Material
 #include "LXSystem.h"
+class Serializer2;
 
 class Material;
 class Texture;
@@ -124,6 +125,7 @@ PIDX_SpecularTexture,
 PIDX_HeightfieldTexture,
 PIDX_ShaderFamily,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

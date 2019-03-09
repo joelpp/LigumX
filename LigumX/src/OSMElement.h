@@ -8,6 +8,7 @@
 
 #pragma region  FORWARD_DECLARATIONS OSMElement
 #include "LXSystem.h"
+class Serializer2;
 
 class OSMElement;
 

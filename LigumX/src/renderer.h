@@ -28,6 +28,7 @@ class SectorGraphicalData;
 
 #pragma region  FORWARD_DECLARATIONS Renderer
 #include "LXSystem.h"
+class Serializer2;
 
 class Renderer;
 class DisplayOptions;
@@ -114,6 +115,7 @@ PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_DebugCamera,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

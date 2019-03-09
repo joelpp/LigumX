@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS World
 #include "LXSystem.h"
+class Serializer2;
 
 class World;
 class SunLight;
@@ -80,6 +81,7 @@ PIDX_Entities,
 PIDX_DebugEntities,
 PIDX_Sectors,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

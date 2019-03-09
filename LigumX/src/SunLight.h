@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS SunLight
 #include "LXSystem.h"
+class Serializer2;
 
 class SunLight;
 class Texture;
@@ -52,6 +53,7 @@ PIDX_Speed,
 PIDX_UseSkybox,
 PIDX_Skybox,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

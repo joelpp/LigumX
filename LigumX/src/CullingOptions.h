@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS CullingOptions
 #include "LXSystem.h"
+class Serializer2;
 
 class CullingOptions;
 
@@ -53,6 +54,7 @@ PIDX_DebugAABBClippPos,
 PIDX_DebugDotProduct,
 PIDX_DebugDotProductMaxDistance,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

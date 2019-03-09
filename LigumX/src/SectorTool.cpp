@@ -23,6 +23,7 @@
 #pragma region  CLASS_SOURCE SectorTool
 
 #include "SectorTool.h"
+#include "serializer.h"
 #include "Sector.h"
 const ClassPropertyData SectorTool::g_Properties[] = 
 {
@@ -40,8 +41,15 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "LoadSectorsOnClick", PIDX_LoadSectorsOnClick, offsetof(SectorTool, m_LoadSectorsOnClick), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "SelectedWayIndex", PIDX_SelectedWayIndex, offsetof(SectorTool, m_SelectedWayIndex), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
+bool SectorTool::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool SectorTool::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

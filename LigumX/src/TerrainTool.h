@@ -5,6 +5,7 @@ class Texture;
 
 #pragma region  FORWARD_DECLARATIONS TerrainTool
 #include "LXSystem.h"
+class Serializer2;
 
 class TerrainTool;
 class Sector;
@@ -76,6 +77,7 @@ PIDX_StartTexel,
 PIDX_SplatMapIncrement,
 PIDX_ClickedSector,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

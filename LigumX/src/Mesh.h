@@ -3,6 +3,7 @@
 #include "GL.h"
 #pragma region  FORWARD_DECLARATIONS Mesh
 #include "LXSystem.h"
+class Serializer2;
 
 class Mesh;
 
@@ -110,6 +111,7 @@ PIDX_UsesIndexBuffer,
 PIDX_WireframeRendering,
 PIDX_PointRendering,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

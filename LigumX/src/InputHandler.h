@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS InputHandler
 #include "LXSystem.h"
+class Serializer2;
 
 class InputHandler;
 
@@ -86,6 +87,7 @@ PIDX_MousePosition,
 PIDX_LastMousePosition,
 PIDX_MouseScroll,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

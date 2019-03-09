@@ -12,6 +12,7 @@
 #pragma region  CLASS_SOURCE Sector
 
 #include "Sector.h"
+#include "serializer.h"
 #include "Heightfield.h"
 #include "Entity.h"
 const ClassPropertyData Sector::g_Properties[] = 
@@ -25,8 +26,15 @@ const ClassPropertyData Sector::g_Properties[] =
 { "TerrainPatchEntity", PIDX_TerrainPatchEntity, offsetof(Sector, m_TerrainPatchEntity), 0, LXType_ObjectPtr, sizeof(Entity*), LXType_Entity, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "OSMFilename", PIDX_OSMFilename, offsetof(Sector, m_OSMFilename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool Sector::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Sector::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

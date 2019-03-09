@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS AABB
 #include "LXSystem.h"
+class Serializer2;
 
 class AABB;
 
@@ -33,6 +34,7 @@ enum g_AABBPIDX
 PIDX_StartPoint,
 PIDX_Scale,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -27,6 +27,7 @@ public:
 		classesToDeclare.push_back(m_Class.m_Name);
 
 		WriteLine("#include \"LXSystem.h\"");
+		WriteLine("class Serializer2;");
 
 		WriteLine("");
 

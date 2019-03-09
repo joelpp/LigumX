@@ -47,6 +47,7 @@
 Editor* g_Editor;
 
 #include "Editor.h"
+#include "serializer.h"
 #include "EditorOptions.h"
 #include "EditorTool.h"
 #include "Node.h"
@@ -62,8 +63,15 @@ const ClassPropertyData Editor::g_Properties[] =
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool Editor::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Editor::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

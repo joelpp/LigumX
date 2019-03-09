@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Sector
 #include "LXSystem.h"
+class Serializer2;
 
 class Sector;
 class Heightfield;
@@ -72,6 +73,7 @@ PIDX_Heightfield,
 PIDX_TerrainPatchEntity,
 PIDX_OSMFilename,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

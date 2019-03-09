@@ -13,6 +13,7 @@
 #pragma region  CLASS_SOURCE Camera
 
 #include "Camera.h"
+#include "serializer.h"
 const ClassPropertyData Camera::g_Properties[] = 
 {
 { "Position", PIDX_Position, offsetof(Camera, m_Position), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
@@ -34,8 +35,15 @@ const ClassPropertyData Camera::g_Properties[] =
 { "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 2000, 0,}, 
 { "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
+bool Camera::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Camera::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;

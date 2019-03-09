@@ -7,6 +7,7 @@
 #pragma region  CLASS_SOURCE Texture
 
 #include "Texture.h"
+#include "serializer.h"
 const ClassPropertyData Texture::g_Properties[] = 
 {
 { "Filename", PIDX_Filename, offsetof(Texture, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -19,8 +20,15 @@ const ClassPropertyData Texture::g_Properties[] =
 { "PixelType", PIDX_PixelType, offsetof(Texture, m_PixelType), 0, LXType_Object, sizeof(GLPixelType), LXType_GLPixelType, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 { "Size", PIDX_Size, offsetof(Texture, m_Size), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
+bool Texture::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Texture::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;

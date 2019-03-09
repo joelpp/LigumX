@@ -6,6 +6,7 @@
 #pragma region  CLASS_SOURCE Framebuffer
 
 #include "Framebuffer.h"
+#include "serializer.h"
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
 { "Width", PIDX_Width, offsetof(Framebuffer, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
@@ -17,8 +18,15 @@ const ClassPropertyData Framebuffer::g_Properties[] =
 { "HasDepth", PIDX_HasDepth, offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "NumColorTargets", PIDX_NumColorTargets, offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
+bool Framebuffer::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Framebuffer::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

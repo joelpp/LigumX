@@ -6,13 +6,21 @@
 #pragma region  CLASS_SOURCE AABB
 
 #include "AABB.h"
+#include "serializer.h"
 const ClassPropertyData AABB::g_Properties[] = 
 {
 { "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
+bool AABB::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool AABB::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

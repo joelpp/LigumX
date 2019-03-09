@@ -7,6 +7,7 @@
 #pragma region  CLASS_SOURCE Entity
 
 #include "Entity.h"
+#include "serializer.h"
 #include "Model.h"
 #include "Component.h"
 const ClassPropertyData Entity::g_Properties[] = 
@@ -23,8 +24,15 @@ const ClassPropertyData Entity::g_Properties[] =
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Components", PIDX_Components, offsetof(Entity, m_Components), 0, LXType_stdvector, sizeof(std::vector<Component*>), LXType_stdvector, false, LXType_Component, true, 0, 0, 0, 0,}, 
 };
+bool Entity::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Entity::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;

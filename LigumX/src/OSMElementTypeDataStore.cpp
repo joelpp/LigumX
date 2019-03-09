@@ -7,13 +7,21 @@
 OSMElementTypeDataStore* g_OSMElementTypeDataStore;
 
 #include "OSMElementTypeDataStore.h"
+#include "serializer.h"
 #include "OSMElementTypeData.h"
 const ClassPropertyData OSMElementTypeDataStore::g_Properties[] = 
 {
 { "Data", PIDX_Data, offsetof(OSMElementTypeDataStore, m_Data), 0, LXType_stdvector, sizeof(std::vector<OSMElementTypeData>), LXType_stdvector, false, LXType_OSMElementTypeData, false, 0, 0, 0, 0,}, 
 };
+bool OSMElementTypeDataStore::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool OSMElementTypeDataStore::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

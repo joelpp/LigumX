@@ -18,6 +18,7 @@ class TerrainTool;
 
 #pragma region  FORWARD_DECLARATIONS Editor
 #include "LXSystem.h"
+class Serializer2;
 
 class Editor;
 class EditorOptions;
@@ -98,6 +99,7 @@ PIDX_Tools,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

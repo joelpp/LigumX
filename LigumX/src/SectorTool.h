@@ -12,6 +12,7 @@ class SectorGraphicalData;
 
 #pragma region  FORWARD_DECLARATIONS SectorTool
 #include "LXSystem.h"
+class Serializer2;
 
 class SectorTool;
 class Sector;
@@ -88,6 +89,7 @@ PIDX_HighlightSelectedSector,
 PIDX_LoadSectorsOnClick,
 PIDX_SelectedWayIndex,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -4,6 +4,7 @@
 
 #pragma region  FORWARD_DECLARATIONS OSMElementComponent
 #include "LXSystem.h"
+class Serializer2;
 
 class OSMElementComponent;
 class Way;
@@ -32,6 +33,7 @@ enum g_OSMElementComponentPIDX
 {
 PIDX_Way,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

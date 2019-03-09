@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Serializer2
 #include "LXSystem.h"
+class Serializer2;
 
 class Serializer2;
 class LXObject;
@@ -41,12 +42,21 @@ PIDX_IsValid,
 PIDX_Filename,
 PIDX_Object,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Serializer2
 
+public:
+	Serializer2(LXObject* object, bool writing, const std::string& fileName);
+	static Serializer2 CreateSerializer(LXObject* object, bool writing);
 
+	void Close();
+
+private:
+
+std::fstream m_FileStream;
 
 };

@@ -4,6 +4,7 @@
 #pragma region  CLASS_SOURCE DisplayOptions
 
 #include "DisplayOptions.h"
+#include "serializer.h"
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
 { "UseSkyLighting", PIDX_UseSkyLighting, offsetof(DisplayOptions, m_UseSkyLighting), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -28,8 +29,15 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "PickingEnabled", PIDX_PickingEnabled, offsetof(DisplayOptions, m_PickingEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayMode", PIDX_DisplayMode, offsetof(DisplayOptions, m_DisplayMode), 0, LXType_Object, sizeof(DisplayMode), LXType_DisplayMode, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 };
+bool DisplayOptions::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool DisplayOptions::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

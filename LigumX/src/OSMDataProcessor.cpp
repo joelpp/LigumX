@@ -43,14 +43,22 @@ T GetRandomValue(T min, T max)
 OSMDataProcessor* g_OSMDataProcessor;
 
 #include "OSMDataProcessor.h"
+#include "serializer.h"
 #include "OSMDataProcessorSettings.h"
 const ClassPropertyData OSMDataProcessor::g_Properties[] = 
 {
 { "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Settings", PIDX_Settings, offsetof(OSMDataProcessor, m_Settings), 0, LXType_ObjectPtr, sizeof(OSMDataProcessorSettings*), LXType_OSMDataProcessorSettings, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool OSMDataProcessor::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool OSMDataProcessor::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

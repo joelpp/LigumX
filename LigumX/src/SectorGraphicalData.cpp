@@ -6,6 +6,7 @@
 #pragma region  CLASS_SOURCE SectorGraphicalData
 
 #include "SectorGraphicalData.h"
+#include "serializer.h"
 #include "Model.h"
 #include "Entity.h"
 #include "Texture.h"
@@ -19,8 +20,15 @@ const ClassPropertyData SectorGraphicalData::g_Properties[] =
 { "SplatMapTexture", PIDX_SplatMapTexture, offsetof(SectorGraphicalData, m_SplatMapTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "AlbedoTexture", PIDX_AlbedoTexture, offsetof(SectorGraphicalData, m_AlbedoTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool SectorGraphicalData::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool SectorGraphicalData::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

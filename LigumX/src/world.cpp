@@ -9,6 +9,7 @@
 #pragma region  CLASS_SOURCE World
 
 #include "World.h"
+#include "serializer.h"
 #include "SunLight.h"
 #include "Entity.h"
 #include "Sector.h"
@@ -19,8 +20,15 @@ const ClassPropertyData World::g_Properties[] =
 { "DebugEntities", PIDX_DebugEntities, offsetof(World, m_DebugEntities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, true, PropertyFlags_Transient, 0, 0, 0,}, 
 { "Sectors", PIDX_Sectors, offsetof(World, m_Sectors), 0, LXType_stdvector, sizeof(std::vector<Sector*>), LXType_stdvector, false, LXType_Sector, true, PropertyFlags_Transient, 0, 0, 0,}, 
 };
+bool World::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool World::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;

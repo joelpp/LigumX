@@ -6,6 +6,7 @@ typedef unsigned int GLuint;
 
 #pragma region  FORWARD_DECLARATIONS Framebuffer
 #include "LXSystem.h"
+class Serializer2;
 
 class Framebuffer;
 
@@ -61,6 +62,7 @@ PIDX_InternalPixelFormat,
 PIDX_HasDepth,
 PIDX_NumColorTargets,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

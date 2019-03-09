@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS GL
 #include "LXSystem.h"
+class Serializer2;
 
 class GL;
 

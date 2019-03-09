@@ -5,6 +5,7 @@
 
 #pragma region  FORWARD_DECLARATIONS EditorTool
 #include "LXSystem.h"
+class Serializer2;
 
 class EditorTool;
 
@@ -32,6 +33,7 @@ enum g_EditorToolPIDX
 {
 PIDX_Active,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -14,6 +14,7 @@
 
 #pragma region  FORWARD_DECLARATIONS RenderDataManager
 #include "LXSystem.h"
+class Serializer2;
 
 class RenderDataManager;
 class CullingOptions;
@@ -128,6 +129,7 @@ enum g_RenderDataManagerPIDX
 PIDX_CullingOptions,
 PIDX_RenderingStats,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

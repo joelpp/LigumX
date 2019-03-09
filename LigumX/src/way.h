@@ -4,6 +4,7 @@
 
 #pragma region  FORWARD_DECLARATIONS Way
 #include "LXSystem.h"
+class Serializer2;
 
 class Way;
 class Node;
@@ -59,6 +60,7 @@ PIDX_IndexInSector,
 PIDX_FilledIn,
 PIDX_AllTags,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

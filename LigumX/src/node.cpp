@@ -3,6 +3,7 @@
 #pragma region  CLASS_SOURCE Node
 
 #include "Node.h"
+#include "serializer.h"
 #include "Way.h"
 const ClassPropertyData Node::g_Properties[] = 
 {
@@ -14,8 +15,15 @@ const ClassPropertyData Node::g_Properties[] =
 { "SectorIndex", PIDX_SectorIndex, offsetof(Node, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "SectorOffset", PIDX_SectorOffset, offsetof(Node, m_SectorOffset), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
+bool Node::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Node::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

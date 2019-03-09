@@ -525,18 +525,18 @@ void InitializeGenerator()
 	g_ClassPropertyFlagsStringMap.emplace("postserialization", ClassPropertyFlags_PostSerialization);
 	g_ClassPropertyFlagsStringMap.emplace("globalinstance", ClassPropertyFlags_GlobalInstance);
 
-	g_LXTypeToImguiCallName.emplace("bool", "BOOL");
-	g_LXTypeToImguiCallName.emplace("int", "INT");
-	g_LXTypeToImguiCallName.emplace("float", "FLOAT");
-	g_LXTypeToImguiCallName.emplace("long", "LONG");
-	g_LXTypeToImguiCallName.emplace("glm::ivec2", "IVEC2");
-	g_LXTypeToImguiCallName.emplace("glm::ivec3", "IVEC3");
-	g_LXTypeToImguiCallName.emplace("glm::ivec4", "IVEC4");
-	g_LXTypeToImguiCallName.emplace("glm::vec2", "VEC2");
-	g_LXTypeToImguiCallName.emplace("glm::vec3", "VEC3");
-	g_LXTypeToImguiCallName.emplace("glm::vec4", "VEC4");
-	g_LXTypeToImguiCallName.emplace("std::string", "STRING");
-	g_LXTypeToImguiCallName.emplace("std::vector", "OBJECTREF_VECTOR");
+	g_LXTypeToImguiCallName.emplace("bool", "Bool");
+	g_LXTypeToImguiCallName.emplace("int", "Int");
+	g_LXTypeToImguiCallName.emplace("float", "Float");
+	g_LXTypeToImguiCallName.emplace("long", "Long");
+	g_LXTypeToImguiCallName.emplace("glm::ivec2", "IVec2");
+	g_LXTypeToImguiCallName.emplace("glm::ivec3", "IVec3");
+	g_LXTypeToImguiCallName.emplace("glm::ivec4", "IVec4");
+	g_LXTypeToImguiCallName.emplace("glm::vec2", "Vec2");
+	g_LXTypeToImguiCallName.emplace("glm::vec3", "Vec3");
+	g_LXTypeToImguiCallName.emplace("glm::vec4", "Vec4");
+	g_LXTypeToImguiCallName.emplace("std::string", "String");
+	g_LXTypeToImguiCallName.emplace("std::vector", "ObjectPtr_Vector");
 
 	g_DefaultMinForType.emplace("int", "LX_LIMITS_INT_MIN");
 	g_DefaultMinForType.emplace("LONG", "LX_LIMITS_LONG_MIN");

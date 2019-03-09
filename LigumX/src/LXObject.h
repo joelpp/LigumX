@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS LXObject
 #include "LXSystem.h"
+class Serializer2;
 
 class LXObject;
 
@@ -32,6 +33,7 @@ enum g_LXObjectPIDX
 PIDX_ObjectID,
 PIDX_Name,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

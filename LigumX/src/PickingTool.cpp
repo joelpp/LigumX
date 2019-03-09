@@ -17,6 +17,7 @@
 #pragma region  CLASS_SOURCE PickingTool
 
 #include "PickingTool.h"
+#include "serializer.h"
 #include "Entity.h"
 #include "Sector.h"
 const ClassPropertyData PickingTool::g_Properties[] = 
@@ -34,8 +35,15 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "PickedHeight", PIDX_PickedHeight, offsetof(PickingTool, m_PickedHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "PickedSector", PIDX_PickedSector, offsetof(PickingTool, m_PickedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
+bool PickingTool::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool PickingTool::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

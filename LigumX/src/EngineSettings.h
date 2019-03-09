@@ -3,6 +3,7 @@
 #include "glm\glm.hpp"
 #pragma region  FORWARD_DECLARATIONS EngineSettings
 #include "LXSystem.h"
+class Serializer2;
 
 class EngineSettings;
 
@@ -79,6 +80,7 @@ PIDX_MessagesPixelsOffset,
 PIDX_LoadOSMData,
 PIDX_TerrainTiling,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

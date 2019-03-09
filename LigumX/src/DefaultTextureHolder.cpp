@@ -5,6 +5,7 @@
 DefaultTextureHolder* g_DefaultTextureHolder;
 
 #include "DefaultTextureHolder.h"
+#include "serializer.h"
 #include "Texture.h"
 const ClassPropertyData DefaultTextureHolder::g_Properties[] = 
 {
@@ -16,8 +17,15 @@ const ClassPropertyData DefaultTextureHolder::g_Properties[] =
 { "SandTexture", PIDX_SandTexture, offsetof(DefaultTextureHolder, m_SandTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "WaterTexture", PIDX_WaterTexture, offsetof(DefaultTextureHolder, m_WaterTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
+bool DefaultTextureHolder::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool DefaultTextureHolder::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }

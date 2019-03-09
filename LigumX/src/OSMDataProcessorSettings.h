@@ -2,6 +2,7 @@
 
 #pragma region  FORWARD_DECLARATIONS OSMDataProcessorSettings
 #include "LXSystem.h"
+class Serializer2;
 
 class OSMDataProcessorSettings;
 
@@ -77,6 +78,7 @@ PIDX_ProcessAddressInterpolation,
 PIDX_CheckPointInRoad,
 PIDX_CheckPointInBuilding,
 };
+bool Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

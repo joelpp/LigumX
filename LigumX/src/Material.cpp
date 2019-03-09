@@ -6,6 +6,7 @@
 #pragma region  CLASS_SOURCE Material
 
 #include "Material.h"
+#include "serializer.h"
 #include "Texture.h"
 const ClassPropertyData Material::g_Properties[] = 
 {
@@ -30,8 +31,15 @@ const ClassPropertyData Material::g_Properties[] =
 { "HeightfieldTexture", PIDX_HeightfieldTexture, offsetof(Material, m_HeightfieldTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_Object, sizeof(ShaderFamily), LXType_ShaderFamily, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 };
+bool Material::Serialize(Serializer2& serializer)
+{
+	return true;
+}
 bool Material::Serialize(bool writing)
 {
+	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
+	Serialize(serializer2); 
+
 	bool success = g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
