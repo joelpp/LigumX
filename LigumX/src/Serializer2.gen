@@ -1,0 +1,10 @@
+class Serializer2
+{
+    bool Writing = false;
+
+    bool IsValid = false;
+
+    std::string Filename;
+
+    LXObject* Object;
+}

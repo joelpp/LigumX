@@ -219,6 +219,7 @@
     <ClCompile Include="src\SectorMath.cpp" />
     <ClCompile Include="src\SectorTool.cpp" />
     <ClCompile Include="src\Serializer.cpp" />
+    <ClCompile Include="src\Serializer2.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -336,6 +337,7 @@
     <ClInclude Include="src\SectorMath.h" />
     <ClInclude Include="src\SectorTool.h" />
     <ClInclude Include="src\serializer.h" />
+    <ClInclude Include="src\Serializer2.h" />
     <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\stb_rect_pack.h" />
     <ClInclude Include="src\stb_textedit.h" />
@@ -398,6 +400,7 @@
     <None Include="src\Sector.gen" />
     <None Include="src\SectorGraphicalData.gen" />
     <None Include="src\SectorTool.gen" />
+    <None Include="src\Serializer2.gen" />
     <None Include="src\SunLight.gen" />
     <None Include="src\TerrainTool.gen" />
     <None Include="src\Texture.gen" />

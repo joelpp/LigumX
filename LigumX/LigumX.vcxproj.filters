@@ -246,6 +246,9 @@
     <ClCompile Include="src\LXObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Serializer2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -599,6 +602,9 @@
     <ClInclude Include="src\LXObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Serializer2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -652,5 +658,6 @@
     <None Include="src\OSMElementTypeData.gen" />
     <None Include="src\OSMElementTypeDataStore.gen" />
     <None Include="src\LXObject.gen" />
+    <None Include="src\Serializer2.gen" />
   </ItemGroup>
 </Project>

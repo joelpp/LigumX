@@ -26,7 +26,16 @@
 
 
 #define NAMESPACE_BEGIN namespace LigumXGenerator {
-#define NAMESPACE_END }
+#define NAMESPACE_END 
+
+enum FileSelectionMode
+{
+	Normal = 0,
+	ForceAll,
+	OnlyFirst,
+	SelectFile,
+	Count
+};
 
 int g_Now;
 
@@ -496,6 +505,7 @@ void InitializeGenerator()
 	g_UnwantedSubstrings.push_back("[");
 	g_UnwantedSubstrings.push_back("]");
 	g_UnwantedSubstrings.push_back(",");
+	g_UnwantedSubstrings.push_back("    ");
 
 	// Type names that have a corresponding gui callback
 	g_AllowedTypesForGUI.push_back("bool");
@@ -644,7 +654,7 @@ struct ClassPropertyData
 }
 #endif
 
-void DoMainProcessing(bool forceUpdateAll)
+void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToForce)
 {
 	HANDLE hFind;
 	WIN32_FIND_DATA data;
@@ -665,11 +675,22 @@ void DoMainProcessing(bool forceUpdateAll)
 
 
 	std::vector<GeneratorFile> generatorFiles;
-	for (std::string& file : srcFileList)
+	for (int fileIndex = 0; fileIndex < srcFileList.size(); ++fileIndex)
 	{
+		std::string& file = srcFileList[fileIndex];
+
 		int dotIndex = file.find_first_of('.');
 
 		std::string fileName = file.substr(0, dotIndex);
+
+		if (fileSelectionMode == FileSelectionMode::SelectFile)
+		{
+			if (file != fileToForce)
+			{
+				continue;
+			}
+		}
+
 		std::string fileHeader = file.substr(dotIndex + 1, file.length());
 
 		FileType type = GetTypeFromHeader(fileHeader);
@@ -693,7 +714,7 @@ void DoMainProcessing(bool forceUpdateAll)
 				processFile = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
 			}
 
-			if (processFile || forceUpdateAll)
+			if (processFile || (fileSelectionMode != FileSelectionMode::Normal))
 			{
 				std::cout << "\"" << fileName << "\" : has been updated." << std::endl;
 				generatorFiles.push_back(genFile);
@@ -711,6 +732,15 @@ void DoMainProcessing(bool forceUpdateAll)
 		{
 
 		}
+		else
+		{
+			__debugbreak();
+		}
+
+		if (fileSelectionMode == FileSelectionMode::OnlyFirst)
+		{
+			break;
+		}
 
 	}
 
@@ -722,6 +752,10 @@ void DoMainProcessing(bool forceUpdateAll)
 	PrintLine("");
 }
 
+void DoMainProcessing(FileSelectionMode fileSelectionMode)
+{
+	DoMainProcessing(fileSelectionMode, "");
+}
 
 void OpenLogFile()
 {
@@ -738,17 +772,35 @@ void MainLoop()
 	while (command != 'q')
 	{
 		PrintLine("Input command.");
-		PrintLine("Options : (p)rocess | (f)orce process all | open (l)og file | (q)uit");
-
+		PrintLine("Options : ");
+		PrintLine("    (p)rocess");
+		PrintLine("    (f)orce process all");
+		PrintLine("    (o)nly first file");
+		PrintLine("    (s)elect file (force)");
+		PrintLine("    open (l)og file");
+		PrintLine("    (q)uit");
 		std::cin >> command;
 
 		if (command == 'p')
 		{
-			DoMainProcessing(false);
+			DoMainProcessing(FileSelectionMode::Normal);
 		}
 		else if (command == 'f')
 		{
-			DoMainProcessing(true);
+			DoMainProcessing(FileSelectionMode::ForceAll);
+		}
+		else if (command == 'o')
+		{
+			DoMainProcessing(FileSelectionMode::OnlyFirst);
+		}
+		else if (command == 's')
+		{
+			PrintLine("Enter file name (without .gen) : ");
+			char fileName[256];
+
+			std::cin >> fileName;
+
+			DoMainProcessing(FileSelectionMode::SelectFile, std::string(fileName) + ".gen");
 		}
 		else if (command == 'l')
 		{

@@ -52,6 +52,7 @@ enum LXType
 	LXType_Sector,
 	LXType_SectorGraphicalData,
 	LXType_SectorTool,
+	LXType_Serializer2,
 	LXType_ShaderFamily,
 	LXType_SunLight,
 	LXType_TerrainEditionMode,
