@@ -48,7 +48,7 @@ public:
 		m_CodeRegionEndString = g_CodeRegionEndString + " " + m_IDString + " " + m_Class.m_Name;
 	}
 
-	bool IsBeginMarker(TokenList& token) { return IsIncludeDeclaration(token); }
+	bool IsBeginMarker(TokenList& token, bool createStub) { return IsIncludeDeclaration(token); }
 
 	bool GenerateFileStub(std::string& stub)
 	{

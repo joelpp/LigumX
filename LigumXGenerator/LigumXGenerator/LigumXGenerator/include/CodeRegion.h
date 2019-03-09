@@ -42,7 +42,8 @@ public:
 		std::string headerFilePath = GenerateFileName();
 		std::vector<std::string> lines = readFileLines(headerFilePath.c_str());
 
-		if (lines.size() == 0)
+		bool createStub = (lines.size() == 0);
+		if (createStub)
 		{
 			CreateFileStub();
 			lines = readFileLines(headerFilePath.c_str());
@@ -56,7 +57,7 @@ public:
 		{
 			TokenList tokens = splitString(line, ' ');
 
-			if (IsBeginMarker(tokens))
+			if (IsBeginMarker(tokens, createStub))
 			{
 				classBeginIndex = index;
 			}

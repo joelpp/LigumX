@@ -24,9 +24,7 @@ public:
 		ss << "\n";
 		ss << "\n";
 
-		ss << "class " << m_Class.m_Name;
-		ss << "\n";
-		ss << "{";
+
 		ss << "\n";
 		ss << "\n";
 		ss << "};";
@@ -35,7 +33,7 @@ public:
 		return true;
 	}
 
-	bool IsBeginMarker(TokenList& token)
+	bool IsBeginMarker(TokenList& token, bool createStub)
 	{
 		bool ok = false;
 		bool header = IsClassDeclaration(token);
