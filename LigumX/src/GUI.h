@@ -38,7 +38,7 @@ enum g_GUIPIDX
 PIDX_m_Enabled,
 PIDX_NumActiveWindows,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

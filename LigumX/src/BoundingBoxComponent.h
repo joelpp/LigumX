@@ -41,7 +41,7 @@ PIDX_BoundingBox,
 PIDX_UpdatesWithEntity,
 PIDX_ModelToWorldMatrix,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

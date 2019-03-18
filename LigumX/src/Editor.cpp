@@ -63,29 +63,32 @@ const ClassPropertyData Editor::g_Properties[] =
 { "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool Editor::Serialize(Serializer2& serializer)
+void Editor::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeObjectPtr("Options", m_Options);
+	serializer.SerializeInt("PickingBufferSize", m_PickingBufferSize);
+	serializer.SerializeObjectPtr("SelectedNode", m_SelectedNode);
 }
 bool Editor::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Editor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("Options", m_Options);
-	LXIMGUI_SHOW_VEC4_SETCALLBACK("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("ManipulatorDragging", m_ManipulatorDragging);
-	LXIMGUI_SHOW_VEC3("ManipulatorStartPosition", m_ManipulatorStartPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("EditingTerrain", m_EditingTerrain);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Tools", m_Tools);
-	LXIMGUI_SHOW_INT("PickingBufferSize", m_PickingBufferSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode);
+	ImguiHelpers::ShowObjectPtr("Options", m_Options  );
+	ImguiHelpers::ShowVec4("XYZMask", m_XYZMask , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("ManipulatorDragging", m_ManipulatorDragging  );
+	ImguiHelpers::ShowVec3("ManipulatorStartPosition", m_ManipulatorStartPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("EditingTerrain", m_EditingTerrain  );
+	ImguiHelpers::ShowVector("Tools", m_Tools  );
+	ImguiHelpers::ShowInt("PickingBufferSize", m_PickingBufferSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowObjectPtr("SelectedNode", m_SelectedNode  );
 	return true;
 }
 const char* Editor::GetTypeName()

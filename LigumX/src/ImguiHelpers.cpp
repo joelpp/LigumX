@@ -107,7 +107,10 @@ bool ImguiHelpers::ShowRawString(LXString& str)
 	return ShowRawString(str.c_str());
 }
 
-
+bool ImguiHelpers::ShowVector(const char* name, std::vector<std::string>& values)
+{
+	return false;
+}
 
 
 bool ImguiHelpers::BeginPropertyTree(const char* name)

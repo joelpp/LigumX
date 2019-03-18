@@ -18,25 +18,29 @@ const ClassPropertyData Framebuffer::g_Properties[] =
 { "HasDepth", PIDX_HasDepth, offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "NumColorTargets", PIDX_NumColorTargets, offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
-bool Framebuffer::Serialize(Serializer2& serializer)
+void Framebuffer::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeInt("Width", m_Width);
+	serializer.SerializeInt("Height", m_Height);
+	serializer.SerializeBool("HasDepth", m_HasDepth);
+	serializer.SerializeInt("NumColorTargets", m_NumColorTargets);
 }
 bool Framebuffer::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Framebuffer::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_INT("Width", m_Width, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_INT("Height", m_Height, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_BOOL("HasDepth", m_HasDepth);
-	LXIMGUI_SHOW_INT("NumColorTargets", m_NumColorTargets, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	ImguiHelpers::ShowInt("Width", m_Width , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowInt("Height", m_Height , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowBool("HasDepth", m_HasDepth  );
+	ImguiHelpers::ShowInt("NumColorTargets", m_NumColorTargets , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* Framebuffer::GetTypeName()

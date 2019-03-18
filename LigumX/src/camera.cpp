@@ -35,33 +35,44 @@ const ClassPropertyData Camera::g_Properties[] =
 { "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 2000, 0,}, 
 { "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool Camera::Serialize(Serializer2& serializer)
+void Camera::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeVec3("Position", m_Position);
+	serializer.SerializeVec3("FrontVector", m_FrontVector);
+	serializer.SerializeVec3("RightVector", m_RightVector);
+	serializer.SerializeVec3("UpVector", m_UpVector);
+	serializer.SerializeFloat("NearPlane", m_NearPlane);
+	serializer.SerializeFloat("FarPlane", m_FarPlane);
+	serializer.SerializeInt("ProjectionType", m_ProjectionType);
+	serializer.SerializeFloat("OrthoBorders", m_OrthoBorders);
+	serializer.SerializeFloat("ViewSize", m_ViewSize);
+	serializer.SerializeFloat("MovementSpeed", m_MovementSpeed);
+	serializer.SerializeFloat("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor);
 }
 bool Camera::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;
 }
 bool Camera::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_VEC3("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("FrontVector", m_FrontVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("RightVector", m_RightVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("UpVector", m_UpVector, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("NearPlane", m_NearPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("FarPlane", m_FarPlane, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_INT("ProjectionType", m_ProjectionType, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_FLOAT("OrthoBorders", m_OrthoBorders, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("ViewSize", m_ViewSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MovementSpeed", m_MovementSpeed, 0, 2000);
-	LXIMGUI_SHOW_FLOAT("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowVec3("Position", m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("FrontVector", m_FrontVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("RightVector", m_RightVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("UpVector", m_UpVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("NearPlane", m_NearPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("FarPlane", m_FarPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowInt("ProjectionType", m_ProjectionType , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowFloat("OrthoBorders", m_OrthoBorders , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("ViewSize", m_ViewSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MovementSpeed", m_MovementSpeed , 0, 2000 );
+	ImguiHelpers::ShowFloat("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* Camera::GetTypeName()

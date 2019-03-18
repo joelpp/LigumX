@@ -9,22 +9,23 @@ const ClassPropertyData OSMElementComponent::g_Properties[] =
 {
 { "Way", PIDX_Way, offsetof(OSMElementComponent, m_Way), 0, LXType_ObjectPtr, sizeof(Way*), LXType_Way, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool OSMElementComponent::Serialize(Serializer2& serializer)
+void OSMElementComponent::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeObjectPtr("Way", m_Way);
 }
 bool OSMElementComponent::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool OSMElementComponent::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("Way", m_Way);
+	ImguiHelpers::ShowObjectPtr("Way", m_Way  );
 	return true;
 }
 const char* OSMElementComponent::GetTypeName()

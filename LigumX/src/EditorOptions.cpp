@@ -27,41 +27,61 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "MouseScrollCameraSpeed", PIDX_MouseScrollCameraSpeed, offsetof(EditorOptions, m_MouseScrollCameraSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MouseScrollEntityCloseupPercent", PIDX_MouseScrollEntityCloseupPercent, offsetof(EditorOptions, m_MouseScrollEntityCloseupPercent), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool EditorOptions::Serialize(Serializer2& serializer)
+void EditorOptions::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("Enabled", m_Enabled);
+	serializer.SerializeBool("ShowWorldWindow", m_ShowWorldWindow);
+	serializer.SerializeBool("ShowMaterialWindow", m_ShowMaterialWindow);
+	serializer.SerializeBool("ShowEntityWindow", m_ShowEntityWindow);
+	serializer.SerializeBool("ShowObjectCreator", m_ShowObjectCreator);
+	serializer.SerializeBool("ShowEngineStats", m_ShowEngineStats);
+	serializer.SerializeBool("ShowTestGUI", m_ShowTestGUI);
+	serializer.SerializeBool("ShowObjectManager", m_ShowObjectManager);
+	serializer.SerializeBool("BackupDataOnSave", m_BackupDataOnSave);
+	serializer.SerializeBool("DebugDisplay", m_DebugDisplay);
+	serializer.SerializeBool("DisplayMessages", m_DisplayMessages);
+	serializer.SerializeBool("SaveDisabled", m_SaveDisabled);
+	serializer.SerializeBool("DisplayPickingTool", m_DisplayPickingTool);
+	serializer.SerializeBool("DisplayOSMTool", m_DisplayOSMTool);
+	serializer.SerializeBool("DisplaySectorTool", m_DisplaySectorTool);
+	serializer.SerializeBool("DisplayFramebufferTool", m_DisplayFramebufferTool);
+	serializer.SerializeBool("DisplayTerrainTool", m_DisplayTerrainTool);
+	serializer.SerializeBool("DisplayAxisGizmo", m_DisplayAxisGizmo);
+	serializer.SerializeFloat("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed);
+	serializer.SerializeFloat("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent);
 }
 bool EditorOptions::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool EditorOptions::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_BOOL("ShowWorldWindow", m_ShowWorldWindow);
-	LXIMGUI_SHOW_BOOL("ShowMaterialWindow", m_ShowMaterialWindow);
-	LXIMGUI_SHOW_BOOL("ShowEntityWindow", m_ShowEntityWindow);
-	LXIMGUI_SHOW_BOOL("ShowObjectCreator", m_ShowObjectCreator);
-	LXIMGUI_SHOW_BOOL("ShowEngineStats", m_ShowEngineStats);
-	LXIMGUI_SHOW_BOOL("ShowTestGUI", m_ShowTestGUI);
-	LXIMGUI_SHOW_BOOL("ShowObjectManager", m_ShowObjectManager);
-	LXIMGUI_SHOW_BOOL("BackupDataOnSave", m_BackupDataOnSave);
-	LXIMGUI_SHOW_BOOL("DebugDisplay", m_DebugDisplay);
-	LXIMGUI_SHOW_BOOL("DisplayMessages", m_DisplayMessages);
-	LXIMGUI_SHOW_BOOL("SaveDisabled", m_SaveDisabled);
-	LXIMGUI_SHOW_BOOL("DisplayPickingTool", m_DisplayPickingTool);
-	LXIMGUI_SHOW_BOOL("DisplayOSMTool", m_DisplayOSMTool);
-	LXIMGUI_SHOW_BOOL("DisplaySectorTool", m_DisplaySectorTool);
-	LXIMGUI_SHOW_BOOL("DisplayFramebufferTool", m_DisplayFramebufferTool);
-	LXIMGUI_SHOW_BOOL("DisplayTerrainTool", m_DisplayTerrainTool);
-	LXIMGUI_SHOW_BOOL("DisplayAxisGizmo", m_DisplayAxisGizmo);
-	LXIMGUI_SHOW_FLOAT("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
+	ImguiHelpers::ShowBool("ShowWorldWindow", m_ShowWorldWindow  );
+	ImguiHelpers::ShowBool("ShowMaterialWindow", m_ShowMaterialWindow  );
+	ImguiHelpers::ShowBool("ShowEntityWindow", m_ShowEntityWindow  );
+	ImguiHelpers::ShowBool("ShowObjectCreator", m_ShowObjectCreator  );
+	ImguiHelpers::ShowBool("ShowEngineStats", m_ShowEngineStats  );
+	ImguiHelpers::ShowBool("ShowTestGUI", m_ShowTestGUI  );
+	ImguiHelpers::ShowBool("ShowObjectManager", m_ShowObjectManager  );
+	ImguiHelpers::ShowBool("BackupDataOnSave", m_BackupDataOnSave  );
+	ImguiHelpers::ShowBool("DebugDisplay", m_DebugDisplay  );
+	ImguiHelpers::ShowBool("DisplayMessages", m_DisplayMessages  );
+	ImguiHelpers::ShowBool("SaveDisabled", m_SaveDisabled  );
+	ImguiHelpers::ShowBool("DisplayPickingTool", m_DisplayPickingTool  );
+	ImguiHelpers::ShowBool("DisplayOSMTool", m_DisplayOSMTool  );
+	ImguiHelpers::ShowBool("DisplaySectorTool", m_DisplaySectorTool  );
+	ImguiHelpers::ShowBool("DisplayFramebufferTool", m_DisplayFramebufferTool  );
+	ImguiHelpers::ShowBool("DisplayTerrainTool", m_DisplayTerrainTool  );
+	ImguiHelpers::ShowBool("DisplayAxisGizmo", m_DisplayAxisGizmo  );
+	ImguiHelpers::ShowFloat("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* EditorOptions::GetTypeName()

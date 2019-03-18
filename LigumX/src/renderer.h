@@ -115,7 +115,7 @@ PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_DebugCamera,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

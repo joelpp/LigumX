@@ -12,23 +12,25 @@ const ClassPropertyData AABB::g_Properties[] =
 { "StartPoint", PIDX_StartPoint, offsetof(AABB, m_StartPoint), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Scale", PIDX_Scale, offsetof(AABB, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool AABB::Serialize(Serializer2& serializer)
+void AABB::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeVec3("StartPoint", m_StartPoint);
+	serializer.SerializeVec3("Scale", m_Scale);
 }
 bool AABB::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool AABB::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_VEC3("StartPoint", m_StartPoint, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("Scale", m_Scale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowVec3("StartPoint", m_StartPoint , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("Scale", m_Scale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* AABB::GetTypeName()

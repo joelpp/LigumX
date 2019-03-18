@@ -12,23 +12,25 @@ const ClassPropertyData GUI::g_Properties[] =
 { "m_Enabled", PIDX_m_Enabled, offsetof(GUI, m_m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "NumActiveWindows", PIDX_NumActiveWindows, offsetof(GUI, m_NumActiveWindows), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
-bool GUI::Serialize(Serializer2& serializer)
+void GUI::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("m_Enabled", m_m_Enabled);
+	serializer.SerializeInt("NumActiveWindows", m_NumActiveWindows);
 }
 bool GUI::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool GUI::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("m_Enabled", m_m_Enabled);
-	LXIMGUI_SHOW_INT("NumActiveWindows", m_NumActiveWindows, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	ImguiHelpers::ShowBool("m_Enabled", m_m_Enabled  );
+	ImguiHelpers::ShowInt("NumActiveWindows", m_NumActiveWindows , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* GUI::GetTypeName()

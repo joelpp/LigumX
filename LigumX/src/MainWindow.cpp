@@ -13,26 +13,30 @@ const ClassPropertyData MainWindow::g_Properties[] =
 { "Size", PIDX_Size, offsetof(MainWindow, m_Size), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "Title", PIDX_Title, offsetof(MainWindow, m_Title), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool MainWindow::Serialize(Serializer2& serializer)
+void MainWindow::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("InFocus", m_InFocus);
+	serializer.SerializeVec2("Position", m_Position);
+	serializer.SerializeIVec2("Size", m_Size);
+	serializer.SerializeString("Title", m_Title);
 }
 bool MainWindow::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;
 }
 bool MainWindow::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("InFocus", m_InFocus);
-	LXIMGUI_SHOW_VEC2("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_IVEC2("Size", m_Size, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_STRING("Title", m_Title);
+	ImguiHelpers::ShowBool("InFocus", m_InFocus  );
+	ImguiHelpers::ShowVec2("Position", m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowIVec2("Size", m_Size , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowString("Title", m_Title  );
 	return true;
 }
 const char* MainWindow::GetTypeName()

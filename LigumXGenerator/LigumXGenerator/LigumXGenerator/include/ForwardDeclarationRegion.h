@@ -50,7 +50,7 @@ public:
 				}
 
 
-				if (!stringArrayContains(classesToDeclare, type))
+				if (!stringArrayContains(classesToDeclare, type) && !(type == "std::string"))
 				{
 					classesToDeclare.push_back(type);
 				}

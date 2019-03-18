@@ -30,23 +30,34 @@ std::string StringUtils::FromFile(const char* fileName)
 }
 
 
-std::vector<std::string> StringUtils::ReadFileLines(const char* fileName)
+std::vector<std::string> StringUtils::ReadFileLines(std::fstream& fileStream)
 {
 	std::vector<std::string> values;
-
-	std::fstream refFile(fileName, std::fstream::in);
-	if (refFile.is_open())
+	if (fileStream.is_open())
 	{
 		std::string line;
-		while (std::getline(refFile, line))
+		while (std::getline(fileStream, line))
 		{
 			values.push_back(line);
 		}
-		refFile.close();
+		fileStream.close();
 	}
 
 	return values;
 }
+
+std::vector<std::string> StringUtils::ReadFileLines(const char* fileName)
+{
+	std::fstream fileStream(fileName, std::fstream::in);
+	return ReadFileLines(fileStream);
+}
+
+
+std::vector<std::string> StringUtils::ReadFileLines(const std::string& fileName)
+{
+	return ReadFileLines(fileName.c_str());
+}
+
 
 bool StringUtils::StringContains(const std::string& baseString, const std::string& searchedString)
 {
@@ -161,15 +172,19 @@ int StringUtils::Count(const std::string& s, const char c)
 	return (int) std::count(s.begin(), s.end(), c);
 }
 
+float StringUtils::ToFloat(const std::string& str)
+{
+	return std::atof(str.c_str());
+}
+
 int StringUtils::ToInt(const std::string& str)
 {
 	return std::atoi(str.c_str());
 }
 
-long int StringUtils::ToLongInt(const std::string& str)
+long int StringUtils::ToLong(const std::string& str)
 {
 	return std::atol(str.c_str());
-
 }
 
 

@@ -50,23 +50,25 @@ const ClassPropertyData OSMDataProcessor::g_Properties[] =
 { "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Settings", PIDX_Settings, offsetof(OSMDataProcessor, m_Settings), 0, LXType_ObjectPtr, sizeof(OSMDataProcessorSettings*), LXType_OSMDataProcessorSettings, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool OSMDataProcessor::Serialize(Serializer2& serializer)
+void OSMDataProcessor::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeFloat("RoadWidth", m_RoadWidth);
+	serializer.SerializeObjectPtr("Settings", m_Settings);
 }
 bool OSMDataProcessor::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool OSMDataProcessor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_FLOAT("RoadWidth", m_RoadWidth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("Settings", m_Settings);
+	ImguiHelpers::ShowFloat("RoadWidth", m_RoadWidth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowObjectPtr("Settings", m_Settings  );
 	return true;
 }
 const char* OSMDataProcessor::GetTypeName()

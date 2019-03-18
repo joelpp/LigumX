@@ -89,7 +89,7 @@ PIDX_HighlightSelectedSector,
 PIDX_LoadSectorsOnClick,
 PIDX_SelectedWayIndex,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

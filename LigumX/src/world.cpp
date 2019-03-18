@@ -20,26 +20,28 @@ const ClassPropertyData World::g_Properties[] =
 { "DebugEntities", PIDX_DebugEntities, offsetof(World, m_DebugEntities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, true, PropertyFlags_Transient, 0, 0, 0,}, 
 { "Sectors", PIDX_Sectors, offsetof(World, m_Sectors), 0, LXType_stdvector, sizeof(std::vector<Sector*>), LXType_stdvector, false, LXType_Sector, true, PropertyFlags_Transient, 0, 0, 0,}, 
 };
-bool World::Serialize(Serializer2& serializer)
+void World::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeObjectPtr("SunLight", m_SunLight);
+	serializer.SerializeVector("Entities", m_Entities);
 }
 bool World::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;
 }
 bool World::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("SunLight", m_SunLight);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Entities", m_Entities);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("DebugEntities", m_DebugEntities);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Sectors", m_Sectors);
+	ImguiHelpers::ShowObjectPtr("SunLight", m_SunLight  );
+	ImguiHelpers::ShowVector("Entities", m_Entities  );
+	ImguiHelpers::ShowVector("DebugEntities", m_DebugEntities  );
+	ImguiHelpers::ShowVector("Sectors", m_Sectors  );
 	return true;
 }
 const char* World::GetTypeName()

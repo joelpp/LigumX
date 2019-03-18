@@ -11,25 +11,29 @@ const ClassPropertyData PostEffects::g_Properties[] =
 { "ToneMappingEnabled", PIDX_ToneMappingEnabled, offsetof(PostEffects, m_ToneMappingEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "EmissiveGlowEnabled", PIDX_EmissiveGlowEnabled, offsetof(PostEffects, m_EmissiveGlowEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool PostEffects::Serialize(Serializer2& serializer)
+void PostEffects::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("GammaCorrectionEnabled", m_GammaCorrectionEnabled);
+	serializer.SerializeFloat("GammaExponent", m_GammaExponent);
+	serializer.SerializeBool("ToneMappingEnabled", m_ToneMappingEnabled);
+	serializer.SerializeBool("EmissiveGlowEnabled", m_EmissiveGlowEnabled);
 }
 bool PostEffects::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool PostEffects::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("GammaCorrectionEnabled", m_GammaCorrectionEnabled);
-	LXIMGUI_SHOW_FLOAT("GammaExponent", m_GammaExponent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("ToneMappingEnabled", m_ToneMappingEnabled);
-	LXIMGUI_SHOW_BOOL("EmissiveGlowEnabled", m_EmissiveGlowEnabled);
+	ImguiHelpers::ShowBool("GammaCorrectionEnabled", m_GammaCorrectionEnabled  );
+	ImguiHelpers::ShowFloat("GammaExponent", m_GammaExponent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("ToneMappingEnabled", m_ToneMappingEnabled  );
+	ImguiHelpers::ShowBool("EmissiveGlowEnabled", m_EmissiveGlowEnabled  );
 	return true;
 }
 const char* PostEffects::GetTypeName()

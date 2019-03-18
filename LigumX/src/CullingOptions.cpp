@@ -14,28 +14,35 @@ const ClassPropertyData CullingOptions::g_Properties[] =
 { "DebugDotProduct", PIDX_DebugDotProduct, offsetof(CullingOptions, m_DebugDotProduct), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugDotProductMaxDistance", PIDX_DebugDotProductMaxDistance, offsetof(CullingOptions, m_DebugDotProductMaxDistance), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool CullingOptions::Serialize(Serializer2& serializer)
+void CullingOptions::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("CullEntities", m_CullEntities);
+	serializer.SerializeBool("CullSectors", m_CullSectors);
+	serializer.SerializeBool("UseDotProduct", m_UseDotProduct);
+	serializer.SerializeBool("UseAABBClipPos", m_UseAABBClipPos);
+	serializer.SerializeBool("DebugAABBClippPos", m_DebugAABBClippPos);
+	serializer.SerializeBool("DebugDotProduct", m_DebugDotProduct);
+	serializer.SerializeFloat("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance);
 }
 bool CullingOptions::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool CullingOptions::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("CullEntities", m_CullEntities);
-	LXIMGUI_SHOW_BOOL("CullSectors", m_CullSectors);
-	LXIMGUI_SHOW_BOOL("UseDotProduct", m_UseDotProduct);
-	LXIMGUI_SHOW_BOOL("UseAABBClipPos", m_UseAABBClipPos);
-	LXIMGUI_SHOW_BOOL("DebugAABBClippPos", m_DebugAABBClippPos);
-	LXIMGUI_SHOW_BOOL("DebugDotProduct", m_DebugDotProduct);
-	LXIMGUI_SHOW_FLOAT("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowBool("CullEntities", m_CullEntities  );
+	ImguiHelpers::ShowBool("CullSectors", m_CullSectors  );
+	ImguiHelpers::ShowBool("UseDotProduct", m_UseDotProduct  );
+	ImguiHelpers::ShowBool("UseAABBClipPos", m_UseAABBClipPos  );
+	ImguiHelpers::ShowBool("DebugAABBClippPos", m_DebugAABBClippPos  );
+	ImguiHelpers::ShowBool("DebugDotProduct", m_DebugDotProduct  );
+	ImguiHelpers::ShowFloat("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* CullingOptions::GetTypeName()

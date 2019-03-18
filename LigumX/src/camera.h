@@ -108,7 +108,7 @@ PIDX_ViewSize,
 PIDX_MovementSpeed,
 PIDX_KeyMovementSpeedIncreaseFactor,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

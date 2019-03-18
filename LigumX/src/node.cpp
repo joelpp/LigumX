@@ -15,28 +15,35 @@ const ClassPropertyData Node::g_Properties[] =
 { "SectorIndex", PIDX_SectorIndex, offsetof(Node, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "SectorOffset", PIDX_SectorOffset, offsetof(Node, m_SectorOffset), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool Node::Serialize(Serializer2& serializer)
+void Node::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeLong("OSMId", m_OSMId);
+	serializer.SerializeVec2("LongLat", m_LongLat);
+	serializer.SerializeVec3("WorldPosition", m_WorldPosition);
+	serializer.SerializeFloat("Elevation", m_Elevation);
+	serializer.SerializeVector("Ways", m_Ways);
+	serializer.SerializeIVec2("SectorIndex", m_SectorIndex);
+	serializer.SerializeVec2("SectorOffset", m_SectorOffset);
 }
 bool Node::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Node::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_LONG("OSMId", m_OSMId, 0, 0);
-	LXIMGUI_SHOW_VEC2("LongLat", m_LongLat, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("WorldPosition", m_WorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("Elevation", m_Elevation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Ways", m_Ways);
-	LXIMGUI_SHOW_IVEC2("SectorIndex", m_SectorIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_VEC2("SectorOffset", m_SectorOffset, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowLong("OSMId", m_OSMId , 0, 0 );
+	ImguiHelpers::ShowVec2("LongLat", m_LongLat , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("WorldPosition", m_WorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("Elevation", m_Elevation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVector("Ways", m_Ways  );
+	ImguiHelpers::ShowIVec2("SectorIndex", m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowVec2("SectorOffset", m_SectorOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* Node::GetTypeName()

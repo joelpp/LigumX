@@ -1,0 +1,6 @@
+
+class SerializerInputVariable
+{
+	std::string VariableName;
+	std::vector<std::string> Values;
+};

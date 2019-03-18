@@ -33,13 +33,13 @@ enum g_ComponentPIDX
 {
 PIDX_ParentEntity,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Component
 
-virtual void Update() = 0;
+virtual void Update();
 
 };

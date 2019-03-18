@@ -185,6 +185,11 @@ public:
 				}
 				sizeProperty += ")";
 
+				std::string lxType = (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None");
+				if (var.m_AssociatedType == "std::string")
+				{
+					lxType = "LXType_None";
+				}
 
 				// warning! if you change anything here mirror it in property.h in LigumX
 				WriteLine("{ \"" + varName + "\", "
@@ -195,7 +200,7 @@ public:
 					+  sizeProperty+ ", "
 					+ "LXType_" + RemoveSubstrings(varType, "::") + ", "
 					+ (var.IsAPointer() ? "true" : "false") + ", "
-					+ (var.m_IsTemplate ? ("LXType_" + var.m_AssociatedType) : "LXType_None") + ", "
+					+ lxType + ", "
 					+ (var.m_AssociatedPtr ? "true" : "false") + ", "
 					+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
 					+ var.GetMinValue() + ", "
@@ -209,55 +214,42 @@ public:
 		}
 	}
 
-	void WriteSerializer()
-	{
-		WriteLine("bool " + m_Class.m_Name + "::Serialize(Serializer2& serializer)");
-		WriteLine("{");
-		WriteLine("	return true;");
-		WriteLine("}");
-
-		WriteLine("bool " + m_Class.m_Name + "::Serialize(bool writing)");
-		WriteLine("{");
-		WriteLine(R"(	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); )");
-		WriteLine(R"(	Serialize(serializer2); )");
-		WriteLine("");
-		WriteLine(R"(	bool success = g_Serializer->SerializeObject(this, writing); )");
-
-		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
-		{
-			WriteLine("	PostSerialization(writing, success);");
-		}
-		WriteLine("	return success;");
-		WriteLine("}");
-	}
-
-	void WriteGetTypeName()
-	{
-		WriteLine("const char* " + m_Class.m_Name + "::GetTypeName()");
-		WriteLine("{");
-		WriteLine("\treturn ClassName;");
-		WriteLine("}");
-
-	}
 
 	enum OutputType
 	{
 		Imgui = 0,
-		File
+		Serializer,
+		Count
 	};
 
-	//struct OutputParams
-	//{
-
-	//	const char* m_PtrVector;
-	//	const char* m_Vector;
-	//	const char* m_Reference;
-	//	const char* m_Reference;
-	//};
-
-	void WriteImguiVariable(Variable& var)
+	struct OutputParams
 	{
-		std::string prefix = "LXImgui_Show";
+		OutputParams(const std::string& prefix, bool limits, bool ignoreTransientMembers)
+			: m_Prefix(prefix)
+			, m_OutputLimits(limits)
+			, m_IgnoreTransientMembers(ignoreTransientMembers)
+		{
+
+		}
+		std::string m_Prefix;
+		bool m_OutputLimits;
+		bool m_IgnoreTransientMembers;
+	};
+
+
+	OutputParams g_OutputParams[2] =
+	{
+		OutputParams("ImguiHelpers::Show", true, false),
+		OutputParams("serializer.Serialize", false, true),
+	};
+
+	void WriteVariable(Variable& var, const OutputParams& outputParams)
+	{
+		if (outputParams.m_IgnoreTransientMembers && (var.m_PropertyFlags & PropertyFlags_Transient))
+		{
+			return;
+		}
+
 		std::string tabStop = "\t";
 
 		std::string& varName = var.m_Name;
@@ -278,11 +270,11 @@ public:
 			{
 				if (var.m_AssociatedPtr)
 				{
-					typeToWrite = "ObjectPtrVector";
+					typeToWrite = "Vector";
 				}
 				else
 				{
-					typeToWrite = "ObjectVector";
+					typeToWrite = "Vector";
 				}
 			}
 			else
@@ -291,14 +283,14 @@ public:
 			}
 
 
-			if (var.m_IsTemplate)
-			{
-				extraArgs = ", " + var.m_AssociatedType;
-			}
-			else
-			{
-				extraArgs = ", " + var.GetType();
-			}
+			//if (var.m_IsTemplate)
+			//{
+			//	extraArgs = ", " + var.m_AssociatedType;
+			//}
+			//else
+			//{
+			//	extraArgs = ", " + var.GetType();
+			//}
 
 
 		}
@@ -312,7 +304,7 @@ public:
 				// found
 				write = true;
 
-				std::string typeToWrite = findResult->second;
+				typeToWrite = findResult->second;
 
 				if (VarTypeSupportsLimits(var))
 				{
@@ -326,19 +318,106 @@ public:
 			}
 		}
 
-		if (var.m_PropertyFlags & PropertyFlags_SetCallback)
+		//if (var.m_PropertyFlags & PropertyFlags_SetCallback)
+		//{
+		//	typeToWrite += "_SetCallback";
+		//}
+
+		std::stringstream sstr;
+		sstr << tabStop + outputParams.m_Prefix + typeToWrite + "(\"" + varName + "\", " + varValue;
+
+		if (outputParams.m_OutputLimits)
 		{
-			typeToWrite += "_SetCallback";
+			sstr << " " << extraArgs << " ";
 		}
+
+		sstr << ");";
 
 		if (write)
 		{
-			WriteLine(tabStop + prefix + typeToWrite + "(\"" + varName + "\", " + varValue + ");");
+			WriteLine(sstr.str());
 		}
 	}
 
+
+	void WriteVariable(Variable& var, OutputType outputType)
+	{
+		WriteVariable(var, g_OutputParams[outputType]);
+
+	}
+	void WriteVariables(OutputType outputType)
+	{
+		int numProperties = m_Class.m_Members.size();
+
+		if (numProperties > 0)
+		{
+			for (int i = 0; i < numProperties; ++i)
+			{
+				Variable& var = m_Class.m_Members[i];
+				WriteVariable(var, outputType);
+			}
+		}
+	}
+
+
+	void WriteSerializer()
+	{
+		WriteLine("void " + m_Class.m_Name + "::Serialize(Serializer2& serializer)");
+		WriteLine("{");
+
+		if (!(m_Class.m_ParentName.empty()))
+		{
+			WriteLine("\tsuper::Serialize(serializer);");
+		}
+
+		WriteVariables(OutputType::Serializer);
+		WriteLine("}");
+
+		WriteLine("bool " + m_Class.m_Name + "::Serialize(bool writing)");
+		WriteLine("{");
+		WriteLine(R"(	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); )");
+		WriteLine(R"(	Serialize(serializer2); )");
+		WriteLine("");
+		WriteLine(R"(	bool success = true;//g_Serializer->SerializeObject(this, writing); )");
+
+		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
+		{
+			WriteLine("	PostSerialization(writing, success);");
+		}
+		WriteLine("	return success;");
+		WriteLine("}");
+	}
+
+	void WriteGetTypeName()
+	{
+		WriteLine("const char* " + m_Class.m_Name + "::GetTypeName()");
+		WriteLine("{");
+		WriteLine("\treturn ClassName;");
+		WriteLine("}");
+
+	}
+
+
+	//struct OutputParams
+	//{
+
+	//	const char* m_PtrVector;
+	//	const char* m_Vector;
+	//	const char* m_Reference;
+	//	const char* m_Reference;
+	//};
+
+
+
+	//void WriteImguiVariable(Variable& var)
+	//{
+	//	WriteVariable(var, );
+	//}
+
 	void WriteShowImgui()
 	{
+		std::string tabStop = "\t";
+
 		WriteLine("bool " + m_Class.m_Name + "::ShowPropertyGrid()");
 		WriteLine("{");
 
@@ -348,16 +427,8 @@ public:
 			WriteLine(tabStop + "super::ShowPropertyGrid();");
 		}
 
-		int numProperties = m_Class.m_Members.size();
+		WriteVariables(OutputType::Imgui);
 
-		if (numProperties > 0)
-		{
-			for (int i = 0; i < numProperties; ++i)
-			{
-				Variable& var = m_Class.m_Members[i];
-				
-			}
-		}
 		WriteLine(tabStop + std::string("return true;"));
 		WriteLine("}");
 	}
@@ -383,7 +454,7 @@ public:
 				varType = var.m_AssociatedType;
 			}
 
-			if (!varType.empty())
+			if (!varType.empty() && !(varType == "std::string"))
 			{
 				auto findResult = std::find(neededIncludes.begin(), neededIncludes.end(), varType);
 

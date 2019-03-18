@@ -38,31 +38,41 @@ const ClassPropertyData OSMTool::g_Properties[] =
 { "ShowFlatWays", PIDX_ShowFlatWays, offsetof(OSMTool, m_ShowFlatWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugPointInRoad", PIDX_DebugPointInRoad, offsetof(OSMTool, m_DebugPointInRoad), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool OSMTool::Serialize(Serializer2& serializer)
+void OSMTool::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("Enabled", m_Enabled);
+	serializer.SerializeObjectPtr("SelectedNode", m_SelectedNode);
+	serializer.SerializeVector("SelectedWays", m_SelectedWays);
+	serializer.SerializeBool("SearchOnlyWithinSector", m_SearchOnlyWithinSector);
+	serializer.SerializeIVec2("SelectedSectorIndex", m_SelectedSectorIndex);
+	serializer.SerializeVec3("WorldSpacePosition", m_WorldSpacePosition);
+	serializer.SerializeBool("ShowNodes", m_ShowNodes);
+	serializer.SerializeBool("ShowWays", m_ShowWays);
+	serializer.SerializeBool("ShowFlatWays", m_ShowFlatWays);
+	serializer.SerializeBool("DebugPointInRoad", m_DebugPointInRoad);
 }
 bool OSMTool::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool OSMTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_OBJECTREF("SelectedNode", m_SelectedNode);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("SelectedWays", m_SelectedWays);
-	LXIMGUI_SHOW_BOOL("SearchOnlyWithinSector", m_SearchOnlyWithinSector);
-	LXIMGUI_SHOW_IVEC2("SelectedSectorIndex", m_SelectedSectorIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_VEC3("WorldSpacePosition", m_WorldSpacePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("ShowNodes", m_ShowNodes);
-	LXIMGUI_SHOW_BOOL("ShowWays", m_ShowWays);
-	LXIMGUI_SHOW_BOOL("ShowFlatWays", m_ShowFlatWays);
-	LXIMGUI_SHOW_BOOL("DebugPointInRoad", m_DebugPointInRoad);
+	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
+	ImguiHelpers::ShowObjectPtr("SelectedNode", m_SelectedNode  );
+	ImguiHelpers::ShowVector("SelectedWays", m_SelectedWays  );
+	ImguiHelpers::ShowBool("SearchOnlyWithinSector", m_SearchOnlyWithinSector  );
+	ImguiHelpers::ShowIVec2("SelectedSectorIndex", m_SelectedSectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowVec3("WorldSpacePosition", m_WorldSpacePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("ShowNodes", m_ShowNodes  );
+	ImguiHelpers::ShowBool("ShowWays", m_ShowWays  );
+	ImguiHelpers::ShowBool("ShowFlatWays", m_ShowFlatWays  );
+	ImguiHelpers::ShowBool("DebugPointInRoad", m_DebugPointInRoad  );
 	return true;
 }
 const char* OSMTool::GetTypeName()

@@ -350,12 +350,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			m_AllNodes.emplace(id, node);
 
-			long int intID = StringUtils::ToLongInt(id);
+			long int intID = StringUtils::ToLong(id);
 
 			if (intID == 2147483647)
 			{
 				std::string newid = id.substr(3, id.size());
-				intID = StringUtils::ToLongInt(newid);
+				intID = StringUtils::ToLong(newid);
 			}
 
 			sector->m_Data->m_AllNodesPtr[intID] = node;
@@ -449,7 +449,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			m_AllWays.emplace(id, way);
 
-			long intID = StringUtils::ToLongInt(id);
+			long intID = StringUtils::ToLong(id);
 			way->SetIndexInSector(request->GetSector()->m_Data->m_AllWaysPtr.size());
 			request->GetSector()->m_Data->m_AllWaysPtr[intID] = way;
 			m_AllWaysPtr[intID] = way;

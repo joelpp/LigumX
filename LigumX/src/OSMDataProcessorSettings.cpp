@@ -21,34 +21,47 @@ const ClassPropertyData OSMDataProcessorSettings::g_Properties[] =
 { "CheckPointInRoad", PIDX_CheckPointInRoad, offsetof(OSMDataProcessorSettings, m_CheckPointInRoad), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "CheckPointInBuilding", PIDX_CheckPointInBuilding, offsetof(OSMDataProcessorSettings, m_CheckPointInBuilding), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool OSMDataProcessorSettings::Serialize(Serializer2& serializer)
+void OSMDataProcessorSettings::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeFloat("MinFacadeLength", m_MinFacadeLength);
+	serializer.SerializeFloat("MaxFacadeLength", m_MaxFacadeLength);
+	serializer.SerializeFloat("MinPlotLengthRatio", m_MinPlotLengthRatio);
+	serializer.SerializeFloat("MaxPlotLengthRatio", m_MaxPlotLengthRatio);
+	serializer.SerializeFloat("MinBuildingDepth", m_MinBuildingDepth);
+	serializer.SerializeFloat("MaxBuildingDepth", m_MaxBuildingDepth);
+	serializer.SerializeFloat("MinHeight", m_MinHeight);
+	serializer.SerializeFloat("MaxHeight", m_MaxHeight);
+	serializer.SerializeFloat("MinNeighborDistance", m_MinNeighborDistance);
+	serializer.SerializeFloat("MaxNeighborDistance", m_MaxNeighborDistance);
+	serializer.SerializeBool("ProcessAddressInterpolation", m_ProcessAddressInterpolation);
+	serializer.SerializeBool("CheckPointInRoad", m_CheckPointInRoad);
+	serializer.SerializeBool("CheckPointInBuilding", m_CheckPointInBuilding);
 }
 bool OSMDataProcessorSettings::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool OSMDataProcessorSettings::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_FLOAT("MinFacadeLength", m_MinFacadeLength, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MaxFacadeLength", m_MaxFacadeLength, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MinPlotLengthRatio", m_MinPlotLengthRatio, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MaxPlotLengthRatio", m_MaxPlotLengthRatio, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MinBuildingDepth", m_MinBuildingDepth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MaxBuildingDepth", m_MaxBuildingDepth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MinHeight", m_MinHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MaxHeight", m_MaxHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MinNeighborDistance", m_MinNeighborDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MaxNeighborDistance", m_MaxNeighborDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("ProcessAddressInterpolation", m_ProcessAddressInterpolation);
-	LXIMGUI_SHOW_BOOL("CheckPointInRoad", m_CheckPointInRoad);
-	LXIMGUI_SHOW_BOOL("CheckPointInBuilding", m_CheckPointInBuilding);
+	ImguiHelpers::ShowFloat("MinFacadeLength", m_MinFacadeLength , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MaxFacadeLength", m_MaxFacadeLength , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MinPlotLengthRatio", m_MinPlotLengthRatio , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MaxPlotLengthRatio", m_MaxPlotLengthRatio , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MinBuildingDepth", m_MinBuildingDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MaxBuildingDepth", m_MaxBuildingDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MinHeight", m_MinHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MaxHeight", m_MaxHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MinNeighborDistance", m_MinNeighborDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MaxNeighborDistance", m_MaxNeighborDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("ProcessAddressInterpolation", m_ProcessAddressInterpolation  );
+	ImguiHelpers::ShowBool("CheckPointInRoad", m_CheckPointInRoad  );
+	ImguiHelpers::ShowBool("CheckPointInBuilding", m_CheckPointInBuilding  );
 	return true;
 }
 const char* OSMDataProcessorSettings::GetTypeName()

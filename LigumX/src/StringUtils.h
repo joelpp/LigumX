@@ -14,7 +14,9 @@ namespace StringUtils
 {
 	std::string FromFile(const char* fileName);
 
+	std::vector<std::string> ReadFileLines(std::fstream& fileStream);
 	std::vector<std::string> ReadFileLines(const char* fileName);
+	std::vector<std::string> ReadFileLines(const std::string& fileName);
 
 	bool StringContains(const std::string& baseString, const std::string& searchedString);
 	bool StringContains(const std::string& s, char val);
@@ -37,8 +39,10 @@ namespace StringUtils
 
 	int Count(const std::string& s, const char c);
 
+	float ToFloat(const std::string& str);
+
 	int ToInt(const std::string& str);
-	long int ToLongInt(const std::string& str);
+	long int ToLong(const std::string& str);
 
 	bool IsCapitalLetter(const char&);
 	bool IsLowerCaseLetter(const char& c);

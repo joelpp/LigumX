@@ -43,23 +43,25 @@ const ClassPropertyData RenderDataManager::g_Properties[] =
 { "CullingOptions", PIDX_CullingOptions, offsetof(RenderDataManager, m_CullingOptions), 0, LXType_ObjectPtr, sizeof(CullingOptions*), LXType_CullingOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "RenderingStats", PIDX_RenderingStats, offsetof(RenderDataManager, m_RenderingStats), 0, LXType_ObjectPtr, sizeof(RenderingStats*), LXType_RenderingStats, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool RenderDataManager::Serialize(Serializer2& serializer)
+void RenderDataManager::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeObjectPtr("CullingOptions", m_CullingOptions);
+	serializer.SerializeObjectPtr("RenderingStats", m_RenderingStats);
 }
 bool RenderDataManager::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool RenderDataManager::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("CullingOptions", m_CullingOptions);
-	LXIMGUI_SHOW_OBJECTREF("RenderingStats", m_RenderingStats);
+	ImguiHelpers::ShowObjectPtr("CullingOptions", m_CullingOptions  );
+	ImguiHelpers::ShowObjectPtr("RenderingStats", m_RenderingStats  );
 	return true;
 }
 const char* RenderDataManager::GetTypeName()
@@ -346,7 +348,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 					glm::vec3 direction = glm::normalize(distance);
 					float length = glm::length(distance);
 					int numsubdivisions = (int)(length / g_EngineSettings->GetWayTessellationFactor());
-					float factor = numsubdivisions + 1;
+					float factor = (float) (numsubdivisions + 1);
 					for (int j = 0; j < numsubdivisions; ++j)
 					{
 						glm::vec3 subdivisionPoint;
@@ -627,7 +629,7 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 				glm::ivec2 ndc = GetNDCFromWorldPosition(glm::vec4(worldPosition, 1.f), camera, windowSize);
 
 				int textWidth = 100;
-				int edgeOffset = ndc.x + textWidth - windowSize.x;
+				int edgeOffset = ndc.x + textWidth - (int)windowSize.x;
 				ndc.x -= std::min(textWidth, std::max(edgeOffset, 0));
 
 				glm::vec3 msgColor = behind ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
@@ -696,7 +698,7 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 				glm::ivec2 ndc = GetNDCFromClipPos(clipPos, windowSize);
 
 				int textWidth = 100;
-				int edgeOffset = ndc.x + textWidth - windowSize.x;
+				int edgeOffset = ndc.x + textWidth - (int)windowSize.x;
 				ndc.x -= std::min(textWidth, std::max(edgeOffset, 0));
 
 				glm::vec3 msgColor = visible ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
@@ -787,6 +789,6 @@ void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
 
 	}
 
-	m_RenderingStats->SetNumVisibleEntities(m_VisibleEntities.size());
-	m_RenderingStats->SetNumVisibleSectors(m_VisibleSectors.size());
+	m_RenderingStats->SetNumVisibleEntities((int)m_VisibleEntities.size());
+	m_RenderingStats->SetNumVisibleSectors((int)m_VisibleSectors.size());
 }

@@ -29,41 +29,61 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "PickingEnabled", PIDX_PickingEnabled, offsetof(DisplayOptions, m_PickingEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayMode", PIDX_DisplayMode, offsetof(DisplayOptions, m_DisplayMode), 0, LXType_Object, sizeof(DisplayMode), LXType_DisplayMode, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 };
-bool DisplayOptions::Serialize(Serializer2& serializer)
+void DisplayOptions::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("UseSkyLighting", m_UseSkyLighting);
+	serializer.SerializeBool("RenderTerrain", m_RenderTerrain);
+	serializer.SerializeBool("DrawSky", m_DrawSky);
+	serializer.SerializeBool("WireframeRendering", m_WireframeRendering);
+	serializer.SerializeBool("UseLighting", m_UseLighting);
+	serializer.SerializeBool("ShowNormals", m_ShowNormals);
+	serializer.SerializeBool("ShowUVs", m_ShowUVs);
+	serializer.SerializeBool("ShowSpecular", m_ShowSpecular);
+	serializer.SerializeBool("ShowDiffuse", m_ShowDiffuse);
+	serializer.SerializeBool("ShowAmbient", m_ShowAmbient);
+	serializer.SerializeBool("ShowFPS", m_ShowFPS);
+	serializer.SerializeBool("ShowDepth", m_ShowDepth);
+	serializer.SerializeBool("LinearizeDepth", m_LinearizeDepth);
+	serializer.SerializeBool("BlinnPhongShading", m_BlinnPhongShading);
+	serializer.SerializeBool("RenderTextureOverlay", m_RenderTextureOverlay);
+	serializer.SerializeBool("RenderOpaque", m_RenderOpaque);
+	serializer.SerializeBool("RenderShadows", m_RenderShadows);
+	serializer.SerializeBool("OutputGLErrors", m_OutputGLErrors);
+	serializer.SerializeBool("DisplayDebugModels", m_DisplayDebugModels);
+	serializer.SerializeBool("PickingEnabled", m_PickingEnabled);
 }
 bool DisplayOptions::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool DisplayOptions::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("UseSkyLighting", m_UseSkyLighting);
-	LXIMGUI_SHOW_BOOL("RenderTerrain", m_RenderTerrain);
-	LXIMGUI_SHOW_BOOL("DrawSky", m_DrawSky);
-	LXIMGUI_SHOW_BOOL("WireframeRendering", m_WireframeRendering);
-	LXIMGUI_SHOW_BOOL("UseLighting", m_UseLighting);
-	LXIMGUI_SHOW_BOOL("ShowNormals", m_ShowNormals);
-	LXIMGUI_SHOW_BOOL("ShowUVs", m_ShowUVs);
-	LXIMGUI_SHOW_BOOL("ShowSpecular", m_ShowSpecular);
-	LXIMGUI_SHOW_BOOL("ShowDiffuse", m_ShowDiffuse);
-	LXIMGUI_SHOW_BOOL("ShowAmbient", m_ShowAmbient);
-	LXIMGUI_SHOW_BOOL("ShowFPS", m_ShowFPS);
-	LXIMGUI_SHOW_BOOL("ShowDepth", m_ShowDepth);
-	LXIMGUI_SHOW_BOOL("LinearizeDepth", m_LinearizeDepth);
-	LXIMGUI_SHOW_BOOL("BlinnPhongShading", m_BlinnPhongShading);
-	LXIMGUI_SHOW_BOOL("RenderTextureOverlay", m_RenderTextureOverlay);
-	LXIMGUI_SHOW_BOOL("RenderOpaque", m_RenderOpaque);
-	LXIMGUI_SHOW_BOOL("RenderShadows", m_RenderShadows);
-	LXIMGUI_SHOW_BOOL("OutputGLErrors", m_OutputGLErrors);
-	LXIMGUI_SHOW_BOOL("DisplayDebugModels", m_DisplayDebugModels);
-	LXIMGUI_SHOW_BOOL("PickingEnabled", m_PickingEnabled);
+	ImguiHelpers::ShowBool("UseSkyLighting", m_UseSkyLighting  );
+	ImguiHelpers::ShowBool("RenderTerrain", m_RenderTerrain  );
+	ImguiHelpers::ShowBool("DrawSky", m_DrawSky  );
+	ImguiHelpers::ShowBool("WireframeRendering", m_WireframeRendering  );
+	ImguiHelpers::ShowBool("UseLighting", m_UseLighting  );
+	ImguiHelpers::ShowBool("ShowNormals", m_ShowNormals  );
+	ImguiHelpers::ShowBool("ShowUVs", m_ShowUVs  );
+	ImguiHelpers::ShowBool("ShowSpecular", m_ShowSpecular  );
+	ImguiHelpers::ShowBool("ShowDiffuse", m_ShowDiffuse  );
+	ImguiHelpers::ShowBool("ShowAmbient", m_ShowAmbient  );
+	ImguiHelpers::ShowBool("ShowFPS", m_ShowFPS  );
+	ImguiHelpers::ShowBool("ShowDepth", m_ShowDepth  );
+	ImguiHelpers::ShowBool("LinearizeDepth", m_LinearizeDepth  );
+	ImguiHelpers::ShowBool("BlinnPhongShading", m_BlinnPhongShading  );
+	ImguiHelpers::ShowBool("RenderTextureOverlay", m_RenderTextureOverlay  );
+	ImguiHelpers::ShowBool("RenderOpaque", m_RenderOpaque  );
+	ImguiHelpers::ShowBool("RenderShadows", m_RenderShadows  );
+	ImguiHelpers::ShowBool("OutputGLErrors", m_OutputGLErrors  );
+	ImguiHelpers::ShowBool("DisplayDebugModels", m_DisplayDebugModels  );
+	ImguiHelpers::ShowBool("PickingEnabled", m_PickingEnabled  );
 	return true;
 }
 const char* DisplayOptions::GetTypeName()

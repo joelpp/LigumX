@@ -20,29 +20,37 @@ const ClassPropertyData CurlRequest::g_Properties[] =
 { "SectorIndex", PIDX_SectorIndex, offsetof(CurlRequest, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "Async", PIDX_Async, offsetof(CurlRequest, m_Async), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool CurlRequest::Serialize(Serializer2& serializer)
+void CurlRequest::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeInt("State", m_State);
+	serializer.SerializeVec2("Coords", m_Coords);
+	serializer.SerializeVec2("Extent", m_Extent);
+	serializer.SerializeString("Result", m_Result);
+	serializer.SerializeString("Filename", m_Filename);
+	serializer.SerializeObjectPtr("Sector", m_Sector);
+	serializer.SerializeIVec2("SectorIndex", m_SectorIndex);
+	serializer.SerializeBool("Async", m_Async);
 }
 bool CurlRequest::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool CurlRequest::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_INT("State", m_State, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_VEC2("Coords", m_Coords, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("Extent", m_Extent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_STRING("Result", m_Result);
-	LXIMGUI_SHOW_STRING("Filename", m_Filename);
-	LXIMGUI_SHOW_OBJECTREF("Sector", m_Sector);
-	LXIMGUI_SHOW_IVEC2("SectorIndex", m_SectorIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_BOOL("Async", m_Async);
+	ImguiHelpers::ShowInt("State", m_State , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowVec2("Coords", m_Coords , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("Extent", m_Extent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowString("Result", m_Result  );
+	ImguiHelpers::ShowString("Filename", m_Filename  );
+	ImguiHelpers::ShowObjectPtr("Sector", m_Sector  );
+	ImguiHelpers::ShowIVec2("SectorIndex", m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowBool("Async", m_Async  );
 	return true;
 }
 const char* CurlRequest::GetTypeName()

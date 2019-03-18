@@ -33,7 +33,7 @@ enum g_EditorToolPIDX
 {
 PIDX_Active,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -75,7 +75,7 @@ PIDX_ShowWays,
 PIDX_ShowFlatWays,
 PIDX_DebugPointInRoad,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

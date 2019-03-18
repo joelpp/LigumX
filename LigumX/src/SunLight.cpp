@@ -19,27 +19,33 @@ const ClassPropertyData SunLight::g_Properties[] =
 { "UseSkybox", PIDX_UseSkybox, offsetof(SunLight, m_UseSkybox), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(SunLight, UseSkybox, bool),}, 
 { "Skybox", PIDX_Skybox, offsetof(SunLight, m_Skybox), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_Hidden, 0, 0, 0,}, 
 };
-bool SunLight::Serialize(Serializer2& serializer)
+void SunLight::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("UseShadowMap", m_UseShadowMap);
+	serializer.SerializeFloat("Time", m_Time);
+	serializer.SerializeFloat("Orientation", m_Orientation);
+	serializer.SerializeFloat("Speed", m_Speed);
+	serializer.SerializeBool("UseSkybox", m_UseSkybox);
+	serializer.SerializeObjectPtr("Skybox", m_Skybox);
 }
 bool SunLight::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool SunLight::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("UseShadowMap", m_UseShadowMap);
-	LXIMGUI_SHOW_FLOAT("Time", m_Time, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("Orientation", m_Orientation, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("Speed", m_Speed, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL_SETCALLBACK("UseSkybox", m_UseSkybox);
-	LXIMGUI_SHOW_OBJECTREF("Skybox", m_Skybox);
+	ImguiHelpers::ShowBool("UseShadowMap", m_UseShadowMap  );
+	ImguiHelpers::ShowFloat("Time", m_Time , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("Orientation", m_Orientation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("Speed", m_Speed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("UseSkybox", m_UseSkybox  );
+	ImguiHelpers::ShowObjectPtr("Skybox", m_Skybox  );
 	return true;
 }
 const char* SunLight::GetTypeName()

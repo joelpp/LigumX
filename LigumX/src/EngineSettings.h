@@ -80,7 +80,7 @@ PIDX_MessagesPixelsOffset,
 PIDX_LoadOSMData,
 PIDX_TerrainTiling,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

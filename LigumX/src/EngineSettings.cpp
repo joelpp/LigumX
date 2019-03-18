@@ -21,34 +21,47 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 { "LoadOSMData", PIDX_LoadOSMData, offsetof(EngineSettings, m_LoadOSMData), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "TerrainTiling", PIDX_TerrainTiling, offsetof(EngineSettings, m_TerrainTiling), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool EngineSettings::Serialize(Serializer2& serializer)
+void EngineSettings::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeFloat("WorldScale", m_WorldScale);
+	serializer.SerializeVec2("StartLonLat", m_StartLonLat);
+	serializer.SerializeFloat("Extent", m_Extent);
+	serializer.SerializeInt("OSMQuantizationScale", m_OSMQuantizationScale);
+	serializer.SerializeBool("GenerateFlatTerrain", m_GenerateFlatTerrain);
+	serializer.SerializeIVec2("SplatMapResolution", m_SplatMapResolution);
+	serializer.SerializeFloat("WayTessellationFactor", m_WayTessellationFactor);
+	serializer.SerializeVec2("MessagesStartingPosition", m_MessagesStartingPosition);
+	serializer.SerializeFloat("MessagesFontSize", m_MessagesFontSize);
+	serializer.SerializeInt("MessagesDefaultFrameCount", m_MessagesDefaultFrameCount);
+	serializer.SerializeInt("MessagesPixelsOffset", m_MessagesPixelsOffset);
+	serializer.SerializeBool("LoadOSMData", m_LoadOSMData);
+	serializer.SerializeFloat("TerrainTiling", m_TerrainTiling);
 }
 bool EngineSettings::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool EngineSettings::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_FLOAT("WorldScale", m_WorldScale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("StartLonLat", m_StartLonLat, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("Extent", m_Extent, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_INT("OSMQuantizationScale", m_OSMQuantizationScale, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_BOOL("GenerateFlatTerrain", m_GenerateFlatTerrain);
-	LXIMGUI_SHOW_IVEC2("SplatMapResolution", m_SplatMapResolution, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_FLOAT("WayTessellationFactor", m_WayTessellationFactor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("MessagesStartingPosition", m_MessagesStartingPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("MessagesFontSize", m_MessagesFontSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_INT("MessagesDefaultFrameCount", m_MessagesDefaultFrameCount, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_INT("MessagesPixelsOffset", m_MessagesPixelsOffset, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_BOOL("LoadOSMData", m_LoadOSMData);
-	LXIMGUI_SHOW_FLOAT("TerrainTiling", m_TerrainTiling, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowFloat("WorldScale", m_WorldScale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("StartLonLat", m_StartLonLat , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("Extent", m_Extent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowInt("OSMQuantizationScale", m_OSMQuantizationScale , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowBool("GenerateFlatTerrain", m_GenerateFlatTerrain  );
+	ImguiHelpers::ShowIVec2("SplatMapResolution", m_SplatMapResolution , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowFloat("WayTessellationFactor", m_WayTessellationFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("MessagesStartingPosition", m_MessagesStartingPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("MessagesFontSize", m_MessagesFontSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowInt("MessagesDefaultFrameCount", m_MessagesDefaultFrameCount , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowInt("MessagesPixelsOffset", m_MessagesPixelsOffset , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowBool("LoadOSMData", m_LoadOSMData  );
+	ImguiHelpers::ShowFloat("TerrainTiling", m_TerrainTiling , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* EngineSettings::GetTypeName()

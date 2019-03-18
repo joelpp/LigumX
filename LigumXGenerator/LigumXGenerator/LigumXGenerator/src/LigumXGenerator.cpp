@@ -536,7 +536,7 @@ void InitializeGenerator()
 	g_LXTypeToImguiCallName.emplace("glm::vec3", "Vec3");
 	g_LXTypeToImguiCallName.emplace("glm::vec4", "Vec4");
 	g_LXTypeToImguiCallName.emplace("std::string", "String");
-	g_LXTypeToImguiCallName.emplace("std::vector", "ObjectPtr_Vector");
+	g_LXTypeToImguiCallName.emplace("std::vector", "Vector");
 
 	g_DefaultMinForType.emplace("int", "LX_LIMITS_INT_MIN");
 	g_DefaultMinForType.emplace("LONG", "LX_LIMITS_LONG_MIN");

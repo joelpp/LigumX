@@ -20,28 +20,35 @@ const ClassPropertyData SectorGraphicalData::g_Properties[] =
 { "SplatMapTexture", PIDX_SplatMapTexture, offsetof(SectorGraphicalData, m_SplatMapTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "AlbedoTexture", PIDX_AlbedoTexture, offsetof(SectorGraphicalData, m_AlbedoTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool SectorGraphicalData::Serialize(Serializer2& serializer)
+void SectorGraphicalData::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeObjectPtr("NodesModel", m_NodesModel);
+	serializer.SerializeObjectPtr("WaysModel", m_WaysModel);
+	serializer.SerializeVector("WaysModelsVector", m_WaysModelsVector);
+	serializer.SerializeVector("RoadEntities", m_RoadEntities);
+	serializer.SerializeVector("StaticEntities", m_StaticEntities);
+	serializer.SerializeObjectPtr("SplatMapTexture", m_SplatMapTexture);
+	serializer.SerializeObjectPtr("AlbedoTexture", m_AlbedoTexture);
 }
 bool SectorGraphicalData::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool SectorGraphicalData::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("NodesModel", m_NodesModel);
-	LXIMGUI_SHOW_OBJECTREF("WaysModel", m_WaysModel);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("WaysModelsVector", m_WaysModelsVector);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("RoadEntities", m_RoadEntities);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("StaticEntities", m_StaticEntities);
-	LXIMGUI_SHOW_OBJECTREF("SplatMapTexture", m_SplatMapTexture);
-	LXIMGUI_SHOW_OBJECTREF("AlbedoTexture", m_AlbedoTexture);
+	ImguiHelpers::ShowObjectPtr("NodesModel", m_NodesModel  );
+	ImguiHelpers::ShowObjectPtr("WaysModel", m_WaysModel  );
+	ImguiHelpers::ShowVector("WaysModelsVector", m_WaysModelsVector  );
+	ImguiHelpers::ShowVector("RoadEntities", m_RoadEntities  );
+	ImguiHelpers::ShowVector("StaticEntities", m_StaticEntities  );
+	ImguiHelpers::ShowObjectPtr("SplatMapTexture", m_SplatMapTexture  );
+	ImguiHelpers::ShowObjectPtr("AlbedoTexture", m_AlbedoTexture  );
 	return true;
 }
 const char* SectorGraphicalData::GetTypeName()

@@ -12,24 +12,27 @@ const ClassPropertyData OSMElementTypeData::g_Properties[] =
 { "DebugColor", PIDX_DebugColor, offsetof(OSMElementTypeData, m_DebugColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Attributes", PIDX_Attributes, offsetof(OSMElementTypeData, m_Attributes), 0, LXType_stdvector, sizeof(std::vector<OSMAttribute>), LXType_stdvector, false, LXType_OSMAttribute, false, 0, 0, 0, 0,}, 
 };
-bool OSMElementTypeData::Serialize(Serializer2& serializer)
+void OSMElementTypeData::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("FillIn", m_FillIn);
+	serializer.SerializeVec3("DebugColor", m_DebugColor);
+	serializer.SerializeVector("Attributes", m_Attributes);
 }
 bool OSMElementTypeData::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool OSMElementTypeData::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("FillIn", m_FillIn);
-	LXIMGUI_SHOW_VEC3("DebugColor", m_DebugColor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECT_VECTOR("Attributes", m_Attributes);
+	ImguiHelpers::ShowBool("FillIn", m_FillIn  );
+	ImguiHelpers::ShowVec3("DebugColor", m_DebugColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVector("Attributes", m_Attributes  );
 	return true;
 }
 const char* OSMElementTypeData::GetTypeName()

@@ -21,34 +21,47 @@ const ClassPropertyData InputHandler::g_Properties[] =
 { "LastMousePosition", PIDX_LastMousePosition, offsetof(InputHandler, m_LastMousePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MouseScroll", PIDX_MouseScroll, offsetof(InputHandler, m_MouseScroll), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool InputHandler::Serialize(Serializer2& serializer)
+void InputHandler::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("Mouse1Pressed", m_Mouse1Pressed);
+	serializer.SerializeBool("Mouse2Pressed", m_Mouse2Pressed);
+	serializer.SerializeBool("CtrlHeld", m_CtrlHeld);
+	serializer.SerializeBool("Dragging", m_Dragging);
+	serializer.SerializeVec2("DragDistance", m_DragDistance);
+	serializer.SerializeVec2("LastDragDistance", m_LastDragDistance);
+	serializer.SerializeVec2("DragAccumulator", m_DragAccumulator);
+	serializer.SerializeVec2("MouseClickPosition", m_MouseClickPosition);
+	serializer.SerializeVec2("LastMouseClickPosition", m_LastMouseClickPosition);
+	serializer.SerializeVec2("MouseReleasePosition", m_MouseReleasePosition);
+	serializer.SerializeVec2("MousePosition", m_MousePosition);
+	serializer.SerializeVec2("LastMousePosition", m_LastMousePosition);
+	serializer.SerializeVec2("MouseScroll", m_MouseScroll);
 }
 bool InputHandler::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool InputHandler::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL_SETCALLBACK("Mouse1Pressed", m_Mouse1Pressed);
-	LXIMGUI_SHOW_BOOL("Mouse2Pressed", m_Mouse2Pressed);
-	LXIMGUI_SHOW_BOOL("CtrlHeld", m_CtrlHeld);
-	LXIMGUI_SHOW_BOOL("Dragging", m_Dragging);
-	LXIMGUI_SHOW_VEC2("DragDistance", m_DragDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("LastDragDistance", m_LastDragDistance, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("DragAccumulator", m_DragAccumulator, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2_SETCALLBACK("MouseClickPosition", m_MouseClickPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("LastMouseClickPosition", m_LastMouseClickPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("MouseReleasePosition", m_MouseReleasePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2_SETCALLBACK("MousePosition", m_MousePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("LastMousePosition", m_LastMousePosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("MouseScroll", m_MouseScroll, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowBool("Mouse1Pressed", m_Mouse1Pressed  );
+	ImguiHelpers::ShowBool("Mouse2Pressed", m_Mouse2Pressed  );
+	ImguiHelpers::ShowBool("CtrlHeld", m_CtrlHeld  );
+	ImguiHelpers::ShowBool("Dragging", m_Dragging  );
+	ImguiHelpers::ShowVec2("DragDistance", m_DragDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("LastDragDistance", m_LastDragDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("DragAccumulator", m_DragAccumulator , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("MouseClickPosition", m_MouseClickPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("LastMouseClickPosition", m_LastMouseClickPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("MouseReleasePosition", m_MouseReleasePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("MousePosition", m_MousePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("LastMousePosition", m_LastMousePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("MouseScroll", m_MouseScroll , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* InputHandler::GetTypeName()

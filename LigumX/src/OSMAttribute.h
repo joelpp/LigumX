@@ -36,7 +36,7 @@ enum g_OSMAttributePIDX
 PIDX_Key,
 PIDX_Value,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

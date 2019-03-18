@@ -6,5 +6,5 @@ class Serializer2
 
     std::string Filename;
 
-    LXObject* Object;
+	std::vector<SerializerInputVariable> SerializerInputVariables;
 }

@@ -77,7 +77,7 @@ PIDX_StartTexel,
 PIDX_SplatMapIncrement,
 PIDX_ClickedSector,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -26,29 +26,35 @@ const ClassPropertyData Sector::g_Properties[] =
 { "TerrainPatchEntity", PIDX_TerrainPatchEntity, offsetof(Sector, m_TerrainPatchEntity), 0, LXType_ObjectPtr, sizeof(Entity*), LXType_Entity, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "OSMFilename", PIDX_OSMFilename, offsetof(Sector, m_OSMFilename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool Sector::Serialize(Serializer2& serializer)
+void Sector::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeVec2("WorldPosition", m_WorldPosition);
+	serializer.SerializeVec2("EarthPosition", m_EarthPosition);
+	serializer.SerializeIVec2("QuantizedPosition", m_QuantizedPosition);
+	serializer.SerializeIVec2("OffsetIndex", m_OffsetIndex);
+	serializer.SerializeBool("DataLoaded", m_DataLoaded);
+	serializer.SerializeString("OSMFilename", m_OSMFilename);
 }
 bool Sector::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Sector::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_VEC2("WorldPosition", m_WorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("EarthPosition", m_EarthPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_IVEC2("QuantizedPosition", m_QuantizedPosition, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_IVEC2("OffsetIndex", m_OffsetIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_BOOL("DataLoaded", m_DataLoaded);
-	LXIMGUI_SHOW_OBJECTREF("Heightfield", m_Heightfield);
-	LXIMGUI_SHOW_OBJECTREF("TerrainPatchEntity", m_TerrainPatchEntity);
-	LXIMGUI_SHOW_STRING("OSMFilename", m_OSMFilename);
+	ImguiHelpers::ShowVec2("WorldPosition", m_WorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("EarthPosition", m_EarthPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowIVec2("QuantizedPosition", m_QuantizedPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowIVec2("OffsetIndex", m_OffsetIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowBool("DataLoaded", m_DataLoaded  );
+	ImguiHelpers::ShowObjectPtr("Heightfield", m_Heightfield  );
+	ImguiHelpers::ShowObjectPtr("TerrainPatchEntity", m_TerrainPatchEntity  );
+	ImguiHelpers::ShowString("OSMFilename", m_OSMFilename  );
 	return true;
 }
 const char* Sector::GetTypeName()

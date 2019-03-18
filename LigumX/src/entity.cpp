@@ -24,32 +24,42 @@ const ClassPropertyData Entity::g_Properties[] =
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Components", PIDX_Components, offsetof(Entity, m_Components), 0, LXType_stdvector, sizeof(std::vector<Component*>), LXType_stdvector, false, LXType_Component, true, 0, 0, 0, 0,}, 
 };
-bool Entity::Serialize(Serializer2& serializer)
+void Entity::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("Visible", m_Visible);
+	serializer.SerializeVec3("Position", m_Position);
+	serializer.SerializeFloat("RotationAngle", m_RotationAngle);
+	serializer.SerializeVec3("RotationAxis", m_RotationAxis);
+	serializer.SerializeVec3("Scale", m_Scale);
+	serializer.SerializeBool("HasMoved", m_HasMoved);
+	serializer.SerializeFloat("PickingID", m_PickingID);
+	serializer.SerializeObjectPtr("Model", m_Model);
+	serializer.SerializeBool("IsLight", m_IsLight);
+	serializer.SerializeVector("Components", m_Components);
 }
 bool Entity::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;
 }
 bool Entity::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("Visible", m_Visible);
-	LXIMGUI_SHOW_VEC3_SETCALLBACK("Position", m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT_SETCALLBACK("RotationAngle", m_RotationAngle, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3_SETCALLBACK("RotationAxis", m_RotationAxis, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3_SETCALLBACK("Scale", m_Scale, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL_SETCALLBACK("HasMoved", m_HasMoved);
-	LXIMGUI_SHOW_FLOAT("PickingID", m_PickingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF_SETCALLBACK("Model", m_Model);
-	LXIMGUI_SHOW_BOOL("IsLight", m_IsLight);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Components", m_Components);
+	ImguiHelpers::ShowBool("Visible", m_Visible  );
+	ImguiHelpers::ShowVec3("Position", m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("RotationAngle", m_RotationAngle , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("RotationAxis", m_RotationAxis , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("Scale", m_Scale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("HasMoved", m_HasMoved  );
+	ImguiHelpers::ShowFloat("PickingID", m_PickingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowObjectPtr("Model", m_Model  );
+	ImguiHelpers::ShowBool("IsLight", m_IsLight  );
+	ImguiHelpers::ShowVector("Components", m_Components  );
 	return true;
 }
 const char* Entity::GetTypeName()

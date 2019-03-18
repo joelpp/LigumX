@@ -154,7 +154,14 @@ namespace ImguiHelpers
 		return true;
 	}
 
+	template <typename T>
+	bool ShowObjectPtr_SetCallback(const char* name, T* value)
+	{
+		return ShowObjectPtr<T>(name, value);
+	}
 
+	bool ShowVector(const char* name, std::vector<std::string>& values);
+	
 	template <typename T>
 	bool ShowVector(const char* name, std::vector<T>& values)
 	{

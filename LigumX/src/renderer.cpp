@@ -48,25 +48,28 @@ const ClassPropertyData Renderer::g_Properties[] =
 { "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_ObjectPtr, sizeof(PostEffects*), LXType_PostEffects, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_ObjectPtr, sizeof(Camera*), LXType_Camera, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool Renderer::Serialize(Serializer2& serializer)
+void Renderer::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeObjectPtr("DisplayOptions", m_DisplayOptions);
+	serializer.SerializeObjectPtr("PostEffects", m_PostEffects);
+	serializer.SerializeObjectPtr("DebugCamera", m_DebugCamera);
 }
 bool Renderer::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;
 }
 bool Renderer::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("DisplayOptions", m_DisplayOptions);
-	LXIMGUI_SHOW_OBJECTREF("PostEffects", m_PostEffects);
-	LXIMGUI_SHOW_OBJECTREF("DebugCamera", m_DebugCamera);
+	ImguiHelpers::ShowObjectPtr("DisplayOptions", m_DisplayOptions  );
+	ImguiHelpers::ShowObjectPtr("PostEffects", m_PostEffects  );
+	ImguiHelpers::ShowObjectPtr("DebugCamera", m_DebugCamera  );
 	return true;
 }
 const char* Renderer::GetTypeName()

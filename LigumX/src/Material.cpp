@@ -31,40 +31,59 @@ const ClassPropertyData Material::g_Properties[] =
 { "HeightfieldTexture", PIDX_HeightfieldTexture, offsetof(Material, m_HeightfieldTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_Object, sizeof(ShaderFamily), LXType_ShaderFamily, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 };
-bool Material::Serialize(Serializer2& serializer)
+void Material::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("Enabled", m_Enabled);
+	serializer.SerializeVec3("AmbientColor", m_AmbientColor);
+	serializer.SerializeVec3("DiffuseColor", m_DiffuseColor);
+	serializer.SerializeVec3("SpecularColor", m_SpecularColor);
+	serializer.SerializeBool("IsPBR", m_IsPBR);
+	serializer.SerializeFloat("Shininess", m_Shininess);
+	serializer.SerializeFloat("Metallic", m_Metallic);
+	serializer.SerializeFloat("Roughness", m_Roughness);
+	serializer.SerializeFloat("AO", m_AO);
+	serializer.SerializeFloat("EmissiveFactor", m_EmissiveFactor);
+	serializer.SerializeBool("DiffuseTextureEnabled", m_DiffuseTextureEnabled);
+	serializer.SerializeBool("SpecularTextureEnabled", m_SpecularTextureEnabled);
+	serializer.SerializeBool("Unlit", m_Unlit);
+	serializer.SerializeFloat("RefractionIndex", m_RefractionIndex);
+	serializer.SerializeBool("IsGlass", m_IsGlass);
+	serializer.SerializeBool("ReflectEnvironment", m_ReflectEnvironment);
+	serializer.SerializeObjectPtr("DiffuseTexture", m_DiffuseTexture);
+	serializer.SerializeObjectPtr("SpecularTexture", m_SpecularTexture);
+	serializer.SerializeObjectPtr("HeightfieldTexture", m_HeightfieldTexture);
 }
 bool Material::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Material::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_VEC3("AmbientColor", m_AmbientColor, 0, 1);
-	LXIMGUI_SHOW_VEC3("DiffuseColor", m_DiffuseColor, 0, 1);
-	LXIMGUI_SHOW_VEC3("SpecularColor", m_SpecularColor, 0, 1);
-	LXIMGUI_SHOW_BOOL("IsPBR", m_IsPBR);
-	LXIMGUI_SHOW_FLOAT("Shininess", m_Shininess, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("Metallic", m_Metallic, 0, 1);
-	LXIMGUI_SHOW_FLOAT("Roughness", m_Roughness, 0, 1);
-	LXIMGUI_SHOW_FLOAT("AO", m_AO, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("EmissiveFactor", m_EmissiveFactor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("DiffuseTextureEnabled", m_DiffuseTextureEnabled);
-	LXIMGUI_SHOW_BOOL("SpecularTextureEnabled", m_SpecularTextureEnabled);
-	LXIMGUI_SHOW_BOOL("Unlit", m_Unlit);
-	LXIMGUI_SHOW_FLOAT("RefractionIndex", m_RefractionIndex, 0, 1);
-	LXIMGUI_SHOW_BOOL("IsGlass", m_IsGlass);
-	LXIMGUI_SHOW_BOOL("ReflectEnvironment", m_ReflectEnvironment);
-	LXIMGUI_SHOW_OBJECTREF_SETCALLBACK("DiffuseTexture", m_DiffuseTexture);
-	LXIMGUI_SHOW_OBJECTREF_SETCALLBACK("SpecularTexture", m_SpecularTexture);
-	LXIMGUI_SHOW_OBJECTREF("HeightfieldTexture", m_HeightfieldTexture);
+	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
+	ImguiHelpers::ShowVec3("AmbientColor", m_AmbientColor , 0, 1 );
+	ImguiHelpers::ShowVec3("DiffuseColor", m_DiffuseColor , 0, 1 );
+	ImguiHelpers::ShowVec3("SpecularColor", m_SpecularColor , 0, 1 );
+	ImguiHelpers::ShowBool("IsPBR", m_IsPBR  );
+	ImguiHelpers::ShowFloat("Shininess", m_Shininess , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("Metallic", m_Metallic , 0, 1 );
+	ImguiHelpers::ShowFloat("Roughness", m_Roughness , 0, 1 );
+	ImguiHelpers::ShowFloat("AO", m_AO , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("EmissiveFactor", m_EmissiveFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("DiffuseTextureEnabled", m_DiffuseTextureEnabled  );
+	ImguiHelpers::ShowBool("SpecularTextureEnabled", m_SpecularTextureEnabled  );
+	ImguiHelpers::ShowBool("Unlit", m_Unlit  );
+	ImguiHelpers::ShowFloat("RefractionIndex", m_RefractionIndex , 0, 1 );
+	ImguiHelpers::ShowBool("IsGlass", m_IsGlass  );
+	ImguiHelpers::ShowBool("ReflectEnvironment", m_ReflectEnvironment  );
+	ImguiHelpers::ShowObjectPtr("DiffuseTexture", m_DiffuseTexture  );
+	ImguiHelpers::ShowObjectPtr("SpecularTexture", m_SpecularTexture  );
+	ImguiHelpers::ShowObjectPtr("HeightfieldTexture", m_HeightfieldTexture  );
 	return true;
 }
 const char* Material::GetTypeName()

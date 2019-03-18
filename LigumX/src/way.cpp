@@ -18,26 +18,31 @@ const ClassPropertyData Way::g_Properties[] =
 { "FilledIn", PIDX_FilledIn, offsetof(Way, m_FilledIn), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "AllTags", PIDX_AllTags, offsetof(Way, m_AllTags), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, PropertyFlags_Adder, 0, 0, 0,}, 
 };
-bool Way::Serialize(Serializer2& serializer)
+void Way::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeInt("OSMId", m_OSMId);
+	serializer.SerializeVector("Nodes", m_Nodes);
+	serializer.SerializeInt("IndexInSector", m_IndexInSector);
+	serializer.SerializeBool("FilledIn", m_FilledIn);
+	serializer.SerializeString("AllTags", m_AllTags);
 }
 bool Way::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Way::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_INT("OSMId", m_OSMId, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Nodes", m_Nodes);
-	LXIMGUI_SHOW_INT("IndexInSector", m_IndexInSector, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_BOOL("FilledIn", m_FilledIn);
-	LXIMGUI_SHOW_STRING("AllTags", m_AllTags);
+	ImguiHelpers::ShowInt("OSMId", m_OSMId , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowVector("Nodes", m_Nodes  );
+	ImguiHelpers::ShowInt("IndexInSector", m_IndexInSector , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowBool("FilledIn", m_FilledIn  );
+	ImguiHelpers::ShowString("AllTags", m_AllTags  );
 	return true;
 }
 const char* Way::GetTypeName()

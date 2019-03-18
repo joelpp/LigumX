@@ -15,24 +15,27 @@ const ClassPropertyData Mesh::g_Properties[] =
 { "WireframeRendering", PIDX_WireframeRendering, offsetof(Mesh, m_WireframeRendering), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "PointRendering", PIDX_PointRendering, offsetof(Mesh, m_PointRendering), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool Mesh::Serialize(Serializer2& serializer)
+void Mesh::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("UsesIndexBuffer", m_UsesIndexBuffer);
+	serializer.SerializeBool("WireframeRendering", m_WireframeRendering);
+	serializer.SerializeBool("PointRendering", m_PointRendering);
 }
 bool Mesh::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Mesh::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("UsesIndexBuffer", m_UsesIndexBuffer);
-	LXIMGUI_SHOW_BOOL("WireframeRendering", m_WireframeRendering);
-	LXIMGUI_SHOW_BOOL("PointRendering", m_PointRendering);
+	ImguiHelpers::ShowBool("UsesIndexBuffer", m_UsesIndexBuffer  );
+	ImguiHelpers::ShowBool("WireframeRendering", m_WireframeRendering  );
+	ImguiHelpers::ShowBool("PointRendering", m_PointRendering  );
 	return true;
 }
 const char* Mesh::GetTypeName()

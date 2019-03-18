@@ -9,23 +9,25 @@ const ClassPropertyData OSMAttribute::g_Properties[] =
 { "Key", PIDX_Key, offsetof(OSMAttribute, m_Key), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Value", PIDX_Value, offsetof(OSMAttribute, m_Value), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
-bool OSMAttribute::Serialize(Serializer2& serializer)
+void OSMAttribute::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeString("Key", m_Key);
+	serializer.SerializeString("Value", m_Value);
 }
 bool OSMAttribute::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool OSMAttribute::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_STRING("Key", m_Key);
-	LXIMGUI_SHOW_STRING("Value", m_Value);
+	ImguiHelpers::ShowString("Key", m_Key  );
+	ImguiHelpers::ShowString("Value", m_Value  );
 	return true;
 }
 const char* OSMAttribute::GetTypeName()

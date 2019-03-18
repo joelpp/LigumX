@@ -41,34 +41,47 @@ const ClassPropertyData SectorTool::g_Properties[] =
 { "LoadSectorsOnClick", PIDX_LoadSectorsOnClick, offsetof(SectorTool, m_LoadSectorsOnClick), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "SelectedWayIndex", PIDX_SelectedWayIndex, offsetof(SectorTool, m_SelectedWayIndex), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
-bool SectorTool::Serialize(Serializer2& serializer)
+void SectorTool::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("Enabled", m_Enabled);
+	serializer.SerializeVec3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates);
+	serializer.SerializeVec2("HighlightedSectorUV", m_HighlightedSectorUV);
+	serializer.SerializeObjectPtr("HighlightedSector", m_HighlightedSector);
+	serializer.SerializeVec3("SectorGridColor", m_SectorGridColor);
+	serializer.SerializeBool("AsyncSectorLoading", m_AsyncSectorLoading);
+	serializer.SerializeFloat("NodeSize", m_NodeSize);
+	serializer.SerializeInt("LoadingRingSize", m_LoadingRingSize);
+	serializer.SerializeBool("ShowSectorAABBs", m_ShowSectorAABBs);
+	serializer.SerializeBool("ShowGrid", m_ShowGrid);
+	serializer.SerializeBool("HighlightSelectedSector", m_HighlightSelectedSector);
+	serializer.SerializeBool("LoadSectorsOnClick", m_LoadSectorsOnClick);
+	serializer.SerializeInt("SelectedWayIndex", m_SelectedWayIndex);
 }
 bool SectorTool::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool SectorTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_VEC3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC2("HighlightedSectorUV", m_HighlightedSectorUV, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("HighlightedSector", m_HighlightedSector);
-	LXIMGUI_SHOW_VEC3("SectorGridColor", m_SectorGridColor, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("AsyncSectorLoading", m_AsyncSectorLoading);
-	LXIMGUI_SHOW_FLOAT("NodeSize", m_NodeSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_INT("LoadingRingSize", m_LoadingRingSize, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_BOOL("ShowSectorAABBs", m_ShowSectorAABBs);
-	LXIMGUI_SHOW_BOOL("ShowGrid", m_ShowGrid);
-	LXIMGUI_SHOW_BOOL("HighlightSelectedSector", m_HighlightSelectedSector);
-	LXIMGUI_SHOW_BOOL("LoadSectorsOnClick", m_LoadSectorsOnClick);
-	LXIMGUI_SHOW_INT("SelectedWayIndex", m_SelectedWayIndex, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
+	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
+	ImguiHelpers::ShowVec3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("HighlightedSectorUV", m_HighlightedSectorUV , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowObjectPtr("HighlightedSector", m_HighlightedSector  );
+	ImguiHelpers::ShowVec3("SectorGridColor", m_SectorGridColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("AsyncSectorLoading", m_AsyncSectorLoading  );
+	ImguiHelpers::ShowFloat("NodeSize", m_NodeSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowInt("LoadingRingSize", m_LoadingRingSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowBool("ShowSectorAABBs", m_ShowSectorAABBs  );
+	ImguiHelpers::ShowBool("ShowGrid", m_ShowGrid  );
+	ImguiHelpers::ShowBool("HighlightSelectedSector", m_HighlightSelectedSector  );
+	ImguiHelpers::ShowBool("LoadSectorsOnClick", m_LoadSectorsOnClick  );
+	ImguiHelpers::ShowInt("SelectedWayIndex", m_SelectedWayIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* SectorTool::GetTypeName()

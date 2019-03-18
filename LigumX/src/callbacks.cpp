@@ -145,5 +145,7 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 		g_InputHandler->SetMousePosition(glm::vec2(x, y));
 	}
 
+	lxAssert(m_Renderer->GetDebugCamera() != nullptr);
+
 	m_Renderer->GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);
 }

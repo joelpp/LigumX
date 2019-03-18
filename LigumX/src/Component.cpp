@@ -9,22 +9,22 @@ const ClassPropertyData Component::g_Properties[] =
 {
 { "ParentEntity", PIDX_ParentEntity, offsetof(Component, m_ParentEntity), 0, LXType_ObjectPtr, sizeof(Entity*), LXType_Entity, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
-bool Component::Serialize(Serializer2& serializer)
+void Component::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
 }
 bool Component::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool Component::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECTREF("ParentEntity", m_ParentEntity);
+	ImguiHelpers::ShowObjectPtr("ParentEntity", m_ParentEntity  );
 	return true;
 }
 const char* Component::GetTypeName()
@@ -34,3 +34,11 @@ const char* Component::GetTypeName()
 
 #pragma endregion  CLASS_SOURCE Component
 
+void Component::Update()
+{
+	static bool g_Debug_ComponentUpdateControl = false;
+	if (g_Debug_ComponentUpdateControl)
+	{
+		lxAssert0();
+	}
+}

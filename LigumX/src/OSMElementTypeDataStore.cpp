@@ -13,22 +13,23 @@ const ClassPropertyData OSMElementTypeDataStore::g_Properties[] =
 {
 { "Data", PIDX_Data, offsetof(OSMElementTypeDataStore, m_Data), 0, LXType_stdvector, sizeof(std::vector<OSMElementTypeData>), LXType_stdvector, false, LXType_OSMElementTypeData, false, 0, 0, 0, 0,}, 
 };
-bool OSMElementTypeDataStore::Serialize(Serializer2& serializer)
+void OSMElementTypeDataStore::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeVector("Data", m_Data);
 }
 bool OSMElementTypeDataStore::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool OSMElementTypeDataStore::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_OBJECT_VECTOR("Data", m_Data);
+	ImguiHelpers::ShowVector("Data", m_Data  );
 	return true;
 }
 const char* OSMElementTypeDataStore::GetTypeName()

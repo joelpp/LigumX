@@ -35,33 +35,34 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "PickedHeight", PIDX_PickedHeight, offsetof(PickingTool, m_PickedHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "PickedSector", PIDX_PickedSector, offsetof(PickingTool, m_PickedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
-bool PickingTool::Serialize(Serializer2& serializer)
+void PickingTool::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeBool("Enabled", m_Enabled);
 }
 bool PickingTool::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool PickingTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("Enabled", m_Enabled);
-	LXIMGUI_SHOW_OBJECTREF_SETCALLBACK("PickedEntity", m_PickedEntity);
-	LXIMGUI_SHOW_VEC2("AimingWindowPosition", m_AimingWindowPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("AimingWorldPosition", m_AimingWorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("AimingID", m_AimingID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC3("PickedWorldPosition", m_PickedWorldPosition, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC4("PickingData", m_PickingData, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("PickedDepth", m_PickedDepth, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_FLOAT("PickedID", m_PickedID, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_BOOL("PickDebugModels", m_PickDebugModels);
-	LXIMGUI_SHOW_FLOAT("PickedHeight", m_PickedHeight, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("PickedSector", m_PickedSector);
+	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
+	ImguiHelpers::ShowObjectPtr("PickedEntity", m_PickedEntity  );
+	ImguiHelpers::ShowVec2("AimingWindowPosition", m_AimingWindowPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("AimingWorldPosition", m_AimingWorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("AimingID", m_AimingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec3("PickedWorldPosition", m_PickedWorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec4("PickingData", m_PickingData , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("PickedDepth", m_PickedDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowFloat("PickedID", m_PickedID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowBool("PickDebugModels", m_PickDebugModels  );
+	ImguiHelpers::ShowFloat("PickedHeight", m_PickedHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowObjectPtr("PickedSector", m_PickedSector  );
 	return true;
 }
 const char* PickingTool::GetTypeName()

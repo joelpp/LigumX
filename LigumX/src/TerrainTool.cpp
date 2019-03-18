@@ -29,28 +29,30 @@ const ClassPropertyData TerrainTool::g_Properties[] =
 { "SplatMapIncrement", PIDX_SplatMapIncrement, offsetof(TerrainTool, m_SplatMapIncrement), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "ClickedSector", PIDX_ClickedSector, offsetof(TerrainTool, m_ClickedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
-bool TerrainTool::Serialize(Serializer2& serializer)
+void TerrainTool::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeFloat("TerrainBrushSize", m_TerrainBrushSize);
+	serializer.SerializeInt("SplatMapIncrement", m_SplatMapIncrement);
 }
 bool TerrainTool::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool TerrainTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_BOOL("TerrainErasureMode", m_TerrainErasureMode);
-	LXIMGUI_SHOW_FLOAT("TerrainBrushSize", m_TerrainBrushSize, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_VEC4("XYZMask", m_XYZMask, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
-	LXIMGUI_SHOW_IVEC2("ClickedTexel", m_ClickedTexel, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_IVEC2("StartTexel", m_StartTexel, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_INT("SplatMapIncrement", m_SplatMapIncrement, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_OBJECTREF("ClickedSector", m_ClickedSector);
+	ImguiHelpers::ShowBool("TerrainErasureMode", m_TerrainErasureMode  );
+	ImguiHelpers::ShowFloat("TerrainBrushSize", m_TerrainBrushSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec4("XYZMask", m_XYZMask , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowIVec2("ClickedTexel", m_ClickedTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowIVec2("StartTexel", m_StartTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowInt("SplatMapIncrement", m_SplatMapIncrement , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowObjectPtr("ClickedSector", m_ClickedSector  );
 	return true;
 }
 const char* TerrainTool::GetTypeName()

@@ -19,24 +19,26 @@ const ClassPropertyData Model::g_Properties[] =
 { "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, sizeof(std::vector<Material*>), LXType_stdvector, false, LXType_Material, true, 0, 0, 0, 0,}, 
 };
-bool Model::Serialize(Serializer2& serializer)
+void Model::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeString("Filename", m_Filename);
+	serializer.SerializeVector("Materials", m_Materials);
 }
 bool Model::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);
 	return success;
 }
 bool Model::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_STRING("Filename", m_Filename);
-	LXIMGUI_SHOW_OBJECTPTR_VECTOR("Materials", m_Materials);
+	ImguiHelpers::ShowString("Filename", m_Filename  );
+	ImguiHelpers::ShowVector("Materials", m_Materials  );
 	return true;
 }
 const char* Model::GetTypeName()

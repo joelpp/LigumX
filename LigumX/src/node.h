@@ -60,7 +60,7 @@ PIDX_Ways,
 PIDX_SectorIndex,
 PIDX_SectorOffset,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

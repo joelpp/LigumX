@@ -44,7 +44,7 @@ PIDX_Position,
 PIDX_Size,
 PIDX_Title,
 };
-bool Serialize(Serializer2& serializer);
+void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

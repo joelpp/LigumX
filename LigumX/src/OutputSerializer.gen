@@ -1,0 +1,4 @@
+class OutputSerializer : Serializer2
+{
+	
+}

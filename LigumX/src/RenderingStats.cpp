@@ -12,26 +12,31 @@ const ClassPropertyData RenderingStats::g_Properties[] =
 { "Num2DMessages", PIDX_Num2DMessages, offsetof(RenderingStats, m_Num2DMessages), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, PropertyFlags_Adder, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "fps", PIDX_fps, offsetof(RenderingStats, m_fps), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
-bool RenderingStats::Serialize(Serializer2& serializer)
+void RenderingStats::Serialize(Serializer2& serializer)
 {
-	return true;
+	super::Serialize(serializer);
+	serializer.SerializeInt("NumVisibleEntities", m_NumVisibleEntities);
+	serializer.SerializeInt("NumVisibleSectors", m_NumVisibleSectors);
+	serializer.SerializeInt("NumDebugModels", m_NumDebugModels);
+	serializer.SerializeInt("Num2DMessages", m_Num2DMessages);
+	serializer.SerializeFloat("fps", m_fps);
 }
 bool RenderingStats::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
 
-	bool success = g_Serializer->SerializeObject(this, writing); 
+	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
 }
 bool RenderingStats::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	LXIMGUI_SHOW_INT("NumVisibleEntities", m_NumVisibleEntities, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_INT("NumVisibleSectors", m_NumVisibleSectors, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_INT("NumDebugModels", m_NumDebugModels, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_INT("Num2DMessages", m_Num2DMessages, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX);
-	LXIMGUI_SHOW_FLOAT("fps", m_fps, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX);
+	ImguiHelpers::ShowInt("NumVisibleEntities", m_NumVisibleEntities , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowInt("NumVisibleSectors", m_NumVisibleSectors , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowInt("NumDebugModels", m_NumDebugModels , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowInt("Num2DMessages", m_Num2DMessages , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowFloat("fps", m_fps , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* RenderingStats::GetTypeName()
