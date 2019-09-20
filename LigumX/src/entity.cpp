@@ -169,7 +169,10 @@ void Entity::UpdateAABB()
 	if (success)
 	{
 		BoundingBoxComponent* bbComponent = GetComponent<BoundingBoxComponent>();
-		bbComponent->SetStartAndScale(min, max - min);
+		if (bbComponent)
+		{
+			bbComponent->SetStartAndScale(min, max - min);
+		}
 	}
 }
 
@@ -188,7 +191,10 @@ void Entity::Update(double dt)
 
 	for (Component* component : m_Components)
 	{
-		component->Update();
+		if (component)
+		{
+			component->Update();
+		}
 	}
 
 	SetHasMoved(false);

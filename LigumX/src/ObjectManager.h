@@ -81,7 +81,7 @@ public:
 
 
 	template <typename T>
-	T* FindObjectByID(ObjectID id, bool createIfNotFound = true)
+	T* FindObjectByID(ObjectID id, bool createIfNotFound = false)
 	{
 		LXType type = T::Type;
 
