@@ -10,6 +10,8 @@ class Mesh;
 
 #pragma endregion  FORWARD_DECLARATIONS Mesh
 
+#include "CPUBuffers.h"
+
 enum EBufferType
 {
 	VERTEX_POSITIONS,
@@ -37,36 +39,6 @@ class ColoredPointsGPUBuffers : public GPUBuffers
 {
 public:
 	GLuint glidColorBuffer;
-};
-
-class CPUBuffers
-{
-public:
-
-	void AppendBuffer(const CPUBuffers& buffer)
-	{
-		for (const glm::vec3& v : buffer.m_VertexPositions)
-		{
-			m_VertexPositions.push_back(v);
-		}
-		for (const glm::vec3& v : buffer.m_vertexNormals)
-		{
-			m_vertexNormals.push_back(v);
-		}
-		for (const glm::vec2& v : buffer.m_vertexUVs)
-		{
-			m_vertexUVs.push_back(v);
-		}
-		for (const int v : buffer.indexBuffer)
-		{
-			indexBuffer.push_back(v);
-		}
-	}
-
-	std::vector<glm::vec3> m_VertexPositions;
-	std::vector<glm::vec3> m_vertexNormals;
-	std::vector<glm::vec2> m_vertexUVs;
-	std::vector<int> indexBuffer;
 };
 
 class FlatWaysCPUBuffers : public CPUBuffers

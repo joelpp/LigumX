@@ -16,6 +16,7 @@ class Serializer2;
 
 class Model;
 class Material;
+class Mesh;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Model
@@ -39,17 +40,22 @@ void SetFilename(std::string value) { m_Filename = value; };
 std::vector<Material*>& GetMaterials() { return m_Materials; }; 
 void SetMaterials(std::vector<Material*> value) { m_Materials = value; }; 
 void AddTo_Materials(Material* value) { m_Materials.push_back(value); };
+std::vector<Mesh*>& GetMeshes() { return m_Meshes; }; 
+void SetMeshes(std::vector<Mesh*> value) { m_Meshes = value; }; 
+void AddTo_Meshes(Mesh* value) { m_Meshes.push_back(value); };
 private:
 std::string m_Filename;
 std::vector<Material*> m_Materials;
+std::vector<Mesh*> m_Meshes;
 public:
-static const int g_PropertyCount = 2;
+static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ModelPIDX
 {
 PIDX_Filename,
 PIDX_Materials,
+PIDX_Meshes,
 };
 void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
@@ -77,8 +83,6 @@ public:
 	void addMesh(Mesh* mesh);
 
 	bool GetMinMax(glm::vec3& min, glm::vec3& max);
-
-	std::vector<Mesh* > m_meshes;
 
 	glm::vec3 position;
     glm::mat4 m_modelMatrix;

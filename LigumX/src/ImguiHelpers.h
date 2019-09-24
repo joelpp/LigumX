@@ -127,11 +127,33 @@ namespace ImguiHelpers
 	void EndPropertyTree();
 
 	template <typename T>
+	void CommonPrimitiveShowPtr(const char* name, const char* type, T* value)
+	{
+		bool isNull = (value == nullptr);
+		char treeNodeName[256];
+		sprintf(treeNodeName, "%s (%s)%s", name, type, (isNull ? " (nullptr)" : ""));
+
+		if (isNull)
+		{
+			ShowRawString(treeNodeName);
+		}
+		else
+		{
+			ShowRawString("value_here");
+		}
+
+	}
+
+	bool ShowObjectPtr(const char* name, glm::vec3* value);
+	bool ShowObjectPtr(const char* name, glm::vec2* value);
+	bool ShowObjectPtr(const char* name, int* value);
+
+	template <typename T>
 	bool ShowObjectPtr(const char* name, T* value)
 	{
 		bool isNull = (value == nullptr);
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (%s)%s", name, value->ClassName, (isNull ? " (nullptr)" : ""));
+		sprintf(treeNodeName, "%s (%s)%s", name, "[fixThis]"/*value->ClassName*/, (isNull ? " (nullptr)" : ""));
 
 		if (value == nullptr)
 		{
@@ -161,13 +183,13 @@ namespace ImguiHelpers
 	}
 
 	bool ShowVector(const char* name, std::vector<std::string>& values);
-	
+
 	template <typename T>
 	bool ShowVector(const char* name, std::vector<T>& values)
 	{
 		size_t numElements = values.size();
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (List<%s>, size = %d)", name, T::ClassName, numElements);
+		sprintf(treeNodeName, "%s (List<%s>, size = %d)", name, "[Classname, Fix this!]"/*T::ClassName*/, numElements);
 
 		if (numElements == 0)
 		{
@@ -181,10 +203,11 @@ namespace ImguiHelpers
 				T& objectRef = values[i];
 
 				char thisObjectType[256];
-				sprintf(thisObjectType, "%s", objectRef.GetTypeName());
+				sprintf(thisObjectType, "%s", "someTypeNameToFix"/*objectRef.GetTypeName()*/);
 
 				char elementName[256];
-				sprintf(elementName, "[%d] : %s (%s)", i, objectRef.GetName().c_str(), thisObjectType);
+				//sprintf(elementName, "[%d] : %s (%s)", i, objectRef.GetName().c_str(), thisObjectType);
+				sprintf(elementName, "[%d] : oh god fix this", i);
 
 				ShowObjectPtr(elementName, &objectRef);
 			}

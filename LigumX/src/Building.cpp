@@ -220,17 +220,17 @@ bool Building::GenerateModel()
 	m_Model->SetName("Building");
 
 	CPUBuffers cpuBuffers;
-	cpuBuffers.m_VertexPositions = buildingTrianglePositions;
+	cpuBuffers.SetVertexPositions(buildingTrianglePositions);
 
 	glm::vec3 scale = m_MaxCoords - m_MinCoords;
-	for (int k = 0; k < cpuBuffers.m_VertexPositions.size(); k++)
+	for (int k = 0; k < cpuBuffers.GetVertexPositions().size(); k++)
 	{
-		const glm::vec3& point = cpuBuffers.m_VertexPositions[k];
+		const glm::vec3& point = cpuBuffers.GetVertexPositions()[k];
 		glm::vec2 uv = glm::vec2((point - m_MinCoords) / scale);
 
 		uv /= g_EngineSettings->GetExtent();
 
-		cpuBuffers.m_vertexUVs.push_back(uv);
+		cpuBuffers.AddTo_VertexUVs(uv);
 	}
 
 	Mesh* mesh = new Mesh(cpuBuffers, GL::PrimitiveMode::Triangles, false);

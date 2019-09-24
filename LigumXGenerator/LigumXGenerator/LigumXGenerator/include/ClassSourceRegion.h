@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CodeRegion.h"
+#include "StringUtils.h"
 
 
 // count the no. of set bits in a positive integer
@@ -190,6 +191,8 @@ public:
 				{
 					lxType = "LXType_None";
 				}
+
+				lxType = RemoveSubstrings(lxType, "::");
 
 				// warning! if you change anything here mirror it in property.h in LigumX
 				WriteLine("{ \"" + varName + "\", "
@@ -454,7 +457,21 @@ public:
 				varType = var.m_AssociatedType;
 			}
 
-			if (!varType.empty() && !(varType == "std::string"))
+			std::vector<std::string> excludedClasses =
+			{
+				"std::string",
+				"std::string.h", // todo investigate this
+				"bool",
+				"int",
+				"float",
+				"glm::vec2",
+				"glm::vec3",
+				"glm::vec4",
+				"glm::mat4",
+			};
+
+			bool excludedClass = (std::find(excludedClasses.begin(), excludedClasses.end(), varType) != excludedClasses.end());
+			if (!varType.empty() && !excludedClass)
 			{
 				auto findResult = std::find(neededIncludes.begin(), neededIncludes.end(), varType);
 

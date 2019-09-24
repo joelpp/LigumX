@@ -14,10 +14,12 @@
 #include "Model.h"
 #include "serializer.h"
 #include "Material.h"
+#include "Mesh.h"
 const ClassPropertyData Model::g_Properties[] = 
 {
 { "Filename", PIDX_Filename, offsetof(Model, m_Filename), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Materials", PIDX_Materials, offsetof(Model, m_Materials), 0, LXType_stdvector, sizeof(std::vector<Material*>), LXType_stdvector, false, LXType_Material, true, 0, 0, 0, 0,}, 
+{ "Meshes", PIDX_Meshes, offsetof(Model, m_Meshes), 0, LXType_stdvector, sizeof(std::vector<Mesh*>), LXType_stdvector, false, LXType_Mesh, true, PropertyFlags_Transient, 0, 0, 0,}, 
 };
 void Model::Serialize(Serializer2& serializer)
 {
@@ -39,6 +41,7 @@ bool Model::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowString("Filename", m_Filename  );
 	ImguiHelpers::ShowVector("Materials", m_Materials  );
+	ImguiHelpers::ShowVector("Meshes", m_Meshes  );
 	return true;
 }
 const char* Model::GetTypeName()
@@ -64,7 +67,7 @@ Model::Model(std::string path)
 
 Model::Model(Mesh* mesh, Material* material)
 {
-	m_meshes.push_back(mesh);
+	m_Meshes.push_back(mesh);
 
 	if (material != nullptr)
 	{
@@ -76,7 +79,7 @@ Model::Model(Mesh* mesh, Material* material)
 
 Model::Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList)
 {
-	m_meshes = meshList;
+	m_Meshes = meshList;
 	m_Materials = materialList;
 	SetObjectID(g_ObjectManager->GetNewObjectID());
 }
@@ -95,7 +98,7 @@ void Model::PostSerialization(bool writing, bool success)
 
 			int hardcodedMeshID = std::atoi(filenameCopy.c_str());
 			Mesh* mesh = g_DefaultObjects->GetMeshFromID(hardcodedMeshID);
-			m_meshes.push_back(mesh);
+			m_Meshes.push_back(mesh);
 		}
 		else
 		{
@@ -107,7 +110,7 @@ void Model::PostSerialization(bool writing, bool success)
 
 void Model::CreateHWBuffers()
 {
-	for (Mesh* mesh : m_meshes)
+	for (Mesh* mesh : m_Meshes)
 	{
 		mesh->CreateBuffers();
 		mesh->SetUsesIndexBuffer(true);
@@ -238,13 +241,13 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
 		position.x = assimpMesh->mVertices[i].x;
 		position.y = assimpMesh->mVertices[i].y;
 		position.z = assimpMesh->mVertices[i].z; 
-		newMesh->m_buffers.m_VertexPositions.push_back(position);
+		newMesh->m_buffers.GetVertexPositions().push_back(position);
 
 		glm::vec2 texCoords;
 		texCoords.x = assimpMesh->mTextureCoords[0][i].x;
 		texCoords.y = assimpMesh->mTextureCoords[0][i].y;
 
-		newMesh->m_buffers.m_vertexUVs.push_back(texCoords);
+		newMesh->m_buffers.GetVertexUVs().push_back(texCoords);
 
 
 		glm::vec3 normal;
@@ -252,14 +255,14 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
 		normal.y = assimpMesh->mNormals[i].y;
 		normal.z = assimpMesh->mNormals[i].z;
 
-		newMesh->m_buffers.m_vertexNormals.push_back(normal);
+		newMesh->m_buffers.GetVertexNormals().push_back(normal);
     }
 
 	for (GLuint i = 0; i < assimpMesh->mNumFaces; i++)
 	{
 		aiFace face = assimpMesh->mFaces[i];
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
-			newMesh->m_buffers.indexBuffer.push_back(face.mIndices[j]);
+			newMesh->m_buffers.GetIndexBuffer().push_back(face.mIndices[j]);
 	}
 
     return newMesh;
@@ -267,21 +270,21 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
 
 void Model::addMesh(Mesh* mesh)
 {
-	m_meshes.push_back(mesh);
+	m_Meshes.push_back(mesh);
 }
 
 void Model::addMesh(Mesh* mesh, Material* material)
 {
 	m_Materials.push_back( material ) ;
-	m_meshes.push_back(mesh);
+	m_Meshes.push_back(mesh);
 
 }
 
 bool Model::GetMinMax(glm::vec3& min, glm::vec3& max)
 {
-	for (Mesh* mesh : m_meshes)
+	for (Mesh* mesh : m_Meshes)
 	{
-		for (const glm::vec3& pos : mesh->m_buffers.m_VertexPositions)
+		for (const glm::vec3& pos : mesh->m_buffers.GetVertexPositions())
 		{
 			min = glm::min(min, pos);
 			max = glm::max(max, pos);

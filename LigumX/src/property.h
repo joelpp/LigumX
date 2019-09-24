@@ -12,6 +12,7 @@ enum LXType
 	LXType_Component,
 	LXType_CullingOptions,
 	LXType_CurlRequest,
+	LXType_CPUBuffers,
 	LXType_DebugRenderer,
 	LXType_DefaultTextureHolder,
 	LXType_DisplayMode,

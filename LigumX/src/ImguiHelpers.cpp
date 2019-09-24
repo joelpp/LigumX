@@ -124,3 +124,19 @@ void ImguiHelpers::EndPropertyTree()
 {
 	ImGui::TreePop();
 }
+
+bool ImguiHelpers::ShowObjectPtr(const char* name, glm::vec3* value)
+{
+	CommonPrimitiveShowPtr(name, "glm::vec3", value);
+	return true;
+}
+bool ImguiHelpers::ShowObjectPtr(const char* name, glm::vec2* value)
+{
+	CommonPrimitiveShowPtr(name, "glm::vec2", value);
+	return true;
+}
+bool ImguiHelpers::ShowObjectPtr(const char* name, int* value)
+{
+	CommonPrimitiveShowPtr(name, "int", value);
+	return true;
+}

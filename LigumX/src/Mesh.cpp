@@ -55,7 +55,7 @@ Mesh::Mesh()
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode)
 {
-  m_buffers.m_VertexPositions = vertices;
+  m_buffers.SetVertexPositions(vertices);
 
   m_PrimitiveMode = primitiveMode;
   m_WireframeRendering = false;
@@ -69,8 +69,8 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMo
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& uvs, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
-	m_buffers.m_vertexUVs = uvs;
-	m_buffers.m_VertexPositions = vertices;
+	m_buffers.SetVertexUVs(uvs);
+	m_buffers.SetVertexPositions(vertices);
 
 	m_PrimitiveMode = primitiveMode;
 	m_WireframeRendering = false;
@@ -83,8 +83,8 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>&
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indices, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
-	m_buffers.m_VertexPositions = vertices;
-	m_buffers.indexBuffer = indices;
+	m_buffers.SetVertexPositions(vertices);
+	m_buffers.SetIndexBuffer(indices);
 
 	m_PrimitiveMode = primitiveMode;
 	m_PointRendering = usePointRendering;
@@ -99,7 +99,7 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<int>& indic
 
 Mesh::Mesh(const std::vector<glm::vec3>& vertices, GL::PrimitiveMode primitiveMode, bool usePointRendering)
 {
-  m_buffers.m_VertexPositions = vertices;
+  m_buffers.SetVertexPositions(vertices);
   m_PrimitiveMode = primitiveMode;
   m_PointRendering = usePointRendering;
   padBuffer(VERTEX_UVS);
@@ -111,10 +111,10 @@ void Mesh::padBuffer(EBufferType bufferType)
   int numToFill;
   if (bufferType == VERTEX_UVS)
   {
-    numToFill = (int) (m_buffers.m_VertexPositions.size() - m_buffers.m_vertexUVs.size());
+    numToFill = (int) (m_buffers.GetVertexPositions().size() - m_buffers.GetVertexUVs().size());
     for (int i = 0; i < numToFill; ++i)
     {
-      m_buffers.m_vertexUVs.push_back(glm::vec2(0,0));
+      m_buffers.AddTo_VertexUVs(glm::vec2(0,0));
     }
   }
 }
@@ -127,9 +127,9 @@ Mesh::Mesh(const CPUBuffers& cpuBuffers, GL::PrimitiveMode primitiveMode, bool u
 	m_PointRendering = usePointRendering;
 	m_WireframeRendering = false;
 
-	m_UsesIndexBuffer = m_buffers.indexBuffer.size() > 0;
+	m_UsesIndexBuffer = m_buffers.GetIndexBuffer().size() > 0;
 
-	if (m_buffers.m_vertexUVs.size() == 0)
+	if (m_buffers.GetVertexUVs().size() == 0)
 	{
 		padBuffer(VERTEX_UVS);
 	}
@@ -141,9 +141,9 @@ Mesh::Mesh(const CPUBuffers& cpuBuffers, GL::PrimitiveMode primitiveMode, bool u
 void Mesh::CreateBuffers()
 {
 	// TODO: I'm not quite convinced this belongs here. or does it?
-    LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.m_VertexPositions);
+    LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.GetVertexPositions());
     // Renderer::createGLBuffer(m_VBOs.glidNormals,   m_buffers.m_vertexNormals);
-	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs,			m_buffers.m_vertexUVs);
+	LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs,			m_buffers.GetVertexUVs());
 	
     glGenVertexArrays(1, &m_VAO);
 	glBindVertexArray(m_VAO);
@@ -156,20 +156,20 @@ void Mesh::CreateBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs);
     glVertexAttribPointer (1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
-	if (m_buffers.m_vertexNormals.size() > 0)
+	if (m_buffers.GetVertexNormals().size() > 0)
 	{
-		LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals, m_buffers.m_vertexNormals);
+		LigumX::GetInstance().m_Renderer->createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals, m_buffers.GetVertexNormals());
 		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidNormals);
 
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	}
 
-	if (m_buffers.indexBuffer.size() > 0)
+	if (m_buffers.GetIndexBuffer().size() > 0)
 	{
 		glGenBuffers(1, &m_VBOs.glidIndexBuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs.glidIndexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_buffers.indexBuffer.size() * sizeof(int), m_buffers.indexBuffer.data(), GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_buffers.GetIndexBuffer().size() * sizeof(int), m_buffers.GetIndexBuffer().data(), GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 

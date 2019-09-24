@@ -252,6 +252,9 @@
     <ClCompile Include="src\SerializerInputVariable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\CPUBuffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -614,6 +617,9 @@
     <ClInclude Include="src\SerializerInputVariable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\CPUBuffers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -669,5 +675,6 @@
     <None Include="src\LXObject.gen" />
     <None Include="src\Serializer2.gen" />
     <None Include="src\SerializerInputVariable.gen" />
+    <None Include="src\CPUBuffers.gen" />
   </ItemGroup>
 </Project>

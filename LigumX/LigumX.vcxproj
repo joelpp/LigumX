@@ -160,6 +160,7 @@
     <ClCompile Include="src\callbacks.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\Component.cpp" />
+    <ClCompile Include="src\CPUBuffers.cpp" />
     <ClCompile Include="src\CullingOptions.cpp" />
     <ClCompile Include="src\CurlRequest.cpp" />
     <ClCompile Include="src\DebugRenderer.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\Component.h" />
+    <ClInclude Include="src\CPUBuffers.h" />
     <ClInclude Include="src\CullingOptions.h" />
     <ClInclude Include="src\CurlRequest.h" />
     <ClInclude Include="src\DebugRenderer.h" />
@@ -365,6 +367,7 @@
     <None Include="src\BoundingBoxComponent.gen" />
     <None Include="src\Camera.gen" />
     <None Include="src\Component.gen" />
+    <None Include="src\CPUBuffers.gen" />
     <None Include="src\CullingOptions.gen" />
     <None Include="src\CurlRequest.gen" />
     <None Include="src\DebugRenderer.gen" />

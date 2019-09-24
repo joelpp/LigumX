@@ -17,7 +17,7 @@ void DefaultObjects::InitializeDefaultCube()
 
 	Model* testModel = new Model("cube/cube.obj");
 	testModel->loadModel();
-	DefaultCubeMesh = testModel->m_meshes[0];
+	DefaultCubeMesh = testModel->GetMeshes()[0];
 	DefaultCubeMesh->SetName("Default Cube Mesh");
 	DefaultCubeMesh->SetObjectID(g_ObjectManager->DefaultCubeMeshID);
 
@@ -31,10 +31,10 @@ void DefaultObjects::InitializeDefaultQuad()
 	DefaultQuadMesh = new Mesh();
 
 	// todo try morgan's cube obj in here
-	std::vector<glm::vec3>& points = DefaultQuadMesh->m_buffers.m_VertexPositions;
-	std::vector<glm::vec2>& UVs = DefaultQuadMesh->m_buffers.m_vertexUVs;
-	std::vector<glm::vec3>& normals = DefaultQuadMesh->m_buffers.m_vertexNormals;
-	std::vector<int>& indexBuffer = DefaultQuadMesh->m_buffers.indexBuffer;
+	std::vector<glm::vec3>& points = DefaultQuadMesh->m_buffers.GetVertexPositions();
+	std::vector<glm::vec2>& UVs = DefaultQuadMesh->m_buffers.GetVertexUVs();
+	std::vector<glm::vec3>& normals = DefaultQuadMesh->m_buffers.GetVertexNormals();
+	std::vector<int>& indexBuffer = DefaultQuadMesh->m_buffers.GetIndexBuffer();
 
 	points.push_back(glm::vec3(0, 0, 0));
 	points.push_back(glm::vec3(0, 1, 0));
@@ -72,10 +72,10 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 	DefaultTerrainMesh = new Mesh();
 
 	// todo try morgan's cube obj in here
-	std::vector<glm::vec3>& points = DefaultTerrainMesh->m_buffers.m_VertexPositions;
-	std::vector<glm::vec2>& UVs = DefaultTerrainMesh->m_buffers.m_vertexUVs;
-	std::vector<glm::vec3>& normals = DefaultTerrainMesh->m_buffers.m_vertexNormals;
-	std::vector<int>& indexBuffer = DefaultTerrainMesh->m_buffers.indexBuffer;
+	std::vector<glm::vec3>& points = DefaultTerrainMesh->m_buffers.GetVertexPositions();
+	std::vector<glm::vec2>& UVs = DefaultTerrainMesh->m_buffers.GetVertexUVs();
+	std::vector<glm::vec3>& normals = DefaultTerrainMesh->m_buffers.GetVertexNormals();
+	std::vector<int>& indexBuffer = DefaultTerrainMesh->m_buffers.GetIndexBuffer();
 
 	int iWidth = 64;
 	float uvScale = 1.f;//g_EngineSettings->GetTerrainTiling();
@@ -130,7 +130,7 @@ void DefaultObjects::InitializeDefaultSphere()
 {
 	Model* testModel = new Model("sphere/sphere.obj");
 	testModel->loadModel();
-	DefaultSphereMesh = testModel->m_meshes[0];
+	DefaultSphereMesh = testModel->GetMeshes()[0];
 	DefaultSphereMesh->SetName("Default Sphere Mesh");
 	DefaultSphereMesh->SetObjectID(g_ObjectManager->DefaultSphereMeshID);
 
@@ -191,8 +191,8 @@ void DefaultObjects::InitializeDefaultLine()
 	DefaultLineMesh = new Mesh();
 
 	// todo try morgan's cube obj in here
-	std::vector<glm::vec3>& points = DefaultLineMesh->m_buffers.m_VertexPositions;
-	std::vector<glm::vec2>& UVs =	 DefaultLineMesh->m_buffers.m_vertexUVs;
+	std::vector<glm::vec3>& points = DefaultLineMesh->m_buffers.GetVertexPositions();
+	std::vector<glm::vec2>& UVs =	 DefaultLineMesh->m_buffers.GetVertexUVs();
 
 	points.push_back(glm::vec3(0, 0, 0));
 	points.push_back(glm::vec3(0, 1, 0));

@@ -2,6 +2,7 @@
 #include "OSMDataProcessorSettings.h"
 #include "OSMElementTypeDataStore.h"
 
+#include "CPUBuffers.h"
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
@@ -268,15 +269,15 @@ bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 {
 	for (Entity* entity : sector->GetGraphicalData()->GetRoadEntities())
 	{
-		Mesh* mesh = entity->GetModel()->m_meshes[0];
+		Mesh* mesh = entity->GetModel()->GetMeshes()[0];
 
-		int numTriangles = mesh->m_buffers.m_VertexPositions.size() / 3;
+		int numTriangles = mesh->m_buffers.GetVertexPositions().size() / 3;
 		for (int i = 0; i < numTriangles; ++i)
 		{
 			int tIdx = i * 3;
-			const glm::vec3& v0 = mesh->m_buffers.m_VertexPositions[tIdx + 0];
-			const glm::vec3& v1 = mesh->m_buffers.m_VertexPositions[tIdx + 1];
-			const glm::vec3& v2 = mesh->m_buffers.m_VertexPositions[tIdx + 2];
+			const glm::vec3& v0 = mesh->m_buffers.GetVertexPositions()[tIdx + 0];
+			const glm::vec3& v1 = mesh->m_buffers.GetVertexPositions()[tIdx + 1];
+			const glm::vec3& v2 = mesh->m_buffers.GetVertexPositions()[tIdx + 2];
 
 			if (PointInTriangle(worldSpacePosition, v0, v1, v2))
 			{
@@ -290,9 +291,9 @@ bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 
 void Add3DBox(Mesh* mesh, const glm::vec3& start, const glm::vec3& direction, const glm::vec3& back, const glm::vec3& up, const glm::vec3& dimensions)
 {
-	std::vector<glm::vec2>& uvs = mesh->m_buffers.m_vertexUVs;
-	std::vector<glm::vec3>& vertices = mesh->m_buffers.m_VertexPositions;
-	std::vector<glm::vec3>& normals = mesh->m_buffers.m_vertexNormals;
+	std::vector<glm::vec2>& uvs = mesh->m_buffers.GetVertexUVs();
+	std::vector<glm::vec3>& vertices = mesh->m_buffers.GetVertexPositions();
+	std::vector<glm::vec3>& normals = mesh->m_buffers.GetVertexNormals();
 
 	glm::vec3 buildingHeight = up * dimensions.z;
 	glm::vec3 buildingLength = direction * dimensions.x;
@@ -523,28 +524,28 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 
 			CPUBuffers groundBuffers;
 
-			groundBuffers.m_VertexPositions.push_back(v0);
-			groundBuffers.m_VertexPositions.push_back(v1);
-			groundBuffers.m_VertexPositions.push_back(v2);
-			groundBuffers.m_VertexPositions.push_back(v3);
+			groundBuffers.AddTo_VertexPositions(v0);
+			groundBuffers.AddTo_VertexPositions(v1);
+			groundBuffers.AddTo_VertexPositions(v2);
+			groundBuffers.AddTo_VertexPositions(v3);
 
-			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
-			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
-			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
-			groundBuffers.m_vertexNormals.push_back(glm::vec3(0,0,1));
+			groundBuffers.AddTo_VertexNormals(glm::vec3(0, 0, 1));
+			groundBuffers.AddTo_VertexNormals(glm::vec3(0, 0, 1));
+			groundBuffers.AddTo_VertexNormals(glm::vec3(0, 0, 1));
+			groundBuffers.AddTo_VertexNormals(glm::vec3(0,0,1));
 
-			groundBuffers.m_vertexUVs.push_back(glm::vec2(0, 0));
-			groundBuffers.m_vertexUVs.push_back(glm::vec2(0, 1));
-			groundBuffers.m_vertexUVs.push_back(glm::vec2(1, 1));
-			groundBuffers.m_vertexUVs.push_back(glm::vec2(1, 0));
+			groundBuffers.AddTo_VertexUVs(glm::vec2(0, 0));
+			groundBuffers.AddTo_VertexUVs(glm::vec2(0, 1));
+			groundBuffers.AddTo_VertexUVs(glm::vec2(1, 1));
+			groundBuffers.AddTo_VertexUVs(glm::vec2(1, 0));
 
 			int baseIndex = buildingIndex * 4;
-			groundBuffers.indexBuffer.push_back(baseIndex + 0);
-			groundBuffers.indexBuffer.push_back(baseIndex + 1);
-			groundBuffers.indexBuffer.push_back(baseIndex + 2);
-			groundBuffers.indexBuffer.push_back(baseIndex + 2);
-			groundBuffers.indexBuffer.push_back(baseIndex + 3);
-			groundBuffers.indexBuffer.push_back(baseIndex + 0);
+			groundBuffers.AddTo_IndexBuffer(baseIndex + 0);
+			groundBuffers.AddTo_IndexBuffer(baseIndex + 1);
+			groundBuffers.AddTo_IndexBuffer(baseIndex + 2);
+			groundBuffers.AddTo_IndexBuffer(baseIndex + 2);
+			groundBuffers.AddTo_IndexBuffer(baseIndex + 3);
+			groundBuffers.AddTo_IndexBuffer(baseIndex + 0);
 
 			fullBuffers.AppendBuffer(groundBuffers);
 
@@ -631,7 +632,7 @@ void OSMDataProcessor::ProcessGenericBuilding(Sector* sector, Way* way)
 		Renderer& renderer = Renderer::GetInstance();
 
 		Model* buildingModel = new Model();
-		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID);
+		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID, true);
 
 		lxAssert(brickWallMaterial);
 
@@ -664,12 +665,20 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 	std::vector<glm::vec3> vertices;
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
+	std::vector<glm::vec3> nodeWorldPositions;
+
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
 		Node* node = *nodeIt;
-		Node* nextNode = *(nodeIt + 1);
-		glm::vec3 nodePos = node->GetWorldPosition();
-		glm::vec3 nextPos = nextNode->GetWorldPosition();
+		const glm::vec3& nodePos = node->GetWorldPosition();
+		nodeWorldPositions.push_back(nodePos);
+	}
+
+
+	for (auto nodeIt = nodeWorldPositions.begin(); nodeIt != (nodeWorldPositions.end() - 1); ++nodeIt)
+	{
+		const glm::vec3& nodePos = *nodeIt;
+		const glm::vec3& nextPos = *(nodeIt + 1);
 
 		glm::vec3 segment = nextPos - nodePos;
 		float distance = glm::length(segment);
@@ -682,6 +691,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		glm::vec3 direction = glm::normalize(segment);
 		glm::vec3 right = glm::cross(direction, up);
 
+		// width of road?
 		float offset = 30.f;
 		direction *= distance;
 		glm::vec3 first = nodePos - offset * right;
@@ -836,6 +846,18 @@ bool OSMDataProcessor::IsRoad(Way* way)
 	return way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
 }
 
+static int m_MaxRoadsToProcess = 0;
+static int m_RoadsProcessed = 0;
+
+static int m_MaxGenericBuildingsToProcess = 0;
+static int m_GenericBuildingsProcessed = 0;
+
+static int m_MaxAddressInterpolationsToProcess = 0;
+static int m_AddressInterpolationsProcessed = 0;
+
+static bool m_FillInEnabled = false;
+
+
 
 void OSMDataProcessor::ProcessSector(Sector* sector)
 {
@@ -848,24 +870,27 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 		bool hsNodes = (way->GetNodes().size() > 0);
 
 		bool isRoad = IsRoad(way);
-		if (isRoad)
+		if (isRoad && (m_RoadsProcessed < m_MaxRoadsToProcess))
 		{
 			ProcessRoad(sector, way);
+			m_RoadsProcessed++;
 			continue;
 		}
 
 		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()].GetIsBuilding();
-		if (isGenericBuilding)
+		if (isGenericBuilding && (m_GenericBuildingsProcessed < m_MaxGenericBuildingsToProcess))
 		{
 			ProcessGenericBuilding(sector, way);
+			m_GenericBuildingsProcessed++;
 			continue;
 		}
 
 		bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
-		if (isAddressInterpolation)
+		if (isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
 		{
 			// process them at the end when we have all our roads
 			addressInterpolationWays.push_back(way);
+			m_AddressInterpolationsProcessed++;
 			continue;
 		}
 
@@ -875,8 +900,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 		bool fillIn = g_OSMElementTypeDataStore->GetData()[wayType].GetFillIn();
 
-		// todo : dont uncomment this it crashes everything :(
-		if (fillIn)
+		if (fillIn && m_FillInEnabled)
 		{
 			Building building(way);
 			bool success = building.GenerateModel();

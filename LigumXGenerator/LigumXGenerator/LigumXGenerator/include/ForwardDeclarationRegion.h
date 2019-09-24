@@ -1,5 +1,5 @@
 #pragma once
-
+#include <algorithm>
 
 class ForwardDeclarationRegion : public CodeRegion
 {
@@ -31,6 +31,18 @@ public:
 
 		WriteLine("");
 
+		std::vector<std::string> excludedClasses =
+		{
+			"std::string",
+			"bool",
+			"int",
+			"float",
+			"glm::vec2",
+			"glm::vec3",
+			"glm::vec4",
+			"glm::mat4",
+		};
+
 		// todo : add autoincludes from this
 		for (const Variable& v : m_Class.m_Members)
 		{
@@ -49,8 +61,8 @@ public:
 					type = v.GetType();
 				}
 
-
-				if (!stringArrayContains(classesToDeclare, type) && !(type == "std::string"))
+				bool excludedClass = (std::find(excludedClasses.begin(), excludedClasses.end(), type) != excludedClasses.end());
+				if (!stringArrayContains(classesToDeclare, type) && !excludedClass)
 				{
 					classesToDeclare.push_back(type);
 				}

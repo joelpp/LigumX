@@ -14,6 +14,8 @@ const ClassPropertyData Node::g_Properties[] =
 { "Ways", PIDX_Ways, offsetof(Node, m_Ways), 0, LXType_stdvector, sizeof(std::vector<Way*>), LXType_stdvector, false, LXType_Way, true, 0, 0, 0, 0,}, 
 { "SectorIndex", PIDX_SectorIndex, offsetof(Node, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 { "SectorOffset", PIDX_SectorOffset, offsetof(Node, m_SectorOffset), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "QuantizedEarthPosition", PIDX_QuantizedEarthPosition, offsetof(Node, m_QuantizedEarthPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "QuantizedSectorPosition", PIDX_QuantizedSectorPosition, offsetof(Node, m_QuantizedSectorPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
 };
 void Node::Serialize(Serializer2& serializer)
 {
@@ -25,6 +27,8 @@ void Node::Serialize(Serializer2& serializer)
 	serializer.SerializeVector("Ways", m_Ways);
 	serializer.SerializeIVec2("SectorIndex", m_SectorIndex);
 	serializer.SerializeVec2("SectorOffset", m_SectorOffset);
+	serializer.SerializeIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition);
+	serializer.SerializeIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition);
 }
 bool Node::Serialize(bool writing)
 {
@@ -44,6 +48,8 @@ bool Node::ShowPropertyGrid()
 	ImguiHelpers::ShowVector("Ways", m_Ways  );
 	ImguiHelpers::ShowIVec2("SectorIndex", m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowVec2("SectorOffset", m_SectorOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* Node::GetTypeName()

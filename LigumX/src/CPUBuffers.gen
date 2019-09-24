@@ -1,0 +1,9 @@
+class CPUBuffers
+{
+
+	std::vector<glm::vec3> VertexPositions;
+	std::vector<glm::vec3> VertexNormals;
+	std::vector<glm::vec2> VertexUVs;
+	std::vector<int> IndexBuffer;
+
+}

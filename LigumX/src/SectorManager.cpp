@@ -15,6 +15,7 @@
 #include "OSMDataProcessor.h"
 #include "OSMElementTypeDataStore.h"
 #include "tinyxml2\tinyxml2.h"
+#include "EngineSettings.h"
 
 SectorManager* g_SectorManager;
 
@@ -230,14 +231,21 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 			glm::ivec2 offsets = glm::ivec2(i - offset, j - offset);
 			CurlRequest request = CurlRequest(earthStartCoords - earthExtent * (glm::vec2) offsets, earthExtent, false);
 
+			
+			glm::ivec2 earthIntStartCoords = glm::ivec2(earthStartCoords * glm::vec2(g_EngineSettings->GetOSMQuantizationScale(), g_EngineSettings->GetOSMQuantizationScale()));
+
 			glm::ivec2 requestedSectorIndex = normalizedSectorIndex + glm::ivec2(offsets);
 			request.SetSectorIndex(requestedSectorIndex);
 
 			Sector* requestSector = world->GetSectorByIndex(requestedSectorIndex);
+
+
 			if (!requestSector)
 			{
 				requestSector = CreateSector(requestedSectorIndex);
 			}
+
+			requestSector->SetQuantizedPosition(earthIntStartCoords);
 
 			request.SetSector(requestSector);
 
@@ -278,7 +286,11 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 	tinyxml2::XMLNode* docRoot = doc.FirstChild()->NextSibling();
 
 	std::fstream logFile("C:/temp/log.txt", std::fstream::out);
-
+	glm::vec2 gpsScale2 = glm::vec2(g_EngineSettings->GetOSMQuantizationScale(), g_EngineSettings->GetOSMQuantizationScale());
+	glm::ivec2 sectorQuantizedCoordinate = request->GetSector()->GetQuantizedPosition();
+	glm::vec2 extent2 = glm::vec2(g_EngineSettings->GetExtent(), g_EngineSettings->GetExtent());
+	glm::vec2 sectorQuantizedEarthSize = extent2 * gpsScale2;
+	glm::vec2 worldScale2 = glm::vec2(g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale());
 
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
@@ -302,7 +314,25 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			Node* node = new Node(id, longitude, latitude);
 
-			glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
+#if 0
+			glm::ivec2 earthQuantizedPosition = glm::ivec2(glm::vec2(longitude, latitude) * gpsScale2);
+			glm::ivec2 sectorQuantizedPosition = glm::ivec2(sectorQuantizedCoordinate);
+			node->SetQuantizedEarthPosition(earthQuantizedPosition);
+			node->SetQuantizedSectorPosition(earthQuantizedPosition - sectorQuantizedPosition);
+
+			//glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
+			glm::vec2 worldPos = glm::vec2(node->GetQuantizedSectorPosition()) / glm::vec2(sectorQuantizedEarthSize);
+			worldPos *= worldScale2;
+#else
+			glm::vec2 longLat(longitude, latitude);
+
+			glm::vec2 osmDelta = (longLat - request->GetCoords());
+
+			glm::vec2 normalizedSectorLongLat = osmDelta / extent2;
+			glm::ivec2 sectorQuantizedPosition = glm::ivec2(normalizedSectorLongLat * sectorQuantizedEarthSize);
+			glm::vec2 worldPos = normalizedSectorLongLat;
+			worldPos *= worldScale2;
+#endif
 
 			for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
 			{
@@ -311,18 +341,11 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				node->addTag(key, value);
 			}
 
-			glm::ivec2 sectorIndex = GetSectorIndexFromEarthLonLat(glm::vec2(longitude, latitude));
-
-			glm::ivec2 quantizedPosition = (glm::ivec2) (node->getLatLong() * 1e7f);
-			glm::ivec2 sectorQuantizedPosition = (glm::ivec2) (1e7f * (g_EngineSettings->GetStartLonLat()+ (g_EngineSettings->GetExtent() * (glm::vec2)sectorIndex)));
-
-			glm::ivec2 quantizedOffset = quantizedPosition - sectorQuantizedPosition;
-
-			Sector* sector = world->GetSectorByIndex(sectorIndex);
+			Sector* sector = world->GetSectorByIndex(request->GetSectorIndex());
 
 			if (!sector)
 			{
-				sector = CreateSector(sectorIndex);
+				sector = CreateSector(request->GetSectorIndex());
 			}
 
 			float worldScale = g_EngineSettings->GetWorldScale();
@@ -331,7 +354,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			glm::vec2 normalizedPosInSector = glm::fract(posInSector);
 
-			float sampledHeight = sector->SampleHeight(normalizedPosInSector);
+			float sampledHeight = 0.f;// sector->SampleHeight(normalizedPosInSector);
 
 			node->elevation = sampledHeight;
 			node->SetWorldPosition(glm::vec3(worldPos, sampledHeight));
@@ -409,7 +432,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				for (auto it = way->GetNodes().begin(); it != way->GetNodes().end(); ++it)
 				{
 					Node* node = *it;
-					node->elevation = elevation;
+					node->elevation = 0.f;// elevation;
 				}
 			}
 

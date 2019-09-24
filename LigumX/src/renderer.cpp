@@ -675,7 +675,7 @@ void Renderer::SetDebugUniforms()
 
 void Renderer::DrawModel(Entity* entity, Model* model)
 {
-	for (int i = 0; i < model->m_meshes.size(); ++i)
+	for (int i = 0; i < model->GetMeshes().size(); ++i)
 	{
 
 		Material* material = model->GetMaterials()[i];
@@ -701,7 +701,7 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 			m_ShaderBeenUsedThisFrame[material->GetShaderFamily()] = true;
 		}
 
-		DrawMesh(model->m_meshes[i], material);
+		DrawMesh(model->GetMeshes()[i], material);
 
 	}
 
@@ -761,11 +761,11 @@ void Renderer::DrawMesh(Mesh* mesh)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetGPUBuffers().glidIndexBuffer);
 
-		GL::DrawElements(mesh->m_PrimitiveMode, (int) mesh->m_buffers.indexBuffer.size(), GL_UNSIGNED_INT, 0);
+		GL::DrawElements(mesh->m_PrimitiveMode, (int) mesh->m_buffers.GetIndexBuffer().size(), GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
-		glDrawArrays(mesh->m_PrimitiveMode, 0, (int) mesh->m_buffers.m_VertexPositions.size());
+		glDrawArrays(mesh->m_PrimitiveMode, 0, (int) mesh->m_buffers.GetVertexPositions().size());
 		GL::OutputErrors();
 	}
 
@@ -1023,9 +1023,9 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 		SetVertexUniform(3, "g_HeightfieldTexture");
 		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
 
-		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
+		for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
 		{
-			DrawMesh(entity->GetModel()->m_meshes[i]);
+			DrawMesh(entity->GetModel()->GetMeshes()[i]);
 		}
 	}
 	
@@ -1036,9 +1036,9 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 	
-		for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
+		for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
 		{
-			DrawMesh(entity->GetModel()->m_meshes[i]);
+			DrawMesh(entity->GetModel()->GetMeshes()[i]);
 		}
 	}
 	
@@ -1049,9 +1049,9 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 			SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
-			for (int i = 0; i < entity->GetModel()->m_meshes.size(); ++i)
+			for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
 			{
-				DrawMesh(entity->GetModel()->m_meshes[i]);
+				DrawMesh(entity->GetModel()->GetMeshes()[i]);
 			}
 		}
 	}
@@ -1174,7 +1174,7 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 {
 	SetPipeline(programPipeline);
 
-	for (int i = 0; i < model->m_meshes.size(); ++i)
+	for (int i = 0; i < model->GetMeshes().size(); ++i)
 	{
 		SetVertexUniform(modelToWorld, "g_ModelToWorldMatrix");
 
@@ -1182,7 +1182,7 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 
 		SetViewUniforms(m_DebugCamera);
 
-		DrawMesh(model->m_meshes[i], material);
+		DrawMesh(model->GetMeshes()[i], material);
 	}
 }
 
@@ -1193,7 +1193,7 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 
 	GL::SetCapability(GL::Capabilities::Blend, true);
 
-	for (int i = 0; i < model->m_meshes.size(); ++i)
+	for (int i = 0; i < model->GetMeshes().size(); ++i)
 	{
 		SetVertexUniform(modelToWorld, "g_ModelToWorldMatrix");
 
@@ -1205,7 +1205,7 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 		SetFragmentUniform(displayFlags, "g_DisplayFlags");
 		SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
 
-		DrawMesh(model->m_meshes[i], material);
+		DrawMesh(model->GetMeshes()[i], material);
 	}
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
@@ -1221,7 +1221,7 @@ void Renderer::RenderDebugModels()
 		for (Model* model : m_DebugModels)
 		{
 			// TODO : right now this is for buildings but they should create their own entity
-			for (int i = 0; i < model->m_meshes.size(); ++i)
+			for (int i = 0; i < model->GetMeshes().size(); ++i)
 			{
 				SetVertexUniform(glm::mat4(1.0), "g_ModelToWorldMatrix");
 
@@ -1234,7 +1234,7 @@ void Renderer::RenderDebugModels()
 					continue;
 				}
 
-				DrawMesh(model->m_meshes[i], material);
+				DrawMesh(model->GetMeshes()[i], material);
 			}
 
 		}
