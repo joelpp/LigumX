@@ -292,6 +292,8 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 	glm::vec2 sectorQuantizedEarthSize = extent2 * gpsScale2;
 	glm::vec2 worldScale2 = glm::vec2(g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale());
 
+	glm::vec2 sectorWorldPosition = glm::vec2(request->GetSectorIndex()) * extent2;
+
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
 		std::string childValue = std::string(child->Value());
@@ -309,20 +311,34 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				continue;
 			}
 
-			float longitude = (float)atof(child->ToElement()->Attribute("lon"));
-			float latitude = (float)atof(child->ToElement()->Attribute("lat"));
+			float longitude = 0.f;// (float)atof();
+			float latitude = 0.f;//(float)atof(child->ToElement()->Attribute("lat"));
 
 			Node* node = new Node(id, longitude, latitude);
 
-#if 0
-			glm::ivec2 earthQuantizedPosition = glm::ivec2(glm::vec2(longitude, latitude) * gpsScale2);
+#if 1
+			std::string longitudeString(child->ToElement()->Attribute("lon"));
+			std::string latitudeString(child->ToElement()->Attribute("lat"));
+
+			std::string quantizedLongitudeString = StringUtils::RemoveSubstrings(longitudeString, ".");
+			std::string quantizedLatitudeString = StringUtils::RemoveSubstrings(latitudeString, ".");
+
+			int iLong = std::atoi(quantizedLongitudeString.c_str());
+			int iLat = std::atoi(quantizedLatitudeString.c_str());
+
 			glm::ivec2 sectorQuantizedPosition = glm::ivec2(sectorQuantizedCoordinate);
-			node->SetQuantizedEarthPosition(earthQuantizedPosition);
-			node->SetQuantizedSectorPosition(earthQuantizedPosition - sectorQuantizedPosition);
+			glm::ivec2 iSector = glm::ivec2(iLong, iLat) - glm::ivec2(sectorQuantizedPosition);
+
+
+			glm::vec2 f01Sector = glm::vec2(iSector) / sectorQuantizedEarthSize;
+			glm::vec2 worldPos = f01Sector * worldScale2;
+			//glm::ivec2 earthQuantizedPosition = glm::ivec2(glm::vec2(longitude, latitude) * gpsScale2);
+			//node->SetQuantizedEarthPosition(earthQuantizedPosition);
+			//node->SetQuantizedSectorPosition(earthQuantizedPosition - sectorQuantizedPosition);
 
 			//glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
-			glm::vec2 worldPos = glm::vec2(node->GetQuantizedSectorPosition()) / glm::vec2(sectorQuantizedEarthSize);
-			worldPos *= worldScale2;
+			//glm::vec2 worldPos = glm::vec2(node->GetQuantizedSectorPosition()) / glm::vec2(sectorQuantizedEarthSize);
+			//worldPos *= worldScale2;
 #else
 			glm::vec2 longLat(longitude, latitude);
 
@@ -330,7 +346,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			glm::vec2 normalizedSectorLongLat = osmDelta / extent2;
 			glm::ivec2 sectorQuantizedPosition = glm::ivec2(normalizedSectorLongLat * sectorQuantizedEarthSize);
-			glm::vec2 worldPos = normalizedSectorLongLat;
+			glm::vec2 worldPos = glm::vec2(request->GetSectorIndex()) + normalizedSectorLongLat;
 			worldPos *= worldScale2;
 #endif
 

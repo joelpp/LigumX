@@ -50,7 +50,7 @@ private:
 float m_WorldScale = 0.f;
 glm::vec2 m_StartLonLat = glm::vec2(0, 0);
 float m_Extent = 0.f;
-int m_OSMQuantizationScale = 1000000;
+int m_OSMQuantizationScale = 10000000;
 bool m_GenerateFlatTerrain = false;
 glm::ivec2 m_SplatMapResolution = glm::ivec2(0, 0);
 float m_WayTessellationFactor = 50.f;

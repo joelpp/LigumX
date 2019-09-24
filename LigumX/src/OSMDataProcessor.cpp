@@ -667,7 +667,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 
 	std::vector<glm::vec3> nodeWorldPositions;
 
-	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
+	for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
 	{
 		Node* node = *nodeIt;
 		const glm::vec3& nodePos = node->GetWorldPosition();
@@ -692,7 +692,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		glm::vec3 right = glm::cross(direction, up);
 
 		// width of road?
-		float offset = 30.f;
+		float offset = m_RoadWidth / g_EngineSettings->GetWorldScale();
 		direction *= distance;
 		glm::vec3 first = nodePos - offset * right;
 		offset *= 2;
@@ -846,7 +846,7 @@ bool OSMDataProcessor::IsRoad(Way* way)
 	return way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
 }
 
-static int m_MaxRoadsToProcess = 0;
+static int m_MaxRoadsToProcess = 99999999999;
 static int m_RoadsProcessed = 0;
 
 static int m_MaxGenericBuildingsToProcess = 0;

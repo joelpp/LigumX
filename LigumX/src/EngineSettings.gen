@@ -7,7 +7,7 @@ class EngineSettings
 
 	float Extent;
 
-	int OSMQuantizationScale = 1000000;
+	int OSMQuantizationScale = 10000000;
 
 	bool GenerateFlatTerrain;
 

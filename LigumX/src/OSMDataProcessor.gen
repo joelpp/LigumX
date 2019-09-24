@@ -1,7 +1,7 @@
 [globalinstance]
 class OSMDataProcessor
 {
-	float RoadWidth;
+	float RoadWidth = 30.f;
 
 	OSMDataProcessorSettings* Settings;
 }

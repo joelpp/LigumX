@@ -76,7 +76,7 @@ void SetRoadWidth(float value) { m_RoadWidth = value; };
 OSMDataProcessorSettings*& GetSettings() { return m_Settings; }; 
 void SetSettings(OSMDataProcessorSettings* value) { m_Settings = value; }; 
 private:
-float m_RoadWidth = 0.f;
+float m_RoadWidth = 30.f;
 OSMDataProcessorSettings* m_Settings = nullptr;
 public:
 static const int g_PropertyCount = 2;
