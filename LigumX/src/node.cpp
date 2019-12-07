@@ -12,10 +12,11 @@ const ClassPropertyData Node::g_Properties[] =
 { "WorldPosition", PIDX_WorldPosition, offsetof(Node, m_WorldPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Elevation", PIDX_Elevation, offsetof(Node, m_Elevation), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Ways", PIDX_Ways, offsetof(Node, m_Ways), 0, LXType_stdvector, sizeof(std::vector<Way*>), LXType_stdvector, false, LXType_Way, true, 0, 0, 0, 0,}, 
-{ "SectorIndex", PIDX_SectorIndex, offsetof(Node, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "SectorIndex", PIDX_SectorIndex, offsetof(Node, m_SectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "SectorOffset", PIDX_SectorOffset, offsetof(Node, m_SectorOffset), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
-{ "QuantizedEarthPosition", PIDX_QuantizedEarthPosition, offsetof(Node, m_QuantizedEarthPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
-{ "QuantizedSectorPosition", PIDX_QuantizedSectorPosition, offsetof(Node, m_QuantizedSectorPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "SectorRelativePosition", PIDX_SectorRelativePosition, offsetof(Node, m_SectorRelativePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "QuantizedEarthPosition", PIDX_QuantizedEarthPosition, offsetof(Node, m_QuantizedEarthPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
+{ "QuantizedSectorPosition", PIDX_QuantizedSectorPosition, offsetof(Node, m_QuantizedSectorPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 };
 void Node::Serialize(Serializer2& serializer)
 {
@@ -27,6 +28,7 @@ void Node::Serialize(Serializer2& serializer)
 	serializer.SerializeVector("Ways", m_Ways);
 	serializer.SerializeIVec2("SectorIndex", m_SectorIndex);
 	serializer.SerializeVec2("SectorOffset", m_SectorOffset);
+	serializer.SerializeVec2("SectorRelativePosition", m_SectorRelativePosition);
 	serializer.SerializeIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition);
 	serializer.SerializeIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition);
 }
@@ -48,6 +50,7 @@ bool Node::ShowPropertyGrid()
 	ImguiHelpers::ShowVector("Ways", m_Ways  );
 	ImguiHelpers::ShowIVec2("SectorIndex", m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowVec2("SectorOffset", m_SectorOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowVec2("SectorRelativePosition", m_SectorRelativePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
@@ -70,7 +73,7 @@ Node::Node(glm::vec2 latLong)
 
 Node::Node(std::string _id, float _longitude, float _latitude)
 {
-    this->id = _id;
+	this->id = _id;
     this->latitude = _latitude;
     this->longitude = _longitude;
     this->elevation = 0;

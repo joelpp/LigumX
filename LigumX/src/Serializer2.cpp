@@ -63,7 +63,7 @@ void Serializer2::ProcessFile()
 	bool addLastVar = true;
 	for (const std::string& line : lines)
 	{
-		bool startsWithLetter = isalpha(line[0]);
+		bool startsWithLetter = isalpha(line[0]) != 0 ? true : false;
 
 		if (startsWithLetter)
 		{

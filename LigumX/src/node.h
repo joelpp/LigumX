@@ -38,6 +38,8 @@ glm::ivec2& GetSectorIndex() { return m_SectorIndex; };
 void SetSectorIndex(const glm::ivec2& value) { m_SectorIndex = value; }; 
 glm::vec2& GetSectorOffset() { return m_SectorOffset; }; 
 void SetSectorOffset(const glm::vec2& value) { m_SectorOffset = value; }; 
+glm::vec2& GetSectorRelativePosition() { return m_SectorRelativePosition; }; 
+void SetSectorRelativePosition(const glm::vec2& value) { m_SectorRelativePosition = value; }; 
 glm::ivec2& GetQuantizedEarthPosition() { return m_QuantizedEarthPosition; }; 
 void SetQuantizedEarthPosition(const glm::ivec2& value) { m_QuantizedEarthPosition = value; }; 
 glm::ivec2& GetQuantizedSectorPosition() { return m_QuantizedSectorPosition; }; 
@@ -50,10 +52,11 @@ float m_Elevation = 0.f;
 std::vector<Way*> m_Ways;
 glm::ivec2 m_SectorIndex = glm::ivec2(0, 0);
 glm::vec2 m_SectorOffset = glm::vec2(0, 0);
+glm::vec2 m_SectorRelativePosition = glm::vec2(0, 0);
 glm::ivec2 m_QuantizedEarthPosition = glm::ivec2(0, 0);
 glm::ivec2 m_QuantizedSectorPosition = glm::ivec2(0, 0);
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_NodePIDX
@@ -65,6 +68,7 @@ PIDX_Elevation,
 PIDX_Ways,
 PIDX_SectorIndex,
 PIDX_SectorOffset,
+PIDX_SectorRelativePosition,
 PIDX_QuantizedEarthPosition,
 PIDX_QuantizedSectorPosition,
 };

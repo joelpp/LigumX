@@ -98,7 +98,8 @@ ObjectPtr ObjectManager::FindObjectByID(ObjectID id, LXType type, bool createIfN
 		if (createIfNotFound)
 		{
 			// todo: we need to allocate a something*. not sure about the best way to do so now.
-			
+			lxAssert0();
+			return nullptr;
 		}
 		else
 		{

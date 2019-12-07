@@ -9,14 +9,14 @@
 #include "serializer.h"
 const ClassPropertyData Framebuffer::g_Properties[] = 
 {
-{ "Width", PIDX_Width, offsetof(Framebuffer, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
-{ "Height", PIDX_Height, offsetof(Framebuffer, m_Height), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "Width", PIDX_Width, offsetof(Framebuffer, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
+{ "Height", PIDX_Height, offsetof(Framebuffer, m_Height), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "ColorTexture", PIDX_ColorTexture, offsetof(Framebuffer, m_ColorTexture), 0, LXType_Object, sizeof(GLuint), LXType_GLuint, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DepthTexture", PIDX_DepthTexture, offsetof(Framebuffer, m_DepthTexture), 0, LXType_Object, sizeof(GLuint), LXType_GLuint, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "PixelFormat", PIDX_PixelFormat, offsetof(Framebuffer, m_PixelFormat), 0, LXType_Object, sizeof(GLPixelFormat), LXType_GLPixelFormat, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "InternalPixelFormat", PIDX_InternalPixelFormat, offsetof(Framebuffer, m_InternalPixelFormat), 0, LXType_Object, sizeof(GLPixelFormat), LXType_GLPixelFormat, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "HasDepth", PIDX_HasDepth, offsetof(Framebuffer, m_HasDepth), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "NumColorTargets", PIDX_NumColorTargets, offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "NumColorTargets", PIDX_NumColorTargets, offsetof(Framebuffer, m_NumColorTargets), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 };
 void Framebuffer::Serialize(Serializer2& serializer)
 {

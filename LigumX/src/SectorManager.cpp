@@ -315,6 +315,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			float latitude = 0.f;//(float)atof(child->ToElement()->Attribute("lat"));
 
 			Node* node = new Node(id, longitude, latitude);
+			node->SetOSMId(std::atol(id.c_str()));
 
 #if 1
 			std::string longitudeString(child->ToElement()->Attribute("lon"));
@@ -334,7 +335,8 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			glm::vec2 worldPos = f01Sector * worldScale2;
 			//glm::ivec2 earthQuantizedPosition = glm::ivec2(glm::vec2(longitude, latitude) * gpsScale2);
 			//node->SetQuantizedEarthPosition(earthQuantizedPosition);
-			//node->SetQuantizedSectorPosition(earthQuantizedPosition - sectorQuantizedPosition);
+			node->SetQuantizedSectorPosition(iSector);
+			node->SetSectorRelativePosition(f01Sector);
 
 			//glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
 			//glm::vec2 worldPos = glm::vec2(node->GetQuantizedSectorPosition()) / glm::vec2(sectorQuantizedEarthSize);
@@ -413,6 +415,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			}
 
 			Way* way = new Way(id);
+			way->SetOSMId(std::atol(id.c_str()));
 
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
 			{
@@ -489,7 +492,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			m_AllWays.emplace(id, way);
 
 			long intID = StringUtils::ToLong(id);
-			way->SetIndexInSector(request->GetSector()->m_Data->m_AllWaysPtr.size());
+			way->SetIndexInSector((int)request->GetSector()->m_Data->m_AllWaysPtr.size());
 			request->GetSector()->m_Data->m_AllWaysPtr[intID] = way;
 			m_AllWaysPtr[intID] = way;
 		}

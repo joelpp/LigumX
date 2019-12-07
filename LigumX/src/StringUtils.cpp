@@ -174,7 +174,7 @@ int StringUtils::Count(const std::string& s, const char c)
 
 float StringUtils::ToFloat(const std::string& str)
 {
-	return std::atof(str.c_str());
+	return (float)std::atof(str.c_str());
 }
 
 int StringUtils::ToInt(const std::string& str)

@@ -8,6 +8,7 @@ class Node : OSMElement
 
 	glm::ivec2 SectorIndex;
 	glm::vec2 SectorOffset;
+	glm::vec2 SectorRelativePosition;
 
 	glm::ivec2 QuantizedEarthPosition;
 	glm::ivec2 QuantizedSectorPosition;

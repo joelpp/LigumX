@@ -2,7 +2,7 @@
 
 #include "glm\glm.hpp"
 
-#include "CurlRequest.h"
+//#include "CurlRequest.h"
 #include "EditorTool.h"
 
 #include <thread>
@@ -100,8 +100,6 @@ SectorTool();
 
 
 virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
-
-CurlRequest m_Request;
 
 Sector* m_LoadingSector;
 

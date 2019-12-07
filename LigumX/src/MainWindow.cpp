@@ -10,7 +10,7 @@ const ClassPropertyData MainWindow::g_Properties[] =
 {
 { "InFocus", PIDX_InFocus, offsetof(MainWindow, m_InFocus), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Position", PIDX_Position, offsetof(MainWindow, m_Position), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
-{ "Size", PIDX_Size, offsetof(MainWindow, m_Size), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "Size", PIDX_Size, offsetof(MainWindow, m_Size), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "Title", PIDX_Title, offsetof(MainWindow, m_Title), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void MainWindow::Serialize(Serializer2& serializer)
@@ -63,7 +63,7 @@ void MainWindow::PostSerialization(bool writing, bool success)
 	{
 		pWindow = GL::CreateGLWindow(m_Size.x, m_Size.y, m_Title.c_str());
 
-		glfwSetWindowPos(pWindow, m_Position.x, m_Position.y);
+		glfwSetWindowPos(pWindow, (int)m_Position.x, (int)m_Position.y);
 		glfwMakeContextCurrent(pWindow);
 		if (pWindow == NULL)
 		{

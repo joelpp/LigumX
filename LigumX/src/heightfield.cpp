@@ -23,7 +23,7 @@ const ClassPropertyData Heightfield::g_Properties[] =
 { "HeightDataTexture", PIDX_HeightDataTexture, offsetof(Heightfield, m_HeightDataTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "MaxHeight", PIDX_MaxHeight, offsetof(Heightfield, m_MaxHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MinHeight", PIDX_MinHeight, offsetof(Heightfield, m_MinHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
-{ "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "Width", PIDX_Width, offsetof(Heightfield, m_Width), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 };
 void Heightfield::Serialize(Serializer2& serializer)
 {
@@ -97,7 +97,7 @@ Heightfield::Heightfield(glm::vec2 offsetIndex)
 
 			if (!(g_EngineSettings->GetGenerateFlatTerrain()))
 			{
-				z = pNoise->GetHeight(wsPos.x, wsPos.y);
+				z = (float)pNoise->GetHeight(wsPos.x, wsPos.y);
 			}
 
 			z *= 500.f;

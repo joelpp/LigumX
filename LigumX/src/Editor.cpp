@@ -60,7 +60,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, sizeof(std::vector<EditorTool*>), LXType_stdvector, false, LXType_EditorTool, true, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void Editor::Serialize(Serializer2& serializer)
@@ -1463,7 +1463,7 @@ void Editor::RenderImgui()
 		{
 			ImVec2 size = ImVec2(100, 100);
 			
-			ImGui::Image((ImTextureID)textureToDisplay->GetHWObject(), size);
+			ImGui::Image((ImTextureID)(intptr_t)textureToDisplay->GetHWObject(), size);
 		}
 
 		g_GUI->EndWindow();
@@ -1552,7 +1552,7 @@ void Editor::RenderImgui()
 		{
 		//ImGui::Image((ImTextureID)renderer->GetFramebuffer(FramebufferType_Picking)->GetColorTexture(0), size);
 		//ImGui::Image((ImTextureID) GetTerrainTool()->GetSplatMapTexture()->GetHWObject(), size);
-			ImGui::Image((ImTextureID)clickedSector->GetSplatMapTexture()->GetHWObject(), size);
+			ImGui::Image((ImTextureID)(intptr_t)clickedSector->GetSplatMapTexture()->GetHWObject(), size);
 		}
 
 		g_GUI->EndWindow();

@@ -184,6 +184,7 @@ void DefaultObjects::InitializeManipulator()
 	DefaultCubeModel->addMesh(DefaultCubeMesh, DefaultRedMaterial);
 
 	DefaultManipulatorEntity->SetModel(DefaultCubeModel);
+	DefaultManipulatorEntity->SetScale(glm::vec3(0.1f));
 }
 
 void DefaultObjects::InitializeDefaultLine()

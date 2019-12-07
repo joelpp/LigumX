@@ -41,7 +41,6 @@ const char* CPUBuffers::GetTypeName()
 	return ClassName;
 }
 
-
 #pragma endregion  CLASS_SOURCE CPUBuffers
 
 

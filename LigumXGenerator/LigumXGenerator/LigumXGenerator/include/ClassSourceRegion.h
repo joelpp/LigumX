@@ -194,6 +194,18 @@ public:
 
 				lxType = RemoveSubstrings(lxType, "::");
 
+				// ugly hack for min/max stored as float
+				std::string minToWrite = var.GetMinValue();
+				if ((minToWrite == "LX_LIMITS_INT_MIN") || (minToWrite == "LX_LIMITS_LONG_MIN"))
+				{
+					minToWrite = "(float)" + minToWrite;
+				}
+				std::string maxToWrite = var.GetMaxValue();
+				if ((maxToWrite == "LX_LIMITS_INT_MAX") || (maxToWrite == "LX_LIMITS_LONG_MAX"))
+				{
+					maxToWrite = "(float)" + maxToWrite;
+				}
+
 				// warning! if you change anything here mirror it in property.h in LigumX
 				WriteLine("{ \"" + varName + "\", "
 					+ "PIDX_" + varName + ", "
@@ -206,8 +218,8 @@ public:
 					+ lxType + ", "
 					+ (var.m_AssociatedPtr ? "true" : "false") + ", "
 					+ BuildPropertyFlagsString(var.m_PropertyFlags) + ", "
-					+ var.GetMinValue() + ", "
-					+ var.GetMaxValue() + ", "
+					+ minToWrite + ", "
+					+ maxToWrite + ", "
 					+ writeCallbackStream.str() + ","
 					+ "}, ");
 			}

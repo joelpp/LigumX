@@ -2,7 +2,6 @@
 #define _SECTOR_DATA_
 
 #include "LXSystem.h"
-#include "CurlRequest.h"
 
 #include "Math.h"
 #include "OSMElement.h"
@@ -13,6 +12,7 @@ class Node;
 class Relation;
 class Heightfield;
 class SectorGraphicalData;
+class CurlRequest;
 
 typedef std::unordered_map<OSMElement::ElementType, std::unordered_map<std::string, Way*> > WayTypeMap;
 

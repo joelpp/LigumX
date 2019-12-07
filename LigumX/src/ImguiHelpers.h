@@ -189,7 +189,7 @@ namespace ImguiHelpers
 	{
 		size_t numElements = values.size();
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (List<%s>, size = %d)", name, "[Classname, Fix this!]"/*T::ClassName*/, numElements);
+		sprintf(treeNodeName, "%s (List<%s>, size = %zu)", name, "[Classname, Fix this!]"/*T::ClassName*/, numElements);
 
 		if (numElements == 0)
 		{
@@ -219,9 +219,9 @@ namespace ImguiHelpers
 	template <typename T>
 	bool ShowVector(const char* name, std::vector<T*>& values)
 	{
-		int numElements = values.size();
+		size_t numElements = values.size();
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (List<%s>, size = %d)", name, T::ClassName, numElements);
+		sprintf(treeNodeName, "%s (List<%s>, size = %zu)", name, T::ClassName, numElements);
 
 		if (numElements == 0)
 		{
@@ -233,7 +233,7 @@ namespace ImguiHelpers
 
 			if (scope.m_Opened)
 			{
-				for (int i = 0; i < numElements; ++i)
+				for (size_t i = 0; i < numElements; ++i)
 				{
 					T* objectPtr = values[i];
 
@@ -241,7 +241,7 @@ namespace ImguiHelpers
 					sprintf(thisObjectType, "%s", objectPtr->GetTypeName());
 
 					char elementName[256];
-					sprintf(elementName, "[%d] : (%s)", i, /*objectPtr->GetName(),*/ thisObjectType);
+					sprintf(elementName, "[%zu] : (%s)", i, /*objectPtr->GetName(),*/ thisObjectType);
 
 					ShowObjectPtr(elementName, objectPtr);
 				}

@@ -23,7 +23,9 @@ bool ImguiHelpers::ShowInt(LXString& name, int& value, int min, int max)
 bool ImguiHelpers::ShowLong(const char* name, long& value, long min, long max)
 {
 	// todo fix this...
-	return ImGui::DragInt(name, (int*)&value, 1.f, min, max);
+	std::string val = std::to_string(value);
+	return ShowRawString(val);
+	//return ImGui::DragInt(name, (int*)&value, 1.f, min, max);
 }
 
 bool ImguiHelpers::ShowLong(LXString& name, long& value, long min, long max)

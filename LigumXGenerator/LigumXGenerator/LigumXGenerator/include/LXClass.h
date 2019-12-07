@@ -231,16 +231,24 @@ int GetVarPropertyFlags(TokenList& tokens, Variable& variable)
 			TokenList list = splitString(token, '=');
 
 			flagName = list[0];
+			std::string s = list[1];
+
+			// ugly hack because we always store min/max values as float
+			// probably better would be store a list of "attribute" objects and have a class FloatMaxAttribute : public GenAttribute
+			if (!stringContains(s, ".f"))
+			{
+				s += ".f";
+			}
 
 			if (flagName == "min")
 			{
-				variable.SetMinValue(list[1]);
+				variable.SetMinValue(s);
+			}
+			else if (flagName == "max")
+			{
+				variable.SetMaxValue(s);
 			}
 
-			if (flagName == "max")
-			{
-				variable.SetMaxValue(list[1]);
-			}
 		}
 
 		flags |= g_PropertyFlagsStringMap[flagName];

@@ -445,13 +445,13 @@ void Renderer::SetFragmentUniform(bool value, const char* name)
 void Renderer::SetFragmentUniform(const std::vector<int>& values, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
-	glProgramUniform1iv(prog, glGetUniformLocation(prog, name), values.size(), values.data());
+	glProgramUniform1iv(prog, glGetUniformLocation(prog, name), (GLsizei)values.size(), values.data());
 }
 
 void Renderer::SetFragmentUniformArray(const std::vector<glm::vec3>& values, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
-	glProgramUniform3fv(prog, glGetUniformLocation(prog, name), values.size() * 3, (const GLfloat*) values.data());
+	glProgramUniform3fv(prog, glGetUniformLocation(prog, name), (GLsizei)values.size() * 3, (const GLfloat*) values.data());
 }
 
 void Renderer::SetComputeUniform(int value, const char* name)
@@ -1450,7 +1450,7 @@ void Renderer::RenderMessages()
 	float fontSize = g_EngineSettings->GetMessagesFontSize();
 	for (const S2DMessage& message : g_RenderDataManager->Get2DMessages())
 	{
-		RenderText(message.m_Message, message.m_ScreenPosition.x, message.m_ScreenPosition.y, fontSize, message.m_Color, false);
+		RenderText(message.m_Message, (GLfloat)message.m_ScreenPosition.x, (GLfloat)message.m_ScreenPosition.y, fontSize, message.m_Color, false);
 
 		GL::OutputErrors();
 
@@ -1463,9 +1463,9 @@ void Renderer::RenderMessages()
 	GL::SetViewport(m_Window->GetSize());
 
 	glm::vec2 startingPosition = g_EngineSettings->GetMessagesStartingPosition();
-	float heightOffset = g_EngineSettings->GetMessagesPixelsOffset();
+	float heightOffset = (float)g_EngineSettings->GetMessagesPixelsOffset();
 
-	int numMessages = g_RenderDataManager->GetTimedMessages().size();
+	int numMessages = (int)g_RenderDataManager->GetTimedMessages().size();
 	startingPosition.y += heightOffset * (numMessages - 1);
 
 	for (const TimedMessage& message : g_RenderDataManager->GetTimedMessages())

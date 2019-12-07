@@ -11,10 +11,10 @@
 #include "Node.h"
 const ClassPropertyData Way::g_Properties[] = 
 {
-{ "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "Nodes", PIDX_Nodes, offsetof(Way, m_Nodes), 0, LXType_stdvector, sizeof(std::vector<Node*>), LXType_stdvector, false, LXType_Node, true, 0, 0, 0, 0,}, 
 { "OSMElementType", PIDX_OSMElementType, offsetof(Way, m_OSMElementType), 0, LXType_Object, sizeof(OSMElementType), LXType_OSMElementType, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "IndexInSector", PIDX_IndexInSector, offsetof(Way, m_IndexInSector), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX, 0,}, 
+{ "IndexInSector", PIDX_IndexInSector, offsetof(Way, m_IndexInSector), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "FilledIn", PIDX_FilledIn, offsetof(Way, m_FilledIn), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "AllTags", PIDX_AllTags, offsetof(Way, m_AllTags), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, PropertyFlags_Adder, 0, 0, 0,}, 
 };
@@ -77,7 +77,7 @@ void Way::AddNode(Node* ref)
 std::string Way::toString()
 {
     char str[200];
-    sprintf(str, "Way ID=%s, %I64u nodes, eType: %s, ", this->id.c_str(), m_Nodes.size(), EnumValues_OSMElementType[this->GetOSMElementType()]);
+    sprintf(str, "Way ID=%s, %I64u nodes, eType: %s, ", this->id.c_str(), m_Nodes.size(), EnumValues_OSMElementType[this->GetOSMElementType()].c_str());
     std::string toReturn = std::string(str);
     for ( auto it = this->tags.begin(); it != this->tags.end(); ++it ){
         char tagstr[200];

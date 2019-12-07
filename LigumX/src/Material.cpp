@@ -11,19 +11,19 @@
 const ClassPropertyData Material::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(Material, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "AmbientColor", PIDX_AmbientColor, offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 1, 0,}, 
-{ "DiffuseColor", PIDX_DiffuseColor, offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 1, 0,}, 
-{ "SpecularColor", PIDX_SpecularColor, offsetof(Material, m_SpecularColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0, 1, 0,}, 
+{ "AmbientColor", PIDX_AmbientColor, offsetof(Material, m_AmbientColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0.f, 1.f, 0,}, 
+{ "DiffuseColor", PIDX_DiffuseColor, offsetof(Material, m_DiffuseColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0.f, 1.f, 0,}, 
+{ "SpecularColor", PIDX_SpecularColor, offsetof(Material, m_SpecularColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, 0.f, 1.f, 0,}, 
 { "IsPBR", PIDX_IsPBR, offsetof(Material, m_IsPBR), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Shininess", PIDX_Shininess, offsetof(Material, m_Shininess), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
-{ "Metallic", PIDX_Metallic, offsetof(Material, m_Metallic), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 1, 0,}, 
-{ "Roughness", PIDX_Roughness, offsetof(Material, m_Roughness), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 1, 0,}, 
+{ "Metallic", PIDX_Metallic, offsetof(Material, m_Metallic), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 1.f, 0,}, 
+{ "Roughness", PIDX_Roughness, offsetof(Material, m_Roughness), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 1.f, 0,}, 
 { "AO", PIDX_AO, offsetof(Material, m_AO), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "EmissiveFactor", PIDX_EmissiveFactor, offsetof(Material, m_EmissiveFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "DiffuseTextureEnabled", PIDX_DiffuseTextureEnabled, offsetof(Material, m_DiffuseTextureEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "SpecularTextureEnabled", PIDX_SpecularTextureEnabled, offsetof(Material, m_SpecularTextureEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Unlit", PIDX_Unlit, offsetof(Material, m_Unlit), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "RefractionIndex", PIDX_RefractionIndex, offsetof(Material, m_RefractionIndex), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0, 1, 0,}, 
+{ "RefractionIndex", PIDX_RefractionIndex, offsetof(Material, m_RefractionIndex), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 1.f, 0,}, 
 { "IsGlass", PIDX_IsGlass, offsetof(Material, m_IsGlass), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "ReflectEnvironment", PIDX_ReflectEnvironment, offsetof(Material, m_ReflectEnvironment), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DiffuseTexture", PIDX_DiffuseTexture, offsetof(Material, m_DiffuseTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Material, DiffuseTexture, Texture*),}, 
@@ -66,19 +66,19 @@ bool Material::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
-	ImguiHelpers::ShowVec3("AmbientColor", m_AmbientColor , 0, 1 );
-	ImguiHelpers::ShowVec3("DiffuseColor", m_DiffuseColor , 0, 1 );
-	ImguiHelpers::ShowVec3("SpecularColor", m_SpecularColor , 0, 1 );
+	ImguiHelpers::ShowVec3("AmbientColor", m_AmbientColor , 0.f, 1.f );
+	ImguiHelpers::ShowVec3("DiffuseColor", m_DiffuseColor , 0.f, 1.f );
+	ImguiHelpers::ShowVec3("SpecularColor", m_SpecularColor , 0.f, 1.f );
 	ImguiHelpers::ShowBool("IsPBR", m_IsPBR  );
 	ImguiHelpers::ShowFloat("Shininess", m_Shininess , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("Metallic", m_Metallic , 0, 1 );
-	ImguiHelpers::ShowFloat("Roughness", m_Roughness , 0, 1 );
+	ImguiHelpers::ShowFloat("Metallic", m_Metallic , 0.f, 1.f );
+	ImguiHelpers::ShowFloat("Roughness", m_Roughness , 0.f, 1.f );
 	ImguiHelpers::ShowFloat("AO", m_AO , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowFloat("EmissiveFactor", m_EmissiveFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowBool("DiffuseTextureEnabled", m_DiffuseTextureEnabled  );
 	ImguiHelpers::ShowBool("SpecularTextureEnabled", m_SpecularTextureEnabled  );
 	ImguiHelpers::ShowBool("Unlit", m_Unlit  );
-	ImguiHelpers::ShowFloat("RefractionIndex", m_RefractionIndex , 0, 1 );
+	ImguiHelpers::ShowFloat("RefractionIndex", m_RefractionIndex , 0.f, 1.f );
 	ImguiHelpers::ShowBool("IsGlass", m_IsGlass  );
 	ImguiHelpers::ShowBool("ReflectEnvironment", m_ReflectEnvironment  );
 	ImguiHelpers::ShowObjectPtr("DiffuseTexture", m_DiffuseTexture  );
