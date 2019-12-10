@@ -84,6 +84,8 @@ virtual const char* GetTypeName();
 
 OSMTool();
 
+virtual void Reset();
+
 bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 
 void DebugDisplay() override;

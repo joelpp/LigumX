@@ -24,6 +24,8 @@ public:
 	SectorManager();
 	SectorManager(float m_sectorSize);
 
+	void Reset();
+
 	int IDFromPos(glm::vec2 pos);
 	int getSectorIndex(float x, float y);
 
@@ -91,11 +93,10 @@ public:
 	glm::vec2 OffsetIndexToWorldPosition(const glm::ivec2& sectorIndex);
 
 
-
 	std::unordered_map<std::string, Node*> m_AllNodes;
-	std::map<long, Node*> m_AllNodesPtr;
+	std::map<lxInt64, Node*> m_AllNodesPtr;
 	std::map<std::string, Way*> m_AllWays;
-	std::map<int, Way*> m_AllWaysPtr;
+	std::map<lxInt64, Way*> m_AllWaysPtr;
 
 private:
 	REGISTERCLASS(SectorManager);

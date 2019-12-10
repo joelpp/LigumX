@@ -528,7 +528,7 @@ void InitializeGenerator()
 	g_LXTypeToImguiCallName.emplace("bool", "Bool");
 	g_LXTypeToImguiCallName.emplace("int", "Int");
 	g_LXTypeToImguiCallName.emplace("float", "Float");
-	g_LXTypeToImguiCallName.emplace("long", "Long");
+	g_LXTypeToImguiCallName.emplace("lxInt64", "Int64");
 	g_LXTypeToImguiCallName.emplace("glm::ivec2", "IVec2");
 	g_LXTypeToImguiCallName.emplace("glm::ivec3", "IVec3");
 	g_LXTypeToImguiCallName.emplace("glm::ivec4", "IVec4");
@@ -539,7 +539,7 @@ void InitializeGenerator()
 	g_LXTypeToImguiCallName.emplace("std::vector", "Vector");
 
 	g_DefaultMinForType.emplace("int", "LX_LIMITS_INT_MIN");
-	g_DefaultMinForType.emplace("LONG", "LX_LIMITS_LONG_MIN");
+	g_DefaultMinForType.emplace("lxInt64", "LX_LIMITS_INT64_MIN");
 	g_DefaultMinForType.emplace("glm::ivec2", "LX_LIMITS_INT_MIN");
 	g_DefaultMinForType.emplace("glm::ivec3", "LX_LIMITS_INT_MIN");
 	g_DefaultMinForType.emplace("glm::ivec4", "LX_LIMITS_INT_MIN");
@@ -549,7 +549,7 @@ void InitializeGenerator()
 	g_DefaultMinForType.emplace("glm::vec4", "LX_LIMITS_FLOAT_MIN");
 
 	g_DefaultMaxForType.emplace("int", "LX_LIMITS_INT_MAX");
-	g_DefaultMaxForType.emplace("LONG", "LX_LIMITS_LONG_MAX");
+	g_DefaultMaxForType.emplace("lxInt64", "LX_LIMITS_INT64_MAX");
 	g_DefaultMaxForType.emplace("glm::ivec2", "LX_LIMITS_INT_MAX");
 	g_DefaultMaxForType.emplace("glm::ivec3", "LX_LIMITS_INT_MAX");
 	g_DefaultMaxForType.emplace("glm::ivec4", "LX_LIMITS_INT_MAX");

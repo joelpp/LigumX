@@ -65,13 +65,17 @@ void AddTo_DebugEntities(Entity* value) { m_DebugEntities.push_back(value); };
 std::vector<Sector*>& GetSectors() { return m_Sectors; }; 
 void SetSectors(std::vector<Sector*> value) { m_Sectors = value; }; 
 void AddTo_Sectors(Sector* value) { m_Sectors.push_back(value); };
+bool GetReset() { return m_Reset; }; 
+void SetReset(bool value) { SetReset_Callback(value); }; 
+void SetReset_Callback(const bool& value);
 private:
 SunLight* m_SunLight = nullptr;
 std::vector<Entity*> m_Entities;
 std::vector<Entity*> m_DebugEntities;
 std::vector<Sector*> m_Sectors;
+bool m_Reset = false;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_WorldPIDX
@@ -80,6 +84,7 @@ PIDX_SunLight,
 PIDX_Entities,
 PIDX_DebugEntities,
 PIDX_Sectors,
+PIDX_Reset,
 };
 void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);

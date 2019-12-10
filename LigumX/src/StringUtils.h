@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <regex>
+#include "LXSystem.h"
 
 typedef std::vector<std::string> StringList;
 
@@ -42,7 +43,7 @@ namespace StringUtils
 	float ToFloat(const std::string& str);
 
 	int ToInt(const std::string& str);
-	long int ToLong(const std::string& str);
+	lxInt64 ToInt64(const std::string& str);
 
 	bool IsCapitalLetter(const char&);
 	bool IsLowerCaseLetter(const char& c);
@@ -50,4 +51,7 @@ namespace StringUtils
 	std::string SeparateByCapitalLetters(const std::string& str);
 
 	std::string Format(const std::string fmt_str, ...);
+
+	std::string ToStringPrecise(const float a_value, const int n = 6);
+
 }

@@ -7027,6 +7027,16 @@ bool ImGui::DragInt(const char* label, int* v, float v_speed, int v_min, int v_m
     return value_changed;
 }
 
+bool ImGui::DragLong(const char* label, long* v, float v_speed, long v_min, long v_max, const char* display_format)
+{
+	if (!display_format)
+		display_format = "%.0f";
+	float v_f = (float)*v;
+	bool value_changed = DragFloat(label, &v_f, v_speed, (float)v_min, (float)v_max, display_format);
+	*v = (long)v_f;
+	return value_changed;
+}
+
 bool ImGui::DragIntN(const char* label, int* v, int components, float v_speed, int v_min, int v_max, const char* display_format)
 {
     ImGuiWindow* window = GetCurrentWindow();

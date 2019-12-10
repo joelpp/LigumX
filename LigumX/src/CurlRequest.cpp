@@ -95,7 +95,7 @@ std::string curl_request(char* path)
 
 }
 
-const char* g_OSM_API_Path = "http://www.overpass-api.de/api/xapi_meta?*[bbox=%f.2,%f.2,%f.2,%f.2]";
+const char* g_OSM_API_Path = "http://www.overpass-api.de/api/xapi_meta?*[bbox=%.7f,%.7f,%.7f,%.7f]";
 
 std::string queryBoundingBox(float left, float bottom, float right, float top)
 {
@@ -162,7 +162,7 @@ inline bool file_exists(const std::string& name)
 }
 
 
-std::string BuildXMLPath(int dataType, glm::vec2 pos) 
+std::string BuildXMLPath(int dataType, const std::string& fileName)
 {
 	std::stringstream savePath;
 	savePath << "C:/Users/Joel/Documents/LigumX/LigumX/data/";
@@ -175,7 +175,7 @@ std::string BuildXMLPath(int dataType, glm::vec2 pos)
 
 	int index = 1;
 
-	savePath << (int) (pos.x * 1000) << "x" << (int)(pos.y * 1000);
+	savePath << fileName;
 	savePath << ".xml";
 
 	return savePath.str();
@@ -189,7 +189,7 @@ CurlRequest::CurlRequest()
 }
 
 
-CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async)
+CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async, const std::string& fileName)
 	:	m_Coords(coords),
 		m_Extent(extent),
 		m_Sector(nullptr),
@@ -198,7 +198,7 @@ CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async)
 		m_Async(async)
 
 {
-	m_Filename = BuildXMLPath(0, m_Coords);
+	m_Filename = BuildXMLPath(0, fileName);
 
 }
 

@@ -6,9 +6,7 @@
 #include <glm/gtx/transform.hpp>
 #include <iostream>
 #include "Settings.h"
-#include "LXError.h"
 #include "RenderDataManager.h"
-#include "StringUtils.h"
 
 #pragma region  CLASS_SOURCE Camera
 

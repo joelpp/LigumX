@@ -6,6 +6,8 @@
 
 #define LX_IMGUI_ENABLED
 
+typedef signed __int64 lxInt64;
+
 /*
 	GLOBAL EXTERNAL INCLUDES
 */
@@ -44,6 +46,7 @@
 #include "ImguiHelpers.h"
 
 #include "StringUtils.h"
+#include "VectorUtils.h"
 #include "property.h"
 #include "LXObject.h"
 

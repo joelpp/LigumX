@@ -19,12 +19,14 @@ const ClassPropertyData World::g_Properties[] =
 { "Entities", PIDX_Entities, offsetof(World, m_Entities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, true, 0, 0, 0, 0,}, 
 { "DebugEntities", PIDX_DebugEntities, offsetof(World, m_DebugEntities), 0, LXType_stdvector, sizeof(std::vector<Entity*>), LXType_stdvector, false, LXType_Entity, true, PropertyFlags_Transient, 0, 0, 0,}, 
 { "Sectors", PIDX_Sectors, offsetof(World, m_Sectors), 0, LXType_stdvector, sizeof(std::vector<Sector*>), LXType_stdvector, false, LXType_Sector, true, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "Reset", PIDX_Reset, offsetof(World, m_Reset), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(World, Reset, bool),}, 
 };
 void World::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
 	serializer.SerializeObjectPtr("SunLight", m_SunLight);
 	serializer.SerializeVector("Entities", m_Entities);
+	serializer.SerializeBool("Reset", m_Reset);
 }
 bool World::Serialize(bool writing)
 {
@@ -42,6 +44,7 @@ bool World::ShowPropertyGrid()
 	ImguiHelpers::ShowVector("Entities", m_Entities  );
 	ImguiHelpers::ShowVector("DebugEntities", m_DebugEntities  );
 	ImguiHelpers::ShowVector("Sectors", m_Sectors  );
+	ImguiHelpers::ShowBool("Reset", m_Reset  );
 	return true;
 }
 const char* World::GetTypeName()
@@ -355,4 +358,13 @@ float World::SampleHeight(const glm::vec3& worldPos)
 	}
 
 	return sector->SampleHeight(glm::fract(normalizedPos));
+}
+
+void World::SetReset_Callback(const bool& value)
+{
+	if (value)
+	{
+		ResetSectors();
+		m_Reset = false;
+	}
 }

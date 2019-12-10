@@ -16,6 +16,7 @@
 #include "OSMElementTypeDataStore.h"
 #include "tinyxml2\tinyxml2.h"
 #include "EngineSettings.h"
+#include "VectorUtils.h"
 
 SectorManager* g_SectorManager;
 
@@ -38,6 +39,27 @@ SectorManager::SectorManager(float sectorSize)
     
     iNumSectorsX = iSizeX / (int) m_sectorSize;
     iNumSectorsY = iSizeY / (int) m_sectorSize;
+}
+
+void SectorManager::Reset()
+{
+	for (auto nodeIt = m_AllNodes.begin(); nodeIt != m_AllNodes.end(); ++nodeIt)
+	{
+		Node* node = nodeIt->second;
+
+		delete node;
+	}
+	m_AllNodes.clear();
+	m_AllNodesPtr.clear();
+
+	for (auto wayIt = m_AllWays.begin(); wayIt != m_AllWays.end(); ++wayIt)
+	{
+		Way* way = wayIt->second;
+
+		delete way;
+	}
+	m_AllWays.clear();
+	m_AllWaysPtr.clear();
 }
 
 int SectorManager::getSectorIndex(float x, float y)
@@ -229,12 +251,19 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 		for (int j = 0; j < numSectorsPerSide; ++j)
 		{
 			glm::ivec2 offsets = glm::ivec2(i - offset, j - offset);
-			CurlRequest request = CurlRequest(earthStartCoords - earthExtent * (glm::vec2) offsets, earthExtent, false);
 
 			
-			glm::ivec2 earthIntStartCoords = glm::ivec2(earthStartCoords * glm::vec2(g_EngineSettings->GetOSMQuantizationScale(), g_EngineSettings->GetOSMQuantizationScale()));
+			LXString startCoordsStringX = StringUtils::ToStringPrecise(earthStartCoords.x, 7);
+			LXString startCoordsStringY = StringUtils::ToStringPrecise(earthStartCoords.y, 7);
+			startCoordsStringX = StringUtils::RemoveSubstrings(startCoordsStringX, ".");
+			startCoordsStringY = StringUtils::RemoveSubstrings(startCoordsStringY, ".");
 
+			glm::ivec2 earthIntStartCoords = glm::ivec2(std::atoi(startCoordsStringX.c_str()), std::atoi(startCoordsStringY.c_str()));
+			
 			glm::ivec2 requestedSectorIndex = normalizedSectorIndex + glm::ivec2(offsets);
+
+			std::string fileName = startCoordsStringX + "x" + startCoordsStringY;
+			CurlRequest request = CurlRequest(earthStartCoords - earthExtent * (glm::vec2) offsets, earthExtent, false, fileName);
 			request.SetSectorIndex(requestedSectorIndex);
 
 			Sector* requestSector = world->GetSectorByIndex(requestedSectorIndex);
@@ -287,12 +316,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 	std::fstream logFile("C:/temp/log.txt", std::fstream::out);
 	glm::vec2 gpsScale2 = glm::vec2(g_EngineSettings->GetOSMQuantizationScale(), g_EngineSettings->GetOSMQuantizationScale());
-	glm::ivec2 sectorQuantizedCoordinate = request->GetSector()->GetQuantizedPosition();
+	glm::highp_ivec2 sectorQuantizedCoordinate = glm::highp_ivec2(request->GetSector()->GetQuantizedPosition());
 	glm::vec2 extent2 = glm::vec2(g_EngineSettings->GetExtent(), g_EngineSettings->GetExtent());
 	glm::vec2 sectorQuantizedEarthSize = extent2 * gpsScale2;
 	glm::vec2 worldScale2 = glm::vec2(g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale());
 
-	glm::vec2 sectorWorldPosition = glm::vec2(request->GetSectorIndex()) * extent2;
+	glm::vec2 sectorWorldPosition = glm::vec2(request->GetSectorIndex()) * worldScale2;
 
 	for (tinyxml2::XMLNode* child = docRoot->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
 	{
@@ -306,6 +335,45 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 		{
 			const std::string& id = child->ToElement()->Attribute("id");
 
+			std::vector<std::string> debugNodeID = 
+			{
+				"1957579344",
+				//"1957579363",
+				//"1957579303",
+				//"1957579235",
+				//"1957579147",
+				//"1957579118",
+				//"1957579060",
+				//"1957578945",
+				//"1957578841",
+				//"1957578813",
+				//"1957578797",
+				//"1957578704",
+				//"1957578527",
+				//"1957578270",
+				//"1957710804",
+				//"1957577978",
+				//"1957577918",
+				//"1957577826",
+				//"1957577576",
+				//"1957577446",
+				//"1957577248",
+				//"1957576879",
+				//"1957576710",
+				//"1957576657",
+				//"1957576515",
+				//"1957576373",
+				//"1957576279",
+				//"1957576136",
+				//"1957575999",
+				//"1957575876",
+			};
+			bool isDebugNode = VectorUtils::Contains(debugNodeID, id);
+			if (!isDebugNode)
+			{
+				//continue;
+			}
+
 			if (m_AllNodes.find(id) != m_AllNodes.end())
 			{
 				continue;
@@ -315,42 +383,50 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			float latitude = 0.f;//(float)atof(child->ToElement()->Attribute("lat"));
 
 			Node* node = new Node(id, longitude, latitude);
-			node->SetOSMId(std::atol(id.c_str()));
+			node->SetOSMId(StringUtils::ToInt64(id));
 
-#if 1
 			std::string longitudeString(child->ToElement()->Attribute("lon"));
 			std::string latitudeString(child->ToElement()->Attribute("lat"));
+
+			if (isDebugNode)
+			{
+				//latitudeString = "48.2312192";
+			}
 
 			std::string quantizedLongitudeString = StringUtils::RemoveSubstrings(longitudeString, ".");
 			std::string quantizedLatitudeString = StringUtils::RemoveSubstrings(latitudeString, ".");
 
-			int iLong = std::atoi(quantizedLongitudeString.c_str());
-			int iLat = std::atoi(quantizedLatitudeString.c_str());
+			lxInt64 iLong = StringUtils::ToInt64(quantizedLongitudeString.c_str());
+			lxInt64 iLat = StringUtils::ToInt64(quantizedLatitudeString.c_str());
 
-			glm::ivec2 sectorQuantizedPosition = glm::ivec2(sectorQuantizedCoordinate);
-			glm::ivec2 iSector = glm::ivec2(iLong, iLat) - glm::ivec2(sectorQuantizedPosition);
+			glm::highp_ivec2 nodeSectorQuantizedCoordinates = glm::highp_ivec2(sectorQuantizedCoordinate);
 
+			glm::highp_ivec2 iSector = glm::highp_ivec2(iLong, iLat) - nodeSectorQuantizedCoordinates;
+
+			glm::ivec2 sectorIndex(0, 0);
+			//if (iSector.x < 0)
+			//{
+			//	int mul = (int)(iSector.x / sectorQuantizedEarthSize.x) - 1;
+			//	float ceil = abs(mul * sectorQuantizedEarthSize.x);
+			//	iSector.x = ceil - abs(iSector.x);
+			//	sectorIndex.x = mul;
+			//}
+
+			//if (iSector.y < 0)
+			//{
+			//	int mul = (int)(iSector.y / sectorQuantizedEarthSize.y - 1);
+			//	float ceil = abs(mul * sectorQuantizedEarthSize.y);
+			//	iSector.y = ceil - iSector.y;
+			//	sectorIndex.y = mul;
+			//}
 
 			glm::vec2 f01Sector = glm::vec2(iSector) / sectorQuantizedEarthSize;
-			glm::vec2 worldPos = f01Sector * worldScale2;
-			//glm::ivec2 earthQuantizedPosition = glm::ivec2(glm::vec2(longitude, latitude) * gpsScale2);
-			//node->SetQuantizedEarthPosition(earthQuantizedPosition);
-			node->SetQuantizedSectorPosition(iSector);
+
+			glm::vec2 worldPos = sectorWorldPosition + f01Sector * worldScale2;
+
+			node->SetQuantizedSectorPosition(glm::ivec2(iSector));
 			node->SetSectorRelativePosition(f01Sector);
-
-			//glm::vec2 worldPos = Sector::EarthToWorld(node->getLatLong());
-			//glm::vec2 worldPos = glm::vec2(node->GetQuantizedSectorPosition()) / glm::vec2(sectorQuantizedEarthSize);
-			//worldPos *= worldScale2;
-#else
-			glm::vec2 longLat(longitude, latitude);
-
-			glm::vec2 osmDelta = (longLat - request->GetCoords());
-
-			glm::vec2 normalizedSectorLongLat = osmDelta / extent2;
-			glm::ivec2 sectorQuantizedPosition = glm::ivec2(normalizedSectorLongLat * sectorQuantizedEarthSize);
-			glm::vec2 worldPos = glm::vec2(request->GetSectorIndex()) + normalizedSectorLongLat;
-			worldPos *= worldScale2;
-#endif
+			node->SetSectorIndex(sectorIndex);
 
 			for (tinyxml2::XMLNode* tag = child->FirstChildElement(); tag != NULL; tag = tag->NextSiblingElement())
 			{
@@ -391,12 +467,12 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			m_AllNodes.emplace(id, node);
 
-			long int intID = StringUtils::ToLong(id);
+			lxInt64 intID = StringUtils::ToInt64(id);
 
 			if (intID == 2147483647)
 			{
 				std::string newid = id.substr(3, id.size());
-				intID = StringUtils::ToLong(newid);
+				intID = StringUtils::ToInt64(newid);
 			}
 
 			sector->m_Data->m_AllNodesPtr[intID] = node;
@@ -414,8 +490,15 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 				continue;
 			}
 
+			std::vector<std::string> debugUniqueWays = { "185200807" };
+			bool isDebugWay = false;
+			if ((debugUniqueWays.size() > 0) && (VectorUtils::Contains(debugUniqueWays, id)))
+			{
+				isDebugWay = true;
+			}
+
 			Way* way = new Way(id);
-			way->SetOSMId(std::atol(id.c_str()));
+			way->SetOSMId(StringUtils::ToInt64(id.c_str()));
 
 			for (tinyxml2::XMLNode* way_child = child->FirstChildElement(); way_child != NULL; way_child = way_child->NextSiblingElement())
 			{
@@ -491,7 +574,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			m_AllWays.emplace(id, way);
 
-			long intID = StringUtils::ToLong(id);
+			lxInt64 intID = StringUtils::ToInt64(id);
 			way->SetIndexInSector((int)request->GetSector()->m_Data->m_AllWaysPtr.size());
 			request->GetSector()->m_Data->m_AllWaysPtr[intID] = way;
 			m_AllWaysPtr[intID] = way;
@@ -550,7 +633,7 @@ Node* SectorManager::GetClosestNode(glm::vec2 wsPosition, bool searchOnlyWithinS
 
 	Node* toReturn = nullptr;
 
-	std::map<long, Node*>* allNodesPtr = &m_AllNodesPtr;
+	std::map<lxInt64, Node*>* allNodesPtr = &m_AllNodesPtr;
 
 	if (searchOnlyWithinSector)
 	{

@@ -144,34 +144,39 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 		else
 		{
 			node = g_SectorManager->GetClosestNode(glm::vec2(m_WorldSpacePosition), m_SearchOnlyWithinSector);
-			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
-		}
 
+			if (node)
+			{
+				g_DefaultObjects->DefaultManipulatorEntity->SetPosition(node->GetWorldPosition());
+			}
+		}
 
 		m_SelectedNode = node;
 
-
-		for (Way* newWay : m_SelectedNode->GetWays())
+		if (m_SelectedNode)
 		{
-			bool found = false;
-			for (Way* oldWay : m_SelectedWays)
+			for (Way* newWay : m_SelectedNode->GetWays())
 			{
-				if (newWay == oldWay)
+				bool found = false;
+				for (Way* oldWay : m_SelectedWays)
 				{
-					found = true;
-					break;
+					if (newWay == oldWay)
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if (!newWay->GetName().empty())
+				{
+					g_RenderDataManager->AddMouseMessage(newWay->GetName().c_str());
 				}
 			}
 
-			if (!newWay->GetName().empty())
-			{
-				g_RenderDataManager->AddMouseMessage(newWay->GetName().c_str());
-			}
+			m_SelectedWays = std::vector<Way*>(m_SelectedNode->GetWays());
+			m_SelectedSectorIndex = normalizedSectorIndex;
 		}
 
-		m_SelectedWays = std::vector<Way*>(m_SelectedNode->GetWays());
-
-		m_SelectedSectorIndex = normalizedSectorIndex;
 		return true;
 
 	}
@@ -232,4 +237,12 @@ void OSMTool::DebugDisplay()
 		}
 	
 	}
+}
+
+void OSMTool::Reset()
+{
+	m_SelectedWays.clear();
+	m_SelectedNode = nullptr;
+	m_SelectedSectorIndex = glm::ivec2(0, 0);
+	m_WorldSpacePosition = glm::vec3(0, 0, 0);
 }

@@ -79,7 +79,7 @@ virtual const char* GetTypeName();
 #pragma endregion  HEADER CurlRequest
 
 CurlRequest();
-CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async);
+CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async, const std::string& fileName);
 
 void Execute();
 

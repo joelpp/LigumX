@@ -182,9 +182,9 @@ int StringUtils::ToInt(const std::string& str)
 	return std::atoi(str.c_str());
 }
 
-long int StringUtils::ToLong(const std::string& str)
+lxInt64 StringUtils::ToInt64(const std::string& str)
 {
-	return std::atol(str.c_str());
+	return std::atoll(str.c_str());
 }
 
 
@@ -235,4 +235,12 @@ std::string StringUtils::Format(const std::string fmt_str, ...)
 			break;
 	}
 	return std::string(formatted.get());
+}
+
+std::string StringUtils::ToStringPrecise(const float a_value, const int n)
+{
+	std::ostringstream out;
+	out.precision(n);
+	out << std::fixed << a_value;
+	return out.str();
 }

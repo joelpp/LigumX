@@ -117,7 +117,7 @@ public:
 	void SerializeBool(const std::string& varName, bool& variable);
 	void SerializeFloat(const std::string& varName, float& variable);
 	void SerializeInt(const std::string& varName, int& variable);
-	void SerializeLong(const std::string& varName, long int& variable);
+	void SerializeInt64(const std::string& varName, lxInt64& variable);
 
 	void SerializeString(const std::string& varName, std::string& variable);
 

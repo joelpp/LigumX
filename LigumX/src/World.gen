@@ -9,4 +9,7 @@ class World
 
 	[transient]
 	std::vector<Sector*> Sectors;
+
+	[setcallback]
+	bool Reset = false;
 }

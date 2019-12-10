@@ -32,7 +32,7 @@ public:
     std::unordered_map<std::string, Way*> ways;
     std::unordered_map<std::string, Way*> contourWays;
   	std::unordered_map<std::string, Node*> nodes;
-	std::map<long int, Node*> m_AllNodesPtr;
+	std::map<lxInt64, Node*> m_AllNodesPtr;
 
   	std::unordered_map<int, std::unordered_map<std::string, Way*> > waysMap;
 	WayTypeMap m_wayTypeMap;

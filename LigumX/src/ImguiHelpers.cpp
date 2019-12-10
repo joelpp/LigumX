@@ -20,17 +20,17 @@ bool ImguiHelpers::ShowInt(LXString& name, int& value, int min, int max)
 	return ShowInt(name.c_str(), value, min, max);
 }
 
-bool ImguiHelpers::ShowLong(const char* name, long& value, long min, long max)
+bool ImguiHelpers::ShowInt64(const char* name, lxInt64& value, long min, long max)
 {
 	// todo fix this...
 	std::string val = std::to_string(value);
-	return ShowRawString(val);
+	return ImguiHelpers::ShowString(name, val);
 	//return ImGui::DragInt(name, (int*)&value, 1.f, min, max);
 }
 
-bool ImguiHelpers::ShowLong(LXString& name, long& value, long min, long max)
+bool ImguiHelpers::ShowInt64(LXString& name, lxInt64& value, long min, long max)
 {
-	return ShowLong(name.c_str(), value, min, max);
+	return ShowInt64(name.c_str(), value, min, max);
 }
 
 bool ImguiHelpers::ShowIVec2(const char* name, glm::ivec2& value, int min, int max)

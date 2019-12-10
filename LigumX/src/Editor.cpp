@@ -546,8 +546,8 @@ bool Editor::ShowEditableProperty(int* ptr, const char* name)
 	return changed;
 }
 
-template <typename T>
-bool Editor::ShowProperty(std::map<int, char*>* map, const char* name)
+template <typename T, typename U>
+bool Editor::ShowProperty(std::map<U, char*>* map, const char* name)
 {
 	ImGui::PushID(name);
 	if (ImGui::TreeNode(name))
@@ -565,28 +565,8 @@ bool Editor::ShowProperty(std::map<int, char*>* map, const char* name)
 	return false;
 }
 
-template <typename T>
-bool Editor::ShowProperty(std::map<int, T*>* map, const char* name)
-{
-	ImGui::PushID(name);
-	if (ImGui::TreeNode(name))
-	{
-		for (auto it = map->begin(); it != map->end(); ++it)
-		{
-			T* obj = (T*)it->second;
-			std::string label = obj->GetName() + " [" + std::to_string(it->first) + "]";
-			ShowPropertyGridTemplate(obj, label.c_str());
-		}
-		ImGui::TreePop();
-	}
-	ImGui::PopID();
-
-	return false;
-
-}
-
-template <typename T>
-bool Editor::ShowProperty(std::unordered_map<int, char*>* map, const char* name)
+template <typename T, typename U>
+bool Editor::ShowProperty(std::map<U, T*>* map, const char* name)
 {
 	ImGui::PushID(name);
 	if (ImGui::TreeNode(name))
@@ -605,8 +585,28 @@ bool Editor::ShowProperty(std::unordered_map<int, char*>* map, const char* name)
 
 }
 
-template <typename T>
-bool Editor::ShowProperty(std::unordered_map<int, T*>* map, const char* name)
+template <typename T, typename U>
+bool Editor::ShowProperty(std::unordered_map<U, char*>* map, const char* name)
+{
+	ImGui::PushID(name);
+	if (ImGui::TreeNode(name))
+	{
+		for (auto it = map->begin(); it != map->end(); ++it)
+		{
+			T* obj = (T*)it->second;
+			std::string label = obj->GetName() + " [" + std::to_string(it->first) + "]";
+			ShowPropertyGridTemplate(obj, label.c_str());
+		}
+		ImGui::TreePop();
+	}
+	ImGui::PopID();
+
+	return false;
+
+}
+
+template <typename T, typename U>
+bool Editor::ShowProperty(std::unordered_map<U, T*>* map, const char* name)
 {
 	ImGui::PushID(name);
 	if (ImGui::TreeNode(name))
@@ -1251,7 +1251,15 @@ void Editor::TrySaveObject(T* object)
 	}
 }
 
-
+void Editor::ResetWorld()
+{
+	for (EditorTool* tool : m_Tools)
+	{
+		tool->Reset();
+	}
+	LigumX::GetInstance().GetWorld()->ResetSectors();
+	g_SectorManager->Reset();
+}
 
 void Editor::RenderImgui()
 {
@@ -1272,11 +1280,7 @@ void Editor::RenderImgui()
 		{
 			if (ImGui::MenuItem("Reset World"))
 			{
-				LigumX::GetInstance().ResetWorld();
-			}
-			if (ImGui::MenuItem("Reset Sectors"))
-			{
-				LigumX::GetInstance().GetWorld()->ResetSectors();
+				ResetWorld();
 			}
 			if (ImGui::MenuItem("Save Editor"))
 			{
@@ -1444,9 +1448,7 @@ void Editor::RenderImgui()
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");
 		SectorTool* sectorTool = GetSectorTool();
-
-		ShowPropertyGridObject(sectorTool, "Sector Tool");
-
+		sectorTool->ShowPropertyGrid();
 		g_GUI->EndWindow();
 	}
 
@@ -1475,7 +1477,8 @@ void Editor::RenderImgui()
 		g_GUI->BeginWindow(1000, 700, 0, 0, "OSM Tool");
 
 		OSMTool* osmTool = GetOSMTool();
-		ShowPropertyGridObject(osmTool, "OSM Tool");
+		//ShowPropertyGridObject(osmTool, "OSM Tool");
+		osmTool->ShowPropertyGrid();
 
 		{
 			const char* name = "Display Toggles";

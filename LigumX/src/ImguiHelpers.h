@@ -98,8 +98,8 @@ namespace ImguiHelpers
 	bool ShowInt(const char* name, int& value, int min, int max);
 	bool ShowInt(LXString& name, int& value, int min, int max);
 
-	bool ShowLong(const char* name, long& value, long min, long max);
-	bool ShowLong(LXString& name, long& value, long min, long max);
+	bool ShowInt64(const char* name, lxInt64& value, long min, long max);
+	bool ShowInt64(LXString& name, lxInt64& value, long min, long max);
 
 	bool ShowIVec2(const char* name, glm::ivec2& value, int min, int max);
 	bool ShowIVec2(LXString& name, glm::ivec2& value, int min, int max);

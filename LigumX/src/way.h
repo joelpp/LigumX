@@ -26,8 +26,8 @@ static const LXType Type = LXType_Way;
 static constexpr const char* ClassName = "Way";
 typedef OSMElement super;
 
-int GetOSMId() { return m_OSMId; }; 
-void SetOSMId(int value) { m_OSMId = value; }; 
+const lxInt64& GetOSMId() { return m_OSMId; }; 
+void SetOSMId(lxInt64 value) { m_OSMId = value; }; 
 std::vector<Node*>& GetNodes() { return m_Nodes; }; 
 void SetNodes(std::vector<Node*> value) { m_Nodes = value; }; 
 void AddTo_Nodes(Node* value) { m_Nodes.push_back(value); };
@@ -41,7 +41,7 @@ const std::string& GetAllTags() { return m_AllTags; };
 void SetAllTags(std::string value) { m_AllTags = value; }; 
 void AddTo_AllTags(std::string value) { m_AllTags += value; };
 private:
-int m_OSMId = 0;
+lxInt64 m_OSMId;
 std::vector<Node*> m_Nodes;
 OSMElementType m_OSMElementType = OSMElementType_Unknown;
 int m_IndexInSector = 0;

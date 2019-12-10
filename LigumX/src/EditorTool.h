@@ -40,6 +40,8 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER EditorTool
 
+virtual void Reset() { };
+
 virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 	return false;

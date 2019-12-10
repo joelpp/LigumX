@@ -23,8 +23,8 @@ static const LXType Type = LXType_Node;
 static constexpr const char* ClassName = "Node";
 typedef OSMElement super;
 
-const long& GetOSMId() { return m_OSMId; }; 
-void SetOSMId(long value) { m_OSMId = value; }; 
+const lxInt64& GetOSMId() { return m_OSMId; }; 
+void SetOSMId(lxInt64 value) { m_OSMId = value; }; 
 glm::vec2& GetLongLat() { return m_LongLat; }; 
 void SetLongLat(const glm::vec2& value) { m_LongLat = value; }; 
 glm::vec3& GetWorldPosition() { return m_WorldPosition; }; 
@@ -45,7 +45,7 @@ void SetQuantizedEarthPosition(const glm::ivec2& value) { m_QuantizedEarthPositi
 glm::ivec2& GetQuantizedSectorPosition() { return m_QuantizedSectorPosition; }; 
 void SetQuantizedSectorPosition(const glm::ivec2& value) { m_QuantizedSectorPosition = value; }; 
 private:
-long m_OSMId;
+lxInt64 m_OSMId;
 glm::vec2 m_LongLat = glm::vec2(0, 0);
 glm::vec3 m_WorldPosition = glm::vec3(0, 0, 0);
 float m_Elevation = 0.f;

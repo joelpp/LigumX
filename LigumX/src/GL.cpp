@@ -187,6 +187,7 @@ const GLPixelFormat Indirection_GLPixelFormat[] =
 
 
 
+
 bool GL::g_CheckGLErrors = false;
 
 void GL::SetDepthFunction(GL::DepthFunction func)

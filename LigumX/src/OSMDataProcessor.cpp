@@ -673,7 +673,10 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
 	{
 		Node* node = *nodeIt;
-		const glm::vec3& nodePos = glm::vec3(node->GetSectorRelativePosition(), 0.f);
+		const glm::vec2& sectorRelativePosition = node->GetSectorRelativePosition();
+
+		glm::vec2 p = sectorRelativePosition - glm::vec2(sector->GetOffsetIndex());
+		const glm::vec3& nodePos = glm::vec3(p, 0.f);
 		realNodeWorldPositions.push_back(nodePos);
 	}
 
@@ -700,6 +703,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 	}
 
 
+	nodeMeshWorldPositions.push_back(realNodeWorldPositions[realNodeWorldPositions.size() - 1]);
 
 
 	int maxIndex = (int)99999999999;
@@ -711,9 +715,12 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 			break;
 		}
 
-
-		const glm::vec3& prevPos = nodeMeshWorldPositions[i - 1];
 		const glm::vec3& nodePos = nodeMeshWorldPositions[i];
+		glm::vec3 prevPos = nodePos;
+		if (i > 0)
+		{
+			prevPos = nodeMeshWorldPositions[i - 1];
+		}
 
 		glm::vec3 nextPos = nodePos;
 		if (i < nodeMeshWorldPositions.size() - 1)
@@ -727,14 +734,17 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		float prevDistance = glm::length(prevSegment);
 		float distance = glm::length(segment);
 
-		if (distance == 0.f)
-		{
-			continue;
-		}
+
 		glm::vec3 prevDirection = glm::normalize(prevSegment);
 		glm::vec3 prevRight = glm::cross(prevDirection, up);
 
-		glm::vec3 direction = glm::normalize(segment);
+		glm::vec3 direction = prevDirection;
+		
+		if (i != nodeMeshWorldPositions.size() - 1)
+		{
+			direction = glm::normalize(segment);
+		}
+
 		glm::vec3 right = glm::cross(direction, up);
 
 		// width of road?
@@ -809,6 +819,8 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 	for (glm::vec3& vertex : vertices)
 	{
 		vertex *= glm::vec3(worldScale2, 1.f);
+		vertex += glm::vec3(sector->GetWorldPosition(), 0.f);
+		vertex += 0.f;
 	}
 
 	if (vertices.size() > 0)

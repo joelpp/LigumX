@@ -194,15 +194,21 @@ glm::ivec2 Sector::GetNormalizedSectorIndex(const glm::vec2& position)
 	return normalizedSectorIndex;
 }
 
+glm::vec2 Sector::GetStartPosition(glm::vec2 position, glm::ivec2 sectorIndex)
+{
+	glm::dvec2 startCoords = glm::dvec2(g_EngineSettings->GetStartLonLat());
+	glm::dvec2 extent = glm::dvec2((double)g_EngineSettings->GetExtent());
+
+	glm::ivec2 normalizedSectorIndex = sectorIndex;
+	startCoords += extent * (glm::dvec2)normalizedSectorIndex;
+
+	return glm::vec2(startCoords);
+}
+
 glm::vec2 Sector::GetStartPosition(glm::vec2 position)
 {
-	glm::vec2 startCoords = g_EngineSettings->GetStartLonLat();
-	glm::vec2 extent = glm::vec2(g_EngineSettings->GetExtent());
-
 	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(position);
-	startCoords += extent * (glm::vec2)normalizedSectorIndex;
-
-	return startCoords;
+	return GetStartPosition(position, normalizedSectorIndex);
 }
 
 

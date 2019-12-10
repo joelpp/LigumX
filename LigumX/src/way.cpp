@@ -11,7 +11,7 @@
 #include "Node.h"
 const ClassPropertyData Way::g_Properties[] = 
 {
-{ "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
+{ "OSMId", PIDX_OSMId, offsetof(Way, m_OSMId), 0, LXType_Object, sizeof(lxInt64), LXType_lxInt64, false, LXType_None, false, 0, LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX, 0,}, 
 { "Nodes", PIDX_Nodes, offsetof(Way, m_Nodes), 0, LXType_stdvector, sizeof(std::vector<Node*>), LXType_stdvector, false, LXType_Node, true, 0, 0, 0, 0,}, 
 { "OSMElementType", PIDX_OSMElementType, offsetof(Way, m_OSMElementType), 0, LXType_Object, sizeof(OSMElementType), LXType_OSMElementType, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "IndexInSector", PIDX_IndexInSector, offsetof(Way, m_IndexInSector), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
@@ -21,7 +21,7 @@ const ClassPropertyData Way::g_Properties[] =
 void Way::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeInt("OSMId", m_OSMId);
+	serializer.SerializeInt64("OSMId", m_OSMId);
 	serializer.SerializeVector("Nodes", m_Nodes);
 	serializer.SerializeInt("IndexInSector", m_IndexInSector);
 	serializer.SerializeBool("FilledIn", m_FilledIn);
@@ -38,7 +38,7 @@ bool Way::Serialize(bool writing)
 bool Way::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowInt("OSMId", m_OSMId , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowInt64("OSMId", m_OSMId , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
 	ImguiHelpers::ShowVector("Nodes", m_Nodes  );
 	ImguiHelpers::ShowInt("IndexInSector", m_IndexInSector , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowBool("FilledIn", m_FilledIn  );

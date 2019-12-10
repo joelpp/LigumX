@@ -7,7 +7,7 @@
 #include "Way.h"
 const ClassPropertyData Node::g_Properties[] = 
 {
-{ "OSMId", PIDX_OSMId, offsetof(Node, m_OSMId), 0, LXType_Object, sizeof(long), LXType_long, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "OSMId", PIDX_OSMId, offsetof(Node, m_OSMId), 0, LXType_Object, sizeof(lxInt64), LXType_lxInt64, false, LXType_None, false, 0, LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX, 0,}, 
 { "LongLat", PIDX_LongLat, offsetof(Node, m_LongLat), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "WorldPosition", PIDX_WorldPosition, offsetof(Node, m_WorldPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Elevation", PIDX_Elevation, offsetof(Node, m_Elevation), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
@@ -21,7 +21,7 @@ const ClassPropertyData Node::g_Properties[] =
 void Node::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeLong("OSMId", m_OSMId);
+	serializer.SerializeInt64("OSMId", m_OSMId);
 	serializer.SerializeVec2("LongLat", m_LongLat);
 	serializer.SerializeVec3("WorldPosition", m_WorldPosition);
 	serializer.SerializeFloat("Elevation", m_Elevation);
@@ -43,7 +43,7 @@ bool Node::Serialize(bool writing)
 bool Node::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowLong("OSMId", m_OSMId , 0, 0 );
+	ImguiHelpers::ShowInt64("OSMId", m_OSMId , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
 	ImguiHelpers::ShowVec2("LongLat", m_LongLat , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowVec3("WorldPosition", m_WorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowFloat("Elevation", m_Elevation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );

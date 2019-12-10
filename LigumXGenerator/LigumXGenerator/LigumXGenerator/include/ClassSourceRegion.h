@@ -30,7 +30,7 @@ bool VarTypeSupportsLimits(const Variable& var)
 {
 	const std::string& varType = var.GetType();
 	return (varType == "int")
-		|| (varType == "long")
+		|| (varType == "lxInt64")
 		|| (varType == "float")
 		|| (varType == "double")
 		|| (var.IsGLMType());

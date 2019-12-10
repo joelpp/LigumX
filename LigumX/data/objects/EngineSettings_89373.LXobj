@@ -5,10 +5,10 @@ EngineSettings
 WorldScale
 100
 StartLonLat
--79.009740
-48.227873
+-79.01
+48.23
 Extent
-0.01135
+0.001
 GenerateFlatTerrain
 1
 MessagesStartingPosition
@@ -27,3 +27,4 @@ LoadOSMData
 1
 TerrainTiling
 32
+Extent

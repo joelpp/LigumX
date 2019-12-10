@@ -73,7 +73,7 @@ enum LXType
 	LXType_glmvec3,
 	LXType_glmvec4,
 	LXType_int,
-	LXType_long,
+	LXType_lxInt64,
 	LXType_stdstring,
 	LXType_stdvector,
 	LXType_char,

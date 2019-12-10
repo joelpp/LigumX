@@ -1,6 +1,6 @@
 class Node : OSMElement
 {
-	long OSMId;
+	lxInt64 OSMId;
 	glm::vec2 LongLat;
 	glm::vec3 WorldPosition;
 	float Elevation;

@@ -185,7 +185,7 @@ void Serializer2::SerializeInt(const std::string& varName, int& variable)
 	}
 }
 
-void Serializer2::SerializeLong(const std::string& varName, long int& variable)
+void Serializer2::SerializeInt64(const std::string& varName, lxInt64& variable)
 {
 	if (m_Writing)
 	{
@@ -195,7 +195,7 @@ void Serializer2::SerializeLong(const std::string& varName, long int& variable)
 	{
 		FIND_VARIABLE_SIZE(1);
 
-		int val = StringUtils::ToLong(serializerVariable.GetValues()[0]);
+		lxInt64 val = StringUtils::ToInt64(serializerVariable.GetValues()[0]);
 		variable = val;
 	}
 }

@@ -114,6 +114,8 @@ void Initialize();
 void RenderPicking();
 void ApplyTool();
 
+void ResetWorld();
+
 void UpdateManipulator();
 void UpdateTerrainEditor();
 void UpdateSectorLoader();
@@ -192,17 +194,17 @@ bool ShowProperty(glm::vec2* value, const char* name, float min, float max);
 bool ShowProperty(glm::ivec2* value, const char* name, float min, float max);
 bool ShowProperty(std::string* value, const char* name);
 
-template <typename T>
-bool ShowProperty(std::map<int, char *>* map, const char* name);
+template <typename T, typename U>
+bool ShowProperty(std::map<U, char *>* map, const char* name);
 
-template <typename T>
-bool ShowProperty(std::map<int, T*>* map, const char* name);
+template <typename T, typename U>
+bool ShowProperty(std::map<U, T*>* map, const char* name);
 
-template <typename T>
-bool ShowProperty(std::unordered_map<int, char *>* map, const char* name);
+template <typename T, typename U>
+bool ShowProperty(std::unordered_map<U, char *>* map, const char* name);
 
-template <typename T>
-bool ShowProperty(std::unordered_map<int, T*>* map, const char* name);
+template <typename T, typename U>
+bool ShowProperty(std::unordered_map<U, T*>* map, const char* name);
 
 bool ShowEditableProperty(int* value, const char* name);
 void BackupData();
