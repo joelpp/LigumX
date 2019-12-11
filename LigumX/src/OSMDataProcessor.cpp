@@ -676,7 +676,9 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		const glm::vec2& sectorRelativePosition = node->GetSectorRelativePosition();
 
 		glm::vec2 p = sectorRelativePosition - glm::vec2(sector->GetOffsetIndex());
-		const glm::vec3& nodePos = glm::vec3(p, 0.f);
+		//const glm::vec3& nodePos = glm::vec3(p, 0.f);
+
+		glm::vec3 nodePos = node->GetWorldPosition();
 		realNodeWorldPositions.push_back(nodePos);
 	}
 
@@ -748,8 +750,8 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		glm::vec3 right = glm::cross(direction, up);
 
 		// width of road?
-		float offset = m_RoadWidth / (worldScale * worldScale);
-		float prevOffset = m_RoadWidth / (worldScale * worldScale);
+		float offset = m_RoadWidth / (worldScale);
+		float prevOffset = m_RoadWidth / (worldScale);
 		prevDirection *= prevDistance;
 		direction *= distance;
 
@@ -818,8 +820,8 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 
 	for (glm::vec3& vertex : vertices)
 	{
-		vertex *= glm::vec3(worldScale2, 1.f);
-		vertex += glm::vec3(sector->GetWorldPosition(), 0.f);
+		//vertex *= glm::vec3(worldScale2, 1.f);
+		//vertex += glm::vec3(sector->GetWorldPosition(), 0.f);
 		vertex += 0.f;
 	}
 
