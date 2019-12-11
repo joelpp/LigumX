@@ -44,6 +44,8 @@ glm::ivec2& GetQuantizedEarthPosition() { return m_QuantizedEarthPosition; };
 void SetQuantizedEarthPosition(const glm::ivec2& value) { m_QuantizedEarthPosition = value; }; 
 glm::ivec2& GetQuantizedSectorPosition() { return m_QuantizedSectorPosition; }; 
 void SetQuantizedSectorPosition(const glm::ivec2& value) { m_QuantizedSectorPosition = value; }; 
+glm::highp_ivec2& GetHighPrecisionEarthCoordinates() { return m_HighPrecisionEarthCoordinates; }; 
+void SetHighPrecisionEarthCoordinates(const glm::highp_ivec2& value) { m_HighPrecisionEarthCoordinates = value; }; 
 private:
 lxInt64 m_OSMId;
 glm::vec2 m_LongLat = glm::vec2(0, 0);
@@ -55,8 +57,9 @@ glm::vec2 m_SectorOffset = glm::vec2(0, 0);
 glm::vec2 m_SectorRelativePosition = glm::vec2(0, 0);
 glm::ivec2 m_QuantizedEarthPosition = glm::ivec2(0, 0);
 glm::ivec2 m_QuantizedSectorPosition = glm::ivec2(0, 0);
+glm::highp_ivec2 m_HighPrecisionEarthCoordinates = glm::highp_ivec2(0, 0);
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_NodePIDX
@@ -71,6 +74,7 @@ PIDX_SectorOffset,
 PIDX_SectorRelativePosition,
 PIDX_QuantizedEarthPosition,
 PIDX_QuantizedSectorPosition,
+PIDX_HighPrecisionEarthCoordinates,
 };
 void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);

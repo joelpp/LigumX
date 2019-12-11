@@ -122,6 +122,7 @@ public:
 	void SerializeString(const std::string& varName, std::string& variable);
 
 	void SerializeIVec2(const std::string& varName, glm::ivec2& variable);
+	void SerializeHighp_IVec2(const std::string& varName, glm::highp_ivec2 & variable);
 	void SerializeIVec3(const std::string& varName, glm::ivec3& variable);
 
 	void SerializeVec2(const std::string& varName, glm::vec2& variable);

@@ -12,4 +12,6 @@ class Node : OSMElement
 
 	glm::ivec2 QuantizedEarthPosition;
 	glm::ivec2 QuantizedSectorPosition;
+
+	glm::highp_ivec2 HighPrecisionEarthCoordinates;
 }

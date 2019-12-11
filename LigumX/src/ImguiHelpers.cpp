@@ -1,4 +1,5 @@
 #include "ImguiHelpers.h"
+#include <glm/gtx/string_cast.hpp>
 
 bool ImguiHelpers::ShowBool(const char* name, bool& value)
 {
@@ -43,6 +44,16 @@ bool ImguiHelpers::ShowIVec2(LXString& name, glm::ivec2& value, int min, int max
 	return ShowIVec2(name.c_str(), value, min, max);
 }
 
+bool ImguiHelpers::ShowHighp_IVec2(const char* name, glm::highp_ivec2& value, int min, int max)
+{
+	std::string val = std::to_string(value.x) + " " + std::to_string(value.y);
+	return ImguiHelpers::ShowString(name, val);
+}
+
+bool ImguiHelpers::ShowHighp_IVec2(LXString& name, glm::highp_ivec2& value, int min, int max)
+{
+	return ShowHighp_IVec2(name.c_str(), value, min, max);
+}
 
 bool ImguiHelpers::ShowFloat(const char* name, float& value, float min, float max)
 {

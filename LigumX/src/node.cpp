@@ -17,6 +17,7 @@ const ClassPropertyData Node::g_Properties[] =
 { "SectorRelativePosition", PIDX_SectorRelativePosition, offsetof(Node, m_SectorRelativePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "QuantizedEarthPosition", PIDX_QuantizedEarthPosition, offsetof(Node, m_QuantizedEarthPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "QuantizedSectorPosition", PIDX_QuantizedSectorPosition, offsetof(Node, m_QuantizedSectorPosition), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
+{ "HighPrecisionEarthCoordinates", PIDX_HighPrecisionEarthCoordinates, offsetof(Node, m_HighPrecisionEarthCoordinates), 0, LXType_glmhighp_ivec2, sizeof(glm::highp_ivec2), LXType_glmhighp_ivec2, false, LXType_None, false, 0, LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX, 0,}, 
 };
 void Node::Serialize(Serializer2& serializer)
 {
@@ -31,6 +32,7 @@ void Node::Serialize(Serializer2& serializer)
 	serializer.SerializeVec2("SectorRelativePosition", m_SectorRelativePosition);
 	serializer.SerializeIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition);
 	serializer.SerializeIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition);
+	serializer.SerializeHighp_IVec2("HighPrecisionEarthCoordinates", m_HighPrecisionEarthCoordinates);
 }
 bool Node::Serialize(bool writing)
 {
@@ -53,6 +55,7 @@ bool Node::ShowPropertyGrid()
 	ImguiHelpers::ShowVec2("SectorRelativePosition", m_SectorRelativePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowHighp_IVec2("HighPrecisionEarthCoordinates", m_HighPrecisionEarthCoordinates , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
 	return true;
 }
 const char* Node::GetTypeName()

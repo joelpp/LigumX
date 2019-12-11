@@ -401,7 +401,10 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			glm::highp_ivec2 nodeSectorQuantizedCoordinates = glm::highp_ivec2(sectorQuantizedCoordinate);
 
-			glm::highp_ivec2 iSector = glm::highp_ivec2(iLong, iLat) - nodeSectorQuantizedCoordinates;
+			glm::highp_ivec2 longLat64 = glm::highp_ivec2(iLong, iLat);
+			node->SetHighPrecisionEarthCoordinates(longLat64);
+
+			glm::highp_ivec2 iSector = longLat64 - nodeSectorQuantizedCoordinates;
 
 			glm::ivec2 sectorIndex(0, 0);
 			//if (iSector.x < 0)

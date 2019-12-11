@@ -104,6 +104,9 @@ namespace ImguiHelpers
 	bool ShowIVec2(const char* name, glm::ivec2& value, int min, int max);
 	bool ShowIVec2(LXString& name, glm::ivec2& value, int min, int max);
 
+	bool ShowHighp_IVec2(LXString& name, glm::highp_ivec2& value, int min, int max);
+	bool ShowHighp_IVec2(const char* name, glm::highp_ivec2& value, int min, int max);
+
 	bool ShowFloat(const char* name, float& value, float min, float max);
 	bool ShowFloat(LXString& name, float& value, float min, float max);
 

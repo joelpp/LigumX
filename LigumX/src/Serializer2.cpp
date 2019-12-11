@@ -229,6 +229,21 @@ void Serializer2::SerializeIVec2(const std::string& varName, glm::ivec2& variabl
 	}
 }
 
+void Serializer2::SerializeHighp_IVec2(const std::string& varName, glm::highp_ivec2& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(2);
+
+		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
+	}
+}
+
 void Serializer2::SerializeIVec3(const std::string& varName, glm::ivec3& variable)
 {
 	if (m_Writing)

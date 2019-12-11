@@ -236,6 +236,7 @@ std::string DefaultValueForType(bool isAPointer, const std::string& type)
 		ELSE_RETURN_DEFAULT("int", "0")
 		ELSE_RETURN_DEFAULT("float", "0.f")
 		ELSE_RETURN_DEFAULT("glm::ivec2", "glm::ivec2(0, 0)")
+		ELSE_RETURN_DEFAULT("glm::highp_ivec2", "glm::highp_ivec2(0, 0)")
 		ELSE_RETURN_DEFAULT("glm::vec2", "glm::vec2(0, 0)")
 		ELSE_RETURN_DEFAULT("glm::vec3", "glm::vec3(0, 0, 0)")
 	else
@@ -532,6 +533,7 @@ void InitializeGenerator()
 	g_LXTypeToImguiCallName.emplace("glm::ivec2", "IVec2");
 	g_LXTypeToImguiCallName.emplace("glm::ivec3", "IVec3");
 	g_LXTypeToImguiCallName.emplace("glm::ivec4", "IVec4");
+	g_LXTypeToImguiCallName.emplace("glm::highp_ivec2", "Highp_IVec2");
 	g_LXTypeToImguiCallName.emplace("glm::vec2", "Vec2");
 	g_LXTypeToImguiCallName.emplace("glm::vec3", "Vec3");
 	g_LXTypeToImguiCallName.emplace("glm::vec4", "Vec4");
@@ -543,6 +545,7 @@ void InitializeGenerator()
 	g_DefaultMinForType.emplace("glm::ivec2", "LX_LIMITS_INT_MIN");
 	g_DefaultMinForType.emplace("glm::ivec3", "LX_LIMITS_INT_MIN");
 	g_DefaultMinForType.emplace("glm::ivec4", "LX_LIMITS_INT_MIN");
+	g_DefaultMinForType.emplace("glm::highp_ivec2", "LX_LIMITS_INT64_MIN");
 	g_DefaultMinForType.emplace("float", "LX_LIMITS_FLOAT_MIN");
 	g_DefaultMinForType.emplace("glm::vec2", "LX_LIMITS_FLOAT_MIN");
 	g_DefaultMinForType.emplace("glm::vec3", "LX_LIMITS_FLOAT_MIN");
@@ -553,6 +556,7 @@ void InitializeGenerator()
 	g_DefaultMaxForType.emplace("glm::ivec2", "LX_LIMITS_INT_MAX");
 	g_DefaultMaxForType.emplace("glm::ivec3", "LX_LIMITS_INT_MAX");
 	g_DefaultMaxForType.emplace("glm::ivec4", "LX_LIMITS_INT_MAX");
+	g_DefaultMaxForType.emplace("glm::highp_ivec2", "LX_LIMITS_INT64_MAX");
 	g_DefaultMaxForType.emplace("float", "LX_LIMITS_FLOAT_MAX");
 	g_DefaultMaxForType.emplace("glm::vec2", "LX_LIMITS_FLOAT_MAX");
 	g_DefaultMaxForType.emplace("glm::vec3", "LX_LIMITS_FLOAT_MAX");
