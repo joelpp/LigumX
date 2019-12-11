@@ -167,10 +167,24 @@ bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, con
 					}
 				}
 
+				std::stringstream mouseMessage;
+
 				if (!newWay->GetName().empty())
 				{
-					g_RenderDataManager->AddMouseMessage(newWay->GetName().c_str());
+					mouseMessage << newWay->GetName().c_str();
 				}
+				else
+				{
+					mouseMessage << "Unnamed Way";
+				}
+
+				mouseMessage << " (id=";
+				mouseMessage << newWay->GetOSMId();
+				mouseMessage << ", tags=";
+				mouseMessage << newWay->GetAllTags();
+				mouseMessage << ")";
+				
+				g_RenderDataManager->AddMouseMessage(mouseMessage.str().c_str());
 			}
 
 			m_SelectedWays = std::vector<Way*>(m_SelectedNode->GetWays());
@@ -207,7 +221,7 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 	{
 		int selectedWay = 0;
 
-		if (sector->GetOffsetIndex() == GetSelectedSectorIndex() && GetSelectedWays().size() > 0)
+		if (/*sector->GetOffsetIndex() == GetSelectedSectorIndex() &&*/ GetSelectedWays().size() > 0)
 		{
 			selectedWay = GetSelectedWays()[0]->GetIndexInSector();
 		}
