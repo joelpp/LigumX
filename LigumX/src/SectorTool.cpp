@@ -44,19 +44,20 @@ const ClassPropertyData SectorTool::g_Properties[] =
 void SectorTool::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Enabled", m_Enabled);
-	serializer.SerializeVec3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates);
-	serializer.SerializeVec2("HighlightedSectorUV", m_HighlightedSectorUV);
-	serializer.SerializeObjectPtr("HighlightedSector", m_HighlightedSector);
-	serializer.SerializeVec3("SectorGridColor", m_SectorGridColor);
-	serializer.SerializeBool("AsyncSectorLoading", m_AsyncSectorLoading);
-	serializer.SerializeFloat("NodeSize", m_NodeSize);
-	serializer.SerializeInt("LoadingRingSize", m_LoadingRingSize);
-	serializer.SerializeBool("ShowSectorAABBs", m_ShowSectorAABBs);
-	serializer.SerializeBool("ShowGrid", m_ShowGrid);
-	serializer.SerializeBool("HighlightSelectedSector", m_HighlightSelectedSector);
-	serializer.SerializeBool("LoadSectorsOnClick", m_LoadSectorsOnClick);
-	serializer.SerializeInt("SelectedWayIndex", m_SelectedWayIndex);
+	serializer.SerializeBool(g_Properties[PIDX_Enabled], m_Enabled);
+	serializer.SerializeVec3(g_Properties[PIDX_HighlightedWorldCoordinates], m_HighlightedWorldCoordinates);
+	serializer.SerializeVec2(g_Properties[PIDX_HighlightedSectorUV], m_HighlightedSectorUV);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_HighlightedSector], m_HighlightedSector);
+	serializer.SerializeVec3(g_Properties[PIDX_SectorGridColor], m_SectorGridColor);
+	serializer.SerializeBool(g_Properties[PIDX_AsyncSectorLoading], m_AsyncSectorLoading);
+	serializer.SerializeFloat(g_Properties[PIDX_NodeSize], m_NodeSize);
+	serializer.SerializeInt(g_Properties[PIDX_LoadingRingSize], m_LoadingRingSize);
+	serializer.SerializeBool(g_Properties[PIDX_ShowSectorAABBs], m_ShowSectorAABBs);
+	serializer.SerializeBool(g_Properties[PIDX_ShowGrid], m_ShowGrid);
+	serializer.SerializeBool(g_Properties[PIDX_HighlightSelectedSector], m_HighlightSelectedSector);
+	serializer.SerializeBool(g_Properties[PIDX_LoadSectorsOnClick], m_LoadSectorsOnClick);
+	serializer.SerializeInt(g_Properties[PIDX_SelectedWayIndex], m_SelectedWayIndex);
+	serializer.Close();
 }
 bool SectorTool::Serialize(bool writing)
 {

@@ -16,7 +16,8 @@ const ClassPropertyData OSMElementTypeDataStore::g_Properties[] =
 void OSMElementTypeDataStore::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeVector("Data", m_Data);
+	serializer.SerializeVector(g_Properties[PIDX_Data], m_Data);
+	serializer.Close();
 }
 bool OSMElementTypeDataStore::Serialize(bool writing)
 {

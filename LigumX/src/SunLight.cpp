@@ -22,12 +22,13 @@ const ClassPropertyData SunLight::g_Properties[] =
 void SunLight::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("UseShadowMap", m_UseShadowMap);
-	serializer.SerializeFloat("Time", m_Time);
-	serializer.SerializeFloat("Orientation", m_Orientation);
-	serializer.SerializeFloat("Speed", m_Speed);
-	serializer.SerializeBool("UseSkybox", m_UseSkybox);
-	serializer.SerializeObjectPtr("Skybox", m_Skybox);
+	serializer.SerializeBool(g_Properties[PIDX_UseShadowMap], m_UseShadowMap);
+	serializer.SerializeFloat(g_Properties[PIDX_Time], m_Time);
+	serializer.SerializeFloat(g_Properties[PIDX_Orientation], m_Orientation);
+	serializer.SerializeFloat(g_Properties[PIDX_Speed], m_Speed);
+	serializer.SerializeBool(g_Properties[PIDX_UseSkybox], m_UseSkybox);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_Skybox], m_Skybox);
+	serializer.Close();
 }
 bool SunLight::Serialize(bool writing)
 {

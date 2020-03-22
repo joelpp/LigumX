@@ -16,10 +16,11 @@ const ClassPropertyData MainWindow::g_Properties[] =
 void MainWindow::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("InFocus", m_InFocus);
-	serializer.SerializeVec2("Position", m_Position);
-	serializer.SerializeIVec2("Size", m_Size);
-	serializer.SerializeString("Title", m_Title);
+	serializer.SerializeBool(g_Properties[PIDX_InFocus], m_InFocus);
+	serializer.SerializeVec2(g_Properties[PIDX_Position], m_Position);
+	serializer.SerializeIVec2(g_Properties[PIDX_Size], m_Size);
+	serializer.SerializeString(g_Properties[PIDX_Title], m_Title);
+	serializer.Close();
 }
 bool MainWindow::Serialize(bool writing)
 {

@@ -12,6 +12,7 @@ const ClassPropertyData Component::g_Properties[] =
 void Component::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
+	serializer.Close();
 }
 bool Component::Serialize(bool writing)
 {

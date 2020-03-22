@@ -29,12 +29,13 @@ const ClassPropertyData Sector::g_Properties[] =
 void Sector::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeVec2("WorldPosition", m_WorldPosition);
-	serializer.SerializeVec2("EarthPosition", m_EarthPosition);
-	serializer.SerializeIVec2("QuantizedPosition", m_QuantizedPosition);
-	serializer.SerializeIVec2("OffsetIndex", m_OffsetIndex);
-	serializer.SerializeBool("DataLoaded", m_DataLoaded);
-	serializer.SerializeString("OSMFilename", m_OSMFilename);
+	serializer.SerializeVec2(g_Properties[PIDX_WorldPosition], m_WorldPosition);
+	serializer.SerializeVec2(g_Properties[PIDX_EarthPosition], m_EarthPosition);
+	serializer.SerializeIVec2(g_Properties[PIDX_QuantizedPosition], m_QuantizedPosition);
+	serializer.SerializeIVec2(g_Properties[PIDX_OffsetIndex], m_OffsetIndex);
+	serializer.SerializeBool(g_Properties[PIDX_DataLoaded], m_DataLoaded);
+	serializer.SerializeString(g_Properties[PIDX_OSMFilename], m_OSMFilename);
+	serializer.Close();
 }
 bool Sector::Serialize(bool writing)
 {

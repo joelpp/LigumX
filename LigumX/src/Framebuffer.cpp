@@ -21,10 +21,11 @@ const ClassPropertyData Framebuffer::g_Properties[] =
 void Framebuffer::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeInt("Width", m_Width);
-	serializer.SerializeInt("Height", m_Height);
-	serializer.SerializeBool("HasDepth", m_HasDepth);
-	serializer.SerializeInt("NumColorTargets", m_NumColorTargets);
+	serializer.SerializeInt(g_Properties[PIDX_Width], m_Width);
+	serializer.SerializeInt(g_Properties[PIDX_Height], m_Height);
+	serializer.SerializeBool(g_Properties[PIDX_HasDepth], m_HasDepth);
+	serializer.SerializeInt(g_Properties[PIDX_NumColorTargets], m_NumColorTargets);
+	serializer.Close();
 }
 bool Framebuffer::Serialize(bool writing)
 {

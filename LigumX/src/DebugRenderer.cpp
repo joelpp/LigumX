@@ -12,7 +12,8 @@ const ClassPropertyData DebugRenderer::g_Properties[] =
 void DebugRenderer::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Enabled", m_Enabled);
+	serializer.SerializeBool(g_Properties[PIDX_Enabled], m_Enabled);
+	serializer.Close();
 }
 bool DebugRenderer::Serialize(bool writing)
 {

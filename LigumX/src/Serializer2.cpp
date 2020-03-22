@@ -19,10 +19,11 @@ const ClassPropertyData Serializer2::g_Properties[] =
 void Serializer2::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Writing", m_Writing);
-	serializer.SerializeBool("IsValid", m_IsValid);
-	serializer.SerializeString("Filename", m_Filename);
-	serializer.SerializeVector("SerializerInputVariables", m_SerializerInputVariables);
+	serializer.SerializeBool(g_Properties[PIDX_Writing], m_Writing);
+	serializer.SerializeBool(g_Properties[PIDX_IsValid], m_IsValid);
+	serializer.SerializeString(g_Properties[PIDX_Filename], m_Filename);
+	serializer.SerializeVector(g_Properties[PIDX_SerializerInputVariables], m_SerializerInputVariables);
+	serializer.Close();
 }
 bool Serializer2::Serialize(bool writing)
 {

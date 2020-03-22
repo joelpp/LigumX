@@ -11,7 +11,8 @@ const ClassPropertyData EditorTool::g_Properties[] =
 void EditorTool::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Active", m_Active);
+	serializer.SerializeBool(g_Properties[PIDX_Active], m_Active);
+	serializer.Close();
 }
 bool EditorTool::Serialize(bool writing)
 {

@@ -15,8 +15,9 @@ const ClassPropertyData AABB::g_Properties[] =
 void AABB::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeVec3("StartPoint", m_StartPoint);
-	serializer.SerializeVec3("Scale", m_Scale);
+	serializer.SerializeVec3(g_Properties[PIDX_StartPoint], m_StartPoint);
+	serializer.SerializeVec3(g_Properties[PIDX_Scale], m_Scale);
+	serializer.Close();
 }
 bool AABB::Serialize(bool writing)
 {

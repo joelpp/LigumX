@@ -22,17 +22,18 @@ const ClassPropertyData Node::g_Properties[] =
 void Node::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeInt64("OSMId", m_OSMId);
-	serializer.SerializeVec2("LongLat", m_LongLat);
-	serializer.SerializeVec3("WorldPosition", m_WorldPosition);
-	serializer.SerializeFloat("Elevation", m_Elevation);
-	serializer.SerializeVector("Ways", m_Ways);
-	serializer.SerializeIVec2("SectorIndex", m_SectorIndex);
-	serializer.SerializeVec2("SectorOffset", m_SectorOffset);
-	serializer.SerializeVec2("SectorRelativePosition", m_SectorRelativePosition);
-	serializer.SerializeIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition);
-	serializer.SerializeIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition);
-	serializer.SerializeHighp_IVec2("HighPrecisionEarthCoordinates", m_HighPrecisionEarthCoordinates);
+	serializer.SerializeInt64(g_Properties[PIDX_OSMId], m_OSMId);
+	serializer.SerializeVec2(g_Properties[PIDX_LongLat], m_LongLat);
+	serializer.SerializeVec3(g_Properties[PIDX_WorldPosition], m_WorldPosition);
+	serializer.SerializeFloat(g_Properties[PIDX_Elevation], m_Elevation);
+	serializer.SerializeVector(g_Properties[PIDX_Ways], m_Ways);
+	serializer.SerializeIVec2(g_Properties[PIDX_SectorIndex], m_SectorIndex);
+	serializer.SerializeVec2(g_Properties[PIDX_SectorOffset], m_SectorOffset);
+	serializer.SerializeVec2(g_Properties[PIDX_SectorRelativePosition], m_SectorRelativePosition);
+	serializer.SerializeIVec2(g_Properties[PIDX_QuantizedEarthPosition], m_QuantizedEarthPosition);
+	serializer.SerializeIVec2(g_Properties[PIDX_QuantizedSectorPosition], m_QuantizedSectorPosition);
+	serializer.SerializeHighp_IVec2(g_Properties[PIDX_HighPrecisionEarthCoordinates], m_HighPrecisionEarthCoordinates);
+	serializer.Close();
 }
 bool Node::Serialize(bool writing)
 {

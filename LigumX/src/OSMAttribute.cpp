@@ -12,8 +12,9 @@ const ClassPropertyData OSMAttribute::g_Properties[] =
 void OSMAttribute::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeString("Key", m_Key);
-	serializer.SerializeString("Value", m_Value);
+	serializer.SerializeString(g_Properties[PIDX_Key], m_Key);
+	serializer.SerializeString(g_Properties[PIDX_Value], m_Value);
+	serializer.Close();
 }
 bool OSMAttribute::Serialize(bool writing)
 {

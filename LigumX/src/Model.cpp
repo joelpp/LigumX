@@ -24,8 +24,9 @@ const ClassPropertyData Model::g_Properties[] =
 void Model::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeString("Filename", m_Filename);
-	serializer.SerializeVector("Materials", m_Materials);
+	serializer.SerializeString(g_Properties[PIDX_Filename], m_Filename);
+	serializer.SerializeVector(g_Properties[PIDX_Materials], m_Materials);
+	serializer.Close();
 }
 bool Model::Serialize(bool writing)
 {

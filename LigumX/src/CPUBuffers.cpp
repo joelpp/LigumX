@@ -15,9 +15,10 @@ void CPUBuffers::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
 	serializer.SerializeVector(g_Properties[PIDX_VertexPositions], m_VertexPositions);
-	serializer.SerializeVector("VertexNormals", m_VertexNormals);
-	serializer.SerializeVector("VertexUVs", m_VertexUVs);
-	serializer.SerializeVector("IndexBuffer", m_IndexBuffer);
+	serializer.SerializeVector(g_Properties[PIDX_VertexNormals], m_VertexNormals);
+	serializer.SerializeVector(g_Properties[PIDX_VertexUVs], m_VertexUVs);
+	serializer.SerializeVector(g_Properties[PIDX_IndexBuffer], m_IndexBuffer);
+	serializer.Close();
 }
 bool CPUBuffers::Serialize(bool writing)
 {

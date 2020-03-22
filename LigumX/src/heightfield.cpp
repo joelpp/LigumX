@@ -28,10 +28,11 @@ const ClassPropertyData Heightfield::g_Properties[] =
 void Heightfield::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("HeightDataTexture", m_HeightDataTexture);
-	serializer.SerializeFloat("MaxHeight", m_MaxHeight);
-	serializer.SerializeFloat("MinHeight", m_MinHeight);
-	serializer.SerializeInt("Width", m_Width);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_HeightDataTexture], m_HeightDataTexture);
+	serializer.SerializeFloat(g_Properties[PIDX_MaxHeight], m_MaxHeight);
+	serializer.SerializeFloat(g_Properties[PIDX_MinHeight], m_MinHeight);
+	serializer.SerializeInt(g_Properties[PIDX_Width], m_Width);
+	serializer.Close();
 }
 bool Heightfield::Serialize(bool writing)
 {

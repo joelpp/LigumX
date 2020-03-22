@@ -34,25 +34,26 @@ const ClassPropertyData Material::g_Properties[] =
 void Material::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Enabled", m_Enabled);
-	serializer.SerializeVec3("AmbientColor", m_AmbientColor);
-	serializer.SerializeVec3("DiffuseColor", m_DiffuseColor);
-	serializer.SerializeVec3("SpecularColor", m_SpecularColor);
-	serializer.SerializeBool("IsPBR", m_IsPBR);
-	serializer.SerializeFloat("Shininess", m_Shininess);
-	serializer.SerializeFloat("Metallic", m_Metallic);
-	serializer.SerializeFloat("Roughness", m_Roughness);
-	serializer.SerializeFloat("AO", m_AO);
-	serializer.SerializeFloat("EmissiveFactor", m_EmissiveFactor);
-	serializer.SerializeBool("DiffuseTextureEnabled", m_DiffuseTextureEnabled);
-	serializer.SerializeBool("SpecularTextureEnabled", m_SpecularTextureEnabled);
-	serializer.SerializeBool("Unlit", m_Unlit);
-	serializer.SerializeFloat("RefractionIndex", m_RefractionIndex);
-	serializer.SerializeBool("IsGlass", m_IsGlass);
-	serializer.SerializeBool("ReflectEnvironment", m_ReflectEnvironment);
-	serializer.SerializeObjectPtr("DiffuseTexture", m_DiffuseTexture);
-	serializer.SerializeObjectPtr("SpecularTexture", m_SpecularTexture);
-	serializer.SerializeObjectPtr("HeightfieldTexture", m_HeightfieldTexture);
+	serializer.SerializeBool(g_Properties[PIDX_Enabled], m_Enabled);
+	serializer.SerializeVec3(g_Properties[PIDX_AmbientColor], m_AmbientColor);
+	serializer.SerializeVec3(g_Properties[PIDX_DiffuseColor], m_DiffuseColor);
+	serializer.SerializeVec3(g_Properties[PIDX_SpecularColor], m_SpecularColor);
+	serializer.SerializeBool(g_Properties[PIDX_IsPBR], m_IsPBR);
+	serializer.SerializeFloat(g_Properties[PIDX_Shininess], m_Shininess);
+	serializer.SerializeFloat(g_Properties[PIDX_Metallic], m_Metallic);
+	serializer.SerializeFloat(g_Properties[PIDX_Roughness], m_Roughness);
+	serializer.SerializeFloat(g_Properties[PIDX_AO], m_AO);
+	serializer.SerializeFloat(g_Properties[PIDX_EmissiveFactor], m_EmissiveFactor);
+	serializer.SerializeBool(g_Properties[PIDX_DiffuseTextureEnabled], m_DiffuseTextureEnabled);
+	serializer.SerializeBool(g_Properties[PIDX_SpecularTextureEnabled], m_SpecularTextureEnabled);
+	serializer.SerializeBool(g_Properties[PIDX_Unlit], m_Unlit);
+	serializer.SerializeFloat(g_Properties[PIDX_RefractionIndex], m_RefractionIndex);
+	serializer.SerializeBool(g_Properties[PIDX_IsGlass], m_IsGlass);
+	serializer.SerializeBool(g_Properties[PIDX_ReflectEnvironment], m_ReflectEnvironment);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_DiffuseTexture], m_DiffuseTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_SpecularTexture], m_SpecularTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_HeightfieldTexture], m_HeightfieldTexture);
+	serializer.Close();
 }
 bool Material::Serialize(bool writing)
 {

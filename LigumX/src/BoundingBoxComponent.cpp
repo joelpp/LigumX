@@ -13,7 +13,8 @@ const ClassPropertyData BoundingBoxComponent::g_Properties[] =
 void BoundingBoxComponent::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("UpdatesWithEntity", m_UpdatesWithEntity);
+	serializer.SerializeBool(g_Properties[PIDX_UpdatesWithEntity], m_UpdatesWithEntity);
+	serializer.Close();
 }
 bool BoundingBoxComponent::Serialize(bool writing)
 {

@@ -15,9 +15,10 @@ const ClassPropertyData OSMElementTypeData::g_Properties[] =
 void OSMElementTypeData::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("FillIn", m_FillIn);
-	serializer.SerializeVec3("DebugColor", m_DebugColor);
-	serializer.SerializeVector("Attributes", m_Attributes);
+	serializer.SerializeBool(g_Properties[PIDX_FillIn], m_FillIn);
+	serializer.SerializeVec3(g_Properties[PIDX_DebugColor], m_DebugColor);
+	serializer.SerializeVector(g_Properties[PIDX_Attributes], m_Attributes);
+	serializer.Close();
 }
 bool OSMElementTypeData::Serialize(bool writing)
 {

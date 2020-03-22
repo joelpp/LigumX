@@ -12,8 +12,9 @@ const ClassPropertyData SerializerInputVariable::g_Properties[] =
 void SerializerInputVariable::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeString("VariableName", m_VariableName);
-	serializer.SerializeVector("Values", m_Values);
+	serializer.SerializeString(g_Properties[PIDX_VariableName], m_VariableName);
+	serializer.SerializeVector(g_Properties[PIDX_Values], m_Values);
+	serializer.Close();
 }
 bool SerializerInputVariable::Serialize(bool writing)
 {

@@ -27,16 +27,17 @@ const ClassPropertyData Entity::g_Properties[] =
 void Entity::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Visible", m_Visible);
-	serializer.SerializeVec3("Position", m_Position);
-	serializer.SerializeFloat("RotationAngle", m_RotationAngle);
-	serializer.SerializeVec3("RotationAxis", m_RotationAxis);
-	serializer.SerializeVec3("Scale", m_Scale);
-	serializer.SerializeBool("HasMoved", m_HasMoved);
-	serializer.SerializeFloat("PickingID", m_PickingID);
-	serializer.SerializeObjectPtr("Model", m_Model);
-	serializer.SerializeBool("IsLight", m_IsLight);
-	serializer.SerializeVector("Components", m_Components);
+	serializer.SerializeBool(g_Properties[PIDX_Visible], m_Visible);
+	serializer.SerializeVec3(g_Properties[PIDX_Position], m_Position);
+	serializer.SerializeFloat(g_Properties[PIDX_RotationAngle], m_RotationAngle);
+	serializer.SerializeVec3(g_Properties[PIDX_RotationAxis], m_RotationAxis);
+	serializer.SerializeVec3(g_Properties[PIDX_Scale], m_Scale);
+	serializer.SerializeBool(g_Properties[PIDX_HasMoved], m_HasMoved);
+	serializer.SerializeFloat(g_Properties[PIDX_PickingID], m_PickingID);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_Model], m_Model);
+	serializer.SerializeBool(g_Properties[PIDX_IsLight], m_IsLight);
+	serializer.SerializeVector(g_Properties[PIDX_Components], m_Components);
+	serializer.Close();
 }
 bool Entity::Serialize(bool writing)
 {

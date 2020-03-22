@@ -24,19 +24,20 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 void EngineSettings::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeFloat("WorldScale", m_WorldScale);
-	serializer.SerializeVec2("StartLonLat", m_StartLonLat);
-	serializer.SerializeFloat("Extent", m_Extent);
-	serializer.SerializeInt("OSMQuantizationScale", m_OSMQuantizationScale);
-	serializer.SerializeBool("GenerateFlatTerrain", m_GenerateFlatTerrain);
-	serializer.SerializeIVec2("SplatMapResolution", m_SplatMapResolution);
-	serializer.SerializeFloat("WayTessellationFactor", m_WayTessellationFactor);
-	serializer.SerializeVec2("MessagesStartingPosition", m_MessagesStartingPosition);
-	serializer.SerializeFloat("MessagesFontSize", m_MessagesFontSize);
-	serializer.SerializeInt("MessagesDefaultFrameCount", m_MessagesDefaultFrameCount);
-	serializer.SerializeInt("MessagesPixelsOffset", m_MessagesPixelsOffset);
-	serializer.SerializeBool("LoadOSMData", m_LoadOSMData);
-	serializer.SerializeFloat("TerrainTiling", m_TerrainTiling);
+	serializer.SerializeFloat(g_Properties[PIDX_WorldScale], m_WorldScale);
+	serializer.SerializeVec2(g_Properties[PIDX_StartLonLat], m_StartLonLat);
+	serializer.SerializeFloat(g_Properties[PIDX_Extent], m_Extent);
+	serializer.SerializeInt(g_Properties[PIDX_OSMQuantizationScale], m_OSMQuantizationScale);
+	serializer.SerializeBool(g_Properties[PIDX_GenerateFlatTerrain], m_GenerateFlatTerrain);
+	serializer.SerializeIVec2(g_Properties[PIDX_SplatMapResolution], m_SplatMapResolution);
+	serializer.SerializeFloat(g_Properties[PIDX_WayTessellationFactor], m_WayTessellationFactor);
+	serializer.SerializeVec2(g_Properties[PIDX_MessagesStartingPosition], m_MessagesStartingPosition);
+	serializer.SerializeFloat(g_Properties[PIDX_MessagesFontSize], m_MessagesFontSize);
+	serializer.SerializeInt(g_Properties[PIDX_MessagesDefaultFrameCount], m_MessagesDefaultFrameCount);
+	serializer.SerializeInt(g_Properties[PIDX_MessagesPixelsOffset], m_MessagesPixelsOffset);
+	serializer.SerializeBool(g_Properties[PIDX_LoadOSMData], m_LoadOSMData);
+	serializer.SerializeFloat(g_Properties[PIDX_TerrainTiling], m_TerrainTiling);
+	serializer.Close();
 }
 bool EngineSettings::Serialize(bool writing)
 {

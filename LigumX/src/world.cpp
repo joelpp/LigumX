@@ -24,9 +24,10 @@ const ClassPropertyData World::g_Properties[] =
 void World::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("SunLight", m_SunLight);
-	serializer.SerializeVector("Entities", m_Entities);
-	serializer.SerializeBool("Reset", m_Reset);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_SunLight], m_SunLight);
+	serializer.SerializeVector(g_Properties[PIDX_Entities], m_Entities);
+	serializer.SerializeBool(g_Properties[PIDX_Reset], m_Reset);
+	serializer.Close();
 }
 bool World::Serialize(bool writing)
 {

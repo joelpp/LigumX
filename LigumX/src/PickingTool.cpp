@@ -38,7 +38,8 @@ const ClassPropertyData PickingTool::g_Properties[] =
 void PickingTool::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Enabled", m_Enabled);
+	serializer.SerializeBool(g_Properties[PIDX_Enabled], m_Enabled);
+	serializer.Close();
 }
 bool PickingTool::Serialize(bool writing)
 {

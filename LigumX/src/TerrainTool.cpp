@@ -32,8 +32,9 @@ const ClassPropertyData TerrainTool::g_Properties[] =
 void TerrainTool::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeFloat("TerrainBrushSize", m_TerrainBrushSize);
-	serializer.SerializeInt("SplatMapIncrement", m_SplatMapIncrement);
+	serializer.SerializeFloat(g_Properties[PIDX_TerrainBrushSize], m_TerrainBrushSize);
+	serializer.SerializeInt(g_Properties[PIDX_SplatMapIncrement], m_SplatMapIncrement);
+	serializer.Close();
 }
 bool TerrainTool::Serialize(bool writing)
 {

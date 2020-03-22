@@ -15,8 +15,9 @@ const ClassPropertyData GUI::g_Properties[] =
 void GUI::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("m_Enabled", m_m_Enabled);
-	serializer.SerializeInt("NumActiveWindows", m_NumActiveWindows);
+	serializer.SerializeBool(g_Properties[PIDX_m_Enabled], m_m_Enabled);
+	serializer.SerializeInt(g_Properties[PIDX_NumActiveWindows], m_NumActiveWindows);
+	serializer.Close();
 }
 bool GUI::Serialize(bool writing)
 {

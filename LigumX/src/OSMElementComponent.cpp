@@ -12,7 +12,8 @@ const ClassPropertyData OSMElementComponent::g_Properties[] =
 void OSMElementComponent::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("Way", m_Way);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_Way], m_Way);
+	serializer.Close();
 }
 bool OSMElementComponent::Serialize(bool writing)
 {

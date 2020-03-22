@@ -48,8 +48,9 @@ const ClassPropertyData RenderDataManager::g_Properties[] =
 void RenderDataManager::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("CullingOptions", m_CullingOptions);
-	serializer.SerializeObjectPtr("RenderingStats", m_RenderingStats);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_CullingOptions], m_CullingOptions);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_RenderingStats], m_RenderingStats);
+	serializer.Close();
 }
 bool RenderDataManager::Serialize(bool writing)
 {

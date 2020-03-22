@@ -54,8 +54,9 @@ const ClassPropertyData OSMDataProcessor::g_Properties[] =
 void OSMDataProcessor::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeFloat("RoadWidth", m_RoadWidth);
-	serializer.SerializeObjectPtr("Settings", m_Settings);
+	serializer.SerializeFloat(g_Properties[PIDX_RoadWidth], m_RoadWidth);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_Settings], m_Settings);
+	serializer.Close();
 }
 bool OSMDataProcessor::Serialize(bool writing)
 {

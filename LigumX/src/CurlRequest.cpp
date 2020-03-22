@@ -24,14 +24,15 @@ const ClassPropertyData CurlRequest::g_Properties[] =
 void CurlRequest::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeInt("State", m_State);
-	serializer.SerializeVec2("Coords", m_Coords);
-	serializer.SerializeVec2("Extent", m_Extent);
-	serializer.SerializeString("Result", m_Result);
-	serializer.SerializeString("Filename", m_Filename);
-	serializer.SerializeObjectPtr("Sector", m_Sector);
-	serializer.SerializeIVec2("SectorIndex", m_SectorIndex);
-	serializer.SerializeBool("Async", m_Async);
+	serializer.SerializeInt(g_Properties[PIDX_State], m_State);
+	serializer.SerializeVec2(g_Properties[PIDX_Coords], m_Coords);
+	serializer.SerializeVec2(g_Properties[PIDX_Extent], m_Extent);
+	serializer.SerializeString(g_Properties[PIDX_Result], m_Result);
+	serializer.SerializeString(g_Properties[PIDX_Filename], m_Filename);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_Sector], m_Sector);
+	serializer.SerializeIVec2(g_Properties[PIDX_SectorIndex], m_SectorIndex);
+	serializer.SerializeBool(g_Properties[PIDX_Async], m_Async);
+	serializer.Close();
 }
 bool CurlRequest::Serialize(bool writing)
 {

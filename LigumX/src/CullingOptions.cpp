@@ -17,13 +17,14 @@ const ClassPropertyData CullingOptions::g_Properties[] =
 void CullingOptions::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("CullEntities", m_CullEntities);
-	serializer.SerializeBool("CullSectors", m_CullSectors);
-	serializer.SerializeBool("UseDotProduct", m_UseDotProduct);
-	serializer.SerializeBool("UseAABBClipPos", m_UseAABBClipPos);
-	serializer.SerializeBool("DebugAABBClippPos", m_DebugAABBClippPos);
-	serializer.SerializeBool("DebugDotProduct", m_DebugDotProduct);
-	serializer.SerializeFloat("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance);
+	serializer.SerializeBool(g_Properties[PIDX_CullEntities], m_CullEntities);
+	serializer.SerializeBool(g_Properties[PIDX_CullSectors], m_CullSectors);
+	serializer.SerializeBool(g_Properties[PIDX_UseDotProduct], m_UseDotProduct);
+	serializer.SerializeBool(g_Properties[PIDX_UseAABBClipPos], m_UseAABBClipPos);
+	serializer.SerializeBool(g_Properties[PIDX_DebugAABBClippPos], m_DebugAABBClippPos);
+	serializer.SerializeBool(g_Properties[PIDX_DebugDotProduct], m_DebugDotProduct);
+	serializer.SerializeFloat(g_Properties[PIDX_DebugDotProductMaxDistance], m_DebugDotProductMaxDistance);
+	serializer.Close();
 }
 bool CullingOptions::Serialize(bool writing)
 {

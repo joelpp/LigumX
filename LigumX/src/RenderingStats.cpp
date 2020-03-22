@@ -15,11 +15,12 @@ const ClassPropertyData RenderingStats::g_Properties[] =
 void RenderingStats::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeInt("NumVisibleEntities", m_NumVisibleEntities);
-	serializer.SerializeInt("NumVisibleSectors", m_NumVisibleSectors);
-	serializer.SerializeInt("NumDebugModels", m_NumDebugModels);
-	serializer.SerializeInt("Num2DMessages", m_Num2DMessages);
-	serializer.SerializeFloat("fps", m_fps);
+	serializer.SerializeInt(g_Properties[PIDX_NumVisibleEntities], m_NumVisibleEntities);
+	serializer.SerializeInt(g_Properties[PIDX_NumVisibleSectors], m_NumVisibleSectors);
+	serializer.SerializeInt(g_Properties[PIDX_NumDebugModels], m_NumDebugModels);
+	serializer.SerializeInt(g_Properties[PIDX_Num2DMessages], m_Num2DMessages);
+	serializer.SerializeFloat(g_Properties[PIDX_fps], m_fps);
+	serializer.Close();
 }
 bool RenderingStats::Serialize(bool writing)
 {

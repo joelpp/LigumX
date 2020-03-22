@@ -30,26 +30,27 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 void EditorOptions::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Enabled", m_Enabled);
-	serializer.SerializeBool("ShowWorldWindow", m_ShowWorldWindow);
-	serializer.SerializeBool("ShowMaterialWindow", m_ShowMaterialWindow);
-	serializer.SerializeBool("ShowEntityWindow", m_ShowEntityWindow);
-	serializer.SerializeBool("ShowObjectCreator", m_ShowObjectCreator);
-	serializer.SerializeBool("ShowEngineStats", m_ShowEngineStats);
-	serializer.SerializeBool("ShowTestGUI", m_ShowTestGUI);
-	serializer.SerializeBool("ShowObjectManager", m_ShowObjectManager);
-	serializer.SerializeBool("BackupDataOnSave", m_BackupDataOnSave);
-	serializer.SerializeBool("DebugDisplay", m_DebugDisplay);
-	serializer.SerializeBool("DisplayMessages", m_DisplayMessages);
-	serializer.SerializeBool("SaveDisabled", m_SaveDisabled);
-	serializer.SerializeBool("DisplayPickingTool", m_DisplayPickingTool);
-	serializer.SerializeBool("DisplayOSMTool", m_DisplayOSMTool);
-	serializer.SerializeBool("DisplaySectorTool", m_DisplaySectorTool);
-	serializer.SerializeBool("DisplayFramebufferTool", m_DisplayFramebufferTool);
-	serializer.SerializeBool("DisplayTerrainTool", m_DisplayTerrainTool);
-	serializer.SerializeBool("DisplayAxisGizmo", m_DisplayAxisGizmo);
-	serializer.SerializeFloat("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed);
-	serializer.SerializeFloat("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent);
+	serializer.SerializeBool(g_Properties[PIDX_Enabled], m_Enabled);
+	serializer.SerializeBool(g_Properties[PIDX_ShowWorldWindow], m_ShowWorldWindow);
+	serializer.SerializeBool(g_Properties[PIDX_ShowMaterialWindow], m_ShowMaterialWindow);
+	serializer.SerializeBool(g_Properties[PIDX_ShowEntityWindow], m_ShowEntityWindow);
+	serializer.SerializeBool(g_Properties[PIDX_ShowObjectCreator], m_ShowObjectCreator);
+	serializer.SerializeBool(g_Properties[PIDX_ShowEngineStats], m_ShowEngineStats);
+	serializer.SerializeBool(g_Properties[PIDX_ShowTestGUI], m_ShowTestGUI);
+	serializer.SerializeBool(g_Properties[PIDX_ShowObjectManager], m_ShowObjectManager);
+	serializer.SerializeBool(g_Properties[PIDX_BackupDataOnSave], m_BackupDataOnSave);
+	serializer.SerializeBool(g_Properties[PIDX_DebugDisplay], m_DebugDisplay);
+	serializer.SerializeBool(g_Properties[PIDX_DisplayMessages], m_DisplayMessages);
+	serializer.SerializeBool(g_Properties[PIDX_SaveDisabled], m_SaveDisabled);
+	serializer.SerializeBool(g_Properties[PIDX_DisplayPickingTool], m_DisplayPickingTool);
+	serializer.SerializeBool(g_Properties[PIDX_DisplayOSMTool], m_DisplayOSMTool);
+	serializer.SerializeBool(g_Properties[PIDX_DisplaySectorTool], m_DisplaySectorTool);
+	serializer.SerializeBool(g_Properties[PIDX_DisplayFramebufferTool], m_DisplayFramebufferTool);
+	serializer.SerializeBool(g_Properties[PIDX_DisplayTerrainTool], m_DisplayTerrainTool);
+	serializer.SerializeBool(g_Properties[PIDX_DisplayAxisGizmo], m_DisplayAxisGizmo);
+	serializer.SerializeFloat(g_Properties[PIDX_MouseScrollCameraSpeed], m_MouseScrollCameraSpeed);
+	serializer.SerializeFloat(g_Properties[PIDX_MouseScrollEntityCloseupPercent], m_MouseScrollEntityCloseupPercent);
+	serializer.Close();
 }
 bool EditorOptions::Serialize(bool writing)
 {

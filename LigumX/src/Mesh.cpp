@@ -18,9 +18,10 @@ const ClassPropertyData Mesh::g_Properties[] =
 void Mesh::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("UsesIndexBuffer", m_UsesIndexBuffer);
-	serializer.SerializeBool("WireframeRendering", m_WireframeRendering);
-	serializer.SerializeBool("PointRendering", m_PointRendering);
+	serializer.SerializeBool(g_Properties[PIDX_UsesIndexBuffer], m_UsesIndexBuffer);
+	serializer.SerializeBool(g_Properties[PIDX_WireframeRendering], m_WireframeRendering);
+	serializer.SerializeBool(g_Properties[PIDX_PointRendering], m_PointRendering);
+	serializer.Close();
 }
 bool Mesh::Serialize(bool writing)
 {

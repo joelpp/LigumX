@@ -23,13 +23,14 @@ const ClassPropertyData SectorGraphicalData::g_Properties[] =
 void SectorGraphicalData::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("NodesModel", m_NodesModel);
-	serializer.SerializeObjectPtr("WaysModel", m_WaysModel);
-	serializer.SerializeVector("WaysModelsVector", m_WaysModelsVector);
-	serializer.SerializeVector("RoadEntities", m_RoadEntities);
-	serializer.SerializeVector("StaticEntities", m_StaticEntities);
-	serializer.SerializeObjectPtr("SplatMapTexture", m_SplatMapTexture);
-	serializer.SerializeObjectPtr("AlbedoTexture", m_AlbedoTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_NodesModel], m_NodesModel);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_WaysModel], m_WaysModel);
+	serializer.SerializeVector(g_Properties[PIDX_WaysModelsVector], m_WaysModelsVector);
+	serializer.SerializeVector(g_Properties[PIDX_RoadEntities], m_RoadEntities);
+	serializer.SerializeVector(g_Properties[PIDX_StaticEntities], m_StaticEntities);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_SplatMapTexture], m_SplatMapTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_AlbedoTexture], m_AlbedoTexture);
+	serializer.Close();
 }
 bool SectorGraphicalData::Serialize(bool writing)
 {

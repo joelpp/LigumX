@@ -21,11 +21,12 @@ const ClassPropertyData Way::g_Properties[] =
 void Way::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeInt64("OSMId", m_OSMId);
-	serializer.SerializeVector("Nodes", m_Nodes);
-	serializer.SerializeInt("IndexInSector", m_IndexInSector);
-	serializer.SerializeBool("FilledIn", m_FilledIn);
-	serializer.SerializeString("AllTags", m_AllTags);
+	serializer.SerializeInt64(g_Properties[PIDX_OSMId], m_OSMId);
+	serializer.SerializeVector(g_Properties[PIDX_Nodes], m_Nodes);
+	serializer.SerializeInt(g_Properties[PIDX_IndexInSector], m_IndexInSector);
+	serializer.SerializeBool(g_Properties[PIDX_FilledIn], m_FilledIn);
+	serializer.SerializeString(g_Properties[PIDX_AllTags], m_AllTags);
+	serializer.Close();
 }
 bool Way::Serialize(bool writing)
 {

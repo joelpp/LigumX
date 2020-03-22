@@ -24,19 +24,20 @@ const ClassPropertyData OSMDataProcessorSettings::g_Properties[] =
 void OSMDataProcessorSettings::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeFloat("MinFacadeLength", m_MinFacadeLength);
-	serializer.SerializeFloat("MaxFacadeLength", m_MaxFacadeLength);
-	serializer.SerializeFloat("MinPlotLengthRatio", m_MinPlotLengthRatio);
-	serializer.SerializeFloat("MaxPlotLengthRatio", m_MaxPlotLengthRatio);
-	serializer.SerializeFloat("MinBuildingDepth", m_MinBuildingDepth);
-	serializer.SerializeFloat("MaxBuildingDepth", m_MaxBuildingDepth);
-	serializer.SerializeFloat("MinHeight", m_MinHeight);
-	serializer.SerializeFloat("MaxHeight", m_MaxHeight);
-	serializer.SerializeFloat("MinNeighborDistance", m_MinNeighborDistance);
-	serializer.SerializeFloat("MaxNeighborDistance", m_MaxNeighborDistance);
-	serializer.SerializeBool("ProcessAddressInterpolation", m_ProcessAddressInterpolation);
-	serializer.SerializeBool("CheckPointInRoad", m_CheckPointInRoad);
-	serializer.SerializeBool("CheckPointInBuilding", m_CheckPointInBuilding);
+	serializer.SerializeFloat(g_Properties[PIDX_MinFacadeLength], m_MinFacadeLength);
+	serializer.SerializeFloat(g_Properties[PIDX_MaxFacadeLength], m_MaxFacadeLength);
+	serializer.SerializeFloat(g_Properties[PIDX_MinPlotLengthRatio], m_MinPlotLengthRatio);
+	serializer.SerializeFloat(g_Properties[PIDX_MaxPlotLengthRatio], m_MaxPlotLengthRatio);
+	serializer.SerializeFloat(g_Properties[PIDX_MinBuildingDepth], m_MinBuildingDepth);
+	serializer.SerializeFloat(g_Properties[PIDX_MaxBuildingDepth], m_MaxBuildingDepth);
+	serializer.SerializeFloat(g_Properties[PIDX_MinHeight], m_MinHeight);
+	serializer.SerializeFloat(g_Properties[PIDX_MaxHeight], m_MaxHeight);
+	serializer.SerializeFloat(g_Properties[PIDX_MinNeighborDistance], m_MinNeighborDistance);
+	serializer.SerializeFloat(g_Properties[PIDX_MaxNeighborDistance], m_MaxNeighborDistance);
+	serializer.SerializeBool(g_Properties[PIDX_ProcessAddressInterpolation], m_ProcessAddressInterpolation);
+	serializer.SerializeBool(g_Properties[PIDX_CheckPointInRoad], m_CheckPointInRoad);
+	serializer.SerializeBool(g_Properties[PIDX_CheckPointInBuilding], m_CheckPointInBuilding);
+	serializer.Close();
 }
 bool OSMDataProcessorSettings::Serialize(bool writing)
 {

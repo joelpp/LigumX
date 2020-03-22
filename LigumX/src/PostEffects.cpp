@@ -14,10 +14,11 @@ const ClassPropertyData PostEffects::g_Properties[] =
 void PostEffects::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("GammaCorrectionEnabled", m_GammaCorrectionEnabled);
-	serializer.SerializeFloat("GammaExponent", m_GammaExponent);
-	serializer.SerializeBool("ToneMappingEnabled", m_ToneMappingEnabled);
-	serializer.SerializeBool("EmissiveGlowEnabled", m_EmissiveGlowEnabled);
+	serializer.SerializeBool(g_Properties[PIDX_GammaCorrectionEnabled], m_GammaCorrectionEnabled);
+	serializer.SerializeFloat(g_Properties[PIDX_GammaExponent], m_GammaExponent);
+	serializer.SerializeBool(g_Properties[PIDX_ToneMappingEnabled], m_ToneMappingEnabled);
+	serializer.SerializeBool(g_Properties[PIDX_EmissiveGlowEnabled], m_EmissiveGlowEnabled);
+	serializer.Close();
 }
 bool PostEffects::Serialize(bool writing)
 {

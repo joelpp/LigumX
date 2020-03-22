@@ -11,8 +11,9 @@ const ClassPropertyData LXObject::g_Properties[] =
 };
 void LXObject::Serialize(Serializer2& serializer)
 {
-	serializer.SerializeInt("ObjectID", m_ObjectID);
-	serializer.SerializeString("Name", m_Name);
+	serializer.SerializeInt(g_Properties[PIDX_ObjectID], m_ObjectID);
+	serializer.SerializeString(g_Properties[PIDX_Name], m_Name);
+	serializer.Close();
 }
 bool LXObject::Serialize(bool writing)
 {

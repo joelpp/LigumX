@@ -41,16 +41,17 @@ const ClassPropertyData OSMTool::g_Properties[] =
 void OSMTool::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Enabled", m_Enabled);
-	serializer.SerializeObjectPtr("SelectedNode", m_SelectedNode);
-	serializer.SerializeVector("SelectedWays", m_SelectedWays);
-	serializer.SerializeBool("SearchOnlyWithinSector", m_SearchOnlyWithinSector);
-	serializer.SerializeIVec2("SelectedSectorIndex", m_SelectedSectorIndex);
-	serializer.SerializeVec3("WorldSpacePosition", m_WorldSpacePosition);
-	serializer.SerializeBool("ShowNodes", m_ShowNodes);
-	serializer.SerializeBool("ShowWays", m_ShowWays);
-	serializer.SerializeBool("ShowFlatWays", m_ShowFlatWays);
-	serializer.SerializeBool("DebugPointInRoad", m_DebugPointInRoad);
+	serializer.SerializeBool(g_Properties[PIDX_Enabled], m_Enabled);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_SelectedNode], m_SelectedNode);
+	serializer.SerializeVector(g_Properties[PIDX_SelectedWays], m_SelectedWays);
+	serializer.SerializeBool(g_Properties[PIDX_SearchOnlyWithinSector], m_SearchOnlyWithinSector);
+	serializer.SerializeIVec2(g_Properties[PIDX_SelectedSectorIndex], m_SelectedSectorIndex);
+	serializer.SerializeVec3(g_Properties[PIDX_WorldSpacePosition], m_WorldSpacePosition);
+	serializer.SerializeBool(g_Properties[PIDX_ShowNodes], m_ShowNodes);
+	serializer.SerializeBool(g_Properties[PIDX_ShowWays], m_ShowWays);
+	serializer.SerializeBool(g_Properties[PIDX_ShowFlatWays], m_ShowFlatWays);
+	serializer.SerializeBool(g_Properties[PIDX_DebugPointInRoad], m_DebugPointInRoad);
+	serializer.Close();
 }
 bool OSMTool::Serialize(bool writing)
 {

@@ -138,14 +138,25 @@ public:
 	std::string GetAsSerialized(glm::vec3& variable);
 	std::string GetAsSerialized(glm::ivec4& variable);
 	std::string GetAsSerialized(glm::vec4& variable);
-	//template <typename T>
-	//std::string Serializer2::GetAsSerialized(const ClassPropertyData& propertyData, T& variablePtr)
-	//{
-	//	std::stringstream sstr;
-	//	sstr << std::to_string(variablePtr.GetObjectID());
-	//	sstr << gc_NewLine;
-	//	return sstr.str();
-	//}
+	
+	template <typename T>
+	std::string GetAsSerialized(T* variablePtr)
+	{
+		std::stringstream sstr;
+		sstr << std::to_string(variablePtr->GetObjectID());
+		sstr << gc_NewLine;
+		return sstr.str();
+	}
+
+	template <typename T>
+	std::string GetAsSerialized(T& variablePtr)
+	{
+		std::stringstream sstr;
+		sstr << std::to_string(variablePtr.GetObjectID());
+		sstr << gc_NewLine;
+		return sstr.str();
+	}
+
 
 
 	void SerializeBool(const std::string& varName, bool& variable);
@@ -338,11 +349,23 @@ public:
 				m_FileData += std::to_string(variable.size());
 				m_FileData += gc_NewLine;
 
-				for (int i = 0; i < variable.size(); ++i)
-				{
-					T& elem = variable[i];
-					m_FileData += GetAsSerialized(elem);
-				}
+				//if (std::is_enum<T>())
+				//{
+				//	for (int i = 0; i < variable.size(); ++i)
+				//	{
+				//		T& elem = variable[i];
+				//		m_FileData += GetAsSerialized((int)elem);
+				//	}
+				//}
+				//else
+				//{
+					for (int i = 0; i < variable.size(); ++i)
+					{
+						T& elem = variable[i];
+						//m_FileData += GetAsSerialized(elem);
+					}
+				//}
+
 			}
 		}
 		else
@@ -365,9 +388,9 @@ public:
 				for (int i = 0; i < variable.size(); ++i)
 				{
 					T* elem = variable[i];
-					m_FileData += GetAsSerialized(*elem);
+					m_FileData += GetAsSerialized(elem);
 
-					variable->Serialize(m_Writing);
+					elem->Serialize(m_Writing);
 				}
 			}
 		}

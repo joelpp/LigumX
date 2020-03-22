@@ -20,13 +20,14 @@ const ClassPropertyData DefaultTextureHolder::g_Properties[] =
 void DefaultTextureHolder::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("AsphaltTexture", m_AsphaltTexture);
-	serializer.SerializeObjectPtr("DirtTexture", m_DirtTexture);
-	serializer.SerializeObjectPtr("GrassTexture", m_GrassTexture);
-	serializer.SerializeObjectPtr("RockTexture", m_RockTexture);
-	serializer.SerializeObjectPtr("WoodTexture", m_WoodTexture);
-	serializer.SerializeObjectPtr("SandTexture", m_SandTexture);
-	serializer.SerializeObjectPtr("WaterTexture", m_WaterTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_AsphaltTexture], m_AsphaltTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_DirtTexture], m_DirtTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_GrassTexture], m_GrassTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_RockTexture], m_RockTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_WoodTexture], m_WoodTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_SandTexture], m_SandTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_WaterTexture], m_WaterTexture);
+	serializer.Close();
 }
 bool DefaultTextureHolder::Serialize(bool writing)
 {

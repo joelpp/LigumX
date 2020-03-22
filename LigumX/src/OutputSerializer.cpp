@@ -7,6 +7,7 @@
 void OutputSerializer::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
+	serializer.Close();
 }
 bool OutputSerializer::Serialize(bool writing)
 {

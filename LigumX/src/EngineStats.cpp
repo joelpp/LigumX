@@ -13,8 +13,9 @@ const ClassPropertyData EngineStats::g_Properties[] =
 void EngineStats::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeInt("NumObjectMapHits", m_NumObjectMapHits);
-	serializer.SerializeInt("NumDrawCalls", m_NumDrawCalls);
+	serializer.SerializeInt(g_Properties[PIDX_NumObjectMapHits], m_NumObjectMapHits);
+	serializer.SerializeInt(g_Properties[PIDX_NumDrawCalls], m_NumDrawCalls);
+	serializer.Close();
 }
 bool EngineStats::Serialize(bool writing)
 {

@@ -24,19 +24,20 @@ const ClassPropertyData InputHandler::g_Properties[] =
 void InputHandler::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("Mouse1Pressed", m_Mouse1Pressed);
-	serializer.SerializeBool("Mouse2Pressed", m_Mouse2Pressed);
-	serializer.SerializeBool("CtrlHeld", m_CtrlHeld);
-	serializer.SerializeBool("Dragging", m_Dragging);
-	serializer.SerializeVec2("DragDistance", m_DragDistance);
-	serializer.SerializeVec2("LastDragDistance", m_LastDragDistance);
-	serializer.SerializeVec2("DragAccumulator", m_DragAccumulator);
-	serializer.SerializeVec2("MouseClickPosition", m_MouseClickPosition);
-	serializer.SerializeVec2("LastMouseClickPosition", m_LastMouseClickPosition);
-	serializer.SerializeVec2("MouseReleasePosition", m_MouseReleasePosition);
-	serializer.SerializeVec2("MousePosition", m_MousePosition);
-	serializer.SerializeVec2("LastMousePosition", m_LastMousePosition);
-	serializer.SerializeVec2("MouseScroll", m_MouseScroll);
+	serializer.SerializeBool(g_Properties[PIDX_Mouse1Pressed], m_Mouse1Pressed);
+	serializer.SerializeBool(g_Properties[PIDX_Mouse2Pressed], m_Mouse2Pressed);
+	serializer.SerializeBool(g_Properties[PIDX_CtrlHeld], m_CtrlHeld);
+	serializer.SerializeBool(g_Properties[PIDX_Dragging], m_Dragging);
+	serializer.SerializeVec2(g_Properties[PIDX_DragDistance], m_DragDistance);
+	serializer.SerializeVec2(g_Properties[PIDX_LastDragDistance], m_LastDragDistance);
+	serializer.SerializeVec2(g_Properties[PIDX_DragAccumulator], m_DragAccumulator);
+	serializer.SerializeVec2(g_Properties[PIDX_MouseClickPosition], m_MouseClickPosition);
+	serializer.SerializeVec2(g_Properties[PIDX_LastMouseClickPosition], m_LastMouseClickPosition);
+	serializer.SerializeVec2(g_Properties[PIDX_MouseReleasePosition], m_MouseReleasePosition);
+	serializer.SerializeVec2(g_Properties[PIDX_MousePosition], m_MousePosition);
+	serializer.SerializeVec2(g_Properties[PIDX_LastMousePosition], m_LastMousePosition);
+	serializer.SerializeVec2(g_Properties[PIDX_MouseScroll], m_MouseScroll);
+	serializer.Close();
 }
 bool InputHandler::Serialize(bool writing)
 {

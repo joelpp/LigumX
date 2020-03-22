@@ -23,11 +23,12 @@ const ClassPropertyData Texture::g_Properties[] =
 void Texture::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeString("Filename", m_Filename);
-	serializer.SerializeBool("IsCubeMap", m_IsCubeMap);
-	serializer.SerializeInt("NumChannels", m_NumChannels);
-	serializer.SerializeInt("BitsPerPixel", m_BitsPerPixel);
-	serializer.SerializeIVec2("Size", m_Size);
+	serializer.SerializeString(g_Properties[PIDX_Filename], m_Filename);
+	serializer.SerializeBool(g_Properties[PIDX_IsCubeMap], m_IsCubeMap);
+	serializer.SerializeInt(g_Properties[PIDX_NumChannels], m_NumChannels);
+	serializer.SerializeInt(g_Properties[PIDX_BitsPerPixel], m_BitsPerPixel);
+	serializer.SerializeIVec2(g_Properties[PIDX_Size], m_Size);
+	serializer.Close();
 }
 bool Texture::Serialize(bool writing)
 {

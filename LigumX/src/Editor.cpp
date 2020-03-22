@@ -66,9 +66,10 @@ const ClassPropertyData Editor::g_Properties[] =
 void Editor::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("Options", m_Options);
-	serializer.SerializeInt("PickingBufferSize", m_PickingBufferSize);
-	serializer.SerializeObjectPtr("SelectedNode", m_SelectedNode);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_Options], m_Options);
+	serializer.SerializeInt(g_Properties[PIDX_PickingBufferSize], m_PickingBufferSize);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_SelectedNode], m_SelectedNode);
+	serializer.Close();
 }
 bool Editor::Serialize(bool writing)
 {
