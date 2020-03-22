@@ -160,6 +160,132 @@ bool Serializer2::SerializePropertyCommon(const ClassPropertyData& propertyData)
 
 	return true;
 }
+///////////////////////////////
+
+std::string Serializer2::GetAsSerialized(bool variable)
+{
+	std::stringstream sstr;
+	sstr << variable ? "1" : "0";
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(float variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(int variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(lxInt64 variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(std::string& variable)
+{
+	std::stringstream sstr;
+	sstr << variable;
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(glm::ivec2& variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable.x);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.y);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(glm::highp_ivec2& variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable.x);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.y);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(glm::ivec3& variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable.x);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.y);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.z);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(glm::vec2& variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable.x);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.y);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(glm::vec3& variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable.x);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.y);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.z);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(glm::ivec4& variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable.x);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.y);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.z);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.w);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+std::string Serializer2::GetAsSerialized(glm::vec4& variable)
+{
+	std::stringstream sstr;
+	sstr << std::to_string(variable.x);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.y);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.z);
+	sstr << gc_NewLine;
+	sstr << std::to_string(variable.w);
+	sstr << gc_NewLine;
+	return sstr.str();
+}
+
+
+//////////////////////	
 
 void Serializer2::SerializeBool(const ClassPropertyData& propertyData, bool& variable)
 {
@@ -168,211 +294,14 @@ void Serializer2::SerializeBool(const ClassPropertyData& propertyData, bool& var
 		bool output = SerializePropertyCommon(propertyData);
 		if (output)
 		{
-			m_FileData += variable ? "1" : "0";
-			m_FileData += gc_NewLine;
+			m_FileData += GetAsSerialized(variable);
 		}
 	}
 	else
 	{
-		FIND_VARIABLE(propertyData.m_Name, 1);
-
-		int val = StringUtils::ToInt(serializerVariable.GetValues()[0]);
-		variable = (val == 1);
+		SerializeBool(propertyData.m_Name, variable);
 	}
 }
-
-
-void Serializer2::SerializeBool(const std::string& varName, bool& variable)
-{
-	if (m_Writing)
-	{
-		
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(1);
-
-		int val = StringUtils::ToInt(serializerVariable.GetValues()[0]);
-		variable = (val == 1);
-	}
-}
-
-void Serializer2::SerializeFloat(const std::string& varName, float& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(1);
-
-		float val = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
-		variable = val;
-	}
-}
-
-void Serializer2::SerializeInt(const std::string& varName, int& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		
-		FIND_VARIABLE_SIZE(1);
-
-		int val = StringUtils::ToInt(serializerVariable.GetValues()[0]);
-		variable = val;
-	}
-}
-
-void Serializer2::SerializeInt64(const std::string& varName, lxInt64& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(1);
-
-		lxInt64 val = StringUtils::ToInt64(serializerVariable.GetValues()[0]);
-		variable = val;
-	}
-}
-
-void Serializer2::SerializeString(const std::string& varName, std::string& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(1);
-
-		variable = serializerVariable.GetValues()[0];
-	}
-}
-
-void Serializer2::SerializeIVec2(const std::string& varName, glm::ivec2& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(2);
-
-		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
-		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
-	}
-}
-
-void Serializer2::SerializeHighp_IVec2(const std::string& varName, glm::highp_ivec2& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(2);
-
-		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
-		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
-	}
-}
-
-void Serializer2::SerializeIVec3(const std::string& varName, glm::ivec3& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(3);
-
-		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
-		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
-		variable.z = StringUtils::ToInt(serializerVariable.GetValues()[2]);
-	}
-}
-
-void Serializer2::SerializeVec2(const std::string& varName, glm::vec2& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(2);
-
-		variable.x = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
-		variable.y = StringUtils::ToFloat(serializerVariable.GetValues()[1]);
-	}
-}
-
-void Serializer2::SerializeVec3(const std::string& varName, glm::vec3& variable)
-{
-	if (m_Writing)
-	{
-		//m_FileStream << variable.x << std::endl;
-		//m_FileStream << variable.y << std::endl;
-		//m_FileStream << variable.z << std::endl;
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(3);
-
-		variable.x = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
-		variable.y = StringUtils::ToFloat(serializerVariable.GetValues()[1]);
-		variable.z = StringUtils::ToFloat(serializerVariable.GetValues()[2]);
-	}
-
-}
-
-void Serializer2::SerializeIVec4(const std::string& varName, glm::ivec4& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(4);
-
-		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
-		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
-		variable.z = StringUtils::ToInt(serializerVariable.GetValues()[2]);
-		variable.w = StringUtils::ToInt(serializerVariable.GetValues()[3]);
-	}
-}
-
-void Serializer2::SerializeVec4(const std::string& varName, glm::vec4& variable)
-{
-	if (m_Writing)
-	{
-
-	}
-	else
-	{
-		FIND_VARIABLE_SIZE(4);
-
-		variable.x = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
-		variable.y = StringUtils::ToFloat(serializerVariable.GetValues()[1]);
-		variable.z = StringUtils::ToFloat(serializerVariable.GetValues()[2]);
-		variable.w = StringUtils::ToFloat(serializerVariable.GetValues()[3]);
-	}
-}
-
-
-//////////////////////	
 
 
 void Serializer2::SerializeFloat(const ClassPropertyData& propertyData, float& variable)
@@ -581,6 +510,199 @@ void Serializer2::SerializeVec4(const ClassPropertyData& propertyData, glm::vec4
 	else
 	{
 		SerializeVec4(propertyData.m_Name, variable);
+	}
+}
+
+
+
+///////////////////////////////
+
+void Serializer2::SerializeBool(const std::string& varName, bool& variable)
+{
+	if (m_Writing)
+	{
+		
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(1);
+
+		int val = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable = (val == 1);
+	}
+}
+
+void Serializer2::SerializeFloat(const std::string& varName, float& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(1);
+
+		float val = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
+		variable = val;
+	}
+}
+
+void Serializer2::SerializeInt(const std::string& varName, int& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		
+		FIND_VARIABLE_SIZE(1);
+
+		int val = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable = val;
+	}
+}
+
+void Serializer2::SerializeInt64(const std::string& varName, lxInt64& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(1);
+
+		lxInt64 val = StringUtils::ToInt64(serializerVariable.GetValues()[0]);
+		variable = val;
+	}
+}
+
+void Serializer2::SerializeString(const std::string& varName, std::string& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(1);
+
+		variable = serializerVariable.GetValues()[0];
+	}
+}
+
+void Serializer2::SerializeIVec2(const std::string& varName, glm::ivec2& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(2);
+
+		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
+	}
+}
+
+void Serializer2::SerializeHighp_IVec2(const std::string& varName, glm::highp_ivec2& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(2);
+
+		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
+	}
+}
+
+void Serializer2::SerializeIVec3(const std::string& varName, glm::ivec3& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(3);
+
+		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
+		variable.z = StringUtils::ToInt(serializerVariable.GetValues()[2]);
+	}
+}
+
+void Serializer2::SerializeVec2(const std::string& varName, glm::vec2& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(2);
+
+		variable.x = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToFloat(serializerVariable.GetValues()[1]);
+	}
+}
+
+void Serializer2::SerializeVec3(const std::string& varName, glm::vec3& variable)
+{
+	if (m_Writing)
+	{
+		//m_FileStream << variable.x << std::endl;
+		//m_FileStream << variable.y << std::endl;
+		//m_FileStream << variable.z << std::endl;
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(3);
+
+		variable.x = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToFloat(serializerVariable.GetValues()[1]);
+		variable.z = StringUtils::ToFloat(serializerVariable.GetValues()[2]);
+	}
+
+}
+
+void Serializer2::SerializeIVec4(const std::string& varName, glm::ivec4& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(4);
+
+		variable.x = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToInt(serializerVariable.GetValues()[1]);
+		variable.z = StringUtils::ToInt(serializerVariable.GetValues()[2]);
+		variable.w = StringUtils::ToInt(serializerVariable.GetValues()[3]);
+	}
+}
+
+void Serializer2::SerializeVec4(const std::string& varName, glm::vec4& variable)
+{
+	if (m_Writing)
+	{
+
+	}
+	else
+	{
+		FIND_VARIABLE_SIZE(4);
+
+		variable.x = StringUtils::ToFloat(serializerVariable.GetValues()[0]);
+		variable.y = StringUtils::ToFloat(serializerVariable.GetValues()[1]);
+		variable.z = StringUtils::ToFloat(serializerVariable.GetValues()[2]);
+		variable.w = StringUtils::ToFloat(serializerVariable.GetValues()[3]);
 	}
 }
 

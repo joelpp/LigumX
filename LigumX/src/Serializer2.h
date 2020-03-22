@@ -126,10 +126,29 @@ public:
 
 	bool FindVariable(SerializerInputVariable& var, const std::string& varName);
 
-	bool SerializePropertyCommon(const ClassPropertyData& propertyData);
+	std::string GetAsSerialized(bool variable);
+	std::string GetAsSerialized(float variable);
+	std::string GetAsSerialized(int variable);
+	std::string GetAsSerialized(lxInt64 variable);
+	std::string GetAsSerialized(std::string& variable);
+	std::string GetAsSerialized(glm::ivec2& variable);
+	std::string GetAsSerialized(glm::highp_ivec2& variable);
+	std::string GetAsSerialized(glm::ivec3& variable);
+	std::string GetAsSerialized(glm::vec2& variable);
+	std::string GetAsSerialized(glm::vec3& variable);
+	std::string GetAsSerialized(glm::ivec4& variable);
+	std::string GetAsSerialized(glm::vec4& variable);
+	//template <typename T>
+	//std::string Serializer2::GetAsSerialized(const ClassPropertyData& propertyData, T& variablePtr)
+	//{
+	//	std::stringstream sstr;
+	//	sstr << std::to_string(variablePtr.GetObjectID());
+	//	sstr << gc_NewLine;
+	//	return sstr.str();
+	//}
+
 
 	void SerializeBool(const std::string& varName, bool& variable);
-	void SerializeBool(const ClassPropertyData& propertyData, bool& variable);
 	void SerializeFloat(const std::string& varName, float& variable);
 	void SerializeInt(const std::string& varName, int& variable);
 	void SerializeInt64(const std::string& varName, lxInt64& variable);
@@ -147,7 +166,10 @@ public:
 	void SerializeVec4(const std::string& varName, glm::vec4& variable);
 
 	/**/
-	
+
+	bool SerializePropertyCommon(const ClassPropertyData& propertyData);
+
+	void SerializeBool(const ClassPropertyData& propertyData, bool& variable);
 	void SerializeFloat(const ClassPropertyData& propertyData, float& variable);
 	void SerializeInt(const ClassPropertyData& propertyData, int& variable);
 	void SerializeInt64(const ClassPropertyData& propertyData, lxInt64& variable);
@@ -305,6 +327,55 @@ public:
 		}
 	}
 
+	template<typename T>
+	void SerializeVector(const ClassPropertyData& propertyData, std::vector<T>& variable)
+	{
+		if (m_Writing)
+		{
+			bool output = SerializePropertyCommon(propertyData);
+			if (output)
+			{
+				m_FileData += std::to_string(variable.size());
+				m_FileData += gc_NewLine;
+
+				for (int i = 0; i < variable.size(); ++i)
+				{
+					T& elem = variable[i];
+					m_FileData += GetAsSerialized(elem);
+				}
+			}
+		}
+		else
+		{
+			SerializeVector(propertyData.m_Name, variable);
+		}
+	}
+
+	template<typename T>
+	void SerializeVector(const ClassPropertyData& propertyData, std::vector<T*>& variable)
+	{
+		if (m_Writing)
+		{
+			bool output = SerializePropertyCommon(propertyData);
+			if (output)
+			{
+				m_FileData += std::to_string(variable.size());
+				m_FileData += gc_NewLine;
+
+				for (int i = 0; i < variable.size(); ++i)
+				{
+					T* elem = variable[i];
+					m_FileData += GetAsSerialized(*elem);
+
+					variable->Serialize(m_Writing);
+				}
+			}
+		}
+		else
+		{
+			SerializeVector(propertyData.m_Name, variable);
+		}
+	}
 
 private:
 

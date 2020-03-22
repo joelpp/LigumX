@@ -14,7 +14,7 @@ const ClassPropertyData CPUBuffers::g_Properties[] =
 void CPUBuffers::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeVector("VertexPositions", m_VertexPositions);
+	serializer.SerializeVector(g_Properties[PIDX_VertexPositions], m_VertexPositions);
 	serializer.SerializeVector("VertexNormals", m_VertexNormals);
 	serializer.SerializeVector("VertexUVs", m_VertexUVs);
 	serializer.SerializeVector("IndexBuffer", m_IndexBuffer);
