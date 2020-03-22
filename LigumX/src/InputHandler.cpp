@@ -50,19 +50,19 @@ bool InputHandler::Serialize(bool writing)
 bool InputHandler::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Mouse1Pressed", m_Mouse1Pressed  );
-	ImguiHelpers::ShowBool("Mouse2Pressed", m_Mouse2Pressed  );
-	ImguiHelpers::ShowBool("CtrlHeld", m_CtrlHeld  );
-	ImguiHelpers::ShowBool("Dragging", m_Dragging  );
-	ImguiHelpers::ShowVec2("DragDistance", m_DragDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("LastDragDistance", m_LastDragDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("DragAccumulator", m_DragAccumulator , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("MouseClickPosition", m_MouseClickPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("LastMouseClickPosition", m_LastMouseClickPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("MouseReleasePosition", m_MouseReleasePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("MousePosition", m_MousePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("LastMousePosition", m_LastMousePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("MouseScroll", m_MouseScroll , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Mouse1Pressed], &m_Mouse1Pressed  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Mouse2Pressed], &m_Mouse2Pressed  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CtrlHeld], &m_CtrlHeld  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Dragging], &m_Dragging  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DragDistance], &m_DragDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LastDragDistance], &m_LastDragDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DragAccumulator], &m_DragAccumulator , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseClickPosition], &m_MouseClickPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LastMouseClickPosition], &m_LastMouseClickPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseReleasePosition], &m_MouseReleasePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MousePosition], &m_MousePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LastMousePosition], &m_LastMousePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseScroll], &m_MouseScroll , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* InputHandler::GetTypeName()

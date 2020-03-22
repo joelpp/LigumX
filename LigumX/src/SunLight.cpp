@@ -41,12 +41,12 @@ bool SunLight::Serialize(bool writing)
 bool SunLight::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("UseShadowMap", m_UseShadowMap  );
-	ImguiHelpers::ShowFloat("Time", m_Time , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("Orientation", m_Orientation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("Speed", m_Speed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("UseSkybox", m_UseSkybox  );
-	ImguiHelpers::ShowObjectPtr("Skybox", m_Skybox  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseShadowMap], &m_UseShadowMap  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Time], &m_Time , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Orientation], &m_Orientation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Speed], &m_Speed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseSkybox], &m_UseSkybox  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Skybox], m_Skybox  );
 	return true;
 }
 const char* SunLight::GetTypeName()

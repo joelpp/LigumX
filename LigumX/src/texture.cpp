@@ -42,11 +42,11 @@ bool Texture::Serialize(bool writing)
 bool Texture::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowString("Filename", m_Filename  );
-	ImguiHelpers::ShowBool("IsCubeMap", m_IsCubeMap  );
-	ImguiHelpers::ShowInt("NumChannels", m_NumChannels , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowInt("BitsPerPixel", m_BitsPerPixel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowIVec2("Size", m_Size , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Filename], &m_Filename  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsCubeMap], &m_IsCubeMap  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumChannels], &m_NumChannels , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_BitsPerPixel], &m_BitsPerPixel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Size], &m_Size , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* Texture::GetTypeName()

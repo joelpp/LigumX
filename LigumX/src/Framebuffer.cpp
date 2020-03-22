@@ -38,10 +38,10 @@ bool Framebuffer::Serialize(bool writing)
 bool Framebuffer::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowInt("Width", m_Width , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowInt("Height", m_Height , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowBool("HasDepth", m_HasDepth  );
-	ImguiHelpers::ShowInt("NumColorTargets", m_NumColorTargets , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Width], &m_Width , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Height], &m_Height , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HasDepth], &m_HasDepth  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumColorTargets], &m_NumColorTargets , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* Framebuffer::GetTypeName()

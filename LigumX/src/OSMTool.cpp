@@ -64,16 +64,16 @@ bool OSMTool::Serialize(bool writing)
 bool OSMTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
-	ImguiHelpers::ShowObjectPtr("SelectedNode", m_SelectedNode  );
-	ImguiHelpers::ShowVector("SelectedWays", m_SelectedWays  );
-	ImguiHelpers::ShowBool("SearchOnlyWithinSector", m_SearchOnlyWithinSector  );
-	ImguiHelpers::ShowIVec2("SelectedSectorIndex", m_SelectedSectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowVec3("WorldSpacePosition", m_WorldSpacePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("ShowNodes", m_ShowNodes  );
-	ImguiHelpers::ShowBool("ShowWays", m_ShowWays  );
-	ImguiHelpers::ShowBool("ShowFlatWays", m_ShowFlatWays  );
-	ImguiHelpers::ShowBool("DebugPointInRoad", m_DebugPointInRoad  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedNode], m_SelectedNode  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedWays], m_SelectedWays  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SearchOnlyWithinSector], &m_SearchOnlyWithinSector  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedSectorIndex], &m_SelectedSectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WorldSpacePosition], &m_WorldSpacePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowNodes], &m_ShowNodes  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowWays], &m_ShowWays  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowFlatWays], &m_ShowFlatWays  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugPointInRoad], &m_DebugPointInRoad  );
 	return true;
 }
 const char* OSMTool::GetTypeName()

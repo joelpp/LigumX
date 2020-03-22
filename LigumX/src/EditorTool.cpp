@@ -25,7 +25,7 @@ bool EditorTool::Serialize(bool writing)
 bool EditorTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Active", m_Active  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Active], &m_Active  );
 	return true;
 }
 const char* EditorTool::GetTypeName()

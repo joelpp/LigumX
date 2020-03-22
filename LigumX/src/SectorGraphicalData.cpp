@@ -43,13 +43,13 @@ bool SectorGraphicalData::Serialize(bool writing)
 bool SectorGraphicalData::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowObjectPtr("NodesModel", m_NodesModel  );
-	ImguiHelpers::ShowObjectPtr("WaysModel", m_WaysModel  );
-	ImguiHelpers::ShowVector("WaysModelsVector", m_WaysModelsVector  );
-	ImguiHelpers::ShowVector("RoadEntities", m_RoadEntities  );
-	ImguiHelpers::ShowVector("StaticEntities", m_StaticEntities  );
-	ImguiHelpers::ShowObjectPtr("SplatMapTexture", m_SplatMapTexture  );
-	ImguiHelpers::ShowObjectPtr("AlbedoTexture", m_AlbedoTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NodesModel], m_NodesModel  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WaysModel], m_WaysModel  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WaysModelsVector], m_WaysModelsVector  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RoadEntities], m_RoadEntities  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_StaticEntities], m_StaticEntities  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SplatMapTexture], m_SplatMapTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AlbedoTexture], m_AlbedoTexture  );
 	return true;
 }
 const char* SectorGraphicalData::GetTypeName()

@@ -37,13 +37,13 @@ bool CullingOptions::Serialize(bool writing)
 bool CullingOptions::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("CullEntities", m_CullEntities  );
-	ImguiHelpers::ShowBool("CullSectors", m_CullSectors  );
-	ImguiHelpers::ShowBool("UseDotProduct", m_UseDotProduct  );
-	ImguiHelpers::ShowBool("UseAABBClipPos", m_UseAABBClipPos  );
-	ImguiHelpers::ShowBool("DebugAABBClippPos", m_DebugAABBClippPos  );
-	ImguiHelpers::ShowBool("DebugDotProduct", m_DebugDotProduct  );
-	ImguiHelpers::ShowFloat("DebugDotProductMaxDistance", m_DebugDotProductMaxDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CullEntities], &m_CullEntities  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CullSectors], &m_CullSectors  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseDotProduct], &m_UseDotProduct  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseAABBClipPos], &m_UseAABBClipPos  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugAABBClippPos], &m_DebugAABBClippPos  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugDotProduct], &m_DebugDotProduct  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugDotProductMaxDistance], &m_DebugDotProductMaxDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* CullingOptions::GetTypeName()

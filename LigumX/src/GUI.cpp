@@ -30,8 +30,8 @@ bool GUI::Serialize(bool writing)
 bool GUI::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("m_Enabled", m_m_Enabled  );
-	ImguiHelpers::ShowInt("NumActiveWindows", m_NumActiveWindows , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_m_Enabled], &m_m_Enabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumActiveWindows], &m_NumActiveWindows , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* GUI::GetTypeName()

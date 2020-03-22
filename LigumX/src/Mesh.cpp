@@ -34,9 +34,9 @@ bool Mesh::Serialize(bool writing)
 bool Mesh::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("UsesIndexBuffer", m_UsesIndexBuffer  );
-	ImguiHelpers::ShowBool("WireframeRendering", m_WireframeRendering  );
-	ImguiHelpers::ShowBool("PointRendering", m_PointRendering  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UsesIndexBuffer], &m_UsesIndexBuffer  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WireframeRendering], &m_WireframeRendering  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PointRendering], &m_PointRendering  );
 	return true;
 }
 const char* Mesh::GetTypeName()

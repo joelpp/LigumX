@@ -26,7 +26,7 @@ bool OSMElementComponent::Serialize(bool writing)
 bool OSMElementComponent::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowObjectPtr("Way", m_Way  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Way], m_Way  );
 	return true;
 }
 const char* OSMElementComponent::GetTypeName()

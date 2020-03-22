@@ -31,9 +31,9 @@ bool OSMElementTypeData::Serialize(bool writing)
 bool OSMElementTypeData::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("FillIn", m_FillIn  );
-	ImguiHelpers::ShowVec3("DebugColor", m_DebugColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVector("Attributes", m_Attributes  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FillIn], &m_FillIn  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugColor], &m_DebugColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Attributes], m_Attributes  );
 	return true;
 }
 const char* OSMElementTypeData::GetTypeName()

@@ -39,11 +39,11 @@ bool Way::Serialize(bool writing)
 bool Way::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowInt64("OSMId", m_OSMId , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
-	ImguiHelpers::ShowVector("Nodes", m_Nodes  );
-	ImguiHelpers::ShowInt("IndexInSector", m_IndexInSector , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowBool("FilledIn", m_FilledIn  );
-	ImguiHelpers::ShowString("AllTags", m_AllTags  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OSMId], &m_OSMId , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Nodes], m_Nodes  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IndexInSector], &m_IndexInSector , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FilledIn], &m_FilledIn  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AllTags], &m_AllTags  );
 	return true;
 }
 const char* Way::GetTypeName()

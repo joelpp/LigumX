@@ -61,17 +61,17 @@ bool Camera::Serialize(bool writing)
 bool Camera::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowVec3("Position", m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("FrontVector", m_FrontVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("RightVector", m_RightVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("UpVector", m_UpVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("NearPlane", m_NearPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("FarPlane", m_FarPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowInt("ProjectionType", m_ProjectionType , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowFloat("OrthoBorders", m_OrthoBorders , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("ViewSize", m_ViewSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MovementSpeed", m_MovementSpeed , 0.f, 2000.f );
-	ImguiHelpers::ShowFloat("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Position], &m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FrontVector], &m_FrontVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RightVector], &m_RightVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UpVector], &m_UpVector , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NearPlane], &m_NearPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FarPlane], &m_FarPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ProjectionType], &m_ProjectionType , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OrthoBorders], &m_OrthoBorders , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ViewSize], &m_ViewSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MovementSpeed], &m_MovementSpeed , 0.f, 2000.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], &m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* Camera::GetTypeName()

@@ -30,7 +30,7 @@ bool OSMElementTypeDataStore::Serialize(bool writing)
 bool OSMElementTypeDataStore::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowVector("Data", m_Data  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Data], m_Data  );
 	return true;
 }
 const char* OSMElementTypeDataStore::GetTypeName()

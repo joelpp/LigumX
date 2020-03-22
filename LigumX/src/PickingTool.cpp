@@ -52,18 +52,18 @@ bool PickingTool::Serialize(bool writing)
 bool PickingTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
-	ImguiHelpers::ShowObjectPtr("PickedEntity", m_PickedEntity  );
-	ImguiHelpers::ShowVec2("AimingWindowPosition", m_AimingWindowPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("AimingWorldPosition", m_AimingWorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("AimingID", m_AimingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("PickedWorldPosition", m_PickedWorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec4("PickingData", m_PickingData , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("PickedDepth", m_PickedDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("PickedID", m_PickedID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("PickDebugModels", m_PickDebugModels  );
-	ImguiHelpers::ShowFloat("PickedHeight", m_PickedHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowObjectPtr("PickedSector", m_PickedSector  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedEntity], m_PickedEntity  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AimingWindowPosition], &m_AimingWindowPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AimingWorldPosition], &m_AimingWorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AimingID], &m_AimingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedWorldPosition], &m_PickedWorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingData], &m_PickingData , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedDepth], &m_PickedDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedID], &m_PickedID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickDebugModels], &m_PickDebugModels  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedHeight], &m_PickedHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedSector], m_PickedSector  );
 	return true;
 }
 const char* PickingTool::GetTypeName()

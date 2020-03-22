@@ -40,9 +40,9 @@ bool Model::Serialize(bool writing)
 bool Model::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowString("Filename", m_Filename  );
-	ImguiHelpers::ShowVector("Materials", m_Materials  );
-	ImguiHelpers::ShowVector("Meshes", m_Meshes  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Filename], &m_Filename  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Materials], m_Materials  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Meshes], m_Meshes  );
 	return true;
 }
 const char* Model::GetTypeName()

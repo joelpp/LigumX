@@ -65,26 +65,26 @@ bool DisplayOptions::Serialize(bool writing)
 bool DisplayOptions::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("UseSkyLighting", m_UseSkyLighting  );
-	ImguiHelpers::ShowBool("RenderTerrain", m_RenderTerrain  );
-	ImguiHelpers::ShowBool("DrawSky", m_DrawSky  );
-	ImguiHelpers::ShowBool("WireframeRendering", m_WireframeRendering  );
-	ImguiHelpers::ShowBool("UseLighting", m_UseLighting  );
-	ImguiHelpers::ShowBool("ShowNormals", m_ShowNormals  );
-	ImguiHelpers::ShowBool("ShowUVs", m_ShowUVs  );
-	ImguiHelpers::ShowBool("ShowSpecular", m_ShowSpecular  );
-	ImguiHelpers::ShowBool("ShowDiffuse", m_ShowDiffuse  );
-	ImguiHelpers::ShowBool("ShowAmbient", m_ShowAmbient  );
-	ImguiHelpers::ShowBool("ShowFPS", m_ShowFPS  );
-	ImguiHelpers::ShowBool("ShowDepth", m_ShowDepth  );
-	ImguiHelpers::ShowBool("LinearizeDepth", m_LinearizeDepth  );
-	ImguiHelpers::ShowBool("BlinnPhongShading", m_BlinnPhongShading  );
-	ImguiHelpers::ShowBool("RenderTextureOverlay", m_RenderTextureOverlay  );
-	ImguiHelpers::ShowBool("RenderOpaque", m_RenderOpaque  );
-	ImguiHelpers::ShowBool("RenderShadows", m_RenderShadows  );
-	ImguiHelpers::ShowBool("OutputGLErrors", m_OutputGLErrors  );
-	ImguiHelpers::ShowBool("DisplayDebugModels", m_DisplayDebugModels  );
-	ImguiHelpers::ShowBool("PickingEnabled", m_PickingEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseSkyLighting], &m_UseSkyLighting  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RenderTerrain], &m_RenderTerrain  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DrawSky], &m_DrawSky  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WireframeRendering], &m_WireframeRendering  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseLighting], &m_UseLighting  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowNormals], &m_ShowNormals  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowUVs], &m_ShowUVs  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowSpecular], &m_ShowSpecular  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowDiffuse], &m_ShowDiffuse  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowAmbient], &m_ShowAmbient  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowFPS], &m_ShowFPS  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowDepth], &m_ShowDepth  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LinearizeDepth], &m_LinearizeDepth  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_BlinnPhongShading], &m_BlinnPhongShading  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RenderTextureOverlay], &m_RenderTextureOverlay  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RenderOpaque], &m_RenderOpaque  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RenderShadows], &m_RenderShadows  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OutputGLErrors], &m_OutputGLErrors  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayDebugModels], &m_DisplayDebugModels  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingEnabled], &m_PickingEnabled  );
 	return true;
 }
 const char* DisplayOptions::GetTypeName()

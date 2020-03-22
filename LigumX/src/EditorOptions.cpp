@@ -63,26 +63,26 @@ bool EditorOptions::Serialize(bool writing)
 bool EditorOptions::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
-	ImguiHelpers::ShowBool("ShowWorldWindow", m_ShowWorldWindow  );
-	ImguiHelpers::ShowBool("ShowMaterialWindow", m_ShowMaterialWindow  );
-	ImguiHelpers::ShowBool("ShowEntityWindow", m_ShowEntityWindow  );
-	ImguiHelpers::ShowBool("ShowObjectCreator", m_ShowObjectCreator  );
-	ImguiHelpers::ShowBool("ShowEngineStats", m_ShowEngineStats  );
-	ImguiHelpers::ShowBool("ShowTestGUI", m_ShowTestGUI  );
-	ImguiHelpers::ShowBool("ShowObjectManager", m_ShowObjectManager  );
-	ImguiHelpers::ShowBool("BackupDataOnSave", m_BackupDataOnSave  );
-	ImguiHelpers::ShowBool("DebugDisplay", m_DebugDisplay  );
-	ImguiHelpers::ShowBool("DisplayMessages", m_DisplayMessages  );
-	ImguiHelpers::ShowBool("SaveDisabled", m_SaveDisabled  );
-	ImguiHelpers::ShowBool("DisplayPickingTool", m_DisplayPickingTool  );
-	ImguiHelpers::ShowBool("DisplayOSMTool", m_DisplayOSMTool  );
-	ImguiHelpers::ShowBool("DisplaySectorTool", m_DisplaySectorTool  );
-	ImguiHelpers::ShowBool("DisplayFramebufferTool", m_DisplayFramebufferTool  );
-	ImguiHelpers::ShowBool("DisplayTerrainTool", m_DisplayTerrainTool  );
-	ImguiHelpers::ShowBool("DisplayAxisGizmo", m_DisplayAxisGizmo  );
-	ImguiHelpers::ShowFloat("MouseScrollCameraSpeed", m_MouseScrollCameraSpeed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MouseScrollEntityCloseupPercent", m_MouseScrollEntityCloseupPercent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowWorldWindow], &m_ShowWorldWindow  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowMaterialWindow], &m_ShowMaterialWindow  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowEntityWindow], &m_ShowEntityWindow  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowObjectCreator], &m_ShowObjectCreator  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowEngineStats], &m_ShowEngineStats  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowTestGUI], &m_ShowTestGUI  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowObjectManager], &m_ShowObjectManager  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_BackupDataOnSave], &m_BackupDataOnSave  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugDisplay], &m_DebugDisplay  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayMessages], &m_DisplayMessages  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SaveDisabled], &m_SaveDisabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayPickingTool], &m_DisplayPickingTool  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayOSMTool], &m_DisplayOSMTool  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplaySectorTool], &m_DisplaySectorTool  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayFramebufferTool], &m_DisplayFramebufferTool  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayTerrainTool], &m_DisplayTerrainTool  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayAxisGizmo], &m_DisplayAxisGizmo  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseScrollCameraSpeed], &m_MouseScrollCameraSpeed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseScrollEntityCloseupPercent], &m_MouseScrollEntityCloseupPercent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* EditorOptions::GetTypeName()

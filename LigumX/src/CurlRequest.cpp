@@ -45,14 +45,14 @@ bool CurlRequest::Serialize(bool writing)
 bool CurlRequest::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowInt("State", m_State , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowVec2("Coords", m_Coords , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("Extent", m_Extent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowString("Result", m_Result  );
-	ImguiHelpers::ShowString("Filename", m_Filename  );
-	ImguiHelpers::ShowObjectPtr("Sector", m_Sector  );
-	ImguiHelpers::ShowIVec2("SectorIndex", m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowBool("Async", m_Async  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_State], &m_State , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Coords], &m_Coords , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Extent], &m_Extent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Result], &m_Result  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Filename], &m_Filename  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Sector], m_Sector  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorIndex], &m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Async], &m_Async  );
 	return true;
 }
 const char* CurlRequest::GetTypeName()

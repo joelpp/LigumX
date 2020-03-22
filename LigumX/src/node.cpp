@@ -46,17 +46,17 @@ bool Node::Serialize(bool writing)
 bool Node::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowInt64("OSMId", m_OSMId , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
-	ImguiHelpers::ShowVec2("LongLat", m_LongLat , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("WorldPosition", m_WorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("Elevation", m_Elevation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVector("Ways", m_Ways  );
-	ImguiHelpers::ShowIVec2("SectorIndex", m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowVec2("SectorOffset", m_SectorOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("SectorRelativePosition", m_SectorRelativePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowIVec2("QuantizedEarthPosition", m_QuantizedEarthPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowIVec2("QuantizedSectorPosition", m_QuantizedSectorPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowHighp_IVec2("HighPrecisionEarthCoordinates", m_HighPrecisionEarthCoordinates , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OSMId], &m_OSMId , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LongLat], &m_LongLat , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WorldPosition], &m_WorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Elevation], &m_Elevation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Ways], m_Ways  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorIndex], &m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorOffset], &m_SectorOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorRelativePosition], &m_SectorRelativePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_QuantizedEarthPosition], &m_QuantizedEarthPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_QuantizedSectorPosition], &m_QuantizedSectorPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighPrecisionEarthCoordinates], &m_HighPrecisionEarthCoordinates , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
 	return true;
 }
 const char* Node::GetTypeName()

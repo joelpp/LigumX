@@ -70,19 +70,19 @@ bool SectorTool::Serialize(bool writing)
 bool SectorTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
-	ImguiHelpers::ShowVec3("HighlightedWorldCoordinates", m_HighlightedWorldCoordinates , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec2("HighlightedSectorUV", m_HighlightedSectorUV , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowObjectPtr("HighlightedSector", m_HighlightedSector  );
-	ImguiHelpers::ShowVec3("SectorGridColor", m_SectorGridColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("AsyncSectorLoading", m_AsyncSectorLoading  );
-	ImguiHelpers::ShowFloat("NodeSize", m_NodeSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowInt("LoadingRingSize", m_LoadingRingSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowBool("ShowSectorAABBs", m_ShowSectorAABBs  );
-	ImguiHelpers::ShowBool("ShowGrid", m_ShowGrid  );
-	ImguiHelpers::ShowBool("HighlightSelectedSector", m_HighlightSelectedSector  );
-	ImguiHelpers::ShowBool("LoadSectorsOnClick", m_LoadSectorsOnClick  );
-	ImguiHelpers::ShowInt("SelectedWayIndex", m_SelectedWayIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedWorldCoordinates], &m_HighlightedWorldCoordinates , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedSectorUV], &m_HighlightedSectorUV , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedSector], m_HighlightedSector  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorGridColor], &m_SectorGridColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AsyncSectorLoading], &m_AsyncSectorLoading  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NodeSize], &m_NodeSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LoadingRingSize], &m_LoadingRingSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowSectorAABBs], &m_ShowSectorAABBs  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowGrid], &m_ShowGrid  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightSelectedSector], &m_HighlightSelectedSector  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LoadSectorsOnClick], &m_LoadSectorsOnClick  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedWayIndex], &m_SelectedWayIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* SectorTool::GetTypeName()

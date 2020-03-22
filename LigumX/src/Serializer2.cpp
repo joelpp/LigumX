@@ -36,10 +36,10 @@ bool Serializer2::Serialize(bool writing)
 bool Serializer2::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Writing", m_Writing  );
-	ImguiHelpers::ShowBool("IsValid", m_IsValid  );
-	ImguiHelpers::ShowString("Filename", m_Filename  );
-	ImguiHelpers::ShowVector("SerializerInputVariables", m_SerializerInputVariables  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Writing], &m_Writing  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsValid], &m_IsValid  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Filename], &m_Filename  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SerializerInputVariables], m_SerializerInputVariables  );
 	return true;
 }
 const char* Serializer2::GetTypeName()

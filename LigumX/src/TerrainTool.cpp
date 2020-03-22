@@ -47,13 +47,13 @@ bool TerrainTool::Serialize(bool writing)
 bool TerrainTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("TerrainErasureMode", m_TerrainErasureMode  );
-	ImguiHelpers::ShowFloat("TerrainBrushSize", m_TerrainBrushSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec4("XYZMask", m_XYZMask , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowIVec2("ClickedTexel", m_ClickedTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowIVec2("StartTexel", m_StartTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowInt("SplatMapIncrement", m_SplatMapIncrement , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowObjectPtr("ClickedSector", m_ClickedSector  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_TerrainErasureMode], &m_TerrainErasureMode  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_TerrainBrushSize], &m_TerrainBrushSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_XYZMask], &m_XYZMask , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ClickedTexel], &m_ClickedTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_StartTexel], &m_StartTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SplatMapIncrement], &m_SplatMapIncrement , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ClickedSector], m_ClickedSector  );
 	return true;
 }
 const char* TerrainTool::GetTypeName()

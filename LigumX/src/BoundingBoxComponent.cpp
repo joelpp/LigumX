@@ -27,7 +27,7 @@ bool BoundingBoxComponent::Serialize(bool writing)
 bool BoundingBoxComponent::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("UpdatesWithEntity", m_UpdatesWithEntity  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UpdatesWithEntity], &m_UpdatesWithEntity  );
 	return true;
 }
 const char* BoundingBoxComponent::GetTypeName()

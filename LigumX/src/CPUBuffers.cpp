@@ -31,10 +31,10 @@ bool CPUBuffers::Serialize(bool writing)
 bool CPUBuffers::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowVector("VertexPositions", m_VertexPositions  );
-	ImguiHelpers::ShowVector("VertexNormals", m_VertexNormals  );
-	ImguiHelpers::ShowVector("VertexUVs", m_VertexUVs  );
-	ImguiHelpers::ShowVector("IndexBuffer", m_IndexBuffer  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_VertexPositions], m_VertexPositions  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_VertexNormals], m_VertexNormals  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_VertexUVs], m_VertexUVs  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IndexBuffer], m_IndexBuffer  );
 	return true;
 }
 const char* CPUBuffers::GetTypeName()

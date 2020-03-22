@@ -66,25 +66,25 @@ bool Material::Serialize(bool writing)
 bool Material::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
-	ImguiHelpers::ShowVec3("AmbientColor", m_AmbientColor , 0.f, 1.f );
-	ImguiHelpers::ShowVec3("DiffuseColor", m_DiffuseColor , 0.f, 1.f );
-	ImguiHelpers::ShowVec3("SpecularColor", m_SpecularColor , 0.f, 1.f );
-	ImguiHelpers::ShowBool("IsPBR", m_IsPBR  );
-	ImguiHelpers::ShowFloat("Shininess", m_Shininess , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("Metallic", m_Metallic , 0.f, 1.f );
-	ImguiHelpers::ShowFloat("Roughness", m_Roughness , 0.f, 1.f );
-	ImguiHelpers::ShowFloat("AO", m_AO , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("EmissiveFactor", m_EmissiveFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("DiffuseTextureEnabled", m_DiffuseTextureEnabled  );
-	ImguiHelpers::ShowBool("SpecularTextureEnabled", m_SpecularTextureEnabled  );
-	ImguiHelpers::ShowBool("Unlit", m_Unlit  );
-	ImguiHelpers::ShowFloat("RefractionIndex", m_RefractionIndex , 0.f, 1.f );
-	ImguiHelpers::ShowBool("IsGlass", m_IsGlass  );
-	ImguiHelpers::ShowBool("ReflectEnvironment", m_ReflectEnvironment  );
-	ImguiHelpers::ShowObjectPtr("DiffuseTexture", m_DiffuseTexture  );
-	ImguiHelpers::ShowObjectPtr("SpecularTexture", m_SpecularTexture  );
-	ImguiHelpers::ShowObjectPtr("HeightfieldTexture", m_HeightfieldTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AmbientColor], &m_AmbientColor , 0.f, 1.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DiffuseColor], &m_DiffuseColor , 0.f, 1.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SpecularColor], &m_SpecularColor , 0.f, 1.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsPBR], &m_IsPBR  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Shininess], &m_Shininess , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Metallic], &m_Metallic , 0.f, 1.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Roughness], &m_Roughness , 0.f, 1.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AO], &m_AO , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EmissiveFactor], &m_EmissiveFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DiffuseTextureEnabled], &m_DiffuseTextureEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SpecularTextureEnabled], &m_SpecularTextureEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Unlit], &m_Unlit  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RefractionIndex], &m_RefractionIndex , 0.f, 1.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsGlass], &m_IsGlass  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ReflectEnvironment], &m_ReflectEnvironment  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DiffuseTexture], m_DiffuseTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SpecularTexture], m_SpecularTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HeightfieldTexture], m_HeightfieldTexture  );
 	return true;
 }
 const char* Material::GetTypeName()

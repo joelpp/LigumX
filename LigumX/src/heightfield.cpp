@@ -45,10 +45,10 @@ bool Heightfield::Serialize(bool writing)
 bool Heightfield::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowObjectPtr("HeightDataTexture", m_HeightDataTexture  );
-	ImguiHelpers::ShowFloat("MaxHeight", m_MaxHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MinHeight", m_MinHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowInt("Width", m_Width , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HeightDataTexture], m_HeightDataTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MaxHeight], &m_MaxHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MinHeight], &m_MinHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Width], &m_Width , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* Heightfield::GetTypeName()

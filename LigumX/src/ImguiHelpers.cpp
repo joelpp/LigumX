@@ -302,6 +302,11 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 	return changed;
 }
 
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::highp_ivec2* value, float min, float max)
+{
+	return false;
+}
+
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec3* value, float min, float max)
 {
@@ -358,6 +363,12 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 	}
 	return changed;
 }
+
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, std::string* value)
+{
+	return ShowString(propertyData.m_Name, *value);
+}
+
 
 //bool ImguiHelpers::ShowProperty(std::string* value, const char* name)
 //{

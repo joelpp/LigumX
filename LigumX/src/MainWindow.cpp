@@ -34,10 +34,10 @@ bool MainWindow::Serialize(bool writing)
 bool MainWindow::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("InFocus", m_InFocus  );
-	ImguiHelpers::ShowVec2("Position", m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowIVec2("Size", m_Size , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowString("Title", m_Title  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_InFocus], &m_InFocus  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Position], &m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Size], &m_Size , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Title], &m_Title  );
 	return true;
 }
 const char* MainWindow::GetTypeName()

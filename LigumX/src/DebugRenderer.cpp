@@ -26,7 +26,7 @@ bool DebugRenderer::Serialize(bool writing)
 bool DebugRenderer::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Enabled", m_Enabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
 	return true;
 }
 const char* DebugRenderer::GetTypeName()

@@ -50,19 +50,19 @@ bool OSMDataProcessorSettings::Serialize(bool writing)
 bool OSMDataProcessorSettings::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowFloat("MinFacadeLength", m_MinFacadeLength , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MaxFacadeLength", m_MaxFacadeLength , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MinPlotLengthRatio", m_MinPlotLengthRatio , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MaxPlotLengthRatio", m_MaxPlotLengthRatio , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MinBuildingDepth", m_MinBuildingDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MaxBuildingDepth", m_MaxBuildingDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MinHeight", m_MinHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MaxHeight", m_MaxHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MinNeighborDistance", m_MinNeighborDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("MaxNeighborDistance", m_MaxNeighborDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("ProcessAddressInterpolation", m_ProcessAddressInterpolation  );
-	ImguiHelpers::ShowBool("CheckPointInRoad", m_CheckPointInRoad  );
-	ImguiHelpers::ShowBool("CheckPointInBuilding", m_CheckPointInBuilding  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MinFacadeLength], &m_MinFacadeLength , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MaxFacadeLength], &m_MaxFacadeLength , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MinPlotLengthRatio], &m_MinPlotLengthRatio , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MaxPlotLengthRatio], &m_MaxPlotLengthRatio , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MinBuildingDepth], &m_MinBuildingDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MaxBuildingDepth], &m_MaxBuildingDepth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MinHeight], &m_MinHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MaxHeight], &m_MaxHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MinNeighborDistance], &m_MinNeighborDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MaxNeighborDistance], &m_MaxNeighborDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ProcessAddressInterpolation], &m_ProcessAddressInterpolation  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CheckPointInRoad], &m_CheckPointInRoad  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CheckPointInBuilding], &m_CheckPointInBuilding  );
 	return true;
 }
 const char* OSMDataProcessorSettings::GetTypeName()

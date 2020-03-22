@@ -40,13 +40,13 @@ bool DefaultTextureHolder::Serialize(bool writing)
 bool DefaultTextureHolder::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowObjectPtr("AsphaltTexture", m_AsphaltTexture  );
-	ImguiHelpers::ShowObjectPtr("DirtTexture", m_DirtTexture  );
-	ImguiHelpers::ShowObjectPtr("GrassTexture", m_GrassTexture  );
-	ImguiHelpers::ShowObjectPtr("RockTexture", m_RockTexture  );
-	ImguiHelpers::ShowObjectPtr("WoodTexture", m_WoodTexture  );
-	ImguiHelpers::ShowObjectPtr("SandTexture", m_SandTexture  );
-	ImguiHelpers::ShowObjectPtr("WaterTexture", m_WaterTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AsphaltTexture], m_AsphaltTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DirtTexture], m_DirtTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_GrassTexture], m_GrassTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RockTexture], m_RockTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WoodTexture], m_WoodTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SandTexture], m_SandTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WaterTexture], m_WaterTexture  );
 	return true;
 }
 const char* DefaultTextureHolder::GetTypeName()

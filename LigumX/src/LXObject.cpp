@@ -25,8 +25,8 @@ bool LXObject::Serialize(bool writing)
 }
 bool LXObject::ShowPropertyGrid()
 {
-	ImguiHelpers::ShowInt("ObjectID", m_ObjectID , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowString("Name", m_Name  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ObjectID], &m_ObjectID , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Name], &m_Name  );
 	return true;
 }
 const char* LXObject::GetTypeName()

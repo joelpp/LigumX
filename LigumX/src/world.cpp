@@ -41,11 +41,11 @@ bool World::Serialize(bool writing)
 bool World::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowObjectPtr("SunLight", m_SunLight  );
-	ImguiHelpers::ShowVector("Entities", m_Entities  );
-	ImguiHelpers::ShowVector("DebugEntities", m_DebugEntities  );
-	ImguiHelpers::ShowVector("Sectors", m_Sectors  );
-	ImguiHelpers::ShowBool("Reset", m_Reset  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SunLight], m_SunLight  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Entities], m_Entities  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugEntities], m_DebugEntities  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Sectors], m_Sectors  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Reset], &m_Reset  );
 	return true;
 }
 const char* World::GetTypeName()

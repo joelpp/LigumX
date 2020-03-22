@@ -31,10 +31,10 @@ bool PostEffects::Serialize(bool writing)
 bool PostEffects::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("GammaCorrectionEnabled", m_GammaCorrectionEnabled  );
-	ImguiHelpers::ShowFloat("GammaExponent", m_GammaExponent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("ToneMappingEnabled", m_ToneMappingEnabled  );
-	ImguiHelpers::ShowBool("EmissiveGlowEnabled", m_EmissiveGlowEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_GammaCorrectionEnabled], &m_GammaCorrectionEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_GammaExponent], &m_GammaExponent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ToneMappingEnabled], &m_ToneMappingEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EmissiveGlowEnabled], &m_EmissiveGlowEnabled  );
 	return true;
 }
 const char* PostEffects::GetTypeName()

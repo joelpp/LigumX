@@ -28,8 +28,8 @@ bool EngineStats::Serialize(bool writing)
 bool EngineStats::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowInt("NumObjectMapHits", m_NumObjectMapHits , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowInt("NumDrawCalls", m_NumDrawCalls , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumObjectMapHits], &m_NumObjectMapHits , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumDrawCalls], &m_NumDrawCalls , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 const char* EngineStats::GetTypeName()
