@@ -80,7 +80,14 @@ public:
 		{
 			if (m_Writing)
 			{
-				
+				m_FileData += "ObjectID";
+				m_FileData += gc_NewLine;
+				m_FileData += std::to_string(object->GetObjectID());
+				m_FileData += gc_NewLine;
+				m_FileData += "Name";
+				m_FileData += gc_NewLine;
+				m_FileData += object->GetName();
+				m_FileData += gc_NewLine;
 			}
 			else
 			{
@@ -157,7 +164,6 @@ public:
 	void SerializeIVec4(const ClassPropertyData& propertyData, glm::ivec4& variable);
 	void SerializeVec4(const ClassPropertyData& propertyData, glm::vec4& variable);
 	
-	
 	/**/
 
 
@@ -228,7 +234,7 @@ public:
 	}
 
 	template <typename T>
-	void Serializer2::SerializeObjectPtr(const std::string& varName, T*& ptr)
+	void SerializeObjectPtr(const std::string& varName, T*& ptr)
 	{
 		if (m_Writing)
 		{
@@ -276,6 +282,26 @@ public:
 			//	val->Serialize(false);
 			//}
 			//break;
+		}
+	}
+
+	template <typename T>
+	void SerializeObjectPtr(const ClassPropertyData& propertyData, T*& variable)
+	{
+		if (m_Writing)
+		{
+			bool output = SerializePropertyCommon(propertyData);
+			if (output)
+			{
+				m_FileData += std::to_string(variable->GetObjectID());
+				m_FileData += gc_NewLine;
+
+				variable->Serialize(m_Writing);
+			}
+		}
+		else
+		{
+			SerializeObjectPtr(propertyData.m_Name, variable);
 		}
 	}
 

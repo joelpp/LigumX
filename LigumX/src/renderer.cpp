@@ -51,9 +51,10 @@ const ClassPropertyData Renderer::g_Properties[] =
 void Renderer::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr("DisplayOptions", m_DisplayOptions);
-	serializer.SerializeObjectPtr("PostEffects", m_PostEffects);
-	serializer.SerializeObjectPtr("DebugCamera", m_DebugCamera);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_DisplayOptions], m_DisplayOptions);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_PostEffects], m_PostEffects);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_DebugCamera], m_DebugCamera);
+	serializer.Close();
 }
 bool Renderer::Serialize(bool writing)
 {

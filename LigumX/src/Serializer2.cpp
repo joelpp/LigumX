@@ -372,7 +372,7 @@ void Serializer2::SerializeVec4(const std::string& varName, glm::vec4& variable)
 }
 
 
-//////////////////////
+//////////////////////	
 
 
 void Serializer2::SerializeFloat(const ClassPropertyData& propertyData, float& variable)
@@ -583,9 +583,6 @@ void Serializer2::SerializeVec4(const ClassPropertyData& propertyData, glm::vec4
 		SerializeVec4(propertyData.m_Name, variable);
 	}
 }
-
-
-
 
 
 //////////////////////////////////////////
