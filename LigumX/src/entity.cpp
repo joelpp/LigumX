@@ -51,16 +51,16 @@ bool Entity::Serialize(bool writing)
 bool Entity::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowBool("Visible", m_Visible  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Position], &m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowFloat("RotationAngle", m_RotationAngle , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("RotationAxis", m_RotationAxis , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowVec3("Scale", m_Scale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowBool("HasMoved", m_HasMoved  );
-	ImguiHelpers::ShowFloat("PickingID", m_PickingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowObjectPtr("Model", m_Model  );
-	ImguiHelpers::ShowBool("IsLight", m_IsLight  );
-	ImguiHelpers::ShowVector("Components", m_Components  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Visible], &m_Visible  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Position], &m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RotationAngle], &m_RotationAngle , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RotationAxis], &m_RotationAxis , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Scale], &m_Scale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HasMoved], &m_HasMoved  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingID], &m_PickingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Model], m_Model  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsLight], &m_IsLight  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Components], m_Components  );
 	return true;
 }
 const char* Entity::GetTypeName()

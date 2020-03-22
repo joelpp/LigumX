@@ -268,6 +268,9 @@ namespace ImguiHelpers
 
 	bool ShowProperty(std::vector<bool>::reference value, const char* name);
 
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, bool* value);
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, int* value, float min, float max);
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, lxInt64* value, float min, float max);
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, float* value, float min, float max);
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec4* value, float min, float max);
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec3* value, float min, float max);
@@ -275,6 +278,17 @@ namespace ImguiHelpers
 
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, glm::ivec2* value, float min, float max);
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::string* value);
+
+	template <typename T>
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, T* value)
+	{
+		return false;
+	}
+	template <typename T>
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::vector<T*> value)
+	{
+		return false;
+	}
 
 	template <typename T, typename U>
 	bool ShowProperty(std::map<U, char *>* map, const char* name);

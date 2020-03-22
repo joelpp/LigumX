@@ -239,11 +239,13 @@ public:
 
 	struct OutputParams
 	{
-		OutputParams(const std::string& prefix, bool limits, bool ignoreTransientMembers, bool usePIDX)
+		OutputParams(const std::string& prefix, bool limits, bool ignoreTransientMembers, bool usePIDX, bool ptrToValue, bool callTemplate)
 			: m_Prefix(prefix)
 			, m_OutputLimits(limits)
 			, m_IgnoreTransientMembers(ignoreTransientMembers)
 			, m_UsePIDX(usePIDX)
+			, m_PtrToValue(ptrToValue)
+			, m_CallTemplate(callTemplate)
 		{
 
 		}
@@ -251,13 +253,15 @@ public:
 		bool m_OutputLimits;
 		bool m_IgnoreTransientMembers;
 		bool m_UsePIDX;
+		bool m_PtrToValue;
+		bool m_CallTemplate;
 	};
 
 
 	OutputParams g_OutputParams[2] =
 	{
-		OutputParams("ImguiHelpers::Show", true, false, false),
-		OutputParams("serializer.Serialize", false, true, true),
+		OutputParams("ImguiHelpers::ShowProperty(this, ", true, false, true, true, true),
+		OutputParams("serializer.Serialize", false, true, true, false, false),
 	};
 
 	void WriteVariable(Variable& var, const OutputParams& outputParams)
@@ -341,7 +345,15 @@ public:
 		//}
 
 		std::stringstream sstr;
-		sstr << tabStop + outputParams.m_Prefix + typeToWrite + "(";
+		sstr << tabStop + outputParams.m_Prefix;
+			
+		if (outputParams.m_CallTemplate)
+		{
+		}
+		else
+		{
+			sstr << typeToWrite + "(";
+		}
 
 		if (outputParams.m_UsePIDX)
 		{
@@ -363,7 +375,14 @@ public:
 			sstr << "\"";
 		}
 
-		sstr << ", " + varValue;
+		sstr << ", ";
+
+		if (outputParams.m_PtrToValue && !var.m_IsPtr && !var.m_IsTemplate)
+		{
+			sstr << '&';
+		}
+
+		sstr << varValue;
 
 		if (outputParams.m_OutputLimits)
 		{

@@ -233,6 +233,37 @@ bool ImguiHelpers::ShowProperty(bool& value, const char* name)
 //	ImGui::Checkbox(name, valuer);
 //}
 
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, bool* value)
+{
+	bool changed = ShowBool(propertyData.m_Name, *value);
+	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+	{
+		propertyData.m_WriteCallback((char*)object, (char*)value);
+	}
+	return changed;
+}
+
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, int* value, float min, float max)
+{
+	bool changed = ShowInt(propertyData.m_Name, *value, (int)min, (int)max);
+
+	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+	{
+		propertyData.m_WriteCallback((char*)object, (char*)value);
+	}
+	return changed;
+}
+
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, lxInt64* value, float min, float max)
+{
+	bool changed = ShowInt64(propertyData.m_Name, *value, (long)min, (long)max);
+
+	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+	{
+		propertyData.m_WriteCallback((char*)object, (char*)value);
+	}
+	return changed;
+}
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, float* value, float min, float max)
 {
