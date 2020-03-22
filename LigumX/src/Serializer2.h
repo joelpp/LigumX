@@ -323,6 +323,11 @@ public:
 	{
 		if (m_Writing)
 		{
+			if (variable == nullptr)
+			{
+				return;
+			}
+
 			bool output = SerializePropertyCommon(propertyData);
 			if (output)
 			{

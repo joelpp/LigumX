@@ -6,3 +6,10 @@ Filename
 ely_cloudtop/
 IsCubeMap
 1
+NumChannels
+0
+BitsPerPixel
+8
+Size
+512
+512

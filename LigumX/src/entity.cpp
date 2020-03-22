@@ -165,7 +165,8 @@ void Entity::UpdateAABB()
 {
 	glm::vec3 min = glm::vec3(9999999);
 	glm::vec3 max = glm::vec3(-9999999);;
-	bool success = m_Model->GetMinMax(min, max);
+
+	bool success = m_Model && (m_Model->GetMinMax(min, max));
 
 	if (success)
 	{
