@@ -239,23 +239,25 @@ public:
 
 	struct OutputParams
 	{
-		OutputParams(const std::string& prefix, bool limits, bool ignoreTransientMembers)
+		OutputParams(const std::string& prefix, bool limits, bool ignoreTransientMembers, bool usePIDX)
 			: m_Prefix(prefix)
 			, m_OutputLimits(limits)
 			, m_IgnoreTransientMembers(ignoreTransientMembers)
+			, m_UsePIDX(usePIDX)
 		{
 
 		}
 		std::string m_Prefix;
 		bool m_OutputLimits;
 		bool m_IgnoreTransientMembers;
+		bool m_UsePIDX;
 	};
 
 
 	OutputParams g_OutputParams[2] =
 	{
-		OutputParams("ImguiHelpers::Show", true, false),
-		OutputParams("serializer.Serialize", false, true),
+		OutputParams("ImguiHelpers::Show", true, false, false),
+		OutputParams("serializer.Serialize", false, true, true),
 	};
 
 	void WriteVariable(Variable& var, const OutputParams& outputParams)
@@ -339,7 +341,29 @@ public:
 		//}
 
 		std::stringstream sstr;
-		sstr << tabStop + outputParams.m_Prefix + typeToWrite + "(\"" + varName + "\", " + varValue;
+		sstr << tabStop + outputParams.m_Prefix + typeToWrite + "(";
+
+		if (outputParams.m_UsePIDX)
+		{
+			sstr << "g_Properties[PIDX_";
+		}
+		else
+		{
+			sstr << "\"";
+		}
+
+		sstr << varName;
+
+		if (outputParams.m_UsePIDX)
+		{
+			sstr << "]";
+		}
+		else
+		{
+			sstr << "\"";
+		}
+
+		sstr << ", " + varValue;
 
 		if (outputParams.m_OutputLimits)
 		{
@@ -386,6 +410,7 @@ public:
 		}
 
 		WriteVariables(OutputType::Serializer);
+		WriteLine("\tserializer.Close();");
 		WriteLine("}");
 
 		WriteLine("bool " + m_Class.m_Name + "::Serialize(bool writing)");
