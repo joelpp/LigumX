@@ -234,29 +234,41 @@ bool ImguiHelpers::ShowProperty(bool& value, const char* name)
 //}
 
 
-bool ImguiHelpers::ShowProperty(float* value, const char* name, float min, float max)
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, float* value, float min, float max)
 {
+	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
-		return ImGui::DragFloat(name, (float*)value);
+		changed = ImGui::DragFloat(propertyData.m_Name, (float*)value);
 	}
 	else
 	{
-		return ImGui::SliderFloat(name, value, min, max);
+		changed = ImGui::SliderFloat(propertyData.m_Name, value, min, max);
 	}
+	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+	{
+		propertyData.m_WriteCallback((char*)object, (char*)value);
+	}
+	return changed;
 
 }
 
-bool ImguiHelpers::ShowProperty(glm::vec2* value, const char* name, float min, float max)
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec2* value, float min, float max)
 {
+	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
-		return ImGui::DragFloat2(name, (float*)value);
+		changed = ImGui::DragFloat2(propertyData.m_Name, (float*)value);
 	}
 	else
 	{
-		return ImGui::SliderFloat2(name, (float*)value, min, max);
+		changed = ImGui::SliderFloat2(propertyData.m_Name, (float*)value, min, max);
 	}
+	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+	{
+		propertyData.m_WriteCallback((char*)object, (char*)value);
+	}
+	return changed;
 }
 
 
@@ -276,40 +288,52 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 		propertyData.m_WriteCallback((char*)object, (char*)value);
 	}
 
-
-	return false;
+	return changed;
 }
 
-bool ImguiHelpers::ShowProperty(glm::vec4* value, const char* name, float min, float max)
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec4* value, float min, float max)
 {
+	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
-		return ImGui::DragFloat4(name, (float*)value);
+		changed = ImGui::DragFloat4(propertyData.m_Name, (float*)value);
 	}
 	else
 	{
-		return ImGui::SliderFloat4(name, (float*)value, min, max);
+		changed = ImGui::SliderFloat4(propertyData.m_Name, (float*)value, min, max);
 	}
+	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+	{
+		propertyData.m_WriteCallback((char*)object, (char*)value);
+	}
+	return changed;
 }
 
-bool ImguiHelpers::ShowProperty(glm::ivec2* value, const char* name, float min, float max)
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::ivec2* value, float min, float max)
 {
+	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
-		return ImGui::DragInt2(name, (int*)value);
+		changed = ImGui::DragInt2(propertyData.m_Name, (int*)value);
 	}
 	else
 	{
-		return ImGui::SliderInt2(name, (int*)value, (int)min, (int)max);
+		changed = ImGui::SliderInt2(propertyData.m_Name, (int*)value, (int)min, (int)max);
 	}
+
+	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+	{
+		propertyData.m_WriteCallback((char*)object, (char*)value);
+	}
+	return changed;
 }
 
-bool ImguiHelpers::ShowProperty(std::string* value, const char* name)
-{
-	//ShowGUIText(value, name);
-	//return false;
-	return false;
-}
+//bool ImguiHelpers::ShowProperty(std::string* value, const char* name)
+//{
+//	//ShowGUIText(value, name);
+//	//return false;
+//	return false;
+//}
 
 //bool ImguiHelpers::ShowEditableProperty(int* ptr, const char* name)
 //{
