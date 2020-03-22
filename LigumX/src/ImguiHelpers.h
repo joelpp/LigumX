@@ -3,7 +3,7 @@
 #include "LXSystem.h"
 #include "imgui.h"
 
-
+struct ClassPropertyData;
 // todo : overload macros based on number of arguments? 
 
 #define LXIMGUI_SHOW_BOOL(name, value) ImguiHelpers::ShowBool(name, value)
@@ -118,6 +118,12 @@ namespace ImguiHelpers
 
 	bool ShowVec4(const char* name, glm::vec4& value, float min, float max);
 	bool ShowVec4(LXString& name, glm::vec4& value, float min, float max);
+
+	//template <typename T>
+	//ShowProperty(void* srcObject, ClassPropertyData& propertyData, T& value, float min, float max)
+	//{
+		//bool changed = 
+	//}
 
 	bool ShowString(const char* name, LXString& value);
 	bool ShowString(LXString& name, LXString& value);
@@ -253,5 +259,45 @@ namespace ImguiHelpers
 
 		return true;
 	}
+
+
+	bool ShowProperty(int* value, const char* name);
+	bool ShowProperty(bool* value, const char* name);
+	bool ShowProperty(bool& value, const char* name);
+	bool ShowProperty(int* value, const char* name, int min, int max);
+
+	bool ShowProperty(std::vector<bool>::reference value, const char* name);
+
+	bool ShowProperty(float* value, const char* name, float min, float max);
+	bool ShowProperty(glm::vec4* value, const char* name, float min, float max);
+	//bool ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec3* value, float min, float max);
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec3* value, float min, float max);
+	bool ShowProperty(glm::vec2* value, const char* name, float min, float max);
+	bool ShowProperty(glm::ivec2* value, const char* name, float min, float max);
+	bool ShowProperty(std::string* value, const char* name);
+
+	template <typename T, typename U>
+	bool ShowProperty(std::map<U, char *>* map, const char* name);
+
+	template <typename T, typename U>
+	bool ShowProperty(std::map<U, T*>* map, const char* name);
+
+	template <typename T, typename U>
+	bool ShowProperty(std::unordered_map<U, char *>* map, const char* name);
+
+	template <typename T, typename U>
+	bool ShowProperty(std::unordered_map<U, T*>* map, const char* name);
+
+	void ShowVariableAsText(glm::vec3 variable, const char* variableName);
+	void ShowVariableAsText(glm::vec3* variable, const char* variableName);
+	void ShowVariableAsText(float variable, const char* variableName);
+	void ShowVariableAsText(int variable, const char* variableName);
+	void ShowGUIText(const char* text);
+	void ShowGUIText(std::string* text);
+	void ShowGUIText(std::string* text, const char* variableName);
+	void ShowGUIText(const std::string& text);
+	void ShowGUIText(const std::string& text, const char* variableName);
+
+
 
 }

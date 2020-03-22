@@ -52,7 +52,7 @@ bool Entity::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowBool("Visible", m_Visible  );
-	ImguiHelpers::ShowVec3("Position", m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Position], &m_Position, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowFloat("RotationAngle", m_RotationAngle , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowVec3("RotationAxis", m_RotationAxis , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowVec3("Scale", m_Scale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );

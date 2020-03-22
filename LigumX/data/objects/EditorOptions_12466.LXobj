@@ -39,6 +39,6 @@ DisplayTerrainTool
 DisplayAxisGizmo
 1
 MouseScrollCameraSpeed
-10
+10.000000
 MouseScrollEntityCloseupPercent
-15
+15.000000
