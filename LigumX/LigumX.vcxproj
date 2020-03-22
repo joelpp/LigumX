@@ -105,6 +105,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <PreprocessToFile>false</PreprocessToFile>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -223,9 +225,6 @@
     <ClCompile Include="src\Serializer2.cpp" />
     <ClCompile Include="src\SerializerInputVariable.cpp" />
     <ClCompile Include="src\Settings.cpp" />
-    <ClCompile Include="src\stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\StringUtils.cpp" />
     <ClCompile Include="src\SunLight.cpp" />
     <ClCompile Include="src\TerrainTool.cpp" />
@@ -348,7 +347,6 @@
     <ClInclude Include="src\stb_rect_pack.h" />
     <ClInclude Include="src\stb_textedit.h" />
     <ClInclude Include="src\stb_truetype.h" />
-    <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\SunLight.h" />
     <ClInclude Include="src\targetver.h" />

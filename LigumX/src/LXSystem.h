@@ -32,6 +32,9 @@ typedef signed __int64 lxInt64;
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+typedef glm::highp_ivec2 lx2I64;
+typedef glm::vec2 lx2F32;
+typedef glm::vec3 lx3F32;
 
 #include "tinyxml2\tinyxml2.h"
 

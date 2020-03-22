@@ -31,6 +31,23 @@ class Renderer;
 class Sector;
 class Mesh;
 
+const int m_MaxWays = 512;
+
+class GfxWayVAO
+{
+public:
+	bool m_Initialized = false;
+
+	GLuint m_TranslationVBO;
+	GLuint m_NodePositionsVBO;
+	GLuint m_GLid;
+};
+
+struct LXWayDesc
+{
+	lx3F32 m_Translation;
+	std::vector<lx3F32> m_NodeModelPositions;
+};
 
 struct TerrainRenderingJob
 {
@@ -204,6 +221,11 @@ public:
 
 	const std::vector<Entity*>& GetVisibleEntities() { return m_VisibleEntities; }
 	const std::vector<Sector*>& GetVisibleSectors() { return m_VisibleSectors; }
+
+
+	std::vector<LXWayDesc> m_LXWayDescs;
+	GfxWayVAO m_GfxWayVAO;
+	bool m_WaysDirty = false;
 
 private:
 	std::vector<S2DMessage> m_2DMessages;

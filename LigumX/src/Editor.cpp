@@ -1259,6 +1259,7 @@ void Editor::ResetWorld()
 	}
 	LigumX::GetInstance().GetWorld()->ResetSectors();
 	g_SectorManager->Reset();
+	g_OSMDataProcessor->Reset();
 }
 
 void Editor::RenderImgui()

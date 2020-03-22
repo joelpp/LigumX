@@ -107,8 +107,14 @@ void ProcessAddressInterpolation(Sector* sector, Way* way);
 Mesh* BuildGenericBuilding(Sector* sector, Way* way);
 
 void ProcessGenericBuilding(Sector* sector, Way* way);
+void Reset();
 
 static bool IsRoad(Way* way);
 
 private:
+	int m_GenericBuildingsProcessed = 0;
+	int m_RoadsProcessed = 0;
+	int m_AddressInterpolationsProcessed = 0;
+
+
 };

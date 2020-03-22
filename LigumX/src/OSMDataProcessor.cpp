@@ -84,6 +84,12 @@ OSMDataProcessor::OSMDataProcessor()
 	m_Settings = g_ObjectManager->CreateObject<OSMDataProcessorSettings>();
 }
 
+void OSMDataProcessor::Reset()
+{
+	m_RoadsProcessed = 0;
+	m_GenericBuildingsProcessed = 0;
+	m_AddressInterpolationsProcessed = 0;
+}
 
 float sign(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3)
 {
@@ -691,23 +697,161 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		const glm::vec3& nextPos = realNodeWorldPositions[i + 1];
 
 		glm::vec3 segment = nextPos - nodePos;
+			
+		nodeMeshWorldPositions.push_back(nodePos);
+		nodeMeshWorldPositions.push_back(nodePos + segment * 0.1f);
+		nodeMeshWorldPositions.push_back(nodePos + segment * 0.9f);
 
-		int numPoints = 4;
-		glm::vec3 segmentD = segment / (glm::vec3(numPoints));
-		for (int s = 0; s < numPoints; ++s)
-		{
-			glm::vec3 s01 = segmentD * (float)s;
+		//int numPoints = 1;
+		//glm::vec3 segmentD = segment / (glm::vec3(numPoints));
+		//for (int s = 0; s < numPoints; ++s)
+		//{
+		//	glm::vec3 s01 = segmentD * (float)s;
 
-			nodeMeshWorldPositions.push_back(nodePos + s01);
-		}
-		
+		//	nodeMeshWorldPositions.push_back(nodePos + s01);
+		//}
+		//
 
 	}
 
 
 	nodeMeshWorldPositions.push_back(realNodeWorldPositions[realNodeWorldPositions.size() - 1]);
 
+	// missing the first constant part from p0 to n1?
+	for (int i = 1; i < realNodeWorldPositions.size(); ++i)
+	{
+		// 0 (1 2) 3 (4 5) 6 (7 8) 9
+		// osm nodes are at i * 3 in nodeMeshWorldPositions
+		int nodeIdx = i * 3;
+		int prevNodeIdx = (i - 1) * 3;
 
+		const glm::vec3& nodePos = nodeMeshWorldPositions[nodeIdx];
+		const glm::vec3& prevPos = nodeMeshWorldPositions[prevNodeIdx];
+
+		// constant part from n0 to n1
+		glm::vec3 n0 = nodeMeshWorldPositions[prevNodeIdx + 1];
+		glm::vec3 n1 = nodeMeshWorldPositions[prevNodeIdx + 2];
+
+		glm::vec3 pSegment = glm::normalize(n1 - n0);
+		glm::vec3 pRight = glm::cross(pSegment, up);
+
+		float offset = 2.f * m_RoadWidth / (worldScale);
+
+		glm::vec3 p0 = n0 - offset * pRight;
+		glm::vec3 p1 = n0 + offset * pRight;
+
+		glm::vec3 p2 = n1 - offset * pRight;
+		glm::vec3 p3 = n1 + offset * pRight;
+
+#if 0
+		p2		p3
+		|  \	|
+		|   \	|
+		|    \	|
+		|	  \ |
+		p0------p1
+#endif
+
+		vertices.push_back(p0);
+		vertices.push_back(p1);
+		vertices.push_back(p2);
+		vertices.push_back(p1);
+		vertices.push_back(p3);
+		vertices.push_back(p2);
+
+		lxAssert(p0 != p1);
+		lxAssert(p2 != p3);
+		lxAssert(p0 != p2);
+
+		uvs.push_back(glm::vec2(0, 0));
+		uvs.push_back(glm::vec2(1, 0));
+		uvs.push_back(glm::vec2(0, 1));
+		uvs.push_back(glm::vec2(1, 0));
+		uvs.push_back(glm::vec2(1, 1));
+		uvs.push_back(glm::vec2(0, 1));
+
+		// if not last node do "connectors"
+		if (i != realNodeWorldPositions.size() - 1)
+		{
+			glm::vec3 n2 = nodeMeshWorldPositions[nodeIdx + 1];
+			glm::vec3 n3 = nodeMeshWorldPositions[nodeIdx + 2];
+			glm::vec3 nSegment = glm::normalize(n2 - nodePos);
+
+			glm::vec2 pRight2 = glm::vec2(pRight);
+			glm::vec2 pSegment2 = glm::vec2(pSegment);
+			glm::vec2 nSegment2 = glm::vec2(nSegment);
+			//float angle = acosf(glm::dot(pSegment2, nSegment2)) / 2.f;
+			float angle = (glm::atan2(nSegment2.y, nSegment2.x) - glm::atan2(pSegment2.y, pSegment2.x)) * 0.5f;
+
+			glm::vec2 midRight2 = glm::rotate(pRight2, glm::degrees(angle));
+			glm::vec3 midRight3 = glm::normalize(glm::vec3(midRight2, 0));
+
+			//glm::vec3 c0 = nodePos - offset * midRight3;
+			//glm::vec3 c1 = nodePos + offset * midRight3;
+
+			glm::vec3 nRight = glm::cross(nSegment, up);
+			glm::vec3 p4 = n2 - offset * nRight;
+			glm::vec3 p5 = n2 + offset * nRight;
+
+			// first connector intersection
+			glm::vec3 c0;
+			glm::vec3 c1;
+			{
+				glm::vec2 l0 = glm::vec2(p0);
+				glm::vec2 l1 = glm::vec2(p2);
+				glm::vec2 l2 = glm::vec2(p4);
+				glm::vec2 l3 = glm::vec2(n3 - offset * nRight);
+
+				float t = ((l0.x - l2.x) * (l2.y - l3.y) - (l0.y - l2.y) * (l2.x - l3.x)) / ((l0.x - l1.x) * (l2.y - l3.y) - (l0.y - l1.y) * (l2.x - l3.x));
+				c0 = glm::vec3(l0.x + t * (l1.x - l0.x), l0.y + t * (l1.y - l0.y), p0.z);
+			}
+
+			{
+				glm::vec2 l0 = glm::vec2(p1);
+				glm::vec2 l1 = glm::vec2(p3);
+				glm::vec2 l2 = glm::vec2(p5);
+				glm::vec2 l3 = glm::vec2(n3 + offset * nRight);
+
+				float t = ((l0.x - l2.x) * (l2.y - l3.y) - (l0.y - l2.y) * (l2.x - l3.x)) / ((l0.x - l1.x) * (l2.y - l3.y) - (l0.y - l1.y) * (l2.x - l3.x));
+				c1 = glm::vec3(l0.x + t * (l1.x - l0.x), l0.y + t * (l1.y - l0.y), p0.z);
+			}
+			
+
+			vertices.push_back(p2);
+			vertices.push_back(p3);
+			vertices.push_back(c0);
+			vertices.push_back(p3);
+			vertices.push_back(c1);
+			vertices.push_back(c0);
+
+			uvs.push_back(glm::vec2(0, 0));
+			uvs.push_back(glm::vec2(1, 0));
+			uvs.push_back(glm::vec2(0, 1));
+			uvs.push_back(glm::vec2(1, 0));
+			uvs.push_back(glm::vec2(1, 1));
+			uvs.push_back(glm::vec2(0, 1));
+
+			vertices.push_back(c0);
+			vertices.push_back(c1);
+			vertices.push_back(p4);
+			vertices.push_back(c1);
+			vertices.push_back(p5);
+			vertices.push_back(p4);
+
+			uvs.push_back(glm::vec2(0, 0));
+			uvs.push_back(glm::vec2(1, 0));
+			uvs.push_back(glm::vec2(0, 1));
+			uvs.push_back(glm::vec2(1, 0));
+			uvs.push_back(glm::vec2(1, 1));
+			uvs.push_back(glm::vec2(0, 1));
+
+		}
+
+	}
+
+	// do last quad
+
+#if 0
 	int maxIndex = (int)99999999999;
 	for (int i = 1; i < nodeMeshWorldPositions.size(); ++i)
 	//for (auto nodeIt = nodeMeshWorldPositions.begin(); nodeIt != (nodeMeshWorldPositions.end() - 1); ++nodeIt)
@@ -810,6 +954,10 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		vertices.push_back(p3);
 		vertices.push_back(p2);
 
+		lxAssert(p0 != p1);
+		lxAssert(p2 != p3);
+		lxAssert(p0 != p2);
+
 		uvs.push_back(glm::vec2(0, 0));
 		uvs.push_back(glm::vec2(1, 0));
 		uvs.push_back(glm::vec2(0, 1));
@@ -817,6 +965,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 		uvs.push_back(glm::vec2(1, 1));
 		uvs.push_back(glm::vec2(0, 1));
 	}
+#endif
 
 	for (glm::vec3& vertex : vertices)
 	{
@@ -940,13 +1089,10 @@ bool OSMDataProcessor::IsRoad(Way* way)
 }
 
 static int m_MaxRoadsToProcess = 999;
-static int m_RoadsProcessed = 0;
 
 static int m_MaxGenericBuildingsToProcess = 0;
-static int m_GenericBuildingsProcessed = 0;
 
 static int m_MaxAddressInterpolationsToProcess = 0;
-static int m_AddressInterpolationsProcessed = 0;
 
 static bool m_FillInEnabled = false;
 

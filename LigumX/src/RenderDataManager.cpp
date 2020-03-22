@@ -16,6 +16,7 @@
 
 #include "Way.h"
 #include "Node.h"
+#include "OSMElementTypeDataStore.h"
 
 #include "Sector.h"
 #include "World.h"
@@ -29,6 +30,7 @@
 #include "Material.h"
 
 #include "glm/gtx/transform.hpp"
+
 
 #include "Building.h"
 RenderDataManager* g_RenderDataManager;
@@ -301,38 +303,81 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	int wayIndex = 0;
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
+		std::vector<glm::vec3> wayPositions;
 		std::vector<glm::vec3> line;
 		Way* way = it->second;
 		std::vector<Node*>& nodes = way->GetNodes();
 
+		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()].GetIsBuilding();
+		if (!isGenericBuilding)
+		{
+			continue;
+		}
+
 		bool newWay = true;
+
+		// loop over all nodes and find the min/max node.
+
+		lx2I64 minPos = lx2I64(LX_LIMITS_INT64_MAX, LX_LIMITS_INT64_MAX);
+		lx2I64 maxPos = lx2I64(LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MIN);
 		for (int i = 0; i < nodes.size(); ++i)
 		{
 			Node* node = nodes[i];
+			
+			//nodePositions.push_back(node->GetWorldPosition());
+
+			const lx2I64& nodePos = node->GetHighPrecisionEarthCoordinates();
+			minPos = glm::min(minPos, nodePos);
+			maxPos = glm::max(maxPos, nodePos);
+		}
 
 
-			const glm::vec3& pos = node->GetWorldPosition();
+		lx2I64 max64 = lx2I64(LX_LIMITS_INT64_MAX, LX_LIMITS_INT64_MAX);
+		lx2I64 halfMax64 = max64 / lx2I64(2, 2);
+		lxAssert(glm::all(glm::lessThan(minPos, halfMax64)));
+		lxAssert(glm::all(glm::lessThan(maxPos, halfMax64)));
 
-			nodePositions.push_back(node->GetWorldPosition());
-			nodeColors.push_back(glm::vec3(1, 0, 0));
+		lx2I64 centroid = (maxPos + minPos) / lx2I64(2, 2);
 
-			AddPoint(line, pos);
+		// size from min/max to centroid
+		lx2I64 bbScale = maxPos - centroid;
+		lx2F32 bbSizeF = glm::vec2(bbScale);
 
-			// if needed copy last node to gfx 2dline/data
-			if (!newWay && index > (previousLastIndex) && (index - 1) != previousLastIndex)
-			{
-				flatWayPositions.push_back(flatWayPositions.back());
-				vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
-			}
+		std::vector<lx2F32> modelNodePositions(nodes.size());
+		for (int i = 0; i < nodes.size(); ++i)
+		{
+			Node* node = nodes[i];
+			const lx2I64& nodePos = node->GetHighPrecisionEarthCoordinates();
+			lx2I64 nodeModelPos = nodePos - centroid;
 
+			lx2F32 nodeModelPosF = lx2F32(nodeModelPos) / bbSizeF;
 
-			flatWayPositions.push_back(pos);
+			modelNodePositions[i] = nodeModelPosF;
+		}
+
+		for (int i = 0; i < nodes.size(); ++i)
+		{
+			lx3F32 nodelModelPosF3 = glm::vec3(modelNodePositions[i], 0);
+			flatWayPositions.push_back(nodelModelPosF3);
+			wayPositions.push_back(nodelModelPosF3);
+
 			vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
 
+			if (i > 1)
+			{
+				lx3F32 lastNodelModelPosF3 = glm::vec3(modelNodePositions[i - 1], 0);
+				flatWayPositions.push_back(lastNodelModelPosF3);
+				wayPositions.push_back(nodelModelPosF3);
+				vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
+			}
+		}
+		
+#if 0
+		{
 			newWay = false;
 			index++;
 
-#if 1
+#if 0
 			if (i != nodes.size() - 1)
 			{
 				Node* nextNode = nodes[i + 1];
@@ -382,14 +427,23 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 #endif
 
 		}
+
 		previousLastIndex = index - 1;
 		index -= 1;
+#endif
 
 		waysModel = CreateDebugModel(line, glm::vec3(1,0,0), "Sector_Lines_");
 
 		gfxData->AddTo_WaysModelsVector(waysModel);
 		wayIndex++;
 
+
+		LXWayDesc wayDesc;
+		wayDesc.m_Translation = lx3F32(centroid, 0.f);
+		wayDesc.m_NodeModelPositions = wayPositions;
+
+		m_LXWayDescs.push_back(wayDesc);
+		m_WaysDirty = true;
 	}
 
 
@@ -403,6 +457,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 	gfxData->SetNodesModel(nodeModel);
 	gfxData->SetWaysModel(flatWaysModel);
+
 
 }
 
@@ -554,6 +609,49 @@ void RenderDataManager::Update()
 	m_2DMessages.clear();
 	m_EntityAABBJobs.clear();
 	m_NumMouseMessages = 0;
+
+	if (m_GfxWayVAO.m_Initialized = false)
+	{
+		glGenVertexArrays(1, &m_GfxWayVAO.m_GLid);
+		glBindVertexArray(m_GfxWayVAO.m_GLid);
+
+#if 0
+		{
+			template<typename T> static void createGLBuffer(GLenum target, GLuint &bufferName, std::vector<T> bufferData)
+			{
+				glGenBuffers(1, &bufferName);
+				glBindBuffer(target, bufferName);
+				glBufferData(target, bufferData.size() * sizeof(T), 0, GL_DYNAMIC_DRAW /*GL_DYNAMIC_STORAGE_BIT | GL_MAP_READ_BIT |
+																					   GL_MAP_WRITE_BIT*/);
+				glBufferSubData(target, 0, bufferData.size() * sizeof(T), bufferData.data());
+				glBindBuffer(target, 0);
+			}
+		}
+#endif
+
+		GLuint& npVBO = m_GfxWayVAO.m_NodePositionsVBO;
+		//Renderer::GetInstance().createGLBuffer(GL_ARRAY_BUFFER, m_VBOs.glidPositions, m_buffers.GetVertexPositions());
+		glGenBuffers(1, &npVBO);
+		glBindBuffer(GL_ARRAY_BUFFER, npVBO);
+		glBufferData(GL_ARRAY_BUFFER, m_MaxWays * sizeof(lx3F32), 0, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, npVBO);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		//glEnableVertexAttribArray(1);
+		//glBindBuffer(GL_ARRAY_BUFFER, m_VBOs.glidUVs);
+		//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+
+
+	}
+
+	if (m_WaysDirty)
+	{
+
+	}
 }
 
 void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entities, Camera* camera)
