@@ -37,12 +37,12 @@ void InputHandler::Serialize(Serializer2& serializer)
 	serializer.SerializeVec2(g_Properties[PIDX_MousePosition], m_MousePosition);
 	serializer.SerializeVec2(g_Properties[PIDX_LastMousePosition], m_LastMousePosition);
 	serializer.SerializeVec2(g_Properties[PIDX_MouseScroll], m_MouseScroll);
-	serializer.Close();
 }
 bool InputHandler::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

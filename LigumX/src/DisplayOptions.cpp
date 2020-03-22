@@ -52,12 +52,12 @@ void DisplayOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_OutputGLErrors], m_OutputGLErrors);
 	serializer.SerializeBool(g_Properties[PIDX_DisplayDebugModels], m_DisplayDebugModels);
 	serializer.SerializeBool(g_Properties[PIDX_PickingEnabled], m_PickingEnabled);
-	serializer.Close();
 }
 bool DisplayOptions::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

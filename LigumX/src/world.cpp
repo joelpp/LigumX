@@ -27,12 +27,12 @@ void World::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SunLight], m_SunLight);
 	serializer.SerializeVector(g_Properties[PIDX_Entities], m_Entities);
 	serializer.SerializeBool(g_Properties[PIDX_Reset], m_Reset);
-	serializer.Close();
 }
 bool World::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);

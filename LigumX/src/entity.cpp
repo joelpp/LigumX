@@ -37,12 +37,12 @@ void Entity::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Model], m_Model);
 	serializer.SerializeBool(g_Properties[PIDX_IsLight], m_IsLight);
 	serializer.SerializeVector(g_Properties[PIDX_Components], m_Components);
-	serializer.Close();
 }
 bool Entity::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);

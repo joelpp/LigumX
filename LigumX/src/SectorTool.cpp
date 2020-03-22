@@ -57,12 +57,12 @@ void SectorTool::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_HighlightSelectedSector], m_HighlightSelectedSector);
 	serializer.SerializeBool(g_Properties[PIDX_LoadSectorsOnClick], m_LoadSectorsOnClick);
 	serializer.SerializeInt(g_Properties[PIDX_SelectedWayIndex], m_SelectedWayIndex);
-	serializer.Close();
 }
 bool SectorTool::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

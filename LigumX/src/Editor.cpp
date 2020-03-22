@@ -69,12 +69,12 @@ void Editor::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Options], m_Options);
 	serializer.SerializeInt(g_Properties[PIDX_PickingBufferSize], m_PickingBufferSize);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SelectedNode], m_SelectedNode);
-	serializer.Close();
 }
 bool Editor::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

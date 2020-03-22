@@ -25,12 +25,12 @@ void Framebuffer::Serialize(Serializer2& serializer)
 	serializer.SerializeInt(g_Properties[PIDX_Height], m_Height);
 	serializer.SerializeBool(g_Properties[PIDX_HasDepth], m_HasDepth);
 	serializer.SerializeInt(g_Properties[PIDX_NumColorTargets], m_NumColorTargets);
-	serializer.Close();
 }
 bool Framebuffer::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

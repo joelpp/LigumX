@@ -24,12 +24,12 @@ void CullingOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_DebugAABBClippPos], m_DebugAABBClippPos);
 	serializer.SerializeBool(g_Properties[PIDX_DebugDotProduct], m_DebugDotProduct);
 	serializer.SerializeFloat(g_Properties[PIDX_DebugDotProductMaxDistance], m_DebugDotProductMaxDistance);
-	serializer.Close();
 }
 bool CullingOptions::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

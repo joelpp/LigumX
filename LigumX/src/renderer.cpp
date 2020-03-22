@@ -54,12 +54,12 @@ void Renderer::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DisplayOptions], m_DisplayOptions);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_PostEffects], m_PostEffects);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DebugCamera], m_DebugCamera);
-	serializer.Close();
 }
 bool Renderer::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);

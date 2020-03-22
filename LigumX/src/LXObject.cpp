@@ -13,12 +13,12 @@ void LXObject::Serialize(Serializer2& serializer)
 {
 	serializer.SerializeInt(g_Properties[PIDX_ObjectID], m_ObjectID);
 	serializer.SerializeString(g_Properties[PIDX_Name], m_Name);
-	serializer.Close();
 }
 bool LXObject::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

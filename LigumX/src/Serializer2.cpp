@@ -23,12 +23,12 @@ void Serializer2::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_IsValid], m_IsValid);
 	serializer.SerializeString(g_Properties[PIDX_Filename], m_Filename);
 	serializer.SerializeVector(g_Properties[PIDX_SerializerInputVariables], m_SerializerInputVariables);
-	serializer.Close();
 }
 bool Serializer2::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

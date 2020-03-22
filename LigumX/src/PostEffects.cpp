@@ -18,12 +18,12 @@ void PostEffects::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_GammaExponent], m_GammaExponent);
 	serializer.SerializeBool(g_Properties[PIDX_ToneMappingEnabled], m_ToneMappingEnabled);
 	serializer.SerializeBool(g_Properties[PIDX_EmissiveGlowEnabled], m_EmissiveGlowEnabled);
-	serializer.Close();
 }
 bool PostEffects::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

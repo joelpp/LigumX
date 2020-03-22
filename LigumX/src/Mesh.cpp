@@ -21,12 +21,12 @@ void Mesh::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_UsesIndexBuffer], m_UsesIndexBuffer);
 	serializer.SerializeBool(g_Properties[PIDX_WireframeRendering], m_WireframeRendering);
 	serializer.SerializeBool(g_Properties[PIDX_PointRendering], m_PointRendering);
-	serializer.Close();
 }
 bool Mesh::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

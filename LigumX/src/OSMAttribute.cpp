@@ -14,12 +14,12 @@ void OSMAttribute::Serialize(Serializer2& serializer)
 	super::Serialize(serializer);
 	serializer.SerializeString(g_Properties[PIDX_Key], m_Key);
 	serializer.SerializeString(g_Properties[PIDX_Value], m_Value);
-	serializer.Close();
 }
 bool OSMAttribute::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

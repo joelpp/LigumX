@@ -80,14 +80,14 @@ public:
 		{
 			if (m_Writing)
 			{
-				m_FileData += "ObjectID";
-				m_FileData += gc_NewLine;
-				m_FileData += std::to_string(object->GetObjectID());
-				m_FileData += gc_NewLine;
-				m_FileData += "Name";
-				m_FileData += gc_NewLine;
-				m_FileData += object->GetName();
-				m_FileData += gc_NewLine;
+				//m_FileData += "ObjectID";
+				//m_FileData += gc_NewLine;
+				//m_FileData += std::to_string(object->GetObjectID());
+				//m_FileData += gc_NewLine;
+				//m_FileData += "Name";
+				//m_FileData += gc_NewLine;
+				//m_FileData += object->GetName();
+				//m_FileData += gc_NewLine;
 			}
 			else
 			{

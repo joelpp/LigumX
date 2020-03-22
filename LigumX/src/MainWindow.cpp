@@ -20,12 +20,12 @@ void MainWindow::Serialize(Serializer2& serializer)
 	serializer.SerializeVec2(g_Properties[PIDX_Position], m_Position);
 	serializer.SerializeIVec2(g_Properties[PIDX_Size], m_Size);
 	serializer.SerializeString(g_Properties[PIDX_Title], m_Title);
-	serializer.Close();
 }
 bool MainWindow::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);

@@ -28,12 +28,12 @@ void Texture::Serialize(Serializer2& serializer)
 	serializer.SerializeInt(g_Properties[PIDX_NumChannels], m_NumChannels);
 	serializer.SerializeInt(g_Properties[PIDX_BitsPerPixel], m_BitsPerPixel);
 	serializer.SerializeIVec2(g_Properties[PIDX_Size], m_Size);
-	serializer.Close();
 }
 bool Texture::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);

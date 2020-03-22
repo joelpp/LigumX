@@ -28,12 +28,12 @@ void SunLight::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_Speed], m_Speed);
 	serializer.SerializeBool(g_Properties[PIDX_UseSkybox], m_UseSkybox);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Skybox], m_Skybox);
-	serializer.Close();
 }
 bool SunLight::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

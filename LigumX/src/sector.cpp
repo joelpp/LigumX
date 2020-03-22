@@ -35,12 +35,12 @@ void Sector::Serialize(Serializer2& serializer)
 	serializer.SerializeIVec2(g_Properties[PIDX_OffsetIndex], m_OffsetIndex);
 	serializer.SerializeBool(g_Properties[PIDX_DataLoaded], m_DataLoaded);
 	serializer.SerializeString(g_Properties[PIDX_OSMFilename], m_OSMFilename);
-	serializer.Close();
 }
 bool Sector::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

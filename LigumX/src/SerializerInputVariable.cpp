@@ -14,12 +14,12 @@ void SerializerInputVariable::Serialize(Serializer2& serializer)
 	super::Serialize(serializer);
 	serializer.SerializeString(g_Properties[PIDX_VariableName], m_VariableName);
 	serializer.SerializeVector(g_Properties[PIDX_Values], m_Values);
-	serializer.Close();
 }
 bool SerializerInputVariable::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

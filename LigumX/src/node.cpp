@@ -33,12 +33,12 @@ void Node::Serialize(Serializer2& serializer)
 	serializer.SerializeIVec2(g_Properties[PIDX_QuantizedEarthPosition], m_QuantizedEarthPosition);
 	serializer.SerializeIVec2(g_Properties[PIDX_QuantizedSectorPosition], m_QuantizedSectorPosition);
 	serializer.SerializeHighp_IVec2(g_Properties[PIDX_HighPrecisionEarthCoordinates], m_HighPrecisionEarthCoordinates);
-	serializer.Close();
 }
 bool Node::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

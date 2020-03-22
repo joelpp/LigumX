@@ -37,12 +37,12 @@ void OSMDataProcessorSettings::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_ProcessAddressInterpolation], m_ProcessAddressInterpolation);
 	serializer.SerializeBool(g_Properties[PIDX_CheckPointInRoad], m_CheckPointInRoad);
 	serializer.SerializeBool(g_Properties[PIDX_CheckPointInBuilding], m_CheckPointInBuilding);
-	serializer.Close();
 }
 bool OSMDataProcessorSettings::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

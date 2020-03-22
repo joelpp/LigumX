@@ -56,12 +56,12 @@ void OSMDataProcessor::Serialize(Serializer2& serializer)
 	super::Serialize(serializer);
 	serializer.SerializeFloat(g_Properties[PIDX_RoadWidth], m_RoadWidth);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Settings], m_Settings);
-	serializer.Close();
 }
 bool OSMDataProcessor::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

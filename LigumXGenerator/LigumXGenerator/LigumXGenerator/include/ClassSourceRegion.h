@@ -410,13 +410,13 @@ public:
 		}
 
 		WriteVariables(OutputType::Serializer);
-		WriteLine("\tserializer.Close();");
 		WriteLine("}");
 
 		WriteLine("bool " + m_Class.m_Name + "::Serialize(bool writing)");
 		WriteLine("{");
 		WriteLine(R"(	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); )");
 		WriteLine(R"(	Serialize(serializer2); )");
+		WriteLine("\tserializer2.Close();");
 		WriteLine("");
 		WriteLine(R"(	bool success = true;//g_Serializer->SerializeObject(this, writing); )");
 

@@ -51,12 +51,12 @@ void OSMTool::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_ShowWays], m_ShowWays);
 	serializer.SerializeBool(g_Properties[PIDX_ShowFlatWays], m_ShowFlatWays);
 	serializer.SerializeBool(g_Properties[PIDX_DebugPointInRoad], m_DebugPointInRoad);
-	serializer.Close();
 }
 bool OSMTool::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

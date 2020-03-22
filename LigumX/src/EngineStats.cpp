@@ -15,12 +15,12 @@ void EngineStats::Serialize(Serializer2& serializer)
 	super::Serialize(serializer);
 	serializer.SerializeInt(g_Properties[PIDX_NumObjectMapHits], m_NumObjectMapHits);
 	serializer.SerializeInt(g_Properties[PIDX_NumDrawCalls], m_NumDrawCalls);
-	serializer.Close();
 }
 bool EngineStats::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

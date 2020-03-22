@@ -18,12 +18,12 @@ void OSMElementTypeData::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_FillIn], m_FillIn);
 	serializer.SerializeVec3(g_Properties[PIDX_DebugColor], m_DebugColor);
 	serializer.SerializeVector(g_Properties[PIDX_Attributes], m_Attributes);
-	serializer.Close();
 }
 bool OSMElementTypeData::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

@@ -26,12 +26,12 @@ void Model::Serialize(Serializer2& serializer)
 	super::Serialize(serializer);
 	serializer.SerializeString(g_Properties[PIDX_Filename], m_Filename);
 	serializer.SerializeVector(g_Properties[PIDX_Materials], m_Materials);
-	serializer.Close();
 }
 bool Model::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	PostSerialization(writing, success);

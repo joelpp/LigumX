@@ -50,12 +50,12 @@ void EditorOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_DisplayAxisGizmo], m_DisplayAxisGizmo);
 	serializer.SerializeFloat(g_Properties[PIDX_MouseScrollCameraSpeed], m_MouseScrollCameraSpeed);
 	serializer.SerializeFloat(g_Properties[PIDX_MouseScrollEntityCloseupPercent], m_MouseScrollEntityCloseupPercent);
-	serializer.Close();
 }
 bool EditorOptions::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

@@ -53,12 +53,12 @@ void Material::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DiffuseTexture], m_DiffuseTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SpecularTexture], m_SpecularTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_HeightfieldTexture], m_HeightfieldTexture);
-	serializer.Close();
 }
 bool Material::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;

@@ -27,12 +27,12 @@ void DefaultTextureHolder::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_WoodTexture], m_WoodTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SandTexture], m_SandTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_WaterTexture], m_WaterTexture);
-	serializer.Close();
 }
 bool DefaultTextureHolder::Serialize(bool writing)
 {
 	Serializer2 serializer2 = Serializer2::CreateSerializer(this, writing); 
 	Serialize(serializer2); 
+	serializer2.Close();
 
 	bool success = true;//g_Serializer->SerializeObject(this, writing); 
 	return success;
