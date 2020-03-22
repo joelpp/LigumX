@@ -19,7 +19,7 @@ const ClassPropertyData Entity::g_Properties[] =
 { "RotationAxis", PIDX_RotationAxis, offsetof(Entity, m_RotationAxis), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Entity, RotationAxis, glm::vec3),}, 
 { "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Entity, Scale, glm::vec3),}, 
 { "HasMoved", PIDX_HasMoved, offsetof(Entity, m_HasMoved), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, HasMoved, bool),}, 
-{ "PickingID", PIDX_PickingID, offsetof(Entity, m_PickingID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "PickingID", PIDX_PickingID, offsetof(Entity, m_PickingID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, Model, Model*),}, 
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Components", PIDX_Components, offsetof(Entity, m_Components), 0, LXType_stdvector, sizeof(std::vector<Component*>), LXType_stdvector, false, LXType_Component, true, 0, 0, 0, 0,}, 
@@ -33,7 +33,6 @@ void Entity::Serialize(Serializer2& serializer)
 	serializer.SerializeVec3(g_Properties[PIDX_RotationAxis], m_RotationAxis);
 	serializer.SerializeVec3(g_Properties[PIDX_Scale], m_Scale);
 	serializer.SerializeBool(g_Properties[PIDX_HasMoved], m_HasMoved);
-	serializer.SerializeFloat(g_Properties[PIDX_PickingID], m_PickingID);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Model], m_Model);
 	serializer.SerializeBool(g_Properties[PIDX_IsLight], m_IsLight);
 	serializer.SerializeVector(g_Properties[PIDX_Components], m_Components);
@@ -72,6 +71,7 @@ const char* Entity::GetTypeName()
 
 void Entity::PostSerialization(bool writing, bool success)
 {
+	SetHasMoved(true);
 	if (success && !writing)
 	{
 		UpdateAABB();

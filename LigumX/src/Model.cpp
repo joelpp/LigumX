@@ -103,7 +103,13 @@ void Model::PostSerialization(bool writing, bool success)
 		}
 		else
 		{
-			loadModel();
+			if (m_Meshes.size() > 0)
+			{
+			}
+			else
+			{
+				loadModel();
+			}
 		}
 	}
 }

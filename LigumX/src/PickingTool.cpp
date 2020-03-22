@@ -119,8 +119,12 @@ void PickingTool::SetPickedEntity_Callback(Entity* entity)
 		if (entity != m_PickedEntity)
 		{
 			BoundingBoxComponent* bb = entity->GetComponent<BoundingBoxComponent>();
-			bb->SetUpdatesWithEntity(true);
-			entity->UpdateAABB();
+
+			if (bb)
+			{
+				bb->SetUpdatesWithEntity(true);
+				entity->UpdateAABB();
+			}
 		}
 	}
 
