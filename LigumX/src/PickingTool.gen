@@ -34,4 +34,7 @@ class PickingTool : EditorTool
 
 	[transient]
 	Sector* PickedSector;
+
+	[transient, setcallback]
+	bool CloneEntity = false;
 }

@@ -1,15 +1,15 @@
 ObjectID
-11072
+3796
 Name
-Nanosuit
+Nanosuit 3
 Visible
 1
 Position
-13.000001
-12.000001
-0.000000
+20.146366
+11.559161
+-0.482039
 RotationAngle
-0.000000
+205.000015
 RotationAxis
 1.000000
 0.000000
@@ -23,5 +23,4 @@ Model
 IsLight
 0
 Components
-1
-19084
+0

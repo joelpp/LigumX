@@ -162,7 +162,7 @@ namespace ImguiHelpers
 	{
 		bool isNull = (value == nullptr);
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (%s)%s", name, "[fixThis]"/*value->ClassName*/, (isNull ? " (nullptr)" : ""));
+		sprintf(treeNodeName, "%s (%s)%s", isNull ? "nullptr" : value->GetName().c_str(), name, (isNull ? " (nullptr)" : ""));
 
 		if (value == nullptr)
 		{
@@ -293,8 +293,17 @@ namespace ImguiHelpers
 
 
 	template <typename T>
-	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::vector<T*>& value)
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::vector<T*>& values)
 	{
+		for (int i = 0; i < values.size(); ++i)
+		{
+			T* value = values[i];
+			if (value)
+			{
+				ShowProperty(object, propertyData, value);
+			}
+		}
+
 		return false;
 	}
 

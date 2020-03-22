@@ -47,6 +47,9 @@ float GetPickedHeight() { return m_PickedHeight; };
 void SetPickedHeight(float value) { m_PickedHeight = value; }; 
 Sector*& GetPickedSector() { return m_PickedSector; }; 
 void SetPickedSector(Sector* value) { m_PickedSector = value; }; 
+bool GetCloneEntity() { return m_CloneEntity; }; 
+void SetCloneEntity(bool value) { SetCloneEntity_Callback(value); }; 
+void SetCloneEntity_Callback(const bool& value);
 private:
 bool m_Enabled = true;
 Entity* m_PickedEntity = nullptr;
@@ -60,8 +63,9 @@ float m_PickedID = 0.f;
 bool m_PickDebugModels = false;
 float m_PickedHeight = 0.f;
 Sector* m_PickedSector = nullptr;
+bool m_CloneEntity = false;
 public:
-static const int g_PropertyCount = 12;
+static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_PickingToolPIDX
@@ -78,6 +82,7 @@ PIDX_PickedID,
 PIDX_PickDebugModels,
 PIDX_PickedHeight,
 PIDX_PickedSector,
+PIDX_CloneEntity,
 };
 void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
