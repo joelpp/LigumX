@@ -1289,7 +1289,7 @@ void Editor::RenderImgui()
 			}
 			if (ImGui::MenuItem("Save renderer"))
 			{
-				TrySaveObject(this);
+				TrySaveObject(&Renderer::GetInstance());
 			}
 			if (ImGui::MenuItem("Save world"))
 			{

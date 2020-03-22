@@ -12,16 +12,16 @@ class SerializerInputVariable;
 
 #include "SerializerInputVariable.h"
 
-#define FIND_VARIABLE() \
+#define FIND_VARIABLE(_def_name) \
 SerializerInputVariable serializerVariable; \
-bool found = FindVariable(serializerVariable, varName); \
+bool found = FindVariable(serializerVariable, _def_name); \
 if (!found) \
 { \
 	return; \
 }
 
 #define FIND_VARIABLE_SIZE(_size) \
-FIND_VARIABLE(); \
+FIND_VARIABLE(varName); \
 lxAssert(serializerVariable.GetValues().size() == _size); \
 
 #pragma region  HEADER Serializer2
@@ -65,6 +65,7 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Serializer2
 
+
 public:
 	template<typename T>
 	Serializer2(T* object, bool writing, const std::string& fileName)
@@ -77,7 +78,11 @@ public:
 
 		if (m_IsValid)
 		{
-			if (!m_Writing)
+			if (m_Writing)
+			{
+				
+			}
+			else
 			{
 				ProcessFile();
 			}
@@ -114,7 +119,10 @@ public:
 
 	bool FindVariable(SerializerInputVariable& var, const std::string& varName);
 
+	bool SerializePropertyCommon(const ClassPropertyData& propertyData);
+
 	void SerializeBool(const std::string& varName, bool& variable);
+	void SerializeBool(const ClassPropertyData& propertyData, bool& variable);
 	void SerializeFloat(const std::string& varName, float& variable);
 	void SerializeInt(const std::string& varName, int& variable);
 	void SerializeInt64(const std::string& varName, lxInt64& variable);
@@ -130,6 +138,29 @@ public:
 
 	void SerializeIVec4(const std::string& varName, glm::ivec4& variable);
 	void SerializeVec4(const std::string& varName, glm::vec4& variable);
+
+	/**/
+	
+	void SerializeFloat(const ClassPropertyData& propertyData, float& variable);
+	void SerializeInt(const ClassPropertyData& propertyData, int& variable);
+	void SerializeInt64(const ClassPropertyData& propertyData, lxInt64& variable);
+
+	void SerializeString(const ClassPropertyData& propertyData, std::string& variable);
+
+	void SerializeIVec2(const ClassPropertyData& propertyData, glm::ivec2& variable);
+	void SerializeHighp_IVec2(const ClassPropertyData& propertyData, glm::highp_ivec2 & variable);
+	void SerializeIVec3(const ClassPropertyData& propertyData, glm::ivec3& variable);
+
+	void SerializeVec2(const ClassPropertyData& propertyData, glm::vec2& variable);
+	void SerializeVec3(const ClassPropertyData& propertyData, glm::vec3& variable);
+
+	void SerializeIVec4(const ClassPropertyData& propertyData, glm::ivec4& variable);
+	void SerializeVec4(const ClassPropertyData& propertyData, glm::vec4& variable);
+	
+	
+	/**/
+
+
 
 	template <typename T>
 	void SerializeVector(const std::string& varName, std::vector<T>& vec)
@@ -153,7 +184,7 @@ public:
 		}
 		else
 		{
-			FIND_VARIABLE();
+			FIND_VARIABLE(varName);
 
 			vec.clear();
 
@@ -196,13 +227,12 @@ public:
 		}
 	}
 
-
 	template <typename T>
 	void Serializer2::SerializeObjectPtr(const std::string& varName, T*& ptr)
 	{
 		if (m_Writing)
 		{
-
+			ptr->Serialize(m_Writing);
 		}
 		else
 		{
@@ -252,5 +282,5 @@ public:
 
 private:
 
-
+	LXString m_FileData;
 };

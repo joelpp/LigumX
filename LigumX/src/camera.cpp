@@ -36,17 +36,18 @@ const ClassPropertyData Camera::g_Properties[] =
 void Camera::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeVec3("Position", m_Position);
-	serializer.SerializeVec3("FrontVector", m_FrontVector);
-	serializer.SerializeVec3("RightVector", m_RightVector);
-	serializer.SerializeVec3("UpVector", m_UpVector);
-	serializer.SerializeFloat("NearPlane", m_NearPlane);
-	serializer.SerializeFloat("FarPlane", m_FarPlane);
-	serializer.SerializeInt("ProjectionType", m_ProjectionType);
-	serializer.SerializeFloat("OrthoBorders", m_OrthoBorders);
-	serializer.SerializeFloat("ViewSize", m_ViewSize);
-	serializer.SerializeFloat("MovementSpeed", m_MovementSpeed);
-	serializer.SerializeFloat("KeyMovementSpeedIncreaseFactor", m_KeyMovementSpeedIncreaseFactor);
+	serializer.SerializeVec3(g_Properties[PIDX_Position], m_Position);
+	serializer.SerializeVec3(g_Properties[PIDX_FrontVector], m_FrontVector);
+	serializer.SerializeVec3(g_Properties[PIDX_RightVector], m_RightVector);
+	serializer.SerializeVec3(g_Properties[PIDX_UpVector], m_UpVector);
+	serializer.SerializeFloat(g_Properties[PIDX_NearPlane], m_NearPlane);
+	serializer.SerializeFloat(g_Properties[PIDX_FarPlane], m_FarPlane);
+	serializer.SerializeInt(g_Properties[PIDX_ProjectionType], m_ProjectionType);
+	serializer.SerializeFloat(g_Properties[PIDX_OrthoBorders], m_OrthoBorders);
+	serializer.SerializeFloat(g_Properties[PIDX_ViewSize], m_ViewSize);
+	serializer.SerializeFloat(g_Properties[PIDX_MovementSpeed], m_MovementSpeed);
+	serializer.SerializeFloat(g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], m_KeyMovementSpeedIncreaseFactor);
+	serializer.Close();
 }
 bool Camera::Serialize(bool writing)
 {

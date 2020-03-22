@@ -1,7 +1,3 @@
-ObjectID
-28764
-Name
-DisplayOptions
 UseSkyLighting
 0
 RenderTerrain
@@ -42,5 +38,3 @@ DisplayDebugModels
 1
 PickingEnabled
 1
-DisplayMode
-0

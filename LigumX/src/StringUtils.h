@@ -9,6 +9,8 @@
 #include <regex>
 #include "LXSystem.h"
 
+constexpr char gc_NewLine = '\n';
+
 typedef std::vector<std::string> StringList;
 
 namespace StringUtils

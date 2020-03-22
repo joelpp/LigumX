@@ -32,26 +32,27 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 void DisplayOptions::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeBool("UseSkyLighting", m_UseSkyLighting);
-	serializer.SerializeBool("RenderTerrain", m_RenderTerrain);
-	serializer.SerializeBool("DrawSky", m_DrawSky);
-	serializer.SerializeBool("WireframeRendering", m_WireframeRendering);
-	serializer.SerializeBool("UseLighting", m_UseLighting);
-	serializer.SerializeBool("ShowNormals", m_ShowNormals);
-	serializer.SerializeBool("ShowUVs", m_ShowUVs);
-	serializer.SerializeBool("ShowSpecular", m_ShowSpecular);
-	serializer.SerializeBool("ShowDiffuse", m_ShowDiffuse);
-	serializer.SerializeBool("ShowAmbient", m_ShowAmbient);
-	serializer.SerializeBool("ShowFPS", m_ShowFPS);
-	serializer.SerializeBool("ShowDepth", m_ShowDepth);
-	serializer.SerializeBool("LinearizeDepth", m_LinearizeDepth);
-	serializer.SerializeBool("BlinnPhongShading", m_BlinnPhongShading);
-	serializer.SerializeBool("RenderTextureOverlay", m_RenderTextureOverlay);
-	serializer.SerializeBool("RenderOpaque", m_RenderOpaque);
-	serializer.SerializeBool("RenderShadows", m_RenderShadows);
-	serializer.SerializeBool("OutputGLErrors", m_OutputGLErrors);
-	serializer.SerializeBool("DisplayDebugModels", m_DisplayDebugModels);
-	serializer.SerializeBool("PickingEnabled", m_PickingEnabled);
+	serializer.SerializeBool(g_Properties[PIDX_UseSkyLighting], m_UseSkyLighting);
+	serializer.SerializeBool(g_Properties[PIDX_RenderTerrain], m_RenderTerrain);
+	serializer.SerializeBool(g_Properties[PIDX_DrawSky], m_DrawSky);
+	serializer.SerializeBool(g_Properties[PIDX_WireframeRendering], m_WireframeRendering);
+	serializer.SerializeBool(g_Properties[PIDX_UseLighting], m_UseLighting);
+	serializer.SerializeBool(g_Properties[PIDX_ShowNormals], m_ShowNormals);
+	serializer.SerializeBool(g_Properties[PIDX_ShowUVs], m_ShowUVs);
+	serializer.SerializeBool(g_Properties[PIDX_ShowSpecular], m_ShowSpecular);
+	serializer.SerializeBool(g_Properties[PIDX_ShowDiffuse], m_ShowDiffuse);
+	serializer.SerializeBool(g_Properties[PIDX_ShowAmbient], m_ShowAmbient);
+	serializer.SerializeBool(g_Properties[PIDX_ShowFPS], m_ShowFPS);
+	serializer.SerializeBool(g_Properties[PIDX_ShowDepth], m_ShowDepth);
+	serializer.SerializeBool(g_Properties[PIDX_LinearizeDepth], m_LinearizeDepth);
+	serializer.SerializeBool(g_Properties[PIDX_BlinnPhongShading], m_BlinnPhongShading);
+	serializer.SerializeBool(g_Properties[PIDX_RenderTextureOverlay], m_RenderTextureOverlay);
+	serializer.SerializeBool(g_Properties[PIDX_RenderOpaque], m_RenderOpaque);
+	serializer.SerializeBool(g_Properties[PIDX_RenderShadows], m_RenderShadows);
+	serializer.SerializeBool(g_Properties[PIDX_OutputGLErrors], m_OutputGLErrors);
+	serializer.SerializeBool(g_Properties[PIDX_DisplayDebugModels], m_DisplayDebugModels);
+	serializer.SerializeBool(g_Properties[PIDX_PickingEnabled], m_PickingEnabled);
+	serializer.Close();
 }
 bool DisplayOptions::Serialize(bool writing)
 {

@@ -48,9 +48,6 @@ const char* Serializer2::GetTypeName()
 
 #pragma endregion  CLASS_SOURCE Serializer2
 
-
-
-
 void Serializer2::ProcessFile()
 {
 	StringList lines = StringUtils::ReadFileLines(m_Filename);
@@ -103,6 +100,19 @@ void Serializer2::ProcessFile()
 	}
 
 }
+
+
+
+void Serializer2::Close()
+{
+	if (m_Writing)
+	{
+		StringUtils::DumpToFile(m_Filename, m_FileData);
+	}
+}
+
+
+
 int FindVariableIndex(std::vector<SerializerInputVariable>& serializerInputVariables, const std::string& varName)
 {
 	int index = -1;
@@ -138,12 +148,45 @@ bool Serializer2::FindVariable(SerializerInputVariable& var, const std::string& 
 	}
 }
 
+bool Serializer2::SerializePropertyCommon(const ClassPropertyData& propertyData)
+{
+	if (propertyData.m_PropertyFlags & PropertyFlags_Transient)
+	{
+		return false;
+	}
+	
+	m_FileData += propertyData.m_Name;
+	m_FileData += gc_NewLine;
+
+	return true;
+}
+
+void Serializer2::SerializeBool(const ClassPropertyData& propertyData, bool& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += variable ? "1" : "0";
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		FIND_VARIABLE(propertyData.m_Name, 1);
+
+		int val = StringUtils::ToInt(serializerVariable.GetValues()[0]);
+		variable = (val == 1);
+	}
+}
+
 
 void Serializer2::SerializeBool(const std::string& varName, bool& variable)
 {
 	if (m_Writing)
 	{
-
+		
 	}
 	else
 	{
@@ -327,3 +370,222 @@ void Serializer2::SerializeVec4(const std::string& varName, glm::vec4& variable)
 		variable.w = StringUtils::ToFloat(serializerVariable.GetValues()[3]);
 	}
 }
+
+
+//////////////////////
+
+
+void Serializer2::SerializeFloat(const ClassPropertyData& propertyData, float& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeFloat(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeInt(const ClassPropertyData& propertyData, int& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeInt(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeInt64(const ClassPropertyData& propertyData, lxInt64& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeInt64(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeString(const ClassPropertyData& propertyData, std::string& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += variable;
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeString(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeIVec2(const ClassPropertyData& propertyData, glm::ivec2& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable.x);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.y);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeIVec2(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeHighp_IVec2(const ClassPropertyData& propertyData, glm::highp_ivec2 & variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable.x);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.y);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeHighp_IVec2(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeIVec3(const ClassPropertyData& propertyData, glm::ivec3& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable.x);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.y);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.z);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeIVec3(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeVec2(const ClassPropertyData& propertyData, glm::vec2& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable.x);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.y);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeVec2(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeVec3(const ClassPropertyData& propertyData, glm::vec3& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable.x);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.y);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.z);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeVec3(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeIVec4(const ClassPropertyData& propertyData, glm::ivec4& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable.x);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.y);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeIVec4(propertyData.m_Name, variable);
+	}
+}
+
+void Serializer2::SerializeVec4(const ClassPropertyData& propertyData, glm::vec4& variable)
+{
+	if (m_Writing)
+	{
+		bool output = SerializePropertyCommon(propertyData);
+		if (output)
+		{
+			m_FileData += std::to_string(variable.x);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.y);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.z);
+			m_FileData += gc_NewLine;
+			m_FileData += std::to_string(variable.w);
+			m_FileData += gc_NewLine;
+		}
+	}
+	else
+	{
+		SerializeVec4(propertyData.m_Name, variable);
+	}
+}
+
+
+
+
+
+//////////////////////////////////////////
