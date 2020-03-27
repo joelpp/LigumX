@@ -60,7 +60,7 @@ std::vector<std::string> splitString(const std::string &txt, char ch)
 	}
 
 	// Add the last one
-	strs.push_back(txt.substr(initialPos, (std::min)(pos, txt.size()) - initialPos + 1));
+	strs.push_back(txt.substr(initialPos, std::min(pos, (unsigned int)txt.size()) - initialPos + 1));
 
 	return strs;
 }

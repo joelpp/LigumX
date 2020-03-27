@@ -31,7 +31,7 @@ const int EnumLength_TerrainEditionMode = 3;
 class TerrainTool : public EditorTool
 {
 public:
-static const int ClassID = 2789929640;
+static const int ClassID = -1505037656;
 static const LXType Type = LXType_TerrainTool;
 static constexpr const char* ClassName = "TerrainTool";
 typedef EditorTool super;

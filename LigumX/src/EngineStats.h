@@ -14,7 +14,7 @@ extern EngineStats* g_EngineStats;
 class EngineStats : public LXObject
 {
 public:
-static const int ClassID = 2882477190;
+static const int ClassID = -1412490106;
 static const LXType Type = LXType_EngineStats;
 static constexpr const char* ClassName = "EngineStats";
 typedef LXObject super;

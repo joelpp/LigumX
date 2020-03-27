@@ -49,7 +49,7 @@ typedef std::vector<Sector*> SectorList;
 class World : public LXObject
 {
 public:
-static const int ClassID = 3714116915;
+static const int ClassID = -580850381;
 static const LXType Type = LXType_World;
 static constexpr const char* ClassName = "World";
 typedef LXObject super;

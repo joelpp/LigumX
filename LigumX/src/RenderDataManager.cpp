@@ -681,13 +681,6 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 	}
 }
 
-enum LeftRightTestResult
-{
-	Unknown = 0,
-	One = 1,
-	Both = 2
-};
-
 glm::vec4 GetClipPosFromWorldPosition(const glm::vec4& worldPosition, Camera* camera)
 {
 	const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();

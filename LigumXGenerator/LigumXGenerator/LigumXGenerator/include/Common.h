@@ -1,8 +1,10 @@
 #pragma once
 
 #include <string>
-#include <windows.h>
+
+#define NOMINMAX
 #include "stdafx.h"
+#include <windows.h>
 
 #include <iostream>
 #include <algorithm>

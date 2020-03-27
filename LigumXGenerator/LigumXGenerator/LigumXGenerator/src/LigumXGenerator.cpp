@@ -1,6 +1,5 @@
 // LigumXGenerator.cpp : Defines the entry point for the console application.
 //
-#define NOMINMAX
 #include "stdafx.h"
 #include <intrin.h>
 #include <ctime>

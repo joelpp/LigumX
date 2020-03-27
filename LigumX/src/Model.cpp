@@ -136,7 +136,7 @@ void Model::loadModel()
     {
     	std::stringstream ss;
     	ss << "ERROR::ASSIMP::" << import.GetErrorString();
-        PRINT(ss.str());
+        PRINTSTRING(ss.str());
 		assert(false);
         return;
     }

@@ -61,7 +61,8 @@ public:
 		Write("\n");
 		WriteLine("{");
 		WriteLine("public:");
-		m_Stream << "static const int ClassID = " << std::hash_value(m_Class.m_Name) << ";" << std::endl;
+		int hash = std::hash_value(m_Class.m_Name);
+		m_Stream << "static const int ClassID = " << hash << ";" << std::endl;
 
 
 		m_Stream << "static const LXType Type = LXType_" << m_Class.m_Name << ";" << std::endl;

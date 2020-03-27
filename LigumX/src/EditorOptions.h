@@ -13,7 +13,7 @@ class EditorOptions;
 class EditorOptions : public LXObject
 {
 public:
-static const int ClassID = 3240762054;
+static const int ClassID = -1054205242;
 static const LXType Type = LXType_EditorOptions;
 static constexpr const char* ClassName = "EditorOptions";
 typedef LXObject super;

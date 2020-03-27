@@ -30,7 +30,7 @@ class Material;
 class Model : public LXObject
 {
 public:
-static const int ClassID = 2189814010;
+static const int ClassID = -2105153286;
 static const LXType Type = LXType_Model;
 static constexpr const char* ClassName = "Model";
 typedef LXObject super;

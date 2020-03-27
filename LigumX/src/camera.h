@@ -21,7 +21,7 @@ enum ProjectionType
 class Camera : public LXObject
 {
 public:
-static const int ClassID = 3880549230;
+static const int ClassID = -414418066;
 static const LXType Type = LXType_Camera;
 static constexpr const char* ClassName = "Camera";
 typedef LXObject super;

@@ -192,6 +192,7 @@ const GLPixelFormat Indirection_GLPixelFormat[] =
 
 
 
+
 bool GL::g_CheckGLErrors = false;
 
 void GL::SetDepthFunction(GL::DepthFunction func)
@@ -362,7 +363,7 @@ void GL::OutputErrors()
 			case GL_INVALID_FRAMEBUFFER_OPERATION:  error = "INVALID_FRAMEBUFFER_OPERATION";  break;
 		}
 
-		OUTPUT_STRING_LINE(error.c_str());
+		PRINT(error.c_str());
 		err = glGetError();
 	}
 }

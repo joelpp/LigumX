@@ -12,7 +12,7 @@ class SerializerInputVariable;
 class SerializerInputVariable : public LXObject
 {
 public:
-static const int ClassID = 2181810211;
+static const int ClassID = -2113157085;
 static const LXType Type = LXType_SerializerInputVariable;
 static constexpr const char* ClassName = "SerializerInputVariable";
 typedef LXObject super;

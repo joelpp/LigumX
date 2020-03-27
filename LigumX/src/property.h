@@ -59,6 +59,8 @@ enum LXType
 	LXType_SerializerInputVariable,
 	LXType_ShaderFamily,
 	LXType_SunLight,
+	LXType_TestComponentA,
+	LXType_TestComponentB,
 	LXType_TerrainEditionMode,
 	LXType_TerrainTool,
 	LXType_Texture,

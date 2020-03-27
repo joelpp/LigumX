@@ -255,6 +255,15 @@
     <ClCompile Include="src\VectorUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TestComponentA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestComponentB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -620,6 +629,15 @@
     <ClInclude Include="src\VectorUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\TestComponentA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestComponentB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -676,5 +694,7 @@
     <None Include="src\Serializer2.gen" />
     <None Include="src\SerializerInputVariable.gen" />
     <None Include="src\CPUBuffers.gen" />
+    <None Include="src\TestComponentA.gen" />
+    <None Include="src\TestComponentB.gen" />
   </ItemGroup>
 </Project>

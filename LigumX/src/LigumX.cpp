@@ -38,6 +38,7 @@ using namespace std;
 const double static_dt = 1.0 / 100.0;
 
 //Renderer* LigumX::m_Renderer;
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 int main(int argc, char *argv[])
 {

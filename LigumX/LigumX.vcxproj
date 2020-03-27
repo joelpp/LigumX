@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -109,7 +109,7 @@
       </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(ProjectDir)libs\win32\AntTweakBar\lib\AntTweakBar64.lib;$(ProjectDir)libs\win32\glfw\glfw3.lib;$(ProjectDir)libs\win32\freetype\freetyped.lib;$(ProjectDir)libs\win32\curl\libcurl-d_imp.lib;$(ProjectDir)libs\win32\FreeImage\dist\x64\freeimaged.lib;$(ProjectDir)libs\win32\assimp\assimp-vc140-mt.lib;$(ProjectDir)libs\win32\glad\glad.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -196,6 +196,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\node.cpp" />
+    <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
     <ClCompile Include="src\OSMAttribute.cpp" />
     <ClCompile Include="src\OSMDataProcessor.cpp" />
@@ -228,6 +229,8 @@
     <ClCompile Include="src\StringUtils.cpp" />
     <ClCompile Include="src\SunLight.cpp" />
     <ClCompile Include="src\TerrainTool.cpp" />
+    <ClCompile Include="src\TestComponentA.cpp" />
+    <ClCompile Include="src\TestComponentB.cpp" />
     <ClCompile Include="src\text.cpp" />
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
@@ -314,6 +317,7 @@
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\node.h" />
+    <ClInclude Include="src\ObjectFactory.h" />
     <ClInclude Include="src\ObjectManager.h" />
     <ClInclude Include="src\OSMAttribute.h" />
     <ClInclude Include="src\OSMDataProcessor.h" />
@@ -351,6 +355,8 @@
     <ClInclude Include="src\SunLight.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\TerrainTool.h" />
+    <ClInclude Include="src\TestComponentA.h" />
+    <ClInclude Include="src\TestComponentB.h" />
     <ClInclude Include="src\texture.h" />
     <ClInclude Include="src\tinyxml2.h" />
     <ClInclude Include="src\vec2i.h" />
@@ -410,6 +416,8 @@
     <None Include="src\SerializerInputVariable.gen" />
     <None Include="src\SunLight.gen" />
     <None Include="src\TerrainTool.gen" />
+    <None Include="src\TestComponentA.gen" />
+    <None Include="src\TestComponentB.gen" />
     <None Include="src\Texture.gen" />
     <None Include="src\Way.gen" />
     <None Include="src\World.gen" />

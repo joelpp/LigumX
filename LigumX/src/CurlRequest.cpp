@@ -206,7 +206,7 @@ CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async, const s
 
 void CurlRequest::Execute()
 {
-	PRINTSTRING("Beginning cURL request.");
+	PRINT("Beginning cURL request.");
 	std::cout << "Searching for " << m_Filename << "..." << std::endl;
 
 	bool fileAlreadyPresent = file_exists(m_Filename);
@@ -222,7 +222,7 @@ void CurlRequest::Execute()
 		std::cout << "File found on disk!" << std::endl;
 	}
 
-	PRINTSTRING("Request complete")
+	PRINT("Request complete")
 	m_State = ThreadState_Finished;
 }
 	 

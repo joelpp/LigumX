@@ -311,7 +311,7 @@ void Renderer::InitPipelines()
 		m_ShaderBeenUsedThisFrame.push_back(false);
 	}
 
-	PRINTSTRING("Successfully built all shaders!");
+	PRINT("Successfully built all shaders!");
 
 }
 

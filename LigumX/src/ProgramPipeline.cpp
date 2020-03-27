@@ -343,7 +343,7 @@ void ProgramPipeline::useComputeShader(
 		glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
 		if (std::string(info).find("compute") == string::npos)
 		{
-			PRINT(m_name);
+			PRINTSTRING(m_name);
 			PRINT(info);
 		}
 	}
@@ -373,7 +373,7 @@ void ProgramPipeline::useVertexShader(
         glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
         if (std::string(info).find("fragment") == string::npos)
         {
-            PRINT(m_name);
+            PRINTSTRING(m_name);
             PRINT(info);
         }
     }
@@ -409,7 +409,7 @@ void ProgramPipeline::useGeometryShader(ProgramPipeline::ShaderProgram* shader)
         glGetProgramPipelineInfoLog(glidProgramPipeline, infoLength, NULL, info);
         if (std::string(info).find("fragment") == string::npos)
         {
-            PRINT(m_name);
+            PRINTSTRING(m_name);
             PRINT(info);
         }
     }

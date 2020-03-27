@@ -11,6 +11,8 @@ class SerializerInputVariable;
 #pragma endregion  FORWARD_DECLARATIONS Serializer2
 
 #include "SerializerInputVariable.h"
+#include "FileUtils.h"
+#include "ObjectFactory.h"
 
 #define FIND_VARIABLE(_def_name) \
 SerializerInputVariable serializerVariable; \
@@ -28,7 +30,7 @@ lxAssert(serializerVariable.GetValues().size() == _size); \
 class Serializer2 : public LXObject
 {
 public:
-static const int ClassID = 2318800129;
+static const int ClassID = -1976167167;
 static const LXType Type = LXType_Serializer2;
 static constexpr const char* ClassName = "Serializer2";
 typedef LXObject super;
@@ -241,26 +243,87 @@ public:
 				bool mustSerialize = false;
 				T* loadedObject = g_ObjectManager->FindObjectByID<T>(objectID);
 
-				//T* dptr = nullptr;
-				if (loadedObject == nullptr)
+				if (objectID == 19084)
 				{
-					// todo : prolly a huge leak here
-					//if (ptr == 0)
-					{
-						loadedObject = new T();
-						g_ObjectManager->AddObject(objectID, T::Type, (ObjectPtr)loadedObject);
-					}
-					//	mustSerialize = true;
+					//g_ObjectManager->GetObjectClassID(objectID);
+					ObjectPtr* newObject = nullptr;// Visual::GetNewChildObject();
 
-					loadedObject->SetObjectID(objectID);
-					loadedObject->Serialize(false);
+					std::vector<LXString> allFiles = FileUtils::GetAllFilesInDirectory(g_PathObjects.c_str());
+
+					for (LXString& str : allFiles)
+					{
+						std::vector<LXString> all = StringUtils::SplitString(str, '_');
+
+						if (all.size() == 2)
+						{
+							std::vector<LXString> idType= StringUtils::SplitString(all[1], '.');
+
+							if (idType.size() == 2)
+							{
+								ObjectID id = StringUtils::ToInt(idType[0]);
+
+								if (id == objectID)
+								{
+									std::string& typeName = all[0];
+									int classHash = std::hash_value(typeName);
+
+									LXObject* newObject = ObjectFactory::GetNewObject(classHash);// Visual::GetNewChildObject();
+									newObject->SetObjectID(objectID);
+									newObject->Serialize(false);
+									vec[i - 1] = (T*)newObject;
+								}
+
+							}
+						}
+						//if (StringUtils::ToInt(all[]))
+					}
+
+					//T* dptr = nullptr;
+					//if (loadedObject == nullptr)
+					//{
+					//	// todo : prolly a huge leak here
+					//	//if (ptr == 0)
+					//	{
+					//		loadedObject = new T();
+					//		g_ObjectManager->AddObject(objectID, T::Type, (ObjectPtr)loadedObject);
+					//	}
+					//	//	mustSerialize = true;
+
+					//	loadedObject->SetObjectID(objectID);
+					//	loadedObject->Serialize(false);
+					//}
+					//else
+					//{
+
+					//}
+
+					//vec[i - 1] = loadedObject;
+
 				}
 				else
 				{
+					//T* dptr = nullptr;
+					if (loadedObject == nullptr)
+					{
+						// todo : prolly a huge leak here
+						//if (ptr == 0)
+						{
+							loadedObject = new T();
+							g_ObjectManager->AddObject(objectID, T::Type, (ObjectPtr)loadedObject);
+						}
+						//	mustSerialize = true;
+
+						loadedObject->SetObjectID(objectID);
+						loadedObject->Serialize(false);
+					}
+					else
+					{
+
+					}
+
+					vec[i - 1] = loadedObject;
 
 				}
-
-				vec[i - 1] = loadedObject;
 
 			}
 		}

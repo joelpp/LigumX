@@ -14,7 +14,7 @@ class Texture;
 class SunLight : public LXObject
 {
 public:
-static const int ClassID = 2842600075;
+static const int ClassID = -1452367221;
 static const LXType Type = LXType_SunLight;
 static constexpr const char* ClassName = "SunLight";
 typedef LXObject super;

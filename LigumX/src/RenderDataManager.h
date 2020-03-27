@@ -125,7 +125,7 @@ private:
 class RenderDataManager : public LXObject
 {
 public:
-static const int ClassID = 2933429220;
+static const int ClassID = -1361538076;
 static const LXType Type = LXType_RenderDataManager;
 static constexpr const char* ClassName = "RenderDataManager";
 typedef LXObject super;

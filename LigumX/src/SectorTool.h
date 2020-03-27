@@ -24,7 +24,7 @@ class Sector;
 class SectorTool : public EditorTool
 {
 public:
-static const int ClassID = 2610247209;
+static const int ClassID = -1684720087;
 static const LXType Type = LXType_SectorTool;
 static constexpr const char* ClassName = "SectorTool";
 typedef EditorTool super;

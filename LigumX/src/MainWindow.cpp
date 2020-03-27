@@ -68,7 +68,7 @@ void MainWindow::PostSerialization(bool writing, bool success)
 		glfwMakeContextCurrent(pWindow);
 		if (pWindow == NULL)
 		{
-			PRINTSTRING("Failed to open GLFW window.");
+			PRINT("Failed to open GLFW window.");
 			glfwTerminate();
 			return;
 		}

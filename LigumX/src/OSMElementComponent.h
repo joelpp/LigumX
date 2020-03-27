@@ -16,7 +16,7 @@ class Way;
 class OSMElementComponent : public Component
 {
 public:
-static const int ClassID = 3716861205;
+static const int ClassID = -578106091;
 static const LXType Type = LXType_OSMElementComponent;
 static constexpr const char* ClassName = "OSMElementComponent";
 typedef Component super;
