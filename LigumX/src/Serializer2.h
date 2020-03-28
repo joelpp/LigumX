@@ -246,6 +246,7 @@ public:
 				bool mustSerialize = false;
 				T* loadedObject = g_ObjectManager->FindObjectByID<T>(objectID);
 
+				
 				if (loadedObject == nullptr) // objectID == 19084)
 				{
 					//g_ObjectManager->GetObjectClassID(objectID);
@@ -272,13 +273,17 @@ public:
 
 									LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
 
-									vec[i - 1] = (T*)newObject;
+									loadedObject = (T*)newObject;
+									break;
 								}
 
 							}
 						}
 						//if (StringUtils::ToInt(all[]))
 					}
+
+					lxAssert(loadedObject != nullptr);
+					vec[i - 1] = loadedObject;
 
 					//T* dptr = nullptr;
 					//if (loadedObject == nullptr)
