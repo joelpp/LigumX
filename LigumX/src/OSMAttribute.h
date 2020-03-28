@@ -15,7 +15,7 @@ class OSMAttribute;
 class OSMAttribute : public LXObject
 {
 public:
-static const int ClassID = -526003142;
+static const int ClassID = 255726074;
 static const LXType Type = LXType_OSMAttribute;
 static constexpr const char* ClassName = "OSMAttribute";
 typedef LXObject super;

@@ -13,7 +13,7 @@ class RenderingStats;
 class RenderingStats : public LXObject
 {
 public:
-static const int ClassID = -1345917138;
+static const int ClassID = -528831410;
 static const LXType Type = LXType_RenderingStats;
 static constexpr const char* ClassName = "RenderingStats";
 typedef LXObject super;

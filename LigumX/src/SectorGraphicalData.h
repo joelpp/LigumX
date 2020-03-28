@@ -17,7 +17,7 @@ class Texture;
 class SectorGraphicalData : public LXObject
 {
 public:
-static const int ClassID = 1523090688;
+static const int ClassID = 485409280;
 static const LXType Type = LXType_SectorGraphicalData;
 static constexpr const char* ClassName = "SectorGraphicalData";
 typedef LXObject super;

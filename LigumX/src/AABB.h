@@ -13,7 +13,7 @@ class AABB;
 class AABB : public LXObject
 {
 public:
-static const int ClassID = 1726995287;
+static const int ClassID = -1624135593;
 static const LXType Type = LXType_AABB;
 static constexpr const char* ClassName = "AABB";
 typedef LXObject super;

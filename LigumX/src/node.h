@@ -18,7 +18,7 @@ class Way;
 class Node : public OSMElement
 {
 public:
-static const int ClassID = 879231789;
+static const int ClassID = -755583347;
 static const LXType Type = LXType_Node;
 static constexpr const char* ClassName = "Node";
 typedef OSMElement super;

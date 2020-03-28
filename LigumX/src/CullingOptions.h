@@ -13,7 +13,7 @@ class CullingOptions;
 class CullingOptions : public LXObject
 {
 public:
-static const int ClassID = 188449055;
+static const int ClassID = 73693055;
 static const LXType Type = LXType_CullingOptions;
 static constexpr const char* ClassName = "CullingOptions";
 typedef LXObject super;

@@ -13,7 +13,7 @@ class OSMDataProcessorSettings;
 class OSMDataProcessorSettings : public LXObject
 {
 public:
-static const int ClassID = 1877541511;
+static const int ClassID = -301590873;
 static const LXType Type = LXType_OSMDataProcessorSettings;
 static constexpr const char* ClassName = "OSMDataProcessorSettings";
 typedef LXObject super;

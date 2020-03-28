@@ -66,7 +66,7 @@ bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition);
 class OSMDataProcessor : public LXObject
 {
 public:
-static const int ClassID = -1193456638;
+static const int ClassID = -277960222;
 static const LXType Type = LXType_OSMDataProcessor;
 static constexpr const char* ClassName = "OSMDataProcessor";
 typedef LXObject super;

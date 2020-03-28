@@ -15,7 +15,7 @@ extern DefaultTextureHolder* g_DefaultTextureHolder;
 class DefaultTextureHolder : public LXObject
 {
 public:
-static const int ClassID = -167316773;
+static const int ClassID = -1540401317;
 static const LXType Type = LXType_DefaultTextureHolder;
 static constexpr const char* ClassName = "DefaultTextureHolder";
 typedef LXObject super;

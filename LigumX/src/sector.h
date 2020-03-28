@@ -28,7 +28,7 @@ typedef std::pair<int, int> IntPair;
 class Sector : public LXObject
 {
 public:
-static const int ClassID = 749113007;
+static const int ClassID = -1222429009;
 static const LXType Type = LXType_Sector;
 static constexpr const char* ClassName = "Sector";
 typedef LXObject super;

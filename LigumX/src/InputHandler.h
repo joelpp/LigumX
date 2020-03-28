@@ -17,7 +17,7 @@ extern InputHandler* g_InputHandler;
 class InputHandler : public LXObject
 {
 public:
-static const int ClassID = 2115103629;
+static const int ClassID = -279875763;
 static const LXType Type = LXType_InputHandler;
 static constexpr const char* ClassName = "InputHandler";
 typedef LXObject super;

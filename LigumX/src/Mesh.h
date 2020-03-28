@@ -58,7 +58,7 @@ public:
 class Mesh : public LXObject
 {
 public:
-static const int ClassID = 132142556;
+static const int ClassID = -459175268;
 static const LXType Type = LXType_Mesh;
 static constexpr const char* ClassName = "Mesh";
 typedef LXObject super;

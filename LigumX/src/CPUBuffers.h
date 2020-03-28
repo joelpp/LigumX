@@ -14,7 +14,7 @@ class CPUBuffers;
 class CPUBuffers : public LXObject
 {
 public:
-static const int ClassID = -2062382396;
+static const int ClassID = 2143754276;
 static const LXType Type = LXType_CPUBuffers;
 static constexpr const char* ClassName = "CPUBuffers";
 typedef LXObject super;

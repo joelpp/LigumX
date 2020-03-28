@@ -15,7 +15,7 @@ class InputSerializer;
 class InputSerializer : public Serializer2
 {
 public:
-static const int ClassID = -1662523873;
+static const int ClassID = -456708097;
 static const LXType Type = LXType_InputSerializer;
 static constexpr const char* ClassName = "InputSerializer";
 typedef Serializer2 super;

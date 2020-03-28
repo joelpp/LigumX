@@ -21,7 +21,7 @@ typedef std::pair<int, int> WayPair;
 class Way : public OSMElement
 {
 public:
-static const int ClassID = 2137978372;
+static const int ClassID = -432682044;
 static const LXType Type = LXType_Way;
 static constexpr const char* ClassName = "Way";
 typedef OSMElement super;

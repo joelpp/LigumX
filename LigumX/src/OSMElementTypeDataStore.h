@@ -18,7 +18,7 @@ extern OSMElementTypeDataStore* g_OSMElementTypeDataStore;
 class OSMElementTypeDataStore : public LXObject
 {
 public:
-static const int ClassID = 231333735;
+static const int ClassID = -1486964697;
 static const LXType Type = LXType_OSMElementTypeDataStore;
 static constexpr const char* ClassName = "OSMElementTypeDataStore";
 typedef LXObject super;

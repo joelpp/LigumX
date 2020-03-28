@@ -17,7 +17,7 @@ class Framebuffer;
 class Framebuffer : public LXObject
 {
 public:
-static const int ClassID = 199658736;
+static const int ClassID = 1477904080;
 static const LXType Type = LXType_Framebuffer;
 static constexpr const char* ClassName = "Framebuffer";
 typedef LXObject super;

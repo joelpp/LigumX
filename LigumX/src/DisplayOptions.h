@@ -26,7 +26,7 @@ const int EnumLength_DisplayMode = 5;
 class DisplayOptions : public LXObject
 {
 public:
-static const int ClassID = -1821372747;
+static const int ClassID = 969288629;
 static const LXType Type = LXType_DisplayOptions;
 static constexpr const char* ClassName = "DisplayOptions";
 typedef LXObject super;

@@ -16,7 +16,7 @@ class Entity;
 class Component : public LXObject
 {
 public:
-static const int ClassID = 718440320;
+static const int ClassID = 390213760;
 static const LXType Type = LXType_Component;
 static constexpr const char* ClassName = "Component";
 typedef LXObject super;

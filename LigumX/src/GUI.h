@@ -15,7 +15,7 @@ extern GUI* g_GUI;
 class GUI : public LXObject
 {
 public:
-static const int ClassID = 2047816512;
+static const int ClassID = -1741320384;
 static const LXType Type = LXType_GUI;
 static constexpr const char* ClassName = "GUI";
 typedef LXObject super;

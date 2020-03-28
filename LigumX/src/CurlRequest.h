@@ -26,7 +26,7 @@ class Sector;
 class CurlRequest : public LXObject
 {
 public:
-static const int ClassID = -1676102012;
+static const int ClassID = 2012359204;
 static const LXType Type = LXType_CurlRequest;
 static constexpr const char* ClassName = "CurlRequest";
 typedef LXObject super;

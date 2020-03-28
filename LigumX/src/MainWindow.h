@@ -15,7 +15,7 @@ class MainWindow;
 class MainWindow : public LXObject
 {
 public:
-static const int ClassID = -1299369804;
+static const int ClassID = -915618380;
 static const LXType Type = LXType_MainWindow;
 static constexpr const char* ClassName = "MainWindow";
 typedef LXObject super;

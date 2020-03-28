@@ -30,7 +30,7 @@ lxAssert(serializerVariable.GetValues().size() == _size); \
 class Serializer2 : public LXObject
 {
 public:
-static const int ClassID = -1976167167;
+static const int ClassID = 1423632897;
 static const LXType Type = LXType_Serializer2;
 static constexpr const char* ClassName = "Serializer2";
 typedef LXObject super;

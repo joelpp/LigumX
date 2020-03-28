@@ -49,10 +49,19 @@ std::vector<std::string> splitString(const std::string &txt, char ch)
 {
 	std::vector<std::string> strs;
 	unsigned int pos = txt.find(ch);
+	if (pos > txt.length())
+	{
+		strs.push_back(txt);
+		return strs;
+	}
 	unsigned int initialPos = 0;
 
 	// Decompose statement
 	while (pos != std::string::npos) {
+		if (pos > txt.length())
+		{
+			break;
+		}
 		strs.push_back(txt.substr(initialPos, pos - initialPos));
 		initialPos = pos + 1;
 

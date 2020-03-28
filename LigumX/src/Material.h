@@ -30,7 +30,7 @@ class ProgramPipeline;
 class Material : public LXObject
 {
 public:
-static const int ClassID = -875212928;
+static const int ClassID = 58952128;
 static const LXType Type = LXType_Material;
 static constexpr const char* ClassName = "Material";
 typedef LXObject super;

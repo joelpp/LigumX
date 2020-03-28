@@ -47,7 +47,7 @@ const int EnumLength_EEditorTool = 6;
 class Editor : public LXObject
 {
 public:
-static const int ClassID = 1231601560;
+static const int ClassID = 215486072;
 static const LXType Type = LXType_Editor;
 static constexpr const char* ClassName = "Editor";
 typedef LXObject super;

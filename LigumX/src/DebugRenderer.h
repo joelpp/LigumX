@@ -14,7 +14,7 @@ extern DebugRenderer* g_DebugRenderer;
 class DebugRenderer : public LXObject
 {
 public:
-static const int ClassID = 1763775919;
+static const int ClassID = 24743727;
 static const LXType Type = LXType_DebugRenderer;
 static constexpr const char* ClassName = "DebugRenderer";
 typedef LXObject super;

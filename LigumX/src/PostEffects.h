@@ -15,7 +15,7 @@ class PostEffects;
 class PostEffects : public LXObject
 {
 public:
-static const int ClassID = -1116452029;
+static const int ClassID = 1677466883;
 static const LXType Type = LXType_PostEffects;
 static constexpr const char* ClassName = "PostEffects";
 typedef LXObject super;

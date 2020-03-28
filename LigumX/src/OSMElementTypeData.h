@@ -19,7 +19,7 @@ class OSMAttribute;
 class OSMElementTypeData : public LXObject
 {
 public:
-static const int ClassID = -840683850;
+static const int ClassID = 2032613078;
 static const LXType Type = LXType_OSMElementTypeData;
 static constexpr const char* ClassName = "OSMElementTypeData";
 typedef LXObject super;

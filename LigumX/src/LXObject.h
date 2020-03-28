@@ -13,7 +13,7 @@ class LXObject;
 class LXObject
 {
 public:
-static const int ClassID = 147228134;
+static const int ClassID = 1057246886;
 static const LXType Type = LXType_LXObject;
 static constexpr const char* ClassName = "LXObject";
 

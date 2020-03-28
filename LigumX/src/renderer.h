@@ -90,7 +90,7 @@ struct Text {
 class Renderer : public LXObject
 {
 public:
-static const int ClassID = 1498036510;
+static const int ClassID = 1496194462;
 static const LXType Type = LXType_Renderer;
 static constexpr const char* ClassName = "Renderer";
 typedef LXObject super;

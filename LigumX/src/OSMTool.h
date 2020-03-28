@@ -21,7 +21,7 @@ class Way;
 class OSMTool : public EditorTool
 {
 public:
-static const int ClassID = 878880296;
+static const int ClassID = 1416751752;
 static const LXType Type = LXType_OSMTool;
 static constexpr const char* ClassName = "OSMTool";
 typedef EditorTool super;

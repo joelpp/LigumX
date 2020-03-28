@@ -15,7 +15,7 @@ class TestComponentB;
 class TestComponentB : public Component
 {
 public:
-static const int ClassID = -1331125850;
+static const int ClassID = -762015354;
 static const LXType Type = LXType_TestComponentB;
 static constexpr const char* ClassName = "TestComponentB";
 typedef Component super;

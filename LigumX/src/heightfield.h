@@ -23,7 +23,7 @@ class PerlinNoise;
 class Heightfield : public LXObject
 {
 public:
-static const int ClassID = -478953946;
+static const int ClassID = 466202022;
 static const LXType Type = LXType_Heightfield;
 static constexpr const char* ClassName = "Heightfield";
 typedef LXObject super;

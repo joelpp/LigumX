@@ -239,7 +239,12 @@ public:
 
 	void WriteSerializerDeclaration()
 	{
-		WriteLine("void Serialize(Serializer2& serializer);");
+		std::string serialize = "virtual void Serialize(Serializer2& serializer);";
+		//if (m_Class.m_HasChildren)
+		//{
+		//	serialize = "virtual " + serialize;
+		//}
+		WriteLine(serialize);
 		WriteLine("bool Serialize(bool writing);");
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
