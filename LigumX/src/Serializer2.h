@@ -70,6 +70,8 @@ virtual const char* GetTypeName();
 
 
 public:
+	Serializer2() { };
+
 	template<typename T>
 	Serializer2(T* object, bool writing, const std::string& fileName)
 		: m_Writing(writing)
@@ -244,12 +246,12 @@ public:
 				bool mustSerialize = false;
 				T* loadedObject = g_ObjectManager->FindObjectByID<T>(objectID);
 
-				if (objectID == 19084)
+				if (loadedObject == nullptr) // objectID == 19084)
 				{
 					//g_ObjectManager->GetObjectClassID(objectID);
 					ObjectPtr* newObject = nullptr;// Visual::GetNewChildObject();
 
-					std::vector<LXString> allFiles = FileUtils::GetAllFilesInDirectory(g_PathObjects.c_str());
+					std::vector<LXString>& allFiles = g_ObjectManager->GetAllFiles();
 
 					for (LXString& str : allFiles)
 					{

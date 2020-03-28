@@ -353,7 +353,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 					//	}
 					//}
 
-					if (!currentClass.m_ParentName.empty())
+					//if (!currentClass.m_ParentName.empty())
 					{
 						g_ChildClassesNames.push_back(currentClass.m_Name);
 					}
@@ -507,13 +507,16 @@ void OutputClassHierarchyData()
 	objectFactoryFile << "LXObject* ObjectFactory::GetNewObject(int hash, int objectID)" << std::endl;
 	objectFactoryFile << "{" << std::endl;
 	objectFactoryFile << "    switch (hash)" << std::endl;
+	objectFactoryFile << "    {" << std::endl;
 
 	for (std::string& childName : g_ChildClassesNames)
 	{
+		objectFactoryFile << "    case " << childName << "::ClassID:" << std::endl;
 		objectFactoryFile << "    {" << std::endl;
 		objectFactoryFile << "    " << childName << "* obj = new " << childName << "();" << std::endl;
 		objectFactoryFile << "    obj->SetObjectID(objectID);" << std::endl;
 		objectFactoryFile << "    obj->Serialize(false);" << std::endl;
+		objectFactoryFile << "    g_ObjectManager->AddObject(objectID, obj->Type, (ObjectPtr)obj);" << std::endl;
 		objectFactoryFile << "    return (LXObject*)obj;" << std::endl;
 		objectFactoryFile << "	}" << std::endl;
 	}

@@ -136,9 +136,9 @@ void LigumX::Initialize()
 
 void LigumX::InitializeGlobalObjects()
 {
+	g_ObjectManager = new ObjectManager();
 	g_InputHandler = new InputHandler();
 	g_Serializer = new Serializer();
-	g_ObjectManager = new ObjectManager();
 
 	g_Editor = new Editor(73524);
 

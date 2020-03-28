@@ -3,6 +3,7 @@
 #include <random>
 #include "EngineStats.h"
 #include "stringutils.h"
+#include "fileutils.h"
 
 ObjectManager* g_ObjectManager;
 
@@ -53,12 +54,58 @@ void ObjectManager::Initialize()
 	{
 		m_ObjectMaps[type] = ObjectMap();
 	}
+
+#define DETECT_ID_DUPLICATES 1
+
+#if DETECT_ID_DUPLICATES 
+	std::vector<int> dupes;
+#endif //DETECT_ID_DUPLICATES 
+
+	std::vector<LXString>& allFiles = GetAllFiles();
+	int maxID = 0;
+
+	for (LXString& str : allFiles)
+	{
+		std::vector<LXString> all = StringUtils::SplitString(str, '_');
+
+		if (all.size() == 2)
+		{
+			std::vector<LXString> idType = StringUtils::SplitString(all[1], '.');
+
+			if (idType.size() == 2)
+			{
+				ObjectID id = StringUtils::ToInt(idType[0]);
+
+#if DETECT_ID_DUPLICATES 
+				for (int i = 0; i < dupes.size(); ++i)
+				{
+					if (dupes[i] == id)
+					{
+						lxAssert0();
+					}
+				}
+#endif
+
+				maxID = std::max(id, maxID);
+#if DETECT_ID_DUPLICATES 
+				dupes.push_back(id);
+#endif
+
+			}
+		}
+
+		m_MaxID = maxID;
+	}
+
+	
+
+
 }
 
 
 int ObjectManager::GetNewObjectID()
 {
-	return rand_interval(StartObjectIDs, RAND_MAX);
+	return m_MaxID++;
 }
 
 
@@ -133,4 +180,14 @@ bool ObjectManager::FilenameIsID(std::string& s)
 void ObjectManager::IncrementObjectMapHits()
 {
 	g_EngineStats->AddTo_NumObjectMapHits(1);
+}
+
+std::vector<LXString>& ObjectManager::GetAllFiles()
+{
+	if (m_AllFiles.size() == 0)
+	{
+		m_AllFiles = FileUtils::GetAllFilesInDirectory(g_PathObjects.c_str());
+	}
+
+	return m_AllFiles;
 }

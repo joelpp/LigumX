@@ -44,6 +44,7 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER OSMAttribute
 
+OSMAttribute() { };
 OSMAttribute(const std::string& key, const std::string& value);
 
 };

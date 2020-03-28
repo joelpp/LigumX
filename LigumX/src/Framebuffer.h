@@ -3,6 +3,8 @@
 #include <vector>
 
 typedef unsigned int GLuint;
+enum GLPixelFormat;
+enum GLPixelType;
 
 #pragma region  FORWARD_DECLARATIONS Framebuffer
 #include "LXSystem.h"

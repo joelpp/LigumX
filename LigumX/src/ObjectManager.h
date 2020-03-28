@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include "property.h"
+#include "LXTypeDefinition.h"
 
 typedef int ObjectID;
 typedef char* ObjectPtr;
@@ -123,6 +124,9 @@ public:
 
 		return newObject;
 	}
+
+	std::vector<LXString>& GetAllFiles();
+
 	
 
 private:
@@ -132,6 +136,11 @@ private:
 	// replace with shared ptr eventually
 	std::map<LXType, ObjectMap> m_ObjectMaps;
 	std::vector<LXType> m_SupportedTypes;
+
+	std::vector<LXString> m_AllFiles;
+
+	ObjectID m_MaxID = 0;
+
 };
 
 extern ObjectManager* g_ObjectManager;
