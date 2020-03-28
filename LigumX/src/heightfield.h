@@ -54,7 +54,7 @@ PIDX_MinHeight,
 PIDX_Width,
 };
 virtual void Serialize(Serializer2& serializer);
-bool Serialize(bool writing);
+virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
 

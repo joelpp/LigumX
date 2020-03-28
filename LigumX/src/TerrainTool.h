@@ -79,7 +79,7 @@ PIDX_SplatMapIncrement,
 PIDX_ClickedSector,
 };
 virtual void Serialize(Serializer2& serializer);
-bool Serialize(bool writing);
+virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
 

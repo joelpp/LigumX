@@ -55,7 +55,7 @@ PIDX_UseSkybox,
 PIDX_Skybox,
 };
 virtual void Serialize(Serializer2& serializer);
-bool Serialize(bool writing);
+virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
 

@@ -246,7 +246,7 @@ public:
 		//	serialize = "virtual " + serialize;
 		//}
 		WriteLine(serialize);
-		WriteLine("bool Serialize(bool writing);");
+		WriteLine("virtual bool Serialize(bool writing);");
 
 		if (m_Class.m_PropertyFlags & ClassPropertyFlags_PostSerialization)
 		{

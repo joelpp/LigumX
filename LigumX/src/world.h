@@ -88,7 +88,7 @@ PIDX_Sectors,
 PIDX_Reset,
 };
 virtual void Serialize(Serializer2& serializer);
-bool Serialize(bool writing);
+virtual bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

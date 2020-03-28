@@ -36,7 +36,7 @@ PIDX_StartPoint,
 PIDX_Scale,
 };
 virtual void Serialize(Serializer2& serializer);
-bool Serialize(bool writing);
+virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
 
