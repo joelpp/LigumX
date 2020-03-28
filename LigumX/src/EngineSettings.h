@@ -18,6 +18,7 @@ public:
 static const int ClassID = -7439674;
 static const LXType Type = LXType_EngineSettings;
 static constexpr const char* ClassName = "EngineSettings";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 float GetWorldScale() { return m_WorldScale; }; 
@@ -80,7 +81,7 @@ PIDX_MessagesPixelsOffset,
 PIDX_LoadOSMData,
 PIDX_TerrainTiling,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

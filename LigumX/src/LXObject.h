@@ -16,6 +16,7 @@ public:
 static const int ClassID = 1057246886;
 static const LXType Type = LXType_LXObject;
 static constexpr const char* ClassName = "LXObject";
+virtual const char* GetLXClassName() { return ClassName; }
 
 int GetObjectID() { return m_ObjectID; }; 
 void SetObjectID(int value) { m_ObjectID = value; }; 
@@ -33,7 +34,7 @@ enum g_LXObjectPIDX
 PIDX_ObjectID,
 PIDX_Name,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

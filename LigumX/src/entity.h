@@ -29,6 +29,7 @@ public:
 static const int ClassID = 1220590042;
 static const LXType Type = LXType_Entity;
 static constexpr const char* ClassName = "Entity";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetVisible() { return m_Visible; }; 
@@ -91,7 +92,7 @@ PIDX_Model,
 PIDX_IsLight,
 PIDX_Components,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

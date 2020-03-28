@@ -51,7 +51,7 @@ void BoundingBoxComponent::UpdateVertices()
 
 void BoundingBoxComponent::Update()
 {
-	if (GetParentEntity()->GetHasMoved())
+	if (GetParentEntity() && GetParentEntity()->GetHasMoved())
 	{
 		GetParentEntity()->UpdateAABB();
 

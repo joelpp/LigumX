@@ -16,6 +16,7 @@ public:
 static const int ClassID = -528831410;
 static const LXType Type = LXType_RenderingStats;
 static constexpr const char* ClassName = "RenderingStats";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 int GetNumVisibleEntities() { return m_NumVisibleEntities; }; 
@@ -50,7 +51,7 @@ PIDX_NumDebugModels,
 PIDX_Num2DMessages,
 PIDX_fps,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

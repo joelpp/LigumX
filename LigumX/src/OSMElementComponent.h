@@ -19,6 +19,7 @@ public:
 static const int ClassID = -777561099;
 static const LXType Type = LXType_OSMElementComponent;
 static constexpr const char* ClassName = "OSMElementComponent";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef Component super;
 
 Way*& GetWay() { return m_Way; }; 
@@ -33,7 +34,7 @@ enum g_OSMElementComponentPIDX
 {
 PIDX_Way,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

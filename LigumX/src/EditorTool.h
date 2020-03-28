@@ -19,6 +19,7 @@ public:
 static const int ClassID = 779603202;
 static const LXType Type = LXType_EditorTool;
 static constexpr const char* ClassName = "EditorTool";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetActive() { return m_Active; }; 
@@ -33,7 +34,7 @@ enum g_EditorToolPIDX
 {
 PIDX_Active,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

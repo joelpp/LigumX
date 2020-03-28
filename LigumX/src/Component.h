@@ -19,6 +19,7 @@ public:
 static const int ClassID = 390213760;
 static const LXType Type = LXType_Component;
 static constexpr const char* ClassName = "Component";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 Entity*& GetParentEntity() { return m_ParentEntity; }; 
@@ -33,7 +34,7 @@ enum g_ComponentPIDX
 {
 PIDX_ParentEntity,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

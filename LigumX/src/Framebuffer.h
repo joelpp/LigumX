@@ -20,6 +20,7 @@ public:
 static const int ClassID = 1477904080;
 static const LXType Type = LXType_Framebuffer;
 static constexpr const char* ClassName = "Framebuffer";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 int GetWidth() { return m_Width; }; 
@@ -62,7 +63,7 @@ PIDX_InternalPixelFormat,
 PIDX_HasDepth,
 PIDX_NumColorTargets,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

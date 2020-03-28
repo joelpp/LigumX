@@ -69,6 +69,7 @@ public:
 static const int ClassID = -277960222;
 static const LXType Type = LXType_OSMDataProcessor;
 static constexpr const char* ClassName = "OSMDataProcessor";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 float GetRoadWidth() { return m_RoadWidth; }; 
@@ -87,7 +88,7 @@ enum g_OSMDataProcessorPIDX
 PIDX_RoadWidth,
 PIDX_Settings,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -20,6 +20,7 @@ public:
 static const int ClassID = -279875763;
 static const LXType Type = LXType_InputHandler;
 static constexpr const char* ClassName = "InputHandler";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetMouse1Pressed() { return m_Mouse1Pressed; }; 
@@ -87,7 +88,7 @@ PIDX_MousePosition,
 PIDX_LastMousePosition,
 PIDX_MouseScroll,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -29,6 +29,7 @@ public:
 static const int ClassID = 2012359204;
 static const LXType Type = LXType_CurlRequest;
 static constexpr const char* ClassName = "CurlRequest";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 int GetState() { return m_State; }; 
@@ -71,7 +72,7 @@ PIDX_Sector,
 PIDX_SectorIndex,
 PIDX_Async,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

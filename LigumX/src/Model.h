@@ -33,6 +33,7 @@ public:
 static const int ClassID = -1333542246;
 static const LXType Type = LXType_Model;
 static constexpr const char* ClassName = "Model";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 const std::string& GetFilename() { return m_Filename; }; 
@@ -57,7 +58,7 @@ PIDX_Filename,
 PIDX_Materials,
 PIDX_Meshes,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

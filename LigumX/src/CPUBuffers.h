@@ -17,6 +17,7 @@ public:
 static const int ClassID = 2143754276;
 static const LXType Type = LXType_CPUBuffers;
 static constexpr const char* ClassName = "CPUBuffers";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 std::vector<glm::vec3>& GetVertexPositions() { return m_VertexPositions; }; 
@@ -47,7 +48,7 @@ PIDX_VertexNormals,
 PIDX_VertexUVs,
 PIDX_IndexBuffer,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -18,6 +18,7 @@ public:
 static const int ClassID = -1741320384;
 static const LXType Type = LXType_GUI;
 static constexpr const char* ClassName = "GUI";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool Getm_Enabled() { return m_m_Enabled; }; 
@@ -36,7 +37,7 @@ enum g_GUIPIDX
 PIDX_m_Enabled,
 PIDX_NumActiveWindows,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

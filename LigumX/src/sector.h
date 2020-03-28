@@ -31,6 +31,7 @@ public:
 static const int ClassID = -1222429009;
 static const LXType Type = LXType_Sector;
 static constexpr const char* ClassName = "Sector";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 glm::vec2& GetWorldPosition() { return m_WorldPosition; }; 
@@ -73,7 +74,7 @@ PIDX_Heightfield,
 PIDX_TerrainPatchEntity,
 PIDX_OSMFilename,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

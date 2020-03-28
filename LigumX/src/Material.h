@@ -33,6 +33,7 @@ public:
 static const int ClassID = 58952128;
 static const LXType Type = LXType_Material;
 static constexpr const char* ClassName = "Material";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetEnabled() { return m_Enabled; }; 
@@ -125,7 +126,7 @@ PIDX_SpecularTexture,
 PIDX_HeightfieldTexture,
 PIDX_ShaderFamily,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

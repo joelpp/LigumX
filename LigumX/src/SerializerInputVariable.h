@@ -15,6 +15,7 @@ public:
 static const int ClassID = 929535779;
 static const LXType Type = LXType_SerializerInputVariable;
 static constexpr const char* ClassName = "SerializerInputVariable";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 const std::string& GetVariableName() { return m_VariableName; }; 
@@ -34,7 +35,7 @@ enum g_SerializerInputVariablePIDX
 PIDX_VariableName,
 PIDX_Values,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

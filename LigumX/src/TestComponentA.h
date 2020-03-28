@@ -17,17 +17,22 @@ public:
 static const int ClassID = -762015789;
 static const LXType Type = LXType_TestComponentA;
 static constexpr const char* ClassName = "TestComponentA";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef Component super;
 
+bool GetAValue() { return m_AValue; }; 
+void SetAValue(bool value) { m_AValue = value; }; 
 private:
+bool m_AValue = false;
 public:
-static const int g_PropertyCount = 0;
+static const int g_PropertyCount = 1;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_TestComponentAPIDX
 {
+PIDX_AValue,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

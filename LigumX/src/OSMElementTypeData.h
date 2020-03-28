@@ -22,6 +22,7 @@ public:
 static const int ClassID = 2032613078;
 static const LXType Type = LXType_OSMElementTypeData;
 static constexpr const char* ClassName = "OSMElementTypeData";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 const OSMElementType& GetType() { return m_Type; }; 
@@ -49,7 +50,7 @@ PIDX_FillIn,
 PIDX_DebugColor,
 PIDX_Attributes,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

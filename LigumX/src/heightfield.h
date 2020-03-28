@@ -26,6 +26,7 @@ public:
 static const int ClassID = 466202022;
 static const LXType Type = LXType_Heightfield;
 static constexpr const char* ClassName = "Heightfield";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 Texture*& GetHeightDataTexture() { return m_HeightDataTexture; }; 
@@ -52,7 +53,7 @@ PIDX_MaxHeight,
 PIDX_MinHeight,
 PIDX_Width,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

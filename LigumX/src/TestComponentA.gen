@@ -1,5 +1,5 @@
 
 class TestComponentA : Component
 {
-
+	bool AValue = false;
 }

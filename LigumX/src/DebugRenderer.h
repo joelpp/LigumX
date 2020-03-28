@@ -17,6 +17,7 @@ public:
 static const int ClassID = 24743727;
 static const LXType Type = LXType_DebugRenderer;
 static constexpr const char* ClassName = "DebugRenderer";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetEnabled() { return m_Enabled; }; 
@@ -31,7 +32,7 @@ enum g_DebugRendererPIDX
 {
 PIDX_Enabled,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

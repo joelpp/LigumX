@@ -24,6 +24,7 @@ public:
 static const int ClassID = -432682044;
 static const LXType Type = LXType_Way;
 static constexpr const char* ClassName = "Way";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef OSMElement super;
 
 const lxInt64& GetOSMId() { return m_OSMId; }; 
@@ -60,7 +61,7 @@ PIDX_IndexInSector,
 PIDX_FilledIn,
 PIDX_AllTags,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

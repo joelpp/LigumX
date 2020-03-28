@@ -17,6 +17,7 @@ public:
 static const int ClassID = 204926310;
 static const LXType Type = LXType_EngineStats;
 static constexpr const char* ClassName = "EngineStats";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 int GetNumObjectMapHits() { return m_NumObjectMapHits; }; 
@@ -37,7 +38,7 @@ enum g_EngineStatsPIDX
 PIDX_NumObjectMapHits,
 PIDX_NumDrawCalls,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -27,6 +27,7 @@ public:
 static const int ClassID = 1626116169;
 static const LXType Type = LXType_SectorTool;
 static constexpr const char* ClassName = "SectorTool";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 
 bool GetEnabled() { return m_Enabled; }; 
@@ -89,7 +90,7 @@ PIDX_HighlightSelectedSector,
 PIDX_LoadSectorsOnClick,
 PIDX_SelectedWayIndex,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

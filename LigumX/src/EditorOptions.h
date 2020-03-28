@@ -16,6 +16,7 @@ public:
 static const int ClassID = 1786562374;
 static const LXType Type = LXType_EditorOptions;
 static constexpr const char* ClassName = "EditorOptions";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetEnabled() { return m_Enabled; }; 
@@ -106,7 +107,7 @@ PIDX_DisplayAxisGizmo,
 PIDX_MouseScrollCameraSpeed,
 PIDX_MouseScrollEntityCloseupPercent,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

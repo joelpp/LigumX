@@ -93,6 +93,7 @@ public:
 static const int ClassID = 1496194462;
 static const LXType Type = LXType_Renderer;
 static constexpr const char* ClassName = "Renderer";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 DisplayOptions*& GetDisplayOptions() { return m_DisplayOptions; }; 
@@ -115,7 +116,7 @@ PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_DebugCamera,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

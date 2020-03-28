@@ -20,6 +20,7 @@ public:
 static const int ClassID = 485409280;
 static const LXType Type = LXType_SectorGraphicalData;
 static constexpr const char* ClassName = "SectorGraphicalData";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 Model*& GetNodesModel() { return m_NodesModel; }; 
@@ -61,7 +62,7 @@ PIDX_StaticEntities,
 PIDX_SplatMapTexture,
 PIDX_AlbedoTexture,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

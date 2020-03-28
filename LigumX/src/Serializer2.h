@@ -33,6 +33,7 @@ public:
 static const int ClassID = 1423632897;
 static const LXType Type = LXType_Serializer2;
 static constexpr const char* ClassName = "Serializer2";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetWriting() { return m_Writing; }; 
@@ -60,7 +61,7 @@ PIDX_IsValid,
 PIDX_Filename,
 PIDX_SerializerInputVariables,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
@@ -267,9 +268,8 @@ public:
 									std::string& typeName = all[0];
 									int classHash = std::hash_value(typeName);
 
-									LXObject* newObject = ObjectFactory::GetNewObject(classHash);// Visual::GetNewChildObject();
-									newObject->SetObjectID(objectID);
-									newObject->Serialize(false);
+									LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
+
 									vec[i - 1] = (T*)newObject;
 								}
 

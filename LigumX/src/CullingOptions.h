@@ -16,6 +16,7 @@ public:
 static const int ClassID = 73693055;
 static const LXType Type = LXType_CullingOptions;
 static constexpr const char* ClassName = "CullingOptions";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetCullEntities() { return m_CullEntities; }; 
@@ -54,7 +55,7 @@ PIDX_DebugAABBClippPos,
 PIDX_DebugDotProduct,
 PIDX_DebugDotProductMaxDistance,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

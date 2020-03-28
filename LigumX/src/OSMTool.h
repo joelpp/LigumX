@@ -24,6 +24,7 @@ public:
 static const int ClassID = 1416751752;
 static const LXType Type = LXType_OSMTool;
 static constexpr const char* ClassName = "OSMTool";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 
 bool GetEnabled() { return m_Enabled; }; 
@@ -75,7 +76,7 @@ PIDX_ShowWays,
 PIDX_ShowFlatWays,
 PIDX_DebugPointInRoad,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

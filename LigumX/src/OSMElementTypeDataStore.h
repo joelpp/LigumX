@@ -21,6 +21,7 @@ public:
 static const int ClassID = -1486964697;
 static const LXType Type = LXType_OSMElementTypeDataStore;
 static constexpr const char* ClassName = "OSMElementTypeDataStore";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 std::vector<OSMElementTypeData>& GetData() { return m_Data; }; 
@@ -36,7 +37,7 @@ enum g_OSMElementTypeDataStorePIDX
 {
 PIDX_Data,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

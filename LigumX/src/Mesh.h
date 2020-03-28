@@ -61,6 +61,7 @@ public:
 static const int ClassID = -459175268;
 static const LXType Type = LXType_Mesh;
 static constexpr const char* ClassName = "Mesh";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetUsesIndexBuffer() { return m_UsesIndexBuffer; }; 
@@ -83,7 +84,7 @@ PIDX_UsesIndexBuffer,
 PIDX_WireframeRendering,
 PIDX_PointRendering,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

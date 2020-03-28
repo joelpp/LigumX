@@ -18,6 +18,7 @@ public:
 static const int ClassID = -1540401317;
 static const LXType Type = LXType_DefaultTextureHolder;
 static constexpr const char* ClassName = "DefaultTextureHolder";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 Texture*& GetAsphaltTexture() { return m_AsphaltTexture; }; 
@@ -56,7 +57,7 @@ PIDX_WoodTexture,
 PIDX_SandTexture,
 PIDX_WaterTexture,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

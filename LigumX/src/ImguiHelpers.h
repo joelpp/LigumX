@@ -162,7 +162,15 @@ namespace ImguiHelpers
 	{
 		bool isNull = (value == nullptr);
 		char treeNodeName[256];
-		sprintf(treeNodeName, "%s (%s)%s", isNull ? "nullptr" : value->GetName().c_str(), name, (isNull ? " (nullptr)" : ""));
+
+		if (isNull)
+		{
+			sprintf(treeNodeName, "(nullptr)");
+		}
+		else
+		{
+			sprintf(treeNodeName, "%s [%s]", value->GetName().c_str(), value->GetLXClassName());
+		}
 
 		if (value == nullptr)
 		{

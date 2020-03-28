@@ -18,6 +18,7 @@ public:
 static const int ClassID = -456708097;
 static const LXType Type = LXType_InputSerializer;
 static constexpr const char* ClassName = "InputSerializer";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef Serializer2 super;
 
 private:
@@ -28,7 +29,7 @@ static const ClassPropertyData g_Properties[g_PropertyCount];
 enum g_InputSerializerPIDX
 {
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -18,6 +18,7 @@ public:
 static const int ClassID = 255726074;
 static const LXType Type = LXType_OSMAttribute;
 static constexpr const char* ClassName = "OSMAttribute";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 const std::string& GetKey() { return m_Key; }; 
@@ -36,7 +37,7 @@ enum g_OSMAttributePIDX
 PIDX_Key,
 PIDX_Value,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

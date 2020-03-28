@@ -24,6 +24,7 @@ public:
 static const int ClassID = 1181213486;
 static const LXType Type = LXType_Camera;
 static constexpr const char* ClassName = "Camera";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 glm::vec3& GetPosition() { return m_Position; }; 
@@ -108,7 +109,7 @@ PIDX_ViewSize,
 PIDX_MovementSpeed,
 PIDX_KeyMovementSpeedIncreaseFactor,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

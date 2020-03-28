@@ -7,6 +7,6 @@
 namespace ObjectFactory
 {
 
-	LXObject* GetNewObject(int hash);
+	LXObject* GetNewObject(int hash, int objectID);
 
 }

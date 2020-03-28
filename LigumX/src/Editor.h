@@ -50,6 +50,7 @@ public:
 static const int ClassID = 215486072;
 static const LXType Type = LXType_Editor;
 static constexpr const char* ClassName = "Editor";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 EditorOptions*& GetOptions() { return m_Options; }; 
@@ -99,7 +100,7 @@ PIDX_Tools,
 PIDX_PickingBufferSize,
 PIDX_SelectedNode,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

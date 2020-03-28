@@ -29,6 +29,7 @@ public:
 static const int ClassID = 969288629;
 static const LXType Type = LXType_DisplayOptions;
 static constexpr const char* ClassName = "DisplayOptions";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetUseSkyLighting() { return m_UseSkyLighting; }; 
@@ -123,7 +124,7 @@ PIDX_DisplayDebugModels,
 PIDX_PickingEnabled,
 PIDX_DisplayMode,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -27,6 +27,9 @@
 #define NAMESPACE_BEGIN namespace LigumXGenerator {
 #define NAMESPACE_END 
 
+//std::unordered_map<std::string, std::vector<std::string>> g_ParentToChildClasses;
+std::vector<std::string> g_ChildClassesNames;
+
 enum FileSelectionMode
 {
 	Normal = 0,
@@ -350,6 +353,11 @@ ClassList createLXClass(std::vector<std::string>& lines)
 					//	}
 					//}
 
+					if (!currentClass.m_ParentName.empty())
+					{
+						g_ChildClassesNames.push_back(currentClass.m_Name);
+					}
+
 					if (currentClass.m_ParentName.empty() && currentClass.m_Name != "LXObject")
 					{
 						currentClass.m_ParentName = "LXObject";
@@ -483,6 +491,48 @@ void processGeneratorFiles(std::vector<GeneratorFile>& generatorFiles)
 		processSingleGeneratorFile(genFile);
 	}
 }
+
+void OutputClassHierarchyData()
+{
+
+	std::stringstream objectFactoryFile;
+	objectFactoryFile << "#include \"ObjectFactory.h\"" << std::endl;
+	for (std::string& childName : g_ChildClassesNames)
+	{
+		objectFactoryFile << "#include \"" << childName << ".h\"" << std::endl;
+	}
+	
+	objectFactoryFile << std::endl;
+
+	objectFactoryFile << "LXObject* ObjectFactory::GetNewObject(int hash, int objectID)" << std::endl;
+	objectFactoryFile << "{" << std::endl;
+	objectFactoryFile << "    switch (hash)" << std::endl;
+
+	for (std::string& childName : g_ChildClassesNames)
+	{
+		objectFactoryFile << "    {" << std::endl;
+		objectFactoryFile << "    " << childName << "* obj = new " << childName << "();" << std::endl;
+		objectFactoryFile << "    obj->SetObjectID(objectID);" << std::endl;
+		objectFactoryFile << "    obj->Serialize(false);" << std::endl;
+		objectFactoryFile << "    return (LXObject*)obj;" << std::endl;
+		objectFactoryFile << "	}" << std::endl;
+	}
+	objectFactoryFile << "    default:break;" << std::endl;
+
+	objectFactoryFile << "    }" << std::endl;
+	objectFactoryFile << "	return nullptr;" << std::endl;
+	objectFactoryFile << "}" << std::endl;
+
+	std::string filePath = g_GenerationRootDir + "ObjectFactory.cpp";
+	std::fstream file(filePath.c_str(), std::fstream::out);
+
+	if (file.is_open())
+	{
+		file << objectFactoryFile.str();
+		file.close();
+	}
+}
+
 
 void SystemPause()
 {
@@ -748,6 +798,8 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 	}
 
 	processGeneratorFiles(generatorFiles);
+
+	OutputClassHierarchyData();
 
 	g_LogFile.Save();
 

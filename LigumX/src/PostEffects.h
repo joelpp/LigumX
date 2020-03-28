@@ -18,6 +18,7 @@ public:
 static const int ClassID = 1677466883;
 static const LXType Type = LXType_PostEffects;
 static constexpr const char* ClassName = "PostEffects";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetGammaCorrectionEnabled() { return m_GammaCorrectionEnabled; }; 
@@ -44,7 +45,7 @@ PIDX_GammaExponent,
 PIDX_ToneMappingEnabled,
 PIDX_EmissiveGlowEnabled,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

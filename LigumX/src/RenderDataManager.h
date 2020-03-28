@@ -128,6 +128,7 @@ public:
 static const int ClassID = -1412519292;
 static const LXType Type = LXType_RenderDataManager;
 static constexpr const char* ClassName = "RenderDataManager";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 CullingOptions*& GetCullingOptions() { return m_CullingOptions; }; 
@@ -146,7 +147,7 @@ enum g_RenderDataManagerPIDX
 PIDX_CullingOptions,
 PIDX_RenderingStats,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

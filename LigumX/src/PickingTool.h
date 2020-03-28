@@ -20,6 +20,7 @@ public:
 static const int ClassID = -315061750;
 static const LXType Type = LXType_PickingTool;
 static constexpr const char* ClassName = "PickingTool";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 
 bool GetEnabled() { return m_Enabled; }; 
@@ -84,7 +85,7 @@ PIDX_PickedHeight,
 PIDX_PickedSector,
 PIDX_CloneEntity,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

@@ -52,6 +52,7 @@ public:
 static const int ClassID = -450765485;
 static const LXType Type = LXType_World;
 static constexpr const char* ClassName = "World";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 SunLight*& GetSunLight() { return m_SunLight; }; 
@@ -86,7 +87,7 @@ PIDX_DebugEntities,
 PIDX_Sectors,
 PIDX_Reset,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

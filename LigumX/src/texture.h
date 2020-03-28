@@ -20,6 +20,7 @@ public:
 static const int ClassID = -179568300;
 static const LXType Type = LXType_Texture;
 static constexpr const char* ClassName = "Texture";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 const std::string& GetFilename() { return m_Filename; }; 
@@ -66,7 +67,7 @@ PIDX_Format,
 PIDX_PixelType,
 PIDX_Size,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

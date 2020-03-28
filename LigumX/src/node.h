@@ -21,6 +21,7 @@ public:
 static const int ClassID = -755583347;
 static const LXType Type = LXType_Node;
 static constexpr const char* ClassName = "Node";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef OSMElement super;
 
 const lxInt64& GetOSMId() { return m_OSMId; }; 
@@ -76,7 +77,7 @@ PIDX_QuantizedEarthPosition,
 PIDX_QuantizedSectorPosition,
 PIDX_HighPrecisionEarthCoordinates,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

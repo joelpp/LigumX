@@ -16,6 +16,7 @@ public:
 static const int ClassID = -301590873;
 static const LXType Type = LXType_OSMDataProcessorSettings;
 static constexpr const char* ClassName = "OSMDataProcessorSettings";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 float GetMinFacadeLength() { return m_MinFacadeLength; }; 
@@ -78,7 +79,7 @@ PIDX_ProcessAddressInterpolation,
 PIDX_CheckPointInRoad,
 PIDX_CheckPointInBuilding,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

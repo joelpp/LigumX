@@ -18,6 +18,7 @@ public:
 static const int ClassID = -915618380;
 static const LXType Type = LXType_MainWindow;
 static constexpr const char* ClassName = "MainWindow";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetInFocus() { return m_InFocus; }; 
@@ -44,7 +45,7 @@ PIDX_Position,
 PIDX_Size,
 PIDX_Title,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();

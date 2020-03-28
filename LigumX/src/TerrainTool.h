@@ -34,6 +34,7 @@ public:
 static const int ClassID = 1369394216;
 static const LXType Type = LXType_TerrainTool;
 static constexpr const char* ClassName = "TerrainTool";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 
 const TerrainEditionMode& GetMode() { return m_Mode; }; 
@@ -77,7 +78,7 @@ PIDX_StartTexel,
 PIDX_SplatMapIncrement,
 PIDX_ClickedSector,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

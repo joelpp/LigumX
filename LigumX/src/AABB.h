@@ -16,6 +16,7 @@ public:
 static const int ClassID = -1624135593;
 static const LXType Type = LXType_AABB;
 static constexpr const char* ClassName = "AABB";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 glm::vec3& GetStartPoint() { return m_StartPoint; }; 
@@ -34,7 +35,7 @@ enum g_AABBPIDX
 PIDX_StartPoint,
 PIDX_Scale,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

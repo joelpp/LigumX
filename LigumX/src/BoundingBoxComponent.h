@@ -19,6 +19,7 @@ public:
 static const int ClassID = -960579863;
 static const LXType Type = LXType_BoundingBoxComponent;
 static constexpr const char* ClassName = "BoundingBoxComponent";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef Component super;
 
 const AABB& GetBoundingBox() { return m_BoundingBox; }; 
@@ -41,7 +42,7 @@ PIDX_BoundingBox,
 PIDX_UpdatesWithEntity,
 PIDX_ModelToWorldMatrix,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();

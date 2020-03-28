@@ -17,6 +17,7 @@ public:
 static const int ClassID = 1479238507;
 static const LXType Type = LXType_SunLight;
 static constexpr const char* ClassName = "SunLight";
+virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
 bool GetUseShadowMap() { return m_UseShadowMap; }; 
@@ -53,7 +54,7 @@ PIDX_Speed,
 PIDX_UseSkybox,
 PIDX_Skybox,
 };
-void Serialize(Serializer2& serializer);
+virtual void Serialize(Serializer2& serializer);
 bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
 virtual const char* GetTypeName();
