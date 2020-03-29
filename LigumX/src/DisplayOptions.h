@@ -32,6 +32,8 @@ static constexpr const char* ClassName = "DisplayOptions";
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
+bool GetDeferredRendering() { return m_DeferredRendering; }; 
+void SetDeferredRendering(bool value) { m_DeferredRendering = value; }; 
 bool GetUseSkyLighting() { return m_UseSkyLighting; }; 
 void SetUseSkyLighting(bool value) { m_UseSkyLighting = value; }; 
 bool GetRenderTerrain() { return m_RenderTerrain; }; 
@@ -75,6 +77,7 @@ void SetPickingEnabled(bool value) { m_PickingEnabled = value; };
 const DisplayMode& GetDisplayMode() { return m_DisplayMode; }; 
 void SetDisplayMode(DisplayMode value) { m_DisplayMode = value; }; 
 private:
+bool m_DeferredRendering = false;
 bool m_UseSkyLighting = false;
 bool m_RenderTerrain = false;
 bool m_DrawSky = false;
@@ -97,11 +100,12 @@ bool m_DisplayDebugModels = false;
 bool m_PickingEnabled = true;
 DisplayMode m_DisplayMode = DisplayMode_Final;
 public:
-static const int g_PropertyCount = 21;
+static const int g_PropertyCount = 22;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
 {
+PIDX_DeferredRendering,
 PIDX_UseSkyLighting,
 PIDX_RenderTerrain,
 PIDX_DrawSky,

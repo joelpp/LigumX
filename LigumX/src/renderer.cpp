@@ -1356,6 +1356,8 @@ void Renderer::RenderEntityBB(Entity* entity)
 
 void Renderer::RenderEditor()
 {
+	RenderFPS();
+
 	if (!g_Editor->GetOptions()->GetEnabled())
 	{
 		return;
@@ -1365,7 +1367,6 @@ void Renderer::RenderEditor()
 
 	RenderTextureOverlay();
 
-	RenderFPS();
 
 	GL::OutputErrors();
 

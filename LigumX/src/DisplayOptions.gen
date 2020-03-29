@@ -9,6 +9,7 @@ enum DisplayMode
 
 class DisplayOptions
 {
+	bool DeferredRendering = false;
 	bool UseSkyLighting;
 	bool RenderTerrain;
 	bool DrawSky;

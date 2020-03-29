@@ -5,6 +5,7 @@
 #include "property.h"
 #include "LXTypeDefinition.h"
 
+class LXObject;
 typedef int ObjectID;
 typedef char* ObjectPtr;
 typedef std::map<ObjectID, ObjectPtr> ObjectMap;

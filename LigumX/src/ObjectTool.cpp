@@ -65,6 +65,7 @@ void ObjectTool::DrawImguiWindow()
 	{
 		m_SelectedFileIndex = selectedFileIndex;
 	}
+
 	ImGui::Text("%s", allFiles[m_SelectedFileIndex].c_str());
 
 

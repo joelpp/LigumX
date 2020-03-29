@@ -7,6 +7,7 @@
 #include "serializer.h"
 const ClassPropertyData DisplayOptions::g_Properties[] = 
 {
+{ "DeferredRendering", PIDX_DeferredRendering, offsetof(DisplayOptions, m_DeferredRendering), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "UseSkyLighting", PIDX_UseSkyLighting, offsetof(DisplayOptions, m_UseSkyLighting), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "RenderTerrain", PIDX_RenderTerrain, offsetof(DisplayOptions, m_RenderTerrain), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DrawSky", PIDX_DrawSky, offsetof(DisplayOptions, m_DrawSky), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -32,6 +33,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 void DisplayOptions::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
+	serializer.SerializeBool(g_Properties[PIDX_DeferredRendering], m_DeferredRendering);
 	serializer.SerializeBool(g_Properties[PIDX_UseSkyLighting], m_UseSkyLighting);
 	serializer.SerializeBool(g_Properties[PIDX_RenderTerrain], m_RenderTerrain);
 	serializer.SerializeBool(g_Properties[PIDX_DrawSky], m_DrawSky);
@@ -65,6 +67,7 @@ bool DisplayOptions::Serialize(bool writing)
 bool DisplayOptions::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DeferredRendering], &m_DeferredRendering  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseSkyLighting], &m_UseSkyLighting  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RenderTerrain], &m_RenderTerrain  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DrawSky], &m_DrawSky  );
