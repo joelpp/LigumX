@@ -4,6 +4,7 @@
 #include "glm/glm.hpp"
 #include <map>
 #include <vector>
+#include <string>
 #include "Logging.h"
 #include "CurlRequest.h"
 
@@ -156,6 +157,7 @@ template<typename T>
 void ShowGenericProperty(T*& object, const ClassPropertyData& propertyData);
 
 bool ShowPropertyTemplate(char*& ptr, const char* name, const LXType& type, float min, float max, bool noneditable);
+void ShowEnum(LXType type, const char* typeName, char*& ptr, const char* name, const std::string* enumValues, int enumLength);
 
 template <typename T>
 void ShowObjectCreator();

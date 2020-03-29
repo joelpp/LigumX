@@ -629,6 +629,50 @@ bool Editor::ShowProperty(std::unordered_map<U, T*>* map, const char* name)
 	return false;
 }
 
+//////////////////////////////////////
+
+void Editor::ShowEnum(LXType type, const char* typeName, char*& ptr, const char* name, const std::string* enumValues, int enumLength)
+{
+	ShowGUIText(name);
+	int* intPtr = (int*)ptr;
+	ImGui::SameLine();
+	int index = *intPtr;
+	//for (int i = 0; i < index; ++i)
+	//{
+	//	if (Indirection_DisplayMode[i] == index)
+	//	{
+	//		index = i;
+	//		break;
+	//	}
+	//}
+	if (ImGui::Button((enumValues/*EnumValues_DisplayMode*/)[index].c_str()))
+		ImGui::OpenPopup(name);
+	if (ImGui::BeginPopup(name))
+	{
+		ImGui::Text(typeName);
+		ImGui::Separator();
+		for (int i = 0; i < enumLength/*EnumLength_DisplayMode*/; i++)
+		{
+			if (ImGui::Selectable((enumValues/*EnumValues_DisplayMode*/)[i].c_str()))
+			{
+				//*intPtr = Indirection_DisplayMode[i];
+				*intPtr = i;
+				break;
+			}
+		}
+		ImGui::EndPopup();
+	}
+}
+
+#define SHOW_ENUM_2(type) \
+case LXType_##type: \
+{ \
+ShowEnum(LXType_##type, name, ptr, name, EnumValues_##type, EnumLength_##type); \
+break; \
+}
+
+//////////////////////////////////////
+
 #define SHOW_ENUM(type) \
 case LXType_##type: \
 { \
@@ -849,7 +893,7 @@ bool Editor::ShowPropertyTemplate(char*& ptr, const char* name, const LXType& ty
 	SHOW_ENUM(ShaderFamily);
 	SHOW_ENUM(GLPixelType);
 	SHOW_ENUM(GLPixelFormat);
-	SHOW_ENUM(EEditorTool);
+	SHOW_ENUM_2(EEditorTool);
 	SHOW_ENUM(TerrainEditionMode);
 	//SHOW_ENUM(DisplayMode);
 	case LXType_DisplayMode:
