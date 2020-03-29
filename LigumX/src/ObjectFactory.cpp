@@ -1,57 +1,32 @@
 #include "ObjectFactory.h"
-#include "AABB.h"
-#include "BoundingBoxComponent.h"
-#include "Camera.h"
-#include "Component.h"
-#include "CPUBuffers.h"
-#include "CullingOptions.h"
-#include "CurlRequest.h"
-#include "DebugRenderer.h"
-#include "DefaultTextureHolder.h"
-#include "DisplayOptions.h"
-#include "Editor.h"
-#include "EditorOptions.h"
-#include "EditorTool.h"
-#include "EngineSettings.h"
-#include "EngineStats.h"
-#include "Entity.h"
-#include "Framebuffer.h"
-#include "GUI.h"
-#include "Heightfield.h"
-#include "InputHandler.h"
-#include "LXObject.h"
-#include "MainWindow.h"
-#include "Material.h"
-#include "Mesh.h"
-#include "Model.h"
-#include "Node.h"
-#include "OSMAttribute.h"
-#include "OSMDataProcessor.h"
-#include "OSMDataProcessorSettings.h"
-#include "OSMElementComponent.h"
-#include "OSMElementTypeData.h"
-#include "OSMElementTypeDataStore.h"
-#include "OSMTool.h"
-#include "PickingTool.h"
-#include "PostEffects.h"
-#include "RenderDataManager.h"
-#include "Renderer.h"
-#include "RenderingStats.h"
-#include "Sector.h"
-#include "SectorGraphicalData.h"
-#include "SectorTool.h"
-#include "Serializer2.h"
-#include "SerializerInputVariable.h"
-#include "SunLight.h"
-#include "TerrainTool.h"
-#include "TestComponentA.h"
-#include "TestComponentB.h"
-#include "Texture.h"
-#include "Way.h"
-#include "World.h"
+
+#include "LXAllClassInclude.h"
 
 LXObject* ObjectFactory::GetNewObject(int hash, int objectID)
 {
+
+#if 1
+#define LX_CLASS(c) case c::ClassID: \
+{\
+    c* obj = new c();\
+	obj->SetObjectID(objectID);\
+	obj->Serialize(false);\
+	g_ObjectManager->AddObject(objectID, obj->Type, (ObjectPtr)obj);\
+	return (LXObject*)obj;\
+}
+#define LX_ENUM(c)
+
+	switch (hash)
+	{
+#include "LXClassList.h"
+#undef LX_CLASS
+#undef LX_ENUM
+	default:
+		break;
+	}
+
+#else
+
     switch (hash)
     {
     case AABB::ClassID:
@@ -456,5 +431,6 @@ LXObject* ObjectFactory::GetNewObject(int hash, int objectID)
 	}
     default:break;
     }
+#endif
 	return nullptr;
 }

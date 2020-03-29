@@ -474,7 +474,10 @@ void processSingleGeneratorFile(GeneratorFile& genFile)
 		StringList tokens = splitString(genFile.m_Name, '.');
 		theClass.m_Name = tokens[0];
 	}
-	g_ChildClassesNames.push_back(theClass.m_Name);
+	else
+	{
+		g_ChildClassesNames.push_back(theClass.m_Name);
+	}
 	
 	for (const LXEnum& lxEnum : theClass.m_Enums)
 	{
@@ -507,9 +510,11 @@ void OutputClassHierarchyData()
 {
 #if 1
 	std::stringstream classListFile;
+	std::stringstream allClassIncludeFile;
 	for (std::string& childName : g_ChildClassesNames)
 	{
 		classListFile << "LX_CLASS(" << childName << ")" << std::endl;
+		allClassIncludeFile << "#include \"" << childName << ".h\"" << std::endl;
 	}
 
 	for (std::string& enumName : g_EnumNames)
@@ -517,15 +522,28 @@ void OutputClassHierarchyData()
 		classListFile << "LX_ENUM(" << enumName << ")" << std::endl;
 	}
 
-
-	std::string filePath = g_GenerationRootDir + "LXClassList.h";
-	std::fstream file(filePath.c_str(), std::fstream::out);
-
-	if (file.is_open())
 	{
-		file << classListFile.str();
-		file.close();
+		std::string filePath = g_GenerationRootDir + "LXClassList.h";
+		std::fstream file(filePath.c_str(), std::fstream::out);
+
+		if (file.is_open())
+		{
+			file << classListFile.str();
+			file.close();
+		}
 	}
+	{
+		std::string filePath = g_GenerationRootDir + "LXAllClassInclude.h";
+		std::fstream file(filePath.c_str(), std::fstream::out);
+
+		if (file.is_open())
+		{
+			file << allClassIncludeFile.str();
+			file.close();
+		}
+	}
+
+
 #else
 	std::stringstream objectFactoryFile;
 	objectFactoryFile << "#include \"ObjectFactory.h\"" << std::endl;
