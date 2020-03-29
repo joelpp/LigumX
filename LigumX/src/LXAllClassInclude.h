@@ -24,6 +24,7 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Node.h"
+#include "ObjectTool.h"
 #include "OSMAttribute.h"
 #include "OSMDataProcessor.h"
 #include "OSMDataProcessorSettings.h"

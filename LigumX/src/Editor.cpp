@@ -41,6 +41,7 @@
 #include "OSMTool.h"
 #include "PickingTool.h"
 #include "TerrainTool.h"
+#include "ObjectTool.h"
 
 
 #pragma region  CLASS_SOURCE Editor
@@ -103,6 +104,7 @@ const std::string EnumValues_EEditorTool[] =
 "SectorTool",
 "OSMTool",
 "PickingTool",
+"ObjectTool",
 "None",
 };
 
@@ -113,6 +115,7 @@ const EEditorTool Indirection_EEditorTool[] =
 	EEditorTool_SectorTool,
 	EEditorTool_OSMTool,
 	EEditorTool_PickingTool,
+	EEditorTool_ObjectTool,
 	EEditorTool_None,
 };
 
@@ -137,7 +140,8 @@ void Editor::Initialize()
 	m_Tools[EEditorTool_PickingTool]	= new PickingTool();
 	m_Tools[EEditorTool_SectorTool]		= new SectorTool();
 	m_Tools[EEditorTool_TerrainTool] = new TerrainTool();
-	m_Tools[EEditorTool_EntityManipulator]	= new EditorTool();
+	m_Tools[EEditorTool_EntityManipulator] = new EditorTool();
+	m_Tools[EEditorTool_ObjectTool]	= new ObjectTool();
 
 	m_ToolDisplayToggles.resize(EEditorTool_None);
 	m_ToolDisplayToggles[EEditorTool_OSMTool]		= 0;

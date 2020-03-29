@@ -24,15 +24,19 @@ typedef LXObject super;
 
 bool GetActive() { return m_Active; }; 
 void SetActive(bool value) { m_Active = value; }; 
+bool GetVisible() { return m_Visible; }; 
+void SetVisible(bool value) { m_Visible = value; }; 
 private:
 bool m_Active = false;
+bool m_Visible = false;
 public:
-static const int g_PropertyCount = 1;
+static const int g_PropertyCount = 2;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorToolPIDX
 {
 PIDX_Active,
+PIDX_Visible,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
@@ -47,6 +51,8 @@ virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, cons
 {
 	return false;
 }
+
+virtual void DrawImguiWindow();
 
 virtual void HandleKeyboardInput(int button, int action, int mods) { }
 virtual bool HandleMouseScroll(const glm::vec2& scrolling) { return false; }

@@ -1,4 +1,5 @@
 class EditorTool
 {
 	bool Active;
+	bool Visible = false;
 }

@@ -198,6 +198,7 @@
     <ClCompile Include="src\node.cpp" />
     <ClCompile Include="src\ObjectFactory.cpp" />
     <ClCompile Include="src\ObjectManager.cpp" />
+    <ClCompile Include="src\ObjectTool.cpp" />
     <ClCompile Include="src\OSMAttribute.cpp" />
     <ClCompile Include="src\OSMDataProcessor.cpp" />
     <ClCompile Include="src\OSMDataProcessorSettings.cpp" />
@@ -319,6 +320,7 @@
     <ClInclude Include="src\node.h" />
     <ClInclude Include="src\ObjectFactory.h" />
     <ClInclude Include="src\ObjectManager.h" />
+    <ClInclude Include="src\ObjectTool.h" />
     <ClInclude Include="src\OSMAttribute.h" />
     <ClInclude Include="src\OSMDataProcessor.h" />
     <ClInclude Include="src\OSMDataProcessorSettings.h" />
@@ -396,6 +398,7 @@
     <None Include="src\Mesh.gen" />
     <None Include="src\Model.gen" />
     <None Include="src\Node.gen" />
+    <None Include="src\ObjectTool.gen" />
     <None Include="src\OSMAttribute.gen" />
     <None Include="src\OSMDataProcessorSettings.gen" />
     <None Include="src\OSMElement.gen" />

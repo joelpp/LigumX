@@ -524,7 +524,7 @@ void OutputClassHierarchyData()
 
 	{
 		std::string filePath = g_GenerationRootDir + "LXClassList.h";
-		std::fstream file(filePath.c_str(), std::fstream::out);
+		std::fstream file(filePath.c_str(), std::fstream::out | std::fstream::trunc);
 
 		if (file.is_open())
 		{
@@ -534,7 +534,7 @@ void OutputClassHierarchyData()
 	}
 	{
 		std::string filePath = g_GenerationRootDir + "LXAllClassInclude.h";
-		std::fstream file(filePath.c_str(), std::fstream::out);
+		std::fstream file(filePath.c_str(), std::fstream::out | std::fstream::trunc);
 
 		if (file.is_open())
 		{
@@ -852,6 +852,9 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 	OutputClassHierarchyData();
 
 	g_LogFile.Save();
+	g_EnumNames.clear();
+	g_ChildClassesNames.clear();
+
 
 	PrintLine("Finished!");
 	PrintLine("");

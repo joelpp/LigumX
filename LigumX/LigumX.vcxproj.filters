@@ -264,6 +264,9 @@
     <ClCompile Include="src\ObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ObjectTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
@@ -638,6 +641,9 @@
     <ClInclude Include="src\ObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ObjectTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\BasicUV\control.tcs" />
@@ -696,5 +702,6 @@
     <None Include="src\CPUBuffers.gen" />
     <None Include="src\TestComponentA.gen" />
     <None Include="src\TestComponentB.gen" />
+    <None Include="src\ObjectTool.gen" />
   </ItemGroup>
 </Project>
