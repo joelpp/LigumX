@@ -29,6 +29,7 @@
 
 //std::unordered_map<std::string, std::vector<std::string>> g_ParentToChildClasses;
 std::vector<std::string> g_ChildClassesNames;
+std::vector<std::string> g_EnumNames;
 
 enum FileSelectionMode
 {
@@ -45,6 +46,7 @@ struct GeneratorFile
 {
 	std::string m_Name;
 	std::vector<LXClass> m_Contained;
+	bool m_SourceFilesNeedUpdate;
 };
 
 // todo : finish this
@@ -355,7 +357,6 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 					//if (!currentClass.m_ParentName.empty())
 					{
-						g_ChildClassesNames.push_back(currentClass.m_Name);
 					}
 
 					if (currentClass.m_ParentName.empty() && currentClass.m_Name != "LXObject")
@@ -473,15 +474,25 @@ void processSingleGeneratorFile(GeneratorFile& genFile)
 		StringList tokens = splitString(genFile.m_Name, '.');
 		theClass.m_Name = tokens[0];
 	}
+	g_ChildClassesNames.push_back(theClass.m_Name);
+	
+	for (const LXEnum& lxEnum : theClass.m_Enums)
+	{
+		g_EnumNames.push_back(lxEnum.m_Name);
+	}
 
-	ClassHeaderRegion headerRegion(theClass);
-	headerRegion.Process();
+	if (genFile.m_SourceFilesNeedUpdate)
+	{
+		ClassHeaderRegion headerRegion(theClass);
+		headerRegion.Process();
 
-	ForwardDeclarationRegion forwardRegion(theClass);
-	forwardRegion.Process();
+		ForwardDeclarationRegion forwardRegion(theClass);
+		forwardRegion.Process();
 
-	ClassSourceRegion sourceRegion(theClass);
-	sourceRegion.Process();
+		ClassSourceRegion sourceRegion(theClass);
+		sourceRegion.Process();
+	}
+
 }
 
 void processGeneratorFiles(std::vector<GeneratorFile>& generatorFiles)
@@ -494,7 +505,28 @@ void processGeneratorFiles(std::vector<GeneratorFile>& generatorFiles)
 
 void OutputClassHierarchyData()
 {
+#if 1
+	std::stringstream classListFile;
+	for (std::string& childName : g_ChildClassesNames)
+	{
+		classListFile << "LX_CLASS(" << childName << ")" << std::endl;
+	}
 
+	for (std::string& enumName : g_EnumNames)
+	{
+		classListFile << "LX_ENUM(" << enumName << ")" << std::endl;
+	}
+
+
+	std::string filePath = g_GenerationRootDir + "LXClassList.h";
+	std::fstream file(filePath.c_str(), std::fstream::out);
+
+	if (file.is_open())
+	{
+		file << classListFile.str();
+		file.close();
+	}
+#else
 	std::stringstream objectFactoryFile;
 	objectFactoryFile << "#include \"ObjectFactory.h\"" << std::endl;
 	for (std::string& childName : g_ChildClassesNames)
@@ -534,6 +566,7 @@ void OutputClassHierarchyData()
 		file << objectFactoryFile.str();
 		file.close();
 	}
+#endif
 }
 
 
@@ -762,23 +795,19 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 
 			struct _stat64i32 result;
 			int timeLastModified = 0;
-			bool processFile = false;
 
 			if (stat((g_GenerationRootDir + genFile.m_Name).c_str(), &result) == 0)
 			{
 				timeLastModified = (int)result.st_mtime;
-				processFile = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
+				genFile.m_SourceFilesNeedUpdate = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
+				if (!genFile.m_SourceFilesNeedUpdate)
+				{
+					std::cout << "\"" << fileName << "\" : no change since " << timeLastModified << std::endl;
+				}
 			}
 
-			if (processFile || (fileSelectionMode != FileSelectionMode::Normal))
-			{
-				std::cout << "\"" << fileName << "\" : has been updated." << std::endl;
-				generatorFiles.push_back(genFile);
-			}
-			else
-			{
-				std::cout << "\"" << fileName << "\" : no change since " << timeLastModified << std::endl;
-			}
+			std::cout << "\"" << fileName << "\" : has been updated." << std::endl;
+			generatorFiles.push_back(genFile);
 		}
 		else if (type == FileType_Header)
 		{
