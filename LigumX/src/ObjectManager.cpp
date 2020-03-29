@@ -4,6 +4,7 @@
 #include "EngineStats.h"
 #include "stringutils.h"
 #include "fileutils.h"
+#include "ObjectFactory.h"
 
 ObjectManager* g_ObjectManager;
 
@@ -190,4 +191,27 @@ std::vector<LXString>& ObjectManager::GetAllFiles()
 	}
 
 	return m_AllFiles;
+}
+
+LXObject* ObjectManager::GetObjectFromFilename(std::string& str)
+{
+	std::vector<LXString> all = StringUtils::SplitString(str, '_');
+
+	if (all.size() == 2)
+	{
+		std::vector<LXString> idType = StringUtils::SplitString(all[1], '.');
+
+		if (idType.size() == 2)
+		{
+			ObjectID id = StringUtils::ToInt(idType[0]);
+
+			std::string& typeName = all[0];
+			int classHash = std::hash_value(typeName);
+
+			LXObject* newObject = ObjectFactory::GetNewObject(classHash, id);// Visual::GetNewChildObject();
+			return newObject;
+		}
+	}
+
+	return nullptr;
 }

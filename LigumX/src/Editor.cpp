@@ -105,7 +105,6 @@ const std::string EnumValues_EEditorTool[] =
 "OSMTool",
 "PickingTool",
 "ObjectTool",
-"None",
 };
 
 const EEditorTool Indirection_EEditorTool[] =
@@ -116,7 +115,6 @@ const EEditorTool Indirection_EEditorTool[] =
 	EEditorTool_OSMTool,
 	EEditorTool_PickingTool,
 	EEditorTool_ObjectTool,
-	EEditorTool_None,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -135,19 +133,19 @@ Editor::Editor(int objectID)
 
 void Editor::Initialize()
 {
-	m_Tools.resize(EEditorTool_None);
+	m_Tools.resize(EnumLength_EEditorTool);
 	m_Tools[EEditorTool_OSMTool]		= new OSMTool();
 	m_Tools[EEditorTool_PickingTool]	= new PickingTool();
 	m_Tools[EEditorTool_SectorTool]		= new SectorTool();
-	m_Tools[EEditorTool_TerrainTool] = new TerrainTool();
+	m_Tools[EEditorTool_TerrainTool]	= new TerrainTool();
 	m_Tools[EEditorTool_EntityManipulator] = new EditorTool();
 	m_Tools[EEditorTool_ObjectTool]	= new ObjectTool();
 
-	m_ToolDisplayToggles.resize(EEditorTool_None);
-	m_ToolDisplayToggles[EEditorTool_OSMTool]		= 0;
-	m_ToolDisplayToggles[EEditorTool_PickingTool]	= 0;
-	m_ToolDisplayToggles[EEditorTool_SectorTool]	= 0;
-	m_ToolDisplayToggles[EEditorTool_TerrainTool]	= 0;
+	m_ToolDisplayToggles.resize(EnumLength_EEditorTool);
+	for (int i = 0; i < EnumLength_EEditorTool; ++i)
+	{
+		m_ToolDisplayToggles[i] = 0;
+	}
 }
 
 
@@ -335,7 +333,6 @@ void Editor::ApplyTool()
 			m_Tools[m_ActiveTool]->Process(mouseButton1Down, mousePosition, dragDistance);
 			break;
 		}
-		case EEditorTool_None:
 		default:
 		{
 			break;
@@ -1611,6 +1608,15 @@ void Editor::RenderImgui()
 		g_GUI->EndWindow();
 	}
 
+	for (int i = 0; i < EnumLength_EEditorTool; ++i)
+	{
+		if (m_ToolDisplayToggles[i] != 0)
+		{
+			m_Tools[i]->DrawImguiWindow();
+		}
+
+	}
+
 
 	ImGui::Render();
 }
@@ -1688,12 +1694,12 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 
 	EEditorTool ToolKeyboardToggles[EnumLength_EEditorTool] =
 	{
-		EEditorTool_None,
 		EEditorTool_SectorTool,
 		EEditorTool_TerrainTool,
 		EEditorTool_PickingTool,
 		EEditorTool_EntityManipulator,
 		EEditorTool_OSMTool,
+		EEditorTool_ObjectTool,
 	};
 
 	if (action != GLFW_PRESS)

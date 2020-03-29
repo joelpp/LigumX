@@ -141,6 +141,8 @@ private:
 
 	ObjectID m_MaxID = 0;
 
+	LXObject* GetObjectFromFilename(std::string& str);
+
 };
 
 extern ObjectManager* g_ObjectManager;

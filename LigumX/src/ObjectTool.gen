@@ -1,5 +1,4 @@
 class ObjectTool : EditorTool
 {
-
-
+	int SelectedFileIndex = 0;
 }

@@ -21,13 +21,17 @@ static constexpr const char* ClassName = "ObjectTool";
 virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 
+int GetSelectedFileIndex() { return m_SelectedFileIndex; }; 
+void SetSelectedFileIndex(int value) { m_SelectedFileIndex = value; }; 
 private:
+int m_SelectedFileIndex = 0;
 public:
-static const int g_PropertyCount = 0;
+static const int g_PropertyCount = 1;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ObjectToolPIDX
 {
+PIDX_SelectedFileIndex,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
@@ -40,4 +44,5 @@ virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, cons
 
 virtual void DrawImguiWindow();
 
+LXObject* m_CurrentObject = nullptr;
 };
