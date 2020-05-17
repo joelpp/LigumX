@@ -146,8 +146,6 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 	{
 		bool found = false;
 
-		World* world = LigumX::GetInstance().GetWorld();
-
 		for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 		{
 			if (CheckEntity(entity))
@@ -199,8 +197,6 @@ bool PickingTool::IsPickingEntity()
 void PickingTool::UpdatePickingData()
 {
 	Renderer* renderer = LigumX::GetRenderer();
-	World* world = LigumX::GetInstance().GetWorld();
-
 	renderer->RenderPickingBuffer(m_PickDebugModels);
 
 	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();

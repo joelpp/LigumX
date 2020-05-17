@@ -58,6 +58,7 @@ public:
 
 	void Shutdown();
 
+	void LoadWorld();
 	void ResetWorld();
 
     World* GetWorld();
@@ -83,7 +84,7 @@ public:
     static void glfwWindowIconifyCallback(GLFWwindow* /*pGlfwWindow*/, int /*iconified*/) {}
     static void glfwWindowFramebufferSizeCallback(GLFWwindow* /*pGlfwWindow*/, int /*width*/, int /*height*/) {}
 
-    World* world;
+    World* m_World = nullptr;
 
     RenderDataManager* m_RenderDataManager;
 

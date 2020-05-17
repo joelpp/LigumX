@@ -75,11 +75,13 @@ void LigumX::BeginFrame()
 
 void LigumX::DoFrame()
 {
-	world->Update();
+	if (m_World)
+	{
+		m_World->Update();
+		g_RenderDataManager->GatherVisibleEntities(m_World, m_Renderer->GetDebugCamera());
+	}
 
-	g_RenderDataManager->GatherVisibleEntities(world, m_Renderer->GetDebugCamera());
-
-	m_Renderer->render(world);
+	m_Renderer->Render(m_World);
 }
 
 void LigumX::EndFrame()
@@ -96,6 +98,13 @@ void LigumX::MainLoop()
 	EndFrame();
 }
 
+void LigumX::LoadWorld()
+{
+	Settings& settings = Settings::GetInstance();
+	m_World = new World(settings.f("sectorSize"));
+	m_World->SetObjectID(28716);
+	m_World->Serialize(false);
+}
 
 void LigumX::Initialize()
 {
@@ -114,10 +123,10 @@ void LigumX::Initialize()
     // Load world data.
     //=============================================================================
 
-    Settings& settings = Settings::GetInstance();
-    world = new World(settings.f("sectorSize"));
-	world->SetObjectID(28716);
-	world->Serialize(false);
+ //   Settings& settings = Settings::GetInstance();
+ //   world = new World(settings.f("sectorSize"));
+	//world->SetObjectID(28716);
+	//world->Serialize(false);
 
     //=============================================================================
     // create and fill VBOs.
@@ -176,12 +185,12 @@ void LigumX::loadSettings(){
 
 World* LigumX::GetWorld()
 {
-    return world;
+    return m_World;
 }
 
 void LigumX::ResetWorld()
 {
-	world->ResetSectors();
+	m_World->ResetSectors();
 }
 
 string LigumX::labelFromType(OSMElement::ElementType type)

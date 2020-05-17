@@ -84,4 +84,6 @@ static std::string GetTimeString(){
 //                              for (int _index_ = 0; _index_ < e.size(); _index_++) std::cout << _index_ << ": " << e[_index_]->toString() << "\n"; }
 #define PRINTELEMENTVECTOR(v) OutputDebugString("Implement PRINTELEMENTVECTOR!"); OUTPUT_NEWLINE();
 
+#define lxLogMessage(f) { OutputDebugString(f); OUTPUT_NEWLINE(); }
+
 #endif

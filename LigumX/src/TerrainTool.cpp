@@ -95,15 +95,15 @@ float TextureToWorldScale(float scale, glm::ivec2 texSize)
 bool TerrainTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 	PickingTool* pickingTool = g_Editor->GetPickingTool();
+	World* world = LigumX::GetInstance().GetWorld();
 
-	if (pickingTool->GetAimingID() == 0)
+	if ((pickingTool->GetAimingID() == 0) || !world)
 	{
 		return false;
 	}
 
 	glm::vec3 worldPosition = pickingTool->GetAimingWorldPosition();
 
-	World* world = LigumX::GetInstance().GetWorld();
 	m_ClickedSector = world->GetSectorByWorldPosition(worldPosition);
 
 	if (m_ClickedSector == nullptr)

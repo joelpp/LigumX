@@ -145,7 +145,7 @@ public:
     void init_pipelines_filledBuildings();
     void init_pipelines_text();
 
-    void render(World* world);
+    void Render(World* world);
     void RenderText(Text t);
     void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, const glm::vec3& color, bool projected);
     void DrawMesh(Mesh* mesh, Material* material);

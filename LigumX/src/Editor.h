@@ -116,6 +116,8 @@ void Initialize();
 void RenderPicking();
 void ApplyTool();
 
+void LoadWorld();
+void UnloadWorld();
 void ResetWorld();
 
 void UpdateManipulator();

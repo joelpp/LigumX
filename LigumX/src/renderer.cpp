@@ -505,14 +505,18 @@ void Renderer::SetDisplayModeUniforms()
 
 void Renderer::SetSkyUniforms(int skyCubemapSlot)
 {
-	SunLight* sunLight = m_World->GetSunLight();
+	if (m_World)
+	{
+		SunLight* sunLight = m_World->GetSunLight();
 
-	SetFragmentUniform(skyCubemapSlot, "g_Skybox");
-	BindCubemap(skyCubemapSlot, m_World->GetSunLight()->GetSkybox()->GetHWObject());
+		SetFragmentUniform(skyCubemapSlot, "g_Skybox");
+		BindCubemap(skyCubemapSlot, m_World->GetSunLight()->GetSkybox()->GetHWObject());
 
-	SetFragmentUniform(m_World->GetSunLight()->GetUseSkybox(), "g_UseSkybox");
-	SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
-	SetFragmentUniform(sunLight->GetTime(), "sunTime");
+		SetFragmentUniform(m_World->GetSunLight()->GetUseSkybox(), "g_UseSkybox");
+		SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
+		SetFragmentUniform(sunLight->GetTime(), "sunTime");
+	}
+
 }
 
 void Renderer::SetLightingUniforms()
@@ -872,7 +876,7 @@ void Renderer::RenderTerrain()
 
 void Renderer::RenderShadowMap()
 {
-	if (!m_DisplayOptions->GetRenderShadows())
+	if (!m_DisplayOptions->GetRenderShadows() || m_World)
 	{
 		return;
 	}
@@ -917,7 +921,7 @@ void Renderer::RenderOpaque()
 
 	RenderEntities(ShaderFamily_Basic, g_RenderDataManager->GetVisibleEntities());
 
-	if (g_Editor->GetOptions()->GetDebugDisplay())
+	if (g_Editor->GetOptions()->GetDebugDisplay() && m_World)
 	{
 		RenderEntities(ShaderFamily_Basic, m_World->GetDebugEntities());
 	}
@@ -1074,16 +1078,19 @@ void Renderer::BeginFrame(World* world)
 
 	m_NumLights = 0;
 
-	for (Entity* entity : m_World->GetEntities())
+	if (m_World)
 	{
-		if (entity->GetIsLight())
+		for (Entity* entity : m_World->GetEntities())
 		{
-			m_TestLight[m_NumLights].m_Position			= entity->GetPosition();
-			m_TestLight[m_NumLights].m_DiffuseColor		= entity->GetModel()->GetMaterials()[0]->GetDiffuseColor();
-			m_TestLight[m_NumLights].m_SpecularColor	= m_TestLight[m_NumLights].m_DiffuseColor;
-			m_TestLight[m_NumLights].m_AmbientColor		= m_TestLight[m_NumLights].m_DiffuseColor;
-		
-			m_NumLights++;
+			if (entity->GetIsLight())
+			{
+				m_TestLight[m_NumLights].m_Position = entity->GetPosition();
+				m_TestLight[m_NumLights].m_DiffuseColor = entity->GetModel()->GetMaterials()[0]->GetDiffuseColor();
+				m_TestLight[m_NumLights].m_SpecularColor = m_TestLight[m_NumLights].m_DiffuseColor;
+				m_TestLight[m_NumLights].m_AmbientColor = m_TestLight[m_NumLights].m_DiffuseColor;
+
+				m_NumLights++;
+			}
 		}
 	}
 
@@ -1374,7 +1381,7 @@ void Renderer::RenderEditor()
 	RenderMessages();
 }
 
-void Renderer::render(World* world)
+void Renderer::Render(World* world)
 {
 	BeginFrame(world);
 

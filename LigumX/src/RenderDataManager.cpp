@@ -288,7 +288,6 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	std::vector<glm::vec3> nodePositions;
 	std::vector<glm::vec3> nodeColors;
 
-	World* world = LigumX::GetInstance().GetWorld();
 	Renderer& renderer = Renderer::GetInstance();
 
 	Model* waysModel = nullptr;

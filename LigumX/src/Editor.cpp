@@ -153,6 +153,11 @@ void Editor::Initialize()
 void Editor::UpdateManipulator()
 {
 	World* world = LigumX::GetInstance().GetWorld();
+	if (!world)
+	{
+		return;
+	}
+
 	glm::vec3 worldPosition = GetPickingTool()->GetPickedWorldPosition();
 
 	const bool& mouseButton1Down = g_InputHandler->GetMouse1Pressed();
@@ -183,8 +188,6 @@ void Editor::UpdateManipulator()
 	}
 	else
 	{
-		World* world = LigumX::GetInstance().GetWorld();
-
 		float distance = dragDistance.x / 10.f;
 		glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
 
@@ -1233,10 +1236,13 @@ void Editor::SaveObjectFromCreator(T* object)
 template<>
 void Editor::SaveObjectFromCreator(Entity* newEntity)
 {
-	newEntity->GetModel()->Serialize(false);
-
 	World* world = LigumX::GetInstance().GetWorld();
-	world->GetEntities().push_back(newEntity);
+	
+	if (world)
+	{
+		newEntity->GetModel()->Serialize(false);
+		world->GetEntities().push_back(newEntity);
+	}
 }
 
 template <typename T>
@@ -1297,6 +1303,16 @@ void Editor::TrySaveObject(T* object)
 	}
 }
 
+void Editor::LoadWorld()
+{
+	LigumX::GetInstance().LoadWorld();
+}
+
+void Editor::UnloadWorld()
+{
+	// todo jpp : implement UnloadWorld
+}
+
 void Editor::ResetWorld()
 {
 	for (EditorTool* tool : m_Tools)
@@ -1325,6 +1341,14 @@ void Editor::RenderImgui()
 
 		if (ImGui::BeginMenu("Menu"))
 		{
+			if (ImGui::MenuItem("Load world"))
+			{
+				LoadWorld();
+			}
+			if (ImGui::MenuItem("Reset World"))
+			{
+				UnloadWorld();
+			}
 			if (ImGui::MenuItem("Reset World"))
 			{
 				ResetWorld();
@@ -1339,7 +1363,14 @@ void Editor::RenderImgui()
 			}
 			if (ImGui::MenuItem("Save world"))
 			{
-				TrySaveObject(world);
+				if (world)
+				{
+					TrySaveObject(world);
+				}
+				else
+				{
+					lxLogMessage("No world to save!");
+				}
 			}
 			if (ImGui::MenuItem("Quit"))
 			{
@@ -1403,15 +1434,18 @@ void Editor::RenderImgui()
 		ShowPropertyGridForObject(g_InputHandler, "Input Handler");
 		ShowPropertyGridForObject(renderer->GetPostEffects(), "Post Effects");
 		ShowPropertyGridForObject(renderer->GetDebugCamera(), "Camera");
-		ShowPropertyGridForObject(world->GetSunLight(), "SunLight");
-		ShowPropertyGridForObject(world, "World");
 		ShowPropertyGridForObject(g_RenderDataManager, "RenderDataManager");
 		ShowPropertyGridForObject(g_OSMDataProcessor, "OSMDataProcessor");
+		
+		if (world)
+		{
+			ShowPropertyGridForObject(world->GetSunLight(), "SunLight");
+			ShowPropertyGridForObject(world, "World");
+		}
 
 		Editor* editor = this;
 		ShowPropertyGridForObject(editor, "Editor");
 
-		
 		g_GUI->EndWindow();
 		ImGui::PopID();
 

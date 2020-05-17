@@ -239,6 +239,7 @@ glm::ivec2 GetSectorIndexFromEarthLonLat(const glm::vec2& earthLonLat)
 void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStartCoords, const glm::vec2& worldStartCoords, const glm::ivec2& normalizedSectorIndex)
 {
 	World* world = LigumX::GetInstance().GetWorld();
+	lxAssert(world);
 
 	bool loadOSMData = g_EngineSettings->GetLoadOSMData();
 	glm::vec2 earthExtent = glm::vec2(g_EngineSettings->GetExtent());
@@ -305,7 +306,9 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 
 void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType)
 {
-	World *world = LigumX::GetInstance().world;
+	World* world = LigumX::GetInstance().GetWorld();
+	lxAssert(world);
+
 	tinyxml2::XMLDocument doc;
 
 	const std::string& path = request->GetFilename();
@@ -590,7 +593,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 void SectorManager::AddSector(Sector* sector)
 {
-	LigumX::GetInstance().world->GetSectors().push_back(sector);
+	LigumX::GetInstance().GetWorld()->GetSectors().push_back(sector);
 }
 
 
@@ -642,7 +645,9 @@ Node* SectorManager::GetClosestNode(glm::vec2 wsPosition, bool searchOnlyWithinS
 	{
 		glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(wsPosition);
 
-		World *world = LigumX::GetInstance().world;
+		World *world = LigumX::GetInstance().GetWorld();
+		lxAssert(world);
+
 		Sector* clickedSector = world->GetSectorByIndex(normalizedSectorIndex);
 
 		if (clickedSector)

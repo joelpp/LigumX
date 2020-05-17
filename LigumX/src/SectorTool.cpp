@@ -127,7 +127,8 @@ glm::vec3 SectorTool::GetHighlightColor(Sector* sector)
 
 bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
-	if (!m_Enabled)
+	World* world = LigumX::GetInstance().GetWorld();
+	if (!m_Enabled || !world)
 	{
 		return false;
 	}
@@ -141,7 +142,6 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	glm::vec2 earthStartCoords = Sector::GetStartPosition(glm::vec2(worldPosition));
 	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
 
-	World* world = LigumX::GetInstance().GetWorld();
 
 	m_HighlightedSector = world->GetSectorByWorldPosition(worldPosition);
 
@@ -186,12 +186,13 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 void SectorTool::DebugDisplay()
 {
-	if (!m_Enabled)
+	World* world = LigumX::GetInstance().GetWorld();
+
+	if (!m_Enabled || !world)
 	{
 		return;
 	}
 
-	World* world = LigumX::GetInstance().GetWorld();
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 
 	const std::vector<Sector*> sectors = world->GetSectors();

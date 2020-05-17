@@ -1134,8 +1134,6 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 			continue;
 		}
 
-		World* world = LigumX::GetInstance().GetWorld();
-
 		OSMElementType wayType = way->GetOSMElementType();
 
 		bool fillIn = g_OSMElementTypeDataStore->GetData()[wayType].GetFillIn();

@@ -233,12 +233,12 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 
 void OSMTool::DebugDisplay()
 {
-	if (!m_Enabled)
+	World* world = LigumX::GetInstance().GetWorld();
+	if (!m_Enabled || !world)
 	{
 		return;
 	}
 
-	World* world = LigumX::GetInstance().GetWorld();
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 
 	const std::vector<Sector*> sectors = world->GetSectors();

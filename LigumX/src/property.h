@@ -9,8 +9,8 @@ enum LXType
 #define LX_CLASS(c) LXType_##c,
 #define LX_ENUM(c) LXType_##c,
 #include "LXClassList.h"
-#undef LX_CLASS(c)
-#undef LX_ENUM(c)
+#undef LX_CLASS
+#undef LX_ENUM
 
 	LXType_bool,
 	LXType_float,
