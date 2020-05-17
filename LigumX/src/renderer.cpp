@@ -291,7 +291,7 @@ void Renderer::InitPipelines()
 	pPipelineShadowMap = new ProgramPipeline("ShadowMap");
 	pPipelineLines = new ProgramPipeline("general_lines");
 	pPipelineGround = new ProgramPipeline("Terrain");
-	pPipelineEnvmap = new ProgramPipeline("Envmap");
+	//pPipelineEnvmap = new ProgramPipeline("Envmap");
 	pPipelineScreenSpaceTexture = new ProgramPipeline("ScreenSpaceTexture");
 	pPipelineNodes = new ProgramPipeline("nodes");
 	pPipelinePicking = new ProgramPipeline("picking");
@@ -954,7 +954,7 @@ void Renderer::RenderHDRFramebuffer()
 	SetPostEffectsUniforms();
 
 	SetFragmentUniform(0, "g_MainTexture");
-	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetColorTexture(0));
+	Bind2DTexture(0, m_Framebuffers[m_ColorFramebuffer]->GetColorTexture(0));
 
 	SetFragmentUniform(1, "g_GlowTexture");
 	Bind2DTexture(1, m_Framebuffers[FramebufferType_PingPong1]->GetColorTexture(0));
@@ -1094,6 +1094,7 @@ void Renderer::BeginFrame(World* world)
 
 	g_Editor->ApplyTool();
 
+	m_ColorFramebuffer = m_DisplayOptions->GetDeferredRendering() ? FramebufferType_GBuffer : FramebufferType_MainColorBuffer;
 }
 
 void Renderer::ApplyEmissiveGlow()
@@ -1117,7 +1118,7 @@ void Renderer::ApplyEmissiveGlow()
 
 		SetFragmentUniform(horizontal, "horizontal");
 
-		GLuint sourceTexture = (i == 0 ? m_Framebuffers[FramebufferType_MainColorBuffer]->GetColorTexture(1) : m_Framebuffers[fb2]->GetColorTexture(0));
+		GLuint sourceTexture = (i == 0 ? m_Framebuffers[m_ColorFramebuffer]->GetColorTexture(1) : m_Framebuffers[fb2]->GetColorTexture(0));
 		Bind2DTexture(0, sourceTexture);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -1130,7 +1131,7 @@ void Renderer::ApplyEmissiveGlow()
 
 void Renderer::BeforeWorldRender()
 {
-	BindFramebuffer(FramebufferType_MainColorBuffer);
+	BindFramebuffer(m_ColorFramebuffer);
 
 	GL::SetViewport(m_Window->GetSize());
 
@@ -1514,10 +1515,10 @@ void Renderer::RenderSky()
 	{
 		return;
 	}
+	ProgramPipeline* envMapShader = m_Pipelines[ShaderFamily_Envmap];
+	SetPipeline(envMapShader);
 
-	SetPipeline(pPipelineEnvmap);
-
-	GLuint fragProg = pPipelineEnvmap->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
+	GLuint fragProg = envMapShader->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	float pi = 3.141592654f;
 	glm::vec2 viewAngles = glm::vec2(m_DebugCamera->totalViewAngleY*pi, m_DebugCamera->aspectRatio*m_DebugCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");

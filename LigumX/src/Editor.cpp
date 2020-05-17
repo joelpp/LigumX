@@ -1610,7 +1610,7 @@ void Editor::RenderImgui()
 
 	for (int i = 0; i < EnumLength_EEditorTool; ++i)
 	{
-		if (m_ToolDisplayToggles[i] != 0)
+		if (m_Tools[i] && m_ToolDisplayToggles[i] != 0)
 		{
 			m_Tools[i]->DrawImguiWindow();
 		}

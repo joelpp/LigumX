@@ -257,6 +257,7 @@ public:
 	std::vector<ProgramPipeline*> m_Pipelines;
 
     // shaders
+	std::vector<ProgramPipeline*> m_Shaders;
     ProgramPipeline* pPipelineLines;
     ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
@@ -264,7 +265,7 @@ public:
 	ProgramPipeline* pPipelinePicking;
 	ProgramPipeline* pPipelinePickingCompute;
 	ProgramPipeline* pPipelineBlur;
-	ProgramPipeline* pPipelineEnvmap;
+	//ProgramPipeline* pPipelineEnvmap;
 	ProgramPipeline* pPipelineScreenSpaceTexture;
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
@@ -276,7 +277,6 @@ public:
 	ProgramPipeline* pPipelineGrid;
 	ProgramPipeline* pPipelineAxisGizmo;
 	ProgramPipeline* activePipeline;
-    std::unordered_map<std::string, ProgramPipeline*> ProgramPipelinesMap;
 
     // need to keep those for swapping
     ProgramPipeline::ShaderProgram* pGeometryShader1;
@@ -428,6 +428,8 @@ private:
 	int m_TempObjectID;
 
 	std::vector<bool> m_ShaderBeenUsedThisFrame;
+
+	FramebufferType m_ColorFramebuffer = FramebufferType_MainColorBuffer;
 
 };
 

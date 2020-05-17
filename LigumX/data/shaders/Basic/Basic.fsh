@@ -1,5 +1,7 @@
 #version 410 core
 
+#define DEFERRED 0
+
 in vec2 myTexCoord;
 in vec3 vNormalWS;
 in vec4 vWorldPosition;
@@ -18,8 +20,13 @@ in vec4 FragPosLightSpace;
 
 // Include ProvidersMarker
 
-layout (location = 0) out vec4 FinalColor;
-layout (location = 1) out vec4 BrightColor;
+#if DEFERRED
+layout(location = 0) out vec4 Normal;
+layout(location = 1) out vec4 WorldPosition;
+#else
+layout(location = 0) out vec4 FinalColor;
+layout(location = 1) out vec4 BrightColor;
+#endif
 
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS)

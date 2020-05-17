@@ -63,6 +63,14 @@ World::World()
 	SetObjectID(g_ObjectManager->GetNewObjectID());
 }
 
+World::World(float sectorSize)
+{
+	SetObjectID(g_ObjectManager->GetNewObjectID());
+
+	m_sectorManager = new SectorManager(sectorSize);
+	m_sectorSize = sectorSize;
+	m_invSectorSize = 1.f / sectorSize;
+}
 
 
 void World::PostSerialization(bool writing, bool success)
@@ -78,15 +86,6 @@ void World::PostSerialization(bool writing, bool success)
 	}
 
 
-}
-
-World::World(float sectorSize)
-{
-	SetObjectID(g_ObjectManager->GetNewObjectID());
-
-	m_sectorManager = new SectorManager(sectorSize);
-	m_sectorSize = sectorSize;
-	m_invSectorSize = 1.f / sectorSize;
 }
 
 
