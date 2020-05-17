@@ -433,5 +433,14 @@ private:
 
 };
 
+class GPUProfileHolder
+{
+public:
+	GPUProfileHolder(const char* sectionName);
+	~GPUProfileHolder();
+};
+
+#define lxGPUProfile(s) GPUProfileHolder profile_##s = GPUProfileHolder(#s); 
+
 #endif // RENDERER
 

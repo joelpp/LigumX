@@ -810,6 +810,8 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
 
 void Renderer::RenderTerrain()
 {
+	lxGPUProfile(RenderTerrain);
+
 	if (!m_DisplayOptions->GetRenderTerrain())
 	{
 		return;
@@ -876,6 +878,8 @@ void Renderer::RenderTerrain()
 
 void Renderer::RenderShadowMap()
 {
+	lxGPUProfile(RenderShadowMap);
+
 	if (!m_DisplayOptions->GetRenderShadows() || m_World)
 	{
 		return;
@@ -911,6 +915,8 @@ void Renderer::RenderShadowMap()
 
 void Renderer::RenderOpaque()
 {
+	lxGPUProfile(RenderOpaque);
+
 	if (!m_DisplayOptions->GetRenderOpaque())
 	{
 		return;
@@ -949,6 +955,8 @@ void Renderer::RenderTextureOverlay()
 
 void Renderer::RenderHDRFramebuffer()
 {
+	lxGPUProfile(RenderHDRFramebuffer);
+
 	BindFramebuffer(FramebufferType_Default);
 	GL::SetViewport(m_Window->GetSize());
 	GL::ClearColorAndDepthBuffers();
@@ -1005,6 +1013,8 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 
 void Renderer::RenderPickingBuffer(bool debugEntities)
 {
+	lxGPUProfile(RenderPickingBuffer);
+
 	int vpWidth = m_Framebuffers[FramebufferType_Picking]->GetWidth();
 	int vpHeight = m_Framebuffers[FramebufferType_Picking]->GetHeight();
 	GL::SetViewport(vpWidth, vpHeight);
@@ -1106,6 +1116,8 @@ void Renderer::BeginFrame(World* world)
 
 void Renderer::ApplyEmissiveGlow()
 {
+	lxGPUProfile(ApplyEmissiveGlow);
+
 	if (!m_PostEffects->GetEmissiveGlowEnabled())
 	{
 		return;
@@ -1138,6 +1150,8 @@ void Renderer::ApplyEmissiveGlow()
 
 void Renderer::BeforeWorldRender()
 {
+	lxGPUProfile(BeforeWorldRender);
+
 	BindFramebuffer(m_ColorFramebuffer);
 
 	GL::SetViewport(m_Window->GetSize());
@@ -1150,6 +1164,8 @@ void Renderer::BeforeWorldRender()
 
 void Renderer::RenderGrid()
 {
+	lxGPUProfile(RenderGrid);
+
 	GL::DepthWriteEnabled(false);
 
 	SetPipeline(pPipelineGrid);
@@ -1171,6 +1187,8 @@ void Renderer::RenderGrid()
 
 void Renderer::RenderAxisGizmo()
 {
+	lxGPUProfile(RenderAxisGizmo);
+
 	SetPipeline(pPipelineAxisGizmo);
 
 	SetViewUniforms(m_DebugCamera);
@@ -1197,7 +1215,8 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 
 void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay)
 {
-	
+	lxGPUProfile(RenderDebugWays);
+
 	SetPipeline(programPipeline);
 
 	GL::SetCapability(GL::Capabilities::Blend, true);
@@ -1222,6 +1241,8 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 
 void Renderer::RenderDebugModels()
 {
+	lxGPUProfile(RenderDebugModels);
+
 	g_Editor->RenderTools();
 
 	if (m_DisplayOptions->GetDisplayDebugModels())
@@ -1266,6 +1287,8 @@ void Renderer::RenderDebugModels()
 
 void Renderer::AfterWorldRender()
 {
+	lxGPUProfile(AfterWorldRender);
+
 	RenderDebugModels();
 
 	ApplyEmissiveGlow();
@@ -1273,6 +1296,8 @@ void Renderer::AfterWorldRender()
 
 void Renderer::FinishFrame()
 {
+	lxGPUProfile(FinishFrame);
+
 	g_RenderDataManager->Update();
 
 	HandleScreenshot();
@@ -1364,6 +1389,8 @@ void Renderer::RenderEntityBB(Entity* entity)
 
 void Renderer::RenderEditor()
 {
+	lxGPUProfile(RenderEditor);
+
 	RenderFPS();
 
 	if (!g_Editor->GetOptions()->GetEnabled())
@@ -1383,6 +1410,8 @@ void Renderer::RenderEditor()
 
 void Renderer::Render(World* world)
 {
+	lxGPUProfile(RenderFrame);
+
 	BeginFrame(world);
 
 	RenderShadowMap();
@@ -1457,6 +1486,8 @@ void Renderer::HandleScreenshot()
 
 void Renderer::RenderMessages()
 {
+	lxGPUProfile(RenderMessages);
+
 	float fontSize = g_EngineSettings->GetMessagesFontSize();
 	for (const S2DMessage& message : g_RenderDataManager->Get2DMessages())
 	{
@@ -1492,6 +1523,8 @@ void Renderer::RenderMessages()
 
 void Renderer::RenderFPS()
 {
+	lxGPUProfile(RenderFPS);
+
 	if (!m_DisplayOptions->GetShowFPS())
 	{
 		return;
@@ -1518,10 +1551,13 @@ void Renderer::RenderFPS()
 
 void Renderer::RenderSky()
 {
+	lxGPUProfile(RenderSky);
+
 	if (!m_DisplayOptions->GetDrawSky())
 	{
 		return;
 	}
+
 	ProgramPipeline* envMapShader = m_Pipelines[ShaderFamily_Envmap];
 	SetPipeline(envMapShader);
 
@@ -1693,4 +1729,17 @@ void Renderer::AddToDebugModels(Model* model)
 {
 	lxAssert(model != nullptr);
 	m_DebugModels.push_back(model);
+}
+
+
+// -----------------------------------------------------------------------------
+
+GPUProfileHolder::GPUProfileHolder(const char* sectionName)
+{
+	glPushDebugGroupKHR(GL_DEBUG_SOURCE_APPLICATION, 0, -1, sectionName);
+}
+
+GPUProfileHolder::~GPUProfileHolder()
+{
+	glPopDebugGroupKHR();
 }

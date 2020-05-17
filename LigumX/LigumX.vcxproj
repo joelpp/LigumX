@@ -101,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;C:\Program Files\RenderDoc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <PreprocessToFile>false</PreprocessToFile>
@@ -215,6 +215,7 @@
     <ClCompile Include="src\RaycastingHelpers.cpp" />
     <ClCompile Include="src\relation.cpp" />
     <ClCompile Include="src\RenderDataManager.cpp" />
+    <ClCompile Include="src\RenderdocManager.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\RenderingStats.cpp" />
     <ClCompile Include="src\sector.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="src\RaycastingHelpers.h" />
     <ClInclude Include="src\relation.h" />
     <ClInclude Include="src\RenderDataManager.h" />
+    <ClInclude Include="src\RenderdocManager.h" />
     <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\RenderingStats.h" />
     <ClInclude Include="src\sector.h" />

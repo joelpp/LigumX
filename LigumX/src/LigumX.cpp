@@ -29,6 +29,8 @@
 #include "MainWindow.h"
 #include "GUI.h"
 
+#include "RenderdocManager.h"
+
 #include "imgui_impl_glfw_gl3.h"
 #include "imgui.h"
 
@@ -44,6 +46,8 @@ int main(int argc, char *argv[])
 {
     srand(987654321);
 
+	RenderdocManager::GetInstance().LoadRenderdoc();
+	
     LigumX& game = LigumX::GetInstance();
 	
     game.Initialize();

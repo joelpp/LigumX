@@ -7,6 +7,7 @@
 #define LX_IMGUI_ENABLED
 
 typedef signed __int64 lxInt64;
+typedef signed __int32 lxInt32;
 
 /*
 	GLOBAL EXTERNAL INCLUDES

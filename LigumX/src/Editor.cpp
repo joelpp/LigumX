@@ -1326,6 +1326,8 @@ void Editor::ResetWorld()
 
 void Editor::RenderImgui()
 {
+	lxGPUProfile(RenderImgui);
+
 	Renderer* renderer = LigumX::GetRenderer();
 	World* world = LigumX::GetInstance().GetWorld();
 
