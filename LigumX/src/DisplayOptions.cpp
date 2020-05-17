@@ -20,6 +20,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "ShowAmbient", PIDX_ShowAmbient, offsetof(DisplayOptions, m_ShowAmbient), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShowFPS", PIDX_ShowFPS, offsetof(DisplayOptions, m_ShowFPS), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShowDepth", PIDX_ShowDepth, offsetof(DisplayOptions, m_ShowDepth), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "ShowDebugIcons", PIDX_ShowDebugIcons, offsetof(DisplayOptions, m_ShowDebugIcons), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "LinearizeDepth", PIDX_LinearizeDepth, offsetof(DisplayOptions, m_LinearizeDepth), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "BlinnPhongShading", PIDX_BlinnPhongShading, offsetof(DisplayOptions, m_BlinnPhongShading), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "RenderTextureOverlay", PIDX_RenderTextureOverlay, offsetof(DisplayOptions, m_RenderTextureOverlay), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -46,6 +47,7 @@ void DisplayOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_ShowAmbient], m_ShowAmbient);
 	serializer.SerializeBool(g_Properties[PIDX_ShowFPS], m_ShowFPS);
 	serializer.SerializeBool(g_Properties[PIDX_ShowDepth], m_ShowDepth);
+	serializer.SerializeBool(g_Properties[PIDX_ShowDebugIcons], m_ShowDebugIcons);
 	serializer.SerializeBool(g_Properties[PIDX_LinearizeDepth], m_LinearizeDepth);
 	serializer.SerializeBool(g_Properties[PIDX_BlinnPhongShading], m_BlinnPhongShading);
 	serializer.SerializeBool(g_Properties[PIDX_RenderTextureOverlay], m_RenderTextureOverlay);
@@ -80,6 +82,7 @@ bool DisplayOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowAmbient], &m_ShowAmbient  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowFPS], &m_ShowFPS  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowDepth], &m_ShowDepth  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowDebugIcons], &m_ShowDebugIcons  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LinearizeDepth], &m_LinearizeDepth  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_BlinnPhongShading], &m_BlinnPhongShading  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RenderTextureOverlay], &m_RenderTextureOverlay  );

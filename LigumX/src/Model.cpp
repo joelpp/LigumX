@@ -108,7 +108,6 @@ void Model::PostSerialization(bool writing, bool success)
 			}
 			else
 			{
-				loadModel();
 			}
 		}
 	}
@@ -125,7 +124,7 @@ void Model::CreateHWBuffers()
 	}
 }
 
-void Model::loadModel()
+void Model::LoadModel()
 {
     Assimp::Importer import;
 

@@ -33,8 +33,6 @@
 #include "BoundingBoxComponent.h"
 #include "Heightfield.h"
 
-
-
 #pragma region  CLASS_SOURCE Renderer
 
 #include "Renderer.h"
@@ -931,6 +929,20 @@ void Renderer::RenderOpaque()
 	{
 		RenderEntities(ShaderFamily_Basic, m_World->GetDebugEntities());
 	}
+
+	if (m_DisplayOptions->GetShowDebugIcons())
+	{
+		for (Entity* entity : m_World->GetEntities()) // todo jpp : only do visible but hard for now with separate model loading etc.
+		{
+			glm::mat4 toWorld = entity->GetModelToWorldMatrix();
+			glm::vec3 invScale = 1.f / entity->GetScale();
+			toWorld = glm::scale(toWorld, invScale);
+			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+			SetVertexUniform(toWorld, "g_ModelToWorldMatrix");
+			DrawMesh(g_DefaultObjects->DefaultCubeMesh);
+		}
+	}
+
 }
 
 void Renderer::RenderTextureOverlay()
@@ -1033,14 +1045,16 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	{
 		Entity* entity = sector->GetTerrainPatchEntity();
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
-		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 		SetVertexUniform(3, "g_HeightfieldTexture");
 		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
 
-		for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
+		if (entity->GetModel())
 		{
-			DrawMesh(entity->GetModel()->GetMeshes()[i]);
+			for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
+			{
+				DrawMesh(entity->GetModel()->GetMeshes()[i]);
+			}
 		}
 	}
 	
@@ -1071,6 +1085,18 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 		}
 	}
 
+	if (m_DisplayOptions->GetShowDebugIcons())
+	{
+		for (Entity* entity : m_World->GetEntities()) // todo jpp : only do visible but hard for now with separate model loading etc.
+		{
+			glm::mat4 toWorld = entity->GetModelToWorldMatrix();
+			glm::vec3 invScale = 1.f / entity->GetScale();
+			toWorld = glm::scale(toWorld, invScale);
+			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+			SetVertexUniform(toWorld, "g_ModelToWorldMatrix");
+			DrawMesh(g_DefaultObjects->DefaultCubeMesh);
+		}
+	}
 
 	BindFramebuffer(FramebufferType_Default);
 }

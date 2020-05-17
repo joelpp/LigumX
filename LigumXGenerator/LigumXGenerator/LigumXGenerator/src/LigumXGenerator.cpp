@@ -522,24 +522,42 @@ void OutputClassHierarchyData()
 		classListFile << "LX_ENUM(" << enumName << ")" << std::endl;
 	}
 
+	// output class list .h
 	{
 		std::string filePath = g_GenerationRootDir + "LXClassList.h";
-		std::fstream file(filePath.c_str(), std::fstream::out | std::fstream::trunc);
-
-		if (file.is_open())
+		std::string lastClassList = StringFromFile(filePath.c_str());
+		
+		std::string newClassList = classListFile.str();
+		bool contentsChanged = lastClassList != newClassList;
+		if (contentsChanged)
 		{
-			file << classListFile.str();
-			file.close();
+			std::fstream file(filePath.c_str(), std::fstream::out | std::fstream::trunc);
+
+			if (file.is_open())
+			{
+				file << newClassList;
+				file.close();
+			}
 		}
+
 	}
+
+	// output LXAllClassInclude .h
 	{
 		std::string filePath = g_GenerationRootDir + "LXAllClassInclude.h";
-		std::fstream file(filePath.c_str(), std::fstream::out | std::fstream::trunc);
+		std::string lastAllClassInclude = StringFromFile(filePath.c_str());
 
-		if (file.is_open())
+		std::string newAllClassInclude = allClassIncludeFile.str();
+		bool contentsChanged = lastAllClassInclude != newAllClassInclude;
+		if (contentsChanged)
 		{
-			file << allClassIncludeFile.str();
-			file.close();
+			std::fstream file(filePath.c_str(), std::fstream::out | std::fstream::trunc);
+
+			if (file.is_open())
+			{
+				file << allClassIncludeFile.str();
+				file.close();
+			}
 		}
 	}
 

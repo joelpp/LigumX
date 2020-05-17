@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\LigumX.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,9 +46,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pipelines.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\relation.cpp">
@@ -270,15 +264,15 @@
     <ClCompile Include="src\RenderdocManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Visual.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LigumX.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\world.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\texture.h">
@@ -350,112 +344,10 @@
     <ClInclude Include="src\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Building.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CurlRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\heightfield.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\LigumX.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\linesegment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Logging.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\osm_element.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\program_pipeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\relation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\RenderDataManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\sector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SectorData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SectorManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SectorMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\tinyxml2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\triangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\V3SectorTracker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\vec2i.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\way.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\world.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\PerlinNoise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui.h">
@@ -539,9 +431,6 @@
     <ClInclude Include="src\GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="error.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\LXError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -623,9 +512,6 @@
     <ClInclude Include="src\Serializer2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\SerializationHelpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\SerializerInputVariable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -650,64 +536,8 @@
     <ClInclude Include="src\RenderdocManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\shaders\BasicUV\control.tcs" />
-    <None Include="data\shaders\BasicUV\evaluation.tes" />
-    <None Include="data\settings.dat" />
-    <None Include="src\Material.gen" />
-    <None Include="src\Camera.gen" />
-    <None Include="src\DisplayOptions.gen" />
-    <None Include="src\renderer.gen" />
-    <None Include="src\PostEffects.gen" />
-    <None Include="src\Entity.gen" />
-    <None Include="src\SunLight.gen" />
-    <None Include="src\Framebuffer.gen" />
-    <None Include="src\Model.gen" />
-    <None Include="src\AABB.gen" />
-    <None Include="src\BoundingBoxComponent.gen" />
-    <None Include="src\Component.gen" />
-    <None Include="src\World.gen" />
-    <None Include="src\Texture.gen" />
-    <None Include="src\Mesh.gen" />
-    <None Include="src\EditorOptions.gen" />
-    <None Include="src\EngineStats.gen" />
-    <None Include="src\Editor.gen" />
-    <None Include="src\GL.gen" />
-    <None Include="src\CurlRequest.gen" />
-    <None Include="src\Way.gen" />
-    <None Include="src\Node.gen" />
-    <None Include="src\InputHandler.gen" />
-    <None Include="data\Sector.gen" />
-    <None Include="src\EngineSettings.gen" />
-    <None Include="src\MainWindow.gen" />
-    <None Include="src\GUI.gen" />
-    <None Include="src\OSMTool.gen" />
-    <None Include="src\SectorGraphicalData.gen" />
-    <None Include="src\Sector.gen" />
-    <None Include="src\SectorTool.gen" />
-    <None Include="src\PickingTool.gen" />
-    <None Include="src\OSMElement.gen" />
-    <None Include="src\Heightfield.gen" />
-    <None Include="src\TerrainTool.gen" />
-    <None Include="src\DebugRenderer.gen" />
-    <None Include="src\EditorTool.gen" />
-    <None Include="src\OSMDataProcessor.gen" />
-    <None Include="src\OSMDataProcessorSettings.gen" />
-    <None Include="src\CullingOptions.gen" />
-    <None Include="src\RenderingStats.gen" />
-    <None Include="src\RenderDataManager.gen" />
-    <None Include="src\OSMElementComponent.gen" />
-    <None Include="src\DefaultTextureHolder.gen" />
-    <None Include="src\OSMAttribute.gen" />
-    <None Include="src\OSMElementTypeData.gen" />
-    <None Include="src\OSMElementTypeDataStore.gen" />
-    <None Include="src\LXObject.gen" />
-    <None Include="src\Serializer2.gen" />
-    <None Include="src\SerializerInputVariable.gen" />
-    <None Include="src\CPUBuffers.gen" />
-    <None Include="src\TestComponentA.gen" />
-    <None Include="src\TestComponentB.gen" />
-    <None Include="src\ObjectTool.gen" />
+    <ClInclude Include="src\Visual.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

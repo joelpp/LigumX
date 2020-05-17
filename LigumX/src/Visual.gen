@@ -1,0 +1,5 @@
+
+class Visual : Component
+{
+	Model* Model;
+};

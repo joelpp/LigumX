@@ -16,7 +16,7 @@ void DefaultObjects::InitializeDefaultCube()
 	
 
 	Model* testModel = new Model("cube/cube.obj");
-	testModel->loadModel();
+	testModel->LoadModel();
 	DefaultCubeMesh = testModel->GetMeshes()[0];
 	DefaultCubeMesh->SetName("Default Cube Mesh");
 	DefaultCubeMesh->SetObjectID(g_ObjectManager->DefaultCubeMeshID);
@@ -129,7 +129,7 @@ void DefaultObjects::InitializeDefaultTerrainMesh()
 void DefaultObjects::InitializeDefaultSphere()
 {
 	Model* testModel = new Model("sphere/sphere.obj");
-	testModel->loadModel();
+	testModel->LoadModel();
 	DefaultSphereMesh = testModel->GetMeshes()[0];
 	DefaultSphereMesh->SetName("Default Sphere Mesh");
 	DefaultSphereMesh->SetObjectID(g_ObjectManager->DefaultSphereMeshID);

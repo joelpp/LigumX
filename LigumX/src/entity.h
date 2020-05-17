@@ -62,6 +62,9 @@ void SetIsLight(bool value) { m_IsLight = value; };
 std::vector<Component*>& GetComponents() { return m_Components; }; 
 void SetComponents(std::vector<Component*> value) { m_Components = value; }; 
 void AddTo_Components(Component* value) { m_Components.push_back(value); };
+bool GetCOMMAND_LoadModel() { return m_COMMAND_LoadModel; }; 
+void SetCOMMAND_LoadModel(bool value) { SetCOMMAND_LoadModel_Callback(value); }; 
+void SetCOMMAND_LoadModel_Callback(const bool& value);
 private:
 bool m_Visible = false;
 glm::mat4 m_ModelToWorldMatrix;
@@ -74,8 +77,9 @@ float m_PickingID = 0.f;
 Model* m_Model = nullptr;
 bool m_IsLight = false;
 std::vector<Component*> m_Components;
+bool m_COMMAND_LoadModel = false;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 12;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EntityPIDX
@@ -91,6 +95,7 @@ PIDX_PickingID,
 PIDX_Model,
 PIDX_IsLight,
 PIDX_Components,
+PIDX_COMMAND_LoadModel,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

@@ -47,5 +47,6 @@
 #include "TestComponentA.h"
 #include "TestComponentB.h"
 #include "Texture.h"
+#include "Visual.h"
 #include "Way.h"
 #include "World.h"

@@ -74,6 +74,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
+    <IntDir>$(Platform)\$(Configuration)</IntDir>
+    <OutputPath>$(SolutionDir)$(Platform)\$(Configuration)</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -152,9 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\AABB.cpp" />
     <ClCompile Include="src\BoundingBoxComponent.cpp" />
     <ClCompile Include="src\Building.cpp" />
@@ -209,7 +209,6 @@
     <ClCompile Include="src\OSMElement.cpp" />
     <ClCompile Include="src\PerlinNoise.cpp" />
     <ClCompile Include="src\PickingTool.cpp" />
-    <ClCompile Include="src\pipelines.cpp" />
     <ClCompile Include="src\PostEffects.cpp" />
     <ClCompile Include="src\ProgramPipeline.cpp" />
     <ClCompile Include="src\RaycastingHelpers.cpp" />
@@ -237,44 +236,11 @@
     <ClCompile Include="src\texture.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
     <ClCompile Include="src\VectorUtils.cpp" />
+    <ClCompile Include="src\Visual.cpp" />
     <ClCompile Include="src\way.cpp" />
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="error.h" />
-    <ClInclude Include="include\Building.h" />
-    <ClInclude Include="include\camera.h" />
-    <ClInclude Include="include\common.h" />
-    <ClInclude Include="include\CurlRequest.h" />
-    <ClInclude Include="include\entity.h" />
-    <ClInclude Include="include\heightfield.h" />
-    <ClInclude Include="include\LigumX.h" />
-    <ClInclude Include="include\linesegment.h" />
-    <ClInclude Include="include\Logging.h" />
-    <ClInclude Include="include\Material.h" />
-    <ClInclude Include="include\Math.h" />
-    <ClInclude Include="include\Mesh.h" />
-    <ClInclude Include="include\Model.h" />
-    <ClInclude Include="include\node.h" />
-    <ClInclude Include="include\osm_element.h" />
-    <ClInclude Include="include\program_pipeline.h" />
-    <ClInclude Include="include\relation.h" />
-    <ClInclude Include="include\RenderDataManager.h" />
-    <ClInclude Include="include\renderer.h" />
-    <ClInclude Include="include\sector.h" />
-    <ClInclude Include="include\SectorData.h" />
-    <ClInclude Include="include\SectorManager.h" />
-    <ClInclude Include="include\SectorMath.h" />
-    <ClInclude Include="include\Settings.h" />
-    <ClInclude Include="include\stdafx.h" />
-    <ClInclude Include="include\targetver.h" />
-    <ClInclude Include="include\texture.h" />
-    <ClInclude Include="include\tinyxml2.h" />
-    <ClInclude Include="include\triangle.h" />
-    <ClInclude Include="include\V3SectorTracker.h" />
-    <ClInclude Include="include\vec2i.h" />
-    <ClInclude Include="include\way.h" />
-    <ClInclude Include="include\world.h" />
     <ClInclude Include="src\AABB.h" />
     <ClInclude Include="src\BoundingBoxComponent.h" />
     <ClInclude Include="src\Building.h" />
@@ -300,7 +266,6 @@
     <ClInclude Include="src\GL.h" />
     <ClInclude Include="src\GUI.h" />
     <ClInclude Include="src\heightfield.h" />
-    <ClInclude Include="src\imconfig.h" />
     <ClInclude Include="src\imgui.h" />
     <ClInclude Include="src\imgui_impl_glfw_gl3.h" />
     <ClInclude Include="src\imgui_internal.h" />
@@ -347,7 +312,6 @@
     <ClInclude Include="src\SectorManager.h" />
     <ClInclude Include="src\SectorMath.h" />
     <ClInclude Include="src\SectorTool.h" />
-    <ClInclude Include="src\SerializationHelpers.h" />
     <ClInclude Include="src\serializer.h" />
     <ClInclude Include="src\Serializer2.h" />
     <ClInclude Include="src\SerializerInputVariable.h" />
@@ -357,7 +321,6 @@
     <ClInclude Include="src\stb_truetype.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\SunLight.h" />
-    <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\TerrainTool.h" />
     <ClInclude Include="src\TestComponentA.h" />
     <ClInclude Include="src\TestComponentB.h" />
@@ -365,67 +328,9 @@
     <ClInclude Include="src\tinyxml2.h" />
     <ClInclude Include="src\vec2i.h" />
     <ClInclude Include="src\VectorUtils.h" />
+    <ClInclude Include="src\Visual.h" />
     <ClInclude Include="src\way.h" />
     <ClInclude Include="src\world.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data\Sector.gen" />
-    <None Include="data\settings.dat" />
-    <None Include="data\shaders\BasicUV\control.tcs" />
-    <None Include="data\shaders\BasicUV\evaluation.tes" />
-    <None Include="src\AABB.gen" />
-    <None Include="src\BoundingBoxComponent.gen" />
-    <None Include="src\Camera.gen" />
-    <None Include="src\Component.gen" />
-    <None Include="src\CPUBuffers.gen" />
-    <None Include="src\CullingOptions.gen" />
-    <None Include="src\CurlRequest.gen" />
-    <None Include="src\DebugRenderer.gen" />
-    <None Include="src\DefaultTextureHolder.gen" />
-    <None Include="src\DisplayOptions.gen" />
-    <None Include="src\Editor.gen" />
-    <None Include="src\EditorOptions.gen" />
-    <None Include="src\EditorTool.gen" />
-    <None Include="src\EngineSettings.gen" />
-    <None Include="src\EngineStats.gen" />
-    <None Include="src\Entity.gen" />
-    <None Include="src\Framebuffer.gen" />
-    <None Include="src\GL.gen" />
-    <None Include="src\GUI.gen" />
-    <None Include="src\Heightfield.gen" />
-    <None Include="src\InputHandler.gen" />
-    <None Include="src\LXObject.gen" />
-    <None Include="src\MainWindow.gen" />
-    <None Include="src\Material.gen" />
-    <None Include="src\Mesh.gen" />
-    <None Include="src\Model.gen" />
-    <None Include="src\Node.gen" />
-    <None Include="src\ObjectTool.gen" />
-    <None Include="src\OSMAttribute.gen" />
-    <None Include="src\OSMDataProcessorSettings.gen" />
-    <None Include="src\OSMElement.gen" />
-    <None Include="src\OSMDataProcessor.gen" />
-    <None Include="src\OSMElementComponent.gen" />
-    <None Include="src\OSMElementTypeData.gen" />
-    <None Include="src\OSMElementTypeDataStore.gen" />
-    <None Include="src\OSMTool.gen" />
-    <None Include="src\PickingTool.gen" />
-    <None Include="src\PostEffects.gen" />
-    <None Include="src\RenderDataManager.gen" />
-    <None Include="src\renderer.gen" />
-    <None Include="src\RenderingStats.gen" />
-    <None Include="src\Sector.gen" />
-    <None Include="src\SectorGraphicalData.gen" />
-    <None Include="src\SectorTool.gen" />
-    <None Include="src\Serializer2.gen" />
-    <None Include="src\SerializerInputVariable.gen" />
-    <None Include="src\SunLight.gen" />
-    <None Include="src\TerrainTool.gen" />
-    <None Include="src\TestComponentA.gen" />
-    <None Include="src\TestComponentB.gen" />
-    <None Include="src\Texture.gen" />
-    <None Include="src\Way.gen" />
-    <None Include="src\World.gen" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

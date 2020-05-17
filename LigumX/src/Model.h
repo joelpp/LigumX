@@ -74,7 +74,7 @@ public:
 
 	Model(std::vector<Mesh* > meshList, std::vector<Material* > materialList);
 
-	void loadModel();
+	void LoadModel();
     void processNode(aiNode* node, const aiScene* scene);
 	Material* processMaterial(aiMesh* assimpMesh, const aiScene* scene);
     Mesh* processMesh(aiMesh* mesh, const aiScene* scene);

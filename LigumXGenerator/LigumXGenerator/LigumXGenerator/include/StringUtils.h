@@ -134,3 +134,23 @@ std::string getSubstringBetweenCharacters(const std::string& str, char c0, char 
 	unsigned last = str.find(c1);
 	return str.substr(first + 1, last - first - 1);
 }
+
+
+std::string StringFromFile(const char* fileName)
+{
+	std::stringstream stream;
+
+	std::fstream refFile(fileName, std::fstream::in);
+	if (refFile.is_open())
+	{
+		std::string line;
+		while (std::getline(refFile, line))
+		{
+			stream << line;
+			stream << '\n';
+		}
+		refFile.close();
+	}
+
+	return stream.str();
+}

@@ -23,6 +23,7 @@ const ClassPropertyData Entity::g_Properties[] =
 { "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, Model, Model*),}, 
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Components", PIDX_Components, offsetof(Entity, m_Components), 0, LXType_stdvector, sizeof(std::vector<Component*>), LXType_stdvector, false, LXType_Component, true, 0, 0, 0, 0,}, 
+{ "COMMAND_LoadModel", PIDX_COMMAND_LoadModel, offsetof(Entity, m_COMMAND_LoadModel), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(Entity, COMMAND_LoadModel, bool),}, 
 };
 void Entity::Serialize(Serializer2& serializer)
 {
@@ -59,6 +60,7 @@ bool Entity::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Model], m_Model  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsLight], &m_IsLight  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Components], m_Components  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_LoadModel], &m_COMMAND_LoadModel  );
 	return true;
 }
 const char* Entity::GetTypeName()
@@ -201,7 +203,18 @@ void Entity::Update(double dt)
 	SetHasMoved(false);
 }
 
-
+void Entity::SetCOMMAND_LoadModel_Callback(const bool& value)
+{
+	if (value )
+	{
+		if (!m_COMMAND_LoadModel) // if not already loaded
+		{
+			m_Model->LoadModel();
+			m_COMMAND_LoadModel = true;
+		}
+	}
+	// todo jpp : handle model unloading / reloading
+}
 
 
 

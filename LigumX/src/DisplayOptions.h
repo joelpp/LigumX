@@ -58,6 +58,8 @@ bool GetShowFPS() { return m_ShowFPS; };
 void SetShowFPS(bool value) { m_ShowFPS = value; }; 
 bool GetShowDepth() { return m_ShowDepth; }; 
 void SetShowDepth(bool value) { m_ShowDepth = value; }; 
+bool GetShowDebugIcons() { return m_ShowDebugIcons; }; 
+void SetShowDebugIcons(bool value) { m_ShowDebugIcons = value; }; 
 bool GetLinearizeDepth() { return m_LinearizeDepth; }; 
 void SetLinearizeDepth(bool value) { m_LinearizeDepth = value; }; 
 bool GetBlinnPhongShading() { return m_BlinnPhongShading; }; 
@@ -90,6 +92,7 @@ bool m_ShowDiffuse = false;
 bool m_ShowAmbient = false;
 bool m_ShowFPS = false;
 bool m_ShowDepth = false;
+bool m_ShowDebugIcons = false;
 bool m_LinearizeDepth = false;
 bool m_BlinnPhongShading = false;
 bool m_RenderTextureOverlay = false;
@@ -100,7 +103,7 @@ bool m_DisplayDebugModels = false;
 bool m_PickingEnabled = true;
 DisplayMode m_DisplayMode = DisplayMode_Final;
 public:
-static const int g_PropertyCount = 22;
+static const int g_PropertyCount = 23;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -118,6 +121,7 @@ PIDX_ShowDiffuse,
 PIDX_ShowAmbient,
 PIDX_ShowFPS,
 PIDX_ShowDepth,
+PIDX_ShowDebugIcons,
 PIDX_LinearizeDepth,
 PIDX_BlinnPhongShading,
 PIDX_RenderTextureOverlay,
