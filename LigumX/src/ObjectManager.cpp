@@ -41,21 +41,22 @@ ObjectManager::ObjectManager()
 	DefaultCubeModelID			= m_NextHardcodedID++;
 	DefaultManipulatorEntityID	= m_NextHardcodedID++;
 
+
+	// todo jpp is this REALLY needed? seems a bit intense
 	m_SupportedTypes.push_back(LXType_Texture);
 	m_SupportedTypes.push_back(LXType_Mesh);
 	m_SupportedTypes.push_back(LXType_Material);
 	m_SupportedTypes.push_back(LXType_Model);
+	m_SupportedTypes.push_back(LXType_Entity);
+	m_SupportedTypes.push_back(LXType_World);
+	m_SupportedTypes.push_back(LXType_Visual);
+	m_SupportedTypes.push_back(LXType_SunLight);
 
 	Initialize();
 }
 
 void ObjectManager::Initialize()
 {
-	for (LXType& type : m_SupportedTypes)
-	{
-		m_ObjectMaps[type] = ObjectMap();
-	}
-
 #define DETECT_ID_DUPLICATES 1
 
 #if DETECT_ID_DUPLICATES 
@@ -130,18 +131,13 @@ bool ObjectManager::IsSupportedType(LXType type)
 	return false;
 }
 
-ObjectPtr ObjectManager::FindObjectByID(ObjectID id, LXType type, bool createIfNotFound)
+ObjectPtr ObjectManager::FindObjectByID(ObjectID id, bool createIfNotFound)
 {
-	if (!IsSupportedType(type))
-	{
-		return nullptr;
-	}
-
-	auto it = m_ObjectMaps[type].find(id);
+	auto it = m_ObjectMap.find(id);
 
 	g_EngineStats->AddTo_NumObjectMapHits(1);
 
-	if (it == m_ObjectMaps[type].end())
+	if (it == m_ObjectMap.end())
 	{
 		if (createIfNotFound)
 		{
@@ -168,7 +164,7 @@ bool ObjectManager::AddObject(ObjectID id, LXType type, ObjectPtr ptr)
 		return false;
 	}
 
-	m_ObjectMaps[type][id] = ptr;
+	m_ObjectMap[id] = ptr;
 
 	return true;
 }
@@ -183,17 +179,37 @@ void ObjectManager::IncrementObjectMapHits()
 	g_EngineStats->AddTo_NumObjectMapHits(1);
 }
 
-std::vector<LXString>& ObjectManager::GetAllFiles()
+std::vector<LXString>& ObjectManager::GetAllFiles(bool forceUpdate)
 {
-	if (m_AllFiles.size() == 0)
+	if (m_AllFiles.size() == 0 || forceUpdate)
 	{
+		m_AllFiles.clear();
 		m_AllFiles = FileUtils::GetAllFilesInDirectory(g_PathObjects.c_str());
 	}
 
 	return m_AllFiles;
 }
 
-LXObject* ObjectManager::GetObjectFromFilename(std::string& str)
+void ObjectManager::UpdateFileList()
+{
+	GetAllFiles(true);
+}
+
+LXObject* ObjectManager::CreateObject(const std::string& typeName, ObjectID id)
+{
+	int classHash = std::hash_value(typeName);
+
+	LXObject* newObject = ObjectFactory::GetNewObject(classHash, id);// Visual::GetNewChildObject();
+	return newObject;
+}
+
+LXObject* ObjectManager::CreateNewObject(const std::string& typeName)
+{
+	ObjectID newID = GetNewObjectID();
+	return CreateObject(typeName, newID);
+}
+
+LXObject* ObjectManager::GetObjectFromFilename(bool createIfNotLoaded, const std::string& str)
 {
 	std::vector<LXString> all = StringUtils::SplitString(str, '_');
 
@@ -205,11 +221,20 @@ LXObject* ObjectManager::GetObjectFromFilename(std::string& str)
 		{
 			ObjectID id = StringUtils::ToInt(idType[0]);
 
-			std::string& typeName = all[0];
-			int classHash = std::hash_value(typeName);
+			ObjectPtr existingObject = FindObjectByID(id, false);
+			
+			if (existingObject != nullptr)
+			{
+				return (LXObject*)existingObject;
+			}
+			else if (createIfNotLoaded)
+			{
+				std::string& typeName = all[0];
+				int classHash = std::hash_value(typeName);
 
-			LXObject* newObject = ObjectFactory::GetNewObject(classHash, id);// Visual::GetNewChildObject();
-			return newObject;
+				LXObject* newObject = ObjectFactory::GetNewObject(classHash, id);// Visual::GetNewChildObject();
+				return newObject;
+			}
 		}
 	}
 

@@ -1515,18 +1515,6 @@ void Editor::RenderImgui()
 		g_GUI->EndWindow();
 	}
 
-	if (GetOptions()->GetShowObjectManager())
-	{
-		g_GUI->BeginWindow(1000, 700, ImGuiWindowFlags_MenuBar, 0, "Object Manager");
-
-		ShowProperty<Texture>(g_ObjectManager->GetObjects(LXType_Texture), "Textures");
-		ShowProperty<Mesh>(g_ObjectManager->GetObjects(LXType_Mesh), "Meshes");
-		ShowProperty<Material>(g_ObjectManager->GetObjects(LXType_Material), "Materials");
-		ShowProperty<Model>(g_ObjectManager->GetObjects(LXType_Model), "Models");
-
-		g_GUI->EndWindow();
-	}
-
 	if (m_ToolDisplayToggles[EEditorTool_SectorTool] != 0)
 	{
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Sector Tool");

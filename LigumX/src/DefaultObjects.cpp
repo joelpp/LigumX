@@ -161,7 +161,7 @@ Mesh* DefaultObjects::GetMeshFromID(int id)
 		return nullptr;
 	}
 
-	return (Mesh*) (g_ObjectManager->FindObjectByID(id, LXType_Mesh, false));
+	return (Mesh*) (g_ObjectManager->FindObjectByID(id, false));
 }
 
 void DefaultObjects::InitializeManipulator()

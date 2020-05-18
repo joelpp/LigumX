@@ -22,7 +22,6 @@ class ObjectManager
 public:
 	ObjectManager();
 
-	std::map<ObjectID, ObjectPtr>* GetObjects(LXType type) { return &(m_ObjectMaps[type]); };
 	bool IsSupportedType(LXType type);
 	void Initialize();
 
@@ -48,7 +47,7 @@ public:
 	ObjectID DefaultCubeModelID;
 	ObjectID DefaultRedMaterialID;
 
-	ObjectPtr FindObjectByID(ObjectID id, LXType type, bool createIfNotFound);
+	ObjectPtr FindObjectByID(ObjectID id, bool createIfNotFound);
 	bool AddObject(ObjectID id, LXType type, ObjectPtr ptr);
 	
 	void IncrementObjectMapHits();
@@ -68,7 +67,7 @@ public:
 	template <typename T>
 	T* GetLXObject(int objectID)
 	{
-		return (T*) (m_ObjectMaps[T::Type][objectID]);
+		return (T*) (m_ObjectMap[objectID]);
 	}
 
 	template <typename T>
@@ -92,11 +91,11 @@ public:
 			return nullptr;
 		}
 
-		auto it = m_ObjectMaps[type].find(id);
+		auto it = m_ObjectMap.find(id);
 
 		IncrementObjectMapHits();
 
-		if (it == m_ObjectMaps[type].end())
+		if (it == m_ObjectMap.end())
 		{
 			if (createIfNotFound)
 			{
@@ -126,23 +125,25 @@ public:
 		return newObject;
 	}
 
-	std::vector<LXString>& GetAllFiles();
+	std::vector<LXString>& GetAllFiles(bool forceUpdate=false);
+	void UpdateFileList();
 
-	
+	LXObject* GetObjectFromFilename(bool createIfNotLoaded, const std::string& str);
+	LXObject* CreateObject(const std::string& typeName, ObjectID id);
+	LXObject* CreateNewObject(const std::string& typeName);
 
 private:
 	int m_NextTransientID = StartTransientIDs;
 	int m_NextHardcodedID;
 
 	// replace with shared ptr eventually
-	std::map<LXType, ObjectMap> m_ObjectMaps;
+	ObjectMap m_ObjectMap;
 	std::vector<LXType> m_SupportedTypes;
 
 	std::vector<LXString> m_AllFiles;
 
 	ObjectID m_MaxID = 0;
 
-	LXObject* GetObjectFromFilename(std::string& str);
 
 };
 

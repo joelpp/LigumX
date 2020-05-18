@@ -26,3 +26,5 @@ LigumX/libs/win32/assimp/assimp-vc140-mt.exp
 LigumX/libs/win32/curl/CMakeCache.txt
 LigumX/libs/win32/curl/CMakeFiles/cmake.check_cache
 *.TMP
+*.tlog
+*.lastbuildstate

@@ -1,4 +1,10 @@
 class ObjectTool : EditorTool
 {
-	int SelectedFileIndex = 0;
+	int SelectedFileIndex = -1;
+
+	bool LoadUnloadedObjects = false;
+
+	[setcallback]
+	bool COMMAND_SaveCurrentObject;
+
 }
