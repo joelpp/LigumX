@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #include "Building.h"
 #include "Way.h"
 #include "Model.h"

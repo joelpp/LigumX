@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "LigumX.h"
 #include "SectorManager.h"
 #include "SectorData.h"

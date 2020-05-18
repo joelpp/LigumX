@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "glm\glm.hpp"
 
 #pragma region  CLASS_SOURCE SunLight

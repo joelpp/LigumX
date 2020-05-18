@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #pragma region  CLASS_SOURCE Node
 

@@ -7,4 +7,7 @@ class ObjectTool : EditorTool
 	[setcallback]
 	bool COMMAND_SaveCurrentObject;
 
+	[setcallback]
+	bool COMMAND_CreateNewObject;
+
 }

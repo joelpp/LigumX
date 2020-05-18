@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #include "glm/gtc/random.hpp"
 #include "glm/gtc/type_ptr.hpp"

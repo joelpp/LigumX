@@ -10,6 +10,7 @@ const ClassPropertyData ObjectTool::g_Properties[] =
 { "SelectedFileIndex", PIDX_SelectedFileIndex, offsetof(ObjectTool, m_SelectedFileIndex), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "LoadUnloadedObjects", PIDX_LoadUnloadedObjects, offsetof(ObjectTool, m_LoadUnloadedObjects), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "COMMAND_SaveCurrentObject", PIDX_COMMAND_SaveCurrentObject, offsetof(ObjectTool, m_COMMAND_SaveCurrentObject), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(ObjectTool, COMMAND_SaveCurrentObject, bool),}, 
+{ "COMMAND_CreateNewObject", PIDX_COMMAND_CreateNewObject, offsetof(ObjectTool, m_COMMAND_CreateNewObject), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(ObjectTool, COMMAND_CreateNewObject, bool),}, 
 };
 void ObjectTool::Serialize(Serializer2& serializer)
 {
@@ -17,6 +18,7 @@ void ObjectTool::Serialize(Serializer2& serializer)
 	serializer.SerializeInt(g_Properties[PIDX_SelectedFileIndex], m_SelectedFileIndex);
 	serializer.SerializeBool(g_Properties[PIDX_LoadUnloadedObjects], m_LoadUnloadedObjects);
 	serializer.SerializeBool(g_Properties[PIDX_COMMAND_SaveCurrentObject], m_COMMAND_SaveCurrentObject);
+	serializer.SerializeBool(g_Properties[PIDX_COMMAND_CreateNewObject], m_COMMAND_CreateNewObject);
 }
 bool ObjectTool::Serialize(bool writing)
 {
@@ -33,6 +35,7 @@ bool ObjectTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedFileIndex], &m_SelectedFileIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LoadUnloadedObjects], &m_LoadUnloadedObjects  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_SaveCurrentObject], &m_COMMAND_SaveCurrentObject  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CreateNewObject], &m_COMMAND_CreateNewObject  );
 	return true;
 }
 const char* ObjectTool::GetTypeName()
@@ -48,10 +51,13 @@ bool ObjectTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	return false;
 }
 
-bool VectorOfStringGetter(void* data, int n, const char** out_text)
+bool VectorOfFileDisplayInfoGetter(void* data, int n, const char** out_text)
 {
-	std::vector<std::string>* v = (std::vector<std::string>*)data;
-	*out_text = (*v)[n].c_str();
+	std::vector<FileDisplayInformation>* v = (std::vector<FileDisplayInformation>*)data;
+
+	FileDisplayInformation& fileInfo = (*v)[n];
+	*out_text = fileInfo.m_AsText.c_str();
+
 	return true;
 }
 
@@ -61,6 +67,7 @@ struct LXObjectFilenameData
 	LXType type;
 };
 
+const char* g_ImguiStrings_ObjectTool_CreateNewObject = "Create new object...";
 void ObjectTool::DrawImguiWindow()
 {
 
@@ -68,12 +75,12 @@ void ObjectTool::DrawImguiWindow()
 
 	ShowPropertyGrid();
 
-	std::vector<std::string>& allFiles = g_ObjectManager->GetAllFiles();
+	std::vector<FileDisplayInformation>& allFiles = g_ObjectManager->GetAllFiles();
 
 	int selectedFileIndex = m_SelectedFileIndex;
 
 	int numItems = allFiles.size();
-	ImGui::ListBox("Symbols", &selectedFileIndex, VectorOfStringGetter, (void*)&allFiles, numItems);
+	ImGui::ListBox("Symbols", &selectedFileIndex, VectorOfFileDisplayInfoGetter, (void*)&allFiles, numItems);
 
 	if (selectedFileIndex != -1)
 	{
@@ -82,10 +89,10 @@ void ObjectTool::DrawImguiWindow()
 		{
 			m_SelectedFileIndex = selectedFileIndex;
 
-			m_CurrentObject = g_ObjectManager->GetObjectFromFilename(m_LoadUnloadedObjects, allFiles[m_SelectedFileIndex]);
+			m_CurrentObject = g_ObjectManager->GetObjectFromIDAndType(m_LoadUnloadedObjects, allFiles[m_SelectedFileIndex].m_ObjectID, allFiles[m_SelectedFileIndex].m_Typename);
 		}
 
-		ImGui::Text("%s", allFiles[m_SelectedFileIndex].c_str());
+		ImGui::Text("%s", allFiles[m_SelectedFileIndex].m_AsText.c_str());
 	}
 
 	bool showPropertyGrid = (m_CurrentObject != nullptr);
@@ -99,9 +106,7 @@ void ObjectTool::DrawImguiWindow()
 
 		// Simple selection popup
 		// (If you want to show the current selection inside the Button itself, you may want to build a string using the "###" operator to preserve a constant ID with a variable label)
-		if (ImGui::Button("Select.."))
-			ImGui::OpenPopup("select");
-		if (ImGui::BeginPopup("select"))
+		if (ImGui::BeginPopup(g_ImguiStrings_ObjectTool_CreateNewObject))
 		{
 			for (int i = 0; i < 3 /*IM_ARRAYSIZE(names)*/; i++)
 			{
@@ -133,4 +138,5 @@ void ObjectTool::CreateNewObject(const LXString& typeName)
 void ObjectTool::SetCOMMAND_CreateNewObject_Callback(const bool& value)
 {
 	m_COMMAND_CreateNewObject = value;
+	ImGui::OpenPopup(g_ImguiStrings_ObjectTool_CreateNewObject);
 }

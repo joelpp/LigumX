@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "way.h"
 #include "node.h"
 #include "OSMElement.h"

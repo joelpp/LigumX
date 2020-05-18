@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "node.h"
 
 #include "CurlRequest.h"

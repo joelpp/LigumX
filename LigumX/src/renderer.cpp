@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "renderer.h"
 
 #include "ProgramPipeline.h"

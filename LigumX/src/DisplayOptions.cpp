@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <cstddef>
 
 #pragma region  CLASS_SOURCE DisplayOptions

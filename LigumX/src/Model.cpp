@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "stringutils.h"
 
 #include "Model.h"	

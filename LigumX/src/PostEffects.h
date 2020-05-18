@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdafx.h"
+
 
 #pragma region  FORWARD_DECLARATIONS PostEffects
 #include "LXSystem.h"

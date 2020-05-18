@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "Material.h"
 #include "fstream"
 #include "property.h" // todo : make a mandatory includes code region

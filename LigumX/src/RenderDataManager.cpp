@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #include "CullingOptions.h"
 #include "RenderingStats.h"

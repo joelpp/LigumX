@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 #include "renderer.h"
 
 void Renderer::init_pipelines_buildingSides()

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #include "RenderDataManager.h"
 #include "SectorManager.h"

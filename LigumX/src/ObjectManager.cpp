@@ -63,44 +63,30 @@ void ObjectManager::Initialize()
 	std::vector<int> dupes;
 #endif //DETECT_ID_DUPLICATES 
 
-	std::vector<LXString>& allFiles = GetAllFiles();
+	std::vector<FileDisplayInformation>& allFiles = GetAllFiles();
 	int maxID = 0;
 
-	for (LXString& str : allFiles)
+	for (FileDisplayInformation& str : allFiles)
 	{
-		std::vector<LXString> all = StringUtils::SplitString(str, '_');
+		ObjectID id = str.m_ObjectID;
 
-		if (all.size() == 2)
+#if DETECT_ID_DUPLICATES 
+		for (int i = 0; i < dupes.size(); ++i)
 		{
-			std::vector<LXString> idType = StringUtils::SplitString(all[1], '.');
-
-			if (idType.size() == 2)
+			if (dupes[i] == id)
 			{
-				ObjectID id = StringUtils::ToInt(idType[0]);
-
-#if DETECT_ID_DUPLICATES 
-				for (int i = 0; i < dupes.size(); ++i)
-				{
-					if (dupes[i] == id)
-					{
-						lxAssert0();
-					}
-				}
-#endif
-
-				maxID = std::max(id, maxID);
-#if DETECT_ID_DUPLICATES 
-				dupes.push_back(id);
-#endif
-
+				lxAssert0();
 			}
 		}
+#endif
+
+		maxID = std::max(id, maxID);
+#if DETECT_ID_DUPLICATES 
+		dupes.push_back(id);
+#endif
 
 		m_MaxID = maxID;
 	}
-
-	
-
 
 }
 
@@ -179,12 +165,17 @@ void ObjectManager::IncrementObjectMapHits()
 	g_EngineStats->AddTo_NumObjectMapHits(1);
 }
 
-std::vector<LXString>& ObjectManager::GetAllFiles(bool forceUpdate)
+std::vector<FileDisplayInformation>& ObjectManager::GetAllFiles(bool forceUpdate)
 {
 	if (m_AllFiles.size() == 0 || forceUpdate)
 	{
 		m_AllFiles.clear();
-		m_AllFiles = FileUtils::GetAllFilesInDirectory(g_PathObjects.c_str());
+		StringList allFileNames = FileUtils::GetAllFilesInDirectory(g_PathObjects.c_str());
+
+		for (LXString& fileName : allFileNames)
+		{
+			m_AllFiles.push_back(FileDisplayInformation(fileName));
+		}
 	}
 
 	return m_AllFiles;
@@ -209,9 +200,30 @@ LXObject* ObjectManager::CreateNewObject(const std::string& typeName)
 	return CreateObject(typeName, newID);
 }
 
-LXObject* ObjectManager::GetObjectFromFilename(bool createIfNotLoaded, const std::string& str)
+LXObject* ObjectManager::GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID objectID, const std::string& typeName)
 {
-	std::vector<LXString> all = StringUtils::SplitString(str, '_');
+	ObjectPtr existingObject = FindObjectByID(objectID, false);
+			
+	if (existingObject != nullptr)
+	{
+		return (LXObject*)existingObject;
+	}
+	else if (createIfNotLoaded)
+	{
+		int classHash = std::hash_value(typeName);
+
+		LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
+		return newObject;
+	}
+
+	return nullptr;
+}
+
+
+FileDisplayInformation::FileDisplayInformation(const LXString& fileName)
+{
+	bool valid = false;
+	std::vector<LXString> all = StringUtils::SplitString(fileName, '_');
 
 	if (all.size() == 2)
 	{
@@ -219,24 +231,40 @@ LXObject* ObjectManager::GetObjectFromFilename(bool createIfNotLoaded, const std
 
 		if (idType.size() == 2)
 		{
-			ObjectID id = StringUtils::ToInt(idType[0]);
-
-			ObjectPtr existingObject = FindObjectByID(id, false);
-			
-			if (existingObject != nullptr)
-			{
-				return (LXObject*)existingObject;
-			}
-			else if (createIfNotLoaded)
-			{
-				std::string& typeName = all[0];
-				int classHash = std::hash_value(typeName);
-
-				LXObject* newObject = ObjectFactory::GetNewObject(classHash, id);// Visual::GetNewChildObject();
-				return newObject;
-			}
+			m_ObjectID = StringUtils::ToInt(idType[0]);
+			m_Typename = all[0];
+			valid = true;
 		}
 	}
 
-	return nullptr;
+	lxAssert(valid);
+	if (valid)
+	{
+		// go get the name
+		// todo jpp : refactor this into a kind of "get data value from file"
+		std::fstream file = FileUtils::OpenFile((g_PathObjects + fileName).c_str());
+
+		if (file.is_open())
+		{
+			std::string line;
+			bool foundName = false;
+			while (std::getline(file, line))
+			{
+				if (line == "Name" && !foundName)
+				{
+					foundName = true;
+					continue;
+				}
+				if (foundName)
+				{
+					m_Name = line;
+					break;
+				}
+			}
+			file.close();
+		}
+		m_AsText = m_Typename + " (" + std::to_string(m_ObjectID) + ") : " + m_Name;
+	}
+
 }
+

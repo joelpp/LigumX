@@ -252,33 +252,22 @@ public:
 					//g_ObjectManager->GetObjectClassID(objectID);
 					ObjectPtr* newObject = nullptr;// Visual::GetNewChildObject();
 
-					std::vector<LXString>& allFiles = g_ObjectManager->GetAllFiles();
+					std::vector<FileDisplayInformation>& allFiles = g_ObjectManager->GetAllFiles();
 
-					for (LXString& str : allFiles)
+					for (FileDisplayInformation& fileDisplayInformation : allFiles)
 					{
-						std::vector<LXString> all = StringUtils::SplitString(str, '_');
+						ObjectID id = fileDisplayInformation.m_ObjectID;
 
-						if (all.size() == 2)
+						if (id == objectID)
 						{
-							std::vector<LXString> idType= StringUtils::SplitString(all[1], '.');
+							int classHash = std::hash_value(fileDisplayInformation.m_Typename);
 
-							if (idType.size() == 2)
-							{
-								ObjectID id = StringUtils::ToInt(idType[0]);
+							LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
 
-								if (id == objectID)
-								{
-									std::string& typeName = all[0];
-									int classHash = std::hash_value(typeName);
-
-									LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
-
-									loadedObject = (T*)newObject;
-									break;
-								}
-
-							}
+							loadedObject = (T*)newObject;
+							break;
 						}
+
 						//if (StringUtils::ToInt(all[]))
 					}
 

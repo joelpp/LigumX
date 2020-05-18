@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #include "glm/glm.hpp"
 #include "Model.h"

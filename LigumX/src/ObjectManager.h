@@ -17,6 +17,17 @@ const std::string g_PathObjects		= g_PathMainData + "objects/";
 const std::string g_PathObjectsBkp  = g_PathMainData + "objects_backup/";
 const std::string g_PathShaders		= g_PathMainData + "shaders/";
 
+// todo jpp : likely a huge waste but eh
+struct FileDisplayInformation
+{
+	ObjectID m_ObjectID;
+	LXString m_Typename;
+	LXString m_Name;
+	LXString m_AsText;
+
+	FileDisplayInformation(const LXString& fileName);
+};
+
 class ObjectManager
 {
 public:
@@ -125,10 +136,10 @@ public:
 		return newObject;
 	}
 
-	std::vector<LXString>& GetAllFiles(bool forceUpdate=false);
+	std::vector<FileDisplayInformation>& GetAllFiles(bool forceUpdate=false);
 	void UpdateFileList();
 
-	LXObject* GetObjectFromFilename(bool createIfNotLoaded, const std::string& str);
+	LXObject* GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID objectID, const std::string& typeName);
 	LXObject* CreateObject(const std::string& typeName, ObjectID id);
 	LXObject* CreateNewObject(const std::string& typeName);
 
@@ -140,7 +151,7 @@ private:
 	ObjectMap m_ObjectMap;
 	std::vector<LXType> m_SupportedTypes;
 
-	std::vector<LXString> m_AllFiles;
+	std::vector<FileDisplayInformation> m_AllFiles;
 
 	ObjectID m_MaxID = 0;
 
