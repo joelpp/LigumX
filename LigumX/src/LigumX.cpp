@@ -12,6 +12,7 @@
 #include "Serializer.h"
 #include "ObjectManager.h"
 #include "Settings.h"
+#include "ImguiManager.h"
 
 #include "Mesh.h"
 #include "DefaultTextureHolder.h"
@@ -75,6 +76,8 @@ void LigumX::BeginFrame()
 	g_InputHandler->FrameUpdate();
 
 	m_SystemFrame++;
+
+	ImguiManager::GetInstance().BeginFrame();
 }
 
 void LigumX::DoFrame()

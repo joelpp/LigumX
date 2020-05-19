@@ -185,6 +185,8 @@
     <ClCompile Include="src\heightfield.cpp" />
     <ClCompile Include="src\imgui.cpp" />
     <ClCompile Include="src\ImguiHelpers.cpp" />
+    <ClCompile Include="src\ImguiManager.cpp" />
+    <ClCompile Include="src\ImguiPointerDisplay.cpp" />
     <ClCompile Include="src\imgui_demo.cpp" />
     <ClCompile Include="src\imgui_draw.cpp" />
     <ClCompile Include="src\imgui_impl_glfw_gl3.cpp" />
@@ -263,6 +265,8 @@
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\FileUtils.h" />
     <ClInclude Include="src\ImguiHelpers.h" />
+    <ClInclude Include="src\ImguiManager.h" />
+    <ClInclude Include="src\ImguiPointerDisplay.h" />
     <ClInclude Include="src\LXError.h" />
     <ClInclude Include="src\Framebuffer.h" />
     <ClInclude Include="src\GL.h" />

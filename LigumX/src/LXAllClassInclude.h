@@ -17,6 +17,8 @@
 #include "Framebuffer.h"
 #include "GUI.h"
 #include "Heightfield.h"
+#include "ImguiManager.h"
+#include "ImguiPointerDisplay.h"
 #include "InputHandler.h"
 #include "LXObject.h"
 #include "MainWindow.h"

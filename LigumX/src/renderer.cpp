@@ -930,7 +930,7 @@ void Renderer::RenderOpaque()
 		RenderEntities(ShaderFamily_Basic, m_World->GetDebugEntities());
 	}
 
-	if (m_DisplayOptions->GetShowDebugIcons())
+	if (m_DisplayOptions->GetShowDebugIcons() && m_World)
 	{
 		for (Entity* entity : m_World->GetEntities()) // todo jpp : only do visible but hard for now with separate model loading etc.
 		{

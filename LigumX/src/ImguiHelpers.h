@@ -3,6 +3,8 @@
 #include "LXSystem.h"
 #include "imgui.h"
 
+class LXObject;
+
 struct ClassPropertyData;
 // todo : overload macros based on number of arguments? 
 
@@ -92,6 +94,8 @@ public:
 
 namespace ImguiHelpers
 {
+	void BeginFrame();
+
 	bool ShowBool(const char* name, bool& value);
 	bool ShowBool(LXString& name, bool& value);
 
@@ -153,45 +157,70 @@ namespace ImguiHelpers
 
 	}
 
+	template <typename T>
+	bool ShowObject2(void* object, const ClassPropertyData& propertyData, T** value)
+	{
+		LXObject** lxObjectPtrPtr = (LXObject**)value;
+		LXObject*& lxObjectPtrRef = *lxObjectPtrPtr;
+		return ShowObject(object, propertyData, lxObjectPtrRef);
+	}
+
+	bool ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value);
 	bool ShowObjectPtr(const char* name, glm::vec3* value);
 	bool ShowObjectPtr(const char* name, glm::vec2* value);
 	bool ShowObjectPtr(const char* name, int* value);
 
-	template <typename T>
-	bool ShowObjectPtr(const char* name, T* value)
-	{
-		bool isNull = (value == nullptr);
-		char treeNodeName[256];
+	bool ShowObjectPtr(const char* name, LXObject*& value);
+	//template <typename T>
+	//bool ShowObjectPtr(const char* name, T*& value)
+	//{
+	//	bool isNull = (value == nullptr);
+	//	char treeNodeName[256];
 
-		if (isNull)
-		{
-			sprintf(treeNodeName, "(nullptr)");
-		}
-		else
-		{
-			sprintf(treeNodeName, "%s [%s]", value->GetName().c_str(), value->GetLXClassName());
-		}
+	//	if (isNull)
+	//	{
+	//		sprintf(treeNodeName, "(nullptr)");
+	//	}
+	//	else
+	//	{
+	//		sprintf(treeNodeName, "%s [%s]", value->GetName().c_str(), value->GetLXClassName());
+	//	}
 
-		if (value == nullptr)
-		{
-			ShowRawString(treeNodeName);
-		}
-		else
-		{
-			ImguiTreeNodeScope scope(treeNodeName);
+	//	if (value == nullptr)
+	//	{
+	//		ShowRawString(treeNodeName);
+	//	}
+	//	else
+	//	{
+	//		// copy object id
+	//		ObjectID ptrObjectID = value->GetObjectID();
+	//		if (ImguiHelpers::ShowInt("ID", ptrObjectID, 0, LX_LIMITS_INT_MAX)) // display copy
+	//		{
+	//			// find or load object
+	//			T* newObject = g_ObjectManager->GetObjectFromIDAndType(true, ptrObjectID, value->GetLXClassName());
 
-			bool success = scope.m_Opened;
+	//			if (newObject)
+	//			{
+	//				value = newObject;
+	//				return true;
+	//			}
+	//		}
 
-			if (success)
-			{
-				success = value->ShowPropertyGrid();
-			}
+	//		ImGui::SameLine();
+	//		ImguiTreeNodeScope scope(treeNodeName);
 
-			return success;
-		}
+	//		bool success = scope.m_Opened;
 
-		return true;
-	}
+	//		if (success)
+	//		{
+	//			success = value->ShowPropertyGrid();
+	//		}
+
+	//		return success;
+	//	}
+
+	//	return true;
+	//}
 
 	template <typename T>
 	bool ShowObjectPtr_SetCallback(const char* name, T* value)
@@ -288,11 +317,12 @@ namespace ImguiHelpers
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, glm::ivec2* value, float min, float max);
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::string* value);
 
-	template <typename T>
-	bool ShowProperty(void* object, const ClassPropertyData& propertyData, T* value)
-	{
-		return ShowObjectPtr(propertyData.m_Name, value);
-	}
+	bool ShowProperty(void* object, const ClassPropertyData& propertyData, LXObject* value);
+	//template <typename T>
+	//bool ShowProperty(void* object, const ClassPropertyData& propertyData, T* value)
+	//{
+	//	return ShowObjectPtr(propertyData.m_Name, value);
+	//}
 	template <typename T>
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::vector<T>& value)
 	{

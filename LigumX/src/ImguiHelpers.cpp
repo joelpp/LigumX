@@ -1,5 +1,24 @@
 #include "ImguiHelpers.h"
+#include "Imguimanager.h"
+#include "ImguiPointerDisplay.h"
 #include <glm/gtx/string_cast.hpp>
+
+
+
+//static int g_NumObjectPtrsShown[32];
+//static int g_ObjectPtrID = 0;
+//
+//void ImguiHelpers::BeginFrame()
+//{
+//	for (int i = 0; i < 32; ++i)
+//	{
+//		g_NumObjectPtrsShown[i] = -1;
+//	}
+//
+//	g_ObjectPtrID = 0;
+//}
+
+
 
 bool ImguiHelpers::ShowBool(const char* name, bool& value)
 {
@@ -471,4 +490,105 @@ bool ImguiHelpers::ShowProperty(std::unordered_map<U, T*>* map, const char* name
 	ImGui::PopID();
 
 	return false;
+}
+
+bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value)
+{
+	ImguiManager& imguiManager = ImguiManager::GetInstance();
+
+	ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(object, propertyData, value->GetObjectID());
+
+	if (ImGui::InputInt("ID", &(ptrDisplay.GetObjectIDRef()), 0, 0, ImGuiInputTextFlags_EnterReturnsTrue))
+	{
+		LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, ptrDisplay.GetCurrentID(), value->GetLXClassName());
+		value = newObject;
+
+		return true;
+	}
+	else
+	{
+		return ShowObjectPtr(propertyData.m_Name, value);
+	}
+}
+
+bool ImguiHelpers::ShowObjectPtr(const char* name, LXObject*& value)
+{
+		bool isNull = (value == nullptr);
+		char treeNodeName[256];
+
+		if (isNull)
+		{
+			sprintf(treeNodeName, "(nullptr)");
+		}
+		else
+		{
+			sprintf(treeNodeName, "%s [%s]", value->GetName().c_str(), value->GetLXClassName());
+		}
+
+		if (value == nullptr)
+		{
+			ShowRawString(treeNodeName);
+		}
+		else
+		{
+			//{
+			//	ImGui::PushID(name);
+			//	bool changed = ImGui::InputInt("ID", value, 1, 100, );
+
+			//		if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
+			//		{
+			//			propertyData.m_WriteCallback((char*)object, (char*)value);
+			//		}
+			//	return changed;
+
+			//}
+
+
+			ImguiTreeNodeScope scope(treeNodeName);
+
+			//ImGui::SameLine();
+
+			//{
+			//	ImGui::PushID(g_ObjectPtrID);
+
+			//	if (g_NumObjectPtrsShown[g_ObjectPtrID] == -1)
+			//	{
+			//		g_NumObjectPtrsShown[g_ObjectPtrID] = value->GetObjectID();
+			//	}
+
+			//	if (ImGui::InputInt("ID", &g_NumObjectPtrsShown[g_ObjectPtrID], 0, 0, ImGuiInputTextFlags_EnterReturnsTrue)) // display copy
+			//	{
+			//		// find or load object
+			//		LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, g_NumObjectPtrsShown[g_ObjectPtrID], value->GetLXClassName());
+
+			//		if (newObject)
+			//		{
+			//			value = newObject;
+			//			ImGui::PopID();
+			//			g_ObjectPtrID++;
+			//			return true;
+			//		}
+			//	}
+			//	ImGui::PopID();
+			//	g_ObjectPtrID++;
+			//}
+
+
+
+			bool success = scope.m_Opened;
+
+			if (success)
+			{
+				success = value->ShowPropertyGrid();
+			}
+
+			return success;
+		}
+
+		return true;
+}
+
+bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, LXObject* value)
+{
+	return ShowObjectPtr(propertyData.m_Name, value);
 }

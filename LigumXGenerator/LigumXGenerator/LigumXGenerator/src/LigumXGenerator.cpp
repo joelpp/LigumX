@@ -903,6 +903,7 @@ void MainLoop()
 		PrintLine("    (f)orce process all");
 		PrintLine("    (o)nly first file");
 		PrintLine("    (s)elect file (force)");
+		PrintLine("    (c)reate file");
 		PrintLine("    open (l)og file");
 		PrintLine("    (q)uit");
 		std::cin >> command;
@@ -927,6 +928,39 @@ void MainLoop()
 			std::cin >> fileName;
 
 			DoMainProcessing(FileSelectionMode::SelectFile, std::string(fileName) + ".gen");
+		}
+		else if (command == 'c')
+		{
+			PrintLine("Enter file name (without .gen) : ");
+			char fileNameC[256];
+
+			std::cin >> fileNameC;
+
+			std::string fileName = std::string(fileNameC);
+
+			if (fileName.size() > 0)
+			{
+				std::stringstream fileContents;
+				fileContents << "\n";
+				fileContents << "class " << fileName << "\n";
+				fileContents << "{ \n";
+				fileContents << "\n";
+				fileContents << "} \n";
+				fileContents << "\n";
+
+				std::string filePath = g_GenerationRootDir + fileName + ".gen";
+
+				std::fstream newFile(filePath.c_str(), std::fstream::out);
+				if (newFile.is_open())
+				{
+					newFile << fileContents.str();
+					newFile.close();
+				}
+			}
+			else
+			{
+				PrintLine("ERROR : Filename can not be empty.");
+			}
 		}
 		else if (command == 'l')
 		{
