@@ -131,9 +131,9 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 	if (!caughtByImgui)
 	{
 		g_InputHandler->HandleMouseButtonInput(pWindow, button, action, mods);
+		m_Renderer->GetDebugCamera()->handlePresetMouseButton(pWindow, button, action, mods);
 	}
 
-	m_Renderer->GetDebugCamera()->handlePresetMouseButton(pWindow, button, action, mods);
 }
 
 void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)

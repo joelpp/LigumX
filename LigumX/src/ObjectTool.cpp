@@ -51,16 +51,6 @@ bool ObjectTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 	return false;
 }
 
-bool VectorOfFileDisplayInfoGetter(void* data, int n, const char** out_text)
-{
-	std::vector<FileDisplayInformation>* v = (std::vector<FileDisplayInformation>*)data;
-
-	FileDisplayInformation& fileInfo = (*v)[n];
-	*out_text = fileInfo.m_AsText.c_str();
-
-	return true;
-}
-
 struct LXObjectFilenameData
 {
 	ObjectID id = 0;
@@ -80,7 +70,7 @@ void ObjectTool::DrawImguiWindow()
 	int selectedFileIndex = m_SelectedFileIndex;
 
 	int numItems = allFiles.size();
-	ImGui::ListBox("Symbols", &selectedFileIndex, VectorOfFileDisplayInfoGetter, (void*)&allFiles, numItems);
+	ImGui::ListBox("Symbols", &selectedFileIndex, ImguiHelpers::VectorOfFileDisplayInfoGetter, (void*)&allFiles, numItems);
 
 	if (selectedFileIndex != -1)
 	{

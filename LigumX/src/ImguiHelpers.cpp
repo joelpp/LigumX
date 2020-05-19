@@ -498,82 +498,93 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 
 	ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(object, propertyData, value->GetObjectID());
 
+	ShowObjectPtr(propertyData.m_Name, value);
+
+	bool changeObjectRequested = false;
+	bool hasOpenPopup = ptrDisplay.GetOpenPopup();
+	if (ImGui::BeginPopupContextItem("Object"))
+	{
+		if (ImGui::Selectable("Browse..."))
+		{
+			ptrDisplay.SetOpenPopup(true);
+
+		}
+		ImGui::EndPopup();
+	}
+
+	if (!hasOpenPopup && ptrDisplay.GetOpenPopup())
+	{
+		ImGui::OpenPopup("Select file to use");
+		ptrDisplay.SetOpenPopup(false);
+	}
+
+	if (ImGui::BeginPopupModal("Select file to use", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Text("Select a file from the list:");
+
+		// todo jpp : this could be cleaned up into a "select lx file modal popup" all fancy
+		{
+			const std::vector<FileDisplayInformation>& allFiles = g_ObjectManager->GetAllFiles();
+			std::vector<FileDisplayInformation> filteredFiles;
+			// keep only files with compatible type
+			// todo jpp : fix this for inheritance, perf
+			for (const FileDisplayInformation& file : allFiles)
+			{
+				if (file.m_Typename == value->GetLXClassName())
+				{
+					filteredFiles.push_back(file);
+				}
+			}
+
+			int numItems = filteredFiles.size();
+			int selectedFileIndex = imguiManager.GetSelectedFileIndex();
+			ImGui::ListBox("Symbols", &selectedFileIndex, VectorOfFileDisplayInfoGetter, (void*)&filteredFiles, numItems);
+			imguiManager.SetSelectedFileIndex(selectedFileIndex);
+
+			if (ImGui::Button("Ok"))
+			{
+				LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, filteredFiles[selectedFileIndex].m_ObjectID, filteredFiles[selectedFileIndex].m_Typename);
+				value = newObject;
+
+				imguiManager.SetSelectedFileIndex(-1);
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Cancel"))
+			{
+				imguiManager.SetSelectedFileIndex(-1);
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+
+	ImGui::SameLine();
+
 	if (ImGui::InputInt("ID", &(ptrDisplay.GetObjectIDRef()), 0, 0, ImGuiInputTextFlags_EnterReturnsTrue))
 	{
 		LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, ptrDisplay.GetCurrentID(), value->GetLXClassName());
 		value = newObject;
+	}
 
-		return true;
-	}
-	else
-	{
-		return ShowObjectPtr(propertyData.m_Name, value);
-	}
+	return true;
 }
 
 bool ImguiHelpers::ShowObjectPtr(const char* name, LXObject*& value)
 {
-		bool isNull = (value == nullptr);
-		char treeNodeName[256];
-
-		if (isNull)
-		{
-			sprintf(treeNodeName, "(nullptr)");
-		}
-		else
-		{
-			sprintf(treeNodeName, "%s [%s]", value->GetName().c_str(), value->GetLXClassName());
-		}
-
 		if (value == nullptr)
 		{
+			std::string treeNodeName = lxFormat("%s : unset (nullptr)", name);
 			ShowRawString(treeNodeName);
 		}
 		else
 		{
-			//{
-			//	ImGui::PushID(name);
-			//	bool changed = ImGui::InputInt("ID", value, 1, 100, );
+			std::string treeNodeName = lxFormat("%s : %s [%s] (%d)", name, value->GetName().c_str(), value->GetLXClassName(), value->GetObjectID());
 
-			//		if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
-			//		{
-			//			propertyData.m_WriteCallback((char*)object, (char*)value);
-			//		}
-			//	return changed;
-
-			//}
-
-
-			ImguiTreeNodeScope scope(treeNodeName);
-
-			//ImGui::SameLine();
-
-			//{
-			//	ImGui::PushID(g_ObjectPtrID);
-
-			//	if (g_NumObjectPtrsShown[g_ObjectPtrID] == -1)
-			//	{
-			//		g_NumObjectPtrsShown[g_ObjectPtrID] = value->GetObjectID();
-			//	}
-
-			//	if (ImGui::InputInt("ID", &g_NumObjectPtrsShown[g_ObjectPtrID], 0, 0, ImGuiInputTextFlags_EnterReturnsTrue)) // display copy
-			//	{
-			//		// find or load object
-			//		LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, g_NumObjectPtrsShown[g_ObjectPtrID], value->GetLXClassName());
-
-			//		if (newObject)
-			//		{
-			//			value = newObject;
-			//			ImGui::PopID();
-			//			g_ObjectPtrID++;
-			//			return true;
-			//		}
-			//	}
-			//	ImGui::PopID();
-			//	g_ObjectPtrID++;
-			//}
-
-
+			ImguiTreeNodeScope scope(treeNodeName.c_str());
 
 			bool success = scope.m_Opened;
 
@@ -591,4 +602,14 @@ bool ImguiHelpers::ShowObjectPtr(const char* name, LXObject*& value)
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, LXObject* value)
 {
 	return ShowObjectPtr(propertyData.m_Name, value);
+}
+
+bool ImguiHelpers::VectorOfFileDisplayInfoGetter(void* data, int n, const char** out_text)
+{
+	std::vector<FileDisplayInformation>* v = (std::vector<FileDisplayInformation>*)data;
+
+	FileDisplayInformation& fileInfo = (*v)[n];
+	*out_text = fileInfo.m_AsText.c_str();
+
+	return true;
 }

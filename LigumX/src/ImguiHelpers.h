@@ -367,6 +367,7 @@ namespace ImguiHelpers
 	void ShowGUIText(const std::string& text);
 	void ShowGUIText(const std::string& text, const char* variableName);
 
+	bool VectorOfFileDisplayInfoGetter(void* data, int n, const char** out_text);
 
 
 }

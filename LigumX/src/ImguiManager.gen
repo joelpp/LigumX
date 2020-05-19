@@ -1,6 +1,6 @@
 
 class ImguiManager
 { 
-
+	int SelectedFileIndex = -1;
 } 
 

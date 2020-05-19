@@ -25,12 +25,15 @@ LXObject*& GetDataPointer() { return m_DataPointer; };
 void SetDataPointer(LXObject* value) { m_DataPointer = value; }; 
 bool GetWasUsedThisFrame() { return m_WasUsedThisFrame; }; 
 void SetWasUsedThisFrame(bool value) { m_WasUsedThisFrame = value; }; 
+bool GetOpenPopup() { return m_OpenPopup; }; 
+void SetOpenPopup(bool value) { m_OpenPopup = value; }; 
 private:
 int m_CurrentID = 0;
 LXObject* m_DataPointer = nullptr;
 bool m_WasUsedThisFrame = false;
+bool m_OpenPopup = false;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ImguiPointerDisplayPIDX
@@ -38,6 +41,7 @@ enum g_ImguiPointerDisplayPIDX
 PIDX_CurrentID,
 PIDX_DataPointer,
 PIDX_WasUsedThisFrame,
+PIDX_OpenPopup,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

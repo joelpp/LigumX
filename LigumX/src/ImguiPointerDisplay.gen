@@ -4,5 +4,6 @@ class ImguiPointerDisplay
 	int CurrentID;
 	LXObject* DataPointer;
 	bool WasUsedThisFrame = false;
+	bool OpenPopup = false;
 } 
 

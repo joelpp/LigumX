@@ -21,13 +21,17 @@ static constexpr const char* ClassName = "ImguiManager";
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
+int GetSelectedFileIndex() { return m_SelectedFileIndex; }; 
+void SetSelectedFileIndex(int value) { m_SelectedFileIndex = value; }; 
 private:
+int m_SelectedFileIndex = -1;
 public:
-static const int g_PropertyCount = 0;
+static const int g_PropertyCount = 1;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ImguiManagerPIDX
 {
+PIDX_SelectedFileIndex,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
