@@ -155,6 +155,9 @@ private:
 
 	ObjectID m_MaxID = 0;
 
+public:
+	LXType g_ParentClass[LXType_Count];
+	std::vector<LXType> g_ChildClasses[LXType_Count];
 
 };
 

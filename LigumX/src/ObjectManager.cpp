@@ -55,6 +55,7 @@ ObjectManager::ObjectManager()
 	Initialize();
 }
 
+
 void ObjectManager::Initialize()
 {
 #define DETECT_ID_DUPLICATES 1
@@ -87,6 +88,18 @@ void ObjectManager::Initialize()
 
 		m_MaxID = maxID;
 	}
+
+#define LX_CLASS(c, p) g_ParentClass[LXType_##c] = LXType_##p;
+#define LX_ENUM(c)
+#include "LXClassList.h"
+#undef LX_CLASS
+#undef LX_ENUM
+
+#define LX_CLASS(c, p) g_ChildClasses[LXType_##p].push_back(LXType_##c);
+#define LX_ENUM(c)
+#include "LXClassList.h"
+#undef LX_CLASS
+#undef LX_ENUM
 
 }
 

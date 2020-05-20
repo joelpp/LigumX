@@ -6,7 +6,7 @@ LXObject* ObjectFactory::GetNewObject(int hash, int objectID)
 {
 
 #if 1
-#define LX_CLASS(c) case c::ClassID: \
+#define LX_CLASS(c, p) case c::ClassID: \
 {\
     c* obj = new c();\
 	obj->SetObjectID(objectID);\

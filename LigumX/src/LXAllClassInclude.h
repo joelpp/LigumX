@@ -30,6 +30,7 @@
 #include "OSMAttribute.h"
 #include "OSMDataProcessor.h"
 #include "OSMDataProcessorSettings.h"
+#include "OSMElement.h"
 #include "OSMElementComponent.h"
 #include "OSMElementTypeData.h"
 #include "OSMElementTypeDataStore.h"

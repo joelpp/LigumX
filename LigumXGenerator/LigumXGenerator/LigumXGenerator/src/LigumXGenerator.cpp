@@ -28,7 +28,7 @@
 #define NAMESPACE_END 
 
 //std::unordered_map<std::string, std::vector<std::string>> g_ParentToChildClasses;
-std::vector<std::string> g_ChildClassesNames;
+std::vector<LXClass> g_AllClasses;
 std::vector<std::string> g_EnumNames;
 
 enum FileSelectionMode
@@ -359,9 +359,12 @@ ClassList createLXClass(std::vector<std::string>& lines)
 					{
 					}
 
-					if (currentClass.m_ParentName.empty() && currentClass.m_Name != "LXObject")
+					if (currentClass.m_ParentName.empty())
 					{
-						currentClass.m_ParentName = "LXObject";
+						if (currentClass.m_Name != "LXObject")
+						{
+							currentClass.m_ParentName = "LXObject";
+						}
 					}
 
 					currentClass.m_IsValid = true;
@@ -476,7 +479,7 @@ void processSingleGeneratorFile(GeneratorFile& genFile)
 	}
 	else
 	{
-		g_ChildClassesNames.push_back(theClass.m_Name);
+		g_AllClasses.push_back(theClass);
 	}
 	
 	for (const LXEnum& lxEnum : theClass.m_Enums)
@@ -506,15 +509,16 @@ void processGeneratorFiles(std::vector<GeneratorFile>& generatorFiles)
 	}
 }
 
-void OutputClassHierarchyData()
+void OutputClassHierarchyData(std::vector<GeneratorFile>& generatorFiles)
 {
 #if 1
 	std::stringstream classListFile;
 	std::stringstream allClassIncludeFile;
-	for (std::string& childName : g_ChildClassesNames)
+	for (LXClass& theClass : g_AllClasses)
 	{
-		classListFile << "LX_CLASS(" << childName << ")" << std::endl;
-		allClassIncludeFile << "#include \"" << childName << ".h\"" << std::endl;
+		std::string parentName = (theClass.m_Name == "LXObject") ? "None" : theClass.m_ParentName;
+		classListFile << "LX_CLASS(" << theClass.m_Name << ", " << parentName << ")" << std::endl;
+		allClassIncludeFile << "#include \"" << theClass.m_Name << ".h\"" << std::endl;
 	}
 
 	for (std::string& enumName : g_EnumNames)
@@ -832,7 +836,7 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 			struct _stat64i32 result;
 			int timeLastModified = 0;
 
-			if (stat((g_GenerationRootDir + genFile.m_Name).c_str(), &result) == 0)
+			if ((fileSelectionMode != FileSelectionMode::ForceAll) && stat((g_GenerationRootDir + genFile.m_Name).c_str(), &result) == 0)
 			{
 				timeLastModified = (int)result.st_mtime;
 				genFile.m_SourceFilesNeedUpdate = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
@@ -867,11 +871,11 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 
 	processGeneratorFiles(generatorFiles);
 
-	OutputClassHierarchyData();
+	OutputClassHierarchyData(generatorFiles);
 
 	g_LogFile.Save();
 	g_EnumNames.clear();
-	g_ChildClassesNames.clear();
+	g_AllClasses.clear();
 
 
 	PrintLine("Finished!");

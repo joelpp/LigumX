@@ -6,7 +6,7 @@
 
 enum LXType
 {
-#define LX_CLASS(c) LXType_##c,
+#define LX_CLASS(c, p) LXType_##c,
 #define LX_ENUM(c) LXType_##c,
 #include "LXClassList.h"
 #undef LX_CLASS
@@ -31,6 +31,7 @@ enum LXType
 	LXType_GLuint,
 
 	LXType_None,
+	LXType_Count,
 };
 
 enum PropertyFlags

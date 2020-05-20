@@ -36,9 +36,6 @@ const char* EditorTool::GetTypeName()
 	return ClassName;
 }
 
-
-
-
 #pragma endregion  CLASS_SOURCE EditorTool
 
 void EditorTool::DrawImguiWindow()

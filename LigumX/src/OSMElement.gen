@@ -42,3 +42,9 @@ NotImplemented,
 Unknown,
 Count,
 };
+
+
+class OSMElement
+{
+
+}
