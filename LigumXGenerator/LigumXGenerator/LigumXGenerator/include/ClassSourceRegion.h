@@ -345,8 +345,15 @@ public:
 		//}
 
 		std::stringstream sstr;
-		sstr << tabStop + outputParams.m_Prefix;
-			
+		if (var.m_IsPtr && outputParams.m_PtrToValue)
+		{
+			sstr << tabStop + "ImguiHelpers::ShowObject2(this, ";
+		}
+		else
+		{
+			sstr << tabStop + outputParams.m_Prefix;
+		}
+
 		if (outputParams.m_CallTemplate)
 		{
 		}
@@ -377,7 +384,7 @@ public:
 
 		sstr << ", ";
 
-		if (outputParams.m_PtrToValue && !var.m_IsPtr && !var.m_IsTemplate)
+		if (outputParams.m_PtrToValue && !var.m_IsPtr /*&& !var.m_IsTemplate*/)
 		{
 			sstr << '&';
 		}
