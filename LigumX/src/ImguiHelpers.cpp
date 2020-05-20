@@ -496,12 +496,14 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 {
 	ImguiManager& imguiManager = ImguiManager::GetInstance();
 
-	ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(object, propertyData, value->GetObjectID());
+	ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(value, propertyData, value->GetObjectID());
 
 	ShowObjectPtr(propertyData.m_Name, value);
 
 	bool changeObjectRequested = false;
 	bool hasOpenPopup = ptrDisplay.GetOpenPopup();
+
+	ImGui::PushID((void*)value); // todo jpp sort this out
 	if (ImGui::BeginPopupContextItem("Object"))
 	{
 		if (ImGui::Selectable("Browse..."))
@@ -518,7 +520,7 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		ptrDisplay.SetOpenPopup(false);
 	}
 
-	if (ImGui::BeginPopupModal("Select file to use", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Select file to use", NULL, 0))
 	{
 		ImGui::Text("Select a file from the list:");
 
@@ -561,6 +563,7 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 
 		ImGui::EndPopup();
 	}
+	ImGui::PopID();
 
 	ImGui::SameLine();
 
@@ -612,4 +615,102 @@ bool ImguiHelpers::VectorOfFileDisplayInfoGetter(void* data, int n, const char**
 	*out_text = fileInfo.m_AsText.c_str();
 
 	return true;
+}
+
+bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& propertyData, std::vector<LXObject*>& values)
+{
+	std::string baseClassName = g_ObjectManager->GetClassnameFromLXType(propertyData.m_AssociatedType);
+	std::string treeNodeName = lxFormat("%s (%s[%d])", propertyData.m_Name, baseClassName.c_str(), values.size());
+
+	//ImguiManager& imguiManager = ImguiManager::GetInstance();
+
+	static bool popupIsOpen = false;
+	static int selectedFileIndex = -1;
+	//ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(object, propertyData, 0);
+
+	ImguiTreeNodeScope scope(treeNodeName.c_str());
+
+	bool changeObjectRequested = false;
+	//bool hasOpenPopup = ptrDisplay.GetOpenPopup();
+	bool hasOpenPopup = popupIsOpen;
+	if (ImGui::BeginPopupContextItem("ArrayContextMenu"))
+	{
+		if (ImGui::Selectable("Add..."))
+		{
+			//ptrDisplay.SetOpenPopup(true);
+			popupIsOpen = true;
+		}
+		ImGui::EndPopup();
+	}
+
+	bool success = scope.m_Opened;
+
+	if (success)
+	{
+		for (int i = 0; i < values.size(); ++i)
+		{
+			LXObject*& value = values[i];
+			if (value)
+			{
+				ShowObject2(object, propertyData, &value); // todo jpp : this breaks if we use this to replace a child in an array of parent type with another child?
+			}
+		}
+	}
+
+	if (!hasOpenPopup && popupIsOpen)
+	{
+		ImGui::OpenPopup("Select file to add");
+		popupIsOpen = false;
+		//ptrDisplay.SetOpenPopup(false);
+	}
+
+	if (ImGui::BeginPopupModal("Select file to add", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		ImGui::Text("Select a file from the list:");
+		// todo jpp : support inheritance
+		// todo jpp : this could be cleaned up into a "select lx file modal popup" all fancy
+		{
+			const std::vector<FileDisplayInformation>& allFiles = g_ObjectManager->GetAllFiles();
+			std::vector<FileDisplayInformation> filteredFiles;
+			// keep only files with compatible type
+			// todo jpp : fix this for inheritance, perf
+			for (const FileDisplayInformation& file : allFiles)
+			{
+				if (file.m_Typename == baseClassName)
+				{
+					filteredFiles.push_back(file);
+				}
+			}
+
+			int numItems = filteredFiles.size();
+			//int selectedFileIndex = imguiManager.GetSelectedFileIndex();
+			ImGui::ListBox("Symbols", &selectedFileIndex, VectorOfFileDisplayInfoGetter, (void*)&filteredFiles, numItems);
+			//imguiManager.SetSelectedFileIndex(selectedFileIndex);
+
+			if (ImGui::Button("Ok"))
+			{
+				LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, filteredFiles[selectedFileIndex].m_ObjectID, filteredFiles[selectedFileIndex].m_Typename);
+				values.push_back(newObject);
+
+				//imguiManager.SetSelectedFileIndex(-1);
+				selectedFileIndex = -1;
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Cancel"))
+			{
+				//imguiManager.SetSelectedFileIndex(-1);
+				selectedFileIndex = -1;
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::EndPopup();
+	}
+
+	return success;
+
+
 }

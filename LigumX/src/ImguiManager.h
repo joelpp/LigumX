@@ -51,6 +51,6 @@ public:
 	void BeginFrame();
 	std::vector<ImguiPointerDisplay*> m_ImguiPointerDisplays;
 	std::vector<ImguiPointerDisplay*> m_LastImguiPointerDisplays;
-	ImguiPointerDisplay& GetPointerDisplay(void* baseObj, const ClassPropertyData& propertyData, ObjectID currentlySetObjectID);
+	ImguiPointerDisplay& GetPointerDisplay(LXObject* baseObj, const ClassPropertyData& propertyData, ObjectID currentlySetObjectID);
 
 };

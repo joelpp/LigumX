@@ -143,6 +143,9 @@ public:
 	LXObject* CreateObject(const std::string& typeName, ObjectID id);
 	LXObject* CreateNewObject(const std::string& typeName);
 
+	LXType GetLXTypeFromClassname(const std::string& Classname);
+	std::string GetClassnameFromLXType(const LXType type);
+
 private:
 	int m_NextTransientID = StartTransientIDs;
 	int m_NextHardcodedID;

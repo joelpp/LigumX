@@ -281,3 +281,26 @@ FileDisplayInformation::FileDisplayInformation(const LXString& fileName)
 
 }
 
+LXType ObjectManager::GetLXTypeFromClassname(const std::string& className)
+{
+	#define LX_CLASS(c, p) if (className == "##c##") { return LXType_##c##; }
+	#define LX_ENUM(c)
+	#include "LXClassList.h"
+	#undef LX_CLASS
+	#undef LX_ENUM
+
+	return LXType_None;
+}
+
+
+std::string ObjectManager::GetClassnameFromLXType(const LXType type)
+{
+#define LX_CLASS(c, p) if (type == LXType_##c##) { return #c; }
+#define LX_ENUM(c)
+#include "LXClassList.h"
+#undef LX_CLASS
+#undef LX_ENUM
+
+	lxAssert0();
+	return "error!";
+}

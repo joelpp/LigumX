@@ -57,12 +57,11 @@ void ImguiManager::BeginFrame()
 
 }
 
-ImguiPointerDisplay& ImguiManager::GetPointerDisplay(void* baseObj, const ClassPropertyData& propertyData, ObjectID currentlySetObjectID)
+ImguiPointerDisplay& ImguiManager::GetPointerDisplay(LXObject* baseObj, const ClassPropertyData& propertyData, ObjectID currentlySetObjectID)
 {
-	LXObject* obj = (LXObject*)baseObj + propertyData.m_Offset;
 	for (ImguiPointerDisplay* ptrDisplay : m_LastImguiPointerDisplays)
 	{
-		if (ptrDisplay->GetDataPointer() == obj)
+		if (ptrDisplay->GetDataPointer() == baseObj)
 		{
 			return *ptrDisplay;
 		}
@@ -70,7 +69,7 @@ ImguiPointerDisplay& ImguiManager::GetPointerDisplay(void* baseObj, const ClassP
 
 	ImguiPointerDisplay* newPtrDisplay = new ImguiPointerDisplay();
 	newPtrDisplay->SetCurrentID(currentlySetObjectID);
-	newPtrDisplay->SetDataPointer(obj);
+	newPtrDisplay->SetDataPointer(baseObj);
 	newPtrDisplay->SetWasUsedThisFrame(true);
 	m_ImguiPointerDisplays.push_back(newPtrDisplay); // todo jpp do perf vector resize stuff
 	return *newPtrDisplay;

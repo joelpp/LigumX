@@ -329,20 +329,110 @@ namespace ImguiHelpers
 		return false;
 	}
 
+	bool ShowProperty2(void* object, const ClassPropertyData& propertyData, std::vector<LXObject*>& values);
+
+	template <typename T>
+	bool ShowProperty3(void* object, const ClassPropertyData& propertyData, std::vector<T*>& values)
+	{
+		std::vector<LXObject*>& v = *(std::vector<LXObject*> *)&values;
+		return ShowProperty2(object, propertyData, v);
+	}
 
 	template <typename T>
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::vector<T*>& values)
 	{
-		for (int i = 0; i < values.size(); ++i)
+		std::string treeNodeName = lxFormat("%s (%s[%d])", propertyData.m_Name, T::ClassName, values.size());
+
+		//ImguiManager& imguiManager = ImguiManager::GetInstance();
+
+		static bool popupIsOpen = false;
+		static int selectedFileIndex = -1;
+		//ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(object, propertyData, 0);
+
+		ImguiTreeNodeScope scope(treeNodeName.c_str());
+
+		bool changeObjectRequested = false;
+		//bool hasOpenPopup = ptrDisplay.GetOpenPopup();
+		bool hasOpenPopup = popupIsOpen;
+		if (ImGui::BeginPopupContextItem("Object"))
 		{
-			T* value = values[i];
-			if (value)
+			if (ImGui::Selectable("Add..."))
 			{
-				ShowProperty(object, propertyData, value);
+				//ptrDisplay.SetOpenPopup(true);
+				popupIsOpen = true;
+			}
+			ImGui::EndPopup();
+		}
+
+		bool success = scope.m_Opened;
+
+		if (success)
+		{
+			for (int i = 0; i < values.size(); ++i)
+			{
+				T*& value = values[i];
+				if (value)
+				{
+					ShowObject2(object, propertyData, &value); // todo jpp : this breaks if we use this to replace a child in an array of parent type with another child?
+				}
 			}
 		}
 
-		return false;
+		if (!hasOpenPopup && popupIsOpen)
+		{
+			ImGui::OpenPopup("Select file to add");
+			popupIsOpen = false;
+			//ptrDisplay.SetOpenPopup(false);
+		}
+
+		if (ImGui::BeginPopupModal("Select file to add", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("Select a file from the list:");
+			// todo jpp : support inheritance
+			// todo jpp : this could be cleaned up into a "select lx file modal popup" all fancy
+			{
+				const std::vector<FileDisplayInformation>& allFiles = g_ObjectManager->GetAllFiles();
+				std::vector<FileDisplayInformation> filteredFiles;
+				// keep only files with compatible type
+				// todo jpp : fix this for inheritance, perf
+				for (const FileDisplayInformation& file : allFiles)
+				{
+					if (file.m_Typename == T::ClassName)
+					{
+						filteredFiles.push_back(file);
+					}
+				}
+
+				int numItems = filteredFiles.size();
+				//int selectedFileIndex = imguiManager.GetSelectedFileIndex();
+				ImGui::ListBox("Symbols", &selectedFileIndex, VectorOfFileDisplayInfoGetter, (void*)&filteredFiles, numItems);
+				//imguiManager.SetSelectedFileIndex(selectedFileIndex);
+
+				if (ImGui::Button("Ok"))
+				{
+					LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, filteredFiles[selectedFileIndex].m_ObjectID, filteredFiles[selectedFileIndex].m_Typename);
+					values.push_back((T*)newObject);
+
+					//imguiManager.SetSelectedFileIndex(-1);
+					selectedFileIndex = -1;
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::Button("Cancel"))
+				{
+					//imguiManager.SetSelectedFileIndex(-1);
+					selectedFileIndex = -1;
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			ImGui::EndPopup();
+		}
+
+		return success;
+
 	}
 
 	template <typename T, typename U>
