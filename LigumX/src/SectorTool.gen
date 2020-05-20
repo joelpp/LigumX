@@ -7,7 +7,7 @@ class SectorTool : EditorTool
 
 	Sector* HighlightedSector;
 
-	glm::vec3 SectorGridColor = glm::vec3(0.5);
+	glm::vec3 SectorGridColor = glm::vec3(0.7, 0.8, 1.);
 
 	bool AsyncSectorLoading = false;
 
