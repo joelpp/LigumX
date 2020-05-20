@@ -83,14 +83,14 @@ bool Editor::Serialize(bool writing)
 bool Editor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Options], m_Options  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Options], &m_Options  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_XYZMask], &m_XYZMask , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ManipulatorDragging], &m_ManipulatorDragging  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ManipulatorStartPosition], &m_ManipulatorStartPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EditingTerrain], &m_EditingTerrain  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Tools], m_Tools  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingBufferSize], &m_PickingBufferSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedNode], m_SelectedNode  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedNode], &m_SelectedNode  );
 	return true;
 }
 const char* Editor::GetTypeName()

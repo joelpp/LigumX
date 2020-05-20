@@ -33,7 +33,7 @@ bool ImguiPointerDisplay::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CurrentID], &m_CurrentID , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DataPointer], m_DataPointer  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DataPointer], &m_DataPointer  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WasUsedThisFrame], &m_WasUsedThisFrame  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OpenPopup], &m_OpenPopup  );
 	return true;

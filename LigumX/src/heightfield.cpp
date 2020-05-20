@@ -45,7 +45,7 @@ bool Heightfield::Serialize(bool writing)
 bool Heightfield::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HeightDataTexture], m_HeightDataTexture  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_HeightDataTexture], &m_HeightDataTexture  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MaxHeight], &m_MaxHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MinHeight], &m_MinHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Width], &m_Width , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );

@@ -53,8 +53,8 @@ bool Sector::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_QuantizedPosition], &m_QuantizedPosition , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OffsetIndex], &m_OffsetIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DataLoaded], &m_DataLoaded  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Heightfield], m_Heightfield  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_TerrainPatchEntity], m_TerrainPatchEntity  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Heightfield], &m_Heightfield  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_TerrainPatchEntity], &m_TerrainPatchEntity  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OSMFilename], &m_OSMFilename  );
 	return true;
 }

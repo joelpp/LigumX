@@ -70,7 +70,7 @@ bool OSMDataProcessor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RoadWidth], &m_RoadWidth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Settings], m_Settings  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Settings], &m_Settings  );
 	return true;
 }
 const char* OSMDataProcessor::GetTypeName()

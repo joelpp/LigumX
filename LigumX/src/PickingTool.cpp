@@ -54,7 +54,7 @@ bool PickingTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedEntity], m_PickedEntity  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_PickedEntity], &m_PickedEntity  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AimingWindowPosition], &m_AimingWindowPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AimingWorldPosition], &m_AimingWorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AimingID], &m_AimingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
@@ -64,7 +64,7 @@ bool PickingTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedID], &m_PickedID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickDebugModels], &m_PickDebugModels  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedHeight], &m_PickedHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedSector], m_PickedSector  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_PickedSector], &m_PickedSector  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CloneEntity], &m_CloneEntity  );
 	return true;
 }

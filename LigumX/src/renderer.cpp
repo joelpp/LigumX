@@ -66,9 +66,9 @@ bool Renderer::Serialize(bool writing)
 bool Renderer::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayOptions], m_DisplayOptions  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PostEffects], m_PostEffects  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugCamera], m_DebugCamera  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DisplayOptions], &m_DisplayOptions  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_PostEffects], &m_PostEffects  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DebugCamera], &m_DebugCamera  );
 	return true;
 }
 const char* Renderer::GetTypeName()

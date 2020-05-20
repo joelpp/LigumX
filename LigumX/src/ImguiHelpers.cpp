@@ -494,6 +494,10 @@ bool ImguiHelpers::ShowProperty(std::unordered_map<U, T*>* map, const char* name
 
 bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value)
 {
+	if (value == nullptr)
+	{
+		return false;
+	}
 	ImguiManager& imguiManager = ImguiManager::GetInstance();
 
 	ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(value, propertyData, value->GetObjectID());

@@ -384,7 +384,7 @@ public:
 
 		sstr << ", ";
 
-		if (outputParams.m_PtrToValue && !var.m_IsPtr /*&& !var.m_IsTemplate*/)
+		if (outputParams.m_PtrToValue/* && !var.m_IsPtr*/ && !var.m_IsTemplate)
 		{
 			sstr << '&';
 		}

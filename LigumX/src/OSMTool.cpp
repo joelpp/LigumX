@@ -65,7 +65,7 @@ bool OSMTool::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedNode], m_SelectedNode  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedNode], &m_SelectedNode  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedWays], m_SelectedWays  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SearchOnlyWithinSector], &m_SearchOnlyWithinSector  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedSectorIndex], &m_SelectedSectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );

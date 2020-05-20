@@ -63,8 +63,8 @@ bool RenderDataManager::Serialize(bool writing)
 bool RenderDataManager::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CullingOptions], m_CullingOptions  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RenderingStats], m_RenderingStats  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_CullingOptions], &m_CullingOptions  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_RenderingStats], &m_RenderingStats  );
 	return true;
 }
 const char* RenderDataManager::GetTypeName()

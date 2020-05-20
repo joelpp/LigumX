@@ -73,7 +73,7 @@ bool SectorTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedWorldCoordinates], &m_HighlightedWorldCoordinates , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedSectorUV], &m_HighlightedSectorUV , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedSector], m_HighlightedSector  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_HighlightedSector], &m_HighlightedSector  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorGridColor], &m_SectorGridColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AsyncSectorLoading], &m_AsyncSectorLoading  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NodeSize], &m_NodeSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );

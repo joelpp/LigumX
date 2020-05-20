@@ -41,8 +41,8 @@ bool World::Serialize(bool writing)
 bool World::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SunLight], m_SunLight  );
-	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Entities], m_Entities  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SunLight], &m_SunLight  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Entities], m_Entities  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugEntities], m_DebugEntities  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Sectors], m_Sectors  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Reset], &m_Reset  );

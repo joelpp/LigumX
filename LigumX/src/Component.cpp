@@ -25,7 +25,7 @@ bool Component::Serialize(bool writing)
 bool Component::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ParentEntity], m_ParentEntity  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ParentEntity], &m_ParentEntity  );
 	return true;
 }
 const char* Component::GetTypeName()

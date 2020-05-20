@@ -53,7 +53,7 @@ bool TerrainTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ClickedTexel], &m_ClickedTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_StartTexel], &m_StartTexel , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SplatMapIncrement], &m_SplatMapIncrement , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ClickedSector], m_ClickedSector  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ClickedSector], &m_ClickedSector  );
 	return true;
 }
 const char* TerrainTool::GetTypeName()

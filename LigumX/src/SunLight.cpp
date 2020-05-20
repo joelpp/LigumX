@@ -46,7 +46,7 @@ bool SunLight::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Orientation], &m_Orientation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Speed], &m_Speed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseSkybox], &m_UseSkybox  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Skybox], m_Skybox  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Skybox], &m_Skybox  );
 	return true;
 }
 const char* SunLight::GetTypeName()

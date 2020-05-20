@@ -26,7 +26,7 @@ bool Visual::Serialize(bool writing)
 bool Visual::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Model], m_Model  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Model], &m_Model  );
 	return true;
 }
 const char* Visual::GetTypeName()

@@ -82,9 +82,9 @@ bool Material::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RefractionIndex], &m_RefractionIndex , 0.f, 1.f );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsGlass], &m_IsGlass  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ReflectEnvironment], &m_ReflectEnvironment  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DiffuseTexture], m_DiffuseTexture  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SpecularTexture], m_SpecularTexture  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HeightfieldTexture], m_HeightfieldTexture  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DiffuseTexture], &m_DiffuseTexture  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SpecularTexture], &m_SpecularTexture  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_HeightfieldTexture], &m_HeightfieldTexture  );
 	return true;
 }
 const char* Material::GetTypeName()
