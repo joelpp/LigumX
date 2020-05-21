@@ -505,23 +505,31 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 	ShowObjectPtr(propertyData.m_Name, value);
 
 	bool changeObjectRequested = false;
-	bool hasOpenPopup = ptrDisplay.GetOpenPopup();
+	
+	static bool openObjectPtrPopup = false;
+	bool hasOpenPopup = openObjectPtrPopup;
+
 
 	ImGui::PushID((void*)value); // todo jpp sort this out
 	if (ImGui::BeginPopupContextItem("Object"))
 	{
 		if (ImGui::Selectable("Browse..."))
 		{
-			ptrDisplay.SetOpenPopup(true);
-
+			//ptrDisplay.SetOpenPopup(true);
+			openObjectPtrPopup = true;
+		}
+		if (ImGui::Selectable("Remove"))
+		{
+			value = nullptr; // todo jpp handle object ref counting...
 		}
 		ImGui::EndPopup();
 	}
 
-	if (!hasOpenPopup && ptrDisplay.GetOpenPopup())
+	if (!hasOpenPopup && openObjectPtrPopup)
 	{
 		ImGui::OpenPopup("Select file to use");
-		ptrDisplay.SetOpenPopup(false);
+		openObjectPtrPopup = false;
+		//ptrDisplay.SetOpenPopup(false);
 	}
 
 	if (ImGui::BeginPopupModal("Select file to use", NULL, 0))
@@ -649,6 +657,7 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 
 	bool success = scope.m_Opened;
 
+	int indexToRemove = -1;
 	if (success)
 	{
 		for (int i = 0; i < values.size(); ++i)
@@ -657,8 +666,18 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 			if (value)
 			{
 				ShowObject2(object, propertyData, &value); // todo jpp : this breaks if we use this to replace a child in an array of parent type with another child?
+
+				if (value == nullptr)
+				{
+					indexToRemove = i;
+				}
 			}
 		}
+	}
+
+	if (indexToRemove != -1) // todo jpp maybe we can delete in place?
+	{
+		values.erase(values.begin() + 1);
 	}
 
 	if (!hasOpenPopup && popupIsOpen)
