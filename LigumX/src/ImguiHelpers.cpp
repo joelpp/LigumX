@@ -388,6 +388,21 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 	return ShowString(propertyData.m_Name, *value);
 }
 
+bool ImguiHelpers::ShowString2(void* object, const ClassPropertyData& propertyData, std::string& value)
+{
+	ImGui::PushID(object);
+	static char buf_int[64];
+	strcpy(buf_int, value.c_str());
+	bool changed = ImGui::InputText(propertyData.m_Name, buf_int, 64, ImGuiInputTextFlags_EnterReturnsTrue);
+	if (changed)
+	{
+		value = std::string(buf_int);
+	}
+	ImGui::PopID();
+	return changed;
+}
+
+
 
 //bool ImguiHelpers::ShowProperty(std::string* value, const char* name)
 //{
@@ -494,18 +509,16 @@ bool ImguiHelpers::ShowProperty(std::unordered_map<U, T*>* map, const char* name
 
 bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value)
 {
-	if (value == nullptr)
-	{
-		return false;
-	}
 	ImguiManager& imguiManager = ImguiManager::GetInstance();
 
-	ImguiPointerDisplay& ptrDisplay = imguiManager.GetPointerDisplay(value, propertyData, value->GetObjectID());
+	ImguiPointerDisplay invalidPtrDisplay;
+	ImguiPointerDisplay& ptrDisplay = value ? imguiManager.GetPointerDisplay(value, propertyData, value->GetObjectID()) : invalidPtrDisplay;
 
 	ShowObjectPtr(propertyData.m_Name, value);
 
 	bool changeObjectRequested = false;
 	
+	static bool createNewObject = false;
 	static bool openObjectPtrPopup = false;
 	bool hasOpenPopup = openObjectPtrPopup;
 
@@ -513,15 +526,22 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 	ImGui::PushID((void*)value); // todo jpp sort this out
 	if (ImGui::BeginPopupContextItem("Object"))
 	{
+		if (ImGui::Selectable("New"))
+		{
+			createNewObject = true;
+		}
 		if (ImGui::Selectable("Browse..."))
 		{
-			//ptrDisplay.SetOpenPopup(true);
 			openObjectPtrPopup = true;
 		}
-		if (ImGui::Selectable("Remove"))
+		if (value)
 		{
-			value = nullptr; // todo jpp handle object ref counting...
+			if (ImGui::Selectable("Remove"))
+			{
+				value = nullptr; // todo jpp handle object ref counting...
+			}
 		}
+
 		ImGui::EndPopup();
 	}
 
@@ -531,6 +551,8 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		openObjectPtrPopup = false;
 		//ptrDisplay.SetOpenPopup(false);
 	}
+
+	std::string typeName = g_ObjectManager->GetClassnameFromLXType(propertyData.m_Type); // todo jpp do this better
 
 	if (ImGui::BeginPopupModal("Select file to use", NULL, 0))
 	{
@@ -544,7 +566,7 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 			// todo jpp : fix this for inheritance, perf
 			for (const FileDisplayInformation& file : allFiles)
 			{
-				if (file.m_Typename == value->GetLXClassName())
+				if (file.m_Typename == typeName)
 				{
 					filteredFiles.push_back(file);
 				}
@@ -583,6 +605,12 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 	{
 		LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, ptrDisplay.GetCurrentID(), value->GetLXClassName());
 		value = newObject;
+	}
+
+	if (createNewObject)
+	{
+		value = g_ObjectManager->CreateNewObject(typeName); // todo jpp handle inheritance here and not stringly typed
+		createNewObject = false;
 	}
 
 	return true;

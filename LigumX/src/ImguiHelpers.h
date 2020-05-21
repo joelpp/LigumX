@@ -316,6 +316,7 @@ namespace ImguiHelpers
 
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, glm::ivec2* value, float min, float max);
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, std::string* value);
+	bool ShowString2(void* object, const ClassPropertyData& propertyData, std::string& value);
 
 	bool ShowProperty(void* object, const ClassPropertyData& propertyData, LXObject* value);
 	//template <typename T>

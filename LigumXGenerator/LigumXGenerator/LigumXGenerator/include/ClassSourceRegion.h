@@ -349,6 +349,14 @@ public:
 		{
 			sstr << tabStop + "ImguiHelpers::ShowObject2(this, ";
 		}
+		else if (var.m_IsTemplate)
+		{
+			sstr << tabStop + "ImguiHelpers::ShowProperty3(this, ";
+		}
+		else if (var.GetType() == "std::string")
+		{
+			sstr << tabStop + "ImguiHelpers::ShowString2(this, ";
+		}
 		else
 		{
 			sstr << tabStop + outputParams.m_Prefix;
