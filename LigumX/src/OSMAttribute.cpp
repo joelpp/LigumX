@@ -27,8 +27,8 @@ bool OSMAttribute::Serialize(bool writing)
 bool OSMAttribute::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Key], &m_Key  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Value], &m_Value  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Key], m_Key  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Value], m_Value  );
 	return true;
 }
 const char* OSMAttribute::GetTypeName()

@@ -55,7 +55,7 @@ bool Sector::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DataLoaded], &m_DataLoaded  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Heightfield], &m_Heightfield  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_TerrainPatchEntity], &m_TerrainPatchEntity  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OSMFilename], &m_OSMFilename  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_OSMFilename], m_OSMFilename  );
 	return true;
 }
 const char* Sector::GetTypeName()

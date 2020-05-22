@@ -59,7 +59,7 @@ bool Entity::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingID], &m_PickingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Model], &m_Model  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsLight], &m_IsLight  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Components], m_Components  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Components], m_Components  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_LoadModel], &m_COMMAND_LoadModel  );
 	return true;
 }

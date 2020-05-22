@@ -92,17 +92,21 @@ void ObjectTool::DrawImguiWindow()
 	}
 
 	{
-		std::vector<LXString> names = { "Entity", "SunLight", "Material", "Model", "Mesh" };
 
 		// Simple selection popup
 		// (If you want to show the current selection inside the Button itself, you may want to build a string using the "###" operator to preserve a constant ID with a variable label)
 		if (ImGui::BeginPopup(g_ImguiStrings_ObjectTool_CreateNewObject))
 		{
-			for (int i = 0; i < names.size(); i++)
+			std::vector<LXString> allTypeNames;
+			for (int i = 0; i < LXType_SimpleTypesStart; ++i) // todo jpp create at start or compile time
 			{
-				if (ImGui::Selectable(names[i].c_str()))
+				allTypeNames.push_back(g_ObjectManager->GetClassnameFromLXType((LXType)i));
+			}
+			for (int i = 0; i < allTypeNames.size(); i++)
+			{
+				if (ImGui::Selectable(allTypeNames[i].c_str()))
 				{
-					CreateNewObject(names[i]);
+					CreateNewObject(allTypeNames[i]);
 				}
 			}
 			ImGui::EndPopup();

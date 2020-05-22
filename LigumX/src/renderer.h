@@ -1,7 +1,6 @@
 #ifndef RENDERER
 #define RENDERER
 
-
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -21,6 +20,9 @@
 #include "Material.h"
 #include "GL.h"
 #include "GLFW/glfw3.h"
+
+#define DATAINSPECTOR_NUMVALUES 64
+#define DATAINSPECTOR_BINDPOS 7 // todo jpp : so we don't have to juggle for a while
 
 class MainWindow;
 class SectorGraphicalData;
@@ -170,6 +172,7 @@ public:
 	void AfterWorldRender();
 
 	void BeginFrame(World* world);
+	void DataInspector_FinishFrame();
 	void FinishFrame();
 
 	void RenderShadowMap();
@@ -225,9 +228,9 @@ public:
 
 	void  SetFragmentUniform(glm::vec3& value, const char* name, GLuint location);
 
-	void SetPipeline(ProgramPipeline* pipeline, bool force);
-	void SetPipeline(ShaderFamily family);
-	void SetPipeline(ProgramPipeline* pipeline);
+	bool SetPipeline(ProgramPipeline* pipeline, bool force);
+	bool SetPipeline(ShaderFamily family);
+	bool SetPipeline(ProgramPipeline* pipeline);
 	void SetLightingUniforms();
 	void SetWorldGridUniforms();
 	void SetViewUniforms(Camera* cam);
@@ -304,7 +307,7 @@ public:
     GLuint glidGroundTriangleTextureIDs;
     GLuint textVBO;
     GLuint textUvsVBO;
-	GLuint SSBO;
+	GLuint m_PickingSSBO;
 
     std::unordered_map<OSMElement::ElementType, GLuint > glidWaysNodesPositions;
     std::map<OSMElement::ElementType, bool> displayElementType;
@@ -402,6 +405,9 @@ public:
 
 	RenderDataManager* GetRenderDataManager() { return m_RenderDataManager; }
 
+
+	float* GetDataInspectorValues() { return m_DataInspectorValues; }
+
 private:
 	void DrawBoundingBox(BoundingBoxComponent* bb);
 	void DrawManipulator(Entity* entity);
@@ -431,6 +437,8 @@ private:
 
 	FramebufferType m_ColorFramebuffer = FramebufferType_MainColorBuffer;
 
+	float m_DataInspectorValues[DATAINSPECTOR_NUMVALUES];
+	GLuint m_DataInspectorSSBO;
 };
 
 class GPUProfileHolder

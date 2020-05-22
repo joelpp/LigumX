@@ -344,16 +344,25 @@ public:
 		//	typeToWrite += "_SetCallback";
 		//}
 
+		
+		bool validNewVector = var.m_IsTemplate && outputParams.m_PtrToValue &&
+			var.m_AssociatedType != "std::string" &&
+			var.m_AssociatedType != "int" &&
+			var.m_AssociatedType != "float" &&
+			var.m_AssociatedType != "bool" &&
+			var.m_AssociatedType != "SerializerInputVariable" && // todo jpp !!!!!
+			!stringContains(var.m_AssociatedType, "glm");
+
 		std::stringstream sstr;
 		if (var.m_IsPtr && outputParams.m_PtrToValue)
 		{
 			sstr << tabStop + "ImguiHelpers::ShowObject2(this, ";
 		}
-		else if (var.m_IsTemplate)
+		else if (validNewVector)
 		{
 			sstr << tabStop + "ImguiHelpers::ShowProperty3(this, ";
 		}
-		else if (var.GetType() == "std::string")
+		else if (var.GetType() == "std::string" && outputParams.m_PtrToValue)
 		{
 			sstr << tabStop + "ImguiHelpers::ShowString2(this, ";
 		}
@@ -392,7 +401,7 @@ public:
 
 		sstr << ", ";
 
-		if (outputParams.m_PtrToValue/* && !var.m_IsPtr*/ && !var.m_IsTemplate)
+		if (outputParams.m_PtrToValue/* && !var.m_IsPtr*/ && !var.m_IsTemplate && (var.GetType() != "std::string"))
 		{
 			sstr << '&';
 		}

@@ -18,11 +18,13 @@ public:
         GLuint glidShaderProgram;
 
         ShaderProgram();
-        ShaderProgram(GLenum shaderType,
-                      //std::initializer_list<std::string> srcFilenames,
-                      std::string srcFilename,
-                      bool readSrcFilenamesAsSourceCode = false);
         ~ShaderProgram() {}
+
+		bool Initialize(
+			GLenum shaderType,
+			//initializer_list<string> srcFilenames,
+			std::string srcFilenames,
+			bool readSrcFilenamesAsSourceCode);
 
 		int m_NumLinesInInclude = 0;
 
@@ -51,7 +53,7 @@ public:
 
     void usePipeline();
 
-
+	bool m_IsValid = false;
 
 private:
     std::string m_name;

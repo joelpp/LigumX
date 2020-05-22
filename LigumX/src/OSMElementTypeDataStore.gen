@@ -1,5 +1,5 @@
 [globalinstance]
 class OSMElementTypeDataStore
 {
-	std::vector<OSMElementTypeData> Data;
+	std::vector<OSMElementTypeData*> Data;
 }

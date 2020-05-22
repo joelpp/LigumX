@@ -301,6 +301,15 @@ std::string ObjectManager::GetClassnameFromLXType(const LXType type)
 #undef LX_CLASS
 #undef LX_ENUM
 
+	if (type == LXType_stdvector) { return std::string("std::vector"); }
+	if (type == LXType_int) { return std::string("int"); }
+	if (type == LXType_bool) { return std::string("bool"); }
+	if (type == LXType_float) { return std::string("float"); }
+	if (type == LXType_glmvec2) { return std::string("glm::vec2"); }
+	if (type == LXType_glmvec3) { return std::string("glm::vec3"); }
+	if (type == LXType_glmvec4) { return std::string("glm::vec4"); }
+	if (type == LXType_glmvec4) { return std::string("glm::vec4"); }
+
 	lxAssert0();
 	return "error!";
 }

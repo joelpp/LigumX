@@ -6,6 +6,7 @@ enum EEditorTool
 	OSMTool,
 	PickingTool,
 	ObjectTool,
+	DataInspectorTool,
 }
 
 [globalinstance]

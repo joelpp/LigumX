@@ -24,11 +24,11 @@ static constexpr const char* ClassName = "OSMElementTypeDataStore";
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
-std::vector<OSMElementTypeData>& GetData() { return m_Data; }; 
-void SetData(std::vector<OSMElementTypeData> value) { m_Data = value; }; 
-void AddTo_Data(OSMElementTypeData value) { m_Data.push_back(value); };
+std::vector<OSMElementTypeData*>& GetData() { return m_Data; }; 
+void SetData(std::vector<OSMElementTypeData*> value) { m_Data = value; }; 
+void AddTo_Data(OSMElementTypeData* value) { m_Data.push_back(value); };
 private:
-std::vector<OSMElementTypeData> m_Data;
+std::vector<OSMElementTypeData*> m_Data;
 public:
 static const int g_PropertyCount = 1;
 static const ClassPropertyData g_Properties[g_PropertyCount];

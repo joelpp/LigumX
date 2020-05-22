@@ -27,7 +27,7 @@ bool SerializerInputVariable::Serialize(bool writing)
 bool SerializerInputVariable::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_VariableName], &m_VariableName  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_VariableName], m_VariableName  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Values], m_Values  );
 	return true;
 }

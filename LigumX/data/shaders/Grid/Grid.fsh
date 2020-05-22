@@ -1,14 +1,21 @@
-#version 410 core
+#version 430 core
 
 in vec2 myTexCoord;
 in vec3 vNormalWS;
 in vec4 vWorldPosition;
 in float height;
-in vec4 FragPosLightSpace;
+
 
 #define PROVIDER_View
 #define PROVIDER_Window
 #define PROVIDER_WorldGrid
+#define PROVIDER_Depth
+#define PROVIDER_DataInspector
+
+//layout(std430, binding = 7) writeonly buffer g_DataInspectorLayout
+//{
+//	float g_InspectorData[];
+//};
 
 // Include ProvidersMarker
 
@@ -16,7 +23,7 @@ layout (location = 0) out vec4 FinalColor;
 
 vec3 GetWorldSpaceRay(vec3 ndc)
 {
-	vec4 clipCoords = vec4(ndc.xy, -1.0f, 1.0f);
+	vec4 clipCoords = vec4(ndc.xyz, 1.0f);
 
 	vec4 cameraRay = g_ProjectionMatrixInverse * clipCoords;
 
@@ -59,7 +66,23 @@ void main()
 {
 	vec2 normalizedScreenPosition = gl_FragCoord.xy / g_WindowSize;
 
-	vec3 ndc = vec3(2.f * normalizedScreenPosition - vec2(1.f, 1.f), 1.f);
+	DebugWatch(0, gl_FragCoord.x);
+	DebugWatch(1, gl_FragCoord.y);
+	DebugWatch(2, myTexCoord.x);
+	DebugWatch(3, myTexCoord.y);
+
+	//float closestDepth = texture(g_DepthTexture, myTexCoord.xy).r;
+	float closestDepth = texelFetch(g_DepthTexture, ivec2(gl_FragCoord.xy), 0).r;
+	//if ((g_MouseX == int(gl_FragCoord.x)) && (g_MouseY == int(gl_FragCoord.y)))
+	//{
+	//	g_InspectorData[5] = value;
+	//}
+
+	if (closestDepth < 0.99999f)
+	{
+		discard;
+	}
+	vec3 ndc = vec3(2.f * normalizedScreenPosition - vec2(1.f, 1.f), closestDepth);
 
 	vec3 worldSpaceRay = GetWorldSpaceRay(ndc);
 
@@ -70,6 +93,8 @@ void main()
 
 	vec3 wsPosition = GetAimingWorldSpacePosition(worldSpaceRay);
 
+
+
 	// from http://madebyevan.com/shaders/grid/
 	float line = GetLineWidth(wsPosition.xy, g_WorldScale);
 	float alpha = GetLineAlpha(line, 0.8f);
@@ -79,5 +104,5 @@ void main()
 	clamp(outputColor, vec3(0, 0, 0), vec3(1, 1, 1));
 
 	FinalColor = vec4(outputColor, alpha);
-
+	//FinalColor = vec4(wsPosition.z < 0, 0, 0, 1);
 }

@@ -33,6 +33,8 @@
 #include "BoundingBoxComponent.h"
 #include "Heightfield.h"
 
+#include "inputhandler.h" // todo jpp for data inspector, clean if not needed anymore
+
 #pragma region  CLASS_SOURCE Renderer
 
 #include "Renderer.h"
@@ -187,10 +189,15 @@ void Renderer::InitGL()
 	GL::SetCapability(GL::Dither,	true);
 	GL::SetCapability(GL::TextureCubemapSeamless,	true);
 
-	glGenBuffers(1, &SSBO);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
+	glGenBuffers(1, &m_PickingSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_PickingSSBO);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, 12 * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
 
+	glGenBuffers(1, &m_DataInspectorSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_DataInspectorSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, 64 * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
 
 }
 
@@ -476,24 +483,32 @@ void Renderer::SetComputeUniform(int value, const char* name)
 //}
 
 
-void Renderer::SetPipeline(ProgramPipeline* pipeline, bool force)
+bool Renderer::SetPipeline(ProgramPipeline* pipeline, bool force)
 {
+	bool shaderValid = pipeline->m_IsValid;
+	if (!shaderValid && !force)
+	{
+		return false;
+	}
+
 	lxAssert(pipeline != nullptr);
 	if (force || activePipeline != pipeline)
 	{
 		activePipeline = pipeline;
 		activePipeline->usePipeline();
 	}
+
+	return true;
 }
 
-void Renderer::SetPipeline(ProgramPipeline* pipeline)
+bool Renderer::SetPipeline(ProgramPipeline* pipeline)
 {
-	SetPipeline(pipeline, false);
+	return SetPipeline(pipeline, false);
 }
 
-void Renderer::SetPipeline(ShaderFamily family)
+bool Renderer::SetPipeline(ShaderFamily family)
 {
-	SetPipeline(m_Pipelines[family]);
+	return SetPipeline(m_Pipelines[family]);
 }
 
 void Renderer::SetDisplayModeUniforms()
@@ -680,14 +695,28 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 {
 	for (int i = 0; i < model->GetMeshes().size(); ++i)
 	{
-
-		Material* material = model->GetMaterials()[i];
+		Material* material = nullptr;
+		if (model->GetMaterials().size() > i)
+		{
+			material = model->GetMaterials()[i];
+		}
+		else if (model->GetMaterials().size() > 0)
+		{
+			material = model->GetMaterials()[0];
+		}
+		else
+		{
+			lxAssert0();
+		}
 		if (!material->GetEnabled())
 		{
 			continue;
 		}
 
-		SetPipeline(material->GetShaderFamily());
+		if (!SetPipeline(material->GetShaderFamily()))
+		{
+			continue;
+		}
 
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
@@ -758,6 +787,9 @@ void Renderer::FreeBoundTexture(int slot)
 
 void Renderer::DrawMesh(Mesh* mesh)
 {
+	// todo jpp probably kills perf
+
+
 	glBindVertexArray(mesh->m_VAO);
 
 	if (mesh->GetUsesIndexBuffer())
@@ -816,7 +848,10 @@ void Renderer::RenderTerrain()
 	}
 
 
-	SetPipeline(m_Pipelines[ShaderFamily_Terrain]);
+	if (!SetPipeline(m_Pipelines[ShaderFamily_Terrain]))
+	{
+		return;
+	}
 
 	SetLightingUniforms();
 	SetViewUniforms(m_DebugCamera);
@@ -889,7 +924,10 @@ void Renderer::RenderShadowMap()
 	
 	GL::ClearDepthBuffer();
 
-	SetPipeline(pPipelineShadowMap);
+	if (!SetPipeline(pPipelineShadowMap))
+	{
+		return;
+	}
 
 	glm::vec3 pos = glm::normalize(m_World->GetSunLight()->GetSunDirection());
 
@@ -954,7 +992,10 @@ void Renderer::RenderTextureOverlay()
 
 	GL::SetViewport(300, 300);
 
-	SetPipeline(pPipelineScreenSpaceTexture);
+	if (!SetPipeline(pPipelineScreenSpaceTexture))
+	{
+		return;
+	}
 
 	SetPostEffectsUniforms();
 
@@ -973,7 +1014,10 @@ void Renderer::RenderHDRFramebuffer()
 	GL::SetViewport(m_Window->GetSize());
 	GL::ClearColorAndDepthBuffers();
 
-	SetPipeline(pPipelineScreenSpaceTexture);
+	if (!SetPipeline(pPipelineScreenSpaceTexture))
+	{
+		return;
+	}
 
 	SetPostEffectsUniforms();
 
@@ -988,9 +1032,12 @@ void Renderer::RenderHDRFramebuffer()
 
 void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingData)
 {
-	SetPipeline(pPipelinePickingCompute);
+	if (!SetPipeline(pPipelinePickingCompute))
+	{
+		return;
+	}
 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_PickingSSBO);
 
 	SetComputeUniform(1, "g_PickingBuffer");
 	Bind2DTexture(1, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
@@ -1000,7 +1047,7 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 
 
 	SetComputeUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
-	SetComputeUniform(mouseClickPosition, "g_MousePosition");
+	SetComputeUniform(mouseClickPosition, "g_MouseClickPosition");
 
 	glDispatchCompute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -1008,7 +1055,7 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_PickingSSBO);
 
 	GLfloat *ptr;
 	ptr = (GLfloat *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
@@ -1031,7 +1078,10 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	int vpHeight = m_Framebuffers[FramebufferType_Picking]->GetHeight();
 	GL::SetViewport(vpWidth, vpHeight);
 	
-	SetPipeline(pPipelinePicking);
+	if (!SetPipeline(pPipelinePicking))
+	{
+		return;
+	}
 	
 	BindFramebuffer(FramebufferType_Picking);
 	GL::ClearColorAndDepthBuffers();
@@ -1149,7 +1199,10 @@ void Renderer::ApplyEmissiveGlow()
 		return;
 	}
 
-	SetPipeline(pPipelineBlur);
+	if (!SetPipeline(pPipelineBlur))
+	{
+		return;
+	}
 
 
 	bool horizontal = true;
@@ -1194,14 +1247,27 @@ void Renderer::RenderGrid()
 
 	GL::DepthWriteEnabled(false);
 
-	SetPipeline(pPipelineGrid);
+	if (!SetPipeline(pPipelineGrid))
+	{
+		return;
+	}
 
 	GL::SetCapability(GL::Capabilities::Blend, true);
+	GL::SetCapability(GL::Capabilities::DepthTest, false);
 	GL::SetBlendMode(GL::SrcAlpha, GL::BlendMode::OneMinusSrcAlpha);
 
 	SetWorldGridUniforms();
 	SetViewUniforms(m_DebugCamera);
 	SetFragmentUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
+
+	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+	SetFragmentUniform(0, "g_DepthTexture");
+	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetDepthTexture());
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, m_DataInspectorSSBO);
+	SetFragmentUniform((int)(g_InputHandler->GetMousePosition().x), "g_MouseX");
+	SetFragmentUniform((int)(g_InputHandler->GetMousePosition().y), "g_MouseY");
+
 
 	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
 	DrawMesh(mesh);
@@ -1209,15 +1275,22 @@ void Renderer::RenderGrid()
 	GL::DepthWriteEnabled(true);
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
+	GL::SetCapability(GL::Capabilities::DepthTest, true);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, 0);
+
 }
 
 void Renderer::RenderAxisGizmo()
 {
 	lxGPUProfile(RenderAxisGizmo);
 
-	SetPipeline(pPipelineAxisGizmo);
+	if (!SetPipeline(pPipelineAxisGizmo))
+	{
+		return;
+	}
 
 	SetViewUniforms(m_DebugCamera);
+
 
 	GL::DrawArrays(GL::PrimitiveMode::Lines, 0, 6);
 }
@@ -1225,7 +1298,10 @@ void Renderer::RenderAxisGizmo()
 
 void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline)
 {
-	SetPipeline(programPipeline);
+	if (!SetPipeline(programPipeline))
+	{
+		return;
+	}
 
 	for (int i = 0; i < model->GetMeshes().size(); ++i)
 	{
@@ -1243,7 +1319,10 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 {
 	lxGPUProfile(RenderDebugWays);
 
-	SetPipeline(programPipeline);
+	if (!SetPipeline(programPipeline))
+	{
+		return;
+	}
 
 	GL::SetCapability(GL::Capabilities::Blend, true);
 
@@ -1320,9 +1399,29 @@ void Renderer::AfterWorldRender()
 	ApplyEmissiveGlow();
 }
 
+void Renderer::DataInspector_FinishFrame()
+{
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, m_DataInspectorSSBO);
+
+	GLfloat *ptr;
+	ptr = (GLfloat *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+
+	for (int i = 0; i < DATAINSPECTOR_NUMVALUES; ++i)
+	{
+		m_DataInspectorValues[i] = *ptr++;
+	}
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, 0);
+}
+
 void Renderer::FinishFrame()
 {
 	lxGPUProfile(FinishFrame);
+
+	DataInspector_FinishFrame();
 
 	g_RenderDataManager->Update();
 
@@ -1343,7 +1442,10 @@ void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 	GL::SetCapability(GL::Capabilities::DepthTest, true);
 	glDepthMask(GL_FALSE);
 
-	SetPipeline(pPipelineUVEdges);
+	if (!SetPipeline(pPipelineUVEdges))
+	{
+		return;
+	}
 
 	glm::mat4 modelToWorldMatrix = mat4(1.0f);
 
@@ -1369,7 +1471,10 @@ void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
 	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
 	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
 
-	SetPipeline(pPipelineUVEdges);
+	if (!SetPipeline(pPipelineUVEdges))
+	{
+		return;
+	}
 
 	SetViewUniforms(m_DebugCamera);
 	SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
@@ -1385,7 +1490,10 @@ void Renderer::DrawManipulator(Entity* entity)
 	GL::SetCapability(GL::Blend, true);
 	GL::SetBlendMode(GL::SrcAlpha, GL::OneMinusSrcAlpha);
 
-	SetPipeline(pPipelineSolidColor);
+	if (!SetPipeline(pPipelineSolidColor))
+	{
+		return;
+	}
 
 	SetViewUniforms(m_DebugCamera);
 	SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
@@ -1556,7 +1664,10 @@ void Renderer::RenderFPS()
 		return;
 	}
 
-	SetPipeline(pPipelineText);
+	if (!SetPipeline(pPipelineText))
+	{
+		return;
+	}
 
 	GL::SetViewport(m_Window->GetSize());
 
@@ -1585,7 +1696,10 @@ void Renderer::RenderSky()
 	}
 
 	ProgramPipeline* envMapShader = m_Pipelines[ShaderFamily_Envmap];
-	SetPipeline(envMapShader);
+	if (!SetPipeline(envMapShader))
+	{
+		return;
+	}
 
 	GLuint fragProg = envMapShader->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	float pi = 3.141592654f;
@@ -1684,7 +1798,10 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
    // todo : rework how we handle gfx hw stuff here
-   SetPipeline(pPipelineText, true);
+   if (!SetPipeline(pPipelineText, true))
+   {
+	   return;
+   }
 
    GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
 

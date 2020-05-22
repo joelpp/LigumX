@@ -40,10 +40,10 @@ bool Way::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OSMId], &m_OSMId , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Nodes], m_Nodes  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Nodes], m_Nodes  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IndexInSector], &m_IndexInSector , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FilledIn], &m_FilledIn  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AllTags], &m_AllTags  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_AllTags], m_AllTags  );
 	return true;
 }
 const char* Way::GetTypeName()

@@ -45,9 +45,9 @@ bool SectorGraphicalData::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_NodesModel], &m_NodesModel  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_WaysModel], &m_WaysModel  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WaysModelsVector], m_WaysModelsVector  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RoadEntities], m_RoadEntities  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_StaticEntities], m_StaticEntities  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_WaysModelsVector], m_WaysModelsVector  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_RoadEntities], m_RoadEntities  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_StaticEntities], m_StaticEntities  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SplatMapTexture], &m_SplatMapTexture  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_AlbedoTexture], &m_AlbedoTexture  );
 	return true;

@@ -13,6 +13,7 @@ enum LXType
 #undef LX_ENUM
 
 	LXType_bool,
+	LXType_SimpleTypesStart = LXType_bool,
 	LXType_float,
 	LXType_glmhighp_ivec2,
 	LXType_glmivec2,

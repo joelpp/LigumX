@@ -1117,7 +1117,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 			continue;
 		}
 
-		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()].GetIsBuilding();
+		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
 		if (isGenericBuilding && (m_GenericBuildingsProcessed < m_MaxGenericBuildingsToProcess))
 		{
 			ProcessGenericBuilding(sector, way);
@@ -1136,7 +1136,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 
 		OSMElementType wayType = way->GetOSMElementType();
 
-		bool fillIn = g_OSMElementTypeDataStore->GetData()[wayType].GetFillIn();
+		bool fillIn = g_OSMElementTypeDataStore->GetData()[wayType]->GetFillIn();
 
 		if (fillIn && m_FillInEnabled)
 		{
@@ -1166,7 +1166,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 				// corners bug (see in source control)
 
 
-				glm::vec4 color = glm::vec4(g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()].GetDebugColor(), 1.f);
+				glm::vec4 color = glm::vec4(g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetDebugColor(), 1.f);
 
 				// todo : revive terrain color editing jobs.
 				//TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);

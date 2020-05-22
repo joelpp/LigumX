@@ -35,11 +35,12 @@ EEditorTool_SectorTool,
 EEditorTool_OSMTool,
 EEditorTool_PickingTool,
 EEditorTool_ObjectTool,
+EEditorTool_DataInspectorTool,
 };
 
-extern const std::string EnumValues_EEditorTool[6];
-extern const EEditorTool Indirection_EEditorTool[6];
-const int EnumLength_EEditorTool = 6;
+extern const std::string EnumValues_EEditorTool[7];
+extern const EEditorTool Indirection_EEditorTool[7];
+const int EnumLength_EEditorTool = 7;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Editor

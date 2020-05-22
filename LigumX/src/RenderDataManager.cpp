@@ -308,7 +308,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		Way* way = it->second;
 		std::vector<Node*>& nodes = way->GetNodes();
 
-		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()].GetIsBuilding();
+		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
 		if (!isGenericBuilding)
 		{
 			continue;

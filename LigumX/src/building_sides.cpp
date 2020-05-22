@@ -27,17 +27,12 @@ void Renderer::init_pipelines_buildingSides()
             color = texture(sampler, gTexCoord).xyz;\n \
     //            color = vec3(gTexCoord.x, gTexCoord.y, 0.5);\n \
         }";
-    ProgramPipeline::ShaderProgram* pVertexShader =
-            new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/pipeline_buildingSides/vertex.vsh", false);
-
-    ProgramPipeline::ShaderProgram* pGeometryShader =
-            new ProgramPipeline::ShaderProgram(GL_GEOMETRY_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/buildingSides.gsh", false);
-
-    ProgramPipeline::ShaderProgram* pFragmentShader =
-            new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER,
-            "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/pipeline_buildingSides/fragment.fsh", false);
+    ProgramPipeline::ShaderProgram* pVertexShader = new ProgramPipeline::ShaderProgram();
+	pVertexShader->Initialize(GL_VERTEX_SHADER, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/pipeline_buildingSides/vertex.vsh", false);
+    ProgramPipeline::ShaderProgram* pGeometryShader = new ProgramPipeline::ShaderProgram();
+	pGeometryShader->Initialize(GL_GEOMETRY_SHADER, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/buildingSides.gsh", false);
+	ProgramPipeline::ShaderProgram* pFragmentShader = new ProgramPipeline::ShaderProgram(); 
+	pFragmentShader ->Initialize(GL_FRAGMENT_SHADER, "/Users/joelpp/Documents/Maitrise/LigumX/LigumX/protoEngine/data/shaders/pipeline_buildingSides/fragment.fsh", false);
 //#ifdef __APPLE__
 //
 //    ProgramPipeline::ShaderProgram* pVertexShader =

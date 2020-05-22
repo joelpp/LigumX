@@ -37,7 +37,7 @@ bool MainWindow::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_InFocus], &m_InFocus  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Position], &m_Position , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Size], &m_Size , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Title], &m_Title  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Title], m_Title  );
 	return true;
 }
 const char* MainWindow::GetTypeName()

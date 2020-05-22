@@ -93,6 +93,10 @@ uniform bool g_ToneMappingEnabled;
 uniform sampler2D g_DepthMapTexture;
 #endif
 
+#ifdef PROVIDER_Depth
+layout(binding=0) uniform sampler2D g_DepthTexture;
+#endif
+
 #ifdef PROVIDER_Picking
 uniform float g_PickingID;
 #endif
@@ -106,7 +110,6 @@ uniform float sunTime;
 
 #ifdef PROVIDER_Window
 uniform vec2 g_WindowSize;
-uniform vec2 g_MouseCoords;
 #endif
 
 #ifdef PROVIDER_WorldGrid
@@ -181,6 +184,33 @@ vec3 BuildShaderOutput(PixelData pixelData)
 	return pixelData.m_FinalColor.rgb;
 }
 
+#ifdef PROVIDER_DataInspector
+//#define DATAINSPECTOR_BINDPOS 7 // keep in sync with cpp
+layout(std430, binding = 7) buffer g_DataInspectorLayout
+{
+	float g_InspectorData[];
+};
+uniform int g_MouseX;
+uniform int g_MouseY;
 
+void DebugWatch(ivec2 pos, uint index, float value)
+{
+	if ((g_MouseX == pos.x) && (g_MouseY == pos.y))
+	{
+		g_InspectorData[index] = value;
+	}
+}
+
+void DebugWatch(vec4 fragCoords, uint index, float value)
+{
+	DebugWatch(ivec2(fragCoords.xy), index, value);
+}
+
+void DebugWatch(uint index, float value)
+{
+	DebugWatch(gl_FragCoord, index, value);
+
+}
+#endif
 
 #endif // PROVIDER_DEFINITIONS_H

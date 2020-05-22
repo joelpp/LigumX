@@ -48,8 +48,8 @@ bool CurlRequest::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_State], &m_State , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Coords], &m_Coords , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Extent], &m_Extent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Result], &m_Result  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Filename], &m_Filename  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Result], m_Result  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Filename], m_Filename  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Sector], &m_Sector  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorIndex], &m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Async], &m_Async  );

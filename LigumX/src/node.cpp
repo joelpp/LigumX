@@ -50,7 +50,7 @@ bool Node::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LongLat], &m_LongLat , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WorldPosition], &m_WorldPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Elevation], &m_Elevation , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Ways], m_Ways  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Ways], m_Ways  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorIndex], &m_SectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorOffset], &m_SectorOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorRelativePosition], &m_SectorRelativePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );

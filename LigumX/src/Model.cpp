@@ -8,6 +8,7 @@
 #include "ProgramPipeline.h"
 #include "DefaultObjects.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "assimp/cimport.h"
 
 #pragma region  CLASS_SOURCE Model
 
@@ -40,9 +41,9 @@ bool Model::Serialize(bool writing)
 bool Model::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Filename], &m_Filename  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Materials], m_Materials  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Meshes], m_Meshes  );
+	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Filename], m_Filename  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Materials], m_Materials  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Meshes], m_Meshes  );
 	return true;
 }
 const char* Model::GetTypeName()
@@ -129,7 +130,13 @@ void Model::LoadModel()
     Assimp::Importer import;
 
 	std::string fullPath = g_PathModels + m_Filename;
-    const aiScene* scene = import.ReadFile(fullPath, aiProcess_Triangulate | /*aiProcess_GenNormals |*/ aiProcess_GenSmoothNormals);
+
+	aiPropertyStore* props = aiCreatePropertyStore(); 
+	aiSetImportPropertyInteger(props, "PP_PTV_NORMALIZE", 1); 
+	const aiScene* scene = (aiScene*)aiImportFileExWithProperties(fullPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals /* aiProcess_FlipUVs | aiProcess_GenSmoothNormals */| aiProcess_JoinIdenticalVertices | aiProcess_PreTransformVertices, NULL, props); 
+	aiReleasePropertyStore(props);
+
+    //const aiScene* scene = import.ReadFile(fullPath, aiProcess_Triangulate | aiProcess_PreTransformVertices | aiProcess_GenNormals /*| aiProcess_GenSmoothNormals*/);
 	
     if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
@@ -249,27 +256,35 @@ Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)
 		position.z = assimpMesh->mVertices[i].z; 
 		newMesh->m_buffers.GetVertexPositions().push_back(position);
 
-		glm::vec2 texCoords;
-		texCoords.x = assimpMesh->mTextureCoords[0][i].x;
-		texCoords.y = assimpMesh->mTextureCoords[0][i].y;
-
+		glm::vec2 texCoords(0, 0);
+		if (assimpMesh->mTextureCoords[0])
+		{
+			texCoords.x = assimpMesh->mTextureCoords[0][i].x;
+			texCoords.y = assimpMesh->mTextureCoords[0][i].y;
+		}
 		newMesh->m_buffers.GetVertexUVs().push_back(texCoords);
 
 
-		glm::vec3 normal;
-		normal.x = assimpMesh->mNormals[i].x;
-		normal.y = assimpMesh->mNormals[i].y;
-		normal.z = assimpMesh->mNormals[i].z;
-
+		glm::vec3 normal(0, 0, 0);
+		if (assimpMesh->mNormals)
+		{
+			normal.x = assimpMesh->mNormals[i].x;
+			normal.y = assimpMesh->mNormals[i].y;
+			normal.z = assimpMesh->mNormals[i].z;
+		}
 		newMesh->m_buffers.GetVertexNormals().push_back(normal);
     }
 
-	for (GLuint i = 0; i < assimpMesh->mNumFaces; i++)
+	if (assimpMesh->mNumFaces)
 	{
-		aiFace face = assimpMesh->mFaces[i];
-		for (unsigned int j = 0; j < face.mNumIndices; j++)
-			newMesh->m_buffers.GetIndexBuffer().push_back(face.mIndices[j]);
+		for (GLuint i = 0; i < assimpMesh->mNumFaces; i++)
+		{
+			aiFace face = assimpMesh->mFaces[i];
+			for (unsigned int j = 0; j < face.mNumIndices; j++)
+				newMesh->m_buffers.GetIndexBuffer().push_back(face.mIndices[j]);
+		}
 	}
+
 
     return newMesh;
 }  

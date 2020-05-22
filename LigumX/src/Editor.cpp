@@ -42,6 +42,7 @@
 #include "PickingTool.h"
 #include "TerrainTool.h"
 #include "ObjectTool.h"
+#include "DataInspectorTool.h"
 
 
 #pragma region  CLASS_SOURCE Editor
@@ -88,7 +89,7 @@ bool Editor::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ManipulatorDragging], &m_ManipulatorDragging  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ManipulatorStartPosition], &m_ManipulatorStartPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EditingTerrain], &m_EditingTerrain  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Tools], m_Tools  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Tools], m_Tools  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingBufferSize], &m_PickingBufferSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedNode], &m_SelectedNode  );
 	return true;
@@ -105,6 +106,7 @@ const std::string EnumValues_EEditorTool[] =
 "OSMTool",
 "PickingTool",
 "ObjectTool",
+"DataInspectorTool",
 };
 
 const EEditorTool Indirection_EEditorTool[] =
@@ -115,6 +117,7 @@ const EEditorTool Indirection_EEditorTool[] =
 	EEditorTool_OSMTool,
 	EEditorTool_PickingTool,
 	EEditorTool_ObjectTool,
+	EEditorTool_DataInspectorTool,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -139,7 +142,8 @@ void Editor::Initialize()
 	m_Tools[EEditorTool_SectorTool]		= new SectorTool();
 	m_Tools[EEditorTool_TerrainTool]	= new TerrainTool();
 	m_Tools[EEditorTool_EntityManipulator] = new EditorTool();
-	m_Tools[EEditorTool_ObjectTool]	= new ObjectTool();
+	m_Tools[EEditorTool_ObjectTool] = new ObjectTool();
+	m_Tools[EEditorTool_DataInspectorTool]	= new DataInspectorTool();
 
 	m_ToolDisplayToggles.resize(EnumLength_EEditorTool);
 	for (int i = 0; i < EnumLength_EEditorTool; ++i)
@@ -1716,15 +1720,11 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 {
 	m_Tools[m_ActiveTool]->HandleKeyboardInput(button, action, mods);
 
-	EEditorTool ToolKeyboardToggles[EnumLength_EEditorTool] =
+	EEditorTool ToolKeyboardToggles[EnumLength_EEditorTool];
+	for (int i = 0; i < EnumLength_EEditorTool; ++i)
 	{
-		EEditorTool_SectorTool,
-		EEditorTool_TerrainTool,
-		EEditorTool_PickingTool,
-		EEditorTool_EntityManipulator,
-		EEditorTool_OSMTool,
-		EEditorTool_ObjectTool,
-	};
+		ToolKeyboardToggles[i] = (EEditorTool)i;
+	}
 
 	if (action != GLFW_PRESS)
 	{

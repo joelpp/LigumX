@@ -5,6 +5,7 @@
 #include "CPUBuffers.h"
 #include "CullingOptions.h"
 #include "CurlRequest.h"
+#include "DataInspectorTool.h"
 #include "DebugRenderer.h"
 #include "DefaultTextureHolder.h"
 #include "DisplayOptions.h"

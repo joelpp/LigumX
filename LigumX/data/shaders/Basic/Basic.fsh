@@ -1,4 +1,4 @@
-#version 410 core
+#version 430 core
 
 #define DEFERRED 0
 
@@ -11,12 +11,12 @@ in vec4 FragPosLightSpace;
 
 #define PROVIDER_View
 #define PROVIDER_Light
-#define PROVIDER_Debug
 #define PROVIDER_PostEffects
 #define PROVIDER_Material
 #define PROVIDER_ShadowMap
 #define PROVIDER_Sky
 #define PROVIDER_DisplayOptions
+#define PROVIDER_Debug
 
 // Include ProvidersMarker
 

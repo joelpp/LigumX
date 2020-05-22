@@ -552,8 +552,8 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		//ptrDisplay.SetOpenPopup(false);
 	}
 
-	std::string typeName = g_ObjectManager->GetClassnameFromLXType(propertyData.m_Type); // todo jpp do this better
 
+	std::string typeName = (propertyData.m_Type == LXType_stdvector) ? g_ObjectManager->GetClassnameFromLXType(propertyData.m_AssociatedType) : g_ObjectManager->GetClassnameFromLXType(propertyData.m_Type); // todo jpp do this better
 	if (ImGui::BeginPopupModal("Select file to use", NULL, 0))
 	{
 		ImGui::Text("Select a file from the list:");

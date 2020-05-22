@@ -3,5 +3,5 @@ class OSMElementTypeData
 	OSMElementType Type;
 	bool FillIn = false;
 	glm::vec3 DebugColor;
-	std::vector<OSMAttribute> Attributes;
+	std::vector<OSMAttribute*> Attributes;
 }

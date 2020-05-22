@@ -17,11 +17,11 @@ float srgbToLinear(float S)
 
 
 uniform vec2 g_WindowSize;
-uniform vec2 g_MousePosition;
+uniform vec2 g_MouseClickPosition;
 
 void main() 
 {
-	vec2 correctMousePos = g_MousePosition;
+	vec2 correctMousePos = g_MouseClickPosition;
 
 	vec2 coords = correctMousePos / g_WindowSize;
 	coords.y = 1.f - coords.y;

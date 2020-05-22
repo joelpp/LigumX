@@ -17,36 +17,41 @@ const std::string g_ProviderIncludeFilePath = g_PathShaders + "ProviderDefinitio
 
 const std::string g_LineNumberRegex = "\\([0-9]+\\)";
 
-ProgramPipeline::ShaderProgram::ShaderProgram(
-        GLenum shaderType,
-        //initializer_list<string> srcFilenames,
-        string srcFilenames,
-        bool readSrcFilenamesAsSourceCode)
+ProgramPipeline::ShaderProgram::ShaderProgram()
 {
-    this->shaderType = shaderType;
+	
+}
 
-    int nbSources = 1;//int(srcFilenames.size());
-    const char ** sourceCodes = new const char *[nbSources];
-    int count = 0;
-    StringList sourceCodeStrings;
+bool ProgramPipeline::ShaderProgram::Initialize(
+	GLenum shaderType,
+	//initializer_list<string> srcFilenames,
+	string srcFilenames,
+	bool readSrcFilenamesAsSourceCode)
+{
+	this->shaderType = shaderType;
 
-    if(readSrcFilenamesAsSourceCode) 
+	int nbSources = 1;//int(srcFilenames.size());
+	const char ** sourceCodes = new const char *[nbSources];
+	int count = 0;
+	StringList sourceCodeStrings;
+
+	if (readSrcFilenamesAsSourceCode)
 	{
-        sourceCodes[count++] = srcFilenames.c_str();
+		sourceCodes[count++] = srcFilenames.c_str();
 
-    } 
-	else 
+	}
+	else
 	{
-        // Read the Vertex Shader code from the files
-        // based on http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
+		// Read the Vertex Shader code from the files
+		// based on http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
 
 		sourceCodeStrings = StringList(nbSources);
 
-        ifstream sourceCodeStream(srcFilenames, ios::in);
-        if(sourceCodeStream.is_open())
-        {
-            string line;
-            while(getline(sourceCodeStream, line)) 
+		ifstream sourceCodeStream(srcFilenames, ios::in);
+		if (sourceCodeStream.is_open())
+		{
+			string line;
+			while (getline(sourceCodeStream, line))
 			{
 				if (line == g_ProviderIncludeMarker)
 				{
@@ -60,75 +65,76 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 					continue;
 				}
 
-                sourceCodeStrings[count] += line + "\n";
+				sourceCodeStrings[count] += line + "\n";
 
-            }
-            sourceCodeStream.close();
-        } 
-		else 
+			}
+			sourceCodeStream.close();
+		}
+		else
 		{
-            cout << "Error loading shader : " << srcFilenames << endl;
+			cout << "Error loading shader : " << srcFilenames << endl;
 			lxAssert0();
-			return;
-        }
-        sourceCodes[count] = sourceCodeStrings[count].c_str();
-        count++;
+			return false;
+		}
+		sourceCodes[count] = sourceCodeStrings[count].c_str();
+		count++;
 
-    }
+	}
 
-    GLint result;
-    int infoLength;
-    char* info = nullptr;
+	GLint result;
+	int infoLength;
+	char* info = nullptr;
 
-    const GLuint shader = glCreateShader(shaderType);
+	const GLuint shader = glCreateShader(shaderType);
 
-    glShaderSource(shader, nbSources, sourceCodes, NULL);
-    glCompileShader(shader);
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+	glShaderSource(shader, nbSources, sourceCodes, NULL);
+	glCompileShader(shader);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
 
 	bool hadError = false;
 
-    if(!result) 
+	if (!result)
 	{
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLength);
-        info = new char[infoLength];
-        glGetShaderInfoLog(shader, infoLength, NULL, info);
-        cerr << "Compiler error in shader :" << endl;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLength);
+		info = new char[infoLength];
+		glGetShaderInfoLog(shader, infoLength, NULL, info);
+		cerr << "Compiler error in shader :" << endl;
 		hadError = true;
-	} 
-	else 
+	}
+	else
 	{
 
-        glidShaderProgram = glCreateProgram();
-        glProgramParameteri(glidShaderProgram, GL_PROGRAM_SEPARABLE, GL_TRUE);
-        glAttachShader(glidShaderProgram, shader);
-        glLinkProgram(glidShaderProgram);
-        glDetachShader(glidShaderProgram, shader);
-        glDeleteShader(shader);
+		glidShaderProgram = glCreateProgram();
+		glProgramParameteri(glidShaderProgram, GL_PROGRAM_SEPARABLE, GL_TRUE);
+		glAttachShader(glidShaderProgram, shader);
+		glLinkProgram(glidShaderProgram);
+		glDetachShader(glidShaderProgram, shader);
+		glDeleteShader(shader);
 
-        glGetProgramiv(glidShaderProgram, GL_LINK_STATUS, &result);
+		glGetProgramiv(glidShaderProgram, GL_LINK_STATUS, &result);
 
-        if(result != GL_TRUE) 
+		if (result != GL_TRUE)
 		{
-            glGetProgramiv(glidShaderProgram, GL_INFO_LOG_LENGTH, &infoLength);
-            info = new char[infoLength];
-            glGetProgramInfoLog(glidShaderProgram, infoLength, NULL, info);
-            cerr << "Linker error in shader :" << endl;
+			glGetProgramiv(glidShaderProgram, GL_INFO_LOG_LENGTH, &infoLength);
+			info = new char[infoLength];
+			glGetProgramInfoLog(glidShaderProgram, infoLength, NULL, info);
+			cerr << "Linker error in shader :" << endl;
 			hadError = true;
-        }
-    }
+		}
+	}
 
 	if (hadError)
 	{
-		cerr << info << endl;
+		lxLogMessage(lxFormat("%s", srcFilenames.c_str()).c_str());
+		lxLogMessage(lxFormat("Shader error : %s", info).c_str());
+		lxLogMessage("Line numbers(adjusted for provider include file) :");
 
-		cerr << "Line numbers (adjusted for provider include file) : " << endl;
 		std::string infoString(info);
 		std::regex lineNumberRegex(g_LineNumberRegex);
 
 		sregex_iterator it_end;
 		sregex_iterator it(infoString.begin(), infoString.end(), lineNumberRegex);
-		while (it != it_end) 
+		while (it != it_end)
 		{
 			std::smatch match = *it;
 			std::string match_str = match.str();
@@ -137,17 +143,15 @@ ProgramPipeline::ShaderProgram::ShaderProgram(
 			match_str = StringUtils::RemoveSubstrings(match_str, parenthesisList);
 
 			int lineNumber = std::atoi(match_str.c_str()) - m_NumLinesInInclude;
-
-			std::cerr << "(" << lineNumber << ")" << std::endl;
+			lxLogMessage(lxFormat("(%d)", lineNumber).c_str());
 
 			++it;
 		}
 
-		std::cerr << "Number of lines in provider include file : " << m_NumLinesInInclude << std::endl;
-
-		lxAssert0();
+		lxLogMessage(lxFormat("Number of lines in provider include file : %d", m_NumLinesInInclude).c_str());
 	}
 	
+	return !hadError;
 }
 
 GLbitfield ProgramPipeline::sShaderTypeEnumToBitField(
@@ -230,19 +234,39 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
     path << g_PathShaders;
     path << name << "/";
     
+	bool success = false;
 	if (isCompute)
 	{
-		useComputeShader(new ProgramPipeline::ShaderProgram(GL_COMPUTE_SHADER, path.str() + name + ".csh", false));
 
+		ShaderProgram* cs = new ProgramPipeline::ShaderProgram();
+		success = cs->Initialize(GL_COMPUTE_SHADER, path.str() + name + ".csh", false);
+
+		if (success)
+		{
+			useComputeShader(cs);
+		}
 	}
 	else
 	{
-		useVertexShader(new ProgramPipeline::ShaderProgram(GL_VERTEX_SHADER, path.str() + name + ".vsh", false));
-		useFragmentShader(new ProgramPipeline::ShaderProgram(GL_FRAGMENT_SHADER, path.str() + name + ".fsh", false));
+		ShaderProgram* vs = new ProgramPipeline::ShaderProgram();
+		success = vs->Initialize(GL_VERTEX_SHADER, path.str() + name + ".vsh", false);
+
+		if (success)
+		{
+			useVertexShader(vs);
+
+			ShaderProgram* ps = new ProgramPipeline::ShaderProgram();
+			success &= ps->Initialize(GL_FRAGMENT_SHADER, path.str() + name + ".fsh", false);
+			if (success)
+			{
+				useFragmentShader(ps);
+			}
+		}
+
 	}
 
 	//useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
-	
+	m_IsValid = success;
 }
 
 ProgramPipeline::ProgramPipeline()
