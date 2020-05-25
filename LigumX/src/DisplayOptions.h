@@ -80,6 +80,10 @@ bool GetDebugShadowCamera() { return m_DebugShadowCamera; };
 void SetDebugShadowCamera(bool value) { m_DebugShadowCamera = value; }; 
 const DisplayMode& GetDisplayMode() { return m_DisplayMode; }; 
 void SetDisplayMode(DisplayMode value) { m_DisplayMode = value; }; 
+glm::vec2& GetFPSDisplayPosition() { return m_FPSDisplayPosition; }; 
+void SetFPSDisplayPosition(const glm::vec2& value) { m_FPSDisplayPosition = value; }; 
+float GetFPSDisplayScale() { return m_FPSDisplayScale; }; 
+void SetFPSDisplayScale(float value) { m_FPSDisplayScale = value; }; 
 private:
 bool m_DeferredRendering = false;
 bool m_UseSkyLighting = false;
@@ -105,8 +109,10 @@ bool m_DisplayDebugModels = false;
 bool m_PickingEnabled = true;
 bool m_DebugShadowCamera = false;
 DisplayMode m_DisplayMode = DisplayMode_Final;
+glm::vec2 m_FPSDisplayPosition = glm::vec2(1150, 950);
+float m_FPSDisplayScale = 0.3f;
 public:
-static const int g_PropertyCount = 24;
+static const int g_PropertyCount = 26;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -135,6 +141,8 @@ PIDX_DisplayDebugModels,
 PIDX_PickingEnabled,
 PIDX_DebugShadowCamera,
 PIDX_DisplayMode,
+PIDX_FPSDisplayPosition,
+PIDX_FPSDisplayScale,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

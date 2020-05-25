@@ -296,7 +296,7 @@ LXType ObjectManager::GetLXTypeFromClassname(const std::string& className)
 std::string ObjectManager::GetClassnameFromLXType(const LXType type)
 {
 #define LX_CLASS(c, p) if (type == LXType_##c##) { return #c; }
-#define LX_ENUM(c)
+#define LX_ENUM(c) if (type == LXType_##c##) { return "!!FIX THIS!! enum dont use "; }
 #include "LXClassList.h"
 #undef LX_CLASS
 #undef LX_ENUM

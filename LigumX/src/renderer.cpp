@@ -233,6 +233,8 @@ void Renderer::InitFreetype()
 
 	FT_Set_Pixel_Sizes(face, 0, 48);
 
+	GLuint fontTexture = LX_LIMITS_INT_MAX;
+
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
 	for (GLubyte c = 0; c < 128; c++)
 	{
@@ -257,11 +259,32 @@ void Renderer::InitFreetype()
 			GL_UNSIGNED_BYTE,
 			face->glyph->bitmap.buffer
 		);
+
 		// Set texture options
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+
+		if (fontTexture == LX_LIMITS_INT_MAX)
+		{
+			glGenTextures(1, &fontTexture);
+			glBindTexture(GL_TEXTURE_2D, fontTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width * 128, face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+		glBindTexture(GL_TEXTURE_2D, fontTexture);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, c * face->glyph->bitmap.width, 0, face->glyph->bitmap.width, face->glyph->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 		// Now store character for later use
 		Character character = 
 		{
@@ -274,6 +297,8 @@ void Renderer::InitFreetype()
 	}
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
+
+	m_FontTexture = fontTexture;
 
 }
 
@@ -1711,7 +1736,7 @@ void Renderer::RenderMessages()
 
 	for (const TimedMessage& message : g_RenderDataManager->GetTimedMessages())
 	{
-		RenderText(message.m_Message, startingPosition.x, startingPosition.y, fontSize, glm::vec3(0.5, 0.8f, 0.2f), false);
+		RenderText(message.m_Message, startingPosition.x, startingPosition.y, fontSize, glm::vec3(1.f, 1.f, 1.f), false);
 
 		startingPosition.y -= heightOffset;
 
@@ -1743,9 +1768,10 @@ void Renderer::RenderFPS()
 	fpsString << 1.f / (fps / 1000.f);
 	fpsString << " ms/frame";
 
-	static volatile float xPos = 1150.f;
-	static volatile float yPos = 950.f;
-	RenderText(fpsString.str(), xPos, yPos, 0.3f, glm::vec3(0.5, 0.8f, 0.2f), false);
+	glm::vec2 pos = m_DisplayOptions->GetFPSDisplayPosition();
+	float scale = m_DisplayOptions->GetFPSDisplayScale();
+
+	RenderText(fpsString.str(), pos.x, pos.y, scale, glm::vec3(1.f, 1.f, 1.f), false);
 
 	float new_time = (float) glfwGetTime();
 	dt = new_time - curr_time;
@@ -1910,7 +1936,11 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
 
        };
        // Render glyph texture over quad
-       glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+	   //glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+	   
+	   Texture* fontTexture = g_ObjectManager->FindObjectByID<Texture>(897003, true);
+	   glBindTexture(GL_TEXTURE_2D, fontTexture->GetHWObject());
+
        // Update content of VBO memory
        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
@@ -1919,7 +1949,11 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
 
        glBindBuffer(GL_ARRAY_BUFFER, 0);
-       // Render quad
+
+	   int textureCharIndex = (int)*c - 32;
+	   SetFragmentUniform(textureCharIndex, "g_CurrentCharacter");
+
+	   // Render quad
        glDrawArrays(GL_TRIANGLES, 0, 6);
 
        // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)

@@ -35,4 +35,10 @@ class DisplayOptions
 	bool DebugShadowCamera = false;
 
 	DisplayMode DisplayMode = DisplayMode_Final;
+
+	[transient]
+	glm::vec2 FPSDisplayPosition = glm::vec2(1150, 950);
+	
+	[transient]
+	float FPSDisplayScale = 0.3f;
 }

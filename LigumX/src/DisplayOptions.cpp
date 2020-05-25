@@ -30,6 +30,8 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "PickingEnabled", PIDX_PickingEnabled, offsetof(DisplayOptions, m_PickingEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugShadowCamera", PIDX_DebugShadowCamera, offsetof(DisplayOptions, m_DebugShadowCamera), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayMode", PIDX_DisplayMode, offsetof(DisplayOptions, m_DisplayMode), 0, LXType_Object, sizeof(DisplayMode), LXType_DisplayMode, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
+{ "FPSDisplayPosition", PIDX_FPSDisplayPosition, offsetof(DisplayOptions, m_FPSDisplayPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "FPSDisplayScale", PIDX_FPSDisplayScale, offsetof(DisplayOptions, m_FPSDisplayScale), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void DisplayOptions::Serialize(Serializer2& serializer)
 {
@@ -93,6 +95,8 @@ bool DisplayOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayDebugModels], &m_DisplayDebugModels  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingEnabled], &m_PickingEnabled  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugShadowCamera], &m_DebugShadowCamera  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSDisplayPosition], &m_FPSDisplayPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSDisplayScale], &m_FPSDisplayScale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* DisplayOptions::GetTypeName()

@@ -425,9 +425,18 @@ ClassList createLXClass(std::vector<std::string>& lines)
 
 				unsigned int sizeWithDefautValue = 4;
 				unsigned int defaultValueTokenIndex = 3;
-				variable.m_DefaultValue = tokens.size() == sizeWithDefautValue ?
-					tokens[defaultValueTokenIndex] :
-					"";
+
+				variable.m_DefaultValue = "";
+				for (int t = defaultValueTokenIndex; t < tokens.size(); ++t)
+				{
+					variable.m_DefaultValue += tokens[t];
+					
+					// if not last, add comma between values
+					if (t != (tokens.size() - 1))
+					{
+						variable.m_DefaultValue += ", ";
+					}
+				}
 
 				if (variable.m_DefaultValue.empty())
 				{

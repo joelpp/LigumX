@@ -443,6 +443,7 @@ private:
 
 	float m_DataInspectorValues[DATAINSPECTOR_NUMVALUES];
 	GLuint m_DataInspectorSSBO;
+	GLuint m_FontTexture = 0;
 };
 
 class GPUProfileHolder

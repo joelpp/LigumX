@@ -101,7 +101,7 @@ Texture* m_DiffuseTexture = nullptr;
 Texture* m_SpecularTexture = nullptr;
 Texture* m_HeightfieldTexture = nullptr;
 ShaderFamily m_ShaderFamily;
-glm::vec2 m_UVScale = glm::vec2(0, 0);
+glm::vec2 m_UVScale = glm::vec2(1, 1);
 public:
 static const int g_PropertyCount = 21;
 static const ClassPropertyData g_Properties[g_PropertyCount];
