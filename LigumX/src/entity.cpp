@@ -166,14 +166,19 @@ void Entity::UpdateAABB()
 {
 	glm::vec3 min = glm::vec3(9999999);
 	glm::vec3 max = glm::vec3(-9999999);;
+	
+	bool success = m_Model && m_Model->GetMinMax(min, max);
+	//glm::vec4 min4 = glm::vec4(min, 1.f);
+	//glm::vec4 max4 = glm::vec4(max, 1.f);
+	// todo jpp handle rotation
 
-	bool success = m_Model && (m_Model->GetMinMax(min, max));
 
 	if (success)
 	{
 		BoundingBoxComponent* bbComponent = GetComponent<BoundingBoxComponent>();
 		if (bbComponent)
 		{
+			bbComponent->SetParentEntity(this);;
 			bbComponent->SetStartAndScale(min, max - min);
 		}
 	}

@@ -1542,7 +1542,8 @@ void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
 	}
 
 	SetViewUniforms(m_ActiveCamera);
-	SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+	//SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+	SetVertexUniform(bb->GetParentEntity()->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
@@ -1591,6 +1592,7 @@ void Renderer::RenderEditor()
 	lxGPUProfile(RenderEditor);
 
 	RenderFPS();
+	RenderMessages();
 
 	if (!g_Editor->GetOptions()->GetEnabled())
 	{
@@ -1604,7 +1606,6 @@ void Renderer::RenderEditor()
 
 	GL::OutputErrors();
 
-	RenderMessages();
 }
 
 void Renderer::Render(World* world)

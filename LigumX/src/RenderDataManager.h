@@ -210,7 +210,7 @@ public:
 
 
 	bool IsAABBVisible(const std::vector<glm::vec3>& vertices, Camera* camera);
-	bool IsAABBVisible(const AABB& aabb, Camera* camera);
+	bool IsAABBVisible(const AABB& aabb, const glm::mat4& toWorldMatrix, Camera* camera);
 	bool IsSectorVisible(Sector* sector, Camera* camera);
 
 
