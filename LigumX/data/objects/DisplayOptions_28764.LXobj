@@ -5,7 +5,7 @@ Name
 DeferredRendering
 0
 UseSkyLighting
-0
+1
 RenderTerrain
 1
 DrawSky
@@ -13,7 +13,7 @@ DrawSky
 WireframeRendering
 0
 UseLighting
-0
+1
 ShowNormals
 0
 ShowUVs
@@ -39,7 +39,7 @@ RenderTextureOverlay
 RenderOpaque
 1
 RenderShadows
-0
+1
 OutputGLErrors
 1
 DisplayDebugModels

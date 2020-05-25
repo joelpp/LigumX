@@ -52,4 +52,6 @@ class Material
 	Texture* HeightfieldTexture;
 
 	ShaderFamily ShaderFamily;
+
+	glm::vec2 UVScale = glm::vec2(1, 1);
 }

@@ -5,4 +5,7 @@ class Renderer
 	PostEffects* PostEffects
 
 	Camera* DebugCamera;
+
+	[transient]
+	Camera* ActiveCamera;
 }

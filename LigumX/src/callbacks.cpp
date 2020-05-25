@@ -63,9 +63,9 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 		}
         else if (key == GLFW_KEY_ESCAPE) 
 		{
-			if (m_Renderer->GetDebugCamera()->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
+			if (m_Renderer->GetActiveCamera()->controlType == Camera::ControlType::QWEASDZXC_CONTINUOUS)
 			{
-				m_Renderer->GetDebugCamera()->controlType = Camera::ControlType::QWEASDZXC_DRAG;
+				m_Renderer->GetActiveCamera()->controlType = Camera::ControlType::QWEASDZXC_DRAG;
 			}
         }
 		else if (key == GLFW_KEY_R)
@@ -117,7 +117,7 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 	}
 
-	m_Renderer->GetDebugCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
+	m_Renderer->GetActiveCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
 
 	ImGui_ImplGlfwGL3_KeyCallback(pWindow, key, scancode, action, mods);
 
@@ -131,7 +131,7 @@ void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action
 	if (!caughtByImgui)
 	{
 		g_InputHandler->HandleMouseButtonInput(pWindow, button, action, mods);
-		m_Renderer->GetDebugCamera()->handlePresetMouseButton(pWindow, button, action, mods);
+		m_Renderer->GetActiveCamera()->handlePresetMouseButton(pWindow, button, action, mods);
 	}
 
 }
@@ -145,7 +145,8 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 		g_InputHandler->SetMousePosition(glm::vec2(x, y));
 	}
 
-	lxAssert(m_Renderer->GetDebugCamera() != nullptr);
-
-	m_Renderer->GetDebugCamera()->handlePresetCursorPos(pWindow, x, y);
+	if (m_Renderer->GetActiveCamera())
+	{
+		m_Renderer->GetActiveCamera()->handlePresetCursorPos(pWindow, x, y);
+	}
 }

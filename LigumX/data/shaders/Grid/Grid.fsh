@@ -5,7 +5,6 @@ in vec3 vNormalWS;
 in vec4 vWorldPosition;
 in float height;
 
-
 #define PROVIDER_View
 #define PROVIDER_Window
 #define PROVIDER_WorldGrid
@@ -65,20 +64,17 @@ float GetLineAlpha(float lineWidth, float maximum)
 void main() 
 {
 	vec2 normalizedScreenPosition = gl_FragCoord.xy / g_WindowSize;
+	vec2 normalizedMousePosition = vec2(g_MouseX, g_MouseY) / g_WindowSize;
 
-	DebugWatch(0, gl_FragCoord.x);
-	DebugWatch(1, gl_FragCoord.y);
-	DebugWatch(2, myTexCoord.x);
-	DebugWatch(3, myTexCoord.y);
 
 	//float closestDepth = texture(g_DepthTexture, myTexCoord.xy).r;
 	float closestDepth = texelFetch(g_DepthTexture, ivec2(gl_FragCoord.xy), 0).r;
-	//if ((g_MouseX == int(gl_FragCoord.x)) && (g_MouseY == int(gl_FragCoord.y)))
-	//{
-	//	g_InspectorData[5] = value;
-	//}
+	if ((g_MouseX == int(gl_FragCoord.x)) && (g_MouseY == int(gl_FragCoord.y)))
+	{
+		g_InspectorData[5] = closestDepth;
+	}
 
-	if (closestDepth < 0.99999f)
+	if (closestDepth < 1.f)
 	{
 		discard;
 	}
@@ -93,8 +89,6 @@ void main()
 
 	vec3 wsPosition = GetAimingWorldSpacePosition(worldSpaceRay);
 
-
-
 	// from http://madebyevan.com/shaders/grid/
 	float line = GetLineWidth(wsPosition.xy, g_WorldScale);
 	float alpha = GetLineAlpha(line, 0.8f);
@@ -104,5 +98,5 @@ void main()
 	clamp(outputColor, vec3(0, 0, 0), vec3(1, 1, 1));
 
 	FinalColor = vec4(outputColor, alpha);
-	//FinalColor = vec4(wsPosition.z < 0, 0, 0, 1);
+	//FinalColor = vec4((wsPosition.z < 0.f) ? 0.f : 1.f, 0, 0, 1);
 }

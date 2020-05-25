@@ -41,4 +41,5 @@ class Camera
 	float MovementSpeed;
 
 	float KeyMovementSpeedIncreaseFactor = 1.5f;
+
 }

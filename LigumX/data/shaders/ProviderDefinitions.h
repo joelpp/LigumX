@@ -23,6 +23,7 @@ struct Material
 	float		m_Roughness;
 	float		m_AO;
 	bool		m_IsPBR;
+	vec2   m_UVScale;
 };
 
 uniform Material g_Material;
@@ -186,7 +187,7 @@ vec3 BuildShaderOutput(PixelData pixelData)
 
 #ifdef PROVIDER_DataInspector
 //#define DATAINSPECTOR_BINDPOS 7 // keep in sync with cpp
-layout(std430, binding = 7) buffer g_DataInspectorLayout
+layout(std430, binding = 7) restrict buffer g_DataInspectorLayout
 {
 	float g_InspectorData[];
 };
@@ -199,6 +200,11 @@ void DebugWatch(ivec2 pos, uint index, float value)
 	{
 		g_InspectorData[index] = value;
 	}
+}
+
+void DebugWatch(vec2 fragCoords, uint index, float value)
+{
+	DebugWatch(ivec2(fragCoords.xy), index, value);
 }
 
 void DebugWatch(vec4 fragCoords, uint index, float value)

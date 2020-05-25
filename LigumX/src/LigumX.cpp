@@ -85,7 +85,7 @@ void LigumX::DoFrame()
 	if (m_World)
 	{
 		m_World->Update();
-		g_RenderDataManager->GatherVisibleEntities(m_World, m_Renderer->GetDebugCamera());
+		g_RenderDataManager->GatherVisibleEntities(m_World, m_Renderer->GetActiveCamera());
 	}
 
 	m_Renderer->Render(m_World);

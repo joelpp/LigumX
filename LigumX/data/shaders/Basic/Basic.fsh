@@ -17,6 +17,7 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_Sky
 #define PROVIDER_DisplayOptions
 #define PROVIDER_Debug
+#define PROVIDER_DataInspector
 
 // Include ProvidersMarker
 
@@ -29,24 +30,25 @@ layout(location = 1) out vec4 BrightColor;
 #endif
 
 
-float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS)
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 {
 	if (!g_UseShadows)
 	{
 		return 0.f;
 	}
-    // perform perspective divide
+	// perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5; 
 
 
 	float closestDepth = texture(g_DepthMapTexture, projCoords.xy).r;
+
 	float currentDepth = projCoords.z;
 
 	float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, normalWS)), 0.005);  
-	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;  
-		if(projCoords.z > 1.0)
-        shadow = 0.0;
+	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+		//if(projCoords.z > 1.0)
+  //      shadow = 0.0;
     return shadow;
 }
 
@@ -62,7 +64,7 @@ vec4 GetSpecularColor(vec2 uv)
 	vec4 specularColor;
 	if (g_Material.m_SpecularTextureEnabled)
 	{
-		specularColor = SampleTexture(g_Material.m_SpecularTexture, uv);
+		specularColor = SampleTexture(g_Material.m_SpecularTexture, uv * g_Material.m_UVScale);
 	} 
 	else
 	{
@@ -78,7 +80,7 @@ vec4 GetDiffuseColor(vec2 uv)
 	vec4 diffuseColor;
 	if (g_Material.m_DiffuseTextureEnabled)
 	{
-		diffuseColor = SampleTexture(g_Material.m_DiffuseTexture, uv);
+		diffuseColor = SampleTexture(g_Material.m_DiffuseTexture, uv * g_Material.m_UVScale);
 
 		if (g_GammaCorrectionEnabled > 0)
 		{
@@ -98,7 +100,8 @@ vec3 GetLightColor(int lightIndex)
 	vec3 lightColor;
 	if (g_UseSkyLighting)
 	{
-		lightColor = g_DirectionalLight.m_DiffuseColor;
+		//lightColor = g_DirectionalLight.m_DiffuseColor;
+		lightColor = vec3(1, 0, 0);
 	}
 	else
 	{
@@ -113,7 +116,8 @@ vec3 GetLightDirection(int lightIndex)
 	vec3 lightDirection;
 	if (g_UseSkyLighting)
 	{
-		lightDirection = g_DirectionalLight.m_Direction;
+		//lightDirection = g_DirectionalLight.m_Direction;
+		lightDirection = vec3(0, 0, 1);
 	}
 	else
 	{
@@ -239,6 +243,7 @@ void main()
 
 	if (g_UseLighting > 0)
 	{
+#if 0
 		for (int lightIndex = 0; lightIndex < g_NumLights; ++lightIndex)
 		{
 			if (!g_Material.m_IsPBR)
@@ -311,6 +316,55 @@ void main()
 					//FinalColor.rgb = NdotL * vec3(1.0); 
 			}
 		}
+#endif
+
+
+		vec2 sunDirFlat = vec2(cos(sunOrientation), sin(sunOrientation));
+		vec3 sunDir = cos(sunTime)*vec3(0, 0, 1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);
+
+		//vec3 skyLighting = vec3(0, 0, 1);
+		float sky = dot(sunDir, pixelData.m_Normal);
+		pixelData.m_DiffuseColor = GetDiffuseColor(myTexCoord);
+
+		float shadow = ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
+
+		pixelData.m_FinalColor = pixelData.m_DiffuseColor * sky /** shadow*/;
+
+
+		//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
+		//{
+		//	if (!g_UseShadows)
+		//	{
+		//		return 0.f;
+		//	}
+		//	// perform perspective divide
+		//	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+		//	projCoords = projCoords * 0.5 + 0.5;
+
+
+		//	float closestDepth = texture(g_DepthMapTexture, projCoords.xy).r;
+
+		//	float currentDepth = projCoords.z;
+		//	DebugWatch(fragCoord.xy, 0, closestDepth);
+
+		//	float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, normalWS)), 0.005);
+		//	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+		//	//if(projCoords.z > 1.0)
+		//	//      shadow = 0.0;
+		//	return shadow;
+		//};
+
+		//vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+		//projCoords = projCoords * 0.5 + 0.5;
+		////projCoords.x = 1.f - projCoords.x;
+
+		//float closestDepth = texture(g_DepthMapTexture, projCoords.xy).r;
+		//float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, pixelData.m_Normal)), 0.005);
+		//float currentDepth = projCoords.z;
+
+		//pixelData.m_FinalColor = vec4(pow(currentDepth, 1000.f).xxx, 1.f);
+		//pixelData.m_FinalColor = vec4(closestDepth.xxx, 1.f) ;
+
 		// sky tests
 		//float ratio = 1.00 / 1.52;
 		//vec3 R = vec3(0.f);

@@ -48,9 +48,9 @@ glm::vec3 RaycastingHelpers::GetAimingWorldSpacePosition(const glm::vec2& mouseP
 
 	glm::vec3 ndc = glm::vec3(2.f * normalizedScreenPosition - glm::vec2(1.f, 1.f), 1.f);
 
-	glm::vec3 wsRay = GetWorldSpaceRay(ndc, renderer->GetDebugCamera()->GetProjectionMatrixInverse(), renderer->GetDebugCamera()->GetViewMatrixInverse());
+	glm::vec3 wsRay = GetWorldSpaceRay(ndc, renderer->GetActiveCamera()->GetProjectionMatrixInverse(), renderer->GetActiveCamera()->GetViewMatrixInverse());
 
-	glm::vec3 worldPosition = IntersectRayWithFlatPlane(wsRay, renderer->GetDebugCamera()->GetPosition());
+	glm::vec3 worldPosition = IntersectRayWithFlatPlane(wsRay, renderer->GetActiveCamera()->GetPosition());
 
 	return worldPosition;
 }

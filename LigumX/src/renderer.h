@@ -104,12 +104,15 @@ PostEffects*& GetPostEffects() { return m_PostEffects; };
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
 Camera*& GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
+Camera*& GetActiveCamera() { return m_ActiveCamera; }; 
+void SetActiveCamera(Camera* value) { m_ActiveCamera = value; }; 
 private:
 DisplayOptions* m_DisplayOptions = nullptr;
 PostEffects* m_PostEffects = nullptr;
 Camera* m_DebugCamera = nullptr;
+Camera* m_ActiveCamera = nullptr;
 public:
-static const int g_PropertyCount = 3;
+static const int g_PropertyCount = 4;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
@@ -117,6 +120,7 @@ enum g_RendererPIDX
 PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_DebugCamera,
+PIDX_ActiveCamera,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

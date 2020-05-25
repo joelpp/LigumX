@@ -705,7 +705,7 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 
 	if (indexToRemove != -1) // todo jpp maybe we can delete in place?
 	{
-		values.erase(values.begin() + 1);
+		values.erase(values.begin() + indexToRemove);
 	}
 
 	if (!hasOpenPopup && popupIsOpen)

@@ -47,6 +47,7 @@ const ClassPropertyData Renderer::g_Properties[] =
 { "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_ObjectPtr, sizeof(DisplayOptions*), LXType_DisplayOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_ObjectPtr, sizeof(PostEffects*), LXType_PostEffects, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_ObjectPtr, sizeof(Camera*), LXType_Camera, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "ActiveCamera", PIDX_ActiveCamera, offsetof(Renderer, m_ActiveCamera), 0, LXType_ObjectPtr, sizeof(Camera*), LXType_Camera, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
 void Renderer::Serialize(Serializer2& serializer)
 {
@@ -71,6 +72,7 @@ bool Renderer::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DisplayOptions], &m_DisplayOptions  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_PostEffects], &m_PostEffects  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DebugCamera], &m_DebugCamera  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ActiveCamera], &m_ActiveCamera  );
 	return true;
 }
 const char* Renderer::GetTypeName()
@@ -587,6 +589,7 @@ void Renderer::SetMaterialUniforms(Material* material)
 			SetFragmentUniform(material->GetRoughness(), "g_Material.m_Roughness");
 			SetFragmentUniform(material->GetAO(), "g_Material.m_AO");
 			SetFragmentUniform(material->GetIsPBR(), "g_Material.m_IsPBR");
+			SetFragmentUniform(material->GetUVScale(), "g_Material.m_UVScale");
 
 			if (material->GetDiffuseTexture())
 			{
@@ -720,10 +723,10 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
-		if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
+		//if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
 		{
 			SetLightingUniforms();
-			SetViewUniforms(m_DebugCamera);
+			SetViewUniforms(m_ActiveCamera);
 			SetShadowMapUniforms(m_ShadowCamera);
 			SetSkyUniforms(3);
 			SetDisplayModeUniforms();
@@ -814,6 +817,10 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
 
   SetMaterialUniforms(material);
 
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, m_DataInspectorSSBO);
+  SetFragmentUniform((int)(g_InputHandler->GetMousePosition().x), "g_MouseX");
+  SetFragmentUniform((int)(g_InputHandler->GetMousePosition().y), "g_MouseY");
+
   if (mesh->GetWireframeRendering())
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -854,7 +861,7 @@ void Renderer::RenderTerrain()
 	}
 
 	SetLightingUniforms();
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 	SetShadowMapUniforms(m_ShadowCamera);
 	SetSkyUniforms(3);
 	SetDisplayModeUniforms();
@@ -913,7 +920,7 @@ void Renderer::RenderShadowMap()
 {
 	lxGPUProfile(RenderShadowMap);
 
-	if (!m_DisplayOptions->GetRenderShadows() || m_World)
+	if (!m_DisplayOptions->GetRenderShadows() || !m_World)
 	{
 		return;
 	}
@@ -934,17 +941,75 @@ void Renderer::RenderShadowMap()
 	m_TestLight[0].m_Position = pos;
 	SetLightingUniforms();
 
-	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 15.f);
-	m_ShadowCamera->SetFrontVector(pos);
-	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->GetFrontVector())));
-	m_ShadowCamera->SetUpVector(normalize(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector())));
-	m_ShadowCamera->UpdateVPMatrix();
+	//m_ShadowCamera->SetPosition(/*glm::vec3(0, 20, 1) +*/ pos * 100.f);
+	//m_ShadowCamera->SetFrontVector(pos);
+	//m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->GetFrontVector())));
+	//m_ShadowCamera->SetUpVector(normalize(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector())));
+	//m_ShadowCamera->UpdateVPMatrix();
 
 	SetViewUniforms(m_ShadowCamera);
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	RenderEntities(g_RenderDataManager->GetVisibleEntities());
+	//RenderEntities(g_RenderDataManager->GetVisibleEntities());
+	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
+	{
+		if (!entity->GetVisible())
+		{
+			continue;
+		}
+
+		{
+			Model * model = entity->GetModel();
+			for (int i = 0; i < model->GetMeshes().size(); ++i)
+			{
+				Material* material = nullptr;
+				if (model->GetMaterials().size() > i)
+				{
+					material = model->GetMaterials()[i];
+				}
+				else if (model->GetMaterials().size() > 0)
+				{
+					material = model->GetMaterials()[0];
+				}
+				else
+				{
+					lxAssert0();
+				}
+				if (!material->GetEnabled())
+				{
+					continue;
+				}
+
+				// todo jpp EVIL
+				//if (!SetPipeline(material->GetShaderFamily()))
+				//{
+				//	continue;
+				//}
+
+				SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+
+				//if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
+				{
+					//SetLightingUniforms();
+					//SetViewUniforms(m_DebugCamera);
+					//SetShadowMapUniforms(m_ShadowCamera);
+					//SetSkyUniforms(3);
+					//SetDisplayModeUniforms();
+
+					//SetPostEffectsUniforms();
+					//SetDebugUniforms();
+					//m_ShaderBeenUsedThisFrame[material->GetShaderFamily()] = true;
+				}
+
+				DrawMesh(model->GetMeshes()[i], material);
+
+			}
+
+			GL::OutputErrors();
+		}
+	}
+
 
 	BindFramebuffer(FramebufferType_Default);
 }
@@ -957,6 +1022,8 @@ void Renderer::RenderOpaque()
 	{
 		return;
 	}
+
+	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
@@ -1086,7 +1153,7 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	BindFramebuffer(FramebufferType_Picking);
 	GL::ClearColorAndDepthBuffers();
 	
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 
 
 	SetVertexUniform(1, "g_UseHeightfield");
@@ -1153,9 +1220,13 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 
 void Renderer::BeginFrame(World* world)
 {
-	m_DebugCamera->handlePresetNewFrame(m_Window->pWindow);
-
-	m_DebugCamera->UpdateVPMatrix();
+	m_ActiveCamera = m_DebugCamera;
+	if (m_DisplayOptions->GetDebugShadowCamera())
+	{
+		m_ActiveCamera = m_ShadowCamera;
+	}
+	m_ActiveCamera->handlePresetNewFrame(m_Window->pWindow);
+	m_ActiveCamera->UpdateVPMatrix();
 
 	g_EngineStats->ResetFrame();
 
@@ -1257,17 +1328,12 @@ void Renderer::RenderGrid()
 	GL::SetBlendMode(GL::SrcAlpha, GL::BlendMode::OneMinusSrcAlpha);
 
 	SetWorldGridUniforms();
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 	SetFragmentUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
 
 	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 	SetFragmentUniform(0, "g_DepthTexture");
 	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetDepthTexture());
-
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, m_DataInspectorSSBO);
-	SetFragmentUniform((int)(g_InputHandler->GetMousePosition().x), "g_MouseX");
-	SetFragmentUniform((int)(g_InputHandler->GetMousePosition().y), "g_MouseY");
-
 
 	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
 	DrawMesh(mesh);
@@ -1276,7 +1342,6 @@ void Renderer::RenderGrid()
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
 	GL::SetCapability(GL::Capabilities::DepthTest, true);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, 0);
 
 }
 
@@ -1289,7 +1354,7 @@ void Renderer::RenderAxisGizmo()
 		return;
 	}
 
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 
 
 	GL::DrawArrays(GL::PrimitiveMode::Lines, 0, 6);
@@ -1309,7 +1374,7 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 
 		Material* material = model->GetMaterials()[i];
 
-		SetViewUniforms(m_DebugCamera);
+		SetViewUniforms(m_ActiveCamera);
 
 		DrawMesh(model->GetMeshes()[i], material);
 	}
@@ -1332,7 +1397,7 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 
 		Material* material = model->GetMaterials()[i];
 
-		SetViewUniforms(m_DebugCamera);
+		SetViewUniforms(m_ActiveCamera);
 
 		SetFragmentUniform(selectedWay, "g_SelectedWayIndex");
 		SetFragmentUniform(displayFlags, "g_DisplayFlags");
@@ -1362,7 +1427,7 @@ void Renderer::RenderDebugModels()
 
 				Material* material = model->GetMaterials()[i];
 
-				SetViewUniforms(m_DebugCamera);
+				SetViewUniforms(m_ActiveCamera);
 
 				if (!material->GetEnabled())
 				{
@@ -1456,7 +1521,7 @@ void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 	SetVertexUniform(modelToWorldMatrix, "g_ModelToWorldMatrix");
 	SetFragmentUniform(color, "g_Color");
 
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
@@ -1476,7 +1541,7 @@ void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
 		return;
 	}
 
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 	SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
@@ -1495,7 +1560,7 @@ void Renderer::DrawManipulator(Entity* entity)
 		return;
 	}
 
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 	SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 	SetFragmentUniform(glm::vec3(1,0,0), "g_InputColor");
 
@@ -1703,14 +1768,14 @@ void Renderer::RenderSky()
 
 	GLuint fragProg = envMapShader->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	float pi = 3.141592654f;
-	glm::vec2 viewAngles = glm::vec2(m_DebugCamera->totalViewAngleY*pi, m_DebugCamera->aspectRatio*m_DebugCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
+	glm::vec2 viewAngles = glm::vec2(m_ActiveCamera->totalViewAngleY*pi, m_ActiveCamera->aspectRatio*m_ActiveCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");
 
 	SetFragmentUniform(2.f * (glm::vec2) m_Window->GetSize(), "windowSize");
 
 	SetSkyUniforms(0);
 
-	SetViewUniforms(m_DebugCamera);
+	SetViewUniforms(m_ActiveCamera);
 
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
@@ -1731,7 +1796,7 @@ void Renderer::RenderText(Text t)
    GLuint prog = pPipelineText->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
    glm::vec3 myColor = glm::vec3(1.0,1.0,1.0);
    glProgramUniform3f(prog, glGetUniformLocation(prog, "textColor"), myColor.x, myColor.y, myColor.z);
-   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
+   if (t.projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_ActiveCamera->GetViewProjectionMatrix()));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, 800.0f, 0.0f, 800.0f)));
 
    glActiveTexture(GL_TEXTURE0);
@@ -1806,7 +1871,7 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
    GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
 
    SetFragmentUniform(color, "g_TextColor");
-   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_DebugCamera->GetViewProjectionMatrix()));
+   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_ActiveCamera->GetViewProjectionMatrix()));
    else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
 
    glActiveTexture(GL_TEXTURE0);

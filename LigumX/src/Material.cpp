@@ -30,6 +30,7 @@ const ClassPropertyData Material::g_Properties[] =
 { "SpecularTexture", PIDX_SpecularTexture, offsetof(Material, m_SpecularTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Material, SpecularTexture, Texture*),}, 
 { "HeightfieldTexture", PIDX_HeightfieldTexture, offsetof(Material, m_HeightfieldTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_Object, sizeof(ShaderFamily), LXType_ShaderFamily, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
+{ "UVScale", PIDX_UVScale, offsetof(Material, m_UVScale), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void Material::Serialize(Serializer2& serializer)
 {
@@ -53,6 +54,7 @@ void Material::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DiffuseTexture], m_DiffuseTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SpecularTexture], m_SpecularTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_HeightfieldTexture], m_HeightfieldTexture);
+	serializer.SerializeVec2(g_Properties[PIDX_UVScale], m_UVScale);
 }
 bool Material::Serialize(bool writing)
 {
@@ -85,6 +87,7 @@ bool Material::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DiffuseTexture], &m_DiffuseTexture  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SpecularTexture], &m_SpecularTexture  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_HeightfieldTexture], &m_HeightfieldTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UVScale], &m_UVScale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* Material::GetTypeName()
@@ -129,6 +132,8 @@ void Material::InitializeToDefaults()
 	SetObjectID(g_ObjectManager->GetNewObjectID());
 
 	SetDiffuseColor(glm::vec3(1, 0, 0));
+
+	m_UVScale = glm::vec2(1, 1);
 }
 
 Material::Material()

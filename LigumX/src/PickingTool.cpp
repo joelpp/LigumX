@@ -83,7 +83,7 @@ bool PickingTool::CheckEntity(Entity* entity)
 	}
 
 	Renderer& renderer = Renderer::GetInstance();
-	const glm::vec3& cameraPosition = renderer.GetDebugCamera()->GetPosition();
+	const glm::vec3& cameraPosition = renderer.GetActiveCamera()->GetPosition();
 
 	if (MathUtils::FuzzyEquals(m_AimingID, entity->GetPickingID(), 0.005f))
 	{

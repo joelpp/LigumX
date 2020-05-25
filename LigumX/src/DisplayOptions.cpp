@@ -28,6 +28,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "OutputGLErrors", PIDX_OutputGLErrors, offsetof(DisplayOptions, m_OutputGLErrors), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayDebugModels", PIDX_DisplayDebugModels, offsetof(DisplayOptions, m_DisplayDebugModels), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "PickingEnabled", PIDX_PickingEnabled, offsetof(DisplayOptions, m_PickingEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "DebugShadowCamera", PIDX_DebugShadowCamera, offsetof(DisplayOptions, m_DebugShadowCamera), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayMode", PIDX_DisplayMode, offsetof(DisplayOptions, m_DisplayMode), 0, LXType_Object, sizeof(DisplayMode), LXType_DisplayMode, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 };
 void DisplayOptions::Serialize(Serializer2& serializer)
@@ -55,6 +56,7 @@ void DisplayOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_OutputGLErrors], m_OutputGLErrors);
 	serializer.SerializeBool(g_Properties[PIDX_DisplayDebugModels], m_DisplayDebugModels);
 	serializer.SerializeBool(g_Properties[PIDX_PickingEnabled], m_PickingEnabled);
+	serializer.SerializeBool(g_Properties[PIDX_DebugShadowCamera], m_DebugShadowCamera);
 }
 bool DisplayOptions::Serialize(bool writing)
 {
@@ -90,6 +92,7 @@ bool DisplayOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OutputGLErrors], &m_OutputGLErrors  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayDebugModels], &m_DisplayDebugModels  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingEnabled], &m_PickingEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugShadowCamera], &m_DebugShadowCamera  );
 	return true;
 }
 const char* DisplayOptions::GetTypeName()

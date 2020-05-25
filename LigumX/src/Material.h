@@ -78,6 +78,8 @@ Texture*& GetHeightfieldTexture() { return m_HeightfieldTexture; };
 void SetHeightfieldTexture(Texture* value) { m_HeightfieldTexture = value; }; 
 const ShaderFamily& GetShaderFamily() { return m_ShaderFamily; }; 
 void SetShaderFamily(ShaderFamily value) { m_ShaderFamily = value; }; 
+glm::vec2& GetUVScale() { return m_UVScale; }; 
+void SetUVScale(const glm::vec2& value) { m_UVScale = value; }; 
 private:
 bool m_Enabled = false;
 glm::vec3 m_AmbientColor = glm::vec3(0, 0, 0);
@@ -99,8 +101,9 @@ Texture* m_DiffuseTexture = nullptr;
 Texture* m_SpecularTexture = nullptr;
 Texture* m_HeightfieldTexture = nullptr;
 ShaderFamily m_ShaderFamily;
+glm::vec2 m_UVScale = glm::vec2(0, 0);
 public:
-static const int g_PropertyCount = 20;
+static const int g_PropertyCount = 21;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_MaterialPIDX
@@ -125,6 +128,7 @@ PIDX_DiffuseTexture,
 PIDX_SpecularTexture,
 PIDX_HeightfieldTexture,
 PIDX_ShaderFamily,
+PIDX_UVScale,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

@@ -1651,7 +1651,7 @@ void Editor::RenderImgui()
 
 void Editor::ProcessScrolling()
 {
-	Camera* activeCamera = Renderer::GetInstance().GetDebugCamera();
+	Camera* activeCamera = Renderer::GetInstance().GetActiveCamera();
 	const glm::vec2& scrolling = g_InputHandler->GetMouseScroll();
 	glm::vec3 moveVector;
 
