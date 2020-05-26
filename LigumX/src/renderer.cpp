@@ -1902,89 +1902,76 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
 	GL::SetCapability(GL::Capabilities::CullFace,	false);
 	GL::SetDepthFunction(GL::DepthFunction::Depth_Always);
 
-   // todo : rework how we handle gfx hw stuff here
-   if (!SetPipeline(pPipelineText, true))
-   {
-	   return;
-   }
+	// todo : rework how we handle gfx hw stuff here
+	if (!SetPipeline(pPipelineText, true))
+	{
+		return;
+	}
 
-   GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+	GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
 
-   SetFragmentUniform(color, "g_TextColor");
-   if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_ActiveCamera->GetViewProjectionMatrix()));
-   else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
+	SetFragmentUniform(color, "g_TextColor");
+	if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_ActiveCamera->GetViewProjectionMatrix()));
+	else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
 
-   glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0);
 
-   // Iterate through all characters
-   
-   for (int i = 0; i < text.size(); ++i)
-   {
-	   char c = text[i];
-	   //Character ch = Characters[*c];
+	// Iterate through all characters
+	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
+	glBindVertexArray(mesh->m_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetGPUBuffers().glidIndexBuffer);
 
-	   //GLfloat xpos = t.position.x + /*ch.Bearing.x **/ t.scale;
-	   //GLfloat ypos = t.position.y - /*(ch.Size.y - ch.Bearing.y) **/ t.scale;
+	Texture* fontTexture = g_ObjectManager->FindObjectByID<Texture>(897003, true);
+	glBindTexture(GL_TEXTURE_2D, fontTexture->GetHWObject());
 
-	   //GLfloat w = /*ch.Size.x **/ t.scale;
-	   //GLfloat h = /*ch.Size.y **/ t.scale;x
+	int numQuads = glm::min(100, (int)text.size());
 
-    //   // Update VBO for each character
-    //   GLfloat vertices[6][3] = {
-    //       { xpos,     ypos + h,  0.0001f },
-    //       { xpos,     ypos,      0.0001f },
-    //       { xpos + w, ypos,      0.0001f },
+	struct TextInstance_VertexData
+	{
+		glm::vec2 m_Position;
+		float m_Scale;
+	};
 
-    //       { xpos,     ypos + h,  0.0001f },
-    //       { xpos + w, ypos,      0.0001f },
-    //       { xpos + w, ypos + h,  0.0001f }
-    //   };
-    //   GLfloat uvs[6][2] = {
-    //       {0.0, 0.0},
-    //       {0.0, 1.0},
-    //       {1.0, 1.0},
+	struct TextInstance_FragmentData
+	{
+		int m_TextureCharIndex;
+	};
 
-    //       {0.0, 0.0},
-    //       {1.0, 1.0},
-    //       {1.0, 0.0}
+	std::vector<TextInstance_VertexData> vertexData(numQuads);
+	std::vector<TextInstance_FragmentData> fragmentData(numQuads);
 
-    //   };
-       // Render glyph texture over quad
-	   //glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-	   
-	   Texture* fontTexture = g_ObjectManager->FindObjectByID<Texture>(897003, true);
-	   glBindTexture(GL_TEXTURE_2D, fontTexture->GetHWObject());
+	for (int i = 0; i < numQuads; ++i)
+	{
+		glm::vec2 pos2(x + i * scale, y);
+		vertexData[i].m_Position = pos2;
+		vertexData[i].m_Scale = scale;
 
-       // Update content of VBO memory
-       //glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-       //glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		char c = text[i];
+		int textureCharIndex = toupper(c) - 32;
+		fragmentData[i].m_TextureCharIndex = textureCharIndex;
+	}
 
-       //glBindBuffer(GL_ARRAY_BUFFER, textUvsVBO);
-       //glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(uvs), uvs);
+	for (int i = 0; i < numQuads; ++i)
+	{
+		char c = text[i];
 
-       //glBindBuffer(GL_ARRAY_BUFFER, 0);
+		int textureCharIndex = toupper(c) - 32;
+		SetFragmentUniform(textureCharIndex, "g_CurrentCharacter");
 
-	   int textureCharIndex = toupper(c) - 32;
-	   SetFragmentUniform(textureCharIndex, "g_CurrentCharacter");
+		glm::vec2 pos2(x + i * scale, y);
+		SetVertexUniform(pos2, "g_Position");
+		SetVertexUniform(scale, "g_Scale");
+		SetFragmentUniform(m_DisplayOptions->GetDebugVec4(), "g_DebugVec4");
 
-	   glm::vec2 pos2(x + i * scale, y);
-	   SetVertexUniform(pos2, "g_Position");
-	   SetVertexUniform(scale, "g_Scale");
-	   SetFragmentUniform(m_DisplayOptions->GetDebugVec4(), "g_DebugVec4");
+		GL::DrawElements(mesh->m_PrimitiveMode, (int)mesh->m_buffers.GetIndexBuffer().size(), GL_UNSIGNED_INT, 0);
+		g_EngineStats->AddTo_NumDrawCalls(1);
+	}
 
-	   // Render quad
-       //glDrawArrays(GL_TRIANGLES, 0, 6);
-	   DrawMesh(g_DefaultObjects->DefaultQuadMesh);
+	glBindVertexArray(0);
+	FreeBoundTexture();
 
-       // Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-       //x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
-   }
-
-   glBindVertexArray(0);
-   FreeBoundTexture();
-
-   GL::SetCapability(GL::Capabilities::Blend,		false);
-   GL::SetCapability(GL::Capabilities::CullFace,	false);
+	GL::SetCapability(GL::Capabilities::Blend,		false);
+	GL::SetCapability(GL::Capabilities::CullFace,	false);
 
 }
 

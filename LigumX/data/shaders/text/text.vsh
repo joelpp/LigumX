@@ -6,6 +6,14 @@ out vec2 TexCoords;
 uniform vec2 g_Position;
 uniform float g_Scale;
 
+struct TextInstance_VertexData
+{
+	vec2 m_Position;
+	float m_Scale;
+};
+
+uniform TextInstance_VertexData g_InstanceVertexData[100];
+
 uniform mat4 projection;
 out gl_PerVertex {
     vec4 gl_Position;
