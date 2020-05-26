@@ -152,6 +152,7 @@ public:
     void init_pipelines_text();
 
     void Render(World* world);
+	void RenderTextBatch(int numQuads, const glm::vec3& color);
     void RenderText(const Text& t);
     void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, const glm::vec3& color, bool projected);
     void DrawMesh(Mesh* mesh, Material* material);
@@ -447,6 +448,10 @@ private:
 	float m_DataInspectorValues[DATAINSPECTOR_NUMVALUES];
 	GLuint m_DataInspectorSSBO;
 	GLuint m_FontTexture = 0;
+
+	GLuint m_TextInstanceVBO = 0;
+	GLuint m_TextInstanceSSBO = 0;
+
 };
 
 class GPUProfileHolder

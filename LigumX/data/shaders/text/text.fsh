@@ -1,10 +1,11 @@
 #version 410 core
 in vec2 TexCoords;
+flat in int VertexOutput_TextureCharacterIndex;
+
 out vec4 color;
 
 uniform sampler2D text;
 uniform vec3 g_TextColor;
-uniform int g_CurrentCharacter;
 uniform vec4 g_DebugVec4;
 
 int s_CharsPerSide = 8;
@@ -20,7 +21,7 @@ void main()
 {
     vec3 myColor = g_TextColor;
 
-	int character = g_CurrentCharacter;
+	int character = VertexOutput_TextureCharacterIndex;
 	ivec2 charIndex = GetCharIndex(character);
 	//charIndex = ivec2(3, 3);
 
@@ -47,7 +48,7 @@ void main()
 
     vec4 sampled = vec4(1.0, 1.0, 1.0, textureLod(text, uv, 0.f).r);
     color = vec4(myColor, 1.0) * sampled;
-
+	color = sampled;
 	//if (any(lessThan(abs(TexCoords - round(TexCoords)), vec2(0.1f, 0.1f))))
 	//{
 	//	color = vec4(0, 0, 0, 1.0);

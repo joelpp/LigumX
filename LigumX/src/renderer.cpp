@@ -149,6 +149,15 @@ void APIENTRY OutputGLDebugMessageCallback(GLenum source, GLenum type, GLuint id
 	OUTPUT_STRING_LINE(ss.str());
 }
 
+struct TextInstance_VertexData
+{
+	glm::vec2 m_Position;
+	float m_Scale;
+	int m_TextureCharIndex;
+};
+
+constexpr int g_MaxNumTextQuads = 1024;
+
 void Renderer::InitGL()
 {
 	// Initialise GLFW
@@ -199,6 +208,11 @@ void Renderer::InitGL()
 	glGenBuffers(1, &m_DataInspectorSSBO);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_DataInspectorSSBO);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, 64 * sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
+
+	glGenBuffers(1, &m_TextInstanceSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_TextInstanceSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TextInstance_VertexData) * g_MaxNumTextQuads, NULL, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
 
 }
@@ -1747,12 +1761,38 @@ void Renderer::RenderMessages()
 
 	GL::SetViewport(m_Window->GetSize());
 
-	for (const TimedMessage& message : g_RenderDataManager->GetTimedMessages())
-	{
-		RenderText(lxFormat("%s", message.m_Message.c_str()), message.m_Position.x, message.m_Position.y, message.m_Scale, glm::vec3(1.f, 1.f, 1.f), false);
-		GL::OutputErrors();
-	}
 
+	int numQuads = 0;
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_TextInstanceSSBO);
+	TextInstance_VertexData *ptr;
+	ptr = (TextInstance_VertexData *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+	for (int i = 0; i < g_RenderDataManager->GetTimedMessages().size(); ++i)
+	{
+		const TimedMessage& message = g_RenderDataManager->GetTimedMessages()[i];
+
+		for (int j = 0; j < message.m_Message.size(); ++j)
+		{
+			glm::vec2 pos2(message.m_Position.x + j * message.m_Scale, message.m_Position.y);
+			ptr[numQuads].m_Position = pos2;
+			ptr[numQuads].m_Scale = message.m_Scale;
+
+			const char& c = message.m_Message[j];
+			int textureCharIndex = toupper(c) - 32;
+			ptr[numQuads].m_TextureCharIndex = textureCharIndex;
+			numQuads++;
+
+			if (numQuads == g_MaxNumTextQuads)
+			{
+				break;
+			}
+		}
+	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+	RenderTextBatch(numQuads, glm::vec3(1.f, 1.f, 1.f));
+
+	GL::OutputErrors();
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, 0);
 
 }
 
@@ -1926,47 +1966,26 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
 
 	int numQuads = glm::min(100, (int)text.size());
 
-	struct TextInstance_VertexData
-	{
-		glm::vec2 m_Position;
-		float m_Scale;
-	};
-
-	struct TextInstance_FragmentData
-	{
-		int m_TextureCharIndex;
-	};
-
-	std::vector<TextInstance_VertexData> vertexData(numQuads);
-	std::vector<TextInstance_FragmentData> fragmentData(numQuads);
-
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_TextInstanceSSBO);
+	TextInstance_VertexData *ptr;
+	ptr = (TextInstance_VertexData *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 	for (int i = 0; i < numQuads; ++i)
 	{
 		glm::vec2 pos2(x + i * scale, y);
-		vertexData[i].m_Position = pos2;
-		vertexData[i].m_Scale = scale;
+		ptr[i].m_Position = pos2;
+		ptr[i].m_Scale = scale;
 
 		char c = text[i];
 		int textureCharIndex = toupper(c) - 32;
-		fragmentData[i].m_TextureCharIndex = textureCharIndex;
+		ptr[i].m_TextureCharIndex = textureCharIndex;
 	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
-	for (int i = 0; i < numQuads; ++i)
-	{
-		char c = text[i];
+	//glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
+	
+	glDrawElementsInstanced(GL_TRIANGLES, (int)mesh->m_buffers.GetIndexBuffer().size(), GL_UNSIGNED_INT, 0, numQuads);
 
-		int textureCharIndex = toupper(c) - 32;
-		SetFragmentUniform(textureCharIndex, "g_CurrentCharacter");
-
-		glm::vec2 pos2(x + i * scale, y);
-		SetVertexUniform(pos2, "g_Position");
-		SetVertexUniform(scale, "g_Scale");
-		SetFragmentUniform(m_DisplayOptions->GetDebugVec4(), "g_DebugVec4");
-
-		GL::DrawElements(mesh->m_PrimitiveMode, (int)mesh->m_buffers.GetIndexBuffer().size(), GL_UNSIGNED_INT, 0);
-		g_EngineStats->AddTo_NumDrawCalls(1);
-	}
-
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, 0);
 	glBindVertexArray(0);
 	FreeBoundTexture();
 
@@ -1974,6 +1993,48 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
 	GL::SetCapability(GL::Capabilities::CullFace,	false);
 
 }
+
+void Renderer::RenderTextBatch(int numQuads, const glm::vec3& color)
+{
+	GL::SetCapability(GL::Capabilities::Blend, true);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GL::SetCapability(GL::Capabilities::CullFace, false);
+	GL::SetDepthFunction(GL::DepthFunction::Depth_Always);
+
+	// todo : rework how we handle gfx hw stuff here
+	if (!SetPipeline(pPipelineText, true))
+	{
+		return;
+	}
+
+	GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
+
+	SetFragmentUniform(color, "g_TextColor");
+	glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
+
+	glActiveTexture(GL_TEXTURE0);
+
+	// Iterate through all characters
+	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
+	glBindVertexArray(mesh->m_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetGPUBuffers().glidIndexBuffer);
+
+	Texture* fontTexture = g_ObjectManager->FindObjectByID<Texture>(897003, true);
+	glBindTexture(GL_TEXTURE_2D, fontTexture->GetHWObject());
+
+	//glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
+
+	glDrawElementsInstanced(GL_TRIANGLES, (int)mesh->m_buffers.GetIndexBuffer().size(), GL_UNSIGNED_INT, 0, numQuads);
+
+	glBindVertexArray(0);
+	FreeBoundTexture();
+
+	GL::SetCapability(GL::Capabilities::Blend, false);
+	GL::SetCapability(GL::Capabilities::CullFace, false);
+
+}
+
+
 
 void Renderer::AddToDebugModels(Model* model)
 {
