@@ -43,7 +43,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
     projCoords = projCoords * 0.5 + 0.5; 
 
 
-	float closestDepth = texture(g_DepthMapTexture, projCoords.xy).r;
+	float closestDepth = textureLod(g_DepthMapTexture, projCoords.xy, 0.f).r;
 
 	float currentDepth = projCoords.z;
 

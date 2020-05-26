@@ -373,7 +373,10 @@ void Renderer::Initialize()
 	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
 	m_ShadowCamera->SetPosition(glm::vec3(-16.13f, -5.9f, 20.2f));
 	m_ShadowCamera->SetFrontVector(glm::vec3(-0.47f, -0.81f, 0.34f));
-	m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0.f, 0.f, 1.f), m_ShadowCamera->GetFrontVector())));
+	m_ShadowCamera->SetOrthoBorders(64.f);
+
+	glm::vec3 up = (m_ShadowCamera->GetFrontVector().z > 0.99f) ? glm::vec3(1, 0, 0) : glm::vec3(0, 0, 1);
+	m_ShadowCamera->SetRightVector(normalize(glm::cross(up, m_ShadowCamera->GetFrontVector())));
 	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
 	m_ShadowCamera->translateTo(m_ShadowCamera->GetPosition() - m_ShadowCamera->GetFrontVector() * 10.f);
 	m_ShadowCamera->UpdateVPMatrix();
@@ -982,6 +985,8 @@ void Renderer::RenderShadowMap()
 	BindFramebuffer(FramebufferType_ShadowMap);
 	
 	GL::ClearDepthBuffer();
+	GL::SetDepthFunction(GL::Depth_Less);
+	GL::SetCapability(GL::CullFace, true);
 
 	if (!SetPipeline(pPipelineShadowMap))
 	{
@@ -993,11 +998,14 @@ void Renderer::RenderShadowMap()
 	m_TestLight[0].m_Position = pos;
 	SetLightingUniforms();
 
-	//m_ShadowCamera->SetPosition(/*glm::vec3(0, 20, 1) +*/ pos * 100.f);
-	//m_ShadowCamera->SetFrontVector(pos);
-	//m_ShadowCamera->SetRightVector(normalize(glm::cross(glm::vec3(0, 0, 1), m_ShadowCamera->GetFrontVector())));
-	//m_ShadowCamera->SetUpVector(normalize(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector())));
-	//m_ShadowCamera->UpdateVPMatrix();
+	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 100.f);
+	m_ShadowCamera->SetFrontVector(pos);
+
+	glm::vec3 up = (m_ShadowCamera->GetFrontVector().z > 0.99f) ? glm::vec3(1, 0, 0) : glm::vec3(0, 0, 1);
+	m_ShadowCamera->SetRightVector(normalize(glm::cross(up, m_ShadowCamera->GetFrontVector())));
+	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
+
+	m_ShadowCamera->UpdateVPMatrix();
 
 	SetViewUniforms(m_ShadowCamera);
 	SetPostEffectsUniforms();
@@ -1068,14 +1076,15 @@ void Renderer::RenderShadowMap()
 
 void Renderer::RenderOpaque()
 {
-	GL::SetDepthFunction(GL::Depth_Less);
-
 	lxGPUProfile(RenderOpaque);
 
 	if (!m_DisplayOptions->GetRenderOpaque())
 	{
 		return;
 	}
+
+	GL::SetDepthFunction(GL::Depth_Less);
+	GL::SetCapability(GL::CullFace, true);
 
 	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 
@@ -1847,7 +1856,11 @@ void Renderer::RenderSky()
 	if (!SetPipeline(envMapShader))
 	{
 		return;
-	}
+	}	
+	
+	GL::ClearDepthBuffer();
+	GL::SetDepthFunction(GL::Depth_Always);
+	GL::SetCapability(GL::CullFace, false);
 
 	GLuint fragProg = envMapShader->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	float pi = 3.141592654f;
