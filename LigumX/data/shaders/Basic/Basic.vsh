@@ -28,5 +28,5 @@ void main() {
 	height = pos.z;
 	vNormalWS = mat3(transpose(inverse(g_ModelToWorldMatrix))) * v_Normal;
 
-	FragPosLightSpace = g_LightProjectionMatrix * vWorldPosition;
+	FragPosLightSpace = g_LightProjectionMatrix * vec4(vWorldPosition.xyz, 1.f);
 }

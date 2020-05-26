@@ -20,6 +20,7 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_DataInspector
 
 // Include ProvidersMarker
+uniform vec4 g_DebugVec4;
 
 #if DEFERRED
 layout(location = 0) out vec4 Normal;
@@ -38,6 +39,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 	}
 	// perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+	//projCoords.xy *= g_DebugVec4.xy;
     projCoords = projCoords * 0.5 + 0.5; 
 
 
@@ -45,10 +47,10 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 
 	float currentDepth = projCoords.z;
 
-	float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, normalWS)), 0.005);  
+	float bias = max(0.01 * (1.0 - dot(g_DirectionalLight.m_Direction, normalWS)), 0.005);
 	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
-		//if(projCoords.z > 1.0)
-  //      shadow = 0.0;
+		if(projCoords.z > 1.0)
+        shadow = 0.0;
     return shadow;
 }
 
@@ -326,9 +328,9 @@ void main()
 		float sky = dot(sunDir, pixelData.m_Normal);
 		pixelData.m_DiffuseColor = GetDiffuseColor(myTexCoord);
 
-		float shadow = ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
+		float shadow = 1.f - ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
 
-		pixelData.m_FinalColor = pixelData.m_DiffuseColor * sky /** shadow*/;
+		pixelData.m_FinalColor = pixelData.m_DiffuseColor * sky * shadow;
 
 
 		//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
@@ -354,11 +356,12 @@ void main()
 		//	return shadow;
 		//};
 
-		//vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
+		vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
 		//projCoords = projCoords * 0.5 + 0.5;
 		////projCoords.x = 1.f - projCoords.x;
+		//projCoords.xy *= g_DebugVec4.xy;
 
-		//float closestDepth = texture(g_DepthMapTexture, projCoords.xy).r;
+		float closestDepth = textureLod(g_DepthMapTexture, projCoords.xy, 0).r;
 		//float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, pixelData.m_Normal)), 0.005);
 		//float currentDepth = projCoords.z;
 

@@ -601,8 +601,11 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 
 			if (ImGui::Button("Ok"))
 			{
-				LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, filteredFiles[selectedFileIndex].m_ObjectID, filteredFiles[selectedFileIndex].m_Typename);
-				value = newObject;
+				if (selectedFileIndex != -1)
+				{
+					LXObject* newObject = g_ObjectManager->GetObjectFromIDAndType(true, filteredFiles[selectedFileIndex].m_ObjectID, filteredFiles[selectedFileIndex].m_Typename);
+					value = newObject;
+				}
 
 				imguiManager.SetSelectedFileIndex(-1);
 				ImGui::CloseCurrentPopup();

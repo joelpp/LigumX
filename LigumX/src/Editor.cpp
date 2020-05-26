@@ -1671,7 +1671,17 @@ void Editor::ProcessScrolling()
 		moveVector = activeCamera->GetFrontVector() * scrolling.y * m_Options->GetMouseScrollCameraSpeed();
 	}
 
-	activeCamera->AddTo_Position(-moveVector);
+	if (activeCamera)
+	{
+		if (activeCamera->GetProjectionType() == ProjectionType_Perspective)
+		{
+			activeCamera->AddTo_Position(-moveVector);
+		}
+		else
+		{
+			activeCamera->SetOrthoBorders(activeCamera->GetOrthoBorders() + scrolling.y);
+		}
+	}
 }
 
 void Editor::RenderTools()

@@ -771,6 +771,8 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 			continue;
 		}
 
+
+		SetFragmentUniform(m_DisplayOptions->GetDebugVec4(), "g_DebugVec4");
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 		//if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
@@ -1066,6 +1068,8 @@ void Renderer::RenderShadowMap()
 
 void Renderer::RenderOpaque()
 {
+	GL::SetDepthFunction(GL::Depth_Less);
+
 	lxGPUProfile(RenderOpaque);
 
 	if (!m_DisplayOptions->GetRenderOpaque())
@@ -2007,22 +2011,16 @@ void Renderer::RenderTextBatch(int numQuads, const glm::vec3& color)
 		return;
 	}
 
-	GLuint prog = activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram;
-
 	SetFragmentUniform(color, "g_TextColor");
-	glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
-
-	glActiveTexture(GL_TEXTURE0);
 
 	// Iterate through all characters
 	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
 	glBindVertexArray(mesh->m_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->GetGPUBuffers().glidIndexBuffer);
 
+	glActiveTexture(GL_TEXTURE0);
 	Texture* fontTexture = g_ObjectManager->FindObjectByID<Texture>(897003, true);
 	glBindTexture(GL_TEXTURE_2D, fontTexture->GetHWObject());
-
-	//glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
 	glDrawElementsInstanced(GL_TRIANGLES, (int)mesh->m_buffers.GetIndexBuffer().size(), GL_UNSIGNED_INT, 0, numQuads);
 
@@ -2031,7 +2029,6 @@ void Renderer::RenderTextBatch(int numQuads, const glm::vec3& color)
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
 	GL::SetCapability(GL::Capabilities::CullFace, false);
-
 }
 
 
