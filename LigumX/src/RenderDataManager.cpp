@@ -550,15 +550,26 @@ void RenderDataManager::ClearAABBJobs()
 	m_AABBJobs.clear();
 }
 
-void RenderDataManager::AddTimedMessage(const std::string& message, glm::vec2 position, float scale, float time)
+void RenderDataManager::AddTimedMessage(const std::string& message, const glm::vec2& position, float scale, float time)
 {
-	m_TimedMessages.push_back(TimedMessage(message, position, scale, (int)time));
+	m_TimedMessages.push_back(TimedMessage(message, position, scale, time));
 }
 
 void RenderDataManager::AddTimedMessage(const std::string& message)
 {
-	Editor* editor = g_Editor;
-	AddTimedMessage(message, editor->GetOptions()->GetDefaultMessagePosition(), editor->GetOptions()->GetDefaultMessageScale(), (int)editor->GetOptions()->GetDefaultMessageTime());
+	EditorOptions* editorOptions = g_Editor->GetOptions();
+
+	float scale = editorOptions->GetDefaultMessageScale();
+
+	for (int i = 0; i < m_TimedMessages.size(); ++i)
+	{
+		TimedMessage& message = m_TimedMessages[i];
+		message.m_Position.y += scale;
+	}	
+
+	const glm::vec2& position = editorOptions->GetDefaultMessagePosition();
+
+	AddTimedMessage(message, position, scale, editorOptions->GetDefaultMessageTime());
 }
 
 void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec2& screenPosition, const glm::vec3& color)
@@ -592,9 +603,10 @@ void RenderDataManager::Update()
 	{
 		TimedMessage& message = *messageIterator;
 
-		message.m_Timer -= 1;
+		float dt = Renderer::GetInstance().dt;
+		message.m_Timer -= (dt);
 
-		if (message.m_Timer == 0)
+		if (message.m_Timer < 0.f)
 		{
 			messageIterator = m_TimedMessages.erase(messageIterator);
 		}

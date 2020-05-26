@@ -1747,15 +1747,9 @@ void Renderer::RenderMessages()
 
 	GL::SetViewport(m_Window->GetSize());
 
-	//glm::vec2 startingPosition = g_EngineSettings->GetMessagesStartingPosition();
-	//float heightOffset = (float)g_EngineSettings->GetMessagesPixelsOffset();
-
-	//int numMessages = (int)g_RenderDataManager->GetTimedMessages().size();
-	//startingPosition.y += heightOffset * (numMessages - 1);
-
 	for (const TimedMessage& message : g_RenderDataManager->GetTimedMessages())
 	{
-		RenderText(message.m_Message, message.m_Position.x, message.m_Position.y, message.m_Scale, glm::vec3(1.f, 1.f, 1.f), false);
+		RenderText(lxFormat("%s", message.m_Message.c_str()), message.m_Position.x, message.m_Position.y, message.m_Scale, glm::vec3(1.f, 1.f, 1.f), false);
 		GL::OutputErrors();
 	}
 

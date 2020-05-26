@@ -1743,7 +1743,7 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 			const std::string& toolName = EnumValues_EEditorTool[tool];
 			std::string message = "Selected editor tool : " + toolName + "(" + std::to_string(offset) + ")";
 
-			g_RenderDataManager->AddTimedMessage(message, m_Options->GetDefaultMessagePosition(), m_Options->GetDefaultMessageScale(), m_Options->GetDefaultMessageTime());
+			g_RenderDataManager->AddTimedMessage(message);
 
 			SetActiveTool(tool);
 			return;

@@ -77,7 +77,7 @@ struct S2DMessage
 
 struct TimedMessage
 {
-	TimedMessage(const std::string& message, const glm::vec2& position, float scale, int timer)
+	TimedMessage(const std::string& message, const glm::vec2& position, float scale, float timer)
 	{
 		m_Message = message;
 		m_Timer = timer;
@@ -88,7 +88,7 @@ struct TimedMessage
 	std::string m_Message;
 	glm::vec2 m_Position;
 	float m_Scale;
-	int m_Timer;
+	float m_Timer;
 };
 
 
@@ -200,7 +200,7 @@ public:
 	void AddAABBJob(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 	void AddAABBJobCentered(const glm::vec3& worldPosition, int brushWidth, const glm::vec3& color);
 
-	void AddTimedMessage(const std::string& message, glm::vec2 position, float scale, float time);
+	void AddTimedMessage(const std::string& message, const glm::vec2& position, float scale, float time);
 	void AddTimedMessage(const std::string& message);
 
 	void Add2DMessage(const std::string& message, const glm::ivec2& screenPosition, const glm::vec3& color);
