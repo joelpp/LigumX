@@ -215,11 +215,15 @@ void ImguiHelpers::ShowGUIText(const std::string& text, const char* variableName
 
 void ImguiHelpers::ShowVariableAsText(int variable, const char* variableName)
 {
+	LXImguiWidthScope(100);
+
 	ImGui::Text("%s : %d", variableName, variable);
 }
 
 void ImguiHelpers::ShowVariableAsText(float variable, const char* variableName)
 {
+	LXImguiWidthScope(100);
+
 	ImGui::Text("%s : %f", variableName, variable);
 }
 
@@ -227,6 +231,8 @@ void ImguiHelpers::ShowVariableAsText(float variable, const char* variableName)
 
 bool ImguiHelpers::ShowProperty(int* value, const char* name)
 {
+	LXImguiWidthScope(100);
+
 	ShowVariableAsText(*value, name);
 
 	return false;
@@ -234,6 +240,8 @@ bool ImguiHelpers::ShowProperty(int* value, const char* name)
 
 bool ImguiHelpers::ShowProperty(int* value, const char* name, int min, int max)
 {
+	LXImguiWidthScope(100);
+
 	return ImGui::SliderInt(name, value, min, max);
 }
 
@@ -264,6 +272,8 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, int* value, float min, float max)
 {
+	LXImguiWidthScope(100);
+
 	bool changed = ShowInt(propertyData.m_Name, *value, (int)min, (int)max);
 
 	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
@@ -275,6 +285,8 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, lxInt64* value, float min, float max)
 {
+	LXImguiWidthScope(100);
+
 	bool changed = ShowInt64(propertyData.m_Name, *value, (long)min, (long)max);
 
 	if (changed && (propertyData.m_PropertyFlags & PropertyFlags_SetCallback))
@@ -286,6 +298,8 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, float* value, float min, float max)
 {
+	LXImguiWidthScope(100);
+
 	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
@@ -305,6 +319,8 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec2* value, float min, float max)
 {
+	LXImguiWidthScope(100);
+
 	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
@@ -329,6 +345,8 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec3* value, float min, float max)
 {
+	LXImguiWidthScope(100);
+
 	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
@@ -348,6 +366,8 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::vec4* value, float min, float max)
 {
+	LXImguiWidthScope(100);
+
 	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
@@ -366,6 +386,8 @@ bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyD
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, glm::ivec2* value, float min, float max)
 {
+	LXImguiWidthScope(100);
+
 	bool changed = false;
 	if (min == LX_LIMITS_FLOAT_MIN && max == LX_LIMITS_FLOAT_MAX)
 	{
@@ -764,4 +786,15 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 	return success;
 
 
+}
+
+
+LXImguiWidthScope::LXImguiWidthScope(int width)
+{
+	ImGui::PushItemWidth(width);
+}
+
+LXImguiWidthScope::~LXImguiWidthScope()
+{
+	ImGui::PopItemWidth();
 }

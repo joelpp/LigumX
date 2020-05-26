@@ -59,6 +59,12 @@ float GetMouseScrollCameraSpeed() { return m_MouseScrollCameraSpeed; };
 void SetMouseScrollCameraSpeed(float value) { m_MouseScrollCameraSpeed = value; }; 
 float GetMouseScrollEntityCloseupPercent() { return m_MouseScrollEntityCloseupPercent; }; 
 void SetMouseScrollEntityCloseupPercent(float value) { m_MouseScrollEntityCloseupPercent = value; }; 
+glm::vec2& GetDefaultMessagePosition() { return m_DefaultMessagePosition; }; 
+void SetDefaultMessagePosition(const glm::vec2& value) { m_DefaultMessagePosition = value; }; 
+float GetDefaultMessageScale() { return m_DefaultMessageScale; }; 
+void SetDefaultMessageScale(float value) { m_DefaultMessageScale = value; }; 
+float GetDefaultMessageTime() { return m_DefaultMessageTime; }; 
+void SetDefaultMessageTime(float value) { m_DefaultMessageTime = value; }; 
 private:
 bool m_Enabled = false;
 bool m_ShowWorldWindow = false;
@@ -80,8 +86,11 @@ bool m_DisplayTerrainTool = true;
 bool m_DisplayAxisGizmo = true;
 float m_MouseScrollCameraSpeed = 10.0f;
 float m_MouseScrollEntityCloseupPercent = 15.0f;
+glm::vec2 m_DefaultMessagePosition = glm::vec2(0, 0);
+float m_DefaultMessageScale = 0.f;
+float m_DefaultMessageTime = 50;
 public:
-static const int g_PropertyCount = 20;
+static const int g_PropertyCount = 23;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -106,6 +115,9 @@ PIDX_DisplayTerrainTool,
 PIDX_DisplayAxisGizmo,
 PIDX_MouseScrollCameraSpeed,
 PIDX_MouseScrollEntityCloseupPercent,
+PIDX_DefaultMessagePosition,
+PIDX_DefaultMessageScale,
+PIDX_DefaultMessageTime,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

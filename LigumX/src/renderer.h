@@ -152,7 +152,7 @@ public:
     void init_pipelines_text();
 
     void Render(World* world);
-    void RenderText(Text t);
+    void RenderText(const Text& t);
     void RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat scale, const glm::vec3& color, bool projected);
     void DrawMesh(Mesh* mesh, Material* material);
 	void DrawMesh(Mesh* mesh);
@@ -203,6 +203,9 @@ public:
 
 	void SetUniform(glm::vec3& value, const char* name, GLuint location);
 	void SetUniform(const glm::vec3& value, const char* name, GLuint location);
+
+	void SetUniform(glm::vec4& value, const char* name, GLuint location);
+	void SetUniform(const glm::vec4& value, const char* name, GLuint location);
 
 	void SetUniform(glm::vec2& value, const char* name, GLuint location);
 	void SetUniform(const glm::vec2& value, const char* name, GLuint location);

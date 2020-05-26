@@ -36,9 +36,10 @@ class DisplayOptions
 
 	DisplayMode DisplayMode = DisplayMode_Final;
 
+	glm::vec2 FPSDisplayPosition = glm::vec2(0, 0);
+	float FPSDisplayScale = 0.1f;
+
 	[transient]
-	glm::vec2 FPSDisplayPosition = glm::vec2(1150, 950);
-	
-	[transient]
-	float FPSDisplayScale = 0.3f;
+	glm::vec4 DebugVec4;
+
 }

@@ -42,3 +42,10 @@ MouseScrollCameraSpeed
 10.000000
 MouseScrollEntityCloseupPercent
 15.000000
+DefaultMessagePosition
+-0.920000
+-0.920000
+DefaultMessageScale
+0.030000
+DefaultMessageTime
+1000.000000

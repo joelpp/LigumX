@@ -26,6 +26,9 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "DisplayAxisGizmo", PIDX_DisplayAxisGizmo, offsetof(EditorOptions, m_DisplayAxisGizmo), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "MouseScrollCameraSpeed", PIDX_MouseScrollCameraSpeed, offsetof(EditorOptions, m_MouseScrollCameraSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MouseScrollEntityCloseupPercent", PIDX_MouseScrollEntityCloseupPercent, offsetof(EditorOptions, m_MouseScrollEntityCloseupPercent), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "DefaultMessagePosition", PIDX_DefaultMessagePosition, offsetof(EditorOptions, m_DefaultMessagePosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "DefaultMessageScale", PIDX_DefaultMessageScale, offsetof(EditorOptions, m_DefaultMessageScale), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "DefaultMessageTime", PIDX_DefaultMessageTime, offsetof(EditorOptions, m_DefaultMessageTime), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void EditorOptions::Serialize(Serializer2& serializer)
 {
@@ -50,6 +53,9 @@ void EditorOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_DisplayAxisGizmo], m_DisplayAxisGizmo);
 	serializer.SerializeFloat(g_Properties[PIDX_MouseScrollCameraSpeed], m_MouseScrollCameraSpeed);
 	serializer.SerializeFloat(g_Properties[PIDX_MouseScrollEntityCloseupPercent], m_MouseScrollEntityCloseupPercent);
+	serializer.SerializeVec2(g_Properties[PIDX_DefaultMessagePosition], m_DefaultMessagePosition);
+	serializer.SerializeFloat(g_Properties[PIDX_DefaultMessageScale], m_DefaultMessageScale);
+	serializer.SerializeFloat(g_Properties[PIDX_DefaultMessageTime], m_DefaultMessageTime);
 }
 bool EditorOptions::Serialize(bool writing)
 {
@@ -83,6 +89,9 @@ bool EditorOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayAxisGizmo], &m_DisplayAxisGizmo  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseScrollCameraSpeed], &m_MouseScrollCameraSpeed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseScrollEntityCloseupPercent], &m_MouseScrollEntityCloseupPercent , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DefaultMessagePosition], &m_DefaultMessagePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DefaultMessageScale], &m_DefaultMessageScale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DefaultMessageTime], &m_DefaultMessageTime , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 const char* EditorOptions::GetTypeName()

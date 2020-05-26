@@ -173,7 +173,10 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 			}
 		}
 
-		m_PickedSector = g_World->GetSectorByWorldPosition(m_AimingWorldPosition);
+		if (g_World)
+		{
+			m_PickedSector = g_World->GetSectorByWorldPosition(m_AimingWorldPosition);
+		}
 
 		if (!found)
 		{

@@ -550,14 +550,15 @@ void RenderDataManager::ClearAABBJobs()
 	m_AABBJobs.clear();
 }
 
-void RenderDataManager::AddTimedMessage(const std::string& message)
+void RenderDataManager::AddTimedMessage(const std::string& message, glm::vec2 position, float scale, float time)
 {
-	AddTimedMessage(message, g_EngineSettings->GetMessagesDefaultFrameCount());
+	m_TimedMessages.push_back(TimedMessage(message, position, scale, (int)time));
 }
 
-void RenderDataManager::AddTimedMessage(const std::string& message, int numFrames)
+void RenderDataManager::AddTimedMessage(const std::string& message)
 {
-	m_TimedMessages.push_back(TimedMessage(message, numFrames));
+	Editor* editor = g_Editor;
+	AddTimedMessage(message, editor->GetOptions()->GetDefaultMessagePosition(), editor->GetOptions()->GetDefaultMessageScale(), (int)editor->GetOptions()->GetDefaultMessageTime());
 }
 
 void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec2& screenPosition, const glm::vec3& color)
@@ -572,16 +573,13 @@ void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec
 
 void RenderDataManager::Add2DMessage(const std::string& message, const glm::ivec2& screenPosition)
 {
-	Add2DMessage(message, screenPosition, glm::vec3(0.5, 0.8f, 0.2f));
+	Add2DMessage(message, screenPosition, glm::vec3(1.f, 1.f, 1.f));
 }
 
 
 void RenderDataManager::AddMouseMessage(const std::string& message)
 {
 	glm::ivec2 mousePos = glm::ivec2(g_InputHandler->GetMousePosition());
-
-	int messageHeight = (int) (g_EngineSettings->GetMessagesPixelsOffset() * 1.1f * m_NumMouseMessages);
-	mousePos.y = 990 - mousePos.y - messageHeight;
 	Add2DMessage(message, mousePos);
 
 	m_NumMouseMessages++;
@@ -690,7 +688,13 @@ glm::vec4 GetClipPosFromWorldPosition(const glm::vec4& worldPosition, Camera* ca
 }
 glm::ivec2 GetNDCFromClipPos(const glm::vec4& clipPos, const glm::vec2& windowSize)
 {
-	return glm::ivec2((0.5f * (glm::vec2(clipPos) + glm::vec2(1, 1))) * windowSize);
+	glm::vec2 c = glm::vec2(clipPos);
+	c += glm::vec2(1, 1);
+	c *= 0.5f;
+
+	c.y = 1.f - c.y;
+
+	return glm::ivec2(c * windowSize);
 }
 
 glm::ivec2 GetNDCFromWorldPosition(const glm::vec4& worldPosition, Camera* camera, const glm::vec2& windowSize)

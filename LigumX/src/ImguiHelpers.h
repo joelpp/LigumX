@@ -462,3 +462,10 @@ namespace ImguiHelpers
 
 
 }
+
+class LXImguiWidthScope
+{
+public:
+	LXImguiWidthScope(int width = 100);
+	~LXImguiWidthScope();
+};
