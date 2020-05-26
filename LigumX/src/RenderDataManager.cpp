@@ -672,7 +672,7 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 
 		if (m_CullingOptions->GetCullEntities() /*&& e == g_Editor->GetPickingTool()->GetPickedEntity()*/)
 		{
-			visible = IsAABBVisible(e->GetComponent<BoundingBoxComponent>()->GetBoundingBox(), e->GetModelToWorldMatrix(), camera);
+			visible = IsAABBVisible(e, e->GetComponent<BoundingBoxComponent>()->GetBoundingBox(), e->GetModelToWorldMatrix(), camera);
 		}
 
 		if (!visible)
@@ -714,7 +714,7 @@ glm::ivec2 GetNDCFromWorldPosition(const glm::vec4& worldPosition, Camera* camer
 	return GetNDCFromClipPos(GetClipPosFromWorldPosition(worldPosition, camera), windowSize);
 }
 
-bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Camera* camera)
+bool RenderDataManager::IsAABBVisible(Entity* e, const std::vector<glm::vec3>& vertices, Camera* camera)
 {
 	if (m_CullingOptions->GetUseDotProduct())
 	{
@@ -764,7 +764,10 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 		}
 	}
 
-	if (m_CullingOptions->GetUseAABBClipPos())
+	bool use = m_CullingOptions->GetUseAABBClipPos();
+	bool debug = m_CullingOptions->GetDebugAABBClippPos();
+
+	if (use || debug)
 	{
 
 		const glm::mat4& vpMatrix = camera->GetViewProjectionMatrix();
@@ -790,15 +793,15 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 			{
 				visible = true;
 
-				if (!m_CullingOptions->GetDebugAABBClippPos())
+				if (use && !debug)
 				{
 					return true;
 				}
 			}
 
 
-
-			if (m_CullingOptions->GetDebugAABBClippPos())
+			Entity* pickedEntity = g_Editor->GetPickingTool()->GetPickedEntity();
+			if (debug && pickedEntity && (e == pickedEntity))
 			{
 				const glm::vec2& windowSize = glm::vec2(Renderer::GetInstance().GetWindowSize());
 
@@ -842,13 +845,18 @@ bool RenderDataManager::IsAABBVisible(const std::vector<glm::vec3>& vertices, Ca
 
 		bool result = oneVertexVisible;
 
+		if (!use && debug)
+		{
+			result = true;
+		}
+
 		return result;
 	}
 
 	return true;
 }
 
-bool RenderDataManager::IsAABBVisible(const AABB& aabb, const glm::mat4& toWorldMatrix, Camera* camera)
+bool RenderDataManager::IsAABBVisible(Entity* e, const AABB& aabb, const glm::mat4& toWorldMatrix, Camera* camera)
 {
 	Mesh* cubeMesh = g_DefaultObjects->DefaultCubeMesh;
 	std::vector<glm::vec3> vertices;
@@ -859,14 +867,14 @@ bool RenderDataManager::IsAABBVisible(const AABB& aabb, const glm::mat4& toWorld
 		vertices.push_back(glm::vec3(vertex4));
 	}
 
-	return IsAABBVisible(vertices, camera);
+	return IsAABBVisible(e, vertices, camera);
 }
 
 bool RenderDataManager::IsSectorVisible(Sector* sector, Camera* camera)
 {
 	const AABB& aabb = ((BoundingBoxComponent*)sector->GetTerrainPatchEntity()->GetComponent<BoundingBoxComponent>())->GetBoundingBox();
 	glm::mat4 identity(1.f);
-	bool visible = IsAABBVisible(aabb, identity, camera);;
+	bool visible = IsAABBVisible(sector->GetTerrainPatchEntity(), aabb, identity, camera);;
 
 	return visible;
 }

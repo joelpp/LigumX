@@ -705,6 +705,32 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 			//ptrDisplay.SetOpenPopup(true);
 			popupIsOpen = true;
 		}
+		if (ImGui::Button("Add new..."))
+			ImGui::OpenPopup("Popup_AddNew");
+		if (ImGui::BeginPopup("Popup_AddNew"))
+		{
+			std::vector<LXType>& childTypes = g_ObjectManager->g_ChildClasses[propertyData.m_AssociatedType];
+			std::vector<LXString> childTypesNames;
+			for (LXType& lxType : childTypes)
+			{
+				childTypesNames.push_back(g_ObjectManager->GetClassnameFromLXType(lxType));
+			}
+
+			for (int i = 0; i < childTypesNames.size(); i++)
+			{
+				if (ImGui::MenuItem(childTypesNames[i].c_str(), "", nullptr))
+				{
+					lxLogMessage(lxFormat("Creating class of type %s", childTypesNames[i].c_str()).c_str());
+
+					LXObject* newObject = g_ObjectManager->CreateNewObject(childTypesNames[i].c_str());
+					values.push_back(newObject);
+					break;
+				}
+			}
+				
+
+			ImGui::EndPopup();
+		}
 		ImGui::EndPopup();
 	}
 
