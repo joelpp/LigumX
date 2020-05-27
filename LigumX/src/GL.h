@@ -240,7 +240,7 @@ public:
 	static void OutputErrors();
 	static void OutputDebugMessages(int numMsgs);
 
-
+	static void GPUMemoryBarrier(int barrier);
 	static bool g_CheckGLErrors;
 
 };

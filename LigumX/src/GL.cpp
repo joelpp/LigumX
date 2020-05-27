@@ -410,3 +410,8 @@ void GL::DepthWriteEnabled(bool enabled)
 {
 	glDepthMask(enabled);
 }
+
+void GL::GPUMemoryBarrier(int barrier)
+{
+	//glMemoryBarrier(barrier);
+}

@@ -1086,7 +1086,7 @@ void Renderer::RenderOpaque()
 	GL::SetDepthFunction(GL::Depth_Less);
 	GL::SetCapability(GL::CullFace, true);
 
-	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+	GL::GPUMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
@@ -1180,7 +1180,7 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 	SetComputeUniform(mouseClickPosition, "g_MouseClickPosition");
 
 	glDispatchCompute(1, 1, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	GL::GPUMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
@@ -1394,7 +1394,8 @@ void Renderer::RenderGrid()
 	SetViewUniforms(m_ActiveCamera);
 	SetFragmentUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
 
-	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+	GL::GPUMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+
 	SetFragmentUniform(0, "g_DepthTexture");
 	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetDepthTexture());
 
@@ -1529,7 +1530,7 @@ void Renderer::AfterWorldRender()
 
 void Renderer::DataInspector_FinishFrame()
 {
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	GL::GPUMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, m_DataInspectorSSBO);
 
