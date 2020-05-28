@@ -307,7 +307,7 @@ void main()
 
 					vec3 nominator    = NDF * G * F;
 					float denominator = 4 * max(dot(pixelData.m_Normal, fragmentToCamera), 0.0) * max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0) + 0.001; 
-					vec3 specular     = nominator / denominator;  
+					vec3 specular     = nominator / max(denominator, 0.001);  
 
 					vec3 kS = F;
 					vec3 kD = vec3(1.0) - kS;
@@ -337,14 +337,14 @@ void main()
 
 		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * sky * shadow;
 
-		float ambient = 0.1f;
+		float ambient = 0.01f;
 
 		if (g_Material.m_Unlit)
 		{
 			pixelData.m_FinalColor = GetDiffuseColor(myTexCoord);
 		}
 
-		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
+		pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
 
 		//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 		//{
@@ -414,6 +414,7 @@ void main()
 
 	if (g_GammaCorrectionEnabled > 0)
 	{
+		pixelData.m_FinalColor.rgb = pixelData.m_FinalColor.rgb / (pixelData.m_FinalColor.rgb + vec3(1.f, 1.f, 1.f));
 		pixelData.m_FinalColor.rgb = pow(pixelData.m_FinalColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 		BrightColor.rgb = pow(BrightColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 	}

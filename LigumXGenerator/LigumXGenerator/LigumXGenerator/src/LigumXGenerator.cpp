@@ -653,6 +653,7 @@ void InitializeGenerator()
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_MinValue, "min");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_MaxValue, "max");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_Transient, "transient");
+	EMPLACE_PROPERTY_FLAG(PropertyFlags_NoCloning, "nocloning");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_NonEditable, "noneditable");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_Adder, "adder");
 	EMPLACE_PROPERTY_FLAG(PropertyFlags_Enum, "enum");

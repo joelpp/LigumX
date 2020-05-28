@@ -111,6 +111,7 @@ public:
 		ADD_PROPERTY(PropertyFlags_NonEditable)
 		ADD_PROPERTY(PropertyFlags_Adder)
 		ADD_PROPERTY(PropertyFlags_Enum)
+		ADD_PROPERTY(PropertyFlags_NoCloning)
 
 		if (toReturn.size() == 0)
 		{
@@ -271,6 +272,11 @@ public:
 	void WriteVariable(Variable& var, const OutputParams& outputParams)
 	{
 		if (outputParams.m_IgnoreTransientMembers && (var.m_PropertyFlags & PropertyFlags_Transient))
+		{
+			return;
+		}
+
+		if (outputParams.m_IsClone && (var.m_PropertyFlags & PropertyFlags_NoCloning))
 		{
 			return;
 		}

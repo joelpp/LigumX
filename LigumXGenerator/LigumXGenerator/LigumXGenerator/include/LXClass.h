@@ -21,6 +21,7 @@ enum PropertyFlags
 	PropertyFlags_NonEditable		= 1 << 7,
 	PropertyFlags_Adder				= 1 << 8,
 	PropertyFlags_Enum				= 1 << 9,
+	PropertyFlags_NoCloning			= 1 << 10,
 };
 
 
