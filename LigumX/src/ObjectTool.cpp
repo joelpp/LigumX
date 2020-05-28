@@ -11,6 +11,7 @@ const ClassPropertyData ObjectTool::g_Properties[] =
 { "LoadUnloadedObjects", PIDX_LoadUnloadedObjects, offsetof(ObjectTool, m_LoadUnloadedObjects), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "COMMAND_SaveCurrentObject", PIDX_COMMAND_SaveCurrentObject, offsetof(ObjectTool, m_COMMAND_SaveCurrentObject), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(ObjectTool, COMMAND_SaveCurrentObject, bool),}, 
 { "COMMAND_CreateNewObject", PIDX_COMMAND_CreateNewObject, offsetof(ObjectTool, m_COMMAND_CreateNewObject), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(ObjectTool, COMMAND_CreateNewObject, bool),}, 
+{ "COMMAND_CloneCurrentObject", PIDX_COMMAND_CloneCurrentObject, offsetof(ObjectTool, m_COMMAND_CloneCurrentObject), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(ObjectTool, COMMAND_CloneCurrentObject, bool),}, 
 };
 void ObjectTool::Serialize(Serializer2& serializer)
 {
@@ -19,6 +20,7 @@ void ObjectTool::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_LoadUnloadedObjects], m_LoadUnloadedObjects);
 	serializer.SerializeBool(g_Properties[PIDX_COMMAND_SaveCurrentObject], m_COMMAND_SaveCurrentObject);
 	serializer.SerializeBool(g_Properties[PIDX_COMMAND_CreateNewObject], m_COMMAND_CreateNewObject);
+	serializer.SerializeBool(g_Properties[PIDX_COMMAND_CloneCurrentObject], m_COMMAND_CloneCurrentObject);
 }
 bool ObjectTool::Serialize(bool writing)
 {
@@ -36,6 +38,7 @@ bool ObjectTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LoadUnloadedObjects], &m_LoadUnloadedObjects  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_SaveCurrentObject], &m_COMMAND_SaveCurrentObject  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CreateNewObject], &m_COMMAND_CreateNewObject  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CloneCurrentObject], &m_COMMAND_CloneCurrentObject  );
 	return true;
 }
 const char* ObjectTool::GetTypeName()
@@ -57,7 +60,9 @@ struct LXObjectFilenameData
 	LXType type;
 };
 
-const char* g_ImguiStrings_ObjectTool_CreateNewObject = "Create new object...";
+const char* g_ImguiStrings_ObjectTool_CreateNewObject = "Create new object";
+const char* g_ImguiStrings_ObjectTool_CloneCurrentObject = "Clone current object";
+
 void ObjectTool::DrawImguiWindow()
 {
 
@@ -111,6 +116,7 @@ void ObjectTool::DrawImguiWindow()
 			}
 			ImGui::EndPopup();
 		}
+
 	}
 
 	g_GUI->EndWindow();
@@ -131,6 +137,10 @@ void ObjectTool::CreateNewObject(const LXString& typeName)
 
 void ObjectTool::SetCOMMAND_CreateNewObject_Callback(const bool& value)
 {
-	m_COMMAND_CreateNewObject = value;
 	ImGui::OpenPopup(g_ImguiStrings_ObjectTool_CreateNewObject);
+}
+
+void ObjectTool::SetCOMMAND_CloneCurrentObject_Callback(const bool& value)
+{
+
 }

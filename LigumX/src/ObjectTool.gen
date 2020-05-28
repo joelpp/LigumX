@@ -10,4 +10,7 @@ class ObjectTool : EditorTool
 	[setcallback]
 	bool COMMAND_CreateNewObject;
 
+	[setcallback]
+	bool COMMAND_CloneCurrentObject;
+
 }

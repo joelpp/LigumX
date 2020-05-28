@@ -234,18 +234,20 @@ public:
 	{
 		Imgui = 0,
 		Serializer,
+		Clone,
 		Count
 	};
 
 	struct OutputParams
 	{
-		OutputParams(const std::string& prefix, bool limits, bool ignoreTransientMembers, bool usePIDX, bool ptrToValue, bool callTemplate)
+		OutputParams(const std::string& prefix, bool limits, bool ignoreTransientMembers, bool usePIDX, bool ptrToValue, bool callTemplate, bool isClone)
 			: m_Prefix(prefix)
 			, m_OutputLimits(limits)
 			, m_IgnoreTransientMembers(ignoreTransientMembers)
 			, m_UsePIDX(usePIDX)
 			, m_PtrToValue(ptrToValue)
 			, m_CallTemplate(callTemplate)
+			, m_IsClone(isClone)
 		{
 
 		}
@@ -255,13 +257,15 @@ public:
 		bool m_UsePIDX;
 		bool m_PtrToValue;
 		bool m_CallTemplate;
+		bool m_IsClone; // todo jpp this totally breaks the output params concept
 	};
 
 
-	OutputParams g_OutputParams[2] =
+	OutputParams g_OutputParams[] =
 	{
-		OutputParams("ImguiHelpers::ShowProperty(this, ", true, false, true, true, true),
-		OutputParams("serializer.Serialize", false, true, true, false, false),
+		OutputParams("ImguiHelpers::ShowProperty(this, ", true, false, true, true, true, false),
+		OutputParams("serializer.Serialize", false, true, true, false, false, false),
+		OutputParams("other.Set", false, false, false, false, false, true),
 	};
 
 	void WriteVariable(Variable& var, const OutputParams& outputParams)
@@ -281,63 +285,70 @@ public:
 		const std::string& varType = var.GetType();
 
 		bool write = false;
-
-		if (var.m_IsPtr || var.m_IsTemplate)
+		if (outputParams.m_IsClone)
 		{
-			// found
-			write = true;
-
-			if (var.m_IsTemplate)
-			{
-				if (var.m_AssociatedPtr)
-				{
-					typeToWrite = "Vector";
-				}
-				else
-				{
-					typeToWrite = "Vector";
-				}
-			}
-			else
-			{
-				typeToWrite = "ObjectPtr";
-			}
-
-
-			//if (var.m_IsTemplate)
-			//{
-			//	extraArgs = ", " + var.m_AssociatedType;
-			//}
-			//else
-			//{
-			//	extraArgs = ", " + var.GetType();
-			//}
-
-
+			typeToWrite = varName;
 		}
 		else
 		{
-			// not a ref to another object. maybe a primitive type? 
-			auto findResult = g_LXTypeToImguiCallName.find(varType);
-
-			if (findResult != g_LXTypeToImguiCallName.end())
+			if (var.m_IsPtr || var.m_IsTemplate)
 			{
 				// found
 				write = true;
 
-				typeToWrite = findResult->second;
-
-				if (VarTypeSupportsLimits(var))
+				if (var.m_IsTemplate)
 				{
-					// has limits
-					extraArgs += ", " + var.GetMinValue() + ", " + var.GetMaxValue();
+					if (var.m_AssociatedPtr)
+					{
+						typeToWrite = "Vector";
+					}
+					else
+					{
+						typeToWrite = "Vector";
+					}
 				}
 				else
 				{
+					typeToWrite = "ObjectPtr";
 				}
 
+
+				//if (var.m_IsTemplate)
+				//{
+				//	extraArgs = ", " + var.m_AssociatedType;
+				//}
+				//else
+				//{
+				//	extraArgs = ", " + var.GetType();
+				//}
+
+
+			}
+			else
+			{
+				// not a ref to another object. maybe a primitive type? 
+				auto findResult = g_LXTypeToImguiCallName.find(varType);
+
+				if (findResult != g_LXTypeToImguiCallName.end())
+				{
+					// found
+					write = true;
+
+					typeToWrite = findResult->second;
+
+					if (VarTypeSupportsLimits(var))
+					{
+						// has limits
+						extraArgs += ", " + var.GetMinValue() + ", " + var.GetMaxValue();
+					}
+					else
+					{
+					}
+
+				}
 			}
 		}
+		
 
 		//if (var.m_PropertyFlags & PropertyFlags_SetCallback)
 		//{
@@ -399,7 +410,10 @@ public:
 			sstr << "\"";
 		}
 
-		sstr << ", ";
+		if (!outputParams.m_IsClone)
+		{
+			sstr << ", ";
+		}
 
 		if (outputParams.m_PtrToValue/* && !var.m_IsPtr*/ && !var.m_IsTemplate && (var.GetType() != "std::string"))
 		{
@@ -470,6 +484,21 @@ public:
 		WriteLine("	return success;");
 		WriteLine("}");
 	}
+
+	void WriteCloner()
+	{
+		WriteLine("void " + m_Class.m_Name + "::Clone(" + m_Class.m_Name + "& other)");
+		WriteLine("{");
+
+		if (!(m_Class.m_ParentName.empty()))
+		{
+			WriteLine("\tsuper::Clone(other);");
+		}
+
+		WriteVariables(OutputType::Clone);
+		WriteLine("}");
+	}
+
 
 	void WriteGetTypeName()
 	{

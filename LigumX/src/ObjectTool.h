@@ -31,13 +31,17 @@ void SetCOMMAND_SaveCurrentObject_Callback(const bool& value);
 bool GetCOMMAND_CreateNewObject() { return m_COMMAND_CreateNewObject; }; 
 void SetCOMMAND_CreateNewObject(bool value) { SetCOMMAND_CreateNewObject_Callback(value); }; 
 void SetCOMMAND_CreateNewObject_Callback(const bool& value);
+bool GetCOMMAND_CloneCurrentObject() { return m_COMMAND_CloneCurrentObject; }; 
+void SetCOMMAND_CloneCurrentObject(bool value) { SetCOMMAND_CloneCurrentObject_Callback(value); }; 
+void SetCOMMAND_CloneCurrentObject_Callback(const bool& value);
 private:
 int m_SelectedFileIndex = -1;
 bool m_LoadUnloadedObjects = false;
 bool m_COMMAND_SaveCurrentObject = false;
 bool m_COMMAND_CreateNewObject = false;
+bool m_COMMAND_CloneCurrentObject = false;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ObjectToolPIDX
@@ -46,6 +50,7 @@ PIDX_SelectedFileIndex,
 PIDX_LoadUnloadedObjects,
 PIDX_COMMAND_SaveCurrentObject,
 PIDX_COMMAND_CreateNewObject,
+PIDX_COMMAND_CloneCurrentObject,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
