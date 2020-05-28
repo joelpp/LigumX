@@ -606,23 +606,18 @@ void Renderer::SetLightingUniforms()
 	SetFragmentUniform(useSkyLighting,	"g_UseSkyLighting");
 	SetFragmentUniform(m_DisplayOptions->GetRenderShadows(),	"g_UseShadows");
 
-	if (useSkyLighting)
+	SetFragmentUniform(m_SkyLight.m_Position, "g_DirectionalLight.m_Direction");
+	SetFragmentUniform(m_SkyLight.m_DiffuseColor, "g_DirectionalLight.m_DiffuseColor");
+	SetFragmentUniform(m_SkyLight.m_AmbientColor, "g_DirectionalLight.m_AmbientColor");
+	SetFragmentUniform(m_SkyLight.m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
+
+	for (int i = 0; i < m_NumLights; ++i)
 	{
-		SetFragmentUniform(m_TestLight[0].m_Position, "g_DirectionalLight.m_Direction");
-		SetFragmentUniform(m_TestLight[0].m_DiffuseColor, "g_DirectionalLight.m_DiffuseColor");
-		SetFragmentUniform(m_TestLight[0].m_AmbientColor, "g_DirectionalLight.m_AmbientColor");
-		SetFragmentUniform(m_TestLight[0].m_SpecularColor, "g_DirectionalLight.m_SpecularColor");
-	}
-	else
-	{
-		for (int i = 0; i < m_NumLights; ++i)
-		{
-			std::string index = std::to_string(i);
-			SetFragmentUniform(m_TestLight[i].m_Position,		("g_PointLight[" + index + "].m_Position").c_str()	);
-			SetFragmentUniform(m_TestLight[i].m_DiffuseColor,	("g_PointLight[" + index + "].m_DiffuseColor").c_str());
-			SetFragmentUniform(m_TestLight[i].m_AmbientColor,	("g_PointLight[" + index + "].m_AmbientColor").c_str());
-			SetFragmentUniform(m_TestLight[i].m_SpecularColor,	("g_PointLight[" + index + "].m_SpecularColor").c_str());
-		}
+		std::string index = std::to_string(i);
+		SetFragmentUniform(m_TestLight[i].m_Position,		("g_PointLight[" + index + "].m_Position").c_str()	);
+		SetFragmentUniform(m_TestLight[i].m_DiffuseColor,	("g_PointLight[" + index + "].m_DiffuseColor").c_str());
+		SetFragmentUniform(m_TestLight[i].m_AmbientColor,	("g_PointLight[" + index + "].m_AmbientColor").c_str());
+		SetFragmentUniform(m_TestLight[i].m_SpecularColor,	("g_PointLight[" + index + "].m_SpecularColor").c_str());
 	}
 
 	SetFragmentUniform(m_NumLights, "g_NumLights");
@@ -1010,7 +1005,7 @@ void Renderer::RenderShadowMap()
 
 	glm::vec3 pos = glm::normalize(m_World->GetSunLight()->GetSunDirection());
 
-	m_TestLight[0].m_Position = pos;
+	m_SkyLight.m_Position = pos;
 	SetLightingUniforms();
 
 	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 100.f);

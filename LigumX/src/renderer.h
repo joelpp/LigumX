@@ -348,6 +348,7 @@ public:
     std::map<GLchar, Character> Characters;
     std::vector<Text> texts;
 
+	Light m_SkyLight;
 	Light m_TestLight[8];
 
     template<typename T> static void createGLBuffer(GLuint &bufferName, std::vector<T> bufferData) 

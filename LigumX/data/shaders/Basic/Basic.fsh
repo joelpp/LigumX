@@ -100,7 +100,7 @@ vec4 GetDiffuseColor(vec2 uv)
 vec3 GetLightColor(int lightIndex)
 {
 	vec3 lightColor;
-	if (g_UseSkyLighting)
+	if (false && g_UseSkyLighting)
 	{
 		//lightColor = g_DirectionalLight.m_DiffuseColor;
 		lightColor = vec3(1, 0, 0);
@@ -116,7 +116,7 @@ vec3 GetLightColor(int lightIndex)
 vec3 GetLightDirection(int lightIndex)
 {
 	vec3 lightDirection;
-	if (g_UseSkyLighting)
+	if (false && g_UseSkyLighting)
 	{
 		//lightDirection = g_DirectionalLight.m_Direction;
 		lightDirection = vec3(0, 0, 1);
@@ -245,9 +245,9 @@ void main()
 
 	if (g_UseLighting > 0)
 	{
-#if 0
 		for (int lightIndex = 0; lightIndex < g_NumLights; ++lightIndex)
 		{
+#if 0
 			if (!g_Material.m_IsPBR)
 			{
 				// Directions
@@ -281,7 +281,8 @@ void main()
 			}
 			else
 			{
-			   // calculate per-light radiance
+#endif
+				// calculate per-light radiance
 
 					vec3 fragmentToLight = GetLightDirection(lightIndex);
 					vec3 fragmentToLightDir = normalize(fragmentToLight);
@@ -311,27 +312,33 @@ void main()
 					vec3 kS = F;
 					vec3 kD = vec3(1.0) - kS;
 					kD *= 1.0 - g_Material.m_Metallic;	  
+
+					radiance *= 1e4;
         
 					// add to outgoing radiance Lo
 					float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);                
-					FinalColor.rgb += (kD * GetDiffuseColor(myTexCoord).rgb / PI + specular) * radiance * NdotL; 
-					//FinalColor.rgb = NdotL * vec3(1.0); 
-			}
+					vec3 finalColor = (kD * GetDiffuseColor(myTexCoord).rgb / PI + specular) * radiance * NdotL;
+					pixelData.m_FinalColor.rgb += finalColor;
+
+					//pixelData.m_FinalColor.rgb = NdotL * vec3(1.0);
+			//}
 		}
-#endif
 
 
 		vec2 sunDirFlat = vec2(cos(sunOrientation), sin(sunOrientation));
 		vec3 sunDir = cos(sunTime)*vec3(0, 0, 1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);
 
 		//vec3 skyLighting = vec3(0, 0, 1);
-		float sky = dot(sunDir, pixelData.m_Normal);
+		float sky = 0;// dot(sunDir, pixelData.m_Normal);
 		pixelData.m_DiffuseColor = GetDiffuseColor(myTexCoord);
 
 		float shadow = 1.f - ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
 
-		pixelData.m_FinalColor = pixelData.m_DiffuseColor * sky * shadow;
 
+		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * sky * shadow;
+
+		float ambient = 0.1f;
+		pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
 
 		//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 		//{
