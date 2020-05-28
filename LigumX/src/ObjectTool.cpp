@@ -155,11 +155,12 @@ void ObjectTool::SetCOMMAND_CloneCurrentObject_Callback(const bool& value)
 	if (m_CurrentObject)
 	{
 		LXObject* newObject = g_ObjectManager->CreateNewObject(m_CurrentObject->GetLXType());
-		
+		ObjectID newObjectID = newObject->GetObjectID();
 		m_CurrentObject->Clone(*newObject);
 
 		std::string newName = m_CurrentObject->GetName() + " COPY";
 		newObject->SetName(newName);
+		newObject->SetObjectID(newObjectID);
 		
 		m_CurrentObject = newObject;
 		m_SelectedFileIndex = -1;

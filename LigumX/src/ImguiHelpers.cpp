@@ -711,6 +711,7 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 		{
 			std::vector<LXType>& childTypes = g_ObjectManager->g_ChildClasses[propertyData.m_AssociatedType];
 			std::vector<LXString> childTypesNames;
+			childTypesNames.push_back(g_ObjectManager->GetClassnameFromLXType(propertyData.m_AssociatedType));
 			for (LXType& lxType : childTypes)
 			{
 				childTypesNames.push_back(g_ObjectManager->GetClassnameFromLXType(lxType));
