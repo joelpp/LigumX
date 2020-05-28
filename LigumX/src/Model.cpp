@@ -144,14 +144,12 @@ void Model::LoadModel()
 	const aiScene* scene = (aiScene*)aiImportFileExWithProperties(fullPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals /* aiProcess_FlipUVs | aiProcess_GenSmoothNormals */| aiProcess_JoinIdenticalVertices | aiProcess_PreTransformVertices, NULL, props); 
 	aiReleasePropertyStore(props);
 
-    //const aiScene* scene = import.ReadFile(fullPath, aiProcess_Triangulate | aiProcess_PreTransformVertices | aiProcess_GenNormals /*| aiProcess_GenSmoothNormals*/);
-	
     if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
     {
     	std::stringstream ss;
     	ss << "ERROR::ASSIMP::" << import.GetErrorString();
         PRINTSTRING(ss.str());
-		assert(false);
+		lxAssert0();
         return;
     }
 	

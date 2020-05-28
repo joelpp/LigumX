@@ -158,14 +158,14 @@ namespace ImguiHelpers
 	}
 
 	template <typename T>
-	bool ShowObject2(void* object, const ClassPropertyData& propertyData, T** value)
+	bool ShowObject2(void* object, const ClassPropertyData& propertyData, T** value, bool inVector=false)
 	{
 		LXObject** lxObjectPtrPtr = (LXObject**)value;
 		LXObject*& lxObjectPtrRef = *lxObjectPtrPtr;
-		return ShowObject(object, propertyData, lxObjectPtrRef);
+		return ShowObject(object, propertyData, lxObjectPtrRef, inVector);
 	}
 
-	bool ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value);
+	bool ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value, bool inVector=false);
 	bool ShowObjectPtr(const char* name, glm::vec3* value);
 	bool ShowObjectPtr(const char* name, glm::vec2* value);
 	bool ShowObjectPtr(const char* name, int* value);

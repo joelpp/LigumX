@@ -318,3 +318,16 @@ std::string ObjectManager::GetClassnameFromLXType(const LXType type)
 	lxAssert0();
 	return "error!";
 }
+
+LXObject* ObjectManager::CloneObject(LXObject* objToClone)
+{
+	LXObject* newObject = g_ObjectManager->CreateNewObject(objToClone->GetLXType());
+	ObjectID newObjectID = newObject->GetObjectID();
+	objToClone->Clone(newObject);
+
+	std::string newName = objToClone->GetName() + " COPY";
+	newObject->SetName(newName);
+	newObject->SetObjectID(newObjectID);
+
+	return newObject;
+}

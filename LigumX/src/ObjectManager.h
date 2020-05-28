@@ -144,6 +144,8 @@ public:
 	LXObject* CreateNewObject(LXType lxtype);
 	LXObject* CreateNewObject(const std::string& typeName);
 
+	LXObject* CloneObject(LXObject* objToClone);
+
 	LXType GetLXTypeFromClassname(const std::string& Classname);
 	std::string GetClassnameFromLXType(const LXType type);
 

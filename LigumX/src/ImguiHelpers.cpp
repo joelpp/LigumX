@@ -529,8 +529,10 @@ bool ImguiHelpers::ShowProperty(std::unordered_map<U, T*>* map, const char* name
 	return false;
 }
 
-bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value)
+bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value, bool inVector)
 {
+	bool returnValue = false; // todo jpp : right now this only controls "add clone" in vector
+
 	ImguiManager& imguiManager = ImguiManager::GetInstance();
 
 	ImguiPointerDisplay invalidPtrDisplay;
@@ -540,11 +542,13 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 
 	bool changeObjectRequested = false;
 	
-	static bool createNewObject = false;
+	static bool createNewObject = false; // todo jpp maybe this sucks, maybe not
+	static bool cloneObject = false;
 	static bool openObjectPtrPopup = false;
 	bool hasOpenPopup = openObjectPtrPopup;
 
 
+	ImGui::PushID(propertyData.m_Offset); // todo jpp sort this out
 	ImGui::PushID((void*)value); // todo jpp sort this out
 	if (ImGui::BeginPopupContextItem("Object"))
 	{
@@ -555,6 +559,17 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		if (ImGui::Selectable("Browse..."))
 		{
 			openObjectPtrPopup = true;
+		}
+		if (ImGui::Selectable("Clone current object and set"))
+		{
+			cloneObject = true;
+		}
+		if (inVector)
+		{
+			if (ImGui::Selectable("Add clone of current object)"))
+			{
+				returnValue = true;
+			}
 		}
 		if (value)
 		{
@@ -622,7 +637,8 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 
 		ImGui::EndPopup();
 	}
-	ImGui::PopID();
+	ImGui::PopID(); // (void*)value
+	ImGui::PopID(); // propertyData.m_Offset
 
 	ImGui::SameLine();
 
@@ -637,8 +653,14 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		value = g_ObjectManager->CreateNewObject(typeName); // todo jpp handle inheritance here and not stringly typed
 		createNewObject = false;
 	}
+	if (cloneObject)
+	{
+		value = g_ObjectManager->CloneObject(value); // todo jpp handle inheritance here and not stringly typed
+		cloneObject = false;
+	}
 
-	return true;
+
+	return returnValue;
 }
 
 bool ImguiHelpers::ShowObjectPtr(const char* name, LXObject*& value)
@@ -738,6 +760,7 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 	bool success = scope.m_Opened;
 
 	int indexToRemove = -1;
+	int indexToClone = -1;
 	if (success)
 	{
 		for (int i = 0; i < values.size(); ++i)
@@ -745,11 +768,20 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 			LXObject*& value = values[i];
 			if (value)
 			{
-				ShowObject2(object, propertyData, &value); // todo jpp : this breaks if we use this to replace a child in an array of parent type with another child?
+				ImGui::PushID(i);
+
+				// todo jpp : this breaks if we use this to replace a child in an array of parent type with another child?
+				// todo jpp : genericize "add clone" concept of having special right click options in ShowObject depending on gui context
+				bool addClone = ShowObject2(object, propertyData, &value, true); 
+				ImGui::PopID();
 
 				if (value == nullptr)
 				{
 					indexToRemove = i;
+				}
+				if (addClone)
+				{
+					indexToClone = i;
 				}
 			}
 		}
@@ -758,6 +790,11 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 	if (indexToRemove != -1) // todo jpp maybe we can delete in place?
 	{
 		values.erase(values.begin() + indexToRemove);
+	}
+
+	if (indexToClone != -1) // todo jpp maybe we can clone and add in place?
+	{
+		values.push_back(g_ObjectManager->CloneObject(values[indexToClone]));
 	}
 
 	if (!hasOpenPopup && popupIsOpen)
