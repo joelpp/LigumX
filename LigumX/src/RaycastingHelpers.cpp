@@ -42,7 +42,7 @@ glm::vec3 RaycastingHelpers::GetAimingWorldSpacePosition(const glm::vec2& mouseP
 {
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 
-	glm::ivec2 screenSize = renderer->m_Window->GetSize();
+	glm::ivec2 screenSize = renderer->GetMainWindow()->GetSize();
 
 	glm::vec2 normalizedScreenPosition = glm::vec2(mousePosition / glm::vec2(screenSize));
 

@@ -51,7 +51,7 @@ const char* GUI::GetTypeName()
 
 GUI::GUI()
 {
-	MainWindow* window = LigumX::GetRenderer()->m_Window;
+	MainWindow* window = LigumX::GetRenderer()->GetMainWindow();
 	m_WindowHWPtr = window->GetHWObject();
 
 	ImGui_ImplGlfwGL3_Init(m_WindowHWPtr, true);

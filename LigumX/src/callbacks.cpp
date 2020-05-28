@@ -7,6 +7,7 @@
 #include "World.h"
 #include "SectorManager.h"
 #include "Renderer.h"
+#include "MainWindow.h"
 #include "GUI.h"
 
 #include "Editor.h"
@@ -149,4 +150,14 @@ void LigumX::glfwMousePositionCallback(GLFWwindow* pWindow, double x, double y)
 	{
 		m_Renderer->GetActiveCamera()->handlePresetCursorPos(pWindow, x, y);
 	}
+}
+
+void LigumX::glfwWindowPositionCallback(GLFWwindow* pGlfwWindow, int xpos, int ypos)
+{
+	Renderer::GetInstance().GetMainWindow()->SetPosition(glm::vec2((float)xpos, (float)ypos));
+}
+
+void LigumX::glfwWindowSizeCallback(GLFWwindow* pGlfwWindow, int width, int height)
+{
+	Renderer::GetInstance().GetMainWindow()->SetSize(glm::ivec2(width, height));
 }

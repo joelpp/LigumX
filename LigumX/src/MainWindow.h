@@ -63,5 +63,6 @@ GLFWwindow* GetHWObject() { return pWindow; }
 
 GLFWwindow* pWindow;
 
+void Initialize();
 
 };

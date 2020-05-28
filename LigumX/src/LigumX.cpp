@@ -287,7 +287,7 @@ void LigumX::SetCallbacks()
 {
     Renderer& renderer = Renderer::GetInstance();
 
-	GLFWwindow* window = renderer.m_Window->pWindow;
+	GLFWwindow* window = renderer.GetMainWindow()->pWindow;
     glfwSetMouseButtonCallback(window, glfwMouseButtonCallback );
     glfwSetKeyCallback(window, HandleKeyboardInput);
     //glfwSetCharCallback( renderer.pWindow, glfwCharCallback );

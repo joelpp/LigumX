@@ -1,7 +1,8 @@
 [postserialization]
 class MainWindow
 {
-	bool InFocus;
+	[transient]
+	bool InFocus = false;
 
 	glm::vec2 Position;
 

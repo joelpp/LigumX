@@ -42,12 +42,14 @@
 #include "DisplayOptions.h"
 #include "PostEffects.h"
 #include "Camera.h"
+#include "MainWindow.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
 { "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_ObjectPtr, sizeof(DisplayOptions*), LXType_DisplayOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_ObjectPtr, sizeof(PostEffects*), LXType_PostEffects, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_ObjectPtr, sizeof(Camera*), LXType_Camera, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "ActiveCamera", PIDX_ActiveCamera, offsetof(Renderer, m_ActiveCamera), 0, LXType_ObjectPtr, sizeof(Camera*), LXType_Camera, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "MainWindow", PIDX_MainWindow, offsetof(Renderer, m_MainWindow), 0, LXType_ObjectPtr, sizeof(MainWindow*), LXType_MainWindow, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void Renderer::Serialize(Serializer2& serializer)
 {
@@ -55,6 +57,7 @@ void Renderer::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DisplayOptions], m_DisplayOptions);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_PostEffects], m_PostEffects);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DebugCamera], m_DebugCamera);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_MainWindow], m_MainWindow);
 }
 bool Renderer::Serialize(bool writing)
 {
@@ -73,6 +76,7 @@ bool Renderer::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_PostEffects], &m_PostEffects  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DebugCamera], &m_DebugCamera  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ActiveCamera], &m_ActiveCamera  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_MainWindow], &m_MainWindow  );
 	return true;
 }
 void Renderer::Clone(LXObject* otherObj)
@@ -83,6 +87,7 @@ void Renderer::Clone(LXObject* otherObj)
 	other->SetPostEffects(m_PostEffects);
 	other->SetDebugCamera(m_DebugCamera);
 	other->SetActiveCamera(m_ActiveCamera);
+	other->SetMainWindow(m_MainWindow);
 }
 const char* Renderer::GetTypeName()
 {
@@ -108,8 +113,8 @@ Renderer::Renderer()
 
 void Renderer::InitFramebuffers()
 {
-	int windowWidth = m_Window->GetSize().x;
-	int windowHeight = m_Window->GetSize().y;
+	int windowWidth = m_MainWindow->GetSize().x;
+	int windowHeight = m_MainWindow->GetSize().y;
 
 	m_Framebuffers[FramebufferType_MainColorBuffer] = new Framebuffer("Main Color Buffer", windowWidth, windowHeight, GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_MainColorBuffer]->SetHasDepth(true);
@@ -146,7 +151,7 @@ void Renderer::InitFramebuffers()
 
 glm::ivec2 Renderer::GetWindowSize()
 {
-	return m_Window->GetSize();
+	return m_MainWindow->GetSize();
 }
 
 void APIENTRY OutputGLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -179,8 +184,7 @@ void Renderer::InitGL()
 		PRINT("Initialized GLFW.");
 	}
 
-
-	m_Window = new MainWindow(75638);
+	m_MainWindow->Initialize();
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -1150,7 +1154,7 @@ void Renderer::RenderHDRFramebuffer()
 	lxGPUProfile(RenderHDRFramebuffer);
 
 	BindFramebuffer(FramebufferType_Default);
-	GL::SetViewport(m_Window->GetSize());
+	GL::SetViewport(m_MainWindow->GetSize());
 	GL::ClearColorAndDepthBuffers();
 
 	if (!SetPipeline(pPipelineScreenSpaceTexture))
@@ -1185,7 +1189,7 @@ void Renderer::GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingDa
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_Picking]->GetDepthTexture());
 
 
-	SetComputeUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
+	SetComputeUniform(glm::vec2(m_MainWindow->GetSize()), "g_WindowSize");
 	SetComputeUniform(mouseClickPosition, "g_MouseClickPosition");
 
 	glDispatchCompute(1, 1, 1);
@@ -1297,7 +1301,7 @@ void Renderer::BeginFrame(World* world)
 	{
 		m_ActiveCamera = m_ShadowCamera;
 	}
-	m_ActiveCamera->handlePresetNewFrame(m_Window->pWindow);
+	m_ActiveCamera->handlePresetNewFrame(m_MainWindow->pWindow);
 	m_ActiveCamera->UpdateVPMatrix();
 
 	g_EngineStats->ResetFrame();
@@ -1376,7 +1380,7 @@ void Renderer::BeforeWorldRender()
 
 	BindFramebuffer(m_ColorFramebuffer);
 
-	GL::SetViewport(m_Window->GetSize());
+	GL::SetViewport(m_MainWindow->GetSize());
 
 	GL::ClearColorAndDepthBuffers();
 
@@ -1401,7 +1405,7 @@ void Renderer::RenderGrid()
 
 	SetWorldGridUniforms();
 	SetViewUniforms(m_ActiveCamera);
-	SetFragmentUniform(glm::vec2(m_Window->GetSize()), "g_WindowSize");
+	SetFragmentUniform(glm::vec2(m_MainWindow->GetSize()), "g_WindowSize");
 
 	GL::GPUMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 
@@ -1565,7 +1569,7 @@ void Renderer::FinishFrame()
 
 	HandleScreenshot();
 	
-	glfwSwapBuffers(m_Window->GetHWObject());
+	glfwSwapBuffers(m_MainWindow->GetHWObject());
 }
 
 void Renderer::RenderAABB(AABB& aabb)
@@ -1763,7 +1767,7 @@ void Renderer::RenderMessages()
 
 	float fontSize = g_EngineSettings->GetMessagesFontSize();
 
-	glm::ivec2 windowSize = m_Window->GetSize();
+	glm::ivec2 windowSize = m_MainWindow->GetSize();
 
 	for (const S2DMessage& message : g_RenderDataManager->Get2DMessages())
 	{
@@ -1782,7 +1786,7 @@ void Renderer::RenderMessages()
 		return;
 	}
 
-	GL::SetViewport(m_Window->GetSize());
+	GL::SetViewport(m_MainWindow->GetSize());
 
 
 	int numQuads = 0;
@@ -1833,7 +1837,7 @@ void Renderer::RenderFPS()
 		return;
 	}
 
-	GL::SetViewport(m_Window->GetSize());
+	GL::SetViewport(m_MainWindow->GetSize());
 
 	float smoothing = 0.99f; // larger=more smoothing
 	fps = (fps * smoothing) + (1.f / dt * (1.f - smoothing));
@@ -1877,7 +1881,7 @@ void Renderer::RenderSky()
 	glm::vec2 viewAngles = glm::vec2(m_ActiveCamera->totalViewAngleY*pi, m_ActiveCamera->aspectRatio*m_ActiveCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");
 
-	SetFragmentUniform(2.f * (glm::vec2) m_Window->GetSize(), "windowSize");
+	SetFragmentUniform(2.f * (glm::vec2) m_MainWindow->GetSize(), "windowSize");
 
 	SetSkyUniforms(0);
 
@@ -1979,7 +1983,7 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
 
 	SetFragmentUniform(color, "g_TextColor");
 	if (projected) glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(m_ActiveCamera->GetViewProjectionMatrix()));
-	else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_Window->GetSize().x, 0.0f, (float)m_Window->GetSize().y)));
+	else glProgramUniformMatrix4fv(prog, glGetUniformLocation(prog, "projection"), 1, false, value_ptr(glm::ortho(0.0f, (float)m_MainWindow->GetSize().x, 0.0f, (float)m_MainWindow->GetSize().y)));
 
 	glActiveTexture(GL_TEXTURE0);
 

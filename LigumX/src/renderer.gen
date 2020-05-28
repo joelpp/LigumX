@@ -8,4 +8,6 @@ class Renderer
 
 	[transient]
 	Camera* ActiveCamera;
+
+	MainWindow* MainWindow;
 }

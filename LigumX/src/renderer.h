@@ -36,6 +36,7 @@ class Renderer;
 class DisplayOptions;
 class PostEffects;
 class Camera;
+class MainWindow;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Renderer
@@ -107,13 +108,16 @@ Camera*& GetDebugCamera() { return m_DebugCamera; };
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 Camera*& GetActiveCamera() { return m_ActiveCamera; }; 
 void SetActiveCamera(Camera* value) { m_ActiveCamera = value; }; 
+MainWindow*& GetMainWindow() { return m_MainWindow; }; 
+void SetMainWindow(MainWindow* value) { m_MainWindow = value; }; 
 private:
 DisplayOptions* m_DisplayOptions = nullptr;
 PostEffects* m_PostEffects = nullptr;
 Camera* m_DebugCamera = nullptr;
 Camera* m_ActiveCamera = nullptr;
+MainWindow* m_MainWindow = nullptr;
 public:
-static const int g_PropertyCount = 4;
+static const int g_PropertyCount = 5;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
@@ -122,6 +126,7 @@ PIDX_DisplayOptions,
 PIDX_PostEffects,
 PIDX_DebugCamera,
 PIDX_ActiveCamera,
+PIDX_MainWindow,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
@@ -256,10 +261,6 @@ public:
     bool saveScreenshot;
 
     float dt, curr_time, fps;
-
-    // window params
-	MainWindow* m_Window;
-
 
 	Framebuffer* GetFramebuffer(FramebufferType type) { return m_Framebuffers[type]; }
 	Framebuffer* m_Framebuffers[NBFramebuffers];
