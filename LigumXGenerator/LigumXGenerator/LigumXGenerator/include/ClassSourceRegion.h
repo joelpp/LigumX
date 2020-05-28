@@ -260,8 +260,8 @@ public:
 		bool m_IsClone; // todo jpp this totally breaks the output params concept
 	};
 
-
-	OutputParams g_OutputParams[] =
+	
+	OutputParams g_OutputParams[3] =
 	{
 		OutputParams("ImguiHelpers::ShowProperty(this, ", true, false, true, true, true, false),
 		OutputParams("serializer.Serialize", false, true, true, false, false, false),

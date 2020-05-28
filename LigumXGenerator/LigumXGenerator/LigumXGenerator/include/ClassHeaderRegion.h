@@ -238,6 +238,13 @@ public:
 		WriteLine("};");
 	}
 
+	void WriteCloneDeclaration()
+	{
+		std::string cloneLine = "virtual void Clone(" + m_Class.m_Name + " serializer);";
+		WriteLine(cloneLine);
+	}
+
+
 	void WriteSerializerDeclaration()
 	{
 		std::string serialize = "virtual void Serialize(Serializer2& serializer);";
