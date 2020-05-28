@@ -30,6 +30,13 @@ bool BoundingBoxComponent::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UpdatesWithEntity], &m_UpdatesWithEntity  );
 	return true;
 }
+void BoundingBoxComponent::Clone(BoundingBoxComponent& other)
+{
+	super::Clone(other);
+	other.SetBoundingBox(m_BoundingBox);
+	other.SetUpdatesWithEntity(m_UpdatesWithEntity);
+	other.SetModelToWorldMatrix(m_ModelToWorldMatrix);
+}
 const char* BoundingBoxComponent::GetTypeName()
 {
 	return ClassName;

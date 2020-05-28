@@ -94,6 +94,19 @@ bool Editor::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedNode], &m_SelectedNode  );
 	return true;
 }
+void Editor::Clone(Editor& other)
+{
+	super::Clone(other);
+	other.SetOptions(m_Options);
+	other.SetActiveTool(m_ActiveTool);
+	other.SetXYZMask(m_XYZMask);
+	other.SetManipulatorDragging(m_ManipulatorDragging);
+	other.SetManipulatorStartPosition(m_ManipulatorStartPosition);
+	other.SetEditingTerrain(m_EditingTerrain);
+	other.SetTools(m_Tools);
+	other.SetPickingBufferSize(m_PickingBufferSize);
+	other.SetSelectedNode(m_SelectedNode);
+}
 const char* Editor::GetTypeName()
 {
 	return ClassName;

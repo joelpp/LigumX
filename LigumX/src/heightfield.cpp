@@ -51,6 +51,14 @@ bool Heightfield::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Width], &m_Width , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
+void Heightfield::Clone(Heightfield& other)
+{
+	super::Clone(other);
+	other.SetHeightDataTexture(m_HeightDataTexture);
+	other.SetMaxHeight(m_MaxHeight);
+	other.SetMinHeight(m_MinHeight);
+	other.SetWidth(m_Width);
+}
 const char* Heightfield::GetTypeName()
 {
 	return ClassName;

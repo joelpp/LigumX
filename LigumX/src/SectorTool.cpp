@@ -85,6 +85,23 @@ bool SectorTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedWayIndex], &m_SelectedWayIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
+void SectorTool::Clone(SectorTool& other)
+{
+	super::Clone(other);
+	other.SetEnabled(m_Enabled);
+	other.SetHighlightedWorldCoordinates(m_HighlightedWorldCoordinates);
+	other.SetHighlightedSectorUV(m_HighlightedSectorUV);
+	other.SetHighlightedSector(m_HighlightedSector);
+	other.SetSectorGridColor(m_SectorGridColor);
+	other.SetAsyncSectorLoading(m_AsyncSectorLoading);
+	other.SetNodeSize(m_NodeSize);
+	other.SetLoadingRingSize(m_LoadingRingSize);
+	other.SetShowSectorAABBs(m_ShowSectorAABBs);
+	other.SetShowGrid(m_ShowGrid);
+	other.SetHighlightSelectedSector(m_HighlightSelectedSector);
+	other.SetLoadSectorsOnClick(m_LoadSectorsOnClick);
+	other.SetSelectedWayIndex(m_SelectedWayIndex);
+}
 const char* SectorTool::GetTypeName()
 {
 	return ClassName;

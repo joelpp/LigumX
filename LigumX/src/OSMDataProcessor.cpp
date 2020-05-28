@@ -73,6 +73,12 @@ bool OSMDataProcessor::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Settings], &m_Settings  );
 	return true;
 }
+void OSMDataProcessor::Clone(OSMDataProcessor& other)
+{
+	super::Clone(other);
+	other.SetRoadWidth(m_RoadWidth);
+	other.SetSettings(m_Settings);
+}
 const char* OSMDataProcessor::GetTypeName()
 {
 	return ClassName;

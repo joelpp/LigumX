@@ -90,6 +90,31 @@ bool Material::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UVScale], &m_UVScale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
+void Material::Clone(Material& other)
+{
+	super::Clone(other);
+	other.SetEnabled(m_Enabled);
+	other.SetAmbientColor(m_AmbientColor);
+	other.SetDiffuseColor(m_DiffuseColor);
+	other.SetSpecularColor(m_SpecularColor);
+	other.SetIsPBR(m_IsPBR);
+	other.SetShininess(m_Shininess);
+	other.SetMetallic(m_Metallic);
+	other.SetRoughness(m_Roughness);
+	other.SetAO(m_AO);
+	other.SetEmissiveFactor(m_EmissiveFactor);
+	other.SetDiffuseTextureEnabled(m_DiffuseTextureEnabled);
+	other.SetSpecularTextureEnabled(m_SpecularTextureEnabled);
+	other.SetUnlit(m_Unlit);
+	other.SetRefractionIndex(m_RefractionIndex);
+	other.SetIsGlass(m_IsGlass);
+	other.SetReflectEnvironment(m_ReflectEnvironment);
+	other.SetDiffuseTexture(m_DiffuseTexture);
+	other.SetSpecularTexture(m_SpecularTexture);
+	other.SetHeightfieldTexture(m_HeightfieldTexture);
+	other.SetShaderFamily(m_ShaderFamily);
+	other.SetUVScale(m_UVScale);
+}
 const char* Material::GetTypeName()
 {
 	return ClassName;

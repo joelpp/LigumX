@@ -285,9 +285,11 @@ public:
 		const std::string& varType = var.GetType();
 
 		bool write = false;
+		
 		if (outputParams.m_IsClone)
 		{
 			typeToWrite = varName;
+			write = true;
 		}
 		else
 		{
@@ -328,6 +330,14 @@ public:
 			{
 				// not a ref to another object. maybe a primitive type? 
 				auto findResult = g_LXTypeToImguiCallName.find(varType);
+
+				bool isPrimType = false;
+				if (findResult != g_LXTypeToImguiCallName.end())
+				{
+					// found
+					isPrimType = true;
+				}
+
 
 				if (findResult != g_LXTypeToImguiCallName.end())
 				{
@@ -394,18 +404,21 @@ public:
 		{
 			sstr << "g_Properties[PIDX_";
 		}
-		else
+		else if (!outputParams.m_IsClone)
 		{
 			sstr << "\"";
 		}
 
-		sstr << varName;
+		if (!outputParams.m_IsClone)
+		{
+			sstr << varName;
+		}
 
 		if (outputParams.m_UsePIDX)
 		{
 			sstr << "]";
 		}
-		else
+		else if (!outputParams.m_IsClone)
 		{
 			sstr << "\"";
 		}
@@ -609,6 +622,7 @@ public:
 
 		WriteSerializer();
 		WriteShowImgui();
+		WriteCloner();
 		WriteGetTypeName();
 	}
 

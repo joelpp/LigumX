@@ -74,6 +74,28 @@ bool Camera::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], &m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
+void Camera::Clone(Camera& other)
+{
+	super::Clone(other);
+	other.SetPosition(m_Position);
+	other.SetFrontVector(m_FrontVector);
+	other.SetRightVector(m_RightVector);
+	other.SetUpVector(m_UpVector);
+	other.SetViewMatrix(m_ViewMatrix);
+	other.SetViewMatrixNoTranslation(m_ViewMatrixNoTranslation);
+	other.SetProjectionMatrix(m_ProjectionMatrix);
+	other.SetViewProjectionMatrix(m_ViewProjectionMatrix);
+	other.SetViewMatrixInverse(m_ViewMatrixInverse);
+	other.SetProjectionMatrixInverse(m_ProjectionMatrixInverse);
+	other.SetViewProjectionMatrixInverse(m_ViewProjectionMatrixInverse);
+	other.SetNearPlane(m_NearPlane);
+	other.SetFarPlane(m_FarPlane);
+	other.SetProjectionType(m_ProjectionType);
+	other.SetOrthoBorders(m_OrthoBorders);
+	other.SetViewSize(m_ViewSize);
+	other.SetMovementSpeed(m_MovementSpeed);
+	other.SetKeyMovementSpeedIncreaseFactor(m_KeyMovementSpeedIncreaseFactor);
+}
 const char* Camera::GetTypeName()
 {
 	return ClassName;

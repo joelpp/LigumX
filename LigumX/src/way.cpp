@@ -46,6 +46,16 @@ bool Way::ShowPropertyGrid()
 	ImguiHelpers::ShowString2(this, g_Properties[PIDX_AllTags], m_AllTags  );
 	return true;
 }
+void Way::Clone(Way& other)
+{
+	super::Clone(other);
+	other.SetOSMId(m_OSMId);
+	other.SetNodes(m_Nodes);
+	other.SetOSMElementType(m_OSMElementType);
+	other.SetIndexInSector(m_IndexInSector);
+	other.SetFilledIn(m_FilledIn);
+	other.SetAllTags(m_AllTags);
+}
 const char* Way::GetTypeName()
 {
 	return ClassName;

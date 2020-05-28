@@ -29,6 +29,11 @@ bool OSMElementComponent::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Way], &m_Way  );
 	return true;
 }
+void OSMElementComponent::Clone(OSMElementComponent& other)
+{
+	super::Clone(other);
+	other.SetWay(m_Way);
+}
 const char* OSMElementComponent::GetTypeName()
 {
 	return ClassName;

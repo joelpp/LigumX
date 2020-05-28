@@ -75,6 +75,14 @@ bool Renderer::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ActiveCamera], &m_ActiveCamera  );
 	return true;
 }
+void Renderer::Clone(Renderer& other)
+{
+	super::Clone(other);
+	other.SetDisplayOptions(m_DisplayOptions);
+	other.SetPostEffects(m_PostEffects);
+	other.SetDebugCamera(m_DebugCamera);
+	other.SetActiveCamera(m_ActiveCamera);
+}
 const char* Renderer::GetTypeName()
 {
 	return ClassName;

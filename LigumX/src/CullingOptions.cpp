@@ -46,6 +46,17 @@ bool CullingOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugDotProductMaxDistance], &m_DebugDotProductMaxDistance , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
+void CullingOptions::Clone(CullingOptions& other)
+{
+	super::Clone(other);
+	other.SetCullEntities(m_CullEntities);
+	other.SetCullSectors(m_CullSectors);
+	other.SetUseDotProduct(m_UseDotProduct);
+	other.SetUseAABBClipPos(m_UseAABBClipPos);
+	other.SetDebugAABBClippPos(m_DebugAABBClippPos);
+	other.SetDebugDotProduct(m_DebugDotProduct);
+	other.SetDebugDotProductMaxDistance(m_DebugDotProductMaxDistance);
+}
 const char* CullingOptions::GetTypeName()
 {
 	return ClassName;

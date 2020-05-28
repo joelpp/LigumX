@@ -76,6 +76,20 @@ bool OSMTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugPointInRoad], &m_DebugPointInRoad  );
 	return true;
 }
+void OSMTool::Clone(OSMTool& other)
+{
+	super::Clone(other);
+	other.SetEnabled(m_Enabled);
+	other.SetSelectedNode(m_SelectedNode);
+	other.SetSelectedWays(m_SelectedWays);
+	other.SetSearchOnlyWithinSector(m_SearchOnlyWithinSector);
+	other.SetSelectedSectorIndex(m_SelectedSectorIndex);
+	other.SetWorldSpacePosition(m_WorldSpacePosition);
+	other.SetShowNodes(m_ShowNodes);
+	other.SetShowWays(m_ShowWays);
+	other.SetShowFlatWays(m_ShowFlatWays);
+	other.SetDebugPointInRoad(m_DebugPointInRoad);
+}
 const char* OSMTool::GetTypeName()
 {
 	return ClassName;

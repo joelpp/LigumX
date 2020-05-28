@@ -37,6 +37,14 @@ bool CPUBuffers::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IndexBuffer], m_IndexBuffer  );
 	return true;
 }
+void CPUBuffers::Clone(CPUBuffers& other)
+{
+	super::Clone(other);
+	other.SetVertexPositions(m_VertexPositions);
+	other.SetVertexNormals(m_VertexNormals);
+	other.SetVertexUVs(m_VertexUVs);
+	other.SetIndexBuffer(m_IndexBuffer);
+}
 const char* CPUBuffers::GetTypeName()
 {
 	return ClassName;

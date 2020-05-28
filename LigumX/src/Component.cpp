@@ -28,6 +28,11 @@ bool Component::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ParentEntity], &m_ParentEntity  );
 	return true;
 }
+void Component::Clone(Component& other)
+{
+	super::Clone(other);
+	other.SetParentEntity(m_ParentEntity);
+}
 const char* Component::GetTypeName()
 {
 	return ClassName;

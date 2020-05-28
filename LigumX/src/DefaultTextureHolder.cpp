@@ -49,6 +49,17 @@ bool DefaultTextureHolder::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_WaterTexture], &m_WaterTexture  );
 	return true;
 }
+void DefaultTextureHolder::Clone(DefaultTextureHolder& other)
+{
+	super::Clone(other);
+	other.SetAsphaltTexture(m_AsphaltTexture);
+	other.SetDirtTexture(m_DirtTexture);
+	other.SetGrassTexture(m_GrassTexture);
+	other.SetRockTexture(m_RockTexture);
+	other.SetWoodTexture(m_WoodTexture);
+	other.SetSandTexture(m_SandTexture);
+	other.SetWaterTexture(m_WaterTexture);
+}
 const char* DefaultTextureHolder::GetTypeName()
 {
 	return ClassName;

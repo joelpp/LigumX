@@ -67,6 +67,12 @@ bool RenderDataManager::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_RenderingStats], &m_RenderingStats  );
 	return true;
 }
+void RenderDataManager::Clone(RenderDataManager& other)
+{
+	super::Clone(other);
+	other.SetCullingOptions(m_CullingOptions);
+	other.SetRenderingStats(m_RenderingStats);
+}
 const char* RenderDataManager::GetTypeName()
 {
 	return ClassName;

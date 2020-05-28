@@ -91,6 +91,7 @@ PIDX_MouseScroll,
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual void Clone(InputHandler& other);
 virtual const char* GetTypeName();
 
 #pragma endregion  HEADER InputHandler

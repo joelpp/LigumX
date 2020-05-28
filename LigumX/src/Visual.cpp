@@ -29,6 +29,11 @@ bool Visual::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Model], &m_Model  );
 	return true;
 }
+void Visual::Clone(Visual& other)
+{
+	super::Clone(other);
+	other.SetModel(m_Model);
+}
 const char* Visual::GetTypeName()
 {
 	return ClassName;

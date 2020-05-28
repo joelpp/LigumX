@@ -55,6 +55,18 @@ bool CurlRequest::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Async], &m_Async  );
 	return true;
 }
+void CurlRequest::Clone(CurlRequest& other)
+{
+	super::Clone(other);
+	other.SetState(m_State);
+	other.SetCoords(m_Coords);
+	other.SetExtent(m_Extent);
+	other.SetResult(m_Result);
+	other.SetFilename(m_Filename);
+	other.SetSector(m_Sector);
+	other.SetSectorIndex(m_SectorIndex);
+	other.SetAsync(m_Async);
+}
 const char* CurlRequest::GetTypeName()
 {
 	return ClassName;

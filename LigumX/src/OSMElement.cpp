@@ -22,6 +22,10 @@ bool OSMElement::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	return true;
 }
+void OSMElement::Clone(OSMElement& other)
+{
+	super::Clone(other);
+}
 const char* OSMElement::GetTypeName()
 {
 	return ClassName;

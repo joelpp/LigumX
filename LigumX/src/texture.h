@@ -71,6 +71,7 @@ virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
 void PostSerialization(bool writing, bool success);
 virtual bool ShowPropertyGrid();
+virtual void Clone(Texture& other);
 virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Texture

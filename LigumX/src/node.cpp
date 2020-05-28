@@ -59,6 +59,21 @@ bool Node::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighPrecisionEarthCoordinates], &m_HighPrecisionEarthCoordinates , LX_LIMITS_INT64_MIN, LX_LIMITS_INT64_MAX );
 	return true;
 }
+void Node::Clone(Node& other)
+{
+	super::Clone(other);
+	other.SetOSMId(m_OSMId);
+	other.SetLongLat(m_LongLat);
+	other.SetWorldPosition(m_WorldPosition);
+	other.SetElevation(m_Elevation);
+	other.SetWays(m_Ways);
+	other.SetSectorIndex(m_SectorIndex);
+	other.SetSectorOffset(m_SectorOffset);
+	other.SetSectorRelativePosition(m_SectorRelativePosition);
+	other.SetQuantizedEarthPosition(m_QuantizedEarthPosition);
+	other.SetQuantizedSectorPosition(m_QuantizedSectorPosition);
+	other.SetHighPrecisionEarthCoordinates(m_HighPrecisionEarthCoordinates);
+}
 const char* Node::GetTypeName()
 {
 	return ClassName;

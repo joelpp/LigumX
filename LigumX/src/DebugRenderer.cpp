@@ -29,6 +29,11 @@ bool DebugRenderer::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
 	return true;
 }
+void DebugRenderer::Clone(DebugRenderer& other)
+{
+	super::Clone(other);
+	other.SetEnabled(m_Enabled);
+}
 const char* DebugRenderer::GetTypeName()
 {
 	return ClassName;

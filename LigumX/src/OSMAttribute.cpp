@@ -31,6 +31,12 @@ bool OSMAttribute::ShowPropertyGrid()
 	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Value], m_Value  );
 	return true;
 }
+void OSMAttribute::Clone(OSMAttribute& other)
+{
+	super::Clone(other);
+	other.SetKey(m_Key);
+	other.SetValue(m_Value);
+}
 const char* OSMAttribute::GetTypeName()
 {
 	return ClassName;

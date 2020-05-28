@@ -65,6 +65,23 @@ bool OSMDataProcessorSettings::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CheckPointInBuilding], &m_CheckPointInBuilding  );
 	return true;
 }
+void OSMDataProcessorSettings::Clone(OSMDataProcessorSettings& other)
+{
+	super::Clone(other);
+	other.SetMinFacadeLength(m_MinFacadeLength);
+	other.SetMaxFacadeLength(m_MaxFacadeLength);
+	other.SetMinPlotLengthRatio(m_MinPlotLengthRatio);
+	other.SetMaxPlotLengthRatio(m_MaxPlotLengthRatio);
+	other.SetMinBuildingDepth(m_MinBuildingDepth);
+	other.SetMaxBuildingDepth(m_MaxBuildingDepth);
+	other.SetMinHeight(m_MinHeight);
+	other.SetMaxHeight(m_MaxHeight);
+	other.SetMinNeighborDistance(m_MinNeighborDistance);
+	other.SetMaxNeighborDistance(m_MaxNeighborDistance);
+	other.SetProcessAddressInterpolation(m_ProcessAddressInterpolation);
+	other.SetCheckPointInRoad(m_CheckPointInRoad);
+	other.SetCheckPointInBuilding(m_CheckPointInBuilding);
+}
 const char* OSMDataProcessorSettings::GetTypeName()
 {
 	return ClassName;

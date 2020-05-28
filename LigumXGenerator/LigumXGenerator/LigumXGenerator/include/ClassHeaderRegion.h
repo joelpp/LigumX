@@ -240,7 +240,7 @@ public:
 
 	void WriteCloneDeclaration()
 	{
-		std::string cloneLine = "virtual void Clone(" + m_Class.m_Name + " serializer);";
+		std::string cloneLine = "virtual void Clone(" + m_Class.m_Name + "& other);";
 		WriteLine(cloneLine);
 	}
 
@@ -309,6 +309,7 @@ public:
 		WriteSerializerDeclaration();
 
 		WriteShowImguiDeclaration();
+		WriteCloneDeclaration();
 		WriteGetTypeNameDeclaration();
 	}
 

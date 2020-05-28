@@ -41,6 +41,15 @@ bool ObjectTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CloneCurrentObject], &m_COMMAND_CloneCurrentObject  );
 	return true;
 }
+void ObjectTool::Clone(ObjectTool& other)
+{
+	super::Clone(other);
+	other.SetSelectedFileIndex(m_SelectedFileIndex);
+	other.SetLoadUnloadedObjects(m_LoadUnloadedObjects);
+	other.SetCOMMAND_SaveCurrentObject(m_COMMAND_SaveCurrentObject);
+	other.SetCOMMAND_CreateNewObject(m_COMMAND_CreateNewObject);
+	other.SetCOMMAND_CloneCurrentObject(m_COMMAND_CloneCurrentObject);
+}
 const char* ObjectTool::GetTypeName()
 {
 	return ClassName;

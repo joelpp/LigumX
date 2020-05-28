@@ -34,6 +34,12 @@ bool GUI::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumActiveWindows], &m_NumActiveWindows , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
+void GUI::Clone(GUI& other)
+{
+	super::Clone(other);
+	other.Setm_Enabled(m_m_Enabled);
+	other.SetNumActiveWindows(m_NumActiveWindows);
+}
 const char* GUI::GetTypeName()
 {
 	return ClassName;

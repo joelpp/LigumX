@@ -36,6 +36,14 @@ bool OSMElementTypeData::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Attributes], m_Attributes  );
 	return true;
 }
+void OSMElementTypeData::Clone(OSMElementTypeData& other)
+{
+	super::Clone(other);
+	other.SetType(m_Type);
+	other.SetFillIn(m_FillIn);
+	other.SetDebugColor(m_DebugColor);
+	other.SetAttributes(m_Attributes);
+}
 const char* OSMElementTypeData::GetTypeName()
 {
 	return ClassName;

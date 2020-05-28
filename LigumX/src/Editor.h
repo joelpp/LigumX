@@ -105,6 +105,7 @@ PIDX_SelectedNode,
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual void Clone(Editor& other);
 virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Editor

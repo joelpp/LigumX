@@ -24,6 +24,10 @@ bool DataInspectorTool::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	return true;
 }
+void DataInspectorTool::Clone(DataInspectorTool& other)
+{
+	super::Clone(other);
+}
 const char* DataInspectorTool::GetTypeName()
 {
 	return ClassName;

@@ -48,6 +48,15 @@ bool World::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Reset], &m_Reset  );
 	return true;
 }
+void World::Clone(World& other)
+{
+	super::Clone(other);
+	other.SetSunLight(m_SunLight);
+	other.SetEntities(m_Entities);
+	other.SetDebugEntities(m_DebugEntities);
+	other.SetSectors(m_Sectors);
+	other.SetReset(m_Reset);
+}
 const char* World::GetTypeName()
 {
 	return ClassName;

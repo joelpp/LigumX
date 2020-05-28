@@ -87,6 +87,7 @@ PIDX_PointRendering,
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
+virtual void Clone(Mesh& other);
 virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Mesh

@@ -52,6 +52,17 @@ bool SectorGraphicalData::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_AlbedoTexture], &m_AlbedoTexture  );
 	return true;
 }
+void SectorGraphicalData::Clone(SectorGraphicalData& other)
+{
+	super::Clone(other);
+	other.SetNodesModel(m_NodesModel);
+	other.SetWaysModel(m_WaysModel);
+	other.SetWaysModelsVector(m_WaysModelsVector);
+	other.SetRoadEntities(m_RoadEntities);
+	other.SetStaticEntities(m_StaticEntities);
+	other.SetSplatMapTexture(m_SplatMapTexture);
+	other.SetAlbedoTexture(m_AlbedoTexture);
+}
 const char* SectorGraphicalData::GetTypeName()
 {
 	return ClassName;

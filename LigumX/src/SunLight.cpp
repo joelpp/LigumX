@@ -49,6 +49,16 @@ bool SunLight::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Skybox], &m_Skybox  );
 	return true;
 }
+void SunLight::Clone(SunLight& other)
+{
+	super::Clone(other);
+	other.SetUseShadowMap(m_UseShadowMap);
+	other.SetTime(m_Time);
+	other.SetOrientation(m_Orientation);
+	other.SetSpeed(m_Speed);
+	other.SetUseSkybox(m_UseSkybox);
+	other.SetSkybox(m_Skybox);
+}
 const char* SunLight::GetTypeName()
 {
 	return ClassName;

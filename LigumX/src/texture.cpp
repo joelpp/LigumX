@@ -49,6 +49,19 @@ bool Texture::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Size], &m_Size , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
+void Texture::Clone(Texture& other)
+{
+	super::Clone(other);
+	other.SetFilename(m_Filename);
+	other.SetIsCubeMap(m_IsCubeMap);
+	other.SetHWObject(m_HWObject);
+	other.SetNumChannels(m_NumChannels);
+	other.SetBitsPerPixel(m_BitsPerPixel);
+	other.SetInternalFormat(m_InternalFormat);
+	other.SetFormat(m_Format);
+	other.SetPixelType(m_PixelType);
+	other.SetSize(m_Size);
+}
 const char* Texture::GetTypeName()
 {
 	return ClassName;
