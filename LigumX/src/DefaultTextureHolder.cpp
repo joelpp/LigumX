@@ -70,11 +70,11 @@ const char* DefaultTextureHolder::GetTypeName()
 
 DefaultTextureHolder::DefaultTextureHolder()
 {
-	m_AsphaltTexture = new Texture(95736);
-	m_DirtTexture = new Texture(239767);
-	m_WaterTexture = new Texture(7256);
-	m_GrassTexture = new Texture(10691);
-	m_RockTexture = new Texture(10692);
-	m_SandTexture = new Texture(10693);
-	m_WoodTexture = new Texture(11039);
+	//m_AsphaltTexture = new Texture(95736);
+	//m_DirtTexture = new Texture(239767);
+	//m_WaterTexture = new Texture(7256);
+	//m_GrassTexture = new Texture(10691);
+	//m_RockTexture = new Texture(10692);
+	//m_SandTexture = new Texture(10693);
+	//m_WoodTexture = new Texture(11039);
 }

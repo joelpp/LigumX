@@ -49,9 +49,9 @@ float GetPickedHeight() { return m_PickedHeight; };
 void SetPickedHeight(float value) { m_PickedHeight = value; }; 
 Sector*& GetPickedSector() { return m_PickedSector; }; 
 void SetPickedSector(Sector* value) { m_PickedSector = value; }; 
-bool GetCloneEntity() { return m_CloneEntity; }; 
-void SetCloneEntity(bool value) { SetCloneEntity_Callback(value); }; 
-void SetCloneEntity_Callback(const bool& value);
+bool GetCOMMAND_CloneSelectAndAddToWorld() { return m_COMMAND_CloneSelectAndAddToWorld; }; 
+void SetCOMMAND_CloneSelectAndAddToWorld(bool value) { SetCOMMAND_CloneSelectAndAddToWorld_Callback(value); }; 
+void SetCOMMAND_CloneSelectAndAddToWorld_Callback(const bool& value);
 private:
 bool m_Enabled = true;
 Entity* m_PickedEntity = nullptr;
@@ -65,7 +65,7 @@ float m_PickedID = 0.f;
 bool m_PickDebugModels = false;
 float m_PickedHeight = 0.f;
 Sector* m_PickedSector = nullptr;
-bool m_CloneEntity = false;
+bool m_COMMAND_CloneSelectAndAddToWorld = false;
 public:
 static const int g_PropertyCount = 13;
 static const ClassPropertyData g_Properties[g_PropertyCount];
@@ -84,7 +84,7 @@ PIDX_PickedID,
 PIDX_PickDebugModels,
 PIDX_PickedHeight,
 PIDX_PickedSector,
-PIDX_CloneEntity,
+PIDX_COMMAND_CloneSelectAndAddToWorld,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

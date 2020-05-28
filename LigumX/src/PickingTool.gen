@@ -36,5 +36,5 @@ class PickingTool : EditorTool
 	Sector* PickedSector;
 
 	[transient, setcallback]
-	bool CloneEntity = false;
+	bool COMMAND_CloneSelectAndAddToWorld = false;
 }

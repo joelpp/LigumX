@@ -34,7 +34,7 @@ const ClassPropertyData PickingTool::g_Properties[] =
 { "PickDebugModels", PIDX_PickDebugModels, offsetof(PickingTool, m_PickDebugModels), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "PickedHeight", PIDX_PickedHeight, offsetof(PickingTool, m_PickedHeight), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "PickedSector", PIDX_PickedSector, offsetof(PickingTool, m_PickedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "CloneEntity", PIDX_CloneEntity, offsetof(PickingTool, m_CloneEntity), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(PickingTool, CloneEntity, bool),}, 
+{ "COMMAND_CloneSelectAndAddToWorld", PIDX_COMMAND_CloneSelectAndAddToWorld, offsetof(PickingTool, m_COMMAND_CloneSelectAndAddToWorld), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(PickingTool, COMMAND_CloneSelectAndAddToWorld, bool),}, 
 };
 void PickingTool::Serialize(Serializer2& serializer)
 {
@@ -65,7 +65,7 @@ bool PickingTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickDebugModels], &m_PickDebugModels  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickedHeight], &m_PickedHeight , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_PickedSector], &m_PickedSector  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CloneEntity], &m_CloneEntity  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CloneSelectAndAddToWorld], &m_COMMAND_CloneSelectAndAddToWorld  );
 	return true;
 }
 void PickingTool::Clone(LXObject* otherObj)
@@ -84,7 +84,7 @@ void PickingTool::Clone(LXObject* otherObj)
 	other->SetPickDebugModels(m_PickDebugModels);
 	other->SetPickedHeight(m_PickedHeight);
 	other->SetPickedSector(m_PickedSector);
-	other->SetCloneEntity(m_CloneEntity);
+	other->SetCOMMAND_CloneSelectAndAddToWorld(m_COMMAND_CloneSelectAndAddToWorld);
 }
 const char* PickingTool::GetTypeName()
 {
@@ -239,28 +239,17 @@ void PickingTool::UpdatePickingData()
 
 }
 
-void PickingTool::SetCloneEntity_Callback(const bool& value)
+void PickingTool::SetCOMMAND_CloneSelectAndAddToWorld_Callback(const bool& value)
 {
 	if (value)
 	{
 		if (m_PickedEntity != nullptr)
 		{
-			Entity* entity = new Entity();
-			*entity = *m_PickedEntity;
-			entity->SetObjectID(rand());
-			entity->GetComponents().clear();
-
-			LXString name = entity->GetName();
-			name += " " + std::to_string(g_World->GetEntities().size());
-			entity->SetName(name);
-
-			glm::vec3 offset = glm::linearRand(-1.f * glm::vec3(15.f, 15.f, 15.f), glm::vec3(15.f, 15.f, 15.f));
-			entity->AddTo_Position(offset);
-			entity->SetHasMoved(true);
-
-			g_World->AddTo_Entities(entity);
+			Entity* newEntity = (Entity*)g_ObjectManager->CloneObject(m_PickedEntity);
+			m_PickedEntity = newEntity;
+			g_World->AddTo_Entities(newEntity);
 		}
-
-		m_CloneEntity = false;
 	}
+
+	m_COMMAND_CloneSelectAndAddToWorld = false;
 }

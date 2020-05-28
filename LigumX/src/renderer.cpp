@@ -928,6 +928,8 @@ void Renderer::RenderTerrain()
 		return;
 	}
 
+	lxAssert0(); // todo jpp disabled until i fix "default textures holder" stuff
+
 	SetLightingUniforms();
 	SetViewUniforms(m_ActiveCamera);
 	SetShadowMapUniforms(m_ShadowCamera);
