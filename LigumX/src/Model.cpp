@@ -98,7 +98,7 @@ void Model::PostSerialization(bool writing, bool success)
 {
 	if (!writing) // reading
 	{
-		if (g_ObjectManager->FilenameIsID(m_Filename))
+		if (g_ObjectManager->FilenameIsID(m_Filename) && (m_Meshes.size() == 0))
 		{
 			StringList list;
 			list.push_back("<");
