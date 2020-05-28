@@ -529,6 +529,18 @@ bool ImguiHelpers::ShowProperty(std::unordered_map<U, T*>* map, const char* name
 	return false;
 }
 
+LXString GetTreeNodeName(const char* name, LXObject*& value)
+{
+	if (value == nullptr)
+	{
+		return lxFormat("%s : unset (nullptr)", name);
+	}
+	else
+	{
+		return lxFormat("%s : %s [%s] (%d)", name, value->GetName().c_str(), value->GetLXClassName(), value->GetObjectID());
+	}
+}
+
 bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyData, LXObject*& value, bool inVector)
 {
 	bool returnValue = false; // todo jpp : right now this only controls "add clone" in vector
@@ -538,17 +550,26 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 	ImguiPointerDisplay invalidPtrDisplay;
 	ImguiPointerDisplay& ptrDisplay = value ? imguiManager.GetPointerDisplay(value, propertyData, value->GetObjectID()) : invalidPtrDisplay;
 
-	ShowObjectPtr(propertyData.m_Name, value);
+	LXString treeNodeName = GetTreeNodeName(propertyData.m_Name, value);
+	bool treeNodeIsOpen = false;
+	if (value == nullptr)
+	{
+		ShowRawString(treeNodeName);
+	}
+	else
+	{
+		treeNodeIsOpen = ImGui::TreeNode(treeNodeName.c_str());
+	}
 
 	bool changeObjectRequested = false;
 	
-	static bool createNewObject = false; // todo jpp maybe this sucks, maybe not
-	static bool cloneObject = false;
+	bool createNewObject = false; // todo jpp maybe this sucks, maybe not
+	bool cloneObject = false;
+	bool reloadObject = false;
 	static bool openObjectPtrPopup = false;
-	static bool reloadObject = false;
-	bool hasOpenPopup = openObjectPtrPopup;
+	static bool hasOpenPopup = openObjectPtrPopup;
 
-
+	ImGui::SameLine();
 	ImGui::PushID(propertyData.m_Offset); // todo jpp sort this out
 	ImGui::PushID((void*)value); // todo jpp sort this out
 	if (ImGui::BeginPopupContextItem("Object"))
@@ -585,6 +606,12 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		}
 
 		ImGui::EndPopup();
+	}
+
+	if (treeNodeIsOpen)
+	{
+		value->ShowPropertyGrid();
+		ImGui::TreePop();
 	}
 
 	if (!hasOpenPopup && openObjectPtrPopup)
@@ -675,28 +702,26 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 
 bool ImguiHelpers::ShowObjectPtr(const char* name, LXObject*& value)
 {
-		if (value == nullptr)
+	std::string treeNodeName = GetTreeNodeName(name, value);
+	if (value == nullptr)
+	{
+		ShowRawString(treeNodeName);
+	}
+	else
+	{
+		ImguiTreeNodeScope scope(treeNodeName.c_str());
+
+		bool success = scope.m_Opened;
+
+		if (success)
 		{
-			std::string treeNodeName = lxFormat("%s : unset (nullptr)", name);
-			ShowRawString(treeNodeName);
-		}
-		else
-		{
-			std::string treeNodeName = lxFormat("%s : %s [%s] (%d)", name, value->GetName().c_str(), value->GetLXClassName(), value->GetObjectID());
-
-			ImguiTreeNodeScope scope(treeNodeName.c_str());
-
-			bool success = scope.m_Opened;
-
-			if (success)
-			{
-				success = value->ShowPropertyGrid();
-			}
-
-			return success;
+			success = value->ShowPropertyGrid();
 		}
 
-		return true;
+		return success;
+	}
+
+	return true;
 }
 
 bool ImguiHelpers::ShowProperty(void* object, const ClassPropertyData& propertyData, LXObject* value)

@@ -118,7 +118,10 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 	}
 
-	m_Renderer->GetActiveCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
+	if (m_Renderer && m_Renderer->GetActiveCamera())
+	{
+		m_Renderer->GetActiveCamera()->handlePresetKey(pWindow, key, scancode, action, mods);
+	}
 
 	ImGui_ImplGlfwGL3_KeyCallback(pWindow, key, scancode, action, mods);
 
