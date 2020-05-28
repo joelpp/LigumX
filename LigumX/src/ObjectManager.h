@@ -139,12 +139,14 @@ public:
 	std::vector<FileDisplayInformation>& GetAllFiles(bool forceUpdate=false);
 	void UpdateFileList();
 
+	LXObject* LoadRawObjectFromFile(ObjectID objectID, const std::string& typeName);
 	LXObject* GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID objectID, const std::string& typeName);
 	LXObject* CreateObject(const std::string& typeName, ObjectID id);
 	LXObject* CreateNewObject(LXType lxtype);
 	LXObject* CreateNewObject(const std::string& typeName);
 
 	LXObject* CloneObject(LXObject* objToClone);
+	void ReloadObject(LXObject** objToReload);
 
 	LXType GetLXTypeFromClassname(const std::string& Classname);
 	std::string GetClassnameFromLXType(const LXType type);

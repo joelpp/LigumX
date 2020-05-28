@@ -545,6 +545,7 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 	static bool createNewObject = false; // todo jpp maybe this sucks, maybe not
 	static bool cloneObject = false;
 	static bool openObjectPtrPopup = false;
+	static bool reloadObject = false;
 	bool hasOpenPopup = openObjectPtrPopup;
 
 
@@ -563,6 +564,10 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		if (ImGui::Selectable("Clone current object and set"))
 		{
 			cloneObject = true;
+		}
+		if (ImGui::Selectable("Reload from file"))
+		{
+			reloadObject = true;
 		}
 		if (inVector)
 		{
@@ -658,7 +663,12 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		value = g_ObjectManager->CloneObject(value); // todo jpp handle inheritance here and not stringly typed
 		cloneObject = false;
 	}
-
+	if (reloadObject)
+	{
+		LXObject** ptrToValue = &value;
+		g_ObjectManager->ReloadObject(ptrToValue);
+		reloadObject = false;
+	}
 
 	return returnValue;
 }

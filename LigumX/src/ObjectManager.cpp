@@ -237,6 +237,14 @@ LXObject* ObjectManager::GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID
 	return nullptr;
 }
 
+LXObject* ObjectManager::LoadRawObjectFromFile(ObjectID objectID, const std::string& typeName)
+{
+	int classHash = std::hash_value(typeName);
+
+	bool trackInObjectManager = false;
+	LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID, trackInObjectManager);// Visual::GetNewChildObject();
+	return newObject;
+}
 
 FileDisplayInformation::FileDisplayInformation(const LXString& fileName)
 {
@@ -330,4 +338,11 @@ LXObject* ObjectManager::CloneObject(LXObject* objToClone)
 	newObject->SetObjectID(newObjectID);
 
 	return newObject;
+}
+
+void ObjectManager::ReloadObject(LXObject** objToReload)
+{
+	LXObject* tempObjFromFile = LoadRawObjectFromFile((*objToReload)->GetObjectID(), (*objToReload)->GetLXClassName());
+	tempObjFromFile->Clone(*objToReload);
+	delete(tempObjFromFile);
 }

@@ -7,6 +7,6 @@
 namespace ObjectFactory
 {
 
-	LXObject* GetNewObject(int hash, int objectID);
+	LXObject* GetNewObject(int hash, int objectID, bool trackInObjectManager=true);
 
 }
