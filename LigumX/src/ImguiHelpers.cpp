@@ -767,7 +767,7 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 		//ptrDisplay.SetOpenPopup(false);
 	}
 
-	if (ImGui::BeginPopupModal("Select file to add", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("Select file to add", NULL, 0))
 	{
 		ImGui::Text("Select a file from the list:");
 		// todo jpp : support inheritance
