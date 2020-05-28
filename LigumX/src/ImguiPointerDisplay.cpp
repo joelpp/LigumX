@@ -38,13 +38,14 @@ bool ImguiPointerDisplay::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OpenPopup], &m_OpenPopup  );
 	return true;
 }
-void ImguiPointerDisplay::Clone(ImguiPointerDisplay& other)
+void ImguiPointerDisplay::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetCurrentID(m_CurrentID);
-	other.SetDataPointer(m_DataPointer);
-	other.SetWasUsedThisFrame(m_WasUsedThisFrame);
-	other.SetOpenPopup(m_OpenPopup);
+	super::Clone(otherObj);
+	ImguiPointerDisplay* other = (ImguiPointerDisplay*) otherObj;
+	other->SetCurrentID(m_CurrentID);
+	other->SetDataPointer(m_DataPointer);
+	other->SetWasUsedThisFrame(m_WasUsedThisFrame);
+	other->SetOpenPopup(m_OpenPopup);
 }
 const char* ImguiPointerDisplay::GetTypeName()
 {

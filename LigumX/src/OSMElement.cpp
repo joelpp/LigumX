@@ -22,9 +22,10 @@ bool OSMElement::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	return true;
 }
-void OSMElement::Clone(OSMElement& other)
+void OSMElement::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
+	super::Clone(otherObj);
+	OSMElement* other = (OSMElement*) otherObj;
 }
 const char* OSMElement::GetTypeName()
 {

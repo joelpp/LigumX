@@ -46,12 +46,13 @@ bool Model::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Meshes], m_Meshes  );
 	return true;
 }
-void Model::Clone(Model& other)
+void Model::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetFilename(m_Filename);
-	other.SetMaterials(m_Materials);
-	other.SetMeshes(m_Meshes);
+	super::Clone(otherObj);
+	Model* other = (Model*) otherObj;
+	other->SetFilename(m_Filename);
+	other->SetMaterials(m_Materials);
+	other->SetMeshes(m_Meshes);
 }
 const char* Model::GetTypeName()
 {

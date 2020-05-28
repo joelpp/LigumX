@@ -29,10 +29,11 @@ bool ImguiManager::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedFileIndex], &m_SelectedFileIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
-void ImguiManager::Clone(ImguiManager& other)
+void ImguiManager::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetSelectedFileIndex(m_SelectedFileIndex);
+	super::Clone(otherObj);
+	ImguiManager* other = (ImguiManager*) otherObj;
+	other->SetSelectedFileIndex(m_SelectedFileIndex);
 }
 const char* ImguiManager::GetTypeName()
 {

@@ -66,7 +66,7 @@ PIDX_AlbedoTexture,
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
 virtual bool ShowPropertyGrid();
-virtual void Clone(SectorGraphicalData& other);
+virtual void Clone(LXObject* otherObj);
 virtual const char* GetTypeName();
 
 #pragma endregion  HEADER SectorGraphicalData

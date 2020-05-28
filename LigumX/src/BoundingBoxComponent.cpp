@@ -30,12 +30,13 @@ bool BoundingBoxComponent::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UpdatesWithEntity], &m_UpdatesWithEntity  );
 	return true;
 }
-void BoundingBoxComponent::Clone(BoundingBoxComponent& other)
+void BoundingBoxComponent::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetBoundingBox(m_BoundingBox);
-	other.SetUpdatesWithEntity(m_UpdatesWithEntity);
-	other.SetModelToWorldMatrix(m_ModelToWorldMatrix);
+	super::Clone(otherObj);
+	BoundingBoxComponent* other = (BoundingBoxComponent*) otherObj;
+	other->SetBoundingBox(m_BoundingBox);
+	other->SetUpdatesWithEntity(m_UpdatesWithEntity);
+	other->SetModelToWorldMatrix(m_ModelToWorldMatrix);
 }
 const char* BoundingBoxComponent::GetTypeName()
 {

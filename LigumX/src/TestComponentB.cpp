@@ -28,10 +28,11 @@ bool TestComponentB::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_BValueLol], &m_BValueLol  );
 	return true;
 }
-void TestComponentB::Clone(TestComponentB& other)
+void TestComponentB::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetBValueLol(m_BValueLol);
+	super::Clone(otherObj);
+	TestComponentB* other = (TestComponentB*) otherObj;
+	other->SetBValueLol(m_BValueLol);
 }
 const char* TestComponentB::GetTypeName()
 {

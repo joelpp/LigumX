@@ -40,14 +40,15 @@ bool RenderingStats::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_fps], &m_fps , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
-void RenderingStats::Clone(RenderingStats& other)
+void RenderingStats::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetNumVisibleEntities(m_NumVisibleEntities);
-	other.SetNumVisibleSectors(m_NumVisibleSectors);
-	other.SetNumDebugModels(m_NumDebugModels);
-	other.SetNum2DMessages(m_Num2DMessages);
-	other.Setfps(m_fps);
+	super::Clone(otherObj);
+	RenderingStats* other = (RenderingStats*) otherObj;
+	other->SetNumVisibleEntities(m_NumVisibleEntities);
+	other->SetNumVisibleSectors(m_NumVisibleSectors);
+	other->SetNumDebugModels(m_NumDebugModels);
+	other->SetNum2DMessages(m_Num2DMessages);
+	other->Setfps(m_fps);
 }
 const char* RenderingStats::GetTypeName()
 {

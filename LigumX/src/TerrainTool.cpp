@@ -56,17 +56,18 @@ bool TerrainTool::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ClickedSector], &m_ClickedSector  );
 	return true;
 }
-void TerrainTool::Clone(TerrainTool& other)
+void TerrainTool::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetMode(m_Mode);
-	other.SetTerrainErasureMode(m_TerrainErasureMode);
-	other.SetTerrainBrushSize(m_TerrainBrushSize);
-	other.SetXYZMask(m_XYZMask);
-	other.SetClickedTexel(m_ClickedTexel);
-	other.SetStartTexel(m_StartTexel);
-	other.SetSplatMapIncrement(m_SplatMapIncrement);
-	other.SetClickedSector(m_ClickedSector);
+	super::Clone(otherObj);
+	TerrainTool* other = (TerrainTool*) otherObj;
+	other->SetMode(m_Mode);
+	other->SetTerrainErasureMode(m_TerrainErasureMode);
+	other->SetTerrainBrushSize(m_TerrainBrushSize);
+	other->SetXYZMask(m_XYZMask);
+	other->SetClickedTexel(m_ClickedTexel);
+	other->SetStartTexel(m_StartTexel);
+	other->SetSplatMapIncrement(m_SplatMapIncrement);
+	other->SetClickedSector(m_ClickedSector);
 }
 const char* TerrainTool::GetTypeName()
 {

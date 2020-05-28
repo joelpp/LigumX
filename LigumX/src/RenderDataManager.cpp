@@ -67,11 +67,12 @@ bool RenderDataManager::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_RenderingStats], &m_RenderingStats  );
 	return true;
 }
-void RenderDataManager::Clone(RenderDataManager& other)
+void RenderDataManager::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetCullingOptions(m_CullingOptions);
-	other.SetRenderingStats(m_RenderingStats);
+	super::Clone(otherObj);
+	RenderDataManager* other = (RenderDataManager*) otherObj;
+	other->SetCullingOptions(m_CullingOptions);
+	other->SetRenderingStats(m_RenderingStats);
 }
 const char* RenderDataManager::GetTypeName()
 {

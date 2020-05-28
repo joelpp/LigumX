@@ -58,17 +58,18 @@ bool Sector::ShowPropertyGrid()
 	ImguiHelpers::ShowString2(this, g_Properties[PIDX_OSMFilename], m_OSMFilename  );
 	return true;
 }
-void Sector::Clone(Sector& other)
+void Sector::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetWorldPosition(m_WorldPosition);
-	other.SetEarthPosition(m_EarthPosition);
-	other.SetQuantizedPosition(m_QuantizedPosition);
-	other.SetOffsetIndex(m_OffsetIndex);
-	other.SetDataLoaded(m_DataLoaded);
-	other.SetHeightfield(m_Heightfield);
-	other.SetTerrainPatchEntity(m_TerrainPatchEntity);
-	other.SetOSMFilename(m_OSMFilename);
+	super::Clone(otherObj);
+	Sector* other = (Sector*) otherObj;
+	other->SetWorldPosition(m_WorldPosition);
+	other->SetEarthPosition(m_EarthPosition);
+	other->SetQuantizedPosition(m_QuantizedPosition);
+	other->SetOffsetIndex(m_OffsetIndex);
+	other->SetDataLoaded(m_DataLoaded);
+	other->SetHeightfield(m_Heightfield);
+	other->SetTerrainPatchEntity(m_TerrainPatchEntity);
+	other->SetOSMFilename(m_OSMFilename);
 }
 const char* Sector::GetTypeName()
 {

@@ -39,12 +39,13 @@ bool Mesh::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PointRendering], &m_PointRendering  );
 	return true;
 }
-void Mesh::Clone(Mesh& other)
+void Mesh::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetUsesIndexBuffer(m_UsesIndexBuffer);
-	other.SetWireframeRendering(m_WireframeRendering);
-	other.SetPointRendering(m_PointRendering);
+	super::Clone(otherObj);
+	Mesh* other = (Mesh*) otherObj;
+	other->SetUsesIndexBuffer(m_UsesIndexBuffer);
+	other->SetWireframeRendering(m_WireframeRendering);
+	other->SetPointRendering(m_PointRendering);
 }
 const char* Mesh::GetTypeName()
 {

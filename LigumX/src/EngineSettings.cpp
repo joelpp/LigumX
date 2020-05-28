@@ -65,22 +65,23 @@ bool EngineSettings::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_TerrainTiling], &m_TerrainTiling , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
-void EngineSettings::Clone(EngineSettings& other)
+void EngineSettings::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetWorldScale(m_WorldScale);
-	other.SetStartLonLat(m_StartLonLat);
-	other.SetExtent(m_Extent);
-	other.SetOSMQuantizationScale(m_OSMQuantizationScale);
-	other.SetGenerateFlatTerrain(m_GenerateFlatTerrain);
-	other.SetSplatMapResolution(m_SplatMapResolution);
-	other.SetWayTessellationFactor(m_WayTessellationFactor);
-	other.SetMessagesStartingPosition(m_MessagesStartingPosition);
-	other.SetMessagesFontSize(m_MessagesFontSize);
-	other.SetMessagesDefaultFrameCount(m_MessagesDefaultFrameCount);
-	other.SetMessagesPixelsOffset(m_MessagesPixelsOffset);
-	other.SetLoadOSMData(m_LoadOSMData);
-	other.SetTerrainTiling(m_TerrainTiling);
+	super::Clone(otherObj);
+	EngineSettings* other = (EngineSettings*) otherObj;
+	other->SetWorldScale(m_WorldScale);
+	other->SetStartLonLat(m_StartLonLat);
+	other->SetExtent(m_Extent);
+	other->SetOSMQuantizationScale(m_OSMQuantizationScale);
+	other->SetGenerateFlatTerrain(m_GenerateFlatTerrain);
+	other->SetSplatMapResolution(m_SplatMapResolution);
+	other->SetWayTessellationFactor(m_WayTessellationFactor);
+	other->SetMessagesStartingPosition(m_MessagesStartingPosition);
+	other->SetMessagesFontSize(m_MessagesFontSize);
+	other->SetMessagesDefaultFrameCount(m_MessagesDefaultFrameCount);
+	other->SetMessagesPixelsOffset(m_MessagesPixelsOffset);
+	other->SetLoadOSMData(m_LoadOSMData);
+	other->SetTerrainTiling(m_TerrainTiling);
 }
 const char* EngineSettings::GetTypeName()
 {

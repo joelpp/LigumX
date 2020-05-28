@@ -42,13 +42,14 @@ bool Serializer2::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SerializerInputVariables], m_SerializerInputVariables  );
 	return true;
 }
-void Serializer2::Clone(Serializer2& other)
+void Serializer2::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetWriting(m_Writing);
-	other.SetIsValid(m_IsValid);
-	other.SetFilename(m_Filename);
-	other.SetSerializerInputVariables(m_SerializerInputVariables);
+	super::Clone(otherObj);
+	Serializer2* other = (Serializer2*) otherObj;
+	other->SetWriting(m_Writing);
+	other->SetIsValid(m_IsValid);
+	other->SetFilename(m_Filename);
+	other->SetSerializerInputVariables(m_SerializerInputVariables);
 }
 const char* Serializer2::GetTypeName()
 {

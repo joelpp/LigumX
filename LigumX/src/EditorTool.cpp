@@ -31,11 +31,12 @@ bool EditorTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Visible], &m_Visible  );
 	return true;
 }
-void EditorTool::Clone(EditorTool& other)
+void EditorTool::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetActive(m_Active);
-	other.SetVisible(m_Visible);
+	super::Clone(otherObj);
+	EditorTool* other = (EditorTool*) otherObj;
+	other->SetActive(m_Active);
+	other->SetVisible(m_Visible);
 }
 const char* EditorTool::GetTypeName()
 {

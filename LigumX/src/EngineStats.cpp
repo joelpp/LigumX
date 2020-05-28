@@ -32,11 +32,12 @@ bool EngineStats::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumDrawCalls], &m_NumDrawCalls , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
-void EngineStats::Clone(EngineStats& other)
+void EngineStats::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetNumObjectMapHits(m_NumObjectMapHits);
-	other.SetNumDrawCalls(m_NumDrawCalls);
+	super::Clone(otherObj);
+	EngineStats* other = (EngineStats*) otherObj;
+	other->SetNumObjectMapHits(m_NumObjectMapHits);
+	other->SetNumDrawCalls(m_NumDrawCalls);
 }
 const char* EngineStats::GetTypeName()
 {

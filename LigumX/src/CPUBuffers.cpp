@@ -37,13 +37,14 @@ bool CPUBuffers::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IndexBuffer], m_IndexBuffer  );
 	return true;
 }
-void CPUBuffers::Clone(CPUBuffers& other)
+void CPUBuffers::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetVertexPositions(m_VertexPositions);
-	other.SetVertexNormals(m_VertexNormals);
-	other.SetVertexUVs(m_VertexUVs);
-	other.SetIndexBuffer(m_IndexBuffer);
+	super::Clone(otherObj);
+	CPUBuffers* other = (CPUBuffers*) otherObj;
+	other->SetVertexPositions(m_VertexPositions);
+	other->SetVertexNormals(m_VertexNormals);
+	other->SetVertexUVs(m_VertexUVs);
+	other->SetIndexBuffer(m_IndexBuffer);
 }
 const char* CPUBuffers::GetTypeName()
 {

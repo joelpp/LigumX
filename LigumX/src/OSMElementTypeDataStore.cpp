@@ -33,10 +33,11 @@ bool OSMElementTypeDataStore::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Data], m_Data  );
 	return true;
 }
-void OSMElementTypeDataStore::Clone(OSMElementTypeDataStore& other)
+void OSMElementTypeDataStore::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetData(m_Data);
+	super::Clone(otherObj);
+	OSMElementTypeDataStore* other = (OSMElementTypeDataStore*) otherObj;
+	other->SetData(m_Data);
 }
 const char* OSMElementTypeDataStore::GetTypeName()
 {

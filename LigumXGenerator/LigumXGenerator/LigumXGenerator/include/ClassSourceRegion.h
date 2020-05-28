@@ -508,7 +508,7 @@ public:
 			WriteLine("\tsuper::Clone(otherObj);");
 		}
 
-		WriteLine(m_Class.m_Name + "* other = (" + m_Class.m_Name + "*) otherObj;");
+		WriteLine("\t" + m_Class.m_Name + "* other = (" + m_Class.m_Name + "*) otherObj;");
 
 		WriteVariables(OutputType::Clone);
 		WriteLine("}");

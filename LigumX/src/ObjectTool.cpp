@@ -41,14 +41,15 @@ bool ObjectTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CloneCurrentObject], &m_COMMAND_CloneCurrentObject  );
 	return true;
 }
-void ObjectTool::Clone(ObjectTool& other)
+void ObjectTool::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetSelectedFileIndex(m_SelectedFileIndex);
-	other.SetLoadUnloadedObjects(m_LoadUnloadedObjects);
-	other.SetCOMMAND_SaveCurrentObject(m_COMMAND_SaveCurrentObject);
-	other.SetCOMMAND_CreateNewObject(m_COMMAND_CreateNewObject);
-	other.SetCOMMAND_CloneCurrentObject(m_COMMAND_CloneCurrentObject);
+	super::Clone(otherObj);
+	ObjectTool* other = (ObjectTool*) otherObj;
+	other->SetSelectedFileIndex(m_SelectedFileIndex);
+	other->SetLoadUnloadedObjects(m_LoadUnloadedObjects);
+	other->SetCOMMAND_SaveCurrentObject(m_COMMAND_SaveCurrentObject);
+	other->SetCOMMAND_CreateNewObject(m_COMMAND_CreateNewObject);
+	other->SetCOMMAND_CloneCurrentObject(m_COMMAND_CloneCurrentObject);
 }
 const char* ObjectTool::GetTypeName()
 {
@@ -156,7 +157,7 @@ void ObjectTool::SetCOMMAND_CloneCurrentObject_Callback(const bool& value)
 	{
 		LXObject* newObject = g_ObjectManager->CreateNewObject(m_CurrentObject->GetLXType());
 		ObjectID newObjectID = newObject->GetObjectID();
-		m_CurrentObject->Clone(*newObject);
+		m_CurrentObject->Clone(newObject);
 
 		std::string newName = m_CurrentObject->GetName() + " COPY";
 		newObject->SetName(newName);

@@ -37,13 +37,14 @@ bool PostEffects::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EmissiveGlowEnabled], &m_EmissiveGlowEnabled  );
 	return true;
 }
-void PostEffects::Clone(PostEffects& other)
+void PostEffects::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetGammaCorrectionEnabled(m_GammaCorrectionEnabled);
-	other.SetGammaExponent(m_GammaExponent);
-	other.SetToneMappingEnabled(m_ToneMappingEnabled);
-	other.SetEmissiveGlowEnabled(m_EmissiveGlowEnabled);
+	super::Clone(otherObj);
+	PostEffects* other = (PostEffects*) otherObj;
+	other->SetGammaCorrectionEnabled(m_GammaCorrectionEnabled);
+	other->SetGammaExponent(m_GammaExponent);
+	other->SetToneMappingEnabled(m_ToneMappingEnabled);
+	other->SetEmissiveGlowEnabled(m_EmissiveGlowEnabled);
 }
 const char* PostEffects::GetTypeName()
 {

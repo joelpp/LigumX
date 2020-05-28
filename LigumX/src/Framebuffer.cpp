@@ -44,17 +44,18 @@ bool Framebuffer::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NumColorTargets], &m_NumColorTargets , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
-void Framebuffer::Clone(Framebuffer& other)
+void Framebuffer::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetWidth(m_Width);
-	other.SetHeight(m_Height);
-	other.SetColorTexture(m_ColorTexture);
-	other.SetDepthTexture(m_DepthTexture);
-	other.SetPixelFormat(m_PixelFormat);
-	other.SetInternalPixelFormat(m_InternalPixelFormat);
-	other.SetHasDepth(m_HasDepth);
-	other.SetNumColorTargets(m_NumColorTargets);
+	super::Clone(otherObj);
+	Framebuffer* other = (Framebuffer*) otherObj;
+	other->SetWidth(m_Width);
+	other->SetHeight(m_Height);
+	other->SetColorTexture(m_ColorTexture);
+	other->SetDepthTexture(m_DepthTexture);
+	other->SetPixelFormat(m_PixelFormat);
+	other->SetInternalPixelFormat(m_InternalPixelFormat);
+	other->SetHasDepth(m_HasDepth);
+	other->SetNumColorTargets(m_NumColorTargets);
 }
 const char* Framebuffer::GetTypeName()
 {

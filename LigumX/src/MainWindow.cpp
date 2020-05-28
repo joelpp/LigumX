@@ -40,13 +40,14 @@ bool MainWindow::ShowPropertyGrid()
 	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Title], m_Title  );
 	return true;
 }
-void MainWindow::Clone(MainWindow& other)
+void MainWindow::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetInFocus(m_InFocus);
-	other.SetPosition(m_Position);
-	other.SetSize(m_Size);
-	other.SetTitle(m_Title);
+	super::Clone(otherObj);
+	MainWindow* other = (MainWindow*) otherObj;
+	other->SetInFocus(m_InFocus);
+	other->SetPosition(m_Position);
+	other->SetSize(m_Size);
+	other->SetTitle(m_Title);
 }
 const char* MainWindow::GetTypeName()
 {

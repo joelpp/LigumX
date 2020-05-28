@@ -63,21 +63,22 @@ bool Entity::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_LoadModel], &m_COMMAND_LoadModel  );
 	return true;
 }
-void Entity::Clone(Entity& other)
+void Entity::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetVisible(m_Visible);
-	other.SetModelToWorldMatrix(m_ModelToWorldMatrix);
-	other.SetPosition(m_Position);
-	other.SetRotationAngle(m_RotationAngle);
-	other.SetRotationAxis(m_RotationAxis);
-	other.SetScale(m_Scale);
-	other.SetHasMoved(m_HasMoved);
-	other.SetPickingID(m_PickingID);
-	other.SetModel(m_Model);
-	other.SetIsLight(m_IsLight);
-	other.SetComponents(m_Components);
-	other.SetCOMMAND_LoadModel(m_COMMAND_LoadModel);
+	super::Clone(otherObj);
+	Entity* other = (Entity*) otherObj;
+	other->SetVisible(m_Visible);
+	other->SetModelToWorldMatrix(m_ModelToWorldMatrix);
+	other->SetPosition(m_Position);
+	other->SetRotationAngle(m_RotationAngle);
+	other->SetRotationAxis(m_RotationAxis);
+	other->SetScale(m_Scale);
+	other->SetHasMoved(m_HasMoved);
+	other->SetPickingID(m_PickingID);
+	other->SetModel(m_Model);
+	other->SetIsLight(m_IsLight);
+	other->SetComponents(m_Components);
+	other->SetCOMMAND_LoadModel(m_COMMAND_LoadModel);
 }
 const char* Entity::GetTypeName()
 {

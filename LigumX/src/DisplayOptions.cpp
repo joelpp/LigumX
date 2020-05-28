@@ -103,36 +103,37 @@ bool DisplayOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugVec4], &m_DebugVec4 , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
-void DisplayOptions::Clone(DisplayOptions& other)
+void DisplayOptions::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetDeferredRendering(m_DeferredRendering);
-	other.SetUseSkyLighting(m_UseSkyLighting);
-	other.SetRenderTerrain(m_RenderTerrain);
-	other.SetDrawSky(m_DrawSky);
-	other.SetWireframeRendering(m_WireframeRendering);
-	other.SetUseLighting(m_UseLighting);
-	other.SetShowNormals(m_ShowNormals);
-	other.SetShowUVs(m_ShowUVs);
-	other.SetShowSpecular(m_ShowSpecular);
-	other.SetShowDiffuse(m_ShowDiffuse);
-	other.SetShowAmbient(m_ShowAmbient);
-	other.SetShowFPS(m_ShowFPS);
-	other.SetShowDepth(m_ShowDepth);
-	other.SetShowDebugIcons(m_ShowDebugIcons);
-	other.SetLinearizeDepth(m_LinearizeDepth);
-	other.SetBlinnPhongShading(m_BlinnPhongShading);
-	other.SetRenderTextureOverlay(m_RenderTextureOverlay);
-	other.SetRenderOpaque(m_RenderOpaque);
-	other.SetRenderShadows(m_RenderShadows);
-	other.SetOutputGLErrors(m_OutputGLErrors);
-	other.SetDisplayDebugModels(m_DisplayDebugModels);
-	other.SetPickingEnabled(m_PickingEnabled);
-	other.SetDebugShadowCamera(m_DebugShadowCamera);
-	other.SetDisplayMode(m_DisplayMode);
-	other.SetFPSDisplayPosition(m_FPSDisplayPosition);
-	other.SetFPSDisplayScale(m_FPSDisplayScale);
-	other.SetDebugVec4(m_DebugVec4);
+	super::Clone(otherObj);
+	DisplayOptions* other = (DisplayOptions*) otherObj;
+	other->SetDeferredRendering(m_DeferredRendering);
+	other->SetUseSkyLighting(m_UseSkyLighting);
+	other->SetRenderTerrain(m_RenderTerrain);
+	other->SetDrawSky(m_DrawSky);
+	other->SetWireframeRendering(m_WireframeRendering);
+	other->SetUseLighting(m_UseLighting);
+	other->SetShowNormals(m_ShowNormals);
+	other->SetShowUVs(m_ShowUVs);
+	other->SetShowSpecular(m_ShowSpecular);
+	other->SetShowDiffuse(m_ShowDiffuse);
+	other->SetShowAmbient(m_ShowAmbient);
+	other->SetShowFPS(m_ShowFPS);
+	other->SetShowDepth(m_ShowDepth);
+	other->SetShowDebugIcons(m_ShowDebugIcons);
+	other->SetLinearizeDepth(m_LinearizeDepth);
+	other->SetBlinnPhongShading(m_BlinnPhongShading);
+	other->SetRenderTextureOverlay(m_RenderTextureOverlay);
+	other->SetRenderOpaque(m_RenderOpaque);
+	other->SetRenderShadows(m_RenderShadows);
+	other->SetOutputGLErrors(m_OutputGLErrors);
+	other->SetDisplayDebugModels(m_DisplayDebugModels);
+	other->SetPickingEnabled(m_PickingEnabled);
+	other->SetDebugShadowCamera(m_DebugShadowCamera);
+	other->SetDisplayMode(m_DisplayMode);
+	other->SetFPSDisplayPosition(m_FPSDisplayPosition);
+	other->SetFPSDisplayScale(m_FPSDisplayScale);
+	other->SetDebugVec4(m_DebugVec4);
 }
 const char* DisplayOptions::GetTypeName()
 {

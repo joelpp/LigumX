@@ -65,22 +65,23 @@ bool InputHandler::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MouseScroll], &m_MouseScroll , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
-void InputHandler::Clone(InputHandler& other)
+void InputHandler::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetMouse1Pressed(m_Mouse1Pressed);
-	other.SetMouse2Pressed(m_Mouse2Pressed);
-	other.SetCtrlHeld(m_CtrlHeld);
-	other.SetDragging(m_Dragging);
-	other.SetDragDistance(m_DragDistance);
-	other.SetLastDragDistance(m_LastDragDistance);
-	other.SetDragAccumulator(m_DragAccumulator);
-	other.SetMouseClickPosition(m_MouseClickPosition);
-	other.SetLastMouseClickPosition(m_LastMouseClickPosition);
-	other.SetMouseReleasePosition(m_MouseReleasePosition);
-	other.SetMousePosition(m_MousePosition);
-	other.SetLastMousePosition(m_LastMousePosition);
-	other.SetMouseScroll(m_MouseScroll);
+	super::Clone(otherObj);
+	InputHandler* other = (InputHandler*) otherObj;
+	other->SetMouse1Pressed(m_Mouse1Pressed);
+	other->SetMouse2Pressed(m_Mouse2Pressed);
+	other->SetCtrlHeld(m_CtrlHeld);
+	other->SetDragging(m_Dragging);
+	other->SetDragDistance(m_DragDistance);
+	other->SetLastDragDistance(m_LastDragDistance);
+	other->SetDragAccumulator(m_DragAccumulator);
+	other->SetMouseClickPosition(m_MouseClickPosition);
+	other->SetLastMouseClickPosition(m_LastMouseClickPosition);
+	other->SetMouseReleasePosition(m_MouseReleasePosition);
+	other->SetMousePosition(m_MousePosition);
+	other->SetLastMousePosition(m_LastMousePosition);
+	other->SetMouseScroll(m_MouseScroll);
 }
 const char* InputHandler::GetTypeName()
 {

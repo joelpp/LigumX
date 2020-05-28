@@ -29,10 +29,11 @@ bool LXObject::ShowPropertyGrid()
 	ImguiHelpers::ShowString2(this, g_Properties[PIDX_Name], m_Name  );
 	return true;
 }
-void LXObject::Clone(LXObject& other)
+void LXObject::Clone(LXObject* otherObj)
 {
-	other.SetObjectID(m_ObjectID);
-	other.SetName(m_Name);
+	LXObject* other = (LXObject*) otherObj;
+	other->SetObjectID(m_ObjectID);
+	other->SetName(m_Name);
 }
 const char* LXObject::GetTypeName()
 {

@@ -94,32 +94,33 @@ bool EditorOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DefaultMessageTime], &m_DefaultMessageTime , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
-void EditorOptions::Clone(EditorOptions& other)
+void EditorOptions::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetEnabled(m_Enabled);
-	other.SetShowWorldWindow(m_ShowWorldWindow);
-	other.SetShowMaterialWindow(m_ShowMaterialWindow);
-	other.SetShowEntityWindow(m_ShowEntityWindow);
-	other.SetShowObjectCreator(m_ShowObjectCreator);
-	other.SetShowEngineStats(m_ShowEngineStats);
-	other.SetShowTestGUI(m_ShowTestGUI);
-	other.SetShowObjectManager(m_ShowObjectManager);
-	other.SetBackupDataOnSave(m_BackupDataOnSave);
-	other.SetDebugDisplay(m_DebugDisplay);
-	other.SetDisplayMessages(m_DisplayMessages);
-	other.SetSaveDisabled(m_SaveDisabled);
-	other.SetDisplayPickingTool(m_DisplayPickingTool);
-	other.SetDisplayOSMTool(m_DisplayOSMTool);
-	other.SetDisplaySectorTool(m_DisplaySectorTool);
-	other.SetDisplayFramebufferTool(m_DisplayFramebufferTool);
-	other.SetDisplayTerrainTool(m_DisplayTerrainTool);
-	other.SetDisplayAxisGizmo(m_DisplayAxisGizmo);
-	other.SetMouseScrollCameraSpeed(m_MouseScrollCameraSpeed);
-	other.SetMouseScrollEntityCloseupPercent(m_MouseScrollEntityCloseupPercent);
-	other.SetDefaultMessagePosition(m_DefaultMessagePosition);
-	other.SetDefaultMessageScale(m_DefaultMessageScale);
-	other.SetDefaultMessageTime(m_DefaultMessageTime);
+	super::Clone(otherObj);
+	EditorOptions* other = (EditorOptions*) otherObj;
+	other->SetEnabled(m_Enabled);
+	other->SetShowWorldWindow(m_ShowWorldWindow);
+	other->SetShowMaterialWindow(m_ShowMaterialWindow);
+	other->SetShowEntityWindow(m_ShowEntityWindow);
+	other->SetShowObjectCreator(m_ShowObjectCreator);
+	other->SetShowEngineStats(m_ShowEngineStats);
+	other->SetShowTestGUI(m_ShowTestGUI);
+	other->SetShowObjectManager(m_ShowObjectManager);
+	other->SetBackupDataOnSave(m_BackupDataOnSave);
+	other->SetDebugDisplay(m_DebugDisplay);
+	other->SetDisplayMessages(m_DisplayMessages);
+	other->SetSaveDisabled(m_SaveDisabled);
+	other->SetDisplayPickingTool(m_DisplayPickingTool);
+	other->SetDisplayOSMTool(m_DisplayOSMTool);
+	other->SetDisplaySectorTool(m_DisplaySectorTool);
+	other->SetDisplayFramebufferTool(m_DisplayFramebufferTool);
+	other->SetDisplayTerrainTool(m_DisplayTerrainTool);
+	other->SetDisplayAxisGizmo(m_DisplayAxisGizmo);
+	other->SetMouseScrollCameraSpeed(m_MouseScrollCameraSpeed);
+	other->SetMouseScrollEntityCloseupPercent(m_MouseScrollEntityCloseupPercent);
+	other->SetDefaultMessagePosition(m_DefaultMessagePosition);
+	other->SetDefaultMessageScale(m_DefaultMessageScale);
+	other->SetDefaultMessageTime(m_DefaultMessageTime);
 }
 const char* EditorOptions::GetTypeName()
 {

@@ -31,11 +31,12 @@ bool SerializerInputVariable::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Values], m_Values  );
 	return true;
 }
-void SerializerInputVariable::Clone(SerializerInputVariable& other)
+void SerializerInputVariable::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetVariableName(m_VariableName);
-	other.SetValues(m_Values);
+	super::Clone(otherObj);
+	SerializerInputVariable* other = (SerializerInputVariable*) otherObj;
+	other->SetVariableName(m_VariableName);
+	other->SetValues(m_Values);
 }
 const char* SerializerInputVariable::GetTypeName()
 {

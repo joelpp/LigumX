@@ -68,22 +68,23 @@ bool PickingTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CloneEntity], &m_CloneEntity  );
 	return true;
 }
-void PickingTool::Clone(PickingTool& other)
+void PickingTool::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetEnabled(m_Enabled);
-	other.SetPickedEntity(m_PickedEntity);
-	other.SetAimingWindowPosition(m_AimingWindowPosition);
-	other.SetAimingWorldPosition(m_AimingWorldPosition);
-	other.SetAimingID(m_AimingID);
-	other.SetPickedWorldPosition(m_PickedWorldPosition);
-	other.SetPickingData(m_PickingData);
-	other.SetPickedDepth(m_PickedDepth);
-	other.SetPickedID(m_PickedID);
-	other.SetPickDebugModels(m_PickDebugModels);
-	other.SetPickedHeight(m_PickedHeight);
-	other.SetPickedSector(m_PickedSector);
-	other.SetCloneEntity(m_CloneEntity);
+	super::Clone(otherObj);
+	PickingTool* other = (PickingTool*) otherObj;
+	other->SetEnabled(m_Enabled);
+	other->SetPickedEntity(m_PickedEntity);
+	other->SetAimingWindowPosition(m_AimingWindowPosition);
+	other->SetAimingWorldPosition(m_AimingWorldPosition);
+	other->SetAimingID(m_AimingID);
+	other->SetPickedWorldPosition(m_PickedWorldPosition);
+	other->SetPickingData(m_PickingData);
+	other->SetPickedDepth(m_PickedDepth);
+	other->SetPickedID(m_PickedID);
+	other->SetPickDebugModels(m_PickDebugModels);
+	other->SetPickedHeight(m_PickedHeight);
+	other->SetPickedSector(m_PickedSector);
+	other->SetCloneEntity(m_CloneEntity);
 }
 const char* PickingTool::GetTypeName()
 {

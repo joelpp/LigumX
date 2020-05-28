@@ -34,11 +34,12 @@ bool AABB::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Scale], &m_Scale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
-void AABB::Clone(AABB& other)
+void AABB::Clone(LXObject* otherObj)
 {
-	super::Clone(other);
-	other.SetStartPoint(m_StartPoint);
-	other.SetScale(m_Scale);
+	super::Clone(otherObj);
+	AABB* other = (AABB*) otherObj;
+	other->SetStartPoint(m_StartPoint);
+	other->SetScale(m_Scale);
 }
 const char* AABB::GetTypeName()
 {
