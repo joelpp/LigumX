@@ -1373,6 +1373,19 @@ void Editor::RenderImgui()
 			{
 				ResetWorld();
 			}
+			if (ImGui::MenuItem("Save all"))
+			{
+				TrySaveObject(g_Editor);
+				TrySaveObject(&Renderer::GetInstance());
+				if (world)
+				{
+					TrySaveObject(world);
+				}
+				else
+				{
+					lxLogMessage("No world to save!");
+				}
+			}
 			if (ImGui::MenuItem("Save Editor"))
 			{
 				TrySaveObject(g_Editor);
