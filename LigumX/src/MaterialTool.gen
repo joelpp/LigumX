@@ -1,0 +1,10 @@
+
+class MaterialTool : EditorTool
+{ 
+	[transient]
+	Entity* PickedEntity;
+
+	[transient]
+	std::vector<Material*> PickedMaterials;
+} 
+

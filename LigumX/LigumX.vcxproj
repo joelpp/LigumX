@@ -197,6 +197,7 @@
     <ClCompile Include="src\LXObject.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\MaterialTool.cpp" />
     <ClCompile Include="src\MathUtils.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="src\LXTypeDefinition.h" />
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Material.h" />
+    <ClInclude Include="src\MaterialTool.h" />
     <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\Mesh.h" />

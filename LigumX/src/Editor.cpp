@@ -43,6 +43,7 @@
 #include "TerrainTool.h"
 #include "ObjectTool.h"
 #include "DataInspectorTool.h"
+#include "MaterialTool.h"
 
 
 #pragma region  CLASS_SOURCE Editor
@@ -121,6 +122,7 @@ const std::string EnumValues_EEditorTool[] =
 "PickingTool",
 "ObjectTool",
 "DataInspectorTool",
+"MaterialTool",
 };
 
 const EEditorTool Indirection_EEditorTool[] =
@@ -132,6 +134,7 @@ const EEditorTool Indirection_EEditorTool[] =
 	EEditorTool_PickingTool,
 	EEditorTool_ObjectTool,
 	EEditorTool_DataInspectorTool,
+	EEditorTool_MaterialTool,
 };
 
 #pragma endregion  CLASS_SOURCE Editor
@@ -157,7 +160,8 @@ void Editor::Initialize()
 	m_Tools[EEditorTool_TerrainTool]	= new TerrainTool();
 	m_Tools[EEditorTool_EntityManipulator] = new EditorTool();
 	m_Tools[EEditorTool_ObjectTool] = new ObjectTool();
-	m_Tools[EEditorTool_DataInspectorTool]	= new DataInspectorTool();
+	m_Tools[EEditorTool_DataInspectorTool] = new DataInspectorTool();
+	m_Tools[EEditorTool_MaterialTool]	= new MaterialTool();
 
 	m_ToolDisplayToggles.resize(EnumLength_EEditorTool);
 	for (int i = 0; i < EnumLength_EEditorTool; ++i)

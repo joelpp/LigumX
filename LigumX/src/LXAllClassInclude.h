@@ -24,6 +24,7 @@
 #include "LXObject.h"
 #include "MainWindow.h"
 #include "Material.h"
+#include "MaterialTool.h"
 #include "Mesh.h"
 #include "Model.h"
 #include "Node.h"
