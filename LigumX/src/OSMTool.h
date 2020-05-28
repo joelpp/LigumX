@@ -24,6 +24,7 @@ public:
 static const int ClassID = 1416751752;
 static const LXType Type = LXType_OSMTool;
 static constexpr const char* ClassName = "OSMTool";
+virtual LXType GetLXType() { return LXType_OSMTool; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 

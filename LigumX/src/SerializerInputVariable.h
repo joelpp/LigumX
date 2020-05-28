@@ -15,6 +15,7 @@ public:
 static const int ClassID = 929535779;
 static const LXType Type = LXType_SerializerInputVariable;
 static constexpr const char* ClassName = "SerializerInputVariable";
+virtual LXType GetLXType() { return LXType_SerializerInputVariable; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

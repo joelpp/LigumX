@@ -18,6 +18,7 @@ public:
 static const int ClassID = -762015354;
 static const LXType Type = LXType_TestComponentB;
 static constexpr const char* ClassName = "TestComponentB";
+virtual LXType GetLXType() { return LXType_TestComponentB; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef Component super;
 

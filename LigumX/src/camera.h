@@ -24,6 +24,7 @@ public:
 static const int ClassID = 1181213486;
 static const LXType Type = LXType_Camera;
 static constexpr const char* ClassName = "Camera";
+virtual LXType GetLXType() { return LXType_Camera; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

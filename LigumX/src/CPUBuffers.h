@@ -17,6 +17,7 @@ public:
 static const int ClassID = 2143754276;
 static const LXType Type = LXType_CPUBuffers;
 static constexpr const char* ClassName = "CPUBuffers";
+virtual LXType GetLXType() { return LXType_CPUBuffers; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

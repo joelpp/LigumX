@@ -16,6 +16,7 @@ public:
 static const int ClassID = 1786562374;
 static const LXType Type = LXType_EditorOptions;
 static constexpr const char* ClassName = "EditorOptions";
+virtual LXType GetLXType() { return LXType_EditorOptions; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

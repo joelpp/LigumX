@@ -67,6 +67,7 @@ public:
 
 		m_Stream << "static const LXType Type = LXType_" << m_Class.m_Name << ";" << std::endl;
 		m_Stream << "static constexpr const char* ClassName = \"" << m_Class.m_Name << "\";" << std::endl;
+		m_Stream << "virtual LXType GetLXType() { return LXType_" << m_Class.m_Name << "; }" << std::endl;
 		m_Stream << "virtual const char* GetLXClassName() { return ClassName; }" << std::endl;
 
 

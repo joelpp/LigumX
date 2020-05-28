@@ -61,6 +61,7 @@ public:
 static const int ClassID = -459175268;
 static const LXType Type = LXType_Mesh;
 static constexpr const char* ClassName = "Mesh";
+virtual LXType GetLXType() { return LXType_Mesh; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

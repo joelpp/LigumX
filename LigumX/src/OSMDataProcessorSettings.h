@@ -16,6 +16,7 @@ public:
 static const int ClassID = -301590873;
 static const LXType Type = LXType_OSMDataProcessorSettings;
 static constexpr const char* ClassName = "OSMDataProcessorSettings";
+virtual LXType GetLXType() { return LXType_OSMDataProcessorSettings; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

@@ -33,6 +33,7 @@ public:
 static const int ClassID = 58952128;
 static const LXType Type = LXType_Material;
 static constexpr const char* ClassName = "Material";
+virtual LXType GetLXType() { return LXType_Material; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

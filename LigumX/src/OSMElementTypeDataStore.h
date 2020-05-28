@@ -21,6 +21,7 @@ public:
 static const int ClassID = -1486964697;
 static const LXType Type = LXType_OSMElementTypeDataStore;
 static constexpr const char* ClassName = "OSMElementTypeDataStore";
+virtual LXType GetLXType() { return LXType_OSMElementTypeDataStore; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

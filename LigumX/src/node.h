@@ -21,6 +21,7 @@ public:
 static const int ClassID = -755583347;
 static const LXType Type = LXType_Node;
 static constexpr const char* ClassName = "Node";
+virtual LXType GetLXType() { return LXType_Node; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef OSMElement super;
 

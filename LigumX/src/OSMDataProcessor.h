@@ -69,6 +69,7 @@ public:
 static const int ClassID = -277960222;
 static const LXType Type = LXType_OSMDataProcessor;
 static constexpr const char* ClassName = "OSMDataProcessor";
+virtual LXType GetLXType() { return LXType_OSMDataProcessor; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

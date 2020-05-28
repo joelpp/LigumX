@@ -18,6 +18,7 @@ public:
 static const int ClassID = -1540401317;
 static const LXType Type = LXType_DefaultTextureHolder;
 static constexpr const char* ClassName = "DefaultTextureHolder";
+virtual LXType GetLXType() { return LXType_DefaultTextureHolder; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

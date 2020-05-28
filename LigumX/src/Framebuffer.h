@@ -22,6 +22,7 @@ public:
 static const int ClassID = 1477904080;
 static const LXType Type = LXType_Framebuffer;
 static constexpr const char* ClassName = "Framebuffer";
+virtual LXType GetLXType() { return LXType_Framebuffer; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

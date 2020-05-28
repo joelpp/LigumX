@@ -19,6 +19,7 @@ public:
 static const int ClassID = -960579863;
 static const LXType Type = LXType_BoundingBoxComponent;
 static constexpr const char* ClassName = "BoundingBoxComponent";
+virtual LXType GetLXType() { return LXType_BoundingBoxComponent; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef Component super;
 

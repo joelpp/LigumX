@@ -17,6 +17,7 @@ public:
 static const int ClassID = 1479238507;
 static const LXType Type = LXType_SunLight;
 static constexpr const char* ClassName = "SunLight";
+virtual LXType GetLXType() { return LXType_SunLight; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

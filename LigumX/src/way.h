@@ -24,6 +24,7 @@ public:
 static const int ClassID = -432682044;
 static const LXType Type = LXType_Way;
 static constexpr const char* ClassName = "Way";
+virtual LXType GetLXType() { return LXType_Way; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef OSMElement super;
 

@@ -34,6 +34,7 @@ public:
 static const int ClassID = 1369394216;
 static const LXType Type = LXType_TerrainTool;
 static constexpr const char* ClassName = "TerrainTool";
+virtual LXType GetLXType() { return LXType_TerrainTool; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 

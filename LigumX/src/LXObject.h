@@ -16,6 +16,7 @@ public:
 static const int ClassID = 1057246886;
 static const LXType Type = LXType_LXObject;
 static constexpr const char* ClassName = "LXObject";
+virtual LXType GetLXType() { return LXType_LXObject; }
 virtual const char* GetLXClassName() { return ClassName; }
 
 int GetObjectID() { return m_ObjectID; }; 

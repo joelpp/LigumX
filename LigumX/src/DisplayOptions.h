@@ -29,6 +29,7 @@ public:
 static const int ClassID = 969288629;
 static const LXType Type = LXType_DisplayOptions;
 static constexpr const char* ClassName = "DisplayOptions";
+virtual LXType GetLXType() { return LXType_DisplayOptions; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

@@ -132,6 +132,7 @@ public:
 static const int ClassID = -1412519292;
 static const LXType Type = LXType_RenderDataManager;
 static constexpr const char* ClassName = "RenderDataManager";
+virtual LXType GetLXType() { return LXType_RenderDataManager; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

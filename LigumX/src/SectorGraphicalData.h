@@ -20,6 +20,7 @@ public:
 static const int ClassID = 485409280;
 static const LXType Type = LXType_SectorGraphicalData;
 static constexpr const char* ClassName = "SectorGraphicalData";
+virtual LXType GetLXType() { return LXType_SectorGraphicalData; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

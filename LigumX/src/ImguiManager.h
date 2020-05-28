@@ -18,6 +18,7 @@ public:
 static const int ClassID = -1368442899;
 static const LXType Type = LXType_ImguiManager;
 static constexpr const char* ClassName = "ImguiManager";
+virtual LXType GetLXType() { return LXType_ImguiManager; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

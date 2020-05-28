@@ -16,6 +16,7 @@ public:
 static const int ClassID = 73693055;
 static const LXType Type = LXType_CullingOptions;
 static constexpr const char* ClassName = "CullingOptions";
+virtual LXType GetLXType() { return LXType_CullingOptions; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

@@ -52,6 +52,7 @@ public:
 static const int ClassID = -450765485;
 static const LXType Type = LXType_World;
 static constexpr const char* ClassName = "World";
+virtual LXType GetLXType() { return LXType_World; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

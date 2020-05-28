@@ -18,6 +18,7 @@ public:
 static const int ClassID = 987879604;
 static const LXType Type = LXType_ObjectTool;
 static constexpr const char* ClassName = "ObjectTool";
+virtual LXType GetLXType() { return LXType_ObjectTool; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 

@@ -95,6 +95,7 @@ public:
 static const int ClassID = 1496194462;
 static const LXType Type = LXType_Renderer;
 static constexpr const char* ClassName = "Renderer";
+virtual LXType GetLXType() { return LXType_Renderer; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

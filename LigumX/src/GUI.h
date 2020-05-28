@@ -18,6 +18,7 @@ public:
 static const int ClassID = -1741320384;
 static const LXType Type = LXType_GUI;
 static constexpr const char* ClassName = "GUI";
+virtual LXType GetLXType() { return LXType_GUI; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

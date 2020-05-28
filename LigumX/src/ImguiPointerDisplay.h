@@ -16,6 +16,7 @@ public:
 static const int ClassID = -1203610705;
 static const LXType Type = LXType_ImguiPointerDisplay;
 static constexpr const char* ClassName = "ImguiPointerDisplay";
+virtual LXType GetLXType() { return LXType_ImguiPointerDisplay; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

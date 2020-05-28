@@ -29,6 +29,7 @@ public:
 static const int ClassID = 2012359204;
 static const LXType Type = LXType_CurlRequest;
 static constexpr const char* ClassName = "CurlRequest";
+virtual LXType GetLXType() { return LXType_CurlRequest; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

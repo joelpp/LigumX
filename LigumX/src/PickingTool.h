@@ -20,6 +20,7 @@ public:
 static const int ClassID = -315061750;
 static const LXType Type = LXType_PickingTool;
 static constexpr const char* ClassName = "PickingTool";
+virtual LXType GetLXType() { return LXType_PickingTool; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 

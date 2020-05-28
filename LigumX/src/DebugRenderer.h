@@ -17,6 +17,7 @@ public:
 static const int ClassID = 24743727;
 static const LXType Type = LXType_DebugRenderer;
 static constexpr const char* ClassName = "DebugRenderer";
+virtual LXType GetLXType() { return LXType_DebugRenderer; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

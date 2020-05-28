@@ -26,6 +26,7 @@ public:
 static const int ClassID = 466202022;
 static const LXType Type = LXType_Heightfield;
 static constexpr const char* ClassName = "Heightfield";
+virtual LXType GetLXType() { return LXType_Heightfield; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

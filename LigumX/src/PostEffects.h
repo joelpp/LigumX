@@ -18,6 +18,7 @@ public:
 static const int ClassID = 1677466883;
 static const LXType Type = LXType_PostEffects;
 static constexpr const char* ClassName = "PostEffects";
+virtual LXType GetLXType() { return LXType_PostEffects; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

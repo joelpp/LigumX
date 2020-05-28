@@ -18,6 +18,7 @@ public:
 static const int ClassID = -7439674;
 static const LXType Type = LXType_EngineSettings;
 static constexpr const char* ClassName = "EngineSettings";
+virtual LXType GetLXType() { return LXType_EngineSettings; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 

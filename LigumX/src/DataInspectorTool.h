@@ -18,6 +18,7 @@ public:
 static const int ClassID = -1977875512;
 static const LXType Type = LXType_DataInspectorTool;
 static constexpr const char* ClassName = "DataInspectorTool";
+virtual LXType GetLXType() { return LXType_DataInspectorTool; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef EditorTool super;
 

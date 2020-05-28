@@ -19,6 +19,7 @@ public:
 static const int ClassID = -777561099;
 static const LXType Type = LXType_OSMElementComponent;
 static constexpr const char* ClassName = "OSMElementComponent";
+virtual LXType GetLXType() { return LXType_OSMElementComponent; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef Component super;
 
