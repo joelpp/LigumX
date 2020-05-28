@@ -213,6 +213,11 @@ LXObject* ObjectManager::CreateNewObject(const std::string& typeName)
 	return CreateObject(typeName, newID);
 }
 
+LXObject* ObjectManager::CreateNewObject(LXType lxType)
+{
+	return CreateNewObject(GetClassnameFromLXType(lxType));
+}
+
 LXObject* ObjectManager::GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID objectID, const std::string& typeName)
 {
 	ObjectPtr existingObject = FindObjectByID(objectID, false);

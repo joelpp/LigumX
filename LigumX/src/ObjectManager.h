@@ -141,6 +141,7 @@ public:
 
 	LXObject* GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID objectID, const std::string& typeName);
 	LXObject* CreateObject(const std::string& typeName, ObjectID id);
+	LXObject* CreateNewObject(LXType lxtype);
 	LXObject* CreateNewObject(const std::string& typeName);
 
 	LXType GetLXTypeFromClassname(const std::string& Classname);

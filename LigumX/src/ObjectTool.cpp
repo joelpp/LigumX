@@ -121,6 +121,7 @@ void ObjectTool::DrawImguiWindow()
 				if (ImGui::Selectable(allTypeNames[i].c_str()))
 				{
 					CreateNewObject(allTypeNames[i]);
+					m_SelectedFileIndex = -1;
 				}
 			}
 			ImGui::EndPopup();
@@ -151,5 +152,16 @@ void ObjectTool::SetCOMMAND_CreateNewObject_Callback(const bool& value)
 
 void ObjectTool::SetCOMMAND_CloneCurrentObject_Callback(const bool& value)
 {
+	if (m_CurrentObject)
+	{
+		LXObject* newObject = g_ObjectManager->CreateNewObject(m_CurrentObject->GetLXType());
+		
+		m_CurrentObject->Clone(*newObject);
 
+		std::string newName = m_CurrentObject->GetName() + " COPY";
+		newObject->SetName(newName);
+		
+		m_CurrentObject = newObject;
+		m_SelectedFileIndex = -1;
+	}
 }
