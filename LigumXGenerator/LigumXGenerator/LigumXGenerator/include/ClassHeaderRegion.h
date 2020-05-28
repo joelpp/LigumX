@@ -241,7 +241,7 @@ public:
 
 	void WriteCloneDeclaration()
 	{
-		std::string cloneLine = "virtual void Clone(" + m_Class.m_Name + "& other);";
+		std::string cloneLine = "virtual void Clone(LXObject* otherObj);";
 		WriteLine(cloneLine);
 	}
 

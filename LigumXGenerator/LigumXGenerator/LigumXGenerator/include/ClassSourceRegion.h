@@ -265,7 +265,7 @@ public:
 	{
 		OutputParams("ImguiHelpers::ShowProperty(this, ", true, false, true, true, true, false),
 		OutputParams("serializer.Serialize", false, true, true, false, false, false),
-		OutputParams("other.Set", false, false, false, false, false, true),
+		OutputParams("other->Set", false, false, false, false, false, true),
 	};
 
 	void WriteVariable(Variable& var, const OutputParams& outputParams)
@@ -500,13 +500,15 @@ public:
 
 	void WriteCloner()
 	{
-		WriteLine("void " + m_Class.m_Name + "::Clone(" + m_Class.m_Name + "& other)");
+		WriteLine("void " + m_Class.m_Name + "::Clone(LXObject* otherObj)");
 		WriteLine("{");
 
 		if (!(m_Class.m_ParentName.empty()))
 		{
-			WriteLine("\tsuper::Clone(other);");
+			WriteLine("\tsuper::Clone(otherObj);");
 		}
+
+		WriteLine(m_Class.m_Name + "* other = (" + m_Class.m_Name + "*) otherObj;");
 
 		WriteVariables(OutputType::Clone);
 		WriteLine("}");
