@@ -313,7 +313,7 @@ void main()
 					vec3 kD = vec3(1.0) - kS;
 					kD *= 1.0 - g_Material.m_Metallic;	  
 
-					radiance *= 1e4;
+					radiance *= 1e2;
         
 					// add to outgoing radiance Lo
 					float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);                
@@ -338,7 +338,13 @@ void main()
 		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * sky * shadow;
 
 		float ambient = 0.1f;
-		pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
+
+		if (g_Material.m_Unlit)
+		{
+			pixelData.m_FinalColor = GetDiffuseColor(myTexCoord);
+		}
+
+		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
 
 		//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 		//{

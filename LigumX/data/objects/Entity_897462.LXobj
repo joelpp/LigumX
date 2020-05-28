@@ -5,9 +5,9 @@ PBRTEST_Sphere_0_3
 Visible
 1
 Position
-60.000000
--9.000000
-66.000000
+0.000000
+6.000000
+1.000000
 RotationAngle
 0.000000
 RotationAxis
@@ -15,9 +15,9 @@ RotationAxis
 0.000000
 0.000000
 Scale
-10.000000
-10.000000
-10.000000
+1.000000
+1.000000
+1.000000
 Model
 897542
 IsLight

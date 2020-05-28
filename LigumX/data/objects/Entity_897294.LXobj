@@ -6,8 +6,8 @@ Visible
 1
 Position
 0.000000
--9.000000
-66.000000
+0.000000
+1.000000
 RotationAngle
 0.000000
 RotationAxis
@@ -15,11 +15,11 @@ RotationAxis
 0.000000
 0.000000
 Scale
-10.000000
-10.000000
-10.000000
+1.000000
+1.000000
+1.000000
 Model
-26683
+897298
 IsLight
 0
 Components
