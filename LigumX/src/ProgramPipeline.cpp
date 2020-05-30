@@ -12,7 +12,7 @@
 using namespace std;
 
 const std::string g_IncludeMarker = "// Include";
-const std::string g_ProviderIncludeMarker = "// Include ProvidersMarker";
+const std::string g_ProviderIncludeMarker = "ProvidersMarker";
 
 const std::string g_ProviderIncludeFilePath = g_PathShaders + "ProviderDefinitions.h";
 
@@ -23,11 +23,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram()
 	
 }
 
-bool ProgramPipeline::ShaderProgram::Initialize(
-	GLenum shaderType,
-	//initializer_list<string> srcFilenames,
-	string srcFilenames,
-	bool readSrcFilenamesAsSourceCode)
+bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, string srcFilenames,	bool readSrcFilenamesAsSourceCode)
 {
 	this->shaderType = shaderType;
 
@@ -36,6 +32,8 @@ bool ProgramPipeline::ShaderProgram::Initialize(
 	int count = 0;
 	StringList sourceCodeStrings;
 
+	m_NumLinesInInclude = 0;
+
 	if (readSrcFilenamesAsSourceCode)
 	{
 		sourceCodes[count++] = srcFilenames.c_str();
@@ -43,27 +41,39 @@ bool ProgramPipeline::ShaderProgram::Initialize(
 	}
 	else
 	{
-		// Read the Vertex Shader code from the files
-		// based on http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
 
 		sourceCodeStrings = StringList(nbSources);
-
 		ifstream sourceCodeStream(srcFilenames, ios::in);
 		if (sourceCodeStream.is_open())
 		{
 			string line;
 			while (getline(sourceCodeStream, line))
 			{
-				if (line == g_ProviderIncludeMarker)
-				{
-					std::string providerInclude = StringUtils::FromFile(g_ProviderIncludeFilePath.c_str());
-					if (m_NumLinesInInclude == 0)
-					{
-						m_NumLinesInInclude = StringUtils::Count(providerInclude, '\n');
-					}
+				bool includeStatement = StringUtils::StringContains(line, g_IncludeMarker);
 
-					sourceCodeStrings[count] += providerInclude + "\n";
-					continue;
+				if (includeStatement)
+				{
+					std::vector<LXString> tokens = StringUtils::SplitString(line, ' ');
+					lxAssert(tokens.size() == 3);
+					
+					LXString& toInclude = tokens[2];
+					if (toInclude == g_ProviderIncludeMarker)
+					{
+						LXString providerInclude = StringUtils::FromFile(g_ProviderIncludeFilePath.c_str());
+						m_NumLinesInInclude += StringUtils::Count(providerInclude, '\n');
+
+						sourceCodeStrings[count] += providerInclude + "\n";
+						continue;
+					}
+					else
+					{
+						LXString path = g_PathShaders + toInclude;
+						LXString providerInclude = StringUtils::FromFile(path.c_str());
+						m_NumLinesInInclude += StringUtils::Count(providerInclude, '\n');
+
+						sourceCodeStrings[count] += providerInclude + "\n";
+						continue;
+					}
 				}
 
 				sourceCodeStrings[count] += line + "\n";

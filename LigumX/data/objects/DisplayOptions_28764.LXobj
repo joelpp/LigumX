@@ -39,7 +39,7 @@ RenderTextureOverlay
 RenderOpaque
 1
 RenderShadows
-0
+1
 OutputGLErrors
 1
 DisplayDebugModels

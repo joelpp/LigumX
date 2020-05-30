@@ -39,7 +39,7 @@ RefractionIndex
 IsGlass
 0
 ReflectEnvironment
-0
+1
 UVScale
 1.000000
 1.000000

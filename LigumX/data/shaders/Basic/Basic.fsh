@@ -20,6 +20,14 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_DataInspector
 
 // Include ProvidersMarker
+
+// Include BasicUtils.glsl
+// Include ShadowUtils.glsl
+// Include LightUtils.glsl
+// Include MaterialUtils.glsl
+// Include LightingUtils.glsl
+// Include SkyUtils.glsl
+
 uniform vec4 g_DebugVec4;
 
 #if DEFERRED
@@ -29,183 +37,6 @@ layout(location = 1) out vec4 WorldPosition;
 layout(location = 0) out vec4 FinalColor;
 layout(location = 1) out vec4 BrightColor;
 #endif
-
-
-float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
-{
-	if (!g_UseShadows)
-	{
-		return 0.f;
-	}
-	// perform perspective divide
-    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-	//projCoords.xy *= g_DebugVec4.xy;
-    projCoords = projCoords * 0.5 + 0.5; 
-
-
-	float closestDepth = textureLod(g_DepthMapTexture, projCoords.xy, 0.f).r;
-
-	float currentDepth = projCoords.z;
-
-	float bias = max(0.01 * (1.0 - dot(g_DirectionalLight.m_Direction, normalWS)), 0.005);
-	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
-		if(projCoords.z > 1.0)
-        shadow = 0.0;
-    return shadow;
-}
-
-vec4 SampleTexture(sampler2D theTexture, vec2 uv)
-{
-	vec4 samplingResult = texture(theTexture, uv);
-
-	return samplingResult;
-}
-
-vec4 GetSpecularColor(vec2 uv)
-{
-	vec4 specularColor;
-	if (g_Material.m_SpecularTextureEnabled)
-	{
-		specularColor = SampleTexture(g_Material.m_SpecularTexture, uv * g_Material.m_UVScale);
-	} 
-	else
-	{
-		specularColor = vec4(g_Material.m_SpecularColor, 1.0f);
-	}
-
-	return specularColor;
-}
-
-
-vec4 GetDiffuseColor(vec2 uv)
-{
-	vec4 diffuseColor;
-	if (g_Material.m_DiffuseTextureEnabled)
-	{
-		diffuseColor = SampleTexture(g_Material.m_DiffuseTexture, uv * g_Material.m_UVScale);
-
-		if (g_GammaCorrectionEnabled > 0)
-		{
-			diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
-		}
-	} 
-	else
-	{
-		diffuseColor = vec4(g_Material.m_DiffuseColor, 1.0f);
-	}
-
-	return diffuseColor;
-}
-
-vec3 GetLightColor(int lightIndex)
-{
-	vec3 lightColor;
-	if (false && g_UseSkyLighting)
-	{
-		//lightColor = g_DirectionalLight.m_DiffuseColor;
-		lightColor = vec3(1, 0, 0);
-	}
-	else
-	{
-		lightColor = g_PointLight[lightIndex].m_DiffuseColor;
-	}
-
-	return lightColor;
-}
-
-vec3 GetLightDirection(int lightIndex)
-{
-	vec3 lightDirection;
-	if (false && g_UseSkyLighting)
-	{
-		//lightDirection = g_DirectionalLight.m_Direction;
-		lightDirection = vec3(0, 0, 1);
-	}
-	else
-	{
-		lightDirection = g_PointLight[lightIndex].m_Position - vWorldPosition.xyz;
-	}
-
-	return lightDirection;
-}
-
-vec3 GetDiffuseLighting(int lightIndex, vec3 fragmentToLight, vec3 fNormalWS)
-{
- 	// Diffuse
-	vec4 diffuseColor = GetDiffuseColor(myTexCoord);
-
-	if (g_Material.m_Unlit)
-	{
-		return diffuseColor.rgb;
-	}
-
-	float diffuseFactor = max(0.f, dot(fragmentToLight, fNormalWS));
-
-	return diffuseFactor * diffuseColor.rgb * GetLightColor(lightIndex);
-}
-
-vec3 fresnelSchlick(float cosTheta, vec3 F0)
-{
-    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
-}  
-
-float DistributionGGX(vec3 N, vec3 H, float roughness)
-{
-    float a      = roughness*roughness;
-    float a2     = a*a;
-    float NdotH  = max(dot(N, H), 0.0);
-    float NdotH2 = NdotH*NdotH;
-	
-    float nom   = a2;
-    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = PI * denom * denom;
-	
-    return nom / denom;
-}
-
-float GeometrySchlickGGX(float NdotV, float roughness)
-{
-    float r = (roughness + 1.0);
-    float k = (r*r) / 8.0;
-
-    float nom   = NdotV;
-    float denom = NdotV * (1.0 - k) + k;
-	
-    return nom / denom;
-}
-float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
-{
-    float NdotV = max(dot(N, V), 0.0);
-    float NdotL = max(dot(N, L), 0.0);
-    float ggx2  = GeometrySchlickGGX(NdotV, roughness);
-    float ggx1  = GeometrySchlickGGX(NdotL, roughness);
-	
-    return ggx1 * ggx2;
-}
-
-vec3 GetSpecularLighting(int lightIndex, vec3 fragmentToLight, vec3 fragmentToCamera, vec3 fNormalWS)
-{
-	// Specular
-	vec4 specularColor = GetSpecularColor(myTexCoord);
-
-	vec3 reflectionDir = reflect(-fragmentToLight, fNormalWS);
-	vec3 halfwayVector = normalize(fragmentToLight + fragmentToCamera);
-	float spec = 0;
-	if (g_BlinnPhongShading > 0)
-	{
-		spec = pow(max(dot(fNormalWS, halfwayVector), 0.0), g_Material.m_Shininess);
-	}
-	else
-	{
-		spec = pow(max(dot(fragmentToCamera, reflectionDir), 0.0), g_Material.m_Shininess);
-	}
-
-	spec *= g_DebugSpecularEnabled;
-
-
-
-	return spec * specularColor.rgb * GetLightColor(lightIndex);  
-}
 
 void main() 
 {
@@ -329,13 +160,54 @@ void main()
 		vec3 sunDir = cos(sunTime)*vec3(0, 0, 1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);
 
 		//vec3 skyLighting = vec3(0, 0, 1);
-		float sky = 0;// dot(sunDir, pixelData.m_Normal);
+		float sky = dot(sunDir, pixelData.m_Normal) * 0.1f;
 		pixelData.m_DiffuseColor = GetDiffuseColor(myTexCoord);
 
 		float shadow = 1.f - ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
 
+		if (false)
+		{
+			pixelData.m_FinalColor += pixelData.m_DiffuseColor * sky * shadow * 0.1f;
 
-		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * sky * shadow;
+		}
+		else
+		{
+
+			vec3 fragmentToLight = sunDir;
+			vec3 fragmentToLightDir = normalize(fragmentToLight);
+
+			float constant = 1.0f;
+			float llinear = 0.09f;
+			float quadratic = 0.032f;
+			//float attenuation = 1.0 / (constant + llinear * lightDistance + quadratic * (lightDistance * lightDistance));    
+			//float attenuation = 1.0 / (lightDistance * lightDistance);
+			float attenuation = 1.f;
+
+			vec3 halfwayVector = normalize(fragmentToLightDir + fragmentToCamera);
+			vec3 radiance = sky * vec3(1, 1, 1)/* GetLightColor(lightIndex)*/ * attenuation;
+
+
+			vec3 F0 = vec3(0.04);
+			F0 = mix(F0, g_Material.m_DiffuseColor, g_Material.m_Metallic);
+			vec3 F = fresnelSchlick(max(dot(halfwayVector, fragmentToCamera), 0.0), F0);
+			float NDF = DistributionGGX(pixelData.m_Normal, halfwayVector, g_Material.m_Roughness);
+			float G = GeometrySmith(pixelData.m_Normal, fragmentToCamera, fragmentToLightDir, g_Material.m_Roughness);
+
+			vec3 nominator = NDF * G * F;
+			float denominator = 4 * max(dot(pixelData.m_Normal, fragmentToCamera), 0.0) * max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0) + 0.001;
+			vec3 specular = nominator / max(denominator, 0.001);
+
+			vec3 kS = F;
+			vec3 kD = vec3(1.0) - kS;
+			kD *= 1.0 - g_Material.m_Metallic;
+
+			radiance *= 1e2;
+
+			// add to outgoing radiance Lo
+			float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);
+			vec3 finalColor = (kD * GetDiffuseColor(myTexCoord).rgb / PI + specular) * shadow * radiance * NdotL;
+			pixelData.m_FinalColor.rgb += finalColor;
+		}
 
 		float ambient = 0.01f;
 
@@ -344,7 +216,7 @@ void main()
 			pixelData.m_FinalColor = GetDiffuseColor(myTexCoord);
 		}
 
-		pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
+		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
 
 		//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 		//{
@@ -382,18 +254,18 @@ void main()
 		//pixelData.m_FinalColor = vec4(closestDepth.xxx, 1.f) ;
 
 		// sky tests
-		//float ratio = 1.00 / 1.52;
-		//vec3 R = vec3(0.f);
+		float ratio = 1.00 / 1.52;
+		vec3 R = vec3(0.f);
 
-		//if (g_Material.m_ReflectEnvironment)
-		//{
-		//	R = reflect(-fragmentToCamera, pixelData.m_Normal);
-		//	vec3 skyColor = texture(g_Skybox, R).rgb;
-
-		//	// todo handle this blend properly wow
-		//	float ratio = g_Material.m_Shininess / 500.f;
-		//	FinalColor.rgb = ratio * skyColor + (1.f - ratio) * FinalColor.rgb;
-		//}
+		if (g_Material.m_ReflectEnvironment)
+		{
+			R = reflect(-fragmentToCamera, pixelData.m_Normal);
+			vec3 skyColor = GetSkyColor(R, sunTime, sunOrientation);
+			
+			// todo handle this blend properly wow
+			float ratio = g_Material.m_Shininess / 500.f;
+			FinalColor.rgb = ratio * skyColor + (1.f - ratio) * FinalColor.rgb;
+		}
 		
 		//if (g_Material.m_IsGlass)
 		//{
