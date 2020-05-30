@@ -28,3 +28,15 @@ LigumX/libs/win32/curl/CMakeFiles/cmake.check_cache
 *.TMP
 *.tlog
 *.lastbuildstate
+x64/
+LigumXGenerator/LigumXGenerator/LigumXGenerator/Debug/
+*.exe
+*.ilk
+*.pdb
+*.suo
+*.db-shm
+*.db-wal
+*.opendb
+*.lib
+*.dll
+*.exp

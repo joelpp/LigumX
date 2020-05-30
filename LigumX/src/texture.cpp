@@ -221,12 +221,16 @@ void Texture::LoadFromFile(GLuint target, std::string filename)
 	}
 
 	if (FreeImage_FIFSupportsReading(fif))
+	{
 		bitmap = FreeImage_Load(fif, fullName.c_str());
-	//if the image failed to load, return failure
-	if (!bitmap) {
-		cout << "error opening texture : " << fullName << endl;
-		throw std::exception();
 	}
+	
+	if (bitmap == nullptr)
+	{
+		//lxLogMessage(lxFormat("Failed to load texture %s", fullName.c_str()).c_str());
+		lxAssert0();
+	}
+
 
 	// How many bits-per-pixel is the source image?
 	int bitsPerPixel = FreeImage_GetBPP(bitmap);

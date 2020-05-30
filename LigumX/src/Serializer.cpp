@@ -16,6 +16,7 @@
 #include "StringUtils.h"
 #include "glm/glm.hpp"
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem> 
 
 Serializer* g_Serializer;

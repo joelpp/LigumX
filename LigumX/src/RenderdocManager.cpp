@@ -1,6 +1,6 @@
 #include "RenderdocManager.h"
 #include "LXSystem.h"
-#include "renderdoc_app.h"
+#include "C:\Program Files\RenderDoc\renderdoc_app.h"
 
 RENDERDOC_API_1_1_2 *rdoc_api = NULL;
 

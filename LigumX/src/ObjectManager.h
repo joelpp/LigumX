@@ -10,7 +10,7 @@ typedef int ObjectID;
 typedef char* ObjectPtr;
 typedef std::map<ObjectID, ObjectPtr> ObjectMap;
 
-const std::string g_PathMainData	= "C:/Users/Joel/Documents/LigumX/LigumX/data/";
+const std::string g_PathMainData	= "C:/Users/User/Documents/Code/LigumX/LigumX/data/";
 const std::string g_PathModels		= g_PathMainData + "models/";
 const std::string g_PathTextures	= g_PathMainData + "textures/";
 const std::string g_PathObjects		= g_PathMainData + "objects/";

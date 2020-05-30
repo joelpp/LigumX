@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CodeRegion.h"
+#include <xhash>
 
 class ClassHeaderRegion : public CodeRegion
 {
@@ -61,7 +62,7 @@ public:
 		Write("\n");
 		WriteLine("{");
 		WriteLine("public:");
-		int hash = std::hash_value(m_Class.m_Name);
+		int hash = stdext::hash_value(m_Class.m_Name);
 		m_Stream << "static const int ClassID = " << hash << ";" << std::endl;
 
 

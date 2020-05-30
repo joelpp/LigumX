@@ -1,6 +1,7 @@
 #include "ObjectManager.h"
 #include <cstddef>
 #include <random>
+#include <xhash>
 #include "EngineStats.h"
 #include "stringutils.h"
 #include "fileutils.h"
@@ -201,7 +202,7 @@ void ObjectManager::UpdateFileList()
 
 LXObject* ObjectManager::CreateObject(const std::string& typeName, ObjectID id)
 {
-	int classHash = std::hash_value(typeName);
+	int classHash = stdext::hash_value(typeName);
 
 	LXObject* newObject = ObjectFactory::GetNewObject(classHash, id);// Visual::GetNewChildObject();
 	return newObject;
@@ -228,7 +229,7 @@ LXObject* ObjectManager::GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID
 	}
 	else if (createIfNotLoaded)
 	{
-		int classHash = std::hash_value(typeName);
+		int classHash = stdext::hash_value(typeName);
 
 		LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
 		return newObject;
@@ -239,7 +240,7 @@ LXObject* ObjectManager::GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID
 
 LXObject* ObjectManager::LoadRawObjectFromFile(ObjectID objectID, const std::string& typeName)
 {
-	int classHash = std::hash_value(typeName);
+	int classHash = stdext::hash_value(typeName);
 
 	bool trackInObjectManager = false;
 	LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID, trackInObjectManager);// Visual::GetNewChildObject();

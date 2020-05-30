@@ -10,6 +10,7 @@ class SerializerInputVariable;
 
 #pragma endregion  FORWARD_DECLARATIONS Serializer2
 
+#include <xhash>
 #include "SerializerInputVariable.h"
 #include "FileUtils.h"
 #include "ObjectFactory.h"
@@ -108,7 +109,7 @@ public:
 	}
 
 	template<typename T>
-	static Serializer2 Serializer2::CreateSerializer(T* object, bool writing)
+	static Serializer2 CreateSerializer(T* object, bool writing)
 	{	
 		std::string basePath = g_PathObjects;
 		std::string fileName = object->ClassName + std::string("_") + std::to_string(object->GetObjectID()) + ".LXobj";
@@ -262,7 +263,7 @@ public:
 
 						if (id == objectID)
 						{
-							int classHash = std::hash_value(fileDisplayInformation.m_Typename);
+							int classHash = stdext::hash_value(fileDisplayInformation.m_Typename);
 
 							LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
 
