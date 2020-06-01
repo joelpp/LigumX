@@ -607,9 +607,6 @@ void Renderer::SetSkyUniforms(int skyCubemapSlot)
 
 void Renderer::SetLightingUniforms()
 {
-	bool useSkyLighting = m_DisplayOptions->GetUseSkyLighting();
-	SetFragmentUniform(useSkyLighting,	"g_UseSkyLighting");
-	SetFragmentUniform(m_DisplayOptions->GetRenderShadows(),	"g_UseShadows");
 
 	SetFragmentUniform(m_SkyLight.m_Position, "g_DirectionalLight.m_Direction");
 	SetFragmentUniform(m_SkyLight.m_DiffuseColor, "g_DirectionalLight.m_DiffuseColor");
@@ -626,6 +623,15 @@ void Renderer::SetLightingUniforms()
 	}
 
 	SetFragmentUniform(m_NumLights, "g_NumLights");
+
+	SetFragmentUniform(m_LightingOptions->GetEnableDynamicLights(), "g_EnableDynamicLights");
+	SetFragmentUniform(m_LightingOptions->GetEnableSunlight(), "g_EnableSunlight");
+	SetFragmentUniform(m_LightingOptions->GetEnableAmbientLighting(), "g_EnableAmbientLighting");
+	SetFragmentUniform(m_LightingOptions->GetEnableDiffuseComponent(), "g_EnableDiffuseComponent");
+	SetFragmentUniform(m_LightingOptions->GetEnableSpecularComponent(), "g_EnableSpecularComponent");
+	SetFragmentUniform(m_LightingOptions->GetEnableReflection(), "g_EnableReflection");
+	SetFragmentUniform(m_LightingOptions->GetEnableSunShadow(), "g_EnableSunShadow");
+	SetFragmentUniform(m_LightingOptions->GetEnableDynamicShadows(), "g_EnableDynamicShadows");
 }
 
 void Renderer::SetMaterialUniforms(Material* material)

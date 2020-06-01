@@ -3,7 +3,7 @@
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
 {
-	if (!g_UseShadows)
+	if (!g_EnableSunShadow)
 	{
 		return 0.f;
 	}

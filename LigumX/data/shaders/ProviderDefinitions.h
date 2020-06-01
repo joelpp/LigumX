@@ -83,6 +83,17 @@ uniform int g_DebugUVsEnabled;
 uniform int g_DebugLinearizeDepth;
 #endif
 
+#ifdef PROVIDER_LightingOptions
+uniform bool g_EnableDynamicLights;
+uniform bool g_EnableSunlight;
+uniform bool g_EnableAmbientLighting;
+uniform bool g_EnableDiffuseComponent;
+uniform bool g_EnableSpecularComponent;
+uniform bool g_EnableReflection;
+uniform bool g_EnableSunShadow;
+uniform bool g_EnableDynamicShadows;
+#endif // PROVIDER_LightingOptions
+
 #ifdef PROVIDER_PostEffects
 uniform int g_GammaCorrectionEnabled;
 uniform float g_GammaCorrectionExponent;

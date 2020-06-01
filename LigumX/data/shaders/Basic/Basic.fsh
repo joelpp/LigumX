@@ -18,6 +18,7 @@ in vec4 FragPosLightSpace;
 #define PROVIDER_DisplayOptions
 #define PROVIDER_Debug
 #define PROVIDER_DataInspector
+#define PROVIDER_LightingOptions
 
 // Include ProvidersMarker
 

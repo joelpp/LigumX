@@ -1469,6 +1469,7 @@ void Editor::RenderImgui()
 		g_GUI->BeginWindow(1000, 700, 0, 0, "Main Editor Window");
 
 		ShowPropertyGridForObject(g_InputHandler, "Input Handler");
+		ShowPropertyGridForObject(renderer, "Renderer");
 		ShowPropertyGridForObject(renderer->GetPostEffects(), "Post Effects");
 		ShowPropertyGridForObject(renderer->GetDebugCamera(), "Camera");
 		ShowPropertyGridForObject(g_RenderDataManager, "RenderDataManager");
