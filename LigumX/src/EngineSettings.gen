@@ -23,7 +23,9 @@ class EngineSettings
 
 	int MessagesPixelsOffset = 10;
 
+	bool AllowCurlRequest = false;
 	bool LoadOSMData = true;
 
 	float TerrainTiling = 1.f;
+
 }

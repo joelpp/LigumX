@@ -205,12 +205,13 @@ Texture* tryLoadTexture(std::string path)
 
 Material* Model::processMaterial(aiMesh* assimpMesh, const aiScene* scene)
 {
+#if 0
 	Material* material = new Material();
 
 	aiMaterial* mat = scene->mMaterials[assimpMesh->mMaterialIndex];
 
 	// todo once we resurrect material processing change this
-	std::string texturePath = "C:/Users/Joel/Documents/LigumX/LigumX/data/models/nanosuit/tex/";
+	std::string texturePath = "C:/Users/User/Documents/Code/LigumX/LigumX/data/models/nanosuit/tex/";
 
 	if (mat)
 	{
@@ -245,6 +246,8 @@ Material* Model::processMaterial(aiMesh* assimpMesh, const aiScene* scene)
 	}
 
 	return material;
+#endif
+	return nullptr;
 }
 
 Mesh* Model::processMesh(aiMesh* assimpMesh, const aiScene* scene)

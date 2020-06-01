@@ -44,6 +44,8 @@ int GetMessagesDefaultFrameCount() { return m_MessagesDefaultFrameCount; };
 void SetMessagesDefaultFrameCount(int value) { m_MessagesDefaultFrameCount = value; }; 
 int GetMessagesPixelsOffset() { return m_MessagesPixelsOffset; }; 
 void SetMessagesPixelsOffset(int value) { m_MessagesPixelsOffset = value; }; 
+bool GetAllowCurlRequest() { return m_AllowCurlRequest; }; 
+void SetAllowCurlRequest(bool value) { m_AllowCurlRequest = value; }; 
 bool GetLoadOSMData() { return m_LoadOSMData; }; 
 void SetLoadOSMData(bool value) { m_LoadOSMData = value; }; 
 float GetTerrainTiling() { return m_TerrainTiling; }; 
@@ -60,10 +62,11 @@ glm::vec2 m_MessagesStartingPosition = glm::vec2(500, 500);
 float m_MessagesFontSize = 1.f;
 int m_MessagesDefaultFrameCount = 50;
 int m_MessagesPixelsOffset = 10;
+bool m_AllowCurlRequest = false;
 bool m_LoadOSMData = true;
 float m_TerrainTiling = 1.f;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EngineSettingsPIDX
@@ -79,6 +82,7 @@ PIDX_MessagesStartingPosition,
 PIDX_MessagesFontSize,
 PIDX_MessagesDefaultFrameCount,
 PIDX_MessagesPixelsOffset,
+PIDX_AllowCurlRequest,
 PIDX_LoadOSMData,
 PIDX_TerrainTiling,
 };

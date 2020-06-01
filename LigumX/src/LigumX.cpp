@@ -82,7 +82,7 @@ void LigumX::BeginFrame()
 
 void LigumX::DoFrame()
 {
-	if (m_World)
+	if (m_World && m_Renderer->GetActiveCamera())
 	{
 		m_World->Update();
 		g_RenderDataManager->GatherVisibleEntities(m_World, m_Renderer->GetActiveCamera());
@@ -107,6 +107,8 @@ void LigumX::MainLoop()
 
 void LigumX::LoadWorld()
 {
+    lxLogMessage("Loading world...");
+
 	Settings& settings = Settings::GetInstance();
 	m_World = new World(settings.f("sectorSize"));
 	m_World->SetObjectID(28716);
@@ -130,7 +132,7 @@ void LigumX::Initialize()
     // Load world data.
     //=============================================================================
 
- //   Settings& settings = Settings::GetInstance();
+    //   Settings& settings = Settings::GetInstance();
  //   world = new World(settings.f("sectorSize"));
 	//world->SetObjectID(28716);
 	//world->Serialize(false);
@@ -145,8 +147,10 @@ void LigumX::Initialize()
 
 	g_DefaultTextureHolder = new DefaultTextureHolder();
 
+    SetApplicationState(EApplicationState_Running);
 
-	SetApplicationState(EApplicationState_Running);
+    LoadWorld();
+
 }
 
 

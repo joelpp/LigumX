@@ -1,6 +1,7 @@
 #include "LigumX.h"
 #include "Editor.h"
 #include "InputHandler.h"
+#include "EngineSettings.h"
 #include "StringUtils.h"
 
 #include "DefaultObjects.h"
@@ -218,18 +219,20 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 	Renderer* renderer = LigumX::GetInstance().GetRenderer();
 	SectorGraphicalData* gfxData = sector->GetGraphicalData();
 
-	glm::mat4 identity = glm::mat4(1.0);
+	glm::mat4 transfo = glm::mat4(1.0);
+	transfo = glm::translate(transfo, glm::vec3(sector->GetWorldPosition(), 0));
+	transfo = glm::scale(transfo, glm::vec3(g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale()));
 
 	if (m_ShowNodes)
 	{
-		renderer->RenderDebugModel(gfxData->GetNodesModel(), identity, renderer->pPipelineNodes);
+		renderer->RenderDebugModel(gfxData->GetNodesModel(), transfo, renderer->pPipelineNodes);
 	}
 
 	if (m_ShowWays)
 	{
 		for (Model* wayModel : gfxData->GetWaysModelsVector())
 		{
-			renderer->RenderDebugModel(wayModel, identity, renderer->pPipelineLines);
+			renderer->RenderDebugModel(wayModel, transfo, renderer->pPipelineLines);
 		}
 	}
 
@@ -242,7 +245,7 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 			selectedWay = GetSelectedWays()[0]->GetIndexInSector();
 		}
 
-		renderer->RenderDebugWays(gfxData->GetWaysModel(), identity, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
+		renderer->RenderDebugWays(gfxData->GetWaysModel(), transfo, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
 	}
 }
 

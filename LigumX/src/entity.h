@@ -154,6 +154,8 @@ public:
 		return nullptr;
 	}
 
+    void DebugDisplay();
+
 private:
     size_t entityIndex;
 

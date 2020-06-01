@@ -47,3 +47,10 @@ void OSMElementComponent::Update()
 {
 
 }
+
+
+void OSMElementComponent::DebugDisplay()
+{
+
+
+}

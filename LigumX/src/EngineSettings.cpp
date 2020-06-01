@@ -18,6 +18,7 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 { "MessagesFontSize", PIDX_MessagesFontSize, offsetof(EngineSettings, m_MessagesFontSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MessagesDefaultFrameCount", PIDX_MessagesDefaultFrameCount, offsetof(EngineSettings, m_MessagesDefaultFrameCount), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "MessagesPixelsOffset", PIDX_MessagesPixelsOffset, offsetof(EngineSettings, m_MessagesPixelsOffset), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
+{ "AllowCurlRequest", PIDX_AllowCurlRequest, offsetof(EngineSettings, m_AllowCurlRequest), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "LoadOSMData", PIDX_LoadOSMData, offsetof(EngineSettings, m_LoadOSMData), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "TerrainTiling", PIDX_TerrainTiling, offsetof(EngineSettings, m_TerrainTiling), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
@@ -35,6 +36,7 @@ void EngineSettings::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_MessagesFontSize], m_MessagesFontSize);
 	serializer.SerializeInt(g_Properties[PIDX_MessagesDefaultFrameCount], m_MessagesDefaultFrameCount);
 	serializer.SerializeInt(g_Properties[PIDX_MessagesPixelsOffset], m_MessagesPixelsOffset);
+	serializer.SerializeBool(g_Properties[PIDX_AllowCurlRequest], m_AllowCurlRequest);
 	serializer.SerializeBool(g_Properties[PIDX_LoadOSMData], m_LoadOSMData);
 	serializer.SerializeFloat(g_Properties[PIDX_TerrainTiling], m_TerrainTiling);
 }
@@ -61,6 +63,7 @@ bool EngineSettings::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MessagesFontSize], &m_MessagesFontSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MessagesDefaultFrameCount], &m_MessagesDefaultFrameCount , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MessagesPixelsOffset], &m_MessagesPixelsOffset , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AllowCurlRequest], &m_AllowCurlRequest  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LoadOSMData], &m_LoadOSMData  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_TerrainTiling], &m_TerrainTiling , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
@@ -80,6 +83,7 @@ void EngineSettings::Clone(LXObject* otherObj)
 	other->SetMessagesFontSize(m_MessagesFontSize);
 	other->SetMessagesDefaultFrameCount(m_MessagesDefaultFrameCount);
 	other->SetMessagesPixelsOffset(m_MessagesPixelsOffset);
+	other->SetAllowCurlRequest(m_AllowCurlRequest);
 	other->SetLoadOSMData(m_LoadOSMData);
 	other->SetTerrainTiling(m_TerrainTiling);
 }

@@ -290,13 +290,17 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 				request.Start();
 				request.End();
 
-				LoadRequest(&request, SectorData::EOSMDataType::MAP);
+				if (request.GetResult() != "")
+				{
+					LoadRequest(&request, SectorData::EOSMDataType::MAP);
 
-				g_RenderDataManager->CreateWaysLines(requestSector);
+					g_RenderDataManager->CreateWaysLines(requestSector);
 
-				g_OSMDataProcessor->ProcessSector(requestSector);
+					g_OSMDataProcessor->ProcessSector(requestSector);
 
-				requestSector->SetDataLoaded(true);
+					requestSector->SetDataLoaded(true);
+				}
+
 			}
 
 		}

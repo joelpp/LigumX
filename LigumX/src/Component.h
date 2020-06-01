@@ -44,5 +44,6 @@ virtual const char* GetTypeName();
 #pragma endregion  HEADER Component
 
 virtual void Update();
+virtual void DebugDisplay() { };
 
 };

@@ -3,6 +3,8 @@
 #pragma warning( disable : 4005 ) // dunno how to silence this one dammit. warning C4005: 'APIENTRY': macro redefinition
 #include "curl/curl.h"
 #include "Sector.h"
+#include "EngineSettings.h"
+
 #include "tinyxml2\tinyxml2.h"
 
 #pragma region  CLASS_SOURCE CurlRequest
@@ -179,7 +181,7 @@ inline bool file_exists(const std::string& name)
 std::string BuildXMLPath(int dataType, const std::string& fileName)
 {
 	std::stringstream savePath;
-	savePath << "C:/Users/Joel/Documents/LigumX/LigumX/data/";
+	savePath << "C:/Users/User/Documents/Code/LigumX/LigumX/data/";
 	switch (dataType)
 	{
 	case 0:   savePath << "SRTMData/";
@@ -219,23 +221,35 @@ CurlRequest::CurlRequest(glm::vec2 coords, glm::vec2 extent, bool async, const s
 
 void CurlRequest::Execute()
 {
-	PRINT("Beginning cURL request.");
-	std::cout << "Searching for " << m_Filename << "..." << std::endl;
+	lxLogMessage("Beginning cURL request.");
+	lxLogMessage(lxFormat("Searching for %s", m_Filename.c_str()).c_str());
 
 	bool fileAlreadyPresent = file_exists(m_Filename);
 
+	bool allowCurl = g_EngineSettings->GetAllowCurlRequest();
+
 	if (!fileAlreadyPresent)
 	{
-		std::cout << "File not found on disk. Downloading from OpenStreeMaps..." << std::endl;
-		m_Result = queryBoundingBox(m_Coords.x, m_Coords.y, m_Coords.x + m_Extent.x, m_Coords.y + m_Extent.y);
-		StringUtils::DumpToFile(m_Filename, m_Result);
+		if (allowCurl)
+		{
+			lxLogMessage("File not found on disk. Downloading from OpenStreeMaps...");
+			m_Result = queryBoundingBox(m_Coords.x, m_Coords.y, m_Coords.x + m_Extent.x, m_Coords.y + m_Extent.y);
+			StringUtils::DumpToFile(m_Filename, m_Result);
+			m_Result = "Success!"; // todo jpp fix this
+		}
+		else
+		{
+			lxLogMessage("File not found on disk and curl download is disabled.");
+			m_Result = "";
+		}
 	}
 	else
 	{
-		std::cout << "File found on disk!" << std::endl;
+		lxLogMessage("File found on disk!");
+		m_Result = "Success!"; // todo jpp fix this
 	}
 
-	PRINT("Request complete")
+	lxLogMessage("Request complete");
 	m_State = ThreadState_Finished;
 }
 	 

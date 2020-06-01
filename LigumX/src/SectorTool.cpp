@@ -194,10 +194,9 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 			for (int j = 0; j < numSectorsPerSide; ++j)
 			{
 				glm::ivec3 offsets = glm::ivec3(i - offset, j - offset, 0);
-				glm::vec3 scale3 = glm::vec3(scale, scale, 1.f) * 0.5f; // aabb rendering needs half scale
-				//AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0) - scale * (glm::vec3) offsets, scale);
 				
 				// needs to be center of volume and half scale
+				glm::vec3 scale3 = glm::vec3(scale, scale, 1.f) * 0.5f;
 				glm::vec3 center = glm::vec3 (worldStartCoords, 0.f) + scale3;
 				AABB aabb = AABB::BuildFromStartPointAndScale(center, scale3);
 
@@ -237,7 +236,11 @@ void SectorTool::DebugDisplay()
 		if (m_ShowSectorAABBs)
 		{
 			const float& worldScale = g_EngineSettings->GetWorldScale() * 0.99f;
-			AABB bb = AABB::BuildFromStartPointAndScale(sector->GetWorldPosition(), glm::vec3(worldScale, worldScale, 3.f));
+
+			// needs to be center of volume and half scale
+			glm::vec3 scale3 = glm::vec3(worldScale, worldScale, 3.f) * 0.5f;
+			glm::vec3 center = glm::vec3(sector->GetWorldPosition(), 0.f) + scale3;
+			AABB aabb = AABB::BuildFromStartPointAndScale(center, scale3);
 
 			glm::vec3 color(0.863f, 0.078f, 0.235f);
 			if (dataLoaded)
@@ -246,7 +249,7 @@ void SectorTool::DebugDisplay()
 			}
 
 			AABBJob job;
-			job.m_AABB = bb;
+			job.m_AABB = aabb;
 			job.m_Color = color;
 
 			renderer->GetRenderDataManager()->GetAABBJobs().push_back(job);

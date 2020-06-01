@@ -235,7 +235,17 @@ void Entity::SetCOMMAND_LoadModel_Callback(const bool& value)
 
 
 
+void Entity::DebugDisplay()
+{
+	for (Component* component : m_Components)
+	{
+		if (component)
+		{
+			component->DebugDisplay();
+		}
+	}
 
+}
 
 
 
