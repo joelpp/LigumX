@@ -17,8 +17,36 @@ vec4 GetSpecularColor(vec2 uv)
 }
 
 
+float GetRoughness(vec2 uv)
+{
+	if (g_EnableReplacementRoughness)
+	{
+		return g_ReplacementRoughness;
+	}
+
+	return g_Material.m_Roughness;
+}
+
+
+
+float GetMetallic(vec2 uv)
+{
+	if (g_EnableReplacementMetallic)
+	{
+		return g_ReplacementMetallic;
+	}
+
+	return g_Material.m_Metallic;
+}
+
+
 vec4 GetDiffuseColor(vec2 uv)
 {
+	if (g_EnableReplacementAlbedo)
+	{
+		return vec4(g_ReplacementAlbedo.xyz, 1.f);
+	}
+
 	vec4 diffuseColor;
 	if (g_Material.m_DiffuseTextureEnabled)
 	{

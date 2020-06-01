@@ -1565,7 +1565,7 @@ void Renderer::RenderAABB(AABB& aabb, const glm::vec3& color)
 
 	glm::mat4 modelToWorldMatrix = mat4(1.0f);
 
-	glm::vec3 translation = aabb.GetStartPoint() + aabb.GetScale() / 2.f;
+	glm::vec3 translation = aabb.GetStartPoint();
 	modelToWorldMatrix = glm::translate(modelToWorldMatrix, translation);
 	modelToWorldMatrix = glm::scale(modelToWorldMatrix, aabb.GetScale());
 

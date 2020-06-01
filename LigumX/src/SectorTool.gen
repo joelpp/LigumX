@@ -3,6 +3,8 @@ class SectorTool : EditorTool
 	bool Enabled = true;
 
 	glm::vec3 HighlightedWorldCoordinates;
+	glm::ivec2 HighlightedSectorIndex;
+	glm::vec3 SectorStartWorldCoordinates;
 	glm::vec2 HighlightedSectorUV;
 
 	Sector* HighlightedSector;
@@ -22,4 +24,6 @@ class SectorTool : EditorTool
 	bool LoadSectorsOnClick = true;
 	
 	int SelectedWayIndex;
+
+
 }

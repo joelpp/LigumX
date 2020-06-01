@@ -18,3 +18,17 @@ EnableSunShadow
 1
 EnableDynamicShadows
 1
+EnableReplacementAlbedo
+0
+ReplacementAlbedo
+1.000000
+0.000000
+0.000000
+EnableReplacementMetallic
+0
+ReplacementMetallic
+0.710000
+EnableReplacementRoughness
+0
+ReplacementRoughness
+0.100000

@@ -95,6 +95,11 @@ void main()
 
 	vec3 outputColor = g_SectorGridColor;
 
+	if ((abs(wsPosition.x) < 1.f) || (abs(wsPosition.y) < 1.f))
+	{
+		outputColor.gb *= 0.3f;
+	}
+
 	clamp(outputColor, vec3(0, 0, 0), vec3(1, 1, 1));
 
 	FinalColor = vec4(outputColor, alpha);

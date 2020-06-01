@@ -35,6 +35,10 @@ bool GetEnabled() { return m_Enabled; };
 void SetEnabled(bool value) { m_Enabled = value; }; 
 glm::vec3& GetHighlightedWorldCoordinates() { return m_HighlightedWorldCoordinates; }; 
 void SetHighlightedWorldCoordinates(const glm::vec3& value) { m_HighlightedWorldCoordinates = value; }; 
+glm::ivec2& GetHighlightedSectorIndex() { return m_HighlightedSectorIndex; }; 
+void SetHighlightedSectorIndex(const glm::ivec2& value) { m_HighlightedSectorIndex = value; }; 
+glm::vec3& GetSectorStartWorldCoordinates() { return m_SectorStartWorldCoordinates; }; 
+void SetSectorStartWorldCoordinates(const glm::vec3& value) { m_SectorStartWorldCoordinates = value; }; 
 glm::vec2& GetHighlightedSectorUV() { return m_HighlightedSectorUV; }; 
 void SetHighlightedSectorUV(const glm::vec2& value) { m_HighlightedSectorUV = value; }; 
 Sector*& GetHighlightedSector() { return m_HighlightedSector; }; 
@@ -60,6 +64,8 @@ void SetSelectedWayIndex(int value) { m_SelectedWayIndex = value; };
 private:
 bool m_Enabled = true;
 glm::vec3 m_HighlightedWorldCoordinates = glm::vec3(0, 0, 0);
+glm::ivec2 m_HighlightedSectorIndex = glm::ivec2(0, 0);
+glm::vec3 m_SectorStartWorldCoordinates = glm::vec3(0, 0, 0);
 glm::vec2 m_HighlightedSectorUV = glm::vec2(0, 0);
 Sector* m_HighlightedSector = nullptr;
 glm::vec3 m_SectorGridColor = glm::vec3(0.7, 0.8, 1.);
@@ -72,13 +78,15 @@ bool m_HighlightSelectedSector = true;
 bool m_LoadSectorsOnClick = true;
 int m_SelectedWayIndex = 0;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_SectorToolPIDX
 {
 PIDX_Enabled,
 PIDX_HighlightedWorldCoordinates,
+PIDX_HighlightedSectorIndex,
+PIDX_SectorStartWorldCoordinates,
 PIDX_HighlightedSectorUV,
 PIDX_HighlightedSector,
 PIDX_SectorGridColor,

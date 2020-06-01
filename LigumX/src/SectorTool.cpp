@@ -29,6 +29,8 @@ const ClassPropertyData SectorTool::g_Properties[] =
 {
 { "Enabled", PIDX_Enabled, offsetof(SectorTool, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "HighlightedWorldCoordinates", PIDX_HighlightedWorldCoordinates, offsetof(SectorTool, m_HighlightedWorldCoordinates), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "HighlightedSectorIndex", PIDX_HighlightedSectorIndex, offsetof(SectorTool, m_HighlightedSectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
+{ "SectorStartWorldCoordinates", PIDX_SectorStartWorldCoordinates, offsetof(SectorTool, m_SectorStartWorldCoordinates), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "HighlightedSectorUV", PIDX_HighlightedSectorUV, offsetof(SectorTool, m_HighlightedSectorUV), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "HighlightedSector", PIDX_HighlightedSector, offsetof(SectorTool, m_HighlightedSector), 0, LXType_ObjectPtr, sizeof(Sector*), LXType_Sector, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "SectorGridColor", PIDX_SectorGridColor, offsetof(SectorTool, m_SectorGridColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
@@ -46,6 +48,8 @@ void SectorTool::Serialize(Serializer2& serializer)
 	super::Serialize(serializer);
 	serializer.SerializeBool(g_Properties[PIDX_Enabled], m_Enabled);
 	serializer.SerializeVec3(g_Properties[PIDX_HighlightedWorldCoordinates], m_HighlightedWorldCoordinates);
+	serializer.SerializeIVec2(g_Properties[PIDX_HighlightedSectorIndex], m_HighlightedSectorIndex);
+	serializer.SerializeVec3(g_Properties[PIDX_SectorStartWorldCoordinates], m_SectorStartWorldCoordinates);
 	serializer.SerializeVec2(g_Properties[PIDX_HighlightedSectorUV], m_HighlightedSectorUV);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_HighlightedSector], m_HighlightedSector);
 	serializer.SerializeVec3(g_Properties[PIDX_SectorGridColor], m_SectorGridColor);
@@ -72,6 +76,8 @@ bool SectorTool::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedWorldCoordinates], &m_HighlightedWorldCoordinates , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedSectorIndex], &m_HighlightedSectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorStartWorldCoordinates], &m_SectorStartWorldCoordinates , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HighlightedSectorUV], &m_HighlightedSectorUV , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_HighlightedSector], &m_HighlightedSector  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SectorGridColor], &m_SectorGridColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
@@ -91,6 +97,8 @@ void SectorTool::Clone(LXObject* otherObj)
 	SectorTool* other = (SectorTool*) otherObj;
 	other->SetEnabled(m_Enabled);
 	other->SetHighlightedWorldCoordinates(m_HighlightedWorldCoordinates);
+	other->SetHighlightedSectorIndex(m_HighlightedSectorIndex);
+	other->SetSectorStartWorldCoordinates(m_SectorStartWorldCoordinates);
 	other->SetHighlightedSectorUV(m_HighlightedSectorUV);
 	other->SetHighlightedSector(m_HighlightedSector);
 	other->SetSectorGridColor(m_SectorGridColor);
@@ -162,7 +170,9 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 
 
 	m_HighlightedSector = world->GetSectorByWorldPosition(worldPosition);
+	m_HighlightedSectorIndex = normalizedSectorIndex;
 
+	m_SectorStartWorldCoordinates = glm::vec3(worldStartCoords, 0.f);;
 	m_HighlightedWorldCoordinates = worldPosition;
 	if (m_HighlightedSector)
 	{
@@ -184,7 +194,12 @@ bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, 
 			for (int j = 0; j < numSectorsPerSide; ++j)
 			{
 				glm::ivec3 offsets = glm::ivec3(i - offset, j - offset, 0);
-				AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0) - scale * (glm::vec3) offsets, glm::vec3(scale, scale, 1.f));
+				glm::vec3 scale3 = glm::vec3(scale, scale, 1.f) * 0.5f; // aabb rendering needs half scale
+				//AABB aabb = AABB::BuildFromStartPointAndScale(glm::vec3(worldStartCoords, 0) - scale * (glm::vec3) offsets, scale);
+				
+				// needs to be center of volume and half scale
+				glm::vec3 center = glm::vec3 (worldStartCoords, 0.f) + scale3;
+				AABB aabb = AABB::BuildFromStartPointAndScale(center, scale3);
 
 				glm::vec3 aabbColor = GetHighlightColor(m_HighlightedSector);
 				LigumX::GetInstance().m_RenderDataManager->AddAABBJob(aabb, aabbColor);

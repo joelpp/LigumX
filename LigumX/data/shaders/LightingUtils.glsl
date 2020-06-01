@@ -116,8 +116,19 @@ vec3 ShadeLight(int lightIndex, Material material, vec3 worldPosition, vec3 worl
 	// add to outgoing radiance Lo
 	vec4 materialDiffuseColor = GetDiffuseColor(uv);
 	float NdotL = max(dot(worldNormal, fragmentToLightDir), 0.0);
+
+	vec3 diffuse = kD * materialDiffuseColor.rgb;
 	
-	vec3 finalColor = (kD * materialDiffuseColor.rgb / PI + specular) * radiance * NdotL;
+	vec3 finalColor = vec3(0.f);
+	if (g_EnableDiffuseComponent)
+	{
+		finalColor += diffuse * radiance * NdotL;
+	}
+	if (g_EnableSpecularComponent)
+	{
+		finalColor += specular * radiance * NdotL;
+	}
+
 	return finalColor;
 
 }
