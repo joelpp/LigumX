@@ -12,4 +12,10 @@ class LightingOptions
 	bool EnableSunShadow = true;
 	bool EnableDynamicShadows = true;
 	
+	bool EnableReplacementAlbedo = false;
+	glm::vec3 ReplacementAlbedo;
+	bool EnableReplacementMetallic = false;
+	float ReplacementMetallic;
+	bool EnableReplacementRoughness = false;
+	float ReplacementRoughness;
 }

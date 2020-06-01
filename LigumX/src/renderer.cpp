@@ -632,6 +632,13 @@ void Renderer::SetLightingUniforms()
 	SetFragmentUniform(m_LightingOptions->GetEnableReflection(), "g_EnableReflection");
 	SetFragmentUniform(m_LightingOptions->GetEnableSunShadow(), "g_EnableSunShadow");
 	SetFragmentUniform(m_LightingOptions->GetEnableDynamicShadows(), "g_EnableDynamicShadows");
+	SetFragmentUniform(m_LightingOptions->GetEnableReplacementAlbedo(), "g_EnableReplacementAlbedo");
+	SetFragmentUniform(m_LightingOptions->GetReplacementAlbedo(), "g_ReplacementAlbedo");
+	SetFragmentUniform(m_LightingOptions->GetEnableReplacementMetallic(), "g_EnableReplacementMetallic");
+	SetFragmentUniform(m_LightingOptions->GetReplacementMetallic(), "g_ReplacementMetallic");
+	SetFragmentUniform(m_LightingOptions->GetEnableReplacementRoughness(), "g_EnableReplacementRoughness");
+	SetFragmentUniform(m_LightingOptions->GetReplacementRoughness(), "g_ReplacementRoughness");
+
 }
 
 void Renderer::SetMaterialUniforms(Material* material)

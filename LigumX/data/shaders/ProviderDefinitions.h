@@ -92,6 +92,12 @@ uniform bool g_EnableSpecularComponent;
 uniform bool g_EnableReflection;
 uniform bool g_EnableSunShadow;
 uniform bool g_EnableDynamicShadows;
+uniform bool g_EnableReplacementAlbedo;
+uniform vec3 g_ReplacementAlbedo;
+uniform bool g_EnableReplacementMetallic;
+uniform float g_ReplacementMetallic;
+uniform bool g_EnableReplacementRoughness;
+uniform float g_ReplacementRoughness;
 #endif // PROVIDER_LightingOptions
 
 #ifdef PROVIDER_PostEffects

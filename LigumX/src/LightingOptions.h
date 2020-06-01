@@ -35,6 +35,18 @@ bool GetEnableSunShadow() { return m_EnableSunShadow; };
 void SetEnableSunShadow(bool value) { m_EnableSunShadow = value; }; 
 bool GetEnableDynamicShadows() { return m_EnableDynamicShadows; }; 
 void SetEnableDynamicShadows(bool value) { m_EnableDynamicShadows = value; }; 
+bool GetEnableReplacementAlbedo() { return m_EnableReplacementAlbedo; }; 
+void SetEnableReplacementAlbedo(bool value) { m_EnableReplacementAlbedo = value; }; 
+glm::vec3& GetReplacementAlbedo() { return m_ReplacementAlbedo; }; 
+void SetReplacementAlbedo(const glm::vec3& value) { m_ReplacementAlbedo = value; }; 
+bool GetEnableReplacementMetallic() { return m_EnableReplacementMetallic; }; 
+void SetEnableReplacementMetallic(bool value) { m_EnableReplacementMetallic = value; }; 
+float GetReplacementMetallic() { return m_ReplacementMetallic; }; 
+void SetReplacementMetallic(float value) { m_ReplacementMetallic = value; }; 
+bool GetEnableReplacementRoughness() { return m_EnableReplacementRoughness; }; 
+void SetEnableReplacementRoughness(bool value) { m_EnableReplacementRoughness = value; }; 
+float GetReplacementRoughness() { return m_ReplacementRoughness; }; 
+void SetReplacementRoughness(float value) { m_ReplacementRoughness = value; }; 
 private:
 bool m_EnableDynamicLights = true;
 bool m_EnableSunlight = true;
@@ -44,8 +56,14 @@ bool m_EnableSpecularComponent = true;
 bool m_EnableReflection = true;
 bool m_EnableSunShadow = true;
 bool m_EnableDynamicShadows = true;
+bool m_EnableReplacementAlbedo = false;
+glm::vec3 m_ReplacementAlbedo = glm::vec3(0, 0, 0);
+bool m_EnableReplacementMetallic = false;
+float m_ReplacementMetallic = 0.f;
+bool m_EnableReplacementRoughness = false;
+float m_ReplacementRoughness = 0.f;
 public:
-static const int g_PropertyCount = 8;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_LightingOptionsPIDX
@@ -58,6 +76,12 @@ PIDX_EnableSpecularComponent,
 PIDX_EnableReflection,
 PIDX_EnableSunShadow,
 PIDX_EnableDynamicShadows,
+PIDX_EnableReplacementAlbedo,
+PIDX_ReplacementAlbedo,
+PIDX_EnableReplacementMetallic,
+PIDX_ReplacementMetallic,
+PIDX_EnableReplacementRoughness,
+PIDX_ReplacementRoughness,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

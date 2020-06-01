@@ -93,9 +93,12 @@ void main()
 
 	if (g_UseLighting > 0)
 	{
-		for (int lightIndex = 0; lightIndex < g_NumLights; ++lightIndex)
+		if (g_EnableDynamicLights)
 		{
-			pixelData.m_FinalColor.rgb += ShadeLight(lightIndex, g_Material, vWorldPosition.xyz, pixelData.m_Normal, myTexCoord, fragmentToCamera);
+			for (int lightIndex = 0; lightIndex < g_NumLights; ++lightIndex)
+			{
+				pixelData.m_FinalColor.rgb += ShadeLight(lightIndex, g_Material, vWorldPosition.xyz, pixelData.m_Normal, pixelData.m_UVs, fragmentToCamera);
+			}
 		}
 
 		vec2 sunDirFlat = vec2(cos(sunOrientation), sin(sunOrientation));
@@ -105,16 +108,9 @@ void main()
 		float sky = dot(sunDir, pixelData.m_Normal) * 0.1f;
 		pixelData.m_DiffuseColor = GetDiffuseColor(myTexCoord);
 
-		float shadow = 1.f - ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
 
-		if (false)
+		if (g_EnableSunlight)
 		{
-			pixelData.m_FinalColor += pixelData.m_DiffuseColor * sky * shadow * 0.1f;
-
-		}
-		else
-		{
-
 			vec3 fragmentToLight = sunDir;
 			vec3 fragmentToLightDir = normalize(fragmentToLight);
 
@@ -130,10 +126,10 @@ void main()
 
 
 			vec3 F0 = vec3(0.04);
-			F0 = mix(F0, g_Material.m_DiffuseColor, g_Material.m_Metallic);
+			F0 = mix(F0, GetDiffuseColor(pixelData.m_UVs).rgb, GetMetallic(pixelData.m_UVs));
 			vec3 F = fresnelSchlick(max(dot(halfwayVector, fragmentToCamera), 0.0), F0);
-			float NDF = DistributionGGX(pixelData.m_Normal, halfwayVector, g_Material.m_Roughness);
-			float G = GeometrySmith(pixelData.m_Normal, fragmentToCamera, fragmentToLightDir, g_Material.m_Roughness);
+			float NDF = DistributionGGX(pixelData.m_Normal, halfwayVector, GetRoughness(pixelData.m_UVs));
+			float G = GeometrySmith(pixelData.m_Normal, fragmentToCamera, fragmentToLightDir, GetRoughness(pixelData.m_UVs));
 
 			vec3 nominator = NDF * G * F;
 			float denominator = 4 * max(dot(pixelData.m_Normal, fragmentToCamera), 0.0) * max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0) + 0.001;
@@ -141,13 +137,15 @@ void main()
 
 			vec3 kS = F;
 			vec3 kD = vec3(1.0) - kS;
-			kD *= 1.0 - g_Material.m_Metallic;
+			kD *= 1.0 - GetMetallic(pixelData.m_UVs);
 
 			radiance *= 1e2;
 
 			// add to outgoing radiance Lo
 			float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);
-			vec3 finalColor = (kD * GetDiffuseColor(myTexCoord).rgb / PI + specular) * shadow * radiance * NdotL;
+			float shadow = 1.f - ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
+			vec3 finalColor = (kD * GetDiffuseColor(pixelData.m_UVs).rgb / PI + specular) * shadow * radiance * NdotL;
+
 			pixelData.m_FinalColor.rgb += finalColor;
 		}
 
@@ -158,48 +156,11 @@ void main()
 			pixelData.m_FinalColor = GetDiffuseColor(myTexCoord);
 		}
 
-		//pixelData.m_FinalColor += pixelData.m_DiffuseColor * ambient;
-
-		//float ShadowCalculation(vec4 fragPosLightSpace, vec3 normalWS, vec2 fragCoord)
-		//{
-		//	if (!g_UseShadows)
-		//	{
-		//		return 0.f;
-		//	}
-		//	// perform perspective divide
-		//	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-		//	projCoords = projCoords * 0.5 + 0.5;
-
-
-		//	float closestDepth = texture(g_DepthMapTexture, projCoords.xy).r;
-
-		//	float currentDepth = projCoords.z;
-		//	DebugWatch(fragCoord.xy, 0, closestDepth);
-
-		//	float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, normalWS)), 0.005);
-		//	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
-		//	//if(projCoords.z > 1.0)
-		//	//      shadow = 0.0;
-		//	return shadow;
-		//};
-
-		vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
-		//projCoords = projCoords * 0.5 + 0.5;
-		////projCoords.x = 1.f - projCoords.x;
-		//projCoords.xy *= g_DebugVec4.xy;
-
-		float closestDepth = textureLod(g_DepthMapTexture, projCoords.xy, 0).r;
-		//float bias = max(0.05 * (1.0 - dot(g_DirectionalLight.m_Direction, pixelData.m_Normal)), 0.005);
-		//float currentDepth = projCoords.z;
-
-		//pixelData.m_FinalColor = vec4(pow(currentDepth, 1000.f).xxx, 1.f);
-		//pixelData.m_FinalColor = vec4(closestDepth.xxx, 1.f) ;
-
 		// sky tests
 		float ratio = 1.00 / 1.52;
 		vec3 R = vec3(0.f);
 
-		if (g_Material.m_ReflectEnvironment)
+		if (g_Material.m_ReflectEnvironment && g_EnableReflection)
 		{
 			R = reflect(-fragmentToCamera, pixelData.m_Normal);
 			vec3 skyColor = GetSkyColor(R, sunTime, sunOrientation) * 0.1f;
