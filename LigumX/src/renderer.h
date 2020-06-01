@@ -35,6 +35,7 @@ class Serializer2;
 class Renderer;
 class DisplayOptions;
 class PostEffects;
+class LightingOptions;
 class Camera;
 class MainWindow;
 
@@ -104,6 +105,8 @@ DisplayOptions*& GetDisplayOptions() { return m_DisplayOptions; };
 void SetDisplayOptions(DisplayOptions* value) { m_DisplayOptions = value; }; 
 PostEffects*& GetPostEffects() { return m_PostEffects; }; 
 void SetPostEffects(PostEffects* value) { m_PostEffects = value; }; 
+LightingOptions*& GetLightingOptions() { return m_LightingOptions; }; 
+void SetLightingOptions(LightingOptions* value) { m_LightingOptions = value; }; 
 Camera*& GetDebugCamera() { return m_DebugCamera; }; 
 void SetDebugCamera(Camera* value) { m_DebugCamera = value; }; 
 Camera*& GetActiveCamera() { return m_ActiveCamera; }; 
@@ -113,17 +116,19 @@ void SetMainWindow(MainWindow* value) { m_MainWindow = value; };
 private:
 DisplayOptions* m_DisplayOptions = nullptr;
 PostEffects* m_PostEffects = nullptr;
+LightingOptions* m_LightingOptions = nullptr;
 Camera* m_DebugCamera = nullptr;
 Camera* m_ActiveCamera = nullptr;
 MainWindow* m_MainWindow = nullptr;
 public:
-static const int g_PropertyCount = 5;
+static const int g_PropertyCount = 6;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_RendererPIDX
 {
 PIDX_DisplayOptions,
 PIDX_PostEffects,
+PIDX_LightingOptions,
 PIDX_DebugCamera,
 PIDX_ActiveCamera,
 PIDX_MainWindow,

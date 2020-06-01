@@ -3,6 +3,7 @@ class Renderer
 {
 	DisplayOptions* DisplayOptions
 	PostEffects* PostEffects
+	LightingOptions* LightingOptions;
 
 	Camera* DebugCamera;
 
@@ -10,4 +11,5 @@ class Renderer
 	Camera* ActiveCamera;
 
 	MainWindow* MainWindow;
+
 }

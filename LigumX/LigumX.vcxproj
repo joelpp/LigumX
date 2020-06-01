@@ -192,6 +192,7 @@
     <ClCompile Include="src\imgui_draw.cpp" />
     <ClCompile Include="src\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="src\InputHandler.cpp" />
+    <ClCompile Include="src\LightingOptions.cpp" />
     <ClCompile Include="src\LigumX.cpp" />
     <ClCompile Include="src\linesegment.cpp" />
     <ClCompile Include="src\LXObject.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="src\ImguiHelpers.h" />
     <ClInclude Include="src\ImguiManager.h" />
     <ClInclude Include="src\ImguiPointerDisplay.h" />
+    <ClInclude Include="src\LightingOptions.h" />
     <ClInclude Include="src\LXError.h" />
     <ClInclude Include="src\Framebuffer.h" />
     <ClInclude Include="src\GL.h" />
@@ -344,6 +346,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\ShadowUtils.glsl" />
+    <None Include="src\LightingOptions.gen" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

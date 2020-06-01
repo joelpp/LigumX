@@ -41,7 +41,7 @@ OSMTool|1590827717
 PickingTool|1590827717
 PostEffects|1590827717
 RenderDataManager|1590827717
-renderer|1590827717
+renderer|1591035735
 RenderingStats|1590827717
 Sector|1590827717
 SectorGraphicalData|1590827717
@@ -56,3 +56,4 @@ Texture|1590827717
 Visual|1590827717
 Way|1590827717
 World|1590827717
+LightingOptions|1591035187

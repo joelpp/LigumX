@@ -41,12 +41,14 @@
 #include "serializer.h"
 #include "DisplayOptions.h"
 #include "PostEffects.h"
+#include "LightingOptions.h"
 #include "Camera.h"
 #include "MainWindow.h"
 const ClassPropertyData Renderer::g_Properties[] = 
 {
 { "DisplayOptions", PIDX_DisplayOptions, offsetof(Renderer, m_DisplayOptions), 0, LXType_ObjectPtr, sizeof(DisplayOptions*), LXType_DisplayOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "PostEffects", PIDX_PostEffects, offsetof(Renderer, m_PostEffects), 0, LXType_ObjectPtr, sizeof(PostEffects*), LXType_PostEffects, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "LightingOptions", PIDX_LightingOptions, offsetof(Renderer, m_LightingOptions), 0, LXType_ObjectPtr, sizeof(LightingOptions*), LXType_LightingOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugCamera", PIDX_DebugCamera, offsetof(Renderer, m_DebugCamera), 0, LXType_ObjectPtr, sizeof(Camera*), LXType_Camera, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "ActiveCamera", PIDX_ActiveCamera, offsetof(Renderer, m_ActiveCamera), 0, LXType_ObjectPtr, sizeof(Camera*), LXType_Camera, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "MainWindow", PIDX_MainWindow, offsetof(Renderer, m_MainWindow), 0, LXType_ObjectPtr, sizeof(MainWindow*), LXType_MainWindow, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -56,6 +58,7 @@ void Renderer::Serialize(Serializer2& serializer)
 	super::Serialize(serializer);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DisplayOptions], m_DisplayOptions);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_PostEffects], m_PostEffects);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_LightingOptions], m_LightingOptions);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DebugCamera], m_DebugCamera);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_MainWindow], m_MainWindow);
 }
@@ -74,6 +77,7 @@ bool Renderer::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DisplayOptions], &m_DisplayOptions  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_PostEffects], &m_PostEffects  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_LightingOptions], &m_LightingOptions  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DebugCamera], &m_DebugCamera  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ActiveCamera], &m_ActiveCamera  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_MainWindow], &m_MainWindow  );
@@ -85,6 +89,7 @@ void Renderer::Clone(LXObject* otherObj)
 	Renderer* other = (Renderer*) otherObj;
 	other->SetDisplayOptions(m_DisplayOptions);
 	other->SetPostEffects(m_PostEffects);
+	other->SetLightingOptions(m_LightingOptions);
 	other->SetDebugCamera(m_DebugCamera);
 	other->SetActiveCamera(m_ActiveCamera);
 	other->SetMainWindow(m_MainWindow);

@@ -38,39 +38,55 @@ layout(location = 0) out vec4 FinalColor;
 layout(location = 1) out vec4 BrightColor;
 #endif
 
+bool OutputDebugColors(out vec4 FinalColor, in vec3 screenCoords, in vec2 uvs)
+{
+	if (g_DebugUVsEnabled > 0)
+	{
+		vec2 fractUV = fract(uvs);
+		FinalColor = vec4(fractUV.r, fractUV.g, 0.f, 1.f);
+		return true;
+	}
+
+	if (g_DebugDepthEnabled > 0)
+	{
+		float depth = 0;
+		if (g_DebugLinearizeDepth > 0)
+		{
+			depth = LinearizeDepth(screenCoords.z) / g_CameraFarPlane;
+		}
+		else
+		{
+			depth = gl_FragCoord.z;
+		}
+		FinalColor = vec4(depth, depth, depth, 1.f);
+		return true;
+	}
+
+	return false;
+}
+
+
+
 void main() 
 {
 	PixelData pixelData;
 
+	vec3 screenCoords = gl_FragCoord.xyz;
+	float linearDepth = LinearizeDepth(screenCoords.z);
+
 	pixelData.m_UVs = myTexCoord;
 	pixelData.m_FinalColor.rgb = vec3(0,0,0);
 	pixelData.m_Normal = normalize(vNormalWS);
-	pixelData.m_Depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
+	pixelData.m_Depth = linearDepth / g_CameraFarPlane;
 
 	vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 
-	if (g_DebugUVsEnabled > 0)
+	if (OutputDebugColors(pixelData.m_FinalColor, screenCoords, pixelData.m_UVs))
 	{
-		vec2 fractUV = fract(pixelData.m_UVs);
-		FinalColor = vec4(fractUV.r, fractUV.g, 0.f, 1.f);
 		return;
 	}
 
-	
-	//if (g_DebugDepthEnabled > 0)
-	//{
-	//	float depth = 0;
-	//	if (g_DebugLinearizeDepth > 0)
-	//	{
-	//		depth = LinearizeDepth(gl_FragCoord.z) / g_CameraFarPlane;
-	//	}
-	//	else
-	//	{
-	//		depth = gl_FragCoord.z;
-	//	}
-	//	FinalColor = vec4(depth, depth, depth, 1.f);
-	//	return ;
-	//}
+	pixelData.m_FinalColor = vec4(0.f, 0.f, 0.f, 1.f);
 
 	// todo : when i do proper attenuation i need to re-visit gamma
 
@@ -78,83 +94,8 @@ void main()
 	{
 		for (int lightIndex = 0; lightIndex < g_NumLights; ++lightIndex)
 		{
-#if 0
-			if (!g_Material.m_IsPBR)
-			{
-				// Directions
-				//vec3 fragmentToCamera = g_CameraPosition - vWorldPosition.xyz;
-				//vec3 fragmentToLight = normalize( g_PointLight.m_Position - vWorldPosition.xyz);
-				vec3 fragmentToLight = GetLightDirection(lightIndex);
-				vec3 fragmentToLightDir = normalize(fragmentToLight);
-
-				float lightDistance = length(fragmentToLight);
-
-				float constant = 1.0f;
-				float llinear = 0.09f;
-				float quadratic = 0.032f;
-				//float attenuation = 1.0 / (constant + llinear * lightDistance + quadratic * (lightDistance * lightDistance));    
-				float attenuation = 1.0 / (lightDistance * lightDistance);
-			
-				// Ambient
-				vec3 ambientContribution = g_PointLight[0].m_AmbientColor * g_Material.m_AmbientColor; 
-				ambientContribution *= g_DebugAmbientEnabled;
-
-
-				vec3 diffuseContribution = GetDiffuseLighting(lightIndex, fragmentToLightDir, pixelData.m_Normal);
-
-			
-				vec3 specularContribution = GetSpecularLighting(lightIndex, fragmentToLightDir, fragmentToCamera, pixelData.m_Normal);
-
-				float shadow = ShadowCalculation(FragPosLightSpace, pixelData.m_Normal);
-				// final 
-				//FinalColor.rgb += /*ambientContribution +*/ (1.0 - shadow) * diffuseContribution + specularContribution;
-				FinalColor.rgb += attenuation * (diffuseContribution + specularContribution);
-			}
-			else
-			{
-#endif
-				// calculate per-light radiance
-
-					vec3 fragmentToLight = GetLightDirection(lightIndex);
-					vec3 fragmentToLightDir = normalize(fragmentToLight);
-
-					float lightDistance = length(fragmentToLight);
-
-					float constant = 1.0f;
-					float llinear = 0.09f;
-					float quadratic = 0.032f;
-					//float attenuation = 1.0 / (constant + llinear * lightDistance + quadratic * (lightDistance * lightDistance));    
-					float attenuation = 1.0 / (lightDistance * lightDistance);
-			
-					vec3 halfwayVector = normalize(fragmentToLightDir + fragmentToCamera);
-					vec3 radiance = GetLightColor(lightIndex) * attenuation;        
-        
-
-					vec3 F0 = vec3(0.04); 
-					F0      = mix(F0, g_Material.m_DiffuseColor, g_Material.m_Metallic);
-					vec3 F  = fresnelSchlick(max(dot(halfwayVector, fragmentToCamera), 0.0), F0);
-					float NDF = DistributionGGX(pixelData.m_Normal, halfwayVector, g_Material.m_Roughness);       
-					float G   = GeometrySmith(pixelData.m_Normal, fragmentToCamera, fragmentToLightDir, g_Material.m_Roughness);  
-
-					vec3 nominator    = NDF * G * F;
-					float denominator = 4 * max(dot(pixelData.m_Normal, fragmentToCamera), 0.0) * max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0) + 0.001; 
-					vec3 specular     = nominator / max(denominator, 0.001);  
-
-					vec3 kS = F;
-					vec3 kD = vec3(1.0) - kS;
-					kD *= 1.0 - g_Material.m_Metallic;	  
-
-					radiance *= 1e2;
-        
-					// add to outgoing radiance Lo
-					float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);                
-					vec3 finalColor = (kD * GetDiffuseColor(myTexCoord).rgb / PI + specular) * radiance * NdotL;
-					pixelData.m_FinalColor.rgb += finalColor;
-
-					//pixelData.m_FinalColor.rgb = NdotL * vec3(1.0);
-			//}
+			pixelData.m_FinalColor.rgb += ShadeLight(lightIndex, g_Material, vWorldPosition.xyz, pixelData.m_Normal, myTexCoord, fragmentToCamera);
 		}
-
 
 		vec2 sunDirFlat = vec2(cos(sunOrientation), sin(sunOrientation));
 		vec3 sunDir = cos(sunTime)*vec3(0, 0, 1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);

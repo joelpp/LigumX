@@ -21,6 +21,7 @@
 #include "ImguiManager.h"
 #include "ImguiPointerDisplay.h"
 #include "InputHandler.h"
+#include "LightingOptions.h"
 #include "LXObject.h"
 #include "MainWindow.h"
 #include "Material.h"

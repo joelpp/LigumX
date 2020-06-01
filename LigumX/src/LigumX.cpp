@@ -164,7 +164,7 @@ void LigumX::InitializeGlobalObjects()
 	m_Renderer->SetObjectID(28763);
 	m_Renderer->Serialize(false);
 
-	g_GUI = new GUI();
+	g_GUI = new GUI(m_Renderer->GetMainWindow());
 
 	g_DefaultObjects = new DefaultObjects();
 	g_DefaultObjects->Initialize();

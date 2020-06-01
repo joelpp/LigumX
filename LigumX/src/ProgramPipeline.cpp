@@ -23,7 +23,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram()
 	
 }
 
-bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, string srcFilenames,	bool readSrcFilenamesAsSourceCode)
+bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& name, string srcFilenames,	bool readSrcFilenamesAsSourceCode)
 {
 	this->shaderType = shaderType;
 
@@ -31,8 +31,6 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, string srcFil
 	const char ** sourceCodes = new const char *[nbSources];
 	int count = 0;
 	StringList sourceCodeStrings;
-
-	m_NumLinesInInclude = 0;
 
 	if (readSrcFilenamesAsSourceCode)
 	{
@@ -44,6 +42,10 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, string srcFil
 
 		sourceCodeStrings = StringList(nbSources);
 		ifstream sourceCodeStream(srcFilenames, ios::in);
+
+		int finalShaderLineNumber = 1; // in VS lines are counted starting at 1
+		m_FileIncludes.push_back(ShaderFileInclude(name, finalShaderLineNumber, 1));
+		m_NumLinesInInclude = 0;
 		if (sourceCodeStream.is_open())
 		{
 			string line;
@@ -57,28 +59,35 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, string srcFil
 					lxAssert(tokens.size() == 3);
 					
 					LXString& toInclude = tokens[2];
+
+					LXString path = g_PathShaders + toInclude;
+					LXString name = toInclude;
 					if (toInclude == g_ProviderIncludeMarker)
 					{
-						LXString providerInclude = StringUtils::FromFile(g_ProviderIncludeFilePath.c_str());
-						m_NumLinesInInclude += StringUtils::Count(providerInclude, '\n');
-
-						sourceCodeStrings[count] += providerInclude + "\n";
-						continue;
+						path = g_ProviderIncludeFilePath;
+						name = "ProviderInclude";
 					}
-					else
-					{
-						LXString path = g_PathShaders + toInclude;
-						LXString providerInclude = StringUtils::FromFile(path.c_str());
-						m_NumLinesInInclude += StringUtils::Count(providerInclude, '\n');
 
-						sourceCodeStrings[count] += providerInclude + "\n";
-						continue;
-					}
+					LXString providerInclude = StringUtils::FromFile(path.c_str());
+					sourceCodeStrings[count] += providerInclude + "\n";
+
+					int linesInFile = StringUtils::Count(providerInclude, '\n');
+					m_FileIncludes.push_back(ShaderFileInclude(name, finalShaderLineNumber, linesInFile));
+
+					finalShaderLineNumber += linesInFile;
+					m_NumLinesInInclude += linesInFile;
+
+					continue;
 				}
 
 				sourceCodeStrings[count] += line + "\n";
-
+				finalShaderLineNumber++;
 			}
+
+			ShaderFileInclude& lastFileInclude = m_FileIncludes[m_FileIncludes.size() - 1];
+			int lastBlockStart = lastFileInclude.m_LineStart + lastFileInclude.m_NumLines;
+			m_FileIncludes.push_back(ShaderFileInclude(name, lastBlockStart, finalShaderLineNumber - lastBlockStart));
+
 			sourceCodeStream.close();
 		}
 		else
@@ -138,8 +147,9 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, string srcFil
 	{
 		lxLogMessage(lxFormat("%s", srcFilenames.c_str()).c_str());
 		lxLogMessage(lxFormat("Shader error : %s", info).c_str());
-		lxLogMessage("Line numbers(adjusted for provider include file) :");
+		//lxLogMessage("Line numbers(adjusted for provider include file) :");
 
+		// Find in which include files the errors happened
 		std::string infoString(info);
 		std::regex lineNumberRegex(g_LineNumberRegex);
 
@@ -153,13 +163,31 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, string srcFil
 			const StringList parenthesisList = { "(", ")" };
 			match_str = StringUtils::RemoveSubstrings(match_str, parenthesisList);
 
-			int lineNumber = std::atoi(match_str.c_str()) - m_NumLinesInInclude;
-			lxLogMessage(lxFormat("(%d)", lineNumber).c_str());
+			int globalLineNumber = std::atoi(match_str.c_str());
+
+			int includeIndex = m_FileIncludes.size() - 1;
+
+			// find index
+			for (int i = 0; i < m_FileIncludes.size() - 1; ++i)
+			{
+				ShaderFileInclude& inc = m_FileIncludes[i];
+				if (globalLineNumber < inc.m_LineStart)
+				{
+					includeIndex = i - 1;
+					break;
+				}
+			}
+
+			ShaderFileInclude& inc = m_FileIncludes[includeIndex];
+			int localLineNumber = globalLineNumber - inc.m_LineStart;
+
+			// todo jpp get rid of this....
+			int l2 = globalLineNumber - m_NumLinesInInclude;
+
+			lxLogMessage(lxFormat("%s (%d) (%d)", inc.m_Filename.c_str(), localLineNumber, l2).c_str());
 
 			++it;
 		}
-
-		lxLogMessage(lxFormat("Number of lines in provider include file : %d", m_NumLinesInInclude).c_str());
 	}
 	
 	return !hadError;
@@ -250,7 +278,7 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 	{
 
 		ShaderProgram* cs = new ProgramPipeline::ShaderProgram();
-		success = cs->Initialize(GL_COMPUTE_SHADER, path.str() + name + ".csh", false);
+		success = cs->Initialize(GL_COMPUTE_SHADER, name, path.str() + name + ".csh", false);
 
 		if (success)
 		{
@@ -260,14 +288,14 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 	else
 	{
 		ShaderProgram* vs = new ProgramPipeline::ShaderProgram();
-		success = vs->Initialize(GL_VERTEX_SHADER, path.str() + name + ".vsh", false);
+		success = vs->Initialize(GL_VERTEX_SHADER, name, path.str() + name + ".vsh", false);
 
 		if (success)
 		{
 			useVertexShader(vs);
 
 			ShaderProgram* ps = new ProgramPipeline::ShaderProgram();
-			success &= ps->Initialize(GL_FRAGMENT_SHADER, path.str() + name + ".fsh", false);
+			success &= ps->Initialize(GL_FRAGMENT_SHADER, name, path.str() + name + ".fsh", false);
 			if (success)
 			{
 				useFragmentShader(ps);

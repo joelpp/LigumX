@@ -11,6 +11,8 @@ extern GUI* g_GUI;
 
 #pragma endregion  FORWARD_DECLARATIONS GUI
 
+class MainWindow;
+
 #pragma region  HEADER GUI
 class GUI : public LXObject
 {
@@ -46,7 +48,8 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER GUI
 
-GUI();
+GUI() { lxAssert0(); };
+GUI(MainWindow* mainWindow);
 
 void BeginWindow(unsigned int xSize, unsigned int ySize, ImGuiWindowFlags flags, bool open, const char* name);
 

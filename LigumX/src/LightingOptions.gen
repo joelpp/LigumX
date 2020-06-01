@@ -1,0 +1,15 @@
+
+class LightingOptions
+{
+	bool EnableDynamicLights = true;
+	bool EnableSunlight = true;
+	bool EnableAmbientLighting = true;
+
+	bool EnableDiffuseComponent = true;
+	bool EnableSpecularComponent = true;
+
+	bool EnableReflection = true;
+	bool EnableSunShadow = true;
+	bool EnableDynamicShadows = true;
+	
+}

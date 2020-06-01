@@ -17,19 +17,14 @@ vec3 GetLightColor(int lightIndex)
 	return lightColor;
 }
 
-vec3 GetLightDirection(int lightIndex)
+vec3 GetLightPosition(int lightIndex)
 {
-	vec3 lightDirection;
-	if (false && g_UseSkyLighting)
-	{
-		//lightDirection = g_DirectionalLight.m_Direction;
-		lightDirection = vec3(0, 0, 1);
-	}
-	else
-	{
-		lightDirection = g_PointLight[lightIndex].m_Position - vWorldPosition.xyz;
-	}
+	return g_PointLight[lightIndex].m_Position;
+}
 
+vec3 GetDirectionToLight(int lightIndex, vec3 worldPosition)
+{
+	vec3 lightDirection = GetLightPosition(lightIndex) - worldPosition.xyz;
 	return lightDirection;
 }
 

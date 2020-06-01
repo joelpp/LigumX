@@ -49,10 +49,9 @@ const char* GUI::GetTypeName()
 #pragma endregion  CLASS_SOURCE GUI
 
 
-GUI::GUI()
+GUI::GUI(MainWindow* mainWindow)
 {
-	MainWindow* window = LigumX::GetRenderer()->GetMainWindow();
-	m_WindowHWPtr = window->GetHWObject();
+	m_WindowHWPtr = mainWindow->GetHWObject();
 
 	ImGui_ImplGlfwGL3_Init(m_WindowHWPtr, true);
 

@@ -7,6 +7,29 @@
 #include <string>
 #include <sstream>
 
+// todo jpp : This assumes all include files in shaders are in the same block without in between lines
+/* todo jpp : Not sure this supports includes in includes.
+// Should this be -> "ShaderFile" is any glsl file, it has a list of ShaderFileInclude, when loading a file resolve all includes from the bottom up
+// e.g. : Basic
+            Lighting
+                Utils
+            
+First create a ShaderFile for Utils. Then create the ShaderFile for Lighting, using the resolved Utils.
+Finally create Basic - concatenate somehow all the resolved shaderfiles.
+*/
+struct ShaderFileInclude
+{
+    ShaderFileInclude(const LXString& filename, int start, int numLines)
+        : m_Filename(filename)
+        , m_LineStart(start)
+        , m_NumLines(numLines)
+    {
+    }
+    LXString m_Filename = "";
+    int m_LineStart = 0;
+    int m_NumLines = 0;
+};
+
 class ProgramPipeline
 {
 
@@ -20,14 +43,10 @@ public:
         ShaderProgram();
         ~ShaderProgram() {}
 
-		bool Initialize(
-			GLenum shaderType,
-			//initializer_list<string> srcFilenames,
-			std::string srcFilenames,
-			bool readSrcFilenamesAsSourceCode);
-
 		int m_NumLinesInInclude = 0;
+		bool Initialize(GLenum shaderType, LXString& name, std::string srcFilenames, bool readSrcFilenamesAsSourceCode);
 
+        std::vector<ShaderFileInclude> m_FileIncludes;
     };
 
     ShaderProgram  *pVertexShader,
@@ -54,6 +73,7 @@ public:
     void usePipeline();
 
 	bool m_IsValid = false;
+
 
 private:
     std::string m_name;

@@ -79,4 +79,49 @@ vec3 GetSpecularLighting(int lightIndex, vec3 fragmentToLight, vec3 fragmentToCa
 	return spec * specularColor.rgb * GetLightColor(lightIndex);  
 }
 
+
+vec3 ShadeLight(int lightIndex, Material material, vec3 worldPosition, vec3 worldNormal, vec2 uv, vec3 fragmentToCamera)
+{
+	vec3 fragmentToLight = GetDirectionToLight(lightIndex, worldPosition.xyz);
+	vec3 fragmentToLightDir = normalize(fragmentToLight);
+
+	float lightDistance = length(fragmentToLight);
+
+	float constant = 1.0f;
+	float llinear = 0.09f;
+	float quadratic = 0.032f;
+	//float attenuation = 1.0 / (constant + llinear * lightDistance + quadratic * (lightDistance * lightDistance));    
+	float attenuation = 1.0 / (lightDistance * lightDistance);
+
+	vec3 halfwayVector = normalize(fragmentToLightDir + fragmentToCamera);
+	vec3 radiance = GetLightColor(lightIndex) * attenuation;
+
+
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0, material.m_DiffuseColor, material.m_Metallic);
+	vec3 F = fresnelSchlick(max(dot(halfwayVector, fragmentToCamera), 0.0), F0);
+	float NDF = DistributionGGX(worldNormal, halfwayVector, material.m_Roughness);
+	float G = GeometrySmith(worldNormal, fragmentToCamera, fragmentToLightDir, material.m_Roughness);
+
+	vec3 nominator = NDF * G * F;
+	float denominator = 4 * max(dot(worldNormal, fragmentToCamera), 0.0) * max(dot(worldNormal, fragmentToLightDir), 0.0) + 0.001;
+	vec3 specular = nominator / max(denominator, 0.001);
+
+	vec3 kS = F;
+	vec3 kD = vec3(1.0) - kS;
+	kD *= 1.0 - material.m_Metallic;
+
+	radiance *= 1e2;
+
+	// add to outgoing radiance Lo
+	vec4 materialDiffuseColor = GetDiffuseColor(uv);
+	float NdotL = max(dot(worldNormal, fragmentToLightDir), 0.0);
+	
+	vec3 finalColor = (kD * materialDiffuseColor.rgb / PI + specular) * radiance * NdotL;
+	return finalColor;
+
+}
+
+
+
 #endif // GLSL_LIGHTING_UTILS
