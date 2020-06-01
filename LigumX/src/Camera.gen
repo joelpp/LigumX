@@ -42,4 +42,6 @@ class Camera
 
 	float KeyMovementSpeedIncreaseFactor = 1.5f;
 
+	float FOVY = 45.f;
+
 }

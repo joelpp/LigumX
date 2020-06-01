@@ -260,11 +260,12 @@ void main()
 		if (g_Material.m_ReflectEnvironment)
 		{
 			R = reflect(-fragmentToCamera, pixelData.m_Normal);
-			vec3 skyColor = GetSkyColor(R, sunTime, sunOrientation);
+			vec3 skyColor = GetSkyColor(R, sunTime, sunOrientation) * 0.1f;
 			
 			// todo handle this blend properly wow
-			float ratio = g_Material.m_Shininess / 500.f;
-			FinalColor.rgb = ratio * skyColor + (1.f - ratio) * FinalColor.rgb;
+			float ratio = g_Material.m_Shininess;
+
+			pixelData.m_FinalColor.rgb = ratio * skyColor + (1.f - ratio) * pixelData.m_FinalColor.rgb;
 		}
 		
 		//if (g_Material.m_IsGlass)

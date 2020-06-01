@@ -66,6 +66,8 @@ float GetMovementSpeed() { return m_MovementSpeed; };
 void SetMovementSpeed(float value) { m_MovementSpeed = value; }; 
 float GetKeyMovementSpeedIncreaseFactor() { return m_KeyMovementSpeedIncreaseFactor; }; 
 void SetKeyMovementSpeedIncreaseFactor(float value) { m_KeyMovementSpeedIncreaseFactor = value; }; 
+float GetFOVY() { return m_FOVY; }; 
+void SetFOVY(float value) { m_FOVY = value; }; 
 private:
 glm::vec3 m_Position = glm::vec3(0, 0, 0);
 glm::vec3 m_FrontVector = glm::vec3(0, 0, 0);
@@ -85,8 +87,9 @@ float m_OrthoBorders = 0.f;
 float m_ViewSize = 0.f;
 float m_MovementSpeed = 0.f;
 float m_KeyMovementSpeedIncreaseFactor = 1.5f;
+float m_FOVY = 45.f;
 public:
-static const int g_PropertyCount = 18;
+static const int g_PropertyCount = 19;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -109,6 +112,7 @@ PIDX_OrthoBorders,
 PIDX_ViewSize,
 PIDX_MovementSpeed,
 PIDX_KeyMovementSpeedIncreaseFactor,
+PIDX_FOVY,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
@@ -145,7 +149,6 @@ public:
     glm::vec3 lookAtTargetPos, cylindricalUpVec;
     float viewMovementSpeed, defaultViewMovementSpeed;
     float keyMovementSpeed, defaultKeyMovementSpeed;
-    float totalViewAngleY;
     float aspectRatio;
 
 	float minimumSpeed;

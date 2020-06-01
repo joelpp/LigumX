@@ -880,9 +880,9 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
 
   SetMaterialUniforms(material);
 
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, m_DataInspectorSSBO);
-  SetFragmentUniform((int)(g_InputHandler->GetMousePosition().x), "g_MouseX");
-  SetFragmentUniform((int)(g_InputHandler->GetMousePosition().y), "g_MouseY");
+  //glBindBufferBase(GL_SHADER_STORAGE_BUFFER, DATAINSPECTOR_BINDPOS, m_DataInspectorSSBO);
+  //SetFragmentUniform((int)(g_InputHandler->GetMousePosition().x), "g_MouseX");
+  //SetFragmentUniform((int)(g_InputHandler->GetMousePosition().y), "g_MouseY");
 
   if (mesh->GetWireframeRendering())
   {
@@ -1021,7 +1021,6 @@ void Renderer::RenderShadowMap()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	//RenderEntities(g_RenderDataManager->GetVisibleEntities());
 	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 	{
 		if (!entity->GetVisible())
@@ -1029,55 +1028,15 @@ void Renderer::RenderShadowMap()
 			continue;
 		}
 
+		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+		Model * model = entity->GetModel();
+		for (int i = 0; i < model->GetMeshes().size(); ++i)
 		{
-			Model * model = entity->GetModel();
-			for (int i = 0; i < model->GetMeshes().size(); ++i)
-			{
-				Material* material = nullptr;
-				if (model->GetMaterials().size() > i)
-				{
-					material = model->GetMaterials()[i];
-				}
-				else if (model->GetMaterials().size() > 0)
-				{
-					material = model->GetMaterials()[0];
-				}
-				else
-				{
-					lxAssert0();
-				}
-				if (!material->GetEnabled())
-				{
-					continue;
-				}
-
-				// todo jpp EVIL
-				//if (!SetPipeline(material->GetShaderFamily()))
-				//{
-				//	continue;
-				//}
-
-				SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
-
-				//if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
-				{
-					//SetLightingUniforms();
-					//SetViewUniforms(m_DebugCamera);
-					//SetShadowMapUniforms(m_ShadowCamera);
-					//SetSkyUniforms(3);
-					//SetDisplayModeUniforms();
-
-					//SetPostEffectsUniforms();
-					//SetDebugUniforms();
-					//m_ShaderBeenUsedThisFrame[material->GetShaderFamily()] = true;
-				}
-
-				DrawMesh(model->GetMeshes()[i], material);
-
-			}
-
-			GL::OutputErrors();
+			glBindVertexArray(model->GetMeshes()[i]->m_VAO);
+			DrawMesh(model->GetMeshes()[i]);
 		}
+
+		GL::OutputErrors();
 	}
 
 
@@ -1875,7 +1834,7 @@ void Renderer::RenderSky()
 
 	GLuint fragProg = envMapShader->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	float pi = 3.141592654f;
-	glm::vec2 viewAngles = glm::vec2(m_ActiveCamera->totalViewAngleY*pi, m_ActiveCamera->aspectRatio*m_ActiveCamera->totalViewAngleY*glm::pi<float>()) / 180.0f;
+	glm::vec2 viewAngles = glm::vec2(m_ActiveCamera->GetFOVY() * pi, m_ActiveCamera->aspectRatio * m_ActiveCamera->GetFOVY() * pi) / 180.0f;
 	SetFragmentUniform(viewAngles, "viewAngles");
 
 	SetFragmentUniform(2.f * (glm::vec2) m_MainWindow->GetSize(), "windowSize");

@@ -32,6 +32,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 2000.f, 0,}, 
 { "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "FOVY", PIDX_FOVY, offsetof(Camera, m_FOVY), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void Camera::Serialize(Serializer2& serializer)
 {
@@ -47,6 +48,7 @@ void Camera::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_ViewSize], m_ViewSize);
 	serializer.SerializeFloat(g_Properties[PIDX_MovementSpeed], m_MovementSpeed);
 	serializer.SerializeFloat(g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], m_KeyMovementSpeedIncreaseFactor);
+	serializer.SerializeFloat(g_Properties[PIDX_FOVY], m_FOVY);
 }
 bool Camera::Serialize(bool writing)
 {
@@ -72,6 +74,7 @@ bool Camera::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ViewSize], &m_ViewSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MovementSpeed], &m_MovementSpeed , 0.f, 2000.f );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], &m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FOVY], &m_FOVY , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 void Camera::Clone(LXObject* otherObj)
@@ -96,6 +99,7 @@ void Camera::Clone(LXObject* otherObj)
 	other->SetViewSize(m_ViewSize);
 	other->SetMovementSpeed(m_MovementSpeed);
 	other->SetKeyMovementSpeedIncreaseFactor(m_KeyMovementSpeedIncreaseFactor);
+	other->SetFOVY(m_FOVY);
 }
 const char* Camera::GetTypeName()
 {
@@ -113,7 +117,6 @@ Camera::Camera()
     m_ViewProjectionMatrix = mat4(1);
     m_ViewSize = 1;
     angle = 0;
-    totalViewAngleY = 45;
     aspectRatio = 1; // TODO: change to window's aspect ratio.
     m_NearPlane = 0.01f;
     m_FarPlane = 1000.f;
@@ -214,8 +217,8 @@ void Camera::UpdateVPMatrix()
 	// but also it might do
 	if (m_ProjectionType == ProjectionType_Perspective)
 	{
-		m_ViewProjectionMatrix = perspective(totalViewAngleY, aspectRatio, GetNearPlane(), m_FarPlane) * m_ViewProjectionMatrix;
-		m_ProjectionMatrix = perspective(totalViewAngleY, aspectRatio, GetNearPlane(), m_FarPlane);
+		m_ViewProjectionMatrix = perspective(m_FOVY, aspectRatio, GetNearPlane(), m_FarPlane) * m_ViewProjectionMatrix;
+		m_ProjectionMatrix = perspective(m_FOVY, aspectRatio, GetNearPlane(), m_FarPlane);
 	}
 	else
 	{
