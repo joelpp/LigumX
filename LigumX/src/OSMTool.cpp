@@ -220,8 +220,8 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 	SectorGraphicalData* gfxData = sector->GetGraphicalData();
 
 	glm::mat4 transfo = glm::mat4(1.0);
-	transfo = glm::translate(transfo, glm::vec3(sector->GetWorldPosition(), 0));
-	transfo = glm::scale(transfo, glm::vec3(g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale()));
+	//transfo = glm::translate(transfo, glm::vec3(sector->GetWorldPosition(), 0));
+	//transfo = glm::scale(transfo, glm::vec3(g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale(), g_EngineSettings->GetWorldScale()));
 
 	if (m_ShowNodes)
 	{

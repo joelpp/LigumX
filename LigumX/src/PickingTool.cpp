@@ -97,6 +97,7 @@ bool PickingTool::CheckEntity(Entity* entity)
 {
 	if (m_AimingID == 0)
 	{
+		SetPickedEntity(nullptr);;
 		return false;
 	}
 
@@ -164,16 +165,21 @@ bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition,
 	{
 		bool found = false;
 
-		for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
+		World* world = LigumX::GetInstance().GetWorld();
+
+		if (world != nullptr)
 		{
-			if (CheckEntity(entity))
+			for (Entity* entity : world->GetEntities())
 			{
-				found = true;
+				if (CheckEntity(entity))
+				{
+					found = true;
 
-				SetPickedEntity(entity);
+					SetPickedEntity(entity);
 
-				break;
-			};
+					break;
+				};
+			}
 		}
 
 		if (!found)

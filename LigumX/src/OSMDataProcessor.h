@@ -103,6 +103,7 @@ void ProcessSector(Sector* sector);
 
 void ProcessRoad(Sector* sector, Way* way);
 Mesh* BuildRoadMesh(Sector* sector, Way* way);
+Mesh* ProcessWayNodes(Sector* sector, Way* way);
 
 void PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo, const glm::vec3& direction, float& spaceLeft, glm::vec3& plotStart);
 Mesh* BuildAdressInterpolationBuilding(Sector* sector, Way* way, Mesh*& groundMesh);

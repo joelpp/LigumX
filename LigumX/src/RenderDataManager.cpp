@@ -308,18 +308,27 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 	int index = 0;
 	int previousLastIndex = 0;
 	int wayIndex = 0;
+
+	int maxToProcess = 1;//99999;
+	int count = 0;
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
+		if (count >= maxToProcess)
+		{
+			break;
+		}
+		count++;
+
 		std::vector<glm::vec3> wayPositions;
 		std::vector<glm::vec3> line;
 		Way* way = it->second;
 		std::vector<Node*>& nodes = way->GetNodes();
 
-		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
-		if (!isGenericBuilding)
-		{
-			continue;
-		}
+		//bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
+		//if (!isGenericBuilding)
+		//{
+		//	continue;
+		//}
 
 		bool newWay = true;
 
@@ -331,7 +340,7 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 		{
 			Node* node = nodes[i];
 			
-			//nodePositions.push_back(node->GetWorldPosition());
+			nodePositions.push_back(node->GetWorldPosition());
 
 			const lx2I64& nodePos = node->GetHighPrecisionEarthCoordinates();
 			minPos = glm::min(minPos, nodePos);
@@ -364,81 +373,21 @@ void RenderDataManager::CreateWaysLines(Sector* sector)
 
 		for (int i = 0; i < nodes.size(); ++i)
 		{
-			lx3F32 nodelModelPosF3 = glm::vec3(modelNodePositions[i], 0);
-			flatWayPositions.push_back(nodelModelPosF3);
-			wayPositions.push_back(nodelModelPosF3);
+			Node* node = nodes[i];
 
-			vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
 
 			if (i > 1)
 			{
-				lx3F32 lastNodelModelPosF3 = glm::vec3(modelNodePositions[i - 1], 0);
+				lx3F32 lastNodelModelPosF3 = flatWayPositions[flatWayPositions.size() - 1];
 				flatWayPositions.push_back(lastNodelModelPosF3);
-				wayPositions.push_back(nodelModelPosF3);
 				vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
 			}
+
+			lx3F32 nodelModelPosF3 = node->GetWorldPosition();
+			flatWayPositions.push_back(nodelModelPosF3);
+			vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
 		}
 		
-#if 0
-		{
-			newWay = false;
-			index++;
-
-#if 0
-			if (i != nodes.size() - 1)
-			{
-				Node* nextNode = nodes[i + 1];
-
-				float heightSlope = nextNode->GetWorldPosition().z - pos.z;
-
-				const glm::vec3& nextPos = nextNode->GetWorldPosition();
-
-				glm::vec3 distance = nextPos - pos;
-
-				if (distance != glm::vec3(0, 0, 0))
-				{
-					glm::vec3 direction = glm::normalize(distance);
-					float length = glm::length(distance);
-					int numsubdivisions = (int)(length / g_EngineSettings->GetWayTessellationFactor());
-					float factor = (float) (numsubdivisions + 1);
-					for (int j = 0; j < numsubdivisions; ++j)
-					{
-						glm::vec3 subdivisionPoint;
-
-						float lerpFactor = (float)(j + 1) / factor;
-						subdivisionPoint = pos + lerpFactor * direction * length ;
-
-						//subdivisionPoint.z = world->SampleHeight(subdivisionPoint);
-						//subdivisionPoint.z = lerpFactor * heightSlope;
-
-						nodePositions.push_back(subdivisionPoint);
-						nodeColors.push_back(glm::vec3(1, 1, 1));
-						AddPoint(line, subdivisionPoint);
-
-						if (!newWay && index >(previousLastIndex) && (index - 1) != previousLastIndex)
-						{
-							flatWayPositions.push_back(flatWayPositions.back());
-							vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
-						}
-
-
-						flatWayPositions.push_back(subdivisionPoint);
-						vertexData.push_back({ way->GetOSMElementType(), way->GetIndexInSector() });
-
-						newWay = false;
-						index++;
-					}
-				}
-			}
-
-#endif
-
-		}
-
-		previousLastIndex = index - 1;
-		index -= 1;
-#endif
-
 		waysModel = CreateDebugModel(line, glm::vec3(1,0,0), "Sector_Lines_");
 
 		gfxData->AddTo_WaysModelsVector(waysModel);
@@ -677,10 +626,16 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 	{
 		bool visible = true;
 
+		if (e->GetModel() == nullptr)
+		{
+			continue;
+		}
+
 		if (m_CullingOptions->GetCullEntities() /*&& e == g_Editor->GetPickingTool()->GetPickedEntity()*/)
 		{
 			visible = IsAABBVisible(e, e->GetComponent<BoundingBoxComponent>()->GetBoundingBox(), e->GetModelToWorldMatrix(), camera);
 		}
+
 
 		if (!visible)
 		{

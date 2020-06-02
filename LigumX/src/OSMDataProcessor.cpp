@@ -992,23 +992,50 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 	return nullptr;
 }
 
+Mesh* OSMDataProcessor::ProcessWayNodes(Sector* sector, Way* way)
+{
+	//std::vector<glm::vec2> uvs;
+	//std::vector<glm::vec3> vertices;
+	//glm::vec3 up = glm::vec3(0, 0, 1);
+
+	//std::vector<glm::vec3> realNodeWorldPositions;
+
+	//float worldScale = g_EngineSettings->GetWorldScale();
+	//glm::vec2 worldScale2 = glm::vec2(worldScale, worldScale);
+
+	//for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
+	//{
+	//	Node* node = *nodeIt;
+	//	const glm::vec2& sectorRelativePosition = node->GetSectorRelativePosition();
+
+	//	glm::vec2 p = sectorRelativePosition - glm::vec2(sector->GetOffsetIndex());
+	//	//const glm::vec3& nodePos = glm::vec3(p, 0.f);
+
+	//	glm::vec3 nodePos = node->GetWorldPosition();
+	//	realNodeWorldPositions.push_back(nodePos);
+	//}
+
+
+	return nullptr;
+}
+
 
 
 void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
 {
-	Mesh* roadMesh = BuildRoadMesh(sector, way);
+	//Mesh* roadMesh = BuildRoadMesh(sector, way);
 
-	if (roadMesh != nullptr)
+	//if (roadMesh != nullptr)
 	{
 		Renderer& renderer = Renderer::GetInstance();
 
-		Model* roadModel = new Model();
-		roadModel->addMesh(roadMesh, new Material(ShaderFamily_Roads));
-		roadModel->SetName("Road_Test");
+		//Model* roadModel = new Model();
+		//roadModel->addMesh(roadMesh, new Material(ShaderFamily_Roads));
+		//roadModel->SetName("Road_Test");
 
 		Entity* roadEntity = new Entity();
-		roadEntity->SetName("Road - " + way->GetName());
-		roadEntity->SetModel(roadModel);
+		roadEntity->SetName(lxFormat("Road - %s (%lld)", way->GetName().c_str(), way->GetOSMId()));
+		//roadEntity->SetModel(roadModel);
 		
 		roadEntity->SetVisible(true);
 
@@ -1016,10 +1043,27 @@ void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
 		osmElementComponent->SetWay(way);
 		roadEntity->AddTo_Components(osmElementComponent);
 
-		//World* world = LigumX::GetInstance().GetWorld();
-		//world->AddTo_Entities(roadEntity);
+		glm::vec3 entityPos = glm::vec3(0, 0, 0);
+		glm::vec3 entityMin = glm::vec3(LX_LIMITS_FLOAT_MAX);
+		glm::vec3 entityMax = glm::vec3(LX_LIMITS_FLOAT_MIN);
+		int count = 0;
+		for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
+		{
+			Node* node = *nodeIt;
+			const glm::vec3& nodePos = node->GetWorldPosition();
+			entityPos += nodePos;
+			entityMin = glm::min(nodePos, entityMin);
+			entityMin = glm::max(nodePos, entityMax);
+			count++;
+		}
 
-		sector->GetGraphicalData()->GetRoadEntities().push_back(roadEntity);
+		entityPos /= count;
+		roadEntity->SetPosition(entityPos);
+
+		World* world = LigumX::GetInstance().GetWorld();
+		world->AddTo_Entities(roadEntity);
+
+		//sector->GetGraphicalData()->GetRoadEntities().push_back(roadEntity);
 	}
 }
 
@@ -1096,7 +1140,7 @@ bool OSMDataProcessor::IsRoad(Way* way)
 	return way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
 }
 
-static int m_MaxRoadsToProcess = 999;
+static int m_MaxRoadsToProcess = 1;
 
 static int m_MaxGenericBuildingsToProcess = 0;
 
@@ -1114,9 +1158,7 @@ void OSMDataProcessor::ProcessSector(Sector* sector)
 	{
 		Way* way = it->second;
 
-		bool hsNodes = (way->GetNodes().size() > 0);
-
-		bool isRoad = IsRoad(way);
+		bool isRoad = true;///IsRoad(way);
 		if (isRoad && (m_RoadsProcessed < m_MaxRoadsToProcess))
 		{
 			ProcessRoad(sector, way);

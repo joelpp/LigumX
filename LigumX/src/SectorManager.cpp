@@ -344,7 +344,7 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 
 			std::vector<std::string> debugNodeID = 
 			{
-				"1957579344",
+				"3163852168",
 				//"1957579363",
 				//"1957579303",
 				//"1957579235",
