@@ -52,6 +52,9 @@ bool GetShowFlatWays() { return m_ShowFlatWays; };
 void SetShowFlatWays(bool value) { m_ShowFlatWays = value; }; 
 bool GetDebugPointInRoad() { return m_DebugPointInRoad; }; 
 void SetDebugPointInRoad(bool value) { m_DebugPointInRoad = value; }; 
+bool GetCOMMAND_LoadAllDebugWays() { return m_COMMAND_LoadAllDebugWays; }; 
+void SetCOMMAND_LoadAllDebugWays(bool value) { SetCOMMAND_LoadAllDebugWays_Callback(value); }; 
+void SetCOMMAND_LoadAllDebugWays_Callback(const bool& value);
 private:
 bool m_Enabled = true;
 Node* m_SelectedNode = nullptr;
@@ -64,8 +67,9 @@ bool m_ShowNodes = false;
 bool m_ShowWays = false;
 bool m_ShowFlatWays = true;
 bool m_DebugPointInRoad = false;
+bool m_COMMAND_LoadAllDebugWays = false;
 public:
-static const int g_PropertyCount = 11;
+static const int g_PropertyCount = 12;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMToolPIDX
@@ -81,6 +85,7 @@ PIDX_ShowNodes,
 PIDX_ShowWays,
 PIDX_ShowFlatWays,
 PIDX_DebugPointInRoad,
+PIDX_COMMAND_LoadAllDebugWays,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

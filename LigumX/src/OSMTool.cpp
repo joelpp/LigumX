@@ -40,6 +40,7 @@ const ClassPropertyData OSMTool::g_Properties[] =
 { "ShowWays", PIDX_ShowWays, offsetof(OSMTool, m_ShowWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "ShowFlatWays", PIDX_ShowFlatWays, offsetof(OSMTool, m_ShowFlatWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugPointInRoad", PIDX_DebugPointInRoad, offsetof(OSMTool, m_DebugPointInRoad), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "COMMAND_LoadAllDebugWays", PIDX_COMMAND_LoadAllDebugWays, offsetof(OSMTool, m_COMMAND_LoadAllDebugWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(OSMTool, COMMAND_LoadAllDebugWays, bool),}, 
 };
 void OSMTool::Serialize(Serializer2& serializer)
 {
@@ -78,6 +79,7 @@ bool OSMTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowWays], &m_ShowWays  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowFlatWays], &m_ShowFlatWays  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugPointInRoad], &m_DebugPointInRoad  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_LoadAllDebugWays], &m_COMMAND_LoadAllDebugWays  );
 	return true;
 }
 void OSMTool::Clone(LXObject* otherObj)
@@ -95,6 +97,7 @@ void OSMTool::Clone(LXObject* otherObj)
 	other->SetShowWays(m_ShowWays);
 	other->SetShowFlatWays(m_ShowFlatWays);
 	other->SetDebugPointInRoad(m_DebugPointInRoad);
+	other->SetCOMMAND_LoadAllDebugWays(m_COMMAND_LoadAllDebugWays);
 }
 const char* OSMTool::GetTypeName()
 {
@@ -286,4 +289,35 @@ void OSMTool::Reset()
 	m_SelectedNode = nullptr;
 	m_SelectedSectorIndex = glm::ivec2(0, 0);
 	m_WorldSpacePosition = glm::vec3(0, 0, 0);
+}
+
+
+void OSMTool::SetCOMMAND_LoadAllDebugWays_Callback(const bool& value)
+{
+	if (value) 
+	{
+		World* world = LigumX::GetInstance().GetWorld();
+		if (world)
+		{
+			// todo jpp : wrap this in some sort (for all components of type c in world)
+			for (int e = 0; e < world->GetEntities().size(); ++e)
+			{
+				Entity* entity = world->GetEntities()[e];
+
+				if (entity)
+				{
+					OSMElementComponent* osmElementComponent = entity->GetComponent<OSMElementComponent>();
+					if (osmElementComponent && (osmElementComponent->GetDebugWayModel() == nullptr))
+					{
+						osmElementComponent->SetCOMMAND_CreateDebugMesh(true);
+					}
+				}
+			}
+		}
+
+	}
+
+
+	m_COMMAND_LoadAllDebugWays = false;
+
 }

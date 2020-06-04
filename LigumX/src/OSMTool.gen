@@ -19,4 +19,7 @@ class OSMTool : EditorTool
 	bool ShowFlatWays = true;
 
 	bool DebugPointInRoad = false;
+	
+	[transient, setcallback]
+	bool COMMAND_LoadAllDebugWays = false;
 }
