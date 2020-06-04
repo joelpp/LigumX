@@ -245,7 +245,7 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 			selectedWay = GetSelectedWays()[0]->GetIndexInSector();
 		}
 
-		renderer->RenderDebugWays(gfxData->GetWaysModel(), transfo, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
+		renderer->RenderDebugWays(transfo, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
 	}
 }
 

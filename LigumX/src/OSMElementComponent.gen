@@ -1,4 +1,9 @@
 class OSMElementComponent : Component
 {
 	Way* Way;
+
+	Model* DebugWayModel;
+
+	[setcallback]
+	bool COMMAND_CreateDebugMesh = false;
 }

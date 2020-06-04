@@ -145,7 +145,7 @@ public:
 	{
 		for (Component* component : m_Components)
 		{
-			if ( ((T*)component)->ClassID == T::ClassID)
+			if ( ((T*)component)->GetLXType() == T::Type)
 			{
 				return (T*)component;
 			}

@@ -28,6 +28,7 @@
 #include "Model.h"
 #include "World.h"
 #include "Entity.h"
+#include "OSMElementComponent.h"
 #include "Sector.h"
 #include "Sunlight.h"
 #include "BoundingBoxComponent.h"
@@ -1431,7 +1432,7 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 	}
 }
 
-void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay)
+void Renderer::RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay)
 {
 	lxGPUProfile(RenderDebugWays);
 
@@ -1442,20 +1443,40 @@ void Renderer::RenderDebugWays(Model* model, const glm::mat4& modelToWorld, Prog
 
 	GL::SetCapability(GL::Capabilities::Blend, true);
 
-	for (int i = 0; i < model->GetMeshes().size(); ++i)
+	// todo jpp : wrap this in some sort of debug display
+	for (int e = 0; e < m_World->GetEntities().size(); ++e)
 	{
-		SetVertexUniform(modelToWorld, "g_ModelToWorldMatrix");
+		Entity* entity = m_World->GetEntities()[e];
 
-		Material* material = model->GetMaterials()[i];
+		if (entity)
+		{
+			OSMElementComponent* osmElementComponent = entity->GetComponent<OSMElementComponent>();
+			if (osmElementComponent)
+			{
+				Model* wayModel = osmElementComponent->GetDebugWayModel();
 
-		SetViewUniforms(m_ActiveCamera);
+				if (wayModel)
+				{
+					for (int i = 0; i < wayModel->GetMeshes().size(); ++i)
+					{
+						SetVertexUniform(modelToWorld, "g_ModelToWorldMatrix");
 
-		SetFragmentUniform(selectedWay, "g_SelectedWayIndex");
-		SetFragmentUniform(displayFlags, "g_DisplayFlags");
-		SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
+						Material* material = wayModel->GetMaterials()[i];
 
-		DrawMesh(model->GetMeshes()[i], material);
+						SetViewUniforms(m_ActiveCamera);
+
+						SetFragmentUniform(selectedWay, "g_SelectedWayIndex");
+						SetFragmentUniform(displayFlags, "g_DisplayFlags");
+						SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
+
+						DrawMesh(wayModel->GetMeshes()[i], material);
+					}
+				}
+			}
+		}
 	}
+
+
 
 	GL::SetCapability(GL::Capabilities::Blend, false);
 }

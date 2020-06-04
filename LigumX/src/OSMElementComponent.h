@@ -8,6 +8,7 @@ class Serializer2;
 
 class OSMElementComponent;
 class Way;
+class Model;
 
 
 #pragma endregion  FORWARD_DECLARATIONS OSMElementComponent
@@ -25,15 +26,24 @@ typedef Component super;
 
 Way*& GetWay() { return m_Way; }; 
 void SetWay(Way* value) { m_Way = value; }; 
+Model*& GetDebugWayModel() { return m_DebugWayModel; }; 
+void SetDebugWayModel(Model* value) { m_DebugWayModel = value; }; 
+bool GetCOMMAND_CreateDebugMesh() { return m_COMMAND_CreateDebugMesh; }; 
+void SetCOMMAND_CreateDebugMesh(bool value) { SetCOMMAND_CreateDebugMesh_Callback(value); }; 
+void SetCOMMAND_CreateDebugMesh_Callback(const bool& value);
 private:
 Way* m_Way = nullptr;
+Model* m_DebugWayModel = nullptr;
+bool m_COMMAND_CreateDebugMesh = false;
 public:
-static const int g_PropertyCount = 1;
+static const int g_PropertyCount = 3;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMElementComponentPIDX
 {
 PIDX_Way,
+PIDX_DebugWayModel,
+PIDX_COMMAND_CreateDebugMesh,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
