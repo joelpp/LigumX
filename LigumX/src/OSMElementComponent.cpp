@@ -70,23 +70,10 @@ void OSMElementComponent::SetCOMMAND_CreateDebugMesh_Callback(const bool& value)
 {
 	if (value) 
 	{
-		std::vector<glm::vec3> nodePositions;
-		std::vector<glm::vec3> nodeColors;
-
-		Model* waysModel = nullptr;
-
 		std::vector<glm::vec3> flatWayPositions;
 		//todo : make it work with an index buffer someday
 		std::vector<WayData> vertexData;
 
-		// todo : make it work with an index buffer someday
-		//std::vector<int> indexBuffer;
-		int index = 0;
-		int previousLastIndex = 0;
-		int wayIndex = 0;
-
-		std::vector<glm::vec3> wayPositions;
-		std::vector<glm::vec3> line;
 		Way* way = m_Way;
 
 		std::vector<Node*>& nodes = way->GetNodes();
@@ -98,13 +85,10 @@ void OSMElementComponent::SetCOMMAND_CreateDebugMesh_Callback(const bool& value)
 		{
 			Node* node = nodes[i];
 
-			nodePositions.push_back(node->GetWorldPosition());
-
 			const lx2I64& nodePos = node->GetHighPrecisionEarthCoordinates();
 			minPos = glm::min(minPos, nodePos);
 			maxPos = glm::max(maxPos, nodePos);
 		}
-
 
 		lx2I64 max64 = lx2I64(LX_LIMITS_INT64_MAX, LX_LIMITS_INT64_MAX);
 		lx2I64 halfMax64 = max64 / lx2I64(2, 2);
@@ -116,18 +100,6 @@ void OSMElementComponent::SetCOMMAND_CreateDebugMesh_Callback(const bool& value)
 		// size from min/max to centroid
 		lx2I64 bbScale = maxPos - centroid;
 		lx2F32 bbSizeF = glm::vec2(bbScale);
-
-		std::vector<lx2F32> modelNodePositions(nodes.size());
-		for (int i = 0; i < nodes.size(); ++i)
-		{
-			Node* node = nodes[i];
-			const lx2I64& nodePos = node->GetHighPrecisionEarthCoordinates();
-			lx2I64 nodeModelPos = nodePos - centroid;
-
-			lx2F32 nodeModelPosF = lx2F32(nodeModelPos) / bbSizeF;
-
-			modelNodePositions[i] = nodeModelPosF;
-		}
 
 		for (int i = 0; i < nodes.size(); ++i)
 		{

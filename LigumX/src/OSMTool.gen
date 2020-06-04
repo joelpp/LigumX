@@ -5,6 +5,9 @@ class OSMTool : EditorTool
 	Node* SelectedNode;
 	std::vector<Way*> SelectedWays;
 
+	[transient]
+	OSMElementComponent* SelectedOSMElementComponent;
+
 	bool SearchOnlyWithinSector = false;
 
 	glm::ivec2 SelectedSectorIndex;

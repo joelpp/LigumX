@@ -13,6 +13,7 @@ class Serializer2;
 class OSMTool;
 class Node;
 class Way;
+class OSMElementComponent;
 
 
 #pragma endregion  FORWARD_DECLARATIONS OSMTool
@@ -35,6 +36,8 @@ void SetSelectedNode(Node* value) { m_SelectedNode = value; };
 std::vector<Way*>& GetSelectedWays() { return m_SelectedWays; }; 
 void SetSelectedWays(std::vector<Way*> value) { m_SelectedWays = value; }; 
 void AddTo_SelectedWays(Way* value) { m_SelectedWays.push_back(value); };
+OSMElementComponent*& GetSelectedOSMElementComponent() { return m_SelectedOSMElementComponent; }; 
+void SetSelectedOSMElementComponent(OSMElementComponent* value) { m_SelectedOSMElementComponent = value; }; 
 bool GetSearchOnlyWithinSector() { return m_SearchOnlyWithinSector; }; 
 void SetSearchOnlyWithinSector(bool value) { m_SearchOnlyWithinSector = value; }; 
 glm::ivec2& GetSelectedSectorIndex() { return m_SelectedSectorIndex; }; 
@@ -53,6 +56,7 @@ private:
 bool m_Enabled = true;
 Node* m_SelectedNode = nullptr;
 std::vector<Way*> m_SelectedWays;
+OSMElementComponent* m_SelectedOSMElementComponent = nullptr;
 bool m_SearchOnlyWithinSector = false;
 glm::ivec2 m_SelectedSectorIndex = glm::ivec2(0, 0);
 glm::vec3 m_WorldSpacePosition = glm::vec3(0, 0, 0);
@@ -61,7 +65,7 @@ bool m_ShowWays = false;
 bool m_ShowFlatWays = true;
 bool m_DebugPointInRoad = false;
 public:
-static const int g_PropertyCount = 10;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMToolPIDX
@@ -69,6 +73,7 @@ enum g_OSMToolPIDX
 PIDX_Enabled,
 PIDX_SelectedNode,
 PIDX_SelectedWays,
+PIDX_SelectedOSMElementComponent,
 PIDX_SearchOnlyWithinSector,
 PIDX_SelectedSectorIndex,
 PIDX_WorldSpacePosition,

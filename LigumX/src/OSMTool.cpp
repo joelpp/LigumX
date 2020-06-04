@@ -26,11 +26,13 @@
 #include "serializer.h"
 #include "Node.h"
 #include "Way.h"
+#include "OSMElementComponent.h"
 const ClassPropertyData OSMTool::g_Properties[] = 
 {
 { "Enabled", PIDX_Enabled, offsetof(OSMTool, m_Enabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(OSMTool, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "SelectedWays", PIDX_SelectedWays, offsetof(OSMTool, m_SelectedWays), 0, LXType_stdvector, sizeof(std::vector<Way*>), LXType_stdvector, false, LXType_Way, true, 0, 0, 0, 0,}, 
+{ "SelectedOSMElementComponent", PIDX_SelectedOSMElementComponent, offsetof(OSMTool, m_SelectedOSMElementComponent), 0, LXType_ObjectPtr, sizeof(OSMElementComponent*), LXType_OSMElementComponent, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "SearchOnlyWithinSector", PIDX_SearchOnlyWithinSector, offsetof(OSMTool, m_SearchOnlyWithinSector), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "SelectedSectorIndex", PIDX_SelectedSectorIndex, offsetof(OSMTool, m_SelectedSectorIndex), 0, LXType_glmivec2, sizeof(glm::ivec2), LXType_glmivec2, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "WorldSpacePosition", PIDX_WorldSpacePosition, offsetof(OSMTool, m_WorldSpacePosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
@@ -68,6 +70,7 @@ bool OSMTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Enabled], &m_Enabled  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedNode], &m_SelectedNode  );
 	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_SelectedWays], m_SelectedWays  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedOSMElementComponent], &m_SelectedOSMElementComponent  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SearchOnlyWithinSector], &m_SearchOnlyWithinSector  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SelectedSectorIndex], &m_SelectedSectorIndex , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_WorldSpacePosition], &m_WorldSpacePosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
@@ -84,6 +87,7 @@ void OSMTool::Clone(LXObject* otherObj)
 	other->SetEnabled(m_Enabled);
 	other->SetSelectedNode(m_SelectedNode);
 	other->SetSelectedWays(m_SelectedWays);
+	other->SetSelectedOSMElementComponent(m_SelectedOSMElementComponent);
 	other->SetSearchOnlyWithinSector(m_SearchOnlyWithinSector);
 	other->SetSelectedSectorIndex(m_SelectedSectorIndex);
 	other->SetWorldSpacePosition(m_WorldSpacePosition);
@@ -137,6 +141,10 @@ OSMTool::OSMTool()
 
 bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
+
+	Entity* selectedEntity = g_Editor->GetPickingTool()->GetPickedEntity();
+	m_SelectedOSMElementComponent = selectedEntity ? selectedEntity->GetComponent< OSMElementComponent>() : nullptr;
+
 	if (mouseButton1Down)
 	{
 		m_WorldSpacePosition = g_Editor->GetPickingTool()->GetAimingWorldPosition();
