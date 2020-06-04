@@ -40,7 +40,7 @@ in VertexData
 	flat int m_Index;
 } inData;
 
-uniform int g_SelectedWayIndex;
+uniform bool g_IsSelected;
 uniform int g_DisplayFlags[21];
 uniform vec3 g_WayDebugColors[21];
 
@@ -134,7 +134,7 @@ void main()
 		discard;
 	}
 
-	if (wayIndex == g_SelectedWayIndex)
+	if (g_IsSelected)
 	{
 		color = vec3(1,1,1);
 	}

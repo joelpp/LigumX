@@ -4,6 +4,9 @@ class OSMElementComponent : Component
 
 	[transient]
 	Model* DebugWayModel;
+	
+	[setcallback, transient]
+	bool COMMAND_CreateModel = false;
 
 	[setcallback, transient]
 	bool COMMAND_CreateDebugMesh = false;

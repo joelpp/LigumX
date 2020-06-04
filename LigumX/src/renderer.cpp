@@ -1432,7 +1432,7 @@ void Renderer::RenderDebugModel(Model* model, const glm::mat4& modelToWorld, Pro
 	}
 }
 
-void Renderer::RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay)
+void Renderer::RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, Entity* selectedEntity)
 {
 	lxGPUProfile(RenderDebugWays);
 
@@ -1450,6 +1450,8 @@ void Renderer::RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* p
 
 		if (entity)
 		{
+			bool isSelected = (entity == selectedEntity);
+
 			OSMElementComponent* osmElementComponent = entity->GetComponent<OSMElementComponent>();
 			if (osmElementComponent)
 			{
@@ -1465,7 +1467,7 @@ void Renderer::RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* p
 
 						SetViewUniforms(m_ActiveCamera);
 
-						SetFragmentUniform(selectedWay, "g_SelectedWayIndex");
+						SetFragmentUniform(isSelected, "g_IsSelected");
 						SetFragmentUniform(displayFlags, "g_DisplayFlags");
 						SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
 

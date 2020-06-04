@@ -1,6 +1,7 @@
 #include "OSMElementComponent.h"
 #include "Node.h"
 #include "RenderDataManager.h"
+#include "OSMDataProcessor.h"
 
 #pragma region  CLASS_SOURCE OSMElementComponent
 
@@ -12,6 +13,7 @@ const ClassPropertyData OSMElementComponent::g_Properties[] =
 {
 { "Way", PIDX_Way, offsetof(OSMElementComponent, m_Way), 0, LXType_ObjectPtr, sizeof(Way*), LXType_Way, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugWayModel", PIDX_DebugWayModel, offsetof(OSMElementComponent, m_DebugWayModel), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "COMMAND_CreateModel", PIDX_COMMAND_CreateModel, offsetof(OSMElementComponent, m_COMMAND_CreateModel), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(OSMElementComponent, COMMAND_CreateModel, bool),}, 
 { "COMMAND_CreateDebugMesh", PIDX_COMMAND_CreateDebugMesh, offsetof(OSMElementComponent, m_COMMAND_CreateDebugMesh), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(OSMElementComponent, COMMAND_CreateDebugMesh, bool),}, 
 };
 void OSMElementComponent::Serialize(Serializer2& serializer)
@@ -33,6 +35,7 @@ bool OSMElementComponent::ShowPropertyGrid()
 	super::ShowPropertyGrid();
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Way], &m_Way  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DebugWayModel], &m_DebugWayModel  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CreateModel], &m_COMMAND_CreateModel  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CreateDebugMesh], &m_COMMAND_CreateDebugMesh  );
 	return true;
 }
@@ -42,6 +45,7 @@ void OSMElementComponent::Clone(LXObject* otherObj)
 	OSMElementComponent* other = (OSMElementComponent*) otherObj;
 	other->SetWay(m_Way);
 	other->SetDebugWayModel(m_DebugWayModel);
+	other->SetCOMMAND_CreateModel(m_COMMAND_CreateModel);
 	other->SetCOMMAND_CreateDebugMesh(m_COMMAND_CreateDebugMesh);
 }
 const char* OSMElementComponent::GetTypeName()
@@ -62,6 +66,25 @@ void OSMElementComponent::DebugDisplay()
 {
 
 
+}
+
+void OSMElementComponent::SetCOMMAND_CreateModel_Callback(const bool& value)
+{
+	if (value && (GetParentEntity() != nullptr))
+	{
+		Model* model = g_OSMDataProcessor->CreateModelForWay(m_Way, GetParentEntity());
+		if (model)
+		{
+			lxMessage(lxFormat("Created model for %s", GetParentEntity()->GetName().c_str()));
+			GetParentEntity()->SetModel(model);
+		}
+		else
+		{
+			lxMessage(lxFormat("Failed creating model for %s", GetParentEntity()->GetName().c_str()));
+		}
+	}
+
+	m_COMMAND_CreateModel = false;
 }
 
 void OSMElementComponent::SetCOMMAND_CreateDebugMesh_Callback(const bool& value)

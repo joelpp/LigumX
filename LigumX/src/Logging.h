@@ -10,7 +10,7 @@
 
 #define NOMINMAX
 #include <windows.h>
-
+#include <..\um\debugapi.h>
 
 static std::string GetTimeString(){
     std::chrono::time_point<std::chrono::system_clock> now;
@@ -86,4 +86,6 @@ static std::string GetTimeString(){
 
 #define lxLogMessage(f) { OutputDebugString(f); OUTPUT_NEWLINE(); }
 
-#endif
+void lxMessage(const std::string& str);
+
+#endif // LOGGING_H

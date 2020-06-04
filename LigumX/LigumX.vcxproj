@@ -107,7 +107,7 @@
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;C:\Program Files\RenderDoc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <PreprocessToFile>false</PreprocessToFile>
       <PrecompiledHeaderFile>
@@ -195,6 +195,7 @@
     <ClCompile Include="src\LightingOptions.cpp" />
     <ClCompile Include="src\LigumX.cpp" />
     <ClCompile Include="src\linesegment.cpp" />
+    <ClCompile Include="src\Logging.cpp" />
     <ClCompile Include="src\LXObject.cpp" />
     <ClCompile Include="src\MainWindow.cpp" />
     <ClCompile Include="src\Material.cpp" />

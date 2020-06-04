@@ -1,9 +1,7 @@
+#include "Texture.h"
 
 
-#include <vector>
-
-#include "LXError.h"
-
+#include "FreeImage/Dist/x64/FreeImage.h"
 #pragma region  CLASS_SOURCE Texture
 
 #include "Texture.h"

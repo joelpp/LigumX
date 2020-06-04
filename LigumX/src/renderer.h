@@ -179,7 +179,7 @@ public:
 	void RenderEntities(std::vector<Entity*> entities);
 	void RenderDebugModels();
 	void RenderDebugModel(Model* model, const glm::mat4& modelToWorld, ProgramPipeline* programPipeline);
-	void RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, int selectedWay);
+	void RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* programPipeline, const std::vector<int>& displayFlags, const std::vector<glm::vec3>& wayDebugColors, Entity* selectedEntity);
 	
 	void RenderGrid();
 	void RenderAxisGizmo();

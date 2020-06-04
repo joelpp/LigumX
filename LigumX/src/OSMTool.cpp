@@ -41,6 +41,7 @@ const ClassPropertyData OSMTool::g_Properties[] =
 { "ShowFlatWays", PIDX_ShowFlatWays, offsetof(OSMTool, m_ShowFlatWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugPointInRoad", PIDX_DebugPointInRoad, offsetof(OSMTool, m_DebugPointInRoad), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "COMMAND_LoadAllDebugWays", PIDX_COMMAND_LoadAllDebugWays, offsetof(OSMTool, m_COMMAND_LoadAllDebugWays), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(OSMTool, COMMAND_LoadAllDebugWays, bool),}, 
+{ "COMMAND_CreateAllEntityModels", PIDX_COMMAND_CreateAllEntityModels, offsetof(OSMTool, m_COMMAND_CreateAllEntityModels), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(OSMTool, COMMAND_CreateAllEntityModels, bool),}, 
 };
 void OSMTool::Serialize(Serializer2& serializer)
 {
@@ -80,6 +81,7 @@ bool OSMTool::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShowFlatWays], &m_ShowFlatWays  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugPointInRoad], &m_DebugPointInRoad  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_LoadAllDebugWays], &m_COMMAND_LoadAllDebugWays  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_CreateAllEntityModels], &m_COMMAND_CreateAllEntityModels  );
 	return true;
 }
 void OSMTool::Clone(LXObject* otherObj)
@@ -98,6 +100,7 @@ void OSMTool::Clone(LXObject* otherObj)
 	other->SetShowFlatWays(m_ShowFlatWays);
 	other->SetDebugPointInRoad(m_DebugPointInRoad);
 	other->SetCOMMAND_LoadAllDebugWays(m_COMMAND_LoadAllDebugWays);
+	other->SetCOMMAND_CreateAllEntityModels(m_COMMAND_CreateAllEntityModels);
 }
 const char* OSMTool::GetTypeName()
 {
@@ -256,7 +259,8 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 			selectedWay = GetSelectedWays()[0]->GetIndexInSector();
 		}
 
-		renderer->RenderDebugWays(transfo, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedWay);
+		Entity* selectedEntity = g_Editor->GetPickingTool()->GetPickedEntity();
+		renderer->RenderDebugWays(transfo, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedEntity);
 	}
 }
 
@@ -321,3 +325,14 @@ void OSMTool::SetCOMMAND_LoadAllDebugWays_Callback(const bool& value)
 	m_COMMAND_LoadAllDebugWays = false;
 
 }
+
+void OSMTool::SetCOMMAND_CreateAllEntityModels_Callback(const bool& value)
+{
+	if (value)
+	{
+
+	}
+
+	m_COMMAND_CreateAllEntityModels = false;
+}
+

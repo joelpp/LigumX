@@ -673,7 +673,7 @@ void OSMDataProcessor::ProcessGenericBuilding(Sector* sector, Way* way)
 }
 
 
-Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
+Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 {
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> vertices;
@@ -684,16 +684,17 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Sector* sector, Way* way)
 	float worldScale = g_EngineSettings->GetWorldScale();
 	glm::vec2 worldScale2 = glm::vec2(worldScale, worldScale);
 
+	glm::vec3 centroid = glm::vec3(0, 0, 0);
+	if (entity)
+	{
+		centroid = entity->GetPosition();
+	}
+
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
 	{
 		Node* node = *nodeIt;
-		const glm::vec2& sectorRelativePosition = node->GetSectorRelativePosition();
-
-		glm::vec2 p = sectorRelativePosition - glm::vec2(sector->GetOffsetIndex());
-		//const glm::vec3& nodePos = glm::vec3(p, 0.f);
-
 		glm::vec3 nodePos = node->GetWorldPosition();
-		realNodeWorldPositions.push_back(nodePos);
+		realNodeWorldPositions.push_back(nodePos  - centroid);
 	}
 
 	std::vector<glm::vec3> nodeMeshWorldPositions;
@@ -1019,52 +1020,55 @@ Mesh* OSMDataProcessor::ProcessWayNodes(Sector* sector, Way* way)
 	return nullptr;
 }
 
-
-
-void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
+Model* OSMDataProcessor::CreateRoadModel(Way* way, Entity* entity)
 {
-	//Mesh* roadMesh = BuildRoadMesh(sector, way);
+	Mesh* roadMesh = BuildRoadMesh(way, entity);
 
-	//if (roadMesh != nullptr)
+	if (roadMesh != nullptr)
 	{
-		Renderer& renderer = Renderer::GetInstance();
+		Model* roadModel = new Model();
+		roadModel->addMesh(roadMesh, new Material(ShaderFamily_Roads));
+		roadModel->SetName("Road_Test");
 
-		//Model* roadModel = new Model();
-		//roadModel->addMesh(roadMesh, new Material(ShaderFamily_Roads));
-		//roadModel->SetName("Road_Test");
-
-		Entity* roadEntity = new Entity();
-		roadEntity->SetName(lxFormat("OSMEntity - %s (%lld)", way->GetName().c_str(), way->GetOSMId()));
-		//roadEntity->SetModel(roadModel);
-		
-		roadEntity->SetVisible(true);
-
-		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
-		osmElementComponent->SetWay(way);
-		roadEntity->AddTo_Components(osmElementComponent);
-
-		glm::vec3 entityPos = glm::vec3(0, 0, 0);
-		glm::vec3 entityMin = glm::vec3(LX_LIMITS_FLOAT_MAX);
-		glm::vec3 entityMax = glm::vec3(LX_LIMITS_FLOAT_MIN);
-		int count = 0;
-		for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
-		{
-			Node* node = *nodeIt;
-			const glm::vec3& nodePos = node->GetWorldPosition();
-			entityPos += nodePos;
-			entityMin = glm::min(nodePos, entityMin);
-			entityMin = glm::max(nodePos, entityMax);
-			count++;
-		}
-
-		entityPos /= count;
-		roadEntity->SetPosition(entityPos);
-
-		World* world = LigumX::GetInstance().GetWorld();
-		world->AddTo_Entities(roadEntity);
-
-		//sector->GetGraphicalData()->GetRoadEntities().push_back(roadEntity);
+		return roadModel;
 	}
+
+	return nullptr;
+}
+
+
+
+void OSMDataProcessor::CreateEntity(Way* way)
+{
+	Entity* newEntity = new Entity();
+	newEntity->SetName(lxFormat("OSMEntity - %s (%lld)", way->GetName().c_str(), way->GetOSMId()));
+
+	OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
+	osmElementComponent->SetWay(way);
+	newEntity->AddTo_Components(osmElementComponent);
+	osmElementComponent->SetParentEntity(newEntity);
+
+	glm::vec3 entityPos = glm::vec3(0, 0, 0);
+	glm::vec3 entityMin = glm::vec3(LX_LIMITS_FLOAT_MAX);
+	glm::vec3 entityMax = glm::vec3(LX_LIMITS_FLOAT_MIN);
+	int count = 0;
+	for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
+	{
+		Node* node = *nodeIt;
+		const glm::vec3& nodePos = node->GetWorldPosition();
+		entityPos += nodePos;
+		entityMin = glm::min(nodePos, entityMin);
+		entityMin = glm::max(nodePos, entityMax);
+		count++;
+	}
+
+	entityPos /= count;
+	newEntity->SetPosition(entityPos);
+
+	newEntity->SetVisible(true);
+
+	World* world = LigumX::GetInstance().GetWorld();
+	world->AddTo_Entities(newEntity);
 }
 
 void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
@@ -1152,126 +1156,134 @@ static bool m_FillInEnabled = false;
 
 void OSMDataProcessor::ProcessSector(Sector* sector)
 {
-	std::vector<Way*> addressInterpolationWays;
-
 	for (auto it = sector->m_Data->ways.begin(); it != sector->m_Data->ways.end(); ++it)
 	{
 		Way* way = it->second;
-
-		bool isRoad = true;///IsRoad(way);
-		if (isRoad && (m_RoadsProcessed < m_MaxRoadsToProcess))
+		if (m_RoadsProcessed < m_MaxRoadsToProcess)
 		{
-			ProcessRoad(sector, way);
+			CreateEntity(way);
 			m_RoadsProcessed++;
-			continue;
-		}
-
-		bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
-		if (isGenericBuilding && (m_GenericBuildingsProcessed < m_MaxGenericBuildingsToProcess))
-		{
-			ProcessGenericBuilding(sector, way);
-			m_GenericBuildingsProcessed++;
-			continue;
-		}
-
-		bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
-		if (isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
-		{
-			// process them at the end when we have all our roads
-			addressInterpolationWays.push_back(way);
-			m_AddressInterpolationsProcessed++;
-			continue;
-		}
-
-		OSMElementType wayType = way->GetOSMElementType();
-
-		bool fillIn = g_OSMElementTypeDataStore->GetData()[wayType]->GetFillIn();
-
-		if (fillIn && m_FillInEnabled)
-		{
-			Building building(way);
-			bool success = building.GenerateModel();
-
-			if (success)
-			{
-				way->SetFilledIn(true);
-
-				//renderer.AddToDebugModels(building.m_Model);
-
-				Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
-				lxAssert(tex != nullptr);
-
-				const std::vector<Triangle> triangles = building.GetTriangles();
-
-				glm::vec2 sectorUVMin = sector->GetUVForWorldPosition(building.m_MinCoords);
-				glm::vec2 sectorUVMax = sector->GetUVForWorldPosition(building.m_MaxCoords);
-
-				glm::ivec2 texelMin = glm::ivec2(sectorUVMin * glm::vec2(tex->GetSize()));
-				glm::ivec2 texelMax = glm::ivec2(sectorUVMax * glm::vec2(tex->GetSize()));
-
-				std::vector<TerrainColorEditingJob> terrainJobs;
-
-				// todo JPP : fix this mess
-				// corners bug (see in source control)
-
-
-				glm::vec4 color = glm::vec4(g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetDebugColor(), 1.f);
-
-				// todo : revive terrain color editing jobs.
-				//TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);
-				//terrainJobs.push_back(mainJob);
-
-				//for (TerrainColorEditingJob& job : terrainJobs)
-				//{
-				//	job.Execute(triangles);
-				//}
-
-				sector->GetBuildings().push_back(building);
-
-				Entity* footprintEntity = new Entity();
-				footprintEntity->SetName("Building - " + way->GetName());
-				footprintEntity->SetModel(building.m_Model);
-
-				Material* material = footprintEntity->GetModel()->GetMaterials()[0];
-				material->SetDiffuseColor((glm::vec3) color);
-
-
-				if (way->IsPark())
-				{
-					material->SetDiffuseTexture(g_DefaultTextureHolder->GetGrassTexture());
-				}
-				else if (way->IsWater())
-				{
-					material->SetDiffuseTexture(g_DefaultTextureHolder->GetWaterTexture());
-				}
-				else if (way->IsBareRock())
-				{
-					material->SetDiffuseTexture(g_DefaultTextureHolder->GetRockTexture());
-				}
-				else if (way->IsLandUseRetail() || way->IsLandUseIndustrial())
-				{
-					material->SetDiffuseTexture(g_DefaultTextureHolder->GetAsphaltTexture());
-				}
-
-				footprintEntity->SetVisible(true);
-
-				footprintEntity->UpdateAABB();
-				sector->GetGraphicalData()->AddTo_StaticEntities(footprintEntity);
-			}
 		}
 
 	}
+}
 
-	if (m_Settings->GetProcessAddressInterpolation())
+Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
+{
+	std::vector<Way*> addressInterpolationWays;
+
+	bool isRoad = IsRoad(way);
+	if (isRoad)
 	{
-		for (Way* addrInterpWay : addressInterpolationWays)
-		{
-			ProcessAddressInterpolation(sector, addrInterpWay);
-		}
+		return CreateRoadModel(way, entity);
 	}
-	
+	else
+	{
+		return nullptr;
+	}
 
-	Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
-	tex->GenerateMipMaps();
+	bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
+	if (isGenericBuilding && (m_GenericBuildingsProcessed < m_MaxGenericBuildingsToProcess))
+	{
+		//ProcessGenericBuilding(sector, way);
+		m_GenericBuildingsProcessed++;
+	}
+
+	bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
+	if (isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
+	{
+		// process them at the end when we have all our roads
+		addressInterpolationWays.push_back(way);
+		m_AddressInterpolationsProcessed++;
+	}
+
+	OSMElementType wayType = way->GetOSMElementType();
+
+	bool fillIn = g_OSMElementTypeDataStore->GetData()[wayType]->GetFillIn();
+
+	if (fillIn && m_FillInEnabled)
+	{
+		//Building building(way);
+		//bool success = building.GenerateModel();
+
+		//if (success)
+		//{
+		//	way->SetFilledIn(true);
+
+		//	//renderer.AddToDebugModels(building.m_Model);
+
+		//	Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+		//	lxAssert(tex != nullptr);
+
+		//	const std::vector<Triangle> triangles = building.GetTriangles();
+
+		//	glm::vec2 sectorUVMin = sector->GetUVForWorldPosition(building.m_MinCoords);
+		//	glm::vec2 sectorUVMax = sector->GetUVForWorldPosition(building.m_MaxCoords);
+
+		//	glm::ivec2 texelMin = glm::ivec2(sectorUVMin * glm::vec2(tex->GetSize()));
+		//	glm::ivec2 texelMax = glm::ivec2(sectorUVMax * glm::vec2(tex->GetSize()));
+
+		//	std::vector<TerrainColorEditingJob> terrainJobs;
+
+		//	// todo JPP : fix this mess
+		//	// corners bug (see in source control)
+
+
+		//	glm::vec4 color = glm::vec4(g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetDebugColor(), 1.f);
+
+		//	// todo : revive terrain color editing jobs.
+		//	//TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);
+		//	//terrainJobs.push_back(mainJob);
+
+		//	//for (TerrainColorEditingJob& job : terrainJobs)
+		//	//{
+		//	//	job.Execute(triangles);
+		//	//}
+
+		//	sector->GetBuildings().push_back(building);
+
+		//	Entity* footprintEntity = new Entity();
+		//	footprintEntity->SetName("Building - " + way->GetName());
+		//	footprintEntity->SetModel(building.m_Model);
+
+		//	Material* material = footprintEntity->GetModel()->GetMaterials()[0];
+		//	material->SetDiffuseColor((glm::vec3) color);
+
+
+		//	if (way->IsPark())
+		//	{
+		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetGrassTexture());
+		//	}
+		//	else if (way->IsWater())
+		//	{
+		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetWaterTexture());
+		//	}
+		//	else if (way->IsBareRock())
+		//	{
+		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetRockTexture());
+		//	}
+		//	else if (way->IsLandUseRetail() || way->IsLandUseIndustrial())
+		//	{
+		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetAsphaltTexture());
+		//	}
+
+		//	footprintEntity->SetVisible(true);
+
+		//	footprintEntity->UpdateAABB();
+		//	sector->GetGraphicalData()->AddTo_StaticEntities(footprintEntity);
+		//}
+	}
+
+	//if (m_Settings->GetProcessAddressInterpolation())
+	//{
+	//	for (Way* addrInterpWay : addressInterpolationWays)
+	//	{
+	//		ProcessAddressInterpolation(sector, addrInterpWay);
+	//	}
+	//}
+
+
+	//Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+	//tex->GenerateMipMaps();
 
 }

@@ -10,6 +10,8 @@ float Random0To1();
 template <typename T>
 T GetRandomValue(T min, T max);
 
+class Model;
+
 
 struct AddrInterpBuildingInfo
 {
@@ -47,6 +49,7 @@ struct AddrInterpBuildingInfo
 class Mesh;
 class Way;
 class Sector;
+class Entity;
 class OSMDataProcessorSettings;
 
 #pragma region  FORWARD_DECLARATIONS OSMDataProcessor
@@ -100,9 +103,11 @@ virtual const char* GetTypeName();
 OSMDataProcessor();
 
 void ProcessSector(Sector* sector);
+Model* CreateModelForWay(Way* way, Entity* entity);
 
-void ProcessRoad(Sector* sector, Way* way);
-Mesh* BuildRoadMesh(Sector* sector, Way* way);
+void CreateEntity(Way* way);
+Model* CreateRoadModel(Way* way, Entity* entity);
+Mesh* BuildRoadMesh(Way* way, Entity* entity);
 Mesh* ProcessWayNodes(Sector* sector, Way* way);
 
 void PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo, const glm::vec3& direction, float& spaceLeft, glm::vec3& plotStart);

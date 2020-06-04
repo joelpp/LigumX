@@ -1,8 +1,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include "FreeImage/Dist/x64/FreeImage.h"
-#include "GL.h"
 
 #pragma region  FORWARD_DECLARATIONS Texture
 #include "LXSystem.h"
@@ -12,6 +10,8 @@ class Texture;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Texture
+#include "GL.h"
+
 
 #pragma region  HEADER Texture
 class Texture : public LXObject

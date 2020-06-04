@@ -22,4 +22,8 @@ class OSMTool : EditorTool
 	
 	[transient, setcallback]
 	bool COMMAND_LoadAllDebugWays = false;
+
+	[transient, setcallback]
+	bool COMMAND_CreateAllEntityModels = false;
+
 }
