@@ -1034,7 +1034,7 @@ void OSMDataProcessor::ProcessRoad(Sector* sector, Way* way)
 		//roadModel->SetName("Road_Test");
 
 		Entity* roadEntity = new Entity();
-		roadEntity->SetName(lxFormat("Road - %s (%lld)", way->GetName().c_str(), way->GetOSMId()));
+		roadEntity->SetName(lxFormat("OSMEntity - %s (%lld)", way->GetName().c_str(), way->GetOSMId()));
 		//roadEntity->SetModel(roadModel);
 		
 		roadEntity->SetVisible(true);

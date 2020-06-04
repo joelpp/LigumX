@@ -11,15 +11,13 @@
 const ClassPropertyData OSMElementComponent::g_Properties[] = 
 {
 { "Way", PIDX_Way, offsetof(OSMElementComponent, m_Way), 0, LXType_ObjectPtr, sizeof(Way*), LXType_Way, true, LXType_None, false, 0, 0, 0, 0,}, 
-{ "DebugWayModel", PIDX_DebugWayModel, offsetof(OSMElementComponent, m_DebugWayModel), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, 0, 0, 0, 0,}, 
-{ "COMMAND_CreateDebugMesh", PIDX_COMMAND_CreateDebugMesh, offsetof(OSMElementComponent, m_COMMAND_CreateDebugMesh), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(OSMElementComponent, COMMAND_CreateDebugMesh, bool),}, 
+{ "DebugWayModel", PIDX_DebugWayModel, offsetof(OSMElementComponent, m_DebugWayModel), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "COMMAND_CreateDebugMesh", PIDX_COMMAND_CreateDebugMesh, offsetof(OSMElementComponent, m_COMMAND_CreateDebugMesh), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(OSMElementComponent, COMMAND_CreateDebugMesh, bool),}, 
 };
 void OSMElementComponent::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Way], m_Way);
-	serializer.SerializeObjectPtr(g_Properties[PIDX_DebugWayModel], m_DebugWayModel);
-	serializer.SerializeBool(g_Properties[PIDX_COMMAND_CreateDebugMesh], m_COMMAND_CreateDebugMesh);
 }
 bool OSMElementComponent::Serialize(bool writing)
 {

@@ -535,6 +535,11 @@ void SectorManager::LoadRequest(CurlRequest* request, SectorData::EOSMDataType d
 			{
 				way->SetName(way->getValue("name"));
 			}
+			else
+			{
+				LXString name = lxFormat("Unnamed (%s)", way->GetAllTags().c_str());
+				way->SetName(name);
+			}
 
 			if (dataType == SectorData::CONTOUR)
 			{

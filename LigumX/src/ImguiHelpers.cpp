@@ -119,7 +119,7 @@ bool ImguiHelpers::ShowVec4(LXString& name, glm::vec4& value, float min, float m
 
 bool ImguiHelpers::ShowString(const char* name, LXString& value)
 {
-	ImGui::Text("%s : %s", name, value.c_str());
+	ImGui::TextWrapped("%s : %s", name, value.c_str());
 	return true;
 }
 
@@ -130,7 +130,7 @@ bool ImguiHelpers::ShowString(LXString& name, LXString& value)
 
 bool ImguiHelpers::ShowRawString(const char* str)
 {
-	ImGui::Text("%s", str);
+	ImGui::TextWrapped("%s", str);
 	return true;
 }
 
@@ -180,22 +180,22 @@ bool ImguiHelpers::ShowObjectPtr(const char* name, int* value)
 
 void ImguiHelpers::ShowVariableAsText(glm::vec3 variable, const char* variableName)
 {
-	ImGui::Text("%s : %f, %f, %f", variableName, variable.x, variable.y, variable.z);
+	ImGui::TextWrapped("%s : %f, %f, %f", variableName, variable.x, variable.y, variable.z);
 }
 
 void ImguiHelpers::ShowVariableAsText(glm::vec3* variable, const char* variableName)
 {
-	ImGui::Text("%s : %f, %f, %f", variableName, variable->x, variable->y, variable->z);
+	ImGui::TextWrapped("%s : %f, %f, %f", variableName, variable->x, variable->y, variable->z);
 }
 
 void ImguiHelpers::ShowGUIText(const char* text)
 {
-	ImGui::Text("%s", text);
+	ImGui::TextWrapped("%s", text);
 }
 
 void ImguiHelpers::ShowGUIText(const std::string& text)
 {
-	ImGui::Text("%s", text.c_str());
+	ImGui::TextWrapped("%s", text.c_str());
 }
 
 void ImguiHelpers::ShowGUIText(std::string* text)
@@ -205,26 +205,26 @@ void ImguiHelpers::ShowGUIText(std::string* text)
 
 void ImguiHelpers::ShowGUIText(std::string* text, const char* variableName)
 {
-	ImGui::Text("%s : %s", variableName, text->c_str());
+	ImGui::TextWrapped("%s : %s", variableName, text->c_str());
 }
 
 void ImguiHelpers::ShowGUIText(const std::string& text, const char* variableName)
 {
-	ImGui::Text("%s : %s", variableName, text.c_str());
+	ImGui::TextWrapped("%s : %s", variableName, text.c_str());
 }
 
 void ImguiHelpers::ShowVariableAsText(int variable, const char* variableName)
 {
 	LXImguiWidthScope(100);
 
-	ImGui::Text("%s : %d", variableName, variable);
+	ImGui::TextWrapped("%s : %d", variableName, variable);
 }
 
 void ImguiHelpers::ShowVariableAsText(float variable, const char* variableName)
 {
 	LXImguiWidthScope(100);
 
-	ImGui::Text("%s : %f", variableName, variable);
+	ImGui::TextWrapped("%s : %f", variableName, variable);
 }
 
 

@@ -1995,9 +1995,25 @@ void Renderer::RenderText(const std::string& text, GLfloat x, GLfloat y, GLfloat
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_TextInstanceSSBO);
 	TextInstance_VertexData *ptr;
 	ptr = (TextInstance_VertexData *)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+
+	glm::vec2 baseClipPosition = glm::vec2(x, y);
+
+	int lineIndex = 0;
+
+	float maxClipX = (1.f - scale);
 	for (int i = 0; i < numQuads; ++i)
 	{
-		glm::vec2 pos2(x + i * scale, y);
+		glm::vec2 pos2 = baseClipPosition + glm::vec2(lineIndex * scale, 0.f);
+		
+		lineIndex++;
+
+		if (pos2.x > maxClipX)
+		{
+			baseClipPosition -= glm::vec2(0, scale); // lower on screen == lower in clip space
+			lineIndex = 0;
+			pos2 = baseClipPosition + glm::vec2(lineIndex * scale, 0.f);
+		}
+
 		ptr[i].m_Position = pos2;
 		ptr[i].m_Scale = scale;
 
