@@ -151,10 +151,10 @@ glm::vec3 SectorTool::GetHighlightColor(Sector* sector)
 }
 
 
-bool SectorTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+bool SectorTool::Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 	World* world = LigumX::GetInstance().GetWorld();
-	if (!m_Enabled || !world)
+	if (!m_Enabled || !world || !isActiveTool)
 	{
 		return false;
 	}

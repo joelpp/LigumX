@@ -80,7 +80,7 @@ Node*& GetSelectedNode() { return m_SelectedNode; };
 void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
 private:
 EditorOptions* m_Options = nullptr;
-EEditorTool m_ActiveTool;
+EEditorTool m_ActiveTool = EEditorTool_PickingTool;
 glm::vec4 m_XYZMask;
 bool m_ManipulatorDragging = false;
 glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);

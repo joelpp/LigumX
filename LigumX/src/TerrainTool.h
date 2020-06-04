@@ -91,7 +91,7 @@ public:
 
 	TerrainTool();
 
-	bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
+	bool Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 	void HandleKeyboardInput(int button, int action, int mods) override;
 	bool HandleMouseScroll(const glm::vec2& scrolling) override;
 

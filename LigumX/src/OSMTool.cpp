@@ -139,13 +139,13 @@ OSMTool::OSMTool()
 }
 
 
-bool OSMTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+bool OSMTool::Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 
 	Entity* selectedEntity = g_Editor->GetPickingTool()->GetPickedEntity();
 	m_SelectedOSMElementComponent = selectedEntity ? selectedEntity->GetComponent< OSMElementComponent>() : nullptr;
 
-	if (mouseButton1Down)
+	if (mouseButton1Down && isActiveTool)
 	{
 		m_WorldSpacePosition = g_Editor->GetPickingTool()->GetAimingWorldPosition();
 

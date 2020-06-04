@@ -1140,7 +1140,7 @@ bool OSMDataProcessor::IsRoad(Way* way)
 	return way->GetOSMElementType() >= OSMElementType_HighwayTrunk && way->GetOSMElementType() <= OSMElementType_HighwayUnclassified;
 }
 
-static int m_MaxRoadsToProcess = 1;
+static int m_MaxRoadsToProcess = 9999999;
 
 static int m_MaxGenericBuildingsToProcess = 0;
 

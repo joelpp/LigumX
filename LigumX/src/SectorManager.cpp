@@ -294,8 +294,6 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 				{
 					LoadRequest(&request, SectorData::EOSMDataType::MAP);
 
-					//g_RenderDataManager->CreateWaysLines(requestSector);
-
 					g_OSMDataProcessor->ProcessSector(requestSector);
 
 					requestSector->SetDataLoaded(true);

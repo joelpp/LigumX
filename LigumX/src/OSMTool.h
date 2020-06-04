@@ -94,7 +94,7 @@ OSMTool();
 
 virtual void Reset();
 
-bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
+bool Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 
 void DebugDisplay() override;
 void DisplaySectorDebug(Sector* sector);

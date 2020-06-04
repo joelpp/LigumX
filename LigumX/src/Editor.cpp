@@ -342,26 +342,14 @@ void Editor::ApplyTool()
 	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
 	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
 
-
-	switch (m_ActiveTool)
+	for (int i = 0; i < m_Tools.size(); ++i)
 	{
-		case EEditorTool_EntityManipulator:
+		bool isActiveTool = (i == m_ActiveTool);
+		if (m_Tools[i] != nullptr)
 		{
-			UpdateManipulator();
-			break;
+			m_Tools[i]->Process(isActiveTool, mouseButton1Down, mousePosition, dragDistance);
 		}
-		case EEditorTool_SectorTool:
-		case EEditorTool_PickingTool:
-		case EEditorTool_OSMTool:
-		case EEditorTool_TerrainTool:
-		{
-			m_Tools[m_ActiveTool]->Process(mouseButton1Down, mousePosition, dragDistance);
-			break;
-		}
-		default:
-		{
-			break;
-		}
+
 	}
 }
 

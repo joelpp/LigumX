@@ -152,9 +152,9 @@ void PickingTool::SetPickedEntity_Callback(Entity* entity)
 	m_PickedEntity = entity;
 }
 
-bool PickingTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+bool PickingTool::Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
-	if (!m_Enabled )
+	if (!m_Enabled || !isActiveTool)
 	{
 		return false;
 	}

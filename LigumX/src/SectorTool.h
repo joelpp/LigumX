@@ -110,7 +110,7 @@ virtual const char* GetTypeName();
 SectorTool();
 
 
-virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
+virtual bool Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 
 Sector* m_LoadingSector;
 

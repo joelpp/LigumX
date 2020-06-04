@@ -94,7 +94,7 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER PickingTool
 
-bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
+bool Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance) override;
 
 void UpdatePickingData();
 

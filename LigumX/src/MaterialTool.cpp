@@ -51,7 +51,7 @@ const char* MaterialTool::GetTypeName()
 
 #pragma endregion  CLASS_SOURCE MaterialTool
 
-bool MaterialTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+bool MaterialTool::Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 	return false;
 }

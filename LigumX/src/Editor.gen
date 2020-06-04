@@ -15,7 +15,7 @@ class Editor
 {
 	EditorOptions* Options;
 	
-	EEditorTool ActiveTool;
+	EEditorTool ActiveTool = EEditorTool_PickingTool;
 
 	[transient, adder, hidden, setcallback]
 	glm::vec4 XYZMask

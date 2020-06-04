@@ -61,7 +61,7 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER ObjectTool
 
-virtual bool Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
+virtual bool Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance);
 
 virtual void DrawImguiWindow();
 

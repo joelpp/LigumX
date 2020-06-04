@@ -59,7 +59,7 @@ const char* ObjectTool::GetTypeName()
 #pragma endregion  CLASS_SOURCE ObjectTool
 
 
-bool ObjectTool::Process(bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
+bool ObjectTool::Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2& mousePosition, const glm::vec2& dragDistance)
 {
 	return false;
 }
