@@ -330,6 +330,24 @@ void OSMTool::SetCOMMAND_CreateAllEntityModels_Callback(const bool& value)
 {
 	if (value)
 	{
+		World* world = LigumX::GetInstance().GetWorld();
+		if (world)
+		{
+			// todo jpp : wrap this in some sort (for all components of type c in world)
+			for (int e = 0; e < world->GetEntities().size(); ++e)
+			{
+				Entity* entity = world->GetEntities()[e];
+
+				if (entity)
+				{
+					OSMElementComponent* osmElementComponent = entity->GetComponent<OSMElementComponent>();
+					if (osmElementComponent && (osmElementComponent->GetParentEntity()->GetModel() == nullptr))
+					{
+						osmElementComponent->SetCOMMAND_CreateModel(true);
+					}
+				}
+			}
+		}
 
 	}
 

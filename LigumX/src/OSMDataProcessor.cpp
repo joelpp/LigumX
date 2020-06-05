@@ -690,11 +690,11 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		centroid = entity->GetPosition();
 	}
 
-	for (auto nodeIt = way->GetNodes().begin(); nodeIt != way->GetNodes().end(); ++nodeIt)
+	for (int i = 0; i < way->GetNodes().size(); ++i)
 	{
-		Node* node = *nodeIt;
+		Node* node = way->GetNodes()[i];
 		glm::vec3 nodePos = node->GetWorldPosition();
-		realNodeWorldPositions.push_back(nodePos  - centroid);
+		realNodeWorldPositions.push_back(nodePos - centroid);
 	}
 
 	std::vector<glm::vec3> nodeMeshWorldPositions;
@@ -732,14 +732,14 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		// 0 (1 2) 3 (4 5) 6 (7 8) 9
 		// osm nodes are at i * 3 in nodeMeshWorldPositions
 		int nodeIdx = i * 3;
-		int prevNodeIdx = (i - 1) * 3;
+		int prevNodeIdx = glm::max(0, (i - 1) * 3);
 
 		const glm::vec3& nodePos = nodeMeshWorldPositions[nodeIdx];
 		const glm::vec3& prevPos = nodeMeshWorldPositions[prevNodeIdx];
 
 		// constant part from n0 to n1
-		glm::vec3 n0 = nodeMeshWorldPositions[prevNodeIdx + 1];
-		glm::vec3 n1 = nodeMeshWorldPositions[prevNodeIdx + 2];
+		glm::vec3 n0 = nodeMeshWorldPositions[prevNodeIdx];
+		glm::vec3 n1 = nodeMeshWorldPositions[prevNodeIdx + 1];
 
 		glm::vec3 pSegment = glm::normalize(n1 - n0);
 		glm::vec3 pRight = glm::cross(pSegment, up);
@@ -853,8 +853,95 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 			uvs.push_back(glm::vec2(1, 0));
 			uvs.push_back(glm::vec2(1, 1));
 			uvs.push_back(glm::vec2(0, 1));
+		}
+
+		if (i == realNodeWorldPositions.size() - 1)
+		{
+			// last quad
+#if 0
+			p2		p3
+			| \		|
+			|   \	|
+			|    \	|
+			|	  \ |
+			p0------p1
+#endif
+
+			// before last quad
+			{
+				const glm::vec3 & n0 = nodeMeshWorldPositions[nodeMeshWorldPositions.size() - 3];
+				const glm::vec3& n1 = nodeMeshWorldPositions[nodeMeshWorldPositions.size() - 2];
+
+				glm::vec3 pSegment = glm::normalize(n1 - n0);
+				glm::vec3 pRight = glm::cross(pSegment, up);
+
+				float offset = 2.f * m_RoadWidth / (worldScale);
+
+				glm::vec3 p0 = n0 - offset * pRight;
+				glm::vec3 p1 = n0 + offset * pRight;
+
+				glm::vec3 p2 = n1 - offset * pRight;
+				glm::vec3 p3 = n1 + offset * pRight;
+
+				vertices.push_back(p0);
+				vertices.push_back(p1);
+				vertices.push_back(p2);
+				vertices.push_back(p1);
+				vertices.push_back(p3);
+				vertices.push_back(p2);
+
+				lxAssert(p0 != p1);
+				lxAssert(p2 != p3);
+				lxAssert(p0 != p2);
+
+				uvs.push_back(glm::vec2(0, 0));
+				uvs.push_back(glm::vec2(1, 0));
+				uvs.push_back(glm::vec2(0, 1));
+				uvs.push_back(glm::vec2(1, 0));
+				uvs.push_back(glm::vec2(1, 1));
+				uvs.push_back(glm::vec2(0, 1));
+
+			}
+
+
+			// last quad
+			{
+				const glm::vec3& n0 = nodeMeshWorldPositions[nodeMeshWorldPositions.size() - 2];
+				const glm::vec3& n1 = nodeMeshWorldPositions[nodeMeshWorldPositions.size() - 1];
+
+				glm::vec3 pSegment = glm::normalize(n1 - n0);
+				glm::vec3 pRight = glm::cross(pSegment, up);
+
+				float offset = 2.f * m_RoadWidth / (worldScale);
+
+				glm::vec3 p0 = n0 - offset * pRight;
+				glm::vec3 p1 = n0 + offset * pRight;
+
+				glm::vec3 p2 = n1 - offset * pRight;
+				glm::vec3 p3 = n1 + offset * pRight;
+
+				vertices.push_back(p0);
+				vertices.push_back(p1);
+				vertices.push_back(p2);
+				vertices.push_back(p1);
+				vertices.push_back(p3);
+				vertices.push_back(p2);
+
+				lxAssert(p0 != p1);
+				lxAssert(p2 != p3);
+				lxAssert(p0 != p2);
+
+				uvs.push_back(glm::vec2(0, 0));
+				uvs.push_back(glm::vec2(1, 0));
+				uvs.push_back(glm::vec2(0, 1));
+				uvs.push_back(glm::vec2(1, 0));
+				uvs.push_back(glm::vec2(1, 1));
+				uvs.push_back(glm::vec2(0, 1));
+
+			}
 
 		}
+
 
 	}
 
@@ -1027,7 +1114,7 @@ Model* OSMDataProcessor::CreateRoadModel(Way* way, Entity* entity)
 	if (roadMesh != nullptr)
 	{
 		Model* roadModel = new Model();
-		roadModel->addMesh(roadMesh, new Material(ShaderFamily_Roads));
+		roadModel->addMesh(roadMesh, new Material(ShaderFamily_Basic));
 		roadModel->SetName("Road_Test");
 
 		return roadModel;
