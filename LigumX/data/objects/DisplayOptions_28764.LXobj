@@ -7,7 +7,7 @@ DeferredRendering
 UseSkyLighting
 1
 RenderTerrain
-0
+1
 DrawSky
 1
 WireframeRendering
@@ -29,7 +29,7 @@ ShowFPS
 ShowDepth
 0
 ShowDebugIcons
-1
+0
 LinearizeDepth
 0
 BlinnPhongShading

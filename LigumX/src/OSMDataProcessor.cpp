@@ -702,7 +702,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 
 	static float height = 0.001f;
 
-	bool alley = way->hasTagAndValue("service", "alley");
+	bool alley = way->hasTag("service");
 
 
 	glm::vec3 centroid = glm::vec3(0, 0, 0);
@@ -886,7 +886,7 @@ Model* OSMDataProcessor::CreateRoadModel(Way* way, Entity* entity)
 		Model* roadModel = new Model();
 		Material* roadMaterial = m_Settings->GetRoadMaterial();
 
-		if (way->hasTagAndValue("service", "alley"))
+		if (way->hasTag("service"))
 		{
 			roadMaterial = m_Settings->GetAlleyMaterial();
 		}
@@ -1014,7 +1014,7 @@ static int m_MaxGenericBuildingsToProcess = 0;
 
 static int m_MaxAddressInterpolationsToProcess = 0;
 
-static bool m_FillInEnabled = false;
+static bool m_FillInEnabled = true;
 
 
 
@@ -1048,10 +1048,9 @@ Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
 		return CreateBuildingModel(way, entity);
 	}
 
-	return nullptr;
 
 	bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
-	if (isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
+	if (false && isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
 	{
 		// process them at the end when we have all our roads
 		addressInterpolationWays.push_back(way);
@@ -1064,87 +1063,15 @@ Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
 
 	if (fillIn && m_FillInEnabled)
 	{
-		//Building building(way);
-		//bool success = building.GenerateModel();
+		Building building(way);
+		bool success = building.GenerateModel(entity);
 
-		//if (success)
-		//{
-		//	way->SetFilledIn(true);
-
-		//	//renderer.AddToDebugModels(building.m_Model);
-
-		//	Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
-		//	lxAssert(tex != nullptr);
-
-		//	const std::vector<Triangle> triangles = building.GetTriangles();
-
-		//	glm::vec2 sectorUVMin = sector->GetUVForWorldPosition(building.m_MinCoords);
-		//	glm::vec2 sectorUVMax = sector->GetUVForWorldPosition(building.m_MaxCoords);
-
-		//	glm::ivec2 texelMin = glm::ivec2(sectorUVMin * glm::vec2(tex->GetSize()));
-		//	glm::ivec2 texelMax = glm::ivec2(sectorUVMax * glm::vec2(tex->GetSize()));
-
-		//	std::vector<TerrainColorEditingJob> terrainJobs;
-
-		//	// todo JPP : fix this mess
-		//	// corners bug (see in source control)
-
-
-		//	glm::vec4 color = glm::vec4(g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetDebugColor(), 1.f);
-
-		//	// todo : revive terrain color editing jobs.
-		//	//TerrainColorEditingJob mainJob(sector, texelMin, texelMax, color);
-		//	//terrainJobs.push_back(mainJob);
-
-		//	//for (TerrainColorEditingJob& job : terrainJobs)
-		//	//{
-		//	//	job.Execute(triangles);
-		//	//}
-
-		//	sector->GetBuildings().push_back(building);
-
-		//	Entity* footprintEntity = new Entity();
-		//	footprintEntity->SetName("Building - " + way->GetName());
-		//	footprintEntity->SetModel(building.m_Model);
-
-		//	Material* material = footprintEntity->GetModel()->GetMaterials()[0];
-		//	material->SetDiffuseColor((glm::vec3) color);
-
-
-		//	if (way->IsPark())
-		//	{
-		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetGrassTexture());
-		//	}
-		//	else if (way->IsWater())
-		//	{
-		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetWaterTexture());
-		//	}
-		//	else if (way->IsBareRock())
-		//	{
-		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetRockTexture());
-		//	}
-		//	else if (way->IsLandUseRetail() || way->IsLandUseIndustrial())
-		//	{
-		//		material->SetDiffuseTexture(g_DefaultTextureHolder->GetAsphaltTexture());
-		//	}
-
-		//	footprintEntity->SetVisible(true);
-
-		//	footprintEntity->UpdateAABB();
-		//	sector->GetGraphicalData()->AddTo_StaticEntities(footprintEntity);
-		//}
+		if (success)
+		{
+			way->SetFilledIn(true);
+			return building.m_Model;
+		}
 	}
 
-	//if (m_Settings->GetProcessAddressInterpolation())
-	//{
-	//	for (Way* addrInterpWay : addressInterpolationWays)
-	//	{
-	//		ProcessAddressInterpolation(sector, addrInterpWay);
-	//	}
-	//}
-
-
-	//Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
-	//tex->GenerateMipMaps();
-
+	return nullptr;
 }

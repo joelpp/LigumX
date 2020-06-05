@@ -9,7 +9,7 @@ IsCubeMap
 NumChannels
 0
 BitsPerPixel
-32
+24
 Size
-256
-256
+1024
+1024

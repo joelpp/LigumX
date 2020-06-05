@@ -71,7 +71,7 @@ void OSMElementComponent::DebugDisplay()
 
 void OSMElementComponent::SetCOMMAND_CreateModel_Callback(const bool& value)
 {
-	if (value && (GetParentEntity() != nullptr))
+	if (value && (GetParentEntity() != nullptr) && (GetParentEntity()->GetModel() == nullptr))
 	{
 		Model* model = g_Editor->GetOSMDataProcessor()->CreateModelForWay(m_Way, GetParentEntity());
 		if (model)
@@ -90,7 +90,7 @@ void OSMElementComponent::SetCOMMAND_CreateModel_Callback(const bool& value)
 
 void OSMElementComponent::SetCOMMAND_CreateDebugMesh_Callback(const bool& value)
 {
-	if (value) 
+	if (value && (m_DebugWayModel == nullptr))
 	{
 		std::vector<glm::vec3> flatWayPositions;
 		//todo : make it work with an index buffer someday

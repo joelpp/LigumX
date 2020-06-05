@@ -8,6 +8,7 @@
 #include "Material.h"
 #include "LigumX.h"
 #include "EngineSettings.h"
+#include "Entity.h"
 
 using namespace glm;
 using namespace std;
@@ -20,7 +21,7 @@ Building::Building(Way* way)
 }
 
 
-bool Building::GenerateModel()
+bool Building::GenerateModel(Entity* entity)
 {
 
 	Way* way = m_Way;
@@ -42,6 +43,8 @@ bool Building::GenerateModel()
 	std::vector<vec3> tempTriangleVertices;
 	m_FlatVertices.clear();
 
+	glm::vec3 centroid = entity->GetPosition();
+
 	bool failedLoop;
 	for(int clockwiseness=-1; clockwiseness<=1; clockwiseness += 2) 
 	{
@@ -61,8 +64,8 @@ bool Building::GenerateModel()
 	        
 	        if (way->GetOSMElementType() == LiftableWalls)
 	        {
-	            buildingLines.push_back((*n)->GetWorldPosition());
-	            buildingLines.push_back((*n+1)->GetWorldPosition());
+	            buildingLines.push_back((*n)->GetWorldPosition() - centroid);
+	            buildingLines.push_back((*n+1)->GetWorldPosition() - centroid);
 	        }
 
 	        if (way->GetOSMElementType() == LiftableWalls)
@@ -70,8 +73,8 @@ bool Building::GenerateModel()
 	            buildingLinesTexCoords.push_back(float(distance));    
 	        } 
 
-	        distance += glm::distance(vec2((*n)->GetWorldPosition()),
-	                                  vec2((*n + 1)->GetWorldPosition()));
+	        distance += glm::distance(vec2((*n)->GetWorldPosition() - centroid),
+	                                  vec2((*n + 1)->GetWorldPosition() - centroid));
 
 	        if (way->GetOSMElementType() == LiftableWalls)
 	        {
@@ -99,9 +102,9 @@ bool Building::GenerateModel()
 	        Node* n2 = *(nodeIt2);
 	        Node* n3 = *(nodeIt3);
 
-	        const vec3& p1 = n1->GetWorldPosition();
-	        const vec3& p2 = n2->GetWorldPosition();
-	        const vec3& p3 = n3->GetWorldPosition();
+			vec3 p1 = n1->GetWorldPosition() - centroid;
+			vec3 p2 = n2->GetWorldPosition() - centroid;
+			vec3 p3 = n3->GetWorldPosition() - centroid;
 			if (p1 == p2 || p1 == p3)
 			{
 				cout << "bad precision" << std::endl;
@@ -124,7 +127,7 @@ bool Building::GenerateModel()
 	            {
 	                if(node == n1 || node == n2 || node == n3) continue;
 
-					vec3 n_3D = node->GetWorldPosition();
+					vec3 n_3D = node->GetWorldPosition() - centroid;
 
 	                if(clockwiseness * glm::cross(v12, n_3D - p1).z > 0.f &&
 	                   clockwiseness * glm::cross(v23, n_3D - p2).z > 0.f &&
@@ -138,9 +141,9 @@ bool Building::GenerateModel()
 	    	if(isGoodTriangle) 
 	    	{
 	        	// create triangle
-	            const vec3& p1 = n1->GetWorldPosition();
-	            const vec3& p2 = n2->GetWorldPosition();
-	            const vec3& p3 = n3->GetWorldPosition();
+				vec3 p1 = n1->GetWorldPosition() - centroid;
+				vec3 p2 = n2->GetWorldPosition() - centroid;
+				vec3 p3 = n3->GetWorldPosition() - centroid;
 
 				vec3 point = p1;
 	            tempTriangleVertices.push_back(point);

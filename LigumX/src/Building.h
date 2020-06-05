@@ -4,7 +4,7 @@
 
 class Model;
 class Way;
-
+class Entity;
 
 struct Triangle
 {
@@ -28,7 +28,7 @@ public:
 
 	Building(Way* way);
 
-	bool GenerateModel();
+	bool GenerateModel(Entity* entity);
 
 	const std::vector<Triangle>& GetTriangles() { return m_Triangles; }
 	const std::vector<glm::vec3>& GetVertices() { return m_FlatVertices; }
