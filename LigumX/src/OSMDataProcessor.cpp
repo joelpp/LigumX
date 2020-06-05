@@ -682,14 +682,13 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 	float worldScale = g_EngineSettings->GetWorldScale();
 	glm::vec2 worldScale2 = glm::vec2(worldScale, worldScale);
 
-	static float height = 0.0001f;
+	static float height = 0.001f;
 
 	glm::vec3 centroid = glm::vec3(0, 0, 0);
 	if (entity)
 	{
 		centroid = entity->GetPosition();
 	}
-	centroid.z = height; // todo jpp handle zfight better
 	for (int i = 0; i < way->GetNodes().size(); ++i)
 	{
 		Node* node = way->GetNodes()[i];
@@ -697,7 +696,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		nodePos.z = height; // todo jpp handle zfight better
 		realNodeWorldPositions.push_back(nodePos - centroid);
 	}
-	height += 0.0001f;
+	height += 0.001f;
 
 	std::vector<glm::vec3> nodeMeshWorldPositions;
 
@@ -742,8 +741,8 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		glm::vec3 n0 = realNodeWorldPositions[prevNodeIdx];
 		glm::vec3 n1 = realNodeWorldPositions[prevNodeIdx + 1];
 
-		glm::vec3 pSegment = glm::normalize(n1 - n0);
-		glm::vec3 pRight = glm::cross(pSegment, up);
+		glm::vec3 pSegment = (n1 - n0);
+		glm::vec3 pRight = glm::cross(glm::normalize(pSegment), up);
 
 		float offset = m_RoadWidth / 2.f;
 
@@ -773,12 +772,22 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		lxAssert(p2 != p3);
 		lxAssert(p0 != p2);
 
-		uvs.push_back(glm::vec2(0, 0));
-		uvs.push_back(glm::vec2(1, 0));
-		uvs.push_back(glm::vec2(0, 1));
-		uvs.push_back(glm::vec2(1, 0));
-		uvs.push_back(glm::vec2(1, 1));
-		uvs.push_back(glm::vec2(0, 1));
+		glm::vec2 uv0 = glm::vec2(0, 0);
+		glm::vec2 uv3 = glm::vec2(1, 1);
+
+		//uv3 *= glm::abs(glm::vec2(p3) - glm::vec2(p0));
+		//uv3.x *= m_RoadWidth;
+		uv3.y *= glm::length(pSegment);
+
+		glm::vec2 uv1 = glm::vec2(uv3.x, uv0.y);
+		glm::vec2 uv2 = glm::vec2(uv0.x, uv3.y);
+
+		uvs.push_back(uv0);
+		uvs.push_back(uv1);
+		uvs.push_back(uv2);
+		uvs.push_back(uv1);
+		uvs.push_back(uv3);
+		uvs.push_back(uv2);
 
 		// if not last node do "connectors"
 		if (false && i != realNodeWorldPositions.size() - 1)
@@ -931,6 +940,22 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 				lxAssert(p0 != p1);
 				lxAssert(p2 != p3);
 				lxAssert(p0 != p2);
+				glm::vec2 uv0 = glm::vec2(0, 0);
+				glm::vec2 uv3 = glm::vec2(1, 1);
+
+				uv3 *= glm::abs(glm::vec2(p3) - glm::vec2(p0));
+
+				glm::vec2 uv1 = glm::vec2(uv3.x, uv0.y);
+				glm::vec2 uv2 = glm::vec2(uv0.x, uv3.y);
+
+				uvs.push_back(uv0);
+				uvs.push_back(uv1);
+				uvs.push_back(uv2);
+				uvs.push_back(uv1);
+				uvs.push_back(uv3);
+				uvs.push_back(uv2);
+
+				/*
 
 				uvs.push_back(glm::vec2(0, 0));
 				uvs.push_back(glm::vec2(1, 0));
@@ -938,7 +963,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 				uvs.push_back(glm::vec2(1, 0));
 				uvs.push_back(glm::vec2(1, 1));
 				uvs.push_back(glm::vec2(0, 1));
-
+*/
 			}
 
 		}
@@ -1265,10 +1290,6 @@ Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
 	if (isRoad)
 	{
 		return CreateRoadModel(way, entity);
-	}
-	else
-	{
-		return nullptr;
 	}
 
 	bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
