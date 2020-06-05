@@ -72,6 +72,11 @@ void Serializer2::ProcessFile()
 	{
 		bool startsWithLetter = isalpha(line[0]) != 0 ? true : false;
 
+		if (line.empty())
+		{
+			continue;
+		}
+
 		if (startsWithLetter)
 		{
 			if (!creatingVariable || numberValue)

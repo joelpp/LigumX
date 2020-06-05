@@ -2,6 +2,7 @@
 #include "Node.h"
 #include "RenderDataManager.h"
 #include "OSMDataProcessor.h"
+#include "Editor.h"
 
 #pragma region  CLASS_SOURCE OSMElementComponent
 
@@ -72,7 +73,7 @@ void OSMElementComponent::SetCOMMAND_CreateModel_Callback(const bool& value)
 {
 	if (value && (GetParentEntity() != nullptr))
 	{
-		Model* model = g_OSMDataProcessor->CreateModelForWay(m_Way, GetParentEntity());
+		Model* model = g_Editor->GetOSMDataProcessor()->CreateModelForWay(m_Way, GetParentEntity());
 		if (model)
 		{
 			lxMessage(lxFormat("Created model for %s", GetParentEntity()->GetName().c_str()));

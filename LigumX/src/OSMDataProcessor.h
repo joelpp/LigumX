@@ -59,7 +59,6 @@ class Serializer2;
 class OSMDataProcessor;
 class OSMDataProcessorSettings;
 
-extern OSMDataProcessor* g_OSMDataProcessor;
 
 #pragma endregion  FORWARD_DECLARATIONS OSMDataProcessor
 

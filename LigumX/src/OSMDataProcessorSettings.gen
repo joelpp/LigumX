@@ -19,4 +19,6 @@ class OSMDataProcessorSettings
 
 	bool CheckPointInRoad = false;
 	bool CheckPointInBuilding = false;
+
+	Material* RoadMaterial;
 }

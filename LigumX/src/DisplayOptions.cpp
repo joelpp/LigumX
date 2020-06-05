@@ -33,6 +33,7 @@ const ClassPropertyData DisplayOptions::g_Properties[] =
 { "FPSDisplayPosition", PIDX_FPSDisplayPosition, offsetof(DisplayOptions, m_FPSDisplayPosition), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FPSDisplayScale", PIDX_FPSDisplayScale, offsetof(DisplayOptions, m_FPSDisplayScale), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "DebugVec4", PIDX_DebugVec4, offsetof(DisplayOptions, m_DebugVec4), 0, LXType_glmvec4, sizeof(glm::vec4), LXType_glmvec4, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "ClearColor", PIDX_ClearColor, offsetof(DisplayOptions, m_ClearColor), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void DisplayOptions::Serialize(Serializer2& serializer)
 {
@@ -62,6 +63,7 @@ void DisplayOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_DebugShadowCamera], m_DebugShadowCamera);
 	serializer.SerializeVec2(g_Properties[PIDX_FPSDisplayPosition], m_FPSDisplayPosition);
 	serializer.SerializeFloat(g_Properties[PIDX_FPSDisplayScale], m_FPSDisplayScale);
+	serializer.SerializeVec3(g_Properties[PIDX_ClearColor], m_ClearColor);
 }
 bool DisplayOptions::Serialize(bool writing)
 {
@@ -101,6 +103,7 @@ bool DisplayOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSDisplayPosition], &m_FPSDisplayPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSDisplayScale], &m_FPSDisplayScale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugVec4], &m_DebugVec4 , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ClearColor], &m_ClearColor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 void DisplayOptions::Clone(LXObject* otherObj)
@@ -134,6 +137,7 @@ void DisplayOptions::Clone(LXObject* otherObj)
 	other->SetFPSDisplayPosition(m_FPSDisplayPosition);
 	other->SetFPSDisplayScale(m_FPSDisplayScale);
 	other->SetDebugVec4(m_DebugVec4);
+	other->SetClearColor(m_ClearColor);
 }
 const char* DisplayOptions::GetTypeName()
 {

@@ -21,6 +21,7 @@ const ClassPropertyData EngineSettings::g_Properties[] =
 { "AllowCurlRequest", PIDX_AllowCurlRequest, offsetof(EngineSettings, m_AllowCurlRequest), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "LoadOSMData", PIDX_LoadOSMData, offsetof(EngineSettings, m_LoadOSMData), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "TerrainTiling", PIDX_TerrainTiling, offsetof(EngineSettings, m_TerrainTiling), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(EngineSettings, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 };
 void EngineSettings::Serialize(Serializer2& serializer)
 {
@@ -39,6 +40,7 @@ void EngineSettings::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_AllowCurlRequest], m_AllowCurlRequest);
 	serializer.SerializeBool(g_Properties[PIDX_LoadOSMData], m_LoadOSMData);
 	serializer.SerializeFloat(g_Properties[PIDX_TerrainTiling], m_TerrainTiling);
+	serializer.SerializeInt(g_Properties[PIDX_PickingBufferSize], m_PickingBufferSize);
 }
 bool EngineSettings::Serialize(bool writing)
 {
@@ -66,6 +68,7 @@ bool EngineSettings::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AllowCurlRequest], &m_AllowCurlRequest  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_LoadOSMData], &m_LoadOSMData  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_TerrainTiling], &m_TerrainTiling , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingBufferSize], &m_PickingBufferSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	return true;
 }
 void EngineSettings::Clone(LXObject* otherObj)
@@ -86,6 +89,7 @@ void EngineSettings::Clone(LXObject* otherObj)
 	other->SetAllowCurlRequest(m_AllowCurlRequest);
 	other->SetLoadOSMData(m_LoadOSMData);
 	other->SetTerrainTiling(m_TerrainTiling);
+	other->SetPickingBufferSize(m_PickingBufferSize);
 }
 const char* EngineSettings::GetTypeName()
 {

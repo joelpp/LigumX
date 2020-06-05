@@ -17,6 +17,7 @@
 #include "tinyxml2\tinyxml2.h"
 #include "EngineSettings.h"
 #include "VectorUtils.h"
+#include "Editor.h"
 
 SectorManager* g_SectorManager;
 
@@ -294,7 +295,7 @@ void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStart
 				{
 					LoadRequest(&request, SectorData::EOSMDataType::MAP);
 
-					g_OSMDataProcessor->ProcessSector(requestSector);
+					g_Editor->GetOSMDataProcessor()->ProcessSector(requestSector);
 
 					requestSector->SetDataLoaded(true);
 				}

@@ -54,6 +54,7 @@ Editor* g_Editor;
 #include "EditorOptions.h"
 #include "EditorTool.h"
 #include "Node.h"
+#include "OSMDataProcessor.h"
 const ClassPropertyData Editor::g_Properties[] = 
 {
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_ObjectPtr, sizeof(EditorOptions*), LXType_EditorOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -63,15 +64,15 @@ const ClassPropertyData Editor::g_Properties[] =
 { "ManipulatorStartPosition", PIDX_ManipulatorStartPosition, offsetof(Editor, m_ManipulatorStartPosition), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_Transient, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "EditingTerrain", PIDX_EditingTerrain, offsetof(Editor, m_EditingTerrain), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 { "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, sizeof(std::vector<EditorTool*>), LXType_stdvector, false, LXType_EditorTool, true, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "PickingBufferSize", PIDX_PickingBufferSize, offsetof(Editor, m_PickingBufferSize), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "OSMDataProcessor", PIDX_OSMDataProcessor, offsetof(Editor, m_OSMDataProcessor), 0, LXType_ObjectPtr, sizeof(OSMDataProcessor*), LXType_OSMDataProcessor, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void Editor::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Options], m_Options);
-	serializer.SerializeInt(g_Properties[PIDX_PickingBufferSize], m_PickingBufferSize);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SelectedNode], m_SelectedNode);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_OSMDataProcessor], m_OSMDataProcessor);
 }
 bool Editor::Serialize(bool writing)
 {
@@ -91,8 +92,8 @@ bool Editor::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ManipulatorStartPosition], &m_ManipulatorStartPosition , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EditingTerrain], &m_EditingTerrain  );
 	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Tools], m_Tools  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingBufferSize], &m_PickingBufferSize , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedNode], &m_SelectedNode  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_OSMDataProcessor], &m_OSMDataProcessor  );
 	return true;
 }
 void Editor::Clone(LXObject* otherObj)
@@ -106,8 +107,8 @@ void Editor::Clone(LXObject* otherObj)
 	other->SetManipulatorStartPosition(m_ManipulatorStartPosition);
 	other->SetEditingTerrain(m_EditingTerrain);
 	other->SetTools(m_Tools);
-	other->SetPickingBufferSize(m_PickingBufferSize);
 	other->SetSelectedNode(m_SelectedNode);
+	other->SetOSMDataProcessor(m_OSMDataProcessor);
 }
 const char* Editor::GetTypeName()
 {
@@ -1331,7 +1332,7 @@ void Editor::ResetWorld()
 	}
 	LigumX::GetInstance().GetWorld()->ResetSectors();
 	g_SectorManager->Reset();
-	g_OSMDataProcessor->Reset();
+	m_OSMDataProcessor->Reset();
 }
 
 void Editor::RenderImgui()
@@ -1461,7 +1462,7 @@ void Editor::RenderImgui()
 		ShowPropertyGridForObject(renderer->GetPostEffects(), "Post Effects");
 		ShowPropertyGridForObject(renderer->GetDebugCamera(), "Camera");
 		ShowPropertyGridForObject(g_RenderDataManager, "RenderDataManager");
-		ShowPropertyGridForObject(g_OSMDataProcessor, "OSMDataProcessor");
+		ShowPropertyGridForObject(m_OSMDataProcessor, "OSMDataProcessor");
 		
 		if (world)
 		{

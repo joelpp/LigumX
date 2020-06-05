@@ -41,7 +41,6 @@ T GetRandomValue(T min, T max)
 
 
 #pragma region  CLASS_SOURCE OSMDataProcessor
-OSMDataProcessor* g_OSMDataProcessor;
 
 #include "OSMDataProcessor.h"
 #include "serializer.h"
@@ -89,7 +88,6 @@ const char* OSMDataProcessor::GetTypeName()
 
 OSMDataProcessor::OSMDataProcessor()
 {
-	m_Settings = g_ObjectManager->CreateObject<OSMDataProcessorSettings>();
 }
 
 void OSMDataProcessor::Reset()
@@ -723,7 +721,6 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 
 	}
 
-
 	nodeMeshWorldPositions.push_back(realNodeWorldPositions[realNodeWorldPositions.size() - 1]);
 
 	// missing the first constant part from p0 to n1?
@@ -731,15 +728,15 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 	{
 		// 0 (1 2) 3 (4 5) 6 (7 8) 9
 		// osm nodes are at i * 3 in nodeMeshWorldPositions
-		int nodeIdx = i * 3;
-		int prevNodeIdx = glm::max(0, (i - 1) * 3);
+		int nodeIdx = i /** 3*/;
+		int prevNodeIdx = i - 1;//glm::max(0, (i - 1) * 3);
 
-		const glm::vec3& nodePos = nodeMeshWorldPositions[nodeIdx];
-		const glm::vec3& prevPos = nodeMeshWorldPositions[prevNodeIdx];
+		const glm::vec3& nodePos = realNodeWorldPositions[nodeIdx];
+		const glm::vec3& prevPos = realNodeWorldPositions[prevNodeIdx];
 
 		// constant part from n0 to n1
-		glm::vec3 n0 = nodeMeshWorldPositions[prevNodeIdx];
-		glm::vec3 n1 = nodeMeshWorldPositions[prevNodeIdx + 1];
+		glm::vec3 n0 = realNodeWorldPositions[prevNodeIdx];
+		glm::vec3 n1 = realNodeWorldPositions[prevNodeIdx + 1];
 
 		glm::vec3 pSegment = glm::normalize(n1 - n0);
 		glm::vec3 pRight = glm::cross(pSegment, up);
@@ -780,7 +777,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		uvs.push_back(glm::vec2(0, 1));
 
 		// if not last node do "connectors"
-		if (i != realNodeWorldPositions.size() - 1)
+		if (false && i != realNodeWorldPositions.size() - 1)
 		{
 			glm::vec3 n2 = nodeMeshWorldPositions[nodeIdx + 1];
 			glm::vec3 n3 = nodeMeshWorldPositions[nodeIdx + 2];
@@ -866,8 +863,8 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 			|	  \ |
 			p0------p1
 #endif
-
 			// before last quad
+			if (false)
 			{
 				const glm::vec3 & n0 = nodeMeshWorldPositions[nodeMeshWorldPositions.size() - 3];
 				const glm::vec3& n1 = nodeMeshWorldPositions[nodeMeshWorldPositions.size() - 2];
@@ -1114,7 +1111,8 @@ Model* OSMDataProcessor::CreateRoadModel(Way* way, Entity* entity)
 	if (roadMesh != nullptr)
 	{
 		Model* roadModel = new Model();
-		roadModel->addMesh(roadMesh, new Material(ShaderFamily_Basic));
+		Material* roadMaterial = m_Settings->GetRoadMaterial();
+		roadModel->addMesh(roadMesh, roadMaterial);
 		roadModel->SetName("Road_Test");
 
 		return roadModel;

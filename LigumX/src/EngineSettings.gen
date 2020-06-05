@@ -28,4 +28,6 @@ class EngineSettings
 
 	float TerrainTiling = 1.f;
 
+	int PickingBufferSize = 256;
+
 }

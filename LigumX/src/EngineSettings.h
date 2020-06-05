@@ -50,6 +50,8 @@ bool GetLoadOSMData() { return m_LoadOSMData; };
 void SetLoadOSMData(bool value) { m_LoadOSMData = value; }; 
 float GetTerrainTiling() { return m_TerrainTiling; }; 
 void SetTerrainTiling(float value) { m_TerrainTiling = value; }; 
+int GetPickingBufferSize() { return m_PickingBufferSize; }; 
+void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 private:
 float m_WorldScale = 0.f;
 glm::vec2 m_StartLonLat = glm::vec2(0, 0);
@@ -65,8 +67,9 @@ int m_MessagesPixelsOffset = 10;
 bool m_AllowCurlRequest = false;
 bool m_LoadOSMData = true;
 float m_TerrainTiling = 1.f;
+int m_PickingBufferSize = 256;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EngineSettingsPIDX
@@ -85,6 +88,7 @@ PIDX_MessagesPixelsOffset,
 PIDX_AllowCurlRequest,
 PIDX_LoadOSMData,
 PIDX_TerrainTiling,
+PIDX_PickingBufferSize,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

@@ -86,6 +86,8 @@ Mesh::Mesh(const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>&
 	m_UsesIndexBuffer = false;
 	m_PointRendering = false;
 
+	padBuffer(EBufferType::VERTEX_NORMALS);
+
 	CreateBuffers();
 }
 
@@ -120,12 +122,22 @@ void Mesh::padBuffer(EBufferType bufferType)
   int numToFill;
   if (bufferType == VERTEX_UVS)
   {
-    numToFill = (int) (m_buffers.GetVertexPositions().size() - m_buffers.GetVertexUVs().size());
-    for (int i = 0; i < numToFill; ++i)
-    {
-      m_buffers.AddTo_VertexUVs(glm::vec2(0,0));
-    }
+	  numToFill = (int)(m_buffers.GetVertexPositions().size() - m_buffers.GetVertexUVs().size());
+	  for (int i = 0; i < numToFill; ++i)
+	  {
+		  m_buffers.AddTo_VertexUVs(glm::vec2(0, 0));
+	  }
+  }  
+  else if (bufferType == VERTEX_UVS)
+  {
+	  numToFill = (int)(m_buffers.GetVertexPositions().size() - m_buffers.GetVertexNormals().size());
+	  for (int i = 0; i < numToFill; ++i)
+	  {
+		  m_buffers.AddTo_VertexNormals(glm::vec3(0, 0, 1));
+	  }
   }
+
+
 }
 
 Mesh::Mesh(const CPUBuffers& cpuBuffers, GL::PrimitiveMode primitiveMode, bool usePointRendering)

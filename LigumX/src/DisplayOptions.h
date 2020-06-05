@@ -87,6 +87,8 @@ float GetFPSDisplayScale() { return m_FPSDisplayScale; };
 void SetFPSDisplayScale(float value) { m_FPSDisplayScale = value; }; 
 glm::vec4& GetDebugVec4() { return m_DebugVec4; }; 
 void SetDebugVec4(const glm::vec4& value) { m_DebugVec4 = value; }; 
+glm::vec3& GetClearColor() { return m_ClearColor; }; 
+void SetClearColor(const glm::vec3& value) { m_ClearColor = value; }; 
 private:
 bool m_DeferredRendering = false;
 bool m_UseSkyLighting = false;
@@ -115,8 +117,9 @@ DisplayMode m_DisplayMode = DisplayMode_Final;
 glm::vec2 m_FPSDisplayPosition = glm::vec2(0, 0);
 float m_FPSDisplayScale = 0.1f;
 glm::vec4 m_DebugVec4;
+glm::vec3 m_ClearColor = glm::vec3(000);
 public:
-static const int g_PropertyCount = 27;
+static const int g_PropertyCount = 28;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DisplayOptionsPIDX
@@ -148,6 +151,7 @@ PIDX_DisplayMode,
 PIDX_FPSDisplayPosition,
 PIDX_FPSDisplayScale,
 PIDX_DebugVec4,
+PIDX_ClearColor,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

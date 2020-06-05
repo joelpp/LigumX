@@ -25,6 +25,7 @@ SplatMapResolution
 512
 LoadOSMData
 1
+PickingBufferSize
+128
 TerrainTiling
 32
-Extent

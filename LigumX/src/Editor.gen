@@ -32,7 +32,7 @@ class Editor
 	[transient]
 	std::vector<EditorTool*> Tools;
 
-	int PickingBufferSize;
-
 	Node* SelectedNode;
+
+	OSMDataProcessor* OSMDataProcessor;
 }

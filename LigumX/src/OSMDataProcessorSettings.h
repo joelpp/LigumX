@@ -5,6 +5,7 @@
 class Serializer2;
 
 class OSMDataProcessorSettings;
+class Material;
 
 
 #pragma endregion  FORWARD_DECLARATIONS OSMDataProcessorSettings
@@ -46,6 +47,8 @@ bool GetCheckPointInRoad() { return m_CheckPointInRoad; };
 void SetCheckPointInRoad(bool value) { m_CheckPointInRoad = value; }; 
 bool GetCheckPointInBuilding() { return m_CheckPointInBuilding; }; 
 void SetCheckPointInBuilding(bool value) { m_CheckPointInBuilding = value; }; 
+Material*& GetRoadMaterial() { return m_RoadMaterial; }; 
+void SetRoadMaterial(Material* value) { m_RoadMaterial = value; }; 
 private:
 float m_MinFacadeLength = 25.f;
 float m_MaxFacadeLength = 50.f;
@@ -60,8 +63,9 @@ float m_MaxNeighborDistance = 70.f;
 bool m_ProcessAddressInterpolation = true;
 bool m_CheckPointInRoad = false;
 bool m_CheckPointInBuilding = false;
+Material* m_RoadMaterial = nullptr;
 public:
-static const int g_PropertyCount = 13;
+static const int g_PropertyCount = 14;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMDataProcessorSettingsPIDX
@@ -79,6 +83,7 @@ PIDX_MaxNeighborDistance,
 PIDX_ProcessAddressInterpolation,
 PIDX_CheckPointInRoad,
 PIDX_CheckPointInBuilding,
+PIDX_RoadMaterial,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

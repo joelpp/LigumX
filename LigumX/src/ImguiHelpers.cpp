@@ -566,8 +566,10 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 	bool createNewObject = false; // todo jpp maybe this sucks, maybe not
 	bool cloneObject = false;
 	bool reloadObject = false;
+	bool saveObject = false;
 	static bool openObjectPtrPopup = false;
 	static bool hasOpenPopup = openObjectPtrPopup;
+	bool transient = (propertyData.m_PropertyFlags & PropertyFlags_Transient);
 
 	ImGui::SameLine();
 	ImGui::PushID(propertyData.m_Offset); // todo jpp sort this out
@@ -589,6 +591,13 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		if (ImGui::Selectable("Reload from file"))
 		{
 			reloadObject = true;
+		}
+		if (!transient)
+		{
+			if (ImGui::Selectable("Save to file"))
+			{
+				saveObject = true;
+			}
 		}
 		if (inVector)
 		{
@@ -695,6 +704,11 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		LXObject** ptrToValue = &value;
 		g_ObjectManager->ReloadObject(ptrToValue);
 		reloadObject = false;
+	}
+	if (saveObject)
+	{
+		value->Serialize(true);
+		saveObject = false;
 	}
 
 	return returnValue;

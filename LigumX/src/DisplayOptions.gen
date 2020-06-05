@@ -42,4 +42,6 @@ class DisplayOptions
 	[transient]
 	glm::vec4 DebugVec4;
 
+	glm::vec3 ClearColor = glm::vec3(0,0,0);
+
 }

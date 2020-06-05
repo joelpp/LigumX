@@ -5,6 +5,7 @@
 
 #include "OSMDataProcessorSettings.h"
 #include "serializer.h"
+#include "Material.h"
 const ClassPropertyData OSMDataProcessorSettings::g_Properties[] = 
 {
 { "MinFacadeLength", PIDX_MinFacadeLength, offsetof(OSMDataProcessorSettings, m_MinFacadeLength), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
@@ -20,6 +21,7 @@ const ClassPropertyData OSMDataProcessorSettings::g_Properties[] =
 { "ProcessAddressInterpolation", PIDX_ProcessAddressInterpolation, offsetof(OSMDataProcessorSettings, m_ProcessAddressInterpolation), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "CheckPointInRoad", PIDX_CheckPointInRoad, offsetof(OSMDataProcessorSettings, m_CheckPointInRoad), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "CheckPointInBuilding", PIDX_CheckPointInBuilding, offsetof(OSMDataProcessorSettings, m_CheckPointInBuilding), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "RoadMaterial", PIDX_RoadMaterial, offsetof(OSMDataProcessorSettings, m_RoadMaterial), 0, LXType_ObjectPtr, sizeof(Material*), LXType_Material, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void OSMDataProcessorSettings::Serialize(Serializer2& serializer)
 {
@@ -37,6 +39,7 @@ void OSMDataProcessorSettings::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_ProcessAddressInterpolation], m_ProcessAddressInterpolation);
 	serializer.SerializeBool(g_Properties[PIDX_CheckPointInRoad], m_CheckPointInRoad);
 	serializer.SerializeBool(g_Properties[PIDX_CheckPointInBuilding], m_CheckPointInBuilding);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_RoadMaterial], m_RoadMaterial);
 }
 bool OSMDataProcessorSettings::Serialize(bool writing)
 {
@@ -63,6 +66,7 @@ bool OSMDataProcessorSettings::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ProcessAddressInterpolation], &m_ProcessAddressInterpolation  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CheckPointInRoad], &m_CheckPointInRoad  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_CheckPointInBuilding], &m_CheckPointInBuilding  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_RoadMaterial], &m_RoadMaterial  );
 	return true;
 }
 void OSMDataProcessorSettings::Clone(LXObject* otherObj)
@@ -82,6 +86,7 @@ void OSMDataProcessorSettings::Clone(LXObject* otherObj)
 	other->SetProcessAddressInterpolation(m_ProcessAddressInterpolation);
 	other->SetCheckPointInRoad(m_CheckPointInRoad);
 	other->SetCheckPointInBuilding(m_CheckPointInBuilding);
+	other->SetRoadMaterial(m_RoadMaterial);
 }
 const char* OSMDataProcessorSettings::GetTypeName()
 {

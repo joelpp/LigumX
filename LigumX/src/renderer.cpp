@@ -132,7 +132,7 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
 	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
 
-	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_Editor->GetPickingBufferSize(), g_Editor->GetPickingBufferSize(), GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_EngineSettings->GetPickingBufferSize(), g_EngineSettings->GetPickingBufferSize(), GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_Picking]->SetNumColorTargets(1);
 	m_Framebuffers[FramebufferType_Picking]->Initialize();
@@ -405,9 +405,6 @@ void Renderer::Initialize()
 	InitFreetype();
 
 	InitPipelines();
-
-	g_Editor->Initialize();
-
 }
 
 void Renderer::Shutdown()
@@ -1357,6 +1354,8 @@ void Renderer::BeforeWorldRender()
 
 	GL::SetViewport(m_MainWindow->GetSize());
 
+	const glm::vec3& clearColor = m_DisplayOptions->GetClearColor();
+	glClearColor(clearColor.x, clearColor.y, clearColor.z, 0.f);
 	GL::ClearColorAndDepthBuffers();
 
 	GL::OutputErrors();

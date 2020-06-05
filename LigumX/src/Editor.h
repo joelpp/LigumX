@@ -25,6 +25,7 @@ class Editor;
 class EditorOptions;
 class EditorTool;
 class Node;
+class OSMDataProcessor;
 
 extern Editor* g_Editor;
 enum EEditorTool
@@ -74,10 +75,10 @@ void SetEditingTerrain(bool value) { m_EditingTerrain = value; };
 std::vector<EditorTool*>& GetTools() { return m_Tools; }; 
 void SetTools(std::vector<EditorTool*> value) { m_Tools = value; }; 
 void AddTo_Tools(EditorTool* value) { m_Tools.push_back(value); };
-int GetPickingBufferSize() { return m_PickingBufferSize; }; 
-void SetPickingBufferSize(int value) { m_PickingBufferSize = value; }; 
 Node*& GetSelectedNode() { return m_SelectedNode; }; 
 void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
+OSMDataProcessor*& GetOSMDataProcessor() { return m_OSMDataProcessor; }; 
+void SetOSMDataProcessor(OSMDataProcessor* value) { m_OSMDataProcessor = value; }; 
 private:
 EditorOptions* m_Options = nullptr;
 EEditorTool m_ActiveTool = EEditorTool_PickingTool;
@@ -86,8 +87,8 @@ bool m_ManipulatorDragging = false;
 glm::vec3 m_ManipulatorStartPosition = glm::vec3(0, 0, 0);
 bool m_EditingTerrain = false;
 std::vector<EditorTool*> m_Tools;
-int m_PickingBufferSize = 0;
 Node* m_SelectedNode = nullptr;
+OSMDataProcessor* m_OSMDataProcessor = nullptr;
 public:
 static const int g_PropertyCount = 9;
 static const ClassPropertyData g_Properties[g_PropertyCount];
@@ -101,8 +102,8 @@ PIDX_ManipulatorDragging,
 PIDX_ManipulatorStartPosition,
 PIDX_EditingTerrain,
 PIDX_Tools,
-PIDX_PickingBufferSize,
 PIDX_SelectedNode,
+PIDX_OSMDataProcessor,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

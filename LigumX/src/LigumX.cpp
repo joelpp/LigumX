@@ -157,10 +157,9 @@ void LigumX::Initialize()
 void LigumX::InitializeGlobalObjects()
 {
 	g_ObjectManager = new ObjectManager();
+	g_EngineStats = new EngineStats();
 	g_InputHandler = new InputHandler();
 	g_Serializer = new Serializer();
-
-	g_Editor = new Editor(73524);
 
 	g_EngineSettings = new EngineSettings(89373);
 
@@ -168,15 +167,15 @@ void LigumX::InitializeGlobalObjects()
 	m_Renderer->SetObjectID(28763);
 	m_Renderer->Serialize(false);
 
-	g_GUI = new GUI(m_Renderer->GetMainWindow());
-
 	g_DefaultObjects = new DefaultObjects();
 	g_DefaultObjects->Initialize();
 
-	g_EngineStats = new EngineStats();
-	
+	g_Editor = new Editor(73524);
+	g_Editor->Initialize();
+
+	g_GUI = new GUI(m_Renderer->GetMainWindow());
+
 	g_SectorManager = new SectorManager();
-	g_OSMDataProcessor = new OSMDataProcessor();
 	g_OSMElementTypeDataStore = new OSMElementTypeDataStore();
 
 }
