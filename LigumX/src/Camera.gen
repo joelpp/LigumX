@@ -44,4 +44,7 @@ class Camera
 
 	float FOVY = 45.f;
 
+	[transient]
+	bool FPSCamera = false;
+
 }

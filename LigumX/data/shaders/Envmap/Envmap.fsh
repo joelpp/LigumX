@@ -34,6 +34,11 @@ void main()
 		return;
 	}
 
+	if (fragDir.z < 0)
+	{
+		discard;
+	}
+
 	color = GetSkyColor(fragDir, sunTime, sunOrientation);
 
 }

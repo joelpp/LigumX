@@ -147,11 +147,6 @@ public:
 
 		while (std::getline(objectStream, line))
 		{
-			if (line == "")
-			{
-				continue;
-			}
-
 			for (int i = 0; i < object->g_PropertyCount; ++i)
 			{
 				const ClassPropertyData& propertyData = object->g_Properties[i];

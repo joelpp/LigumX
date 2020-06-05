@@ -682,18 +682,22 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 	float worldScale = g_EngineSettings->GetWorldScale();
 	glm::vec2 worldScale2 = glm::vec2(worldScale, worldScale);
 
+	static float height = 0.0001f;
+
 	glm::vec3 centroid = glm::vec3(0, 0, 0);
 	if (entity)
 	{
 		centroid = entity->GetPosition();
 	}
-
+	centroid.z = height; // todo jpp handle zfight better
 	for (int i = 0; i < way->GetNodes().size(); ++i)
 	{
 		Node* node = way->GetNodes()[i];
 		glm::vec3 nodePos = node->GetWorldPosition();
+		nodePos.z = height; // todo jpp handle zfight better
 		realNodeWorldPositions.push_back(nodePos - centroid);
 	}
+	height += 0.0001f;
 
 	std::vector<glm::vec3> nodeMeshWorldPositions;
 
@@ -741,7 +745,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		glm::vec3 pSegment = glm::normalize(n1 - n0);
 		glm::vec3 pRight = glm::cross(pSegment, up);
 
-		float offset = 2.f * m_RoadWidth / (worldScale);
+		float offset = m_RoadWidth / 2.f;
 
 		glm::vec3 p0 = n0 - offset * pRight;
 		glm::vec3 p1 = n0 + offset * pRight;
@@ -872,7 +876,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 				glm::vec3 pSegment = glm::normalize(n1 - n0);
 				glm::vec3 pRight = glm::cross(pSegment, up);
 
-				float offset = 2.f * m_RoadWidth / (worldScale);
+				float offset = m_RoadWidth / 2.f;
 
 				glm::vec3 p0 = n0 - offset * pRight;
 				glm::vec3 p1 = n0 + offset * pRight;
@@ -909,7 +913,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 				glm::vec3 pSegment = glm::normalize(n1 - n0);
 				glm::vec3 pRight = glm::cross(pSegment, up);
 
-				float offset = 2.f * m_RoadWidth / (worldScale);
+				float offset = m_RoadWidth / 2.f;
 
 				glm::vec3 p0 = n0 - offset * pRight;
 				glm::vec3 p1 = n0 + offset * pRight;

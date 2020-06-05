@@ -900,7 +900,8 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
   //SetFragmentUniform((int)(g_InputHandler->GetMousePosition().x), "g_MouseX");
   //SetFragmentUniform((int)(g_InputHandler->GetMousePosition().y), "g_MouseY");
 
-  if (mesh->GetWireframeRendering())
+  bool wireframe = mesh->GetWireframeRendering() || m_DisplayOptions->GetWireframeRendering();
+  if (wireframe)
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   }
@@ -917,7 +918,7 @@ void Renderer::DrawMesh(Mesh* mesh, Material* material)
     glDisable(GL_PROGRAM_POINT_SIZE);
   }
 
-  if (mesh->GetWireframeRendering())
+  if (wireframe)
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
@@ -1199,6 +1200,7 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	}
 	
 	BindFramebuffer(FramebufferType_Picking);
+	glClearColor(0, 0, 0, 0);
 	GL::ClearColorAndDepthBuffers();
 	
 	SetViewUniforms(m_ActiveCamera);
@@ -1355,7 +1357,7 @@ void Renderer::BeforeWorldRender()
 	GL::SetViewport(m_MainWindow->GetSize());
 
 	const glm::vec3& clearColor = m_DisplayOptions->GetClearColor();
-	glClearColor(clearColor.x, clearColor.y, clearColor.z, 0.f);
+	glClearColor(clearColor.x, clearColor.y, clearColor.z, 1.f);
 	GL::ClearColorAndDepthBuffers();
 
 	GL::OutputErrors();

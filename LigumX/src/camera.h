@@ -68,6 +68,8 @@ float GetKeyMovementSpeedIncreaseFactor() { return m_KeyMovementSpeedIncreaseFac
 void SetKeyMovementSpeedIncreaseFactor(float value) { m_KeyMovementSpeedIncreaseFactor = value; }; 
 float GetFOVY() { return m_FOVY; }; 
 void SetFOVY(float value) { m_FOVY = value; }; 
+bool GetFPSCamera() { return m_FPSCamera; }; 
+void SetFPSCamera(bool value) { m_FPSCamera = value; }; 
 private:
 glm::vec3 m_Position = glm::vec3(0, 0, 0);
 glm::vec3 m_FrontVector = glm::vec3(0, 0, 0);
@@ -88,8 +90,9 @@ float m_ViewSize = 0.f;
 float m_MovementSpeed = 0.f;
 float m_KeyMovementSpeedIncreaseFactor = 1.5f;
 float m_FOVY = 45.f;
+bool m_FPSCamera = false;
 public:
-static const int g_PropertyCount = 19;
+static const int g_PropertyCount = 20;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -113,6 +116,7 @@ PIDX_ViewSize,
 PIDX_MovementSpeed,
 PIDX_KeyMovementSpeedIncreaseFactor,
 PIDX_FOVY,
+PIDX_FPSCamera,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

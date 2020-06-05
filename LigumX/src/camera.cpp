@@ -33,6 +33,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 2000.f, 0,}, 
 { "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FOVY", PIDX_FOVY, offsetof(Camera, m_FOVY), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
+{ "FPSCamera", PIDX_FPSCamera, offsetof(Camera, m_FPSCamera), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
 };
 void Camera::Serialize(Serializer2& serializer)
 {
@@ -75,6 +76,7 @@ bool Camera::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MovementSpeed], &m_MovementSpeed , 0.f, 2000.f );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], &m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FOVY], &m_FOVY , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSCamera], &m_FPSCamera  );
 	return true;
 }
 void Camera::Clone(LXObject* otherObj)
@@ -100,6 +102,7 @@ void Camera::Clone(LXObject* otherObj)
 	other->SetMovementSpeed(m_MovementSpeed);
 	other->SetKeyMovementSpeedIncreaseFactor(m_KeyMovementSpeedIncreaseFactor);
 	other->SetFOVY(m_FOVY);
+	other->SetFPSCamera(m_FPSCamera);
 }
 const char* Camera::GetTypeName()
 {
