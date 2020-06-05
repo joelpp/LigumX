@@ -250,18 +250,6 @@ void OSMTool::DisplaySectorDebug(Sector* sector)
 		}
 	}
 
-	if (m_ShowFlatWays)
-	{
-		int selectedWay = 0;
-
-		if (/*sector->GetOffsetIndex() == GetSelectedSectorIndex() &&*/ GetSelectedWays().size() > 0)
-		{
-			selectedWay = GetSelectedWays()[0]->GetIndexInSector();
-		}
-
-		Entity* selectedEntity = g_Editor->GetPickingTool()->GetPickedEntity();
-		renderer->RenderDebugWays(transfo, renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedEntity);
-	}
 }
 
 void OSMTool::DebugDisplay()
@@ -284,6 +272,13 @@ void OSMTool::DebugDisplay()
 			DisplaySectorDebug(sector);
 		}
 	
+	}
+
+
+	if (m_ShowFlatWays)
+	{
+		Entity* selectedEntity = g_Editor->GetPickingTool()->GetPickedEntity();
+		renderer->RenderDebugWays(glm::mat4(1.0f), renderer->pPipelineLines, m_WayDisplayToggles, m_WayDebugColors, selectedEntity);
 	}
 }
 

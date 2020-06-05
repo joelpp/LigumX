@@ -1472,7 +1472,7 @@ void Renderer::RenderDebugWays(const glm::mat4& modelToWorld, ProgramPipeline* p
 						SetFragmentUniform(displayFlags, "g_DisplayFlags");
 						SetFragmentUniformArray(wayDebugColors, "g_WayDebugColors");
 
-						DrawMesh(wayModel->GetMeshes()[i], material);
+						DrawMesh(wayModel->GetMeshes()[i]);
 					}
 				}
 			}
