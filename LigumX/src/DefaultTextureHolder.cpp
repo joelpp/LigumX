@@ -2,7 +2,6 @@
 #include "Texture.h"
 
 #pragma region  CLASS_SOURCE DefaultTextureHolder
-DefaultTextureHolder* g_DefaultTextureHolder;
 
 #include "DefaultTextureHolder.h"
 #include "serializer.h"

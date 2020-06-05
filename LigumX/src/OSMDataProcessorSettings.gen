@@ -20,5 +20,8 @@ class OSMDataProcessorSettings
 	bool CheckPointInRoad = false;
 	bool CheckPointInBuilding = false;
 
+	Material* AlleyMaterial;
 	Material* RoadMaterial;
+	Material* GenericBuildingMaterial;
+
 }

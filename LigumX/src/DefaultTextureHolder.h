@@ -7,7 +7,6 @@ class Serializer2;
 class DefaultTextureHolder;
 class Texture;
 
-extern DefaultTextureHolder* g_DefaultTextureHolder;
 
 #pragma endregion  FORWARD_DECLARATIONS DefaultTextureHolder
 

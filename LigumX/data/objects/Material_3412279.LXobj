@@ -1,7 +1,7 @@
 ObjectID
-17835
+3412279
 Name
-MAT_Brick_Wall
+MAT_OSM_Alley
 Enabled
 1
 AmbientColor
@@ -10,8 +10,8 @@ AmbientColor
 0.000000
 DiffuseColor
 1.000000
-1.000000
-1.000000
+0.000000
+0.000000
 SpecularColor
 0.000000
 0.000000
@@ -19,7 +19,7 @@ SpecularColor
 IsPBR
 0
 Shininess
-1.000000
+0.000000
 Metallic
 0.000000
 Roughness
@@ -41,7 +41,7 @@ IsGlass
 ReflectEnvironment
 0
 DiffuseTexture
-3619081
+3402125
 UVScale
 1.000000
 1.000000

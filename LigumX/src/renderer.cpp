@@ -940,8 +940,6 @@ void Renderer::RenderTerrain()
 		return;
 	}
 
-	lxAssert0(); // todo jpp disabled until i fix "default textures holder" stuff
-
 	SetLightingUniforms();
 	SetViewUniforms(m_ActiveCamera);
 	SetShadowMapUniforms(m_ShadowCamera);
@@ -957,13 +955,13 @@ void Renderer::RenderTerrain()
 	Material* terrainMaterial = nullptr;
 
 	SetFragmentUniform(4, "g_DirtTexture");
-	Bind2DTexture(4, g_DefaultTextureHolder->GetDirtTexture());
+	Bind2DTexture(4, g_Editor->GetDefaultTextureHolder()->GetDirtTexture());
 
 	SetFragmentUniform(5, "g_SandTexture");
-	Bind2DTexture(5, g_DefaultTextureHolder->GetSandTexture());
+	Bind2DTexture(5, g_Editor->GetDefaultTextureHolder()->GetSandTexture());
 
 	SetFragmentUniform(6, "g_WoodTexture");
-	Bind2DTexture(6, g_DefaultTextureHolder->GetWoodTexture());
+	Bind2DTexture(6, g_Editor->GetDefaultTextureHolder()->GetWoodTexture());
 
 
 
@@ -1070,7 +1068,7 @@ void Renderer::RenderOpaque()
 	}
 
 	GL::SetDepthFunction(GL::Depth_Less);
-	GL::SetCapability(GL::CullFace, true);
+	GL::SetCapability(GL::CullFace, false);
 
 	GL::GPUMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 

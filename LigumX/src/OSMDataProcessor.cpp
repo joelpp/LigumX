@@ -576,21 +576,23 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 }
 
 
-Mesh* OSMDataProcessor::BuildGenericBuilding(Sector* sector, Way* way)
+Mesh* OSMDataProcessor::BuildGenericBuilding(Way* way, Entity* entity)
 {
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
-	const float buildingHeight = 100.f;
+	const float buildingHeight = 20.f;
+
+	const glm::vec3& centroid = entity->GetPosition();
 
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
 		Node* node = *nodeIt;
 		Node* nextNode = *(nodeIt + 1);
-		glm::vec3 nodePos = node->GetWorldPosition();
-		glm::vec3 nextPos = nextNode->GetWorldPosition();
+		glm::vec3 nodePos = node->GetWorldPosition() - centroid;
+		glm::vec3 nextPos = nextNode->GetWorldPosition() - centroid;
 
 		glm::vec3 segment = nextPos - nodePos;
 		float distance = glm::length(segment);
@@ -634,42 +636,58 @@ Mesh* OSMDataProcessor::BuildGenericBuilding(Sector* sector, Way* way)
 }
 
 
+//
+//void OSMDataProcessor::ProcessGenericBuilding(Sector* sector, Way* way)
+//{
+//	Mesh* buildingMesh = BuildGenericBuilding(sector, way);
+//
+//	if (buildingMesh != nullptr)
+//	{
+//		Renderer& renderer = Renderer::GetInstance();
+//
+//		Model* buildingModel = new Model();
+//		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID, true);
+//
+//		lxAssert(brickWallMaterial);
+//
+//		buildingModel->addMesh(buildingMesh, brickWallMaterial);
+//		buildingModel->SetName("Building_Test");
+//
+//		Entity* buildingEntity = new Entity();
+//		buildingEntity->SetName("Building - " + way->GetName());
+//		buildingEntity->SetModel(buildingModel);
+//
+//		buildingEntity->SetVisible(true);
+//
+//		buildingEntity->UpdateAABB();
+//
+//		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
+//		osmElementComponent->SetWay(way);
+//		buildingEntity->AddTo_Components(osmElementComponent);
+//
+//		//World* world = LigumX::GetInstance().GetWorld();
+//		//world->AddTo_Entities(roadEntity);
+//
+//		sector->GetGraphicalData()->GetStaticEntities().push_back(buildingEntity);
+//	}
+//}
 
-void OSMDataProcessor::ProcessGenericBuilding(Sector* sector, Way* way)
+Model* OSMDataProcessor::CreateBuildingModel(Way* way, Entity* entity)
 {
-	Mesh* buildingMesh = BuildGenericBuilding(sector, way);
+	Mesh* buildingMesh = BuildGenericBuilding(way, entity);
 
 	if (buildingMesh != nullptr)
 	{
-		Renderer& renderer = Renderer::GetInstance();
-
 		Model* buildingModel = new Model();
-		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID, true);
+		Material* buildingMaterial = m_Settings->GetGenericBuildingMaterial();
+		buildingModel->addMesh(buildingMesh, buildingMaterial);
+		buildingModel->SetName("GenericBuilding_Test");
 
-		lxAssert(brickWallMaterial);
-
-		buildingModel->addMesh(buildingMesh, brickWallMaterial);
-		buildingModel->SetName("Building_Test");
-
-		Entity* buildingEntity = new Entity();
-		buildingEntity->SetName("Building - " + way->GetName());
-		buildingEntity->SetModel(buildingModel);
-
-		buildingEntity->SetVisible(true);
-
-		buildingEntity->UpdateAABB();
-
-		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
-		osmElementComponent->SetWay(way);
-		buildingEntity->AddTo_Components(osmElementComponent);
-
-		//World* world = LigumX::GetInstance().GetWorld();
-		//world->AddTo_Entities(roadEntity);
-
-		sector->GetGraphicalData()->GetStaticEntities().push_back(buildingEntity);
+		return buildingModel;
 	}
-}
 
+	return nullptr;
+}
 
 Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 {
@@ -684,6 +702,9 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 
 	static float height = 0.001f;
 
+	bool alley = way->hasTagAndValue("service", "alley");
+
+
 	glm::vec3 centroid = glm::vec3(0, 0, 0);
 	if (entity)
 	{
@@ -697,6 +718,12 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		realNodeWorldPositions.push_back(nodePos - centroid);
 	}
 	height += 0.002f;
+
+	float roadWidth = m_RoadWidth;
+	if (alley)
+	{
+		roadWidth *= 0.7f;
+	}
 
 	// missing the first constant part from p0 to n1?
 	for (int i = 1; i < realNodeWorldPositions.size(); ++i)
@@ -716,7 +743,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 		glm::vec3 pSegment = (n1 - n0);
 		glm::vec3 pRight = glm::cross(glm::normalize(pSegment), up);
 
-		float offset = m_RoadWidth / 2.f;
+		float offset = roadWidth / 2.f;
 
 		glm::vec3 p0 = n0 - offset * pRight;
 		glm::vec3 p1 = n0 + offset * pRight;
@@ -777,7 +804,7 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 				glm::vec3 pSegment = glm::normalize(n1 - n0);
 				glm::vec3 pRight = glm::cross(pSegment, up);
 
-				float offset = m_RoadWidth / 2.f;
+				float offset = roadWidth / 2.f;
 
 				glm::vec3 p0 = n0 - offset * pRight;
 				glm::vec3 p1 = n0 + offset * pRight;
@@ -858,6 +885,12 @@ Model* OSMDataProcessor::CreateRoadModel(Way* way, Entity* entity)
 	{
 		Model* roadModel = new Model();
 		Material* roadMaterial = m_Settings->GetRoadMaterial();
+
+		if (way->hasTagAndValue("service", "alley"))
+		{
+			roadMaterial = m_Settings->GetAlleyMaterial();
+		}
+
 		roadModel->addMesh(roadMesh, roadMaterial);
 		roadModel->SetName("Road_Test");
 
@@ -948,7 +981,7 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 
 		Model* groundModel = new Model();
 		Material* groundMaterial = new Material();
-		groundMaterial->SetDiffuseTexture(g_DefaultTextureHolder->GetGrassTexture());
+		groundMaterial->SetDiffuseTexture(g_Editor->GetDefaultTextureHolder()->GetGrassTexture());
 
 		groundModel->addMesh(groundMesh, groundMaterial);
 		groundModel->SetName("AddrInterpolation_Test_Ground");
@@ -1008,17 +1041,14 @@ Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
 	{
 		return CreateRoadModel(way, entity);
 	}
-	else
-	{
-		return nullptr;
-	}
 
 	bool isGenericBuilding = g_OSMElementTypeDataStore->GetData()[way->GetOSMElementType()]->GetIsBuilding();
-	if (isGenericBuilding && (m_GenericBuildingsProcessed < m_MaxGenericBuildingsToProcess))
+	if (isGenericBuilding)
 	{
-		//ProcessGenericBuilding(sector, way);
-		m_GenericBuildingsProcessed++;
+		return CreateBuildingModel(way, entity);
 	}
+
+	return nullptr;
 
 	bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
 	if (isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))

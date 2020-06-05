@@ -55,6 +55,7 @@ Editor* g_Editor;
 #include "EditorTool.h"
 #include "Node.h"
 #include "OSMDataProcessor.h"
+#include "DefaultTextureHolder.h"
 const ClassPropertyData Editor::g_Properties[] = 
 {
 { "Options", PIDX_Options, offsetof(Editor, m_Options), 0, LXType_ObjectPtr, sizeof(EditorOptions*), LXType_EditorOptions, true, LXType_None, false, 0, 0, 0, 0,}, 
@@ -66,6 +67,7 @@ const ClassPropertyData Editor::g_Properties[] =
 { "Tools", PIDX_Tools, offsetof(Editor, m_Tools), 0, LXType_stdvector, sizeof(std::vector<EditorTool*>), LXType_stdvector, false, LXType_EditorTool, true, PropertyFlags_Transient, 0, 0, 0,}, 
 { "SelectedNode", PIDX_SelectedNode, offsetof(Editor, m_SelectedNode), 0, LXType_ObjectPtr, sizeof(Node*), LXType_Node, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "OSMDataProcessor", PIDX_OSMDataProcessor, offsetof(Editor, m_OSMDataProcessor), 0, LXType_ObjectPtr, sizeof(OSMDataProcessor*), LXType_OSMDataProcessor, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "DefaultTextureHolder", PIDX_DefaultTextureHolder, offsetof(Editor, m_DefaultTextureHolder), 0, LXType_ObjectPtr, sizeof(DefaultTextureHolder*), LXType_DefaultTextureHolder, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void Editor::Serialize(Serializer2& serializer)
 {
@@ -73,6 +75,7 @@ void Editor::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Options], m_Options);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SelectedNode], m_SelectedNode);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_OSMDataProcessor], m_OSMDataProcessor);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_DefaultTextureHolder], m_DefaultTextureHolder);
 }
 bool Editor::Serialize(bool writing)
 {
@@ -94,6 +97,7 @@ bool Editor::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Tools], m_Tools  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SelectedNode], &m_SelectedNode  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_OSMDataProcessor], &m_OSMDataProcessor  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DefaultTextureHolder], &m_DefaultTextureHolder  );
 	return true;
 }
 void Editor::Clone(LXObject* otherObj)
@@ -109,6 +113,7 @@ void Editor::Clone(LXObject* otherObj)
 	other->SetTools(m_Tools);
 	other->SetSelectedNode(m_SelectedNode);
 	other->SetOSMDataProcessor(m_OSMDataProcessor);
+	other->SetDefaultTextureHolder(m_DefaultTextureHolder);
 }
 const char* Editor::GetTypeName()
 {

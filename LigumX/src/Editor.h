@@ -26,6 +26,7 @@ class EditorOptions;
 class EditorTool;
 class Node;
 class OSMDataProcessor;
+class DefaultTextureHolder;
 
 extern Editor* g_Editor;
 enum EEditorTool
@@ -79,6 +80,8 @@ Node*& GetSelectedNode() { return m_SelectedNode; };
 void SetSelectedNode(Node* value) { m_SelectedNode = value; }; 
 OSMDataProcessor*& GetOSMDataProcessor() { return m_OSMDataProcessor; }; 
 void SetOSMDataProcessor(OSMDataProcessor* value) { m_OSMDataProcessor = value; }; 
+DefaultTextureHolder*& GetDefaultTextureHolder() { return m_DefaultTextureHolder; }; 
+void SetDefaultTextureHolder(DefaultTextureHolder* value) { m_DefaultTextureHolder = value; }; 
 private:
 EditorOptions* m_Options = nullptr;
 EEditorTool m_ActiveTool = EEditorTool_PickingTool;
@@ -89,8 +92,9 @@ bool m_EditingTerrain = false;
 std::vector<EditorTool*> m_Tools;
 Node* m_SelectedNode = nullptr;
 OSMDataProcessor* m_OSMDataProcessor = nullptr;
+DefaultTextureHolder* m_DefaultTextureHolder = nullptr;
 public:
-static const int g_PropertyCount = 9;
+static const int g_PropertyCount = 10;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorPIDX
@@ -104,6 +108,7 @@ PIDX_EditingTerrain,
 PIDX_Tools,
 PIDX_SelectedNode,
 PIDX_OSMDataProcessor,
+PIDX_DefaultTextureHolder,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

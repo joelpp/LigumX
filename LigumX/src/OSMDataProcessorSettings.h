@@ -47,8 +47,12 @@ bool GetCheckPointInRoad() { return m_CheckPointInRoad; };
 void SetCheckPointInRoad(bool value) { m_CheckPointInRoad = value; }; 
 bool GetCheckPointInBuilding() { return m_CheckPointInBuilding; }; 
 void SetCheckPointInBuilding(bool value) { m_CheckPointInBuilding = value; }; 
+Material*& GetAlleyMaterial() { return m_AlleyMaterial; }; 
+void SetAlleyMaterial(Material* value) { m_AlleyMaterial = value; }; 
 Material*& GetRoadMaterial() { return m_RoadMaterial; }; 
 void SetRoadMaterial(Material* value) { m_RoadMaterial = value; }; 
+Material*& GetGenericBuildingMaterial() { return m_GenericBuildingMaterial; }; 
+void SetGenericBuildingMaterial(Material* value) { m_GenericBuildingMaterial = value; }; 
 private:
 float m_MinFacadeLength = 25.f;
 float m_MaxFacadeLength = 50.f;
@@ -63,9 +67,11 @@ float m_MaxNeighborDistance = 70.f;
 bool m_ProcessAddressInterpolation = true;
 bool m_CheckPointInRoad = false;
 bool m_CheckPointInBuilding = false;
+Material* m_AlleyMaterial = nullptr;
 Material* m_RoadMaterial = nullptr;
+Material* m_GenericBuildingMaterial = nullptr;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 16;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMDataProcessorSettingsPIDX
@@ -83,7 +89,9 @@ PIDX_MaxNeighborDistance,
 PIDX_ProcessAddressInterpolation,
 PIDX_CheckPointInRoad,
 PIDX_CheckPointInBuilding,
+PIDX_AlleyMaterial,
 PIDX_RoadMaterial,
+PIDX_GenericBuildingMaterial,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

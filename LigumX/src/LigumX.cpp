@@ -145,8 +145,6 @@ void LigumX::Initialize()
     m_RenderDataManager = new RenderDataManager();
     renderer.setDataSource(m_RenderDataManager);
 
-	g_DefaultTextureHolder = new DefaultTextureHolder();
-
     SetApplicationState(EApplicationState_Running);
 
     LoadWorld();

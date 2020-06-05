@@ -2,4 +2,5 @@ class RenderDataManager
 {
 	CullingOptions* CullingOptions;
 	RenderingStats* RenderingStats;
+	
 }

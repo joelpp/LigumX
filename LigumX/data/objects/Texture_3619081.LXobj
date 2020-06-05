@@ -1,9 +1,9 @@
 ObjectID
-10692
+3619081
 Name
-rock
+Building_Side
 Filename
-rock.png
+building_side1.jpg
 IsCubeMap
 0
 NumChannels
@@ -11,5 +11,5 @@ NumChannels
 BitsPerPixel
 32
 Size
-894
-894
+256
+256

@@ -35,4 +35,7 @@ class Editor
 	Node* SelectedNode;
 
 	OSMDataProcessor* OSMDataProcessor;
+	
+	DefaultTextureHolder* DefaultTextureHolder;
+
 }
