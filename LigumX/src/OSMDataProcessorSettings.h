@@ -41,6 +41,18 @@ float GetMinNeighborDistance() { return m_MinNeighborDistance; };
 void SetMinNeighborDistance(float value) { m_MinNeighborDistance = value; }; 
 float GetMaxNeighborDistance() { return m_MaxNeighborDistance; }; 
 void SetMaxNeighborDistance(float value) { m_MaxNeighborDistance = value; }; 
+float GetRoadWidth() { return m_RoadWidth; }; 
+void SetRoadWidth(float value) { m_RoadWidth = value; }; 
+float GetRoadHeight() { return m_RoadHeight; }; 
+void SetRoadHeight(float value) { m_RoadHeight = value; }; 
+float GetFillInHeight() { return m_FillInHeight; }; 
+void SetFillInHeight(float value) { m_FillInHeight = value; }; 
+float GetAlleyWidth() { return m_AlleyWidth; }; 
+void SetAlleyWidth(float value) { m_AlleyWidth = value; }; 
+float GetBuildingHeightBase() { return m_BuildingHeightBase; }; 
+void SetBuildingHeightBase(float value) { m_BuildingHeightBase = value; }; 
+float GetBuildingHeightVariance() { return m_BuildingHeightVariance; }; 
+void SetBuildingHeightVariance(float value) { m_BuildingHeightVariance = value; }; 
 bool GetProcessAddressInterpolation() { return m_ProcessAddressInterpolation; }; 
 void SetProcessAddressInterpolation(bool value) { m_ProcessAddressInterpolation = value; }; 
 bool GetCheckPointInRoad() { return m_CheckPointInRoad; }; 
@@ -49,10 +61,18 @@ bool GetCheckPointInBuilding() { return m_CheckPointInBuilding; };
 void SetCheckPointInBuilding(bool value) { m_CheckPointInBuilding = value; }; 
 Material*& GetAlleyMaterial() { return m_AlleyMaterial; }; 
 void SetAlleyMaterial(Material* value) { m_AlleyMaterial = value; }; 
+Material*& GetParkingMaterial() { return m_ParkingMaterial; }; 
+void SetParkingMaterial(Material* value) { m_ParkingMaterial = value; }; 
 Material*& GetRoadMaterial() { return m_RoadMaterial; }; 
 void SetRoadMaterial(Material* value) { m_RoadMaterial = value; }; 
 Material*& GetGenericBuildingMaterial() { return m_GenericBuildingMaterial; }; 
 void SetGenericBuildingMaterial(Material* value) { m_GenericBuildingMaterial = value; }; 
+Material*& GetRockMaterial() { return m_RockMaterial; }; 
+void SetRockMaterial(Material* value) { m_RockMaterial = value; }; 
+Material*& GetGrassMaterial() { return m_GrassMaterial; }; 
+void SetGrassMaterial(Material* value) { m_GrassMaterial = value; }; 
+Material*& GetAdressInterpolationMaterial() { return m_AdressInterpolationMaterial; }; 
+void SetAdressInterpolationMaterial(Material* value) { m_AdressInterpolationMaterial = value; }; 
 private:
 float m_MinFacadeLength = 25.f;
 float m_MaxFacadeLength = 50.f;
@@ -64,14 +84,24 @@ float m_MinHeight = 20.f;
 float m_MaxHeight = 50.f;
 float m_MinNeighborDistance = 30.f;
 float m_MaxNeighborDistance = 70.f;
+float m_RoadWidth = 30.f;
+float m_RoadHeight = 0.1f;
+float m_FillInHeight = 0.05f;
+float m_AlleyWidth = 20.f;
+float m_BuildingHeightBase = 30.f;
+float m_BuildingHeightVariance = 5.f;
 bool m_ProcessAddressInterpolation = true;
 bool m_CheckPointInRoad = false;
 bool m_CheckPointInBuilding = false;
 Material* m_AlleyMaterial = nullptr;
+Material* m_ParkingMaterial = nullptr;
 Material* m_RoadMaterial = nullptr;
 Material* m_GenericBuildingMaterial = nullptr;
+Material* m_RockMaterial = nullptr;
+Material* m_GrassMaterial = nullptr;
+Material* m_AdressInterpolationMaterial = nullptr;
 public:
-static const int g_PropertyCount = 16;
+static const int g_PropertyCount = 26;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMDataProcessorSettingsPIDX
@@ -86,12 +116,22 @@ PIDX_MinHeight,
 PIDX_MaxHeight,
 PIDX_MinNeighborDistance,
 PIDX_MaxNeighborDistance,
+PIDX_RoadWidth,
+PIDX_RoadHeight,
+PIDX_FillInHeight,
+PIDX_AlleyWidth,
+PIDX_BuildingHeightBase,
+PIDX_BuildingHeightVariance,
 PIDX_ProcessAddressInterpolation,
 PIDX_CheckPointInRoad,
 PIDX_CheckPointInBuilding,
 PIDX_AlleyMaterial,
+PIDX_ParkingMaterial,
 PIDX_RoadMaterial,
 PIDX_GenericBuildingMaterial,
+PIDX_RockMaterial,
+PIDX_GrassMaterial,
+PIDX_AdressInterpolationMaterial,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

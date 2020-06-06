@@ -75,20 +75,16 @@ virtual LXType GetLXType() { return LXType_OSMDataProcessor; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
-float GetRoadWidth() { return m_RoadWidth; }; 
-void SetRoadWidth(float value) { m_RoadWidth = value; }; 
 OSMDataProcessorSettings*& GetSettings() { return m_Settings; }; 
 void SetSettings(OSMDataProcessorSettings* value) { m_Settings = value; }; 
 private:
-float m_RoadWidth = 30.f;
 OSMDataProcessorSettings* m_Settings = nullptr;
 public:
-static const int g_PropertyCount = 2;
+static const int g_PropertyCount = 1;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_OSMDataProcessorPIDX
 {
-PIDX_RoadWidth,
 PIDX_Settings,
 };
 virtual void Serialize(Serializer2& serializer);
@@ -110,12 +106,11 @@ Mesh* BuildRoadMesh(Way* way, Entity* entity);
 Mesh* ProcessWayNodes(Sector* sector, Way* way);
 
 void PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo, const glm::vec3& direction, float& spaceLeft, glm::vec3& plotStart);
-Mesh* BuildAdressInterpolationBuilding(Sector* sector, Way* way, Mesh*& groundMesh);
-void ProcessAddressInterpolation(Sector* sector, Way* way);
+Mesh* BuildAdressInterpolationBuilding(Way* way, Entity* entity, Mesh*& groundMesh);
+Model* CreateAddressInterpolationModel(Way* way, Entity* entity);
 Mesh* BuildGenericBuilding(Way* way, Entity* entity);
 
 Model* CreateBuildingModel(Way* way, Entity* entity);
-//void ProcessGenericBuilding(Sector* sector, Way* way);
 void Reset();
 
 static bool IsRoad(Way* way);
@@ -124,6 +119,5 @@ private:
 	int m_GenericBuildingsProcessed = 0;
 	int m_RoadsProcessed = 0;
 	int m_AddressInterpolationsProcessed = 0;
-
 
 };

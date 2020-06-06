@@ -21,7 +21,7 @@ Building::Building(Way* way)
 }
 
 
-bool Building::GenerateModel(Entity* entity)
+bool Building::GenerateModel(Entity* entity, Material* material)
 {
 
 	Way* way = m_Way;
@@ -207,6 +207,20 @@ bool Building::GenerateModel(Entity* entity)
 		m_MinCoords = glm::min(v, m_MinCoords);
 	}
 
+	std::vector<glm::vec2> uvs;
+	uvs.resize(buildingTrianglePositions.size());
+
+	glm::vec2 size = glm::vec2(m_MaxCoords - m_MinCoords);
+	glm::vec2 min2 = glm::vec2(m_MinCoords);
+
+	for (int i = 0; i < buildingTrianglePositions.size(); ++ i)
+	{
+		glm::vec2 pos = glm::vec2(buildingTrianglePositions[i]);
+		pos = (pos - min2) /*/ size*/;
+
+		uvs[i] = pos;
+	}
+
 	lxAssert((tempTriangleVertices.size() % 3) == 0);
 	for (int i = 0; i < (tempTriangleVertices.size() / 3); ++i)
 	{
@@ -222,23 +236,9 @@ bool Building::GenerateModel(Entity* entity)
 
 	CPUBuffers cpuBuffers;
 	cpuBuffers.SetVertexPositions(buildingTrianglePositions);
-
-	glm::vec3 scale = m_MaxCoords - m_MinCoords;
-	for (int k = 0; k < cpuBuffers.GetVertexPositions().size(); k++)
-	{
-		const glm::vec3& point = cpuBuffers.GetVertexPositions()[k];
-		glm::vec2 uv = glm::vec2((point - m_MinCoords) / scale);
-
-		uv /= g_EngineSettings->GetExtent();
-
-		cpuBuffers.AddTo_VertexUVs(uv);
-	}
+	cpuBuffers.SetVertexUVs(uvs);
 
 	Mesh* mesh = new Mesh(cpuBuffers, GL::PrimitiveMode::Triangles, false);
-
-	glm::vec3 color = glm::vec3(39, 181, 51) / 255.f;
-
-	Material* material = new Material(renderer.pPipelineBasic, color);
 	m_Model->addMesh(mesh, material);
     
     return true;

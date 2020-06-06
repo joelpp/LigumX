@@ -3,6 +3,7 @@
 #include "LXSystem.h"
 
 class Model;
+class Material;
 class Way;
 class Entity;
 
@@ -28,7 +29,7 @@ public:
 
 	Building(Way* way);
 
-	bool GenerateModel(Entity* entity);
+	bool GenerateModel(Entity* entity, Material* material);
 
 	const std::vector<Triangle>& GetTriangles() { return m_Triangles; }
 	const std::vector<glm::vec3>& GetVertices() { return m_FlatVertices; }

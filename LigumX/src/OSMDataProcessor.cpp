@@ -48,13 +48,11 @@ T GetRandomValue(T min, T max)
 #include "OSMDataProcessorSettings.h"
 const ClassPropertyData OSMDataProcessor::g_Properties[] = 
 {
-{ "RoadWidth", PIDX_RoadWidth, offsetof(OSMDataProcessor, m_RoadWidth), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "Settings", PIDX_Settings, offsetof(OSMDataProcessor, m_Settings), 0, LXType_ObjectPtr, sizeof(OSMDataProcessorSettings*), LXType_OSMDataProcessorSettings, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void OSMDataProcessor::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeFloat(g_Properties[PIDX_RoadWidth], m_RoadWidth);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Settings], m_Settings);
 }
 bool OSMDataProcessor::Serialize(bool writing)
@@ -69,7 +67,6 @@ bool OSMDataProcessor::Serialize(bool writing)
 bool OSMDataProcessor::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_RoadWidth], &m_RoadWidth , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Settings], &m_Settings  );
 	return true;
 }
@@ -77,7 +74,6 @@ void OSMDataProcessor::Clone(LXObject* otherObj)
 {
 	super::Clone(otherObj);
 	OSMDataProcessor* other = (OSMDataProcessor*) otherObj;
-	other->SetRoadWidth(m_RoadWidth);
 	other->SetSettings(m_Settings);
 }
 const char* OSMDataProcessor::GetTypeName()
@@ -443,19 +439,21 @@ void OSMDataProcessor::PrepareNextBuilding(AddrInterpBuildingInfo& buildingInfo,
 }
 
 
-Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* way, Mesh*& groundMesh)
+Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Way* way, Entity* entity, Mesh*& groundMesh)
 {
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
 	Mesh* buildingMesh = new Mesh();
 	CPUBuffers fullBuffers;
 
+	glm::vec3 centroid = entity->GetPosition();
+
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
 		Node* node = *nodeIt;
 		Node* nextNode = *(nodeIt + 1);
-		glm::vec3 nodePos = node->GetWorldPosition();
-		glm::vec3 nodePos2 = nextNode->GetWorldPosition();
+		glm::vec3 nodePos = node->GetWorldPosition() - centroid;
+		glm::vec3 nodePos2 = nextNode->GetWorldPosition() - centroid;
 
 		glm::vec3 wholeSegment = nodePos2 - nodePos;
 
@@ -481,59 +479,62 @@ Mesh* OSMDataProcessor::BuildAdressInterpolationBuilding(Sector* sector, Way* wa
 
 			glm::vec3 buildingStart = plotStart + direction * buildingInfo.m_PaddingBeforeFacade;
 
-			if (m_Settings->GetCheckPointInRoad())
-			{
-				if (PointInRoad(sector, buildingStart))
-				{
-					PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
-					break;
-				}
-			}
+			//if (m_Settings->GetCheckPointInRoad())
+			//{
+			//	if (PointInRoad(sector, buildingStart))
+			//	{
+			//		PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
+			//		break;
+			//	}
+			//}
 
-			if (m_Settings->GetCheckPointInBuilding())
-			{
-				if (PointInBuilding(sector, buildingStart))
-				{
-					PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
-					break;
-				}
-			}
+			//if (m_Settings->GetCheckPointInBuilding())
+			//{
+			//	if (PointInBuilding(sector, buildingStart))
+			//	{
+			//		PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
+			//		break;
+			//	}
+			//}
 
 			const glm::vec3& dimensions = buildingInfo.m_BuildingDimensions;
 
 			float depthClearanceRatio = 1.5f;
 			glm::vec3 back = buildingStart + depthClearanceRatio * right * dimensions.y;
 
-			if (PointInRoad(sector, back))
-			{
-				right *= -1;
-			}
+			//if (PointInRoad(sector, back))
+			//{
+			//	right *= -1;
+			//}
 
-			if (PointInBuilding(sector, back))
-			{
-				PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
-				break;
-			}
+			//if (PointInBuilding(sector, back))
+			//{
+			//	PrepareNextBuilding(buildingInfo, direction, spaceLeft, plotStart);
+			//	break;
+			//}
 
-			Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
-			lxAssert(tex != nullptr);
 
 			glm::vec3 plotForward = buildingInfo.GetPlotLength() * direction;
 			glm::vec3 plotBack = depthClearanceRatio * right * buildingInfo.GetPlotDepth();
 			glm::vec3 plotEnd = plotStart + plotForward + plotBack;
 
+#if 0
 			glm::vec2 plotUVMin = sector->GetUVForWorldPosition(plotStart);
 			glm::vec2 plotUVMax = sector->GetUVForWorldPosition(plotEnd);
+
+
+			Texture* tex = sector->GetGraphicalData()->GetSplatMapTexture();
+			lxAssert(tex != nullptr);
 
 			glm::ivec2 texelMin = glm::ivec2(plotUVMin * glm::vec2(tex->GetSize()));
 			glm::ivec2 texelMax = glm::ivec2(plotUVMax * glm::vec2(tex->GetSize()));
 
 			//TerrainColorEditingJob terrainJob(sector, texelMin, texelMax, glm::vec4(0, 72, 120, 255) / 255.f);
 			//terrainJob.Execute();
+#endif
 
 			Add3DBox(buildingMesh, buildingStart, direction, right, up, dimensions);
 	
-
 			glm::vec3 v0 = plotStart;
 			glm::vec3 v1 = plotStart + plotForward;
 			glm::vec3 v2 = plotEnd;
@@ -588,8 +589,12 @@ Mesh* OSMDataProcessor::BuildGenericBuilding(Way* way, Entity* entity)
 	std::vector<glm::vec3> normals;
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
-
 	const glm::vec3& centroid = entity->GetPosition();
+
+	float buildingHeight = m_Settings->GetBuildingHeightBase();
+	float heightDelta = 2 * ((rand() / (float)RAND_MAX) - 0.5f); // -1 to 1
+	heightDelta *= m_Settings->GetBuildingHeightVariance();
+	buildingHeight += heightDelta;
 
 	for (auto nodeIt = way->GetNodes().begin(); nodeIt != (way->GetNodes().end() - 1); ++nodeIt)
 	{
@@ -611,7 +616,6 @@ Mesh* OSMDataProcessor::BuildGenericBuilding(Way* way, Entity* entity)
 
 		glm::vec3 first = nodePos;
 
-		float buildingHeight = 30.f;
 		glm::vec3 second = nodePos + up * buildingHeight;
 
 		vertices.push_back(first);
@@ -706,7 +710,9 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 	float worldScale = g_EngineSettings->GetWorldScale();
 	glm::vec2 worldScale2 = glm::vec2(worldScale, worldScale);
 
-	static float height = 0.001f;
+	static float heightModifier = 0.001f; // todo jpp handle zfight better
+	float baseHeight = m_Settings->GetRoadHeight();
+	float meshHeight = baseHeight + heightModifier;
 
 	bool alley = way->hasTag("service");
 
@@ -716,20 +722,18 @@ Mesh* OSMDataProcessor::BuildRoadMesh(Way* way, Entity* entity)
 	{
 		centroid = entity->GetPosition();
 	}
+
 	for (int i = 0; i < way->GetNodes().size(); ++i)
 	{
 		Node* node = way->GetNodes()[i];
 		glm::vec3 nodePos = node->GetWorldPosition();
-		nodePos.z = height; // todo jpp handle zfight better
+		nodePos.z = meshHeight; 
 		realNodeWorldPositions.push_back(nodePos - centroid);
 	}
-	height += 0.002f;
 
-	float roadWidth = m_RoadWidth;
-	if (alley)
-	{
-		roadWidth *= 0.7f;
-	}
+	heightModifier += 0.002f;
+
+	float roadWidth = alley ? m_Settings->GetAlleyWidth() : m_Settings->GetRoadWidth();
 
 	// missing the first constant part from p0 to n1?
 	for (int i = 1; i < realNodeWorldPositions.size(); ++i)
@@ -900,6 +904,9 @@ Model* OSMDataProcessor::CreateRoadModel(Way* way, Entity* entity)
 		roadModel->addMesh(roadMesh, roadMaterial);
 		roadModel->SetName("Road_Test");
 
+		glm::vec3 heightDelta = glm::vec3(0, 0, m_Settings->GetRoadHeight());
+		entity->AddTo_Position(heightDelta);
+
 		return roadModel;
 	}
 
@@ -940,47 +947,33 @@ void OSMDataProcessor::CreateEntity(Way* way)
 	world->AddTo_Entities(newEntity);
 }
 
-void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
+Model* OSMDataProcessor::CreateAddressInterpolationModel(Way* way, Entity* entity)
 {
 	Mesh* buildingMesh = nullptr;
 
 	Mesh* groundMesh = nullptr;
-	buildingMesh = BuildAdressInterpolationBuilding(sector, way, groundMesh);
+	buildingMesh = BuildAdressInterpolationBuilding(way, entity, groundMesh);
 
 	int nbBuildings = 5;
 	float buildingWidth = 5.f;
 	float buildingWOffset = 5.f;;
-
 
 	if (buildingMesh != nullptr)
 	{
 		Renderer& renderer = Renderer::GetInstance();
 
 		Model* buildingModel = g_ObjectManager->CreateNewObject<Model>();
-		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID);
+		Material* material = m_Settings->GetAdressInterpolationMaterial();
 
-		lxAssert(brickWallMaterial);
+		lxAssert(material);
 
-		buildingModel->addMesh(buildingMesh, brickWallMaterial);
+		buildingModel->addMesh(buildingMesh, material);
 		buildingModel->SetName("AddrInterpolation_Test");
 
-
-		Entity* buildingEntity = g_ObjectManager->CreateNewObject<Entity>();
-		buildingEntity->SetName("OSM_GENERATED_ADDRINTERP - " + way->GetName());
-
-		Visual* visual = g_ObjectManager->CreateNewObject<Visual>();
-		visual->SetModel(buildingModel);
-
-		buildingEntity->AddTo_Components(visual);
-		buildingEntity->SetVisible(true);
-
-		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
-		osmElementComponent->SetWay(way);
-		buildingEntity->AddTo_Components(osmElementComponent);
-
-		sector->GetGraphicalData()->GetStaticEntities().push_back(buildingEntity);
+		return buildingModel;
 	}
 
+#if 0
 	if (groundMesh != nullptr)
 	{
 		Renderer& renderer = Renderer::GetInstance();
@@ -1007,7 +1000,7 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 
 		sector->GetGraphicalData()->GetStaticEntities().push_back(groundEntity);
 	}
-
+#endif
 }
 
 bool OSMDataProcessor::IsRoad(Way* way)
@@ -1057,11 +1050,9 @@ Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
 
 
 	bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
-	if (isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
+	if (isAddressInterpolation)
 	{
-		// process them at the end when we have all our roads
-		addressInterpolationWays.push_back(way);
-		m_AddressInterpolationsProcessed++;
+		return CreateAddressInterpolationModel(way, entity);
 	}
 
 	OSMElementType wayType = way->GetOSMElementType();
@@ -1071,11 +1062,32 @@ Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
 	if (fillIn && m_FillInEnabled)
 	{
 		Building building(way);
-		bool success = building.GenerateModel(entity);
+
+		Material* material = m_Settings->GetGrassMaterial();
+
+		if (way->IsParking())
+		{
+			material = m_Settings->GetParkingMaterial();
+		}
+		else if (way->IsBareRock())
+		{
+			material = m_Settings->GetRockMaterial();
+		}
+
+		bool success = building.GenerateModel(entity, material);
 
 		if (success)
 		{
 			way->SetFilledIn(true);
+
+			static float heightModifier = 0.001f; // todo jpp handle zfight better
+			float height = m_Settings->GetFillInHeight();
+			height += heightModifier;
+			heightModifier += 0.002f;
+
+			glm::vec3 heightDelta = glm::vec3(0, 0, height);
+			entity->AddTo_Position(heightDelta);
+
 			return building.m_Model;
 		}
 	}

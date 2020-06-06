@@ -1294,7 +1294,7 @@ void Editor::BackupData()
 template <typename T>
 void Editor::TrySaveObject(T* object)
 {
-	if (!g_Editor->GetOptions()->GetSaveDisabled())
+	if (g_Editor->GetOptions()->GetSaveSystemEnabled())
 	{
 		BackupData();
 		object->Serialize(true);
@@ -1352,7 +1352,7 @@ void Editor::RenderImgui()
 			{
 				LoadWorld();
 			}
-			if (ImGui::MenuItem("Reset World"))
+			if (ImGui::MenuItem("Unload World"))
 			{
 				UnloadWorld();
 			}
@@ -1364,7 +1364,8 @@ void Editor::RenderImgui()
 			{
 				TrySaveObject(g_Editor);
 				TrySaveObject(&Renderer::GetInstance());
-				if (world)
+				bool saveWorld = m_Options->GetSaveWorldEnabled();
+				if (world && saveWorld)
 				{
 					TrySaveObject(world);
 				}
@@ -1383,7 +1384,8 @@ void Editor::RenderImgui()
 			}
 			if (ImGui::MenuItem("Save world"))
 			{
-				if (world)
+				bool saveWorld = m_Options->GetSaveWorldEnabled();
+				if (world && saveWorld)
 				{
 					TrySaveObject(world);
 				}

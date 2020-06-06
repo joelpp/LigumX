@@ -42,8 +42,10 @@ bool GetDebugDisplay() { return m_DebugDisplay; };
 void SetDebugDisplay(bool value) { m_DebugDisplay = value; }; 
 bool GetDisplayMessages() { return m_DisplayMessages; }; 
 void SetDisplayMessages(bool value) { m_DisplayMessages = value; }; 
-bool GetSaveDisabled() { return m_SaveDisabled; }; 
-void SetSaveDisabled(bool value) { m_SaveDisabled = value; }; 
+bool GetSaveWorldEnabled() { return m_SaveWorldEnabled; }; 
+void SetSaveWorldEnabled(bool value) { m_SaveWorldEnabled = value; }; 
+bool GetSaveSystemEnabled() { return m_SaveSystemEnabled; }; 
+void SetSaveSystemEnabled(bool value) { m_SaveSystemEnabled = value; }; 
 bool GetDisplayPickingTool() { return m_DisplayPickingTool; }; 
 void SetDisplayPickingTool(bool value) { m_DisplayPickingTool = value; }; 
 bool GetDisplayOSMTool() { return m_DisplayOSMTool; }; 
@@ -78,7 +80,8 @@ bool m_ShowObjectManager = false;
 bool m_BackupDataOnSave = false;
 bool m_DebugDisplay = false;
 bool m_DisplayMessages = true;
-bool m_SaveDisabled = false;
+bool m_SaveWorldEnabled = false;
+bool m_SaveSystemEnabled = true;
 bool m_DisplayPickingTool = false;
 bool m_DisplayOSMTool = false;
 bool m_DisplaySectorTool = true;
@@ -91,7 +94,7 @@ glm::vec2 m_DefaultMessagePosition = glm::vec2(0, 0);
 float m_DefaultMessageScale = 0.f;
 float m_DefaultMessageTime = 50;
 public:
-static const int g_PropertyCount = 23;
+static const int g_PropertyCount = 24;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EditorOptionsPIDX
@@ -107,7 +110,8 @@ PIDX_ShowObjectManager,
 PIDX_BackupDataOnSave,
 PIDX_DebugDisplay,
 PIDX_DisplayMessages,
-PIDX_SaveDisabled,
+PIDX_SaveWorldEnabled,
+PIDX_SaveSystemEnabled,
 PIDX_DisplayPickingTool,
 PIDX_DisplayOSMTool,
 PIDX_DisplaySectorTool,

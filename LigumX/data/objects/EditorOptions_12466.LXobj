@@ -24,8 +24,10 @@ DebugDisplay
 1
 DisplayMessages
 1
-SaveDisabled
+SaveWorldEnabled
 0
+SaveSystemEnabled
+1
 DisplayPickingTool
 0
 DisplayOSMTool

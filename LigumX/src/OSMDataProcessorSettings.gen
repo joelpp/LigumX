@@ -15,13 +15,24 @@ class OSMDataProcessorSettings
 	float MinNeighborDistance = 30.f;
 	float MaxNeighborDistance = 70.f;
 
+	float RoadWidth = 30.f;
+	float RoadHeight = 0.1f;
+	float FillInHeight = 0.05f;
+	float AlleyWidth = 20.f;
+	float BuildingHeightBase = 30.f;
+	float BuildingHeightVariance = 5.f;
+
 	bool ProcessAddressInterpolation = true;
 
 	bool CheckPointInRoad = false;
 	bool CheckPointInBuilding = false;
 
 	Material* AlleyMaterial;
+	Material* ParkingMaterial;
 	Material* RoadMaterial;
 	Material* GenericBuildingMaterial;
+	Material* RockMaterial;
+	Material* GrassMaterial;
+	Material* AdressInterpolationMaterial;
 
 }

@@ -11,8 +11,10 @@ class EditorOptions
 	bool BackupDataOnSave;
 	bool DebugDisplay;
 	bool DisplayMessages = true;
-	bool SaveDisabled;
 
+	bool SaveWorldEnabled = false;
+	bool SaveSystemEnabled = true;
+	
 	bool DisplayPickingTool = false;
 	bool DisplayOSMTool = false;
 	bool DisplaySectorTool = true;

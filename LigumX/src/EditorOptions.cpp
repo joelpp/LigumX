@@ -17,7 +17,8 @@ const ClassPropertyData EditorOptions::g_Properties[] =
 { "BackupDataOnSave", PIDX_BackupDataOnSave, offsetof(EditorOptions, m_BackupDataOnSave), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DebugDisplay", PIDX_DebugDisplay, offsetof(EditorOptions, m_DebugDisplay), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayMessages", PIDX_DisplayMessages, offsetof(EditorOptions, m_DisplayMessages), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
-{ "SaveDisabled", PIDX_SaveDisabled, offsetof(EditorOptions, m_SaveDisabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "SaveWorldEnabled", PIDX_SaveWorldEnabled, offsetof(EditorOptions, m_SaveWorldEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "SaveSystemEnabled", PIDX_SaveSystemEnabled, offsetof(EditorOptions, m_SaveSystemEnabled), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayPickingTool", PIDX_DisplayPickingTool, offsetof(EditorOptions, m_DisplayPickingTool), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplayOSMTool", PIDX_DisplayOSMTool, offsetof(EditorOptions, m_DisplayOSMTool), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "DisplaySectorTool", PIDX_DisplaySectorTool, offsetof(EditorOptions, m_DisplaySectorTool), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -44,7 +45,8 @@ void EditorOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_BackupDataOnSave], m_BackupDataOnSave);
 	serializer.SerializeBool(g_Properties[PIDX_DebugDisplay], m_DebugDisplay);
 	serializer.SerializeBool(g_Properties[PIDX_DisplayMessages], m_DisplayMessages);
-	serializer.SerializeBool(g_Properties[PIDX_SaveDisabled], m_SaveDisabled);
+	serializer.SerializeBool(g_Properties[PIDX_SaveWorldEnabled], m_SaveWorldEnabled);
+	serializer.SerializeBool(g_Properties[PIDX_SaveSystemEnabled], m_SaveSystemEnabled);
 	serializer.SerializeBool(g_Properties[PIDX_DisplayPickingTool], m_DisplayPickingTool);
 	serializer.SerializeBool(g_Properties[PIDX_DisplayOSMTool], m_DisplayOSMTool);
 	serializer.SerializeBool(g_Properties[PIDX_DisplaySectorTool], m_DisplaySectorTool);
@@ -80,7 +82,8 @@ bool EditorOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_BackupDataOnSave], &m_BackupDataOnSave  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DebugDisplay], &m_DebugDisplay  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayMessages], &m_DisplayMessages  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SaveDisabled], &m_SaveDisabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SaveWorldEnabled], &m_SaveWorldEnabled  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_SaveSystemEnabled], &m_SaveSystemEnabled  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayPickingTool], &m_DisplayPickingTool  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplayOSMTool], &m_DisplayOSMTool  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_DisplaySectorTool], &m_DisplaySectorTool  );
@@ -109,7 +112,8 @@ void EditorOptions::Clone(LXObject* otherObj)
 	other->SetBackupDataOnSave(m_BackupDataOnSave);
 	other->SetDebugDisplay(m_DebugDisplay);
 	other->SetDisplayMessages(m_DisplayMessages);
-	other->SetSaveDisabled(m_SaveDisabled);
+	other->SetSaveWorldEnabled(m_SaveWorldEnabled);
+	other->SetSaveSystemEnabled(m_SaveSystemEnabled);
 	other->SetDisplayPickingTool(m_DisplayPickingTool);
 	other->SetDisplayOSMTool(m_DisplayOSMTool);
 	other->SetDisplaySectorTool(m_DisplaySectorTool);

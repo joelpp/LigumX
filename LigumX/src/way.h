@@ -93,5 +93,6 @@ public:
 	bool IsBareRock() { return m_OSMElementType == OSMElementType_NaturalBareRock; }
 	bool IsLandUseRetail() { return m_OSMElementType == OSMElementType_LanduseRetail; }
 	bool IsLandUseIndustrial() { return m_OSMElementType == OSMElementType_LanduseIndustrial; }
+	bool IsParking() { return m_OSMElementType == OSMElementType_AmenityParking; }
 };
 
