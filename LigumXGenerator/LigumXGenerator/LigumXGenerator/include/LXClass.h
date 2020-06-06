@@ -15,13 +15,14 @@ enum PropertyFlags
 	PropertyFlags_ReadOnly			= 1 << 1,
 	PropertyFlags_SetCallback		= 1 << 2,
 	PropertyFlags_GetCallback		= 1 << 3,
-	PropertyFlags_MinValue			= 1 << 4,
-	PropertyFlags_MaxValue			= 1 << 5,
-	PropertyFlags_Transient			= 1 << 6,
-	PropertyFlags_NonEditable		= 1 << 7,
-	PropertyFlags_Adder				= 1 << 8,
-	PropertyFlags_Enum				= 1 << 9,
-	PropertyFlags_NoCloning			= 1 << 10,
+	PropertyFlags_AddCallback		= 1 << 4,
+	PropertyFlags_MinValue			= 1 << 5,
+	PropertyFlags_MaxValue			= 1 << 6,
+	PropertyFlags_Transient			= 1 << 7,
+	PropertyFlags_NonEditable		= 1 << 8,
+	PropertyFlags_Adder				= 1 << 9,
+	PropertyFlags_Enum				= 1 << 10,
+	PropertyFlags_NoCloning			= 1 << 11,
 };
 
 

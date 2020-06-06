@@ -8,6 +8,7 @@
 #include "CurlRequest.h"
 #include "PerlinNoise.h"
 #include "BoundingBoxComponent.h"
+#include "Visual.h"
 
 #pragma region  CLASS_SOURCE Sector
 
@@ -192,7 +193,10 @@ void Sector::CreateHeightfield()
 	terrainMaterial->SetDiffuseTexture(grassTexture);
 
 	Model* terrainPatchModel = new Model(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
-	m_TerrainPatchEntity->SetModel(terrainPatchModel);
+
+	Visual* visual = g_ObjectManager->CreateNewObject<Visual>();
+	visual->SetModel(terrainPatchModel);
+	m_TerrainPatchEntity->AddTo_Components(visual);
 
 	BoundingBoxComponent* bb = m_TerrainPatchEntity->GetComponent<BoundingBoxComponent>();
 	bb->SetStartAndScale(worldPosition, scale);

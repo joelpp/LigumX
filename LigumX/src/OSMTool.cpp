@@ -19,6 +19,7 @@
 
 #include "RenderDataManager.h"
 #include "OSMDataProcessor.h"
+#include "Visual.h"
 
 #pragma region  CLASS_SOURCE OSMTool
 
@@ -164,7 +165,8 @@ bool OSMTool::Process(bool isActiveTool, bool mouseButton1Down, const glm::vec2&
 			Sector* sector = g_World->GetSectorByIndex(normalizedSectorIndex);
 			bool inRoad = PointInRoad(sector, m_WorldSpacePosition);
 
-			Material* material = g_DefaultObjects->DefaultManipulatorEntity->GetModel()->GetMaterials()[0];
+			Visual* visual = g_DefaultObjects->DefaultManipulatorEntity->GetComponent<Visual>();
+			Material* material = visual->GetModel()->GetMaterials()[0];
 			g_DefaultObjects->DefaultManipulatorEntity->SetPosition(m_WorldSpacePosition);
 
 			glm::vec3 diffuseColor = inRoad ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
@@ -336,7 +338,8 @@ void OSMTool::SetCOMMAND_CreateAllEntityModels_Callback(const bool& value)
 				if (entity)
 				{
 					OSMElementComponent* osmElementComponent = entity->GetComponent<OSMElementComponent>();
-					if (osmElementComponent && (osmElementComponent->GetParentEntity()->GetModel() == nullptr))
+					Visual* visual = osmElementComponent->GetParentEntity()->GetComponent<Visual>();
+					if (osmElementComponent && (visual == nullptr))
 					{
 						osmElementComponent->SetCOMMAND_CreateModel(true);
 					}

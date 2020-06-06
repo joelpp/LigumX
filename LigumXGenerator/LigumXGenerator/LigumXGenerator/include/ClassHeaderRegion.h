@@ -199,9 +199,18 @@ public:
 
 			if (vector)
 			{
+				bool hasAddCallback = var.m_PropertyFlags & PropertyFlags_AddCallback;
+				std::string functionText = hasAddCallback ? "AddTo_" + var.m_Name + "_Callback(value);"
+														 : "m_" + var.m_Name + ".push_back(value);";
 				m_Stream << "void AddTo_" << var.m_Name << "(" << var.m_AssociatedType << (var.m_AssociatedPtr ? "*" : "");
-				m_Stream << " value) { m_" << var.m_Name << ".push_back(value); };";
+				m_Stream << " value) { " << functionText << " };";
 				m_Stream << std::endl;
+
+				if (hasAddCallback)
+				{
+					m_Stream << "void AddTo_" << var.m_Name << "_Callback(" << var.m_AssociatedType << (var.m_AssociatedPtr ? "*" : "") << " value);";
+					m_Stream << std::endl;
+				}
 			}
 
 		}

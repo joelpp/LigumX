@@ -4,6 +4,7 @@
 #include "Editor.h"
 #include "PickingTool.h"
 #include "Model.h"
+#include "Visual.h"
 #include "Material.h"
 
 #pragma region  CLASS_SOURCE MaterialTool
@@ -66,7 +67,8 @@ void MaterialTool::DrawImguiWindow()
 
 	if (m_PickedEntity)
 	{
-		Model* model = m_PickedEntity->GetModel();
+		Visual* visual = m_PickedEntity->GetComponent<Visual>();
+		Model* model = visual->GetModel();
 
 		if (model)
 		{

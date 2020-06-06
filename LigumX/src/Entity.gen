@@ -24,11 +24,9 @@ class Entity
 	[readonly, transient, nocloning]
 	float PickingID;
 
-	[setcallback]
-	Model* Model;
-
 	bool IsLight;
 
+	[addcallback]
 	std::vector<Component*> Components;
 
 	[setcallback, transient]

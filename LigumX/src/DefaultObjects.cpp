@@ -5,6 +5,7 @@
 
 #include "Mesh.h"
 #include "Model.h"
+#include "Visual.h"
 
 #include "ObjectManager.h"
 #include "EngineSettings.h"
@@ -183,8 +184,12 @@ void DefaultObjects::InitializeManipulator()
 	DefaultCubeModel->SetObjectID(g_ObjectManager->DefaultCubeModelID);
 	DefaultCubeModel->addMesh(DefaultCubeMesh, DefaultRedMaterial);
 
-	DefaultManipulatorEntity->SetModel(DefaultCubeModel);
+	Visual* visual = g_ObjectManager->CreateNewObject<Visual>();
+	visual->SetModel(DefaultCubeModel);
+	DefaultManipulatorEntity->AddTo_Components(visual);
+
 	DefaultManipulatorEntity->SetScale(glm::vec3(0.1f));
+
 }
 
 void DefaultObjects::InitializeDefaultLine()

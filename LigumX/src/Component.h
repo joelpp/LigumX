@@ -23,16 +23,20 @@ virtual LXType GetLXType() { return LXType_Component; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef LXObject super;
 
+bool GetEnabled() { return m_Enabled; }; 
+void SetEnabled(bool value) { m_Enabled = value; }; 
 Entity*& GetParentEntity() { return m_ParentEntity; }; 
 void SetParentEntity(Entity* value) { m_ParentEntity = value; }; 
 private:
+bool m_Enabled = true;
 Entity* m_ParentEntity = nullptr;
 public:
-static const int g_PropertyCount = 1;
+static const int g_PropertyCount = 2;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_ComponentPIDX
 {
+PIDX_Enabled,
 PIDX_ParentEntity,
 };
 virtual void Serialize(Serializer2& serializer);

@@ -3,6 +3,7 @@
 #include "RenderDataManager.h"
 #include "OSMDataProcessor.h"
 #include "Editor.h"
+#include "Visual.h"
 
 #pragma region  CLASS_SOURCE OSMElementComponent
 
@@ -71,13 +72,17 @@ void OSMElementComponent::DebugDisplay()
 
 void OSMElementComponent::SetCOMMAND_CreateModel_Callback(const bool& value)
 {
-	if (value && (GetParentEntity() != nullptr) && (GetParentEntity()->GetModel() == nullptr))
+	bool createModel = value && (GetParentEntity() != nullptr) && (GetParentEntity()->GetComponent<Visual>() == nullptr);
+	if (createModel)
 	{
 		Model* model = g_Editor->GetOSMDataProcessor()->CreateModelForWay(m_Way, GetParentEntity());
 		if (model)
 		{
 			lxMessage(lxFormat("Created model for %s", GetParentEntity()->GetName().c_str()));
-			GetParentEntity()->SetModel(model);
+			
+			Visual* visual = g_ObjectManager->CreateNewObject<Visual>();
+			visual->SetModel(model);
+			GetParentEntity()->AddTo_Components(visual);
 		}
 		else
 		{

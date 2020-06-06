@@ -28,6 +28,7 @@
 #include "Model.h"
 #include "World.h"
 #include "Entity.h"
+#include "Visual.h"
 #include "OSMElementComponent.h"
 #include "Sector.h"
 #include "Sunlight.h"
@@ -952,8 +953,6 @@ void Renderer::RenderTerrain()
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	Material* terrainMaterial = nullptr;
-
 	SetFragmentUniform(4, "g_DirtTexture");
 	Bind2DTexture(4, g_Editor->GetDefaultTextureHolder()->GetDirtTexture());
 
@@ -976,18 +975,24 @@ void Renderer::RenderTerrain()
 			if (entity)
 			{
 				SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
-				terrainMaterial = entity->GetModel()->GetMaterials()[0];
 
-				SetFragmentUniform(7, "g_AlbedoTexture");
-				Bind2DTexture(7, sector->GetGraphicalData()->GetAlbedoTexture()->GetHWObject());
+				Visual* visual = entity->GetComponent<Visual>();
+				if (visual)
+				{
+					Material* terrainMaterial = visual->GetModel()->GetMaterials()[0];
 
-				SetFragmentUniform(1, "g_SplatMapTexture");
-				Bind2DTexture(1, sector->GetSplatMapTexture()->GetHWObject());
+					SetFragmentUniform(7, "g_AlbedoTexture");
+					Bind2DTexture(7, sector->GetGraphicalData()->GetAlbedoTexture()->GetHWObject());
 
-				SetFragmentUniform(3, "g_HeightfieldTexture");
-				Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
+					SetFragmentUniform(1, "g_SplatMapTexture");
+					Bind2DTexture(1, sector->GetSplatMapTexture()->GetHWObject());
 
-				DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
+					SetFragmentUniform(3, "g_HeightfieldTexture");
+					Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
+
+					DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
+				}
+
 			}
 		}
 	}
@@ -1044,14 +1049,20 @@ void Renderer::RenderShadowMap()
 		}
 
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
-		Model * model = entity->GetModel();
-		for (int i = 0; i < model->GetMeshes().size(); ++i)
+
+		Visual* visual = entity->GetComponent<Visual>();
+		if (visual)
 		{
-			glBindVertexArray(model->GetMeshes()[i]->m_VAO);
-			DrawMesh(model->GetMeshes()[i]);
+			Model* model = visual->GetModel();
+			for (int i = 0; i < model->GetMeshes().size(); ++i)
+			{
+				glBindVertexArray(model->GetMeshes()[i]->m_VAO);
+				DrawMesh(model->GetMeshes()[i]);
+			}
+
+			GL::OutputErrors();
 		}
 
-		GL::OutputErrors();
 	}
 
 
@@ -1062,11 +1073,7 @@ void Renderer::RenderOpaque()
 {
 	lxGPUProfile(RenderOpaque);
 
-	if (!m_DisplayOptions->GetRenderOpaque())
-	{
-		return;
-	}
-
+	
 	GL::SetDepthFunction(GL::Depth_Less);
 	GL::SetCapability(GL::CullFace, false);
 
@@ -1075,15 +1082,20 @@ void Renderer::RenderOpaque()
 	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	glDrawBuffers(2, attachments);
 
-	RenderEntities(ShaderFamily_Basic, g_RenderDataManager->GetVisibleEntities());
-
-	if (g_Editor->GetOptions()->GetDebugDisplay() && m_World)
+	if (m_DisplayOptions->GetRenderOpaque())
 	{
-		RenderEntities(ShaderFamily_Basic, m_World->GetDebugEntities());
+		RenderEntities(ShaderFamily_Basic, g_RenderDataManager->GetVisibleEntities());
+
+		if (g_Editor->GetOptions()->GetDebugDisplay() && m_World)
+		{
+			RenderEntities(ShaderFamily_Basic, m_World->GetDebugEntities());
+		}
 	}
 
 	if (m_DisplayOptions->GetShowDebugIcons() && m_World)
 	{
+		SetPipeline(ShaderFamily_Basic);
+
 		for (Entity* entity : m_World->GetEntities()) // todo jpp : only do visible but hard for now with separate model loading etc.
 		{
 			glm::mat4 toWorld = entity->GetModelToWorldMatrix();
@@ -1213,12 +1225,13 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 
 		SetVertexUniform(3, "g_HeightfieldTexture");
 		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
-
-		if (entity->GetModel())
+		
+		Visual* visual = entity->GetComponent<Visual>();
+		if (visual && visual->GetModel())
 		{
-			for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
+			for (int i = 0; i < visual->GetModel()->GetMeshes().size(); ++i)
 			{
-				DrawMesh(entity->GetModel()->GetMeshes()[i]);
+				DrawMesh(visual->GetModel()->GetMeshes()[i]);
 			}
 		}
 	}
@@ -1230,10 +1243,15 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 	
-		for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
+		Visual* visual = entity->GetComponent<Visual>();
+		if (visual)
 		{
-			DrawMesh(entity->GetModel()->GetMeshes()[i]);
+			for (int i = 0; i < visual->GetModel()->GetMeshes().size(); ++i)
+			{
+				DrawMesh(visual->GetModel()->GetMeshes()[i]);
+			}
 		}
+
 	}
 	
 	if (debugEntities)
@@ -1243,9 +1261,13 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 			SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
-			for (int i = 0; i < entity->GetModel()->GetMeshes().size(); ++i)
+			Visual* visual = entity->GetComponent<Visual>();
+			if (visual)
 			{
-				DrawMesh(entity->GetModel()->GetMeshes()[i]);
+				for (int i = 0; i < visual->GetModel()->GetMeshes().size(); ++i)
+				{
+					DrawMesh(visual->GetModel()->GetMeshes()[i]);
+				}
 			}
 		}
 	}
@@ -1287,10 +1309,19 @@ void Renderer::BeginFrame(World* world)
 	{
 		for (Entity* entity : m_World->GetEntities())
 		{
+
 			if (entity->GetIsLight())
 			{
+				glm::vec3 diffuseColor = glm::vec3(1, 1, 1);
+				Visual* visual = entity->GetComponent<Visual>();
+
+				if (visual && visual->GetModel())
+				{
+					diffuseColor = visual->GetModel()->GetMaterials()[0]->GetDiffuseColor();
+				}
+
 				m_TestLight[m_NumLights].m_Position = entity->GetPosition();
-				m_TestLight[m_NumLights].m_DiffuseColor = entity->GetModel()->GetMaterials()[0]->GetDiffuseColor();
+				m_TestLight[m_NumLights].m_DiffuseColor = diffuseColor;
 				m_TestLight[m_NumLights].m_SpecularColor = m_TestLight[m_NumLights].m_DiffuseColor;
 				m_TestLight[m_NumLights].m_AmbientColor = m_TestLight[m_NumLights].m_DiffuseColor;
 
@@ -1715,7 +1746,11 @@ void Renderer::RenderEntities(ShaderFamily family, const std::vector<Entity*>& e
 			continue;
 		}
 
-		DrawModel(entity, entity->GetModel());
+		Visual* visual = entity->GetComponent<Visual>();
+		if (visual && visual->GetModel())
+		{
+			DrawModel(entity, visual->GetModel());
+		}
 	}
 }
 
@@ -1728,7 +1763,11 @@ void Renderer::RenderEntities(std::vector<Entity*> entities)
 			continue;
 		}
 
-		DrawModel(entity, entity->GetModel());
+		Visual* visual = entity->GetComponent<Visual>();
+		if (visual && visual->GetModel())
+		{
+			DrawModel(entity, visual->GetModel());
+		}
 	}
 }
 

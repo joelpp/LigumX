@@ -19,6 +19,7 @@
 #include "MainWindow.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "Visual.h"
 #include "GUI.h"
 
 #include "SunLight.h"
@@ -1249,18 +1250,6 @@ void Editor::SaveObjectFromCreator(T* object)
 	object->Serialize(true);
 }
 
-template<>
-void Editor::SaveObjectFromCreator(Entity* newEntity)
-{
-	World* world = LigumX::GetInstance().GetWorld();
-	
-	if (world)
-	{
-		newEntity->GetModel()->Serialize(false);
-		world->GetEntities().push_back(newEntity);
-	}
-}
-
 template <typename T>
 void Editor::ShowObjectCreator()
 {
@@ -1510,9 +1499,13 @@ void Editor::RenderImgui()
 		if (GetPickingTool()->GetPickedEntity())
 		{
 			int i = 0;
-			for (Material*& material : GetPickingTool()->GetPickedEntity()->GetModel()->GetMaterials())
+			Visual* visual = GetPickingTool()->GetPickedEntity()->GetComponent<Visual>();
+			if (visual)
 			{
-				ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
+				for (Material*& material : visual->GetModel()->GetMaterials())
+				{
+					ShowPropertyGridTemplate<Material>(material, ("Material #" + std::to_string(i++)).c_str());
+				}
 			}
 		}
 		else

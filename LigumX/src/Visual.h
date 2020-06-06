@@ -22,18 +22,21 @@ virtual LXType GetLXType() { return LXType_Visual; }
 virtual const char* GetLXClassName() { return ClassName; }
 typedef Component super;
 
-std::vector<Model*>& GetModels() { return m_Models; }; 
-void SetModels(std::vector<Model*> value) { m_Models = value; }; 
-void AddTo_Models(Model* value) { m_Models.push_back(value); };
+bool GetEnabled() { return m_Enabled; }; 
+void SetEnabled(bool value) { m_Enabled = value; }; 
+Model*& GetModel() { return m_Model; }; 
+void SetModel(Model* value) { m_Model = value; }; 
 private:
-std::vector<Model*> m_Models;
+bool m_Enabled = true;
+Model* m_Model = nullptr;
 public:
-static const int g_PropertyCount = 1;
+static const int g_PropertyCount = 2;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_VisualPIDX
 {
-PIDX_Models,
+PIDX_Enabled,
+PIDX_Model,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

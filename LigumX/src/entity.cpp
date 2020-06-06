@@ -2,13 +2,13 @@
 
 #include "glm/glm.hpp"
 #include "Model.h"
+#include "Visual.h"
 #include "BoundingBoxComponent.h"
 
 #pragma region  CLASS_SOURCE Entity
 
 #include "Entity.h"
 #include "serializer.h"
-#include "Model.h"
 #include "Component.h"
 const ClassPropertyData Entity::g_Properties[] = 
 {
@@ -20,7 +20,6 @@ const ClassPropertyData Entity::g_Properties[] =
 { "Scale", PIDX_Scale, offsetof(Entity, m_Scale), 0, LXType_glmvec3, sizeof(glm::vec3), LXType_glmvec3, false, LXType_None, false, PropertyFlags_SetCallback, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, WriteSetFunction(Entity, Scale, glm::vec3),}, 
 { "HasMoved", PIDX_HasMoved, offsetof(Entity, m_HasMoved), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(Entity, HasMoved, bool),}, 
 { "PickingID", PIDX_PickingID, offsetof(Entity, m_PickingID), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, PropertyFlags_Transient | PropertyFlags_NoCloning, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
-{ "Model", PIDX_Model, offsetof(Entity, m_Model), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Entity, Model, Model*),}, 
 { "IsLight", PIDX_IsLight, offsetof(Entity, m_IsLight), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "Components", PIDX_Components, offsetof(Entity, m_Components), 0, LXType_stdvector, sizeof(std::vector<Component*>), LXType_stdvector, false, LXType_Component, true, 0, 0, 0, 0,}, 
 { "COMMAND_LoadModel", PIDX_COMMAND_LoadModel, offsetof(Entity, m_COMMAND_LoadModel), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback | PropertyFlags_Transient, 0, 0, WriteSetFunction(Entity, COMMAND_LoadModel, bool),}, 
@@ -33,7 +32,6 @@ void Entity::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_RotationAngle], m_RotationAngle);
 	serializer.SerializeVec3(g_Properties[PIDX_RotationAxis], m_RotationAxis);
 	serializer.SerializeVec3(g_Properties[PIDX_Scale], m_Scale);
-	serializer.SerializeObjectPtr(g_Properties[PIDX_Model], m_Model);
 	serializer.SerializeBool(g_Properties[PIDX_IsLight], m_IsLight);
 	serializer.SerializeVector(g_Properties[PIDX_Components], m_Components);
 }
@@ -57,7 +55,6 @@ bool Entity::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Scale], &m_Scale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_HasMoved], &m_HasMoved  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_PickingID], &m_PickingID , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Model], &m_Model  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_IsLight], &m_IsLight  );
 	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Components], m_Components  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_COMMAND_LoadModel], &m_COMMAND_LoadModel  );
@@ -74,7 +71,6 @@ void Entity::Clone(LXObject* otherObj)
 	other->SetRotationAxis(m_RotationAxis);
 	other->SetScale(m_Scale);
 	other->SetHasMoved(m_HasMoved);
-	other->SetModel(m_Model);
 	other->SetIsLight(m_IsLight);
 	other->SetComponents(m_Components);
 	other->SetCOMMAND_LoadModel(m_COMMAND_LoadModel);
@@ -122,8 +118,7 @@ Entity::Entity()
 	m_Scale = glm::vec3(1, 1, 1);
 
 	BoundingBoxComponent* bb = new BoundingBoxComponent();
-	bb->SetParentEntity(this);
-	m_Components.push_back(bb);
+	AddTo_Components(bb);
 
 	SetObjectID(g_ObjectManager->GetNewObjectID());
 }
@@ -172,29 +167,22 @@ void Entity::SetRotationAngle_Callback(const float& value)
 	SetHasMoved(true);
 }
 
-void Entity::SetModel_Callback(Model* model)
-{
-	m_Model = model;
-	UpdateAABB();
-}
-
 void Entity::UpdateAABB()
 {
 	glm::vec3 min = glm::vec3(9999999);
 	glm::vec3 max = glm::vec3(-9999999);;
 	
-	bool success = m_Model && m_Model->GetMinMax(min, max);
+	Visual* visual = GetComponent<Visual>();
+	bool success = visual && visual->GetModel()->GetMinMax(min, max);
 	//glm::vec4 min4 = glm::vec4(min, 1.f);
 	//glm::vec4 max4 = glm::vec4(max, 1.f);
 	// todo jpp handle rotation
-
 
 	if (success)
 	{
 		BoundingBoxComponent* bbComponent = GetComponent<BoundingBoxComponent>();
 		if (bbComponent)
 		{
-			bbComponent->SetParentEntity(this);;
 			bbComponent->SetStartAndScale(min, max - min);
 		}
 	}
@@ -228,12 +216,20 @@ void Entity::SetCOMMAND_LoadModel_Callback(const bool& value)
 {
 	if (value )
 	{
-		m_Model->LoadModel();
+		Visual* visual = GetComponent<Visual>();
+		if (visual)
+		{
+			visual->GetModel()->LoadModel();
+		}
 	}
 	// todo jpp : handle model unloading / reloading
 }
 
-
+void Entity::AddTo_Components_Callback(Component* value)
+{
+	value->SetParentEntity(this);
+	m_Components.push_back(value);
+}
 
 void Entity::DebugDisplay()
 {

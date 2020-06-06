@@ -15,7 +15,6 @@
 class Serializer2;
 
 class Entity;
-class Model;
 class Component;
 
 
@@ -55,14 +54,12 @@ void SetHasMoved(bool value) { SetHasMoved_Callback(value); };
 void SetHasMoved_Callback(const bool& value);
 float GetPickingID() { return m_PickingID; }; 
 void SetPickingID(float value) { m_PickingID = value; }; 
-Model*& GetModel() { return m_Model; }; 
-void SetModel(Model* value) { SetModel_Callback(value); }; 
-void SetModel_Callback(Model* value);
 bool GetIsLight() { return m_IsLight; }; 
 void SetIsLight(bool value) { m_IsLight = value; }; 
 std::vector<Component*>& GetComponents() { return m_Components; }; 
 void SetComponents(std::vector<Component*> value) { m_Components = value; }; 
-void AddTo_Components(Component* value) { m_Components.push_back(value); };
+void AddTo_Components(Component* value) { AddTo_Components_Callback(value); };
+void AddTo_Components_Callback(Component* value);
 bool GetCOMMAND_LoadModel() { return m_COMMAND_LoadModel; }; 
 void SetCOMMAND_LoadModel(bool value) { SetCOMMAND_LoadModel_Callback(value); }; 
 void SetCOMMAND_LoadModel_Callback(const bool& value);
@@ -75,12 +72,11 @@ glm::vec3 m_RotationAxis = glm::vec3(0, 0, 0);
 glm::vec3 m_Scale = glm::vec3(0, 0, 0);
 bool m_HasMoved = false;
 float m_PickingID = 0.f;
-Model* m_Model = nullptr;
 bool m_IsLight = false;
 std::vector<Component*> m_Components;
 bool m_COMMAND_LoadModel = false;
 public:
-static const int g_PropertyCount = 12;
+static const int g_PropertyCount = 11;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_EntityPIDX
@@ -93,7 +89,6 @@ PIDX_RotationAxis,
 PIDX_Scale,
 PIDX_HasMoved,
 PIDX_PickingID,
-PIDX_Model,
 PIDX_IsLight,
 PIDX_Components,
 PIDX_COMMAND_LoadModel,

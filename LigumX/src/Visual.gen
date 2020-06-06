@@ -1,5 +1,6 @@
 
 class Visual : Component
 {
-	std::vector<Model*> Models;
+	bool Enabled = true;
+	Model* Model;
 };

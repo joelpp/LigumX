@@ -1,5 +1,7 @@
 class Component
 {
+	bool Enabled = true;
+
 	[transient]
 	Entity* ParentEntity;
 }

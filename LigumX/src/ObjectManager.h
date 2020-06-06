@@ -145,6 +145,9 @@ public:
 	LXObject* CreateNewObject(LXType lxtype);
 	LXObject* CreateNewObject(const std::string& typeName);
 
+	template <typename T>
+	T* CreateNewObject() { return (T*) CreateNewObject(T::ClassName); }
+
 	LXObject* CloneObject(LXObject* objToClone);
 	void ReloadObject(LXObject** objToReload);
 

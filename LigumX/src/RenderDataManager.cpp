@@ -27,6 +27,7 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "Visual.h"
 #include "Material.h"
 
 #include "glm/gtx/transform.hpp"
@@ -626,7 +627,8 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 	{
 		bool visible = true;
 
-		if (e->GetModel() == nullptr)
+		Visual* visual = e->GetComponent<Visual>();
+		if (!visual || visual->GetModel() == nullptr)
 		{
 			continue;
 		}

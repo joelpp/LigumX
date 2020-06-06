@@ -6,6 +6,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Model.h"
+#include "Visual.h"
 #include "Renderer.h"
 #include "Editor.h"
 #include "OSMTool.h"
@@ -281,19 +282,23 @@ bool PointInRoad(Sector* sector, const glm::vec3& worldSpacePosition)
 {
 	for (Entity* entity : sector->GetGraphicalData()->GetRoadEntities())
 	{
-		Mesh* mesh = entity->GetModel()->GetMeshes()[0];
-
-		int numTriangles = (int)mesh->m_buffers.GetVertexPositions().size() / 3;
-		for (int i = 0; i < numTriangles; ++i)
+		Visual* visual = entity->GetComponent<Visual>();
+		if (visual)
 		{
-			int tIdx = i * 3;
-			const glm::vec3& v0 = mesh->m_buffers.GetVertexPositions()[tIdx + 0];
-			const glm::vec3& v1 = mesh->m_buffers.GetVertexPositions()[tIdx + 1];
-			const glm::vec3& v2 = mesh->m_buffers.GetVertexPositions()[tIdx + 2];
+			Mesh* mesh = visual->GetModel()->GetMeshes()[0];
 
-			if (PointInTriangle(worldSpacePosition, v0, v1, v2))
+			int numTriangles = (int)mesh->m_buffers.GetVertexPositions().size() / 3;
+			for (int i = 0; i < numTriangles; ++i)
 			{
-				return true;
+				int tIdx = i * 3;
+				const glm::vec3& v0 = mesh->m_buffers.GetVertexPositions()[tIdx + 0];
+				const glm::vec3& v1 = mesh->m_buffers.GetVertexPositions()[tIdx + 1];
+				const glm::vec3& v2 = mesh->m_buffers.GetVertexPositions()[tIdx + 2];
+
+				if (PointInTriangle(worldSpacePosition, v0, v1, v2))
+				{
+					return true;
+				}
 			}
 		}
 	}
@@ -605,6 +610,8 @@ Mesh* OSMDataProcessor::BuildGenericBuilding(Way* way, Entity* entity)
 		glm::vec3 right = glm::cross(direction, up);
 
 		glm::vec3 first = nodePos;
+
+		float buildingHeight = 30.f;
 		glm::vec3 second = nodePos + up * buildingHeight;
 
 		vertices.push_back(first);
@@ -909,7 +916,6 @@ void OSMDataProcessor::CreateEntity(Way* way)
 	OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
 	osmElementComponent->SetWay(way);
 	newEntity->AddTo_Components(osmElementComponent);
-	osmElementComponent->SetParentEntity(newEntity);
 
 	glm::vec3 entityPos = glm::vec3(0, 0, 0);
 	glm::vec3 entityMin = glm::vec3(LX_LIMITS_FLOAT_MAX);
@@ -950,7 +956,7 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 	{
 		Renderer& renderer = Renderer::GetInstance();
 
-		Model* buildingModel = new Model();
+		Model* buildingModel = g_ObjectManager->CreateNewObject<Model>();
 		Material* brickWallMaterial = g_ObjectManager->FindObjectByID<Material>(g_BrickMaterialID);
 
 		lxAssert(brickWallMaterial);
@@ -959,17 +965,18 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 		buildingModel->SetName("AddrInterpolation_Test");
 
 
-		Entity* buildingEntity = new Entity();
+		Entity* buildingEntity = g_ObjectManager->CreateNewObject<Entity>();
 		buildingEntity->SetName("OSM_GENERATED_ADDRINTERP - " + way->GetName());
-		buildingEntity->SetModel(buildingModel);
 
+		Visual* visual = g_ObjectManager->CreateNewObject<Visual>();
+		visual->SetModel(buildingModel);
+
+		buildingEntity->AddTo_Components(visual);
 		buildingEntity->SetVisible(true);
 
 		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
 		osmElementComponent->SetWay(way);
 		buildingEntity->AddTo_Components(osmElementComponent);
-		//World* world = LigumX::GetInstance().GetWorld();
-		//world->AddTo_Entities(roadEntity);
 
 		sector->GetGraphicalData()->GetStaticEntities().push_back(buildingEntity);
 	}
@@ -986,16 +993,17 @@ void OSMDataProcessor::ProcessAddressInterpolation(Sector* sector, Way* way)
 		groundModel->SetName("AddrInterpolation_Test_Ground");
 
 		Entity* groundEntity = new Entity();
+
 		groundEntity->SetName("OSM_GENERATED_Ground_ADDRINTERP - " + way->GetName());
-		groundEntity->SetModel(groundModel);
+		Visual* visual = g_ObjectManager->CreateNewObject<Visual>();
+		visual->SetModel(groundModel);
 
 		groundEntity->SetVisible(true);
+		groundEntity->AddTo_Components(visual);
 
 		OSMElementComponent* osmElementComponent = g_ObjectManager->CreateObject<OSMElementComponent>();
 		osmElementComponent->SetWay(way);
 		groundEntity->AddTo_Components(osmElementComponent);
-		//World* world = LigumX::GetInstance().GetWorld();
-		//world->AddTo_Entities(roadEntity);
 
 		sector->GetGraphicalData()->GetStaticEntities().push_back(groundEntity);
 	}
