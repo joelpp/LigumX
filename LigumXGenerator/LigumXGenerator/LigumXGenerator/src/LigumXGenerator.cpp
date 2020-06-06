@@ -1025,19 +1025,33 @@ std::vector<FileDisplayInformation> GetAllFiles()
 
 void RunDataMigrationTool()
 {
+	enum SourceDataOperation
+	{
+		SourceDataOperation_Replace,
+		SourceDataOperation_Add,
+	};
+
 	char userInput[256];
 
 	PrintLine("Enter class type to migrate FROM (source):");
 	std::cin >> userInput;
 	std::string classSource = std::string(userInput);
 
-	PrintLine("Enter member name to migrate:");
+	PrintLine("Enter member name to remove:");
 	std::cin >> userInput;
 	std::string classMember = std::string(userInput);
+
+	PrintLine("Enter member name to add:");
+	std::cin >> userInput;
+	std::string classMemberNew = std::string(userInput);
 
 	PrintLine("Enter class type to migrate TO (destination):");
 	std::cin >> userInput;
 	std::string classDest = std::string(userInput);
+
+	PrintLine("Enter source data operation (0 = replace, 1 = add):");
+	std::cin >> userInput;
+	SourceDataOperation operation = (SourceDataOperation)std::atoi(userInput);
 
 	std::vector<FileDisplayInformation> allFiles = GetAllFiles();
 
@@ -1062,19 +1076,55 @@ void RunDataMigrationTool()
 		{
 			PrintLine(std::string("Processing file ") + info.m_Name);
 
-			std::vector<std::string> lines = readFileLines((g_PathObjects + info.m_Name).c_str());
+			std::string inName = g_PathObjects + info.m_Typename + "_" + std::to_string(info.m_ObjectID) + ".LXObj";
+			std::vector<std::string> lines = readFileLines(inName.c_str());
 
 			std::string oldValue = "";
 
-			bool found = false;
+			bool foundToRemove = false;
+			bool hasNewMember = false;
 			std::stringstream newLines;
 			for (int i = 0; i < lines.size(); ++i)
 			{
-				if (!found)
+				if (!foundToRemove)
 				{
 					if (lines[i] == classMember)
 					{
-						found = true;
+						foundToRemove = true;
+					}
+					if (lines[i] == classMemberNew)
+					{
+						hasNewMember = true;
+
+						newLines << lines[i] << std::endl;
+
+						bool nextLineIsNewMember = false;
+						bool isArraySize = true;
+						while (!nextLineIsNewMember)
+						{
+							if ((i + 1) >= lines.size())
+							{
+								break;
+							}
+
+							nextLineIsNewMember = std::isalpha(lines[i + 1][0]);
+
+							if (isArraySize)
+							{
+								int val = std::atoi(lines[i + 1].c_str());
+								val++;
+								newLines << val << std::endl;
+								isArraySize = false;
+							}
+							else
+							{
+								newLines << lines[i + 1] << std::endl;
+							}
+							i++;
+						}
+
+						newLines << nextID << std::endl;
+
 					}
 					else
 					{
@@ -1084,41 +1134,49 @@ void RunDataMigrationTool()
 				else
 				{
 					oldValue = lines[i];
-					found = false;
+					foundToRemove = false;
 					continue;
 				}
+			}
+			
+			if (!hasNewMember)
+			{
+				newLines << classMemberNew << std::endl;
+				newLines << nextID << std::endl;
 			}
 
 			if (oldValue != "")
 			{
-				std::ofstream out((g_PathObjects + info.m_Name).c_str());
+				std::ofstream out(inName.c_str());
 
 				if (out.is_open())
 				{
 					out << newLines.str().c_str();
 					out.close();
 				}
+
+				std::stringstream newFile;
+				newFile << "Name" << std::endl;
+				newFile << classDest << "_" << nextID << "_MigratedFrom_" << info.m_Typename << "_" << info.m_ObjectID << std::endl;
+				newFile << "ObjectID" << std::endl;
+				newFile << nextID << std::endl;
+				newFile << classMember << std::endl;
+				newFile << oldValue << std::endl;
+
+				std::string outPath = g_PathObjects + classDest + "_" + std::to_string(nextID) + ".LXObj";
+
+				std::ofstream out2(outPath.c_str());
+
+				if (out2.is_open())
+				{
+					out2 << newFile.str().c_str();
+					out2.close();
+				}
+
+				nextID++;
 			}
 
-			std::stringstream newFile;
-			newFile << "Name" << std::endl;
-			newFile << info.m_Typename << " _Migrated_" << nextID << std::endl;
-			newFile << "ObjectID" << std::endl;
-			newFile << nextID << std::endl;
-			newFile << classMember << std::endl;
-			newFile << oldValue << std::endl;
 
-			std::string outPath = g_PathObjects + classDest + "_" + std::to_string(nextID) + ".LXObj";
-
-			std::ofstream out((g_PathObjects + info.m_Name).c_str());
-
-			if (out.is_open())
-			{
-				out << newFile.str().c_str();
-				out.close();
-			}
-
-			nextID++;
 
 		}
 	}
