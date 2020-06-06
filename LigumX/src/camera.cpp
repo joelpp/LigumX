@@ -30,7 +30,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
-{ "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 2000.f, 0,}, 
+{ "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 30.f, 0,}, 
 { "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FOVY", PIDX_FOVY, offsetof(Camera, m_FOVY), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FPSCamera", PIDX_FPSCamera, offsetof(Camera, m_FPSCamera), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
@@ -73,7 +73,7 @@ bool Camera::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ProjectionType], &m_ProjectionType , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OrthoBorders], &m_OrthoBorders , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ViewSize], &m_ViewSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MovementSpeed], &m_MovementSpeed , 0.f, 2000.f );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MovementSpeed], &m_MovementSpeed , 0.f, 30.f );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], &m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FOVY], &m_FOVY , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSCamera], &m_FPSCamera  );

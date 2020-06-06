@@ -583,7 +583,6 @@ Mesh* OSMDataProcessor::BuildGenericBuilding(Way* way, Entity* entity)
 	std::vector<glm::vec3> normals;
 	glm::vec3 up = glm::vec3(0, 0, 1);
 
-	const float buildingHeight = 20.f;
 
 	const glm::vec3& centroid = entity->GetPosition();
 
@@ -1050,7 +1049,7 @@ Model* OSMDataProcessor::CreateModelForWay(Way* way, Entity* entity)
 
 
 	bool isAddressInterpolation = way->GetOSMElementType() == OSMElementType_AddressInterpolation;
-	if (false && isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
+	if (isAddressInterpolation && (m_AddressInterpolationsProcessed < m_MaxAddressInterpolationsToProcess))
 	{
 		// process them at the end when we have all our roads
 		addressInterpolationWays.push_back(way);

@@ -37,7 +37,7 @@ class Camera
 	float OrthoBorders
 	float ViewSize
 
-	[min=0, max=2000]
+	[min=0, max=30]
 	float MovementSpeed;
 
 	float KeyMovementSpeedIncreaseFactor = 1.5f;

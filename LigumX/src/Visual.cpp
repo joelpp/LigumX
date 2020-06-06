@@ -7,12 +7,12 @@
 #include "Model.h"
 const ClassPropertyData Visual::g_Properties[] = 
 {
-{ "Model", PIDX_Model, offsetof(Visual, m_Model), 0, LXType_ObjectPtr, sizeof(Model*), LXType_Model, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "Models", PIDX_Models, offsetof(Visual, m_Models), 0, LXType_stdvector, sizeof(std::vector<Model*>), LXType_stdvector, false, LXType_Model, true, 0, 0, 0, 0,}, 
 };
 void Visual::Serialize(Serializer2& serializer)
 {
 	super::Serialize(serializer);
-	serializer.SerializeObjectPtr(g_Properties[PIDX_Model], m_Model);
+	serializer.SerializeVector(g_Properties[PIDX_Models], m_Models);
 }
 bool Visual::Serialize(bool writing)
 {
@@ -26,14 +26,14 @@ bool Visual::Serialize(bool writing)
 bool Visual::ShowPropertyGrid()
 {
 	super::ShowPropertyGrid();
-	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Model], &m_Model  );
+	ImguiHelpers::ShowProperty3(this, g_Properties[PIDX_Models], m_Models  );
 	return true;
 }
 void Visual::Clone(LXObject* otherObj)
 {
 	super::Clone(otherObj);
 	Visual* other = (Visual*) otherObj;
-	other->SetModel(m_Model);
+	other->SetModels(m_Models);
 }
 const char* Visual::GetTypeName()
 {
