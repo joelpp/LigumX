@@ -12,6 +12,10 @@
 #include "StringUtils.h"
 #include "ForwardDeclarationRegion.h"
 
+#include <tchar.h> 
+#include <stdio.h>
+#include <strsafe.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifndef WIN32
@@ -181,6 +185,12 @@ void PrintLine(const char * line)
 {
 	std::cout << line << std::endl;
 }
+void PrintLine(const std::string& str)
+{
+	PrintLine(str.c_str());
+}
+
+
 
 void PrintEmptyLine()
 {
@@ -906,6 +916,215 @@ void OpenLogFile()
 	system(cmd.str().c_str());
 }
 
+const std::string g_PathMainData = "C:/Users/User/Documents/Code/LigumX/LigumX/data/";
+const std::string g_PathObjects = g_PathMainData + "objects/";
+
+struct FileDisplayInformation
+{
+	long int m_ObjectID;
+	std::string m_Typename;
+	std::string m_Name;
+	std::string m_AsText;
+
+	FileDisplayInformation(const std::string& fileName);
+};
+FileDisplayInformation::FileDisplayInformation(const std::string& fileName)
+{
+	bool valid = false;
+	std::vector<std::string> all = splitString(fileName, '_');
+
+	if (all.size() == 2)
+	{
+		std::vector<std::string> idType = splitString(all[1], '.');
+
+		if (idType.size() == 2)
+		{
+			m_ObjectID = atoi(idType[0].c_str());
+			m_Typename = all[0];
+			valid = true;
+		}
+	}
+
+	//lxAssert(valid);
+	if (valid)
+	{
+		// go get the name
+		// todo jpp : refactor this into a kind of "get data value from file"
+		std::fstream file = std::fstream((g_PathObjects + fileName).c_str(), std::fstream::in);
+
+		if (file.is_open())
+		{
+			std::string line;
+			bool foundName = false;
+			while (std::getline(file, line))
+			{
+				if (line == "Name" && !foundName)
+				{
+					foundName = true;
+					continue;
+				}
+				if (foundName)
+				{
+					m_Name = line;
+					break;
+				}
+			}
+			file.close();
+		}
+		m_AsText = m_Typename + " (" + std::to_string(m_ObjectID) + ") : " + m_Name;
+	}
+}
+
+std::vector<std::string> GetAllFilesInDirectory(const char* path)
+{
+	std::vector<std::string> out;
+
+	WIN32_FIND_DATA ffd;
+	LARGE_INTEGER filesize;
+	HANDLE hFind;
+
+	TCHAR szDir[MAX_PATH];
+	size_t length_of_arg;
+	//StringCchLength(path, MAX_PATH, &length_of_arg);
+	StringCchCopy(szDir, MAX_PATH, path);
+	StringCchCat(szDir, MAX_PATH, TEXT("*"));
+
+	hFind = FindFirstFileA(szDir, &ffd);
+
+	do
+	{
+		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+		}
+		else
+		{
+			std::string outPath = std::string(ffd.cFileName);
+			out.push_back(outPath);
+		}
+	} while (FindNextFile(hFind, &ffd) != 0);
+	FindClose(hFind);
+
+	return out;
+
+}
+
+std::vector<FileDisplayInformation> GetAllFiles()
+{
+
+	std::vector<FileDisplayInformation> files;
+	StringList allFileNames = GetAllFilesInDirectory(g_PathObjects.c_str());
+
+	for (std::string& fileName : allFileNames)
+	{
+		files.push_back(FileDisplayInformation(fileName));
+	}
+
+	return files;
+}
+
+
+void RunDataMigrationTool()
+{
+	char userInput[256];
+
+	PrintLine("Enter class type to migrate FROM (source):");
+	std::cin >> userInput;
+	std::string classSource = std::string(userInput);
+
+	PrintLine("Enter member name to migrate:");
+	std::cin >> userInput;
+	std::string classMember = std::string(userInput);
+
+	PrintLine("Enter class type to migrate TO (destination):");
+	std::cin >> userInput;
+	std::string classDest = std::string(userInput);
+
+	std::vector<FileDisplayInformation> allFiles = GetAllFiles();
+
+	long int nextID = 0;
+	for (FileDisplayInformation& str : allFiles)
+	{
+		long int id = str.m_ObjectID;
+
+		nextID = std::max(id, nextID);
+	}
+
+	nextID++;
+
+	for (int i = 0; i < allFiles.size(); ++i)
+	{
+		const FileDisplayInformation& info = allFiles[i];
+
+
+
+
+		if (info.m_Typename == classSource)
+		{
+			PrintLine(std::string("Processing file ") + info.m_Name);
+
+			std::vector<std::string> lines = readFileLines((g_PathObjects + info.m_Name).c_str());
+
+			std::string oldValue = "";
+
+			bool found = false;
+			std::stringstream newLines;
+			for (int i = 0; i < lines.size(); ++i)
+			{
+				if (!found)
+				{
+					if (lines[i] == classMember)
+					{
+						found = true;
+					}
+					else
+					{
+						newLines << lines[i] << std::endl;
+					}
+				}
+				else
+				{
+					oldValue = lines[i];
+					found = false;
+					continue;
+				}
+			}
+
+			if (oldValue != "")
+			{
+				std::ofstream out((g_PathObjects + info.m_Name).c_str());
+
+				if (out.is_open())
+				{
+					out << newLines.str().c_str();
+					out.close();
+				}
+			}
+
+			std::stringstream newFile;
+			newFile << "Name" << std::endl;
+			newFile << info.m_Typename << " _Migrated_" << nextID << std::endl;
+			newFile << "ObjectID" << std::endl;
+			newFile << nextID << std::endl;
+			newFile << classMember << std::endl;
+			newFile << oldValue << std::endl;
+
+			std::string outPath = g_PathObjects + classDest + "_" + std::to_string(nextID) + ".LXObj";
+
+			std::ofstream out((g_PathObjects + info.m_Name).c_str());
+
+			if (out.is_open())
+			{
+				out << newFile.str().c_str();
+				out.close();
+			}
+
+			nextID++;
+
+		}
+	}
+
+}
+
 void MainLoop()
 {
 	char command = 0;
@@ -920,6 +1139,7 @@ void MainLoop()
 		PrintLine("    (s)elect file (force)");
 		PrintLine("    (c)reate file");
 		PrintLine("    open (l)og file");
+		PrintLine("    (m)igrate existing data");
 		PrintLine("    (q)uit");
 		std::cin >> command;
 
@@ -980,6 +1200,10 @@ void MainLoop()
 		else if (command == 'l')
 		{
 			OpenLogFile();
+		}
+		else if (command == 'm')
+		{
+			RunDataMigrationTool();
 		}
 
 	}
