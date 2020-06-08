@@ -74,11 +74,13 @@ public:
 
 	bool m_IsValid = false;
 
-    GFXUniformGroup& GetUniformGroup(const LXString& uniformGroupName);
+	GFXUniformGroup* GetUniformGroup(const LXString& uniformGroupName);
 private:
     std::string m_name;
     REGISTERCLASS(ProgramPipeline);
 
-	LXMap<LXString, GFXUniformGroup> m_UniformGroups;
+	//LXMap<LXString, GFXUniformGroup> m_UniformGroups;
+    LXVector<GFXUniformGroup> m_UniformGroups;
+
 };
 

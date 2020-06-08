@@ -39,11 +39,12 @@ class LightingOptions;
 class Camera;
 class MainWindow;
 
-
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 
 class Framebuffer;
 class SunLight;
+class GFXUniformGroup;
+class GFXUniformDescription;
 class BoundingBoxComponent;
 
 class Renderer;
@@ -209,6 +210,13 @@ public:
 	void FreeBoundTexture(int slot);
 	void FreeBoundTexture();
 
+	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, GLfloat* data);
+	void SetUniformDesc(GLuint shader, GFXUniformDescription* uniformDesc, GLfloat* data);
+	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const bool& data);
+	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::vec3& data);
+	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::mat4& data);
+	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const float& data);
+
 	void SetUniform(int value, const char* name, GLuint location);
 	void SetUniform(float value, const char* name, GLuint location);
 
@@ -249,6 +257,8 @@ public:
 	bool SetPipeline(ProgramPipeline* pipeline, bool force);
 	bool SetPipeline(ShaderFamily family);
 	bool SetPipeline(ProgramPipeline* pipeline);
+
+	void SetLightingOptionsUniforms();
 	void SetLightingUniforms();
 	void SetWorldGridUniforms();
 	void SetViewUniforms(Camera* cam);

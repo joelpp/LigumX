@@ -1,4 +1,5 @@
 #include "GFXUniformGroup.h"
+#include "ProgramPipeline.h"
 
 #pragma region  CLASS_SOURCE GFXUniformGroup
 
@@ -61,20 +62,43 @@ GFXUniformGroup::GFXUniformGroup()
 
 void GFXUniformGroup::AddUniform(GFXShaderStage stage, GFXUniformDescription& desc)
 {
-	m_Uniforms[stage].emplace(desc.GetUniformName().c_str(), desc);
+	m_Uniforms[stage].push_back(desc);
 }
 
 void GFXUniformGroup::AddUniform(GFXShaderStage stage, const char* name, LXType type)
 {
-	m_Uniforms[stage].emplace(name, GFXUniformDescription(name, type));
+	m_Uniforms[stage].push_back(GFXUniformDescription(name, type));
 }
 
-GFXUniformDescription& GFXUniformGroup::GetUniformDescription(GFXShaderStage stage, const char* name)
+GFXUniformDescription* GFXUniformGroup::GetUniformDescription(GFXShaderStage stage, const char* name)
 {
-	return m_Uniforms[stage][name];
+	LXVector<GFXUniformDescription>& uniformDescs = GetUniforms((GFXShaderStage)stage);
+	for (int u = 0; u < uniformDescs.size(); ++u)
+	{
+		GFXUniformDescription& desc = uniformDescs[u];
+		if (desc.GetUniformName() == name)
+		{
+			return &desc;
+		}
+	}
+
+	return nullptr;
 }
 
-int GFXUniformGroup::GetUniformLocation(GFXShaderStage stage, const char* name)
+void GFXUniformGroup::GetLocationsFromShader(ProgramPipeline* pipeline)
 {
-	return m_Uniforms[stage][name].GetLocation();
+	for (int i = 0; i < GFXShaderStage_Count; ++i)
+	{
+		GLenum progType = (i == GFXShaderStage_Vertex) ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER;
+
+		LXVector<GFXUniformDescription>& uniformDescs = GetUniforms((GFXShaderStage)i);
+		for (int u = 0; u < uniformDescs.size(); ++u)
+		{
+			GFXUniformDescription& desc = uniformDescs[u];
+
+			GLuint prog = pipeline->getShader(progType)->glidShaderProgram;
+			GLuint uniformLocation = glGetUniformLocation(prog, desc.GetUniformName().c_str());
+			desc.SetLocation((int)uniformLocation);
+		}
+	}
 }

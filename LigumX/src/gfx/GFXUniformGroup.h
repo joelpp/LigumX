@@ -27,6 +27,8 @@ enum GFXShaderStage
 	GFXShaderStage_Count,
 };
 
+class ProgramPipeline;
+
 #include "GFXUniformDescription.h"
 
 #pragma region  HEADER GFXUniformGroup
@@ -66,11 +68,13 @@ public:
 
 	void AddUniform(GFXShaderStage stage, const char* name, LXType type);
 	void AddUniform(GFXShaderStage stage, GFXUniformDescription& desc);
-	GFXUniformDescription& GetUniformDescription(GFXShaderStage stage, const char* name);
-	int GetUniformLocation(GFXShaderStage stage, const char* name);
-	LXMap<LXString, GFXUniformDescription>& GetUniformMap(GFXShaderStage stage) { return m_Uniforms[(int)stage]; }
+	GFXUniformDescription* GetUniformDescription(GFXShaderStage stage, const char* name);
+
+	LXVector<GFXUniformDescription>& GetUniforms(GFXShaderStage stage) { return m_Uniforms[(int)stage]; }
+	
+	void GetLocationsFromShader(ProgramPipeline* pipeline);
 
 private:
-	LXVector<LXMap<LXString, GFXUniformDescription>> m_Uniforms;
+	LXVector<LXVector<GFXUniformDescription>> m_Uniforms;
 
 };

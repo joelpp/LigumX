@@ -607,6 +607,104 @@ void Renderer::SetSkyUniforms(int skyCubemapSlot)
 
 }
 
+void Renderer::SetUniformDesc(GLuint shader, GFXUniformDescription* uniformDesc, GLfloat* data)
+{
+	if (uniformDesc->GetLocation() == LX_LIMITS_UINT_MAX)
+	{
+		return;
+	}
+
+	LXType type = (LXType)uniformDesc->GetType();
+	switch (type)
+	{
+		case LXType_bool:
+		{
+			int val = ((*data) ? 1 : 0);
+			glProgramUniform1i(shader, (GLuint)uniformDesc->GetLocation(), val);
+			break;
+		}
+		case LXType_glmmat4:
+		{
+			glProgramUniformMatrix4fv(shader, (GLuint)uniformDesc->GetLocation(), 1, false, data);
+			break;
+		}
+		default:
+		{
+			lxAssert0();
+		}
+	}
+}
+
+void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, GLfloat* data)
+{
+	GFXUniformDescription* uniformDesc = uniformGroup->GetUniformDescription(stage, name);
+	GLenum glStage = (stage == GFXShaderStage_Vertex) ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER;
+	if (uniformDesc)
+	{
+		SetUniformDesc(activePipeline->getShader(glStage)->glidShaderProgram, uniformDesc, data);
+	}
+}
+
+void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const bool& data)
+{
+	SetUniformDesc(uniformGroup, stage, name, (GLfloat*)&data);
+}
+
+void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::vec3& data)
+{
+	SetUniformDesc(uniformGroup, stage, name, glm::value_ptr(data));
+}
+
+void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::mat4& data)
+{
+	SetUniformDesc(uniformGroup, stage, name, glm::value_ptr(data));
+}
+
+void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const float& data)
+{
+	SetUniformDesc(uniformGroup, stage, name, (GLfloat*)&data);
+}
+
+
+void Renderer::SetLightingOptionsUniforms()
+{
+	GFXUniformGroup* group = activePipeline->GetUniformGroup("LightingOptions");
+	if (group)
+	{
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableDynamicLights", m_LightingOptions->GetEnableDynamicLights());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableSunlight", m_LightingOptions->GetEnableSunlight());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableAmbientLighting", m_LightingOptions->GetEnableAmbientLighting());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableDiffuseComponent", m_LightingOptions->GetEnableDiffuseComponent());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableSpecularComponent", m_LightingOptions->GetEnableSpecularComponent());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableReflection", m_LightingOptions->GetEnableReflection());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableSunShadow", m_LightingOptions->GetEnableSunShadow());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableDynamicShadows", m_LightingOptions->GetEnableDynamicShadows());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableReplacementAlbedo", m_LightingOptions->GetEnableReplacementAlbedo());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ReplacementAlbedo", m_LightingOptions->GetReplacementAlbedo());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableReplacementMetallic", m_LightingOptions->GetEnableReplacementMetallic());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ReplacementMetallic", m_LightingOptions->GetReplacementMetallic());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableReplacementRoughness", m_LightingOptions->GetEnableReplacementRoughness());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ReplacementRoughness", m_LightingOptions->GetReplacementRoughness());
+	}
+	else
+	{
+		SetFragmentUniform(m_LightingOptions->GetEnableDynamicLights(), "g_EnableDynamicLights");
+		SetFragmentUniform(m_LightingOptions->GetEnableSunlight(), "g_EnableSunlight");
+		SetFragmentUniform(m_LightingOptions->GetEnableAmbientLighting(), "g_EnableAmbientLighting");
+		SetFragmentUniform(m_LightingOptions->GetEnableDiffuseComponent(), "g_EnableDiffuseComponent");
+		SetFragmentUniform(m_LightingOptions->GetEnableSpecularComponent(), "g_EnableSpecularComponent");
+		SetFragmentUniform(m_LightingOptions->GetEnableReflection(), "g_EnableReflection");
+		SetFragmentUniform(m_LightingOptions->GetEnableSunShadow(), "g_EnableSunShadow");
+		SetFragmentUniform(m_LightingOptions->GetEnableDynamicShadows(), "g_EnableDynamicShadows");
+		SetFragmentUniform(m_LightingOptions->GetEnableReplacementAlbedo(), "g_EnableReplacementAlbedo");
+		SetFragmentUniform(m_LightingOptions->GetReplacementAlbedo(), "g_ReplacementAlbedo");
+		SetFragmentUniform(m_LightingOptions->GetEnableReplacementMetallic(), "g_EnableReplacementMetallic");
+		SetFragmentUniform(m_LightingOptions->GetReplacementMetallic(), "g_ReplacementMetallic");
+		SetFragmentUniform(m_LightingOptions->GetEnableReplacementRoughness(), "g_EnableReplacementRoughness");
+		SetFragmentUniform(m_LightingOptions->GetReplacementRoughness(), "g_ReplacementRoughness");
+	}
+
+}
 void Renderer::SetLightingUniforms()
 {
 
@@ -626,20 +724,6 @@ void Renderer::SetLightingUniforms()
 
 	SetFragmentUniform(m_NumLights, "g_NumLights");
 
-	SetFragmentUniform(m_LightingOptions->GetEnableDynamicLights(), "g_EnableDynamicLights");
-	SetFragmentUniform(m_LightingOptions->GetEnableSunlight(), "g_EnableSunlight");
-	SetFragmentUniform(m_LightingOptions->GetEnableAmbientLighting(), "g_EnableAmbientLighting");
-	SetFragmentUniform(m_LightingOptions->GetEnableDiffuseComponent(), "g_EnableDiffuseComponent");
-	SetFragmentUniform(m_LightingOptions->GetEnableSpecularComponent(), "g_EnableSpecularComponent");
-	SetFragmentUniform(m_LightingOptions->GetEnableReflection(), "g_EnableReflection");
-	SetFragmentUniform(m_LightingOptions->GetEnableSunShadow(), "g_EnableSunShadow");
-	SetFragmentUniform(m_LightingOptions->GetEnableDynamicShadows(), "g_EnableDynamicShadows");
-	SetFragmentUniform(m_LightingOptions->GetEnableReplacementAlbedo(), "g_EnableReplacementAlbedo");
-	SetFragmentUniform(m_LightingOptions->GetReplacementAlbedo(), "g_ReplacementAlbedo");
-	SetFragmentUniform(m_LightingOptions->GetEnableReplacementMetallic(), "g_EnableReplacementMetallic");
-	SetFragmentUniform(m_LightingOptions->GetReplacementMetallic(), "g_ReplacementMetallic");
-	SetFragmentUniform(m_LightingOptions->GetEnableReplacementRoughness(), "g_EnableReplacementRoughness");
-	SetFragmentUniform(m_LightingOptions->GetReplacementRoughness(), "g_ReplacementRoughness");
 
 }
 
@@ -718,28 +802,14 @@ void Renderer::SetPostEffectsUniforms()
 	SetFragmentUniform(m_PostEffects->GetToneMappingEnabled(), "g_ToneMappingEnabled");
 }
 
-void SetUniformDesc(GLuint shader, GFXUniformDescription& uniformDesc, GLfloat* data)
-{
-	LXType type = (LXType)uniformDesc.GetType();
-	switch (type)
-	{
-	case LXType_glmmat4:
-		glProgramUniformMatrix4fv(shader, (GLuint)uniformDesc.GetLocation(), 1, false, data);
-		break;
-	default:
-		lxAssert0();
-	}
-}
 
 void Renderer::SetShadowMapUniforms(Camera* cam)
 {
 	SetFragmentUniform(2, "g_DepthMapTexture");
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
 
-	GFXUniformGroup& uniformGroup = activePipeline->GetUniformGroup("ShadowMap");
-
-	GFXUniformDescription& uniformDesc = uniformGroup.GetUniformDescription(GFXShaderStage_Vertex, "g_LightProjectionMatrix");
-	SetUniformDesc(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, uniformDesc, (GLfloat*)glm::value_ptr(cam->GetViewProjectionMatrix()));
+	GFXUniformGroup* uniformGroup = activePipeline->GetUniformGroup("ShadowMap");
+	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_LightProjectionMatrix", (GLfloat*)glm::value_ptr(cam->GetViewProjectionMatrix()));
 
 }
 
@@ -826,6 +896,8 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 		//if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
 		{
 			SetLightingUniforms();
+			SetLightingOptionsUniforms();
+
 			SetViewUniforms(m_ActiveCamera);
 			SetShadowMapUniforms(m_ShadowCamera);
 			SetSkyUniforms(3);
@@ -962,6 +1034,8 @@ void Renderer::RenderTerrain()
 	}
 
 	SetLightingUniforms();
+	SetLightingOptionsUniforms();
+
 	SetViewUniforms(m_ActiveCamera);
 	SetShadowMapUniforms(m_ShadowCamera);
 	SetSkyUniforms(3);
@@ -1047,6 +1121,7 @@ void Renderer::RenderShadowMap()
 
 	m_SkyLight.m_Position = pos;
 	SetLightingUniforms();
+	SetLightingOptionsUniforms();
 
 	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 100.f);
 	m_ShadowCamera->SetFrontVector(pos);

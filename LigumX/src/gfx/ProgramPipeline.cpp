@@ -8,6 +8,7 @@
 #include "StringUtils.h"
 
 #include "ShadowUniformGroup.h"
+#include "LightingOptionsUniformGroup.h"
 
 
 
@@ -29,6 +30,12 @@ ProgramPipeline::ShaderProgram::ShaderProgram()
 
 bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& name, string srcFilenames, bool readSrcFilenamesAsSourceCode, LXVector<LXString>& uniformGroups)
 {
+	StringList knownUniformGroups =
+	{
+		"LightingOptions",
+		"ShadowMap"
+	};
+
 	this->shaderType = shaderType;
 
 	int nbSources = 1;//int(srcFilenames.size());
@@ -89,25 +96,30 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 				bool uniformGroupStatement = StringUtils::StringContains(line, g_UniformGroupMarker);
 				if (uniformGroupStatement)
 				{
-					if (line == "#define PROVIDER_ShadowMap")
-					{
-						LXString groupName = "ShadowMap";
+					StringList tokens = StringUtils::SplitString(line, '_');
+					lxAssert(tokens.size() == 2);
 
-						bool found = false;
-						for (int i = 0; i < uniformGroups.size(); ++i)
+					for (LXString& uniformGroupName : knownUniformGroups)
+					{
+						if (tokens[1] == uniformGroupName)
 						{
-							if (uniformGroups[i] == groupName)
+							bool found = false;
+							for (int i = 0; i < uniformGroups.size(); ++i)
 							{
-								found = true;
-								break;
+								if (uniformGroups[i] == uniformGroupName)
+								{
+									found = true;
+									break;
+								}
+							}
+
+							if (!found)
+							{
+								uniformGroups.push_back(uniformGroupName);
 							}
 						}
-
-						if (!found)
-						{
-							uniformGroups.push_back(groupName);
-						}
 					}
+
 				}
 
 				sourceCodeStrings[count] += line + "\n";
@@ -344,29 +356,16 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 		for (int g = 0; g < uniformGroups.size(); ++g)
 		{
 			LXString& groupName = uniformGroups[g];
+			GFXUniformGroup uniformGroup;
 
-			if (groupName == "ShadowMap")
-			{
-				ShadowUniformGroup group;
-				for (int i = 0; i < GFXShaderStage_Count; ++i)
-				{
-					GLenum progType = (i == GFXShaderStage_Vertex) ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER;
+			if (groupName == "ShadowMap") uniformGroup = ShadowUniformGroup();
+			else if (groupName == "LightingOptions") uniformGroup = LightingOptionsUniformGroup();
+			else lxAssert0();
 
-					for (auto it = group.GetUniformMap((GFXShaderStage)i).begin(); it != group.GetUniformMap((GFXShaderStage)i).end(); ++it)
-					{
-						GFXUniformDescription& desc = it->second;
+			uniformGroup.GetLocationsFromShader(this);
+			//m_UniformGroups.emplace(uniformGroup.GetGroupName(), uniformGroup);
+			m_UniformGroups.push_back(uniformGroup);
 
-						GLuint prog = getShader(progType)->glidShaderProgram;
-						GLuint uniformLocation =  glGetUniformLocation(prog, desc.GetUniformName().c_str());
-
-						lxAssert(uniformLocation != LX_LIMITS_UINT_MAX);
-
-						desc.SetLocation((int)uniformLocation);
-					}
-				}
-
-				m_UniformGroups.emplace(group.GetGroupName(), group);
-			}
 		}
 	}
 
@@ -664,8 +663,26 @@ void ProgramPipeline::setUniform(std::string name, glm::vec3 color)
 
 }
 
-GFXUniformGroup& ProgramPipeline::GetUniformGroup(const LXString& uniformGroupName)
+GFXUniformGroup* ProgramPipeline::GetUniformGroup(const LXString& uniformGroupName)
 {
-	return m_UniformGroups[uniformGroupName];
+
+	for (GFXUniformGroup& group : m_UniformGroups)
+	{
+		if (group.GetGroupName() == uniformGroupName)
+		{
+			return &group;
+		}
+	}
+	
+	return nullptr;
+	//try
+	//{
+	//	GFXUniformGroup& group = m_UniformGroups.at(uniformGroupName);
+	//	return &group;
+	//}
+	//catch (std::out_of_range e)
+	//{
+	//	return nullptr;
+	//}
 }
 
