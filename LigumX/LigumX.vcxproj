@@ -106,7 +106,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;C:\Program Files\RenderDoc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;C:\Program Files\RenderDoc;$(ProjectDir)src\gfx;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <PreprocessToFile>false</PreprocessToFile>
@@ -182,6 +182,7 @@
     <ClCompile Include="src\Framebuffer.cpp" />
     <ClCompile Include="src\GFXUniformDescription.cpp" />
     <ClCompile Include="src\GFXUniformGroup.cpp" />
+    <ClCompile Include="src\gfx\renderer.cpp" />
     <ClCompile Include="src\GL.cpp" />
     <ClCompile Include="src\GUI.cpp" />
     <ClCompile Include="src\heightfield.cpp" />
@@ -224,7 +225,6 @@
     <ClCompile Include="src\relation.cpp" />
     <ClCompile Include="src\RenderDataManager.cpp" />
     <ClCompile Include="src\RenderdocManager.cpp" />
-    <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\RenderingStats.cpp" />
     <ClCompile Include="src\sector.cpp" />
     <ClCompile Include="src\SectorData.cpp" />
@@ -273,6 +273,7 @@
     <ClInclude Include="src\FileUtils.h" />
     <ClInclude Include="src\GFXUniformDescription.h" />
     <ClInclude Include="src\GFXUniformGroup.h" />
+    <ClInclude Include="src\gfx\renderer.h" />
     <ClInclude Include="src\ImguiHelpers.h" />
     <ClInclude Include="src\ImguiManager.h" />
     <ClInclude Include="src\ImguiPointerDisplay.h" />
@@ -296,7 +297,6 @@
     <ClInclude Include="src\MainWindow.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\MaterialTool.h" />
-    <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
@@ -321,7 +321,6 @@
     <ClInclude Include="src\relation.h" />
     <ClInclude Include="src\RenderDataManager.h" />
     <ClInclude Include="src\RenderdocManager.h" />
-    <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\RenderingStats.h" />
     <ClInclude Include="src\sector.h" />
     <ClInclude Include="src\SectorData.h" />
@@ -352,6 +351,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\ShadowUtils.glsl" />
+    <None Include="src\gfx\renderer.gen" />
     <None Include="src\LightingOptions.gen" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

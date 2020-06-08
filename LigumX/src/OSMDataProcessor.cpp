@@ -129,8 +129,8 @@ struct TerrainColorEditingJob
 		Texture* tex = m_Sector->GetGraphicalData()->GetSplatMapTexture();
 		unsigned char* val = tex->GetTextureData();
 
-		m_TexelMax = min(tex->GetSize(), m_TexelMax);
-		m_TexelMin = max(glm::ivec2(0, 0), m_TexelMin);
+		m_TexelMax = glm::min(tex->GetSize(), m_TexelMax);
+		m_TexelMin = glm::max(glm::ivec2(0, 0), m_TexelMin);
 
 		int numBytes = tex->GetNumBytes();
 		int stride = 4;

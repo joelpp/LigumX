@@ -120,28 +120,28 @@ OSMTool::OSMTool()
 		m_WayDisplayToggles[i] = true;
 	}
 
-	m_WayDebugColors[OSMElementType_HighwayTrunk]						= vec3(1.0, 1.0, 1.0);	
-	m_WayDebugColors[OSMElementType_HighwayPrimary]						= vec3(0.9, 0.9, 0.9);	
-	m_WayDebugColors[OSMElementType_HighwaySecondary]					= vec3(0.8, 0.8, 0.8);	
-	m_WayDebugColors[OSMElementType_HighwayTertiary] 					= vec3(0.7, 0.7, 0.7);	
-	m_WayDebugColors[OSMElementType_HighwayResidential]					= vec3(0.6, 0.6, 0.6);	
-	m_WayDebugColors[OSMElementType_HighwayService]						= vec3(0.5, 0.5, 0.5);	
-	m_WayDebugColors[OSMElementType_HighwayUnclassified]				= vec3(0.4, 0.4, 0.4);	
-	m_WayDebugColors[OSMElementType_Sidewalk]							= vec3(1.0, 0.0, 1.0);	
-	m_WayDebugColors[OSMElementType_Contour]							= vec3(1.0, 1.0, 1.0);	
-	m_WayDebugColors[OSMElementType_Building_Unmarked]					= vec3(0.0, 0.0, 1.0);	
-	m_WayDebugColors[OSMElementType_Building_School]					= vec3(0.0, 0.0, 1.0);	
-	m_WayDebugColors[OSMElementType_Building_Addressinterpolation]		= vec3(0.0, 0.5, 0.0);	
-	m_WayDebugColors[OSMElementType_Boundary]							= vec3(0.0, 0.0, 0.5);	
-	m_WayDebugColors[OSMElementType_LeisurePark]						= vec3(0.1, 1.0, 0.1);	
-	m_WayDebugColors[OSMElementType_NaturalWood]						= vec3(0.0, 1.0, 0.0);	
-	m_WayDebugColors[OSMElementType_NaturalWater]						= vec3(0.0, 0.2, 0.8);	
-	m_WayDebugColors[OSMElementType_LanduseRetail]						= vec3(0.86, 0.86, 0.86);
-	m_WayDebugColors[OSMElementType_LanduseIndustrial]					= vec3(91, 47, 82) / 255.f;
-	m_WayDebugColors[OSMElementType_RailwaySubway]						= vec3(0.0, 0.8, 1.0);	
-	m_WayDebugColors[OSMElementType_AddressInterpolation]				= vec3(1.0, 1.0, 1.0);	
-	m_WayDebugColors[OSMElementType_NotImplemented]						= vec3(1.0, 0.1, 0.1);		
-	m_WayDebugColors[OSMElementType_Unknown]							= vec3(1.0, 0.0, 0.0);
+	m_WayDebugColors[OSMElementType_HighwayTrunk]						= glm::vec3(1.0, 1.0, 1.0);	
+	m_WayDebugColors[OSMElementType_HighwayPrimary]						= glm::vec3(0.9, 0.9, 0.9);	
+	m_WayDebugColors[OSMElementType_HighwaySecondary]					= glm::vec3(0.8, 0.8, 0.8);	
+	m_WayDebugColors[OSMElementType_HighwayTertiary] 					= glm::vec3(0.7, 0.7, 0.7);	
+	m_WayDebugColors[OSMElementType_HighwayResidential]					= glm::vec3(0.6, 0.6, 0.6);	
+	m_WayDebugColors[OSMElementType_HighwayService]						= glm::vec3(0.5, 0.5, 0.5);	
+	m_WayDebugColors[OSMElementType_HighwayUnclassified]				= glm::vec3(0.4, 0.4, 0.4);	
+	m_WayDebugColors[OSMElementType_Sidewalk]							= glm::vec3(1.0, 0.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Contour]							= glm::vec3(1.0, 1.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Building_Unmarked]					= glm::vec3(0.0, 0.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Building_School]					= glm::vec3(0.0, 0.0, 1.0);	
+	m_WayDebugColors[OSMElementType_Building_Addressinterpolation]		= glm::vec3(0.0, 0.5, 0.0);	
+	m_WayDebugColors[OSMElementType_Boundary]							= glm::vec3(0.0, 0.0, 0.5);	
+	m_WayDebugColors[OSMElementType_LeisurePark]						= glm::vec3(0.1, 1.0, 0.1);	
+	m_WayDebugColors[OSMElementType_NaturalWood]						= glm::vec3(0.0, 1.0, 0.0);	
+	m_WayDebugColors[OSMElementType_NaturalWater]						= glm::vec3(0.0, 0.2, 0.8);	
+	m_WayDebugColors[OSMElementType_LanduseRetail]						= glm::vec3(0.86, 0.86, 0.86);
+	m_WayDebugColors[OSMElementType_LanduseIndustrial]					= glm::vec3(91, 47, 82) / 255.f;
+	m_WayDebugColors[OSMElementType_RailwaySubway]						= glm::vec3(0.0, 0.8, 1.0);	
+	m_WayDebugColors[OSMElementType_AddressInterpolation]				= glm::vec3(1.0, 1.0, 1.0);	
+	m_WayDebugColors[OSMElementType_NotImplemented]						= glm::vec3(1.0, 0.1, 0.1);		
+	m_WayDebugColors[OSMElementType_Unknown]							= glm::vec3(1.0, 0.0, 0.0);
 	
 }
 

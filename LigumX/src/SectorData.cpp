@@ -108,7 +108,7 @@ std::vector<Way*> SectorData::findNClosestWays(int n, glm::vec2 xy, int filter, 
                 p1 = vec2(firstNode->longitude, firstNode->latitude);
                 p2 = vec2(secondNode->longitude, secondNode->latitude);
                 vec2 dir;
-                double dist = Math::pointLineSegmentDistance(xy, p2, p1, dir);
+                double dist = 0;//Math::pointLineSegmentDistance(xy, p2, p1, dir);
 
                 if (dist < bestDist){
                     closest = way;
