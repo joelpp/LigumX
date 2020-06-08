@@ -64,6 +64,11 @@ void GFXUniformGroup::AddUniform(GFXShaderStage stage, GFXUniformDescription& de
 	m_Uniforms[stage].emplace(desc.GetUniformName().c_str(), desc);
 }
 
+void GFXUniformGroup::AddUniform(GFXShaderStage stage, const char* name, LXType type)
+{
+	m_Uniforms[stage].emplace(name, GFXUniformDescription(name, type));
+}
+
 GFXUniformDescription& GFXUniformGroup::GetUniformDescription(GFXShaderStage stage, const char* name)
 {
 	return m_Uniforms[stage][name];

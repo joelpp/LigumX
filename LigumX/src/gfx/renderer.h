@@ -159,8 +159,6 @@ public:
 
     // subfunctions
     void InitPipelines();
-    void init_pipelines_buildingSides();
-    void init_pipelines_filledBuildings();
     void init_pipelines_text();
 
     void Render(World* world);
@@ -278,7 +276,6 @@ public:
     // shaders
 	std::vector<ProgramPipeline*> m_Shaders;
     ProgramPipeline* pPipelineLines;
-    ProgramPipeline* pPipelineBuildings;
     ProgramPipeline* pPipelineBuildingSides;
     ProgramPipeline* pPipelineGround;
 	ProgramPipeline* pPipelinePicking;

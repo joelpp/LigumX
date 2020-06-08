@@ -174,7 +174,6 @@ RenderDataManager::RenderDataManager()
 	g_RenderDataManager = this;
 
     nbRoads = 0;
-    m_renderingScale = Settings::GetInstance().f("RenderingScale");
     Renderer& renderer = Renderer::GetInstance();
 
     screenQuadPos.push_back(vec2(1,-1));

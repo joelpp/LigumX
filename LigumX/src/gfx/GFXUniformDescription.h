@@ -47,6 +47,11 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER GFXUniformDescription
 
-
+GFXUniformDescription() { lxAssert0(); }
+GFXUniformDescription(const char* name, LXType type)
+	: m_UniformName(name)
+	, m_Type((int)type)
+{
+}
 
 };

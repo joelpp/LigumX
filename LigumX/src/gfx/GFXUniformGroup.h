@@ -64,6 +64,7 @@ public:
 
 	GFXUniformGroup();
 
+	void AddUniform(GFXShaderStage stage, const char* name, LXType type);
 	void AddUniform(GFXShaderStage stage, GFXUniformDescription& desc);
 	GFXUniformDescription& GetUniformDescription(GFXShaderStage stage, const char* name);
 	int GetUniformLocation(GFXShaderStage stage, const char* name);

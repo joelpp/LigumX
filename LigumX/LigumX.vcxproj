@@ -106,7 +106,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;C:\Program Files\RenderDoc;$(ProjectDir)src;$(ProjectDir)src\Components;$(ProjectDir)src\Editor;$(ProjectDir)src\Engine;$(ProjectDir)src\gfx;$(ProjectDir)src\GUI;$(ProjectDir)src\OSM;$(ProjectDir)src\System;$(ProjectDir)src\Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)libs\win32;$(ProjectDir)libs\win32\Freetype;$(ProjectDir)libs\win32\GLFW\include;C:\Program Files\RenderDoc;$(ProjectDir)src;$(ProjectDir)src\Components;$(ProjectDir)src\Editor;$(ProjectDir)src\Engine;$(ProjectDir)src\gfx;$(ProjectDir)src\GUI;$(ProjectDir)src\OSM;$(ProjectDir)src\System;$(ProjectDir)src\Utils;$(ProjectDir)src\External;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <PreprocessToFile>false</PreprocessToFile>
@@ -189,13 +189,13 @@
     <ClCompile Include="src\Engine\SectorMath.cpp" />
     <ClCompile Include="src\Engine\SunLight.cpp" />
     <ClCompile Include="src\Engine\world.cpp" />
-    <ClCompile Include="src\filled_buildings.cpp" />
     <ClCompile Include="src\gfx\Building.cpp" />
     <ClCompile Include="src\gfx\camera.cpp" />
     <ClCompile Include="src\gfx\CPUBuffers.cpp" />
     <ClCompile Include="src\gfx\CullingOptions.cpp" />
     <ClCompile Include="src\gfx\DebugRenderer.cpp" />
     <ClCompile Include="src\gfx\DisplayOptions.cpp" />
+    <ClCompile Include="src\gfx\LightingOptionsUniformGroup.cpp" />
     <ClCompile Include="src\gfx\Framebuffer.cpp" />
     <ClCompile Include="src\gfx\GFXUniformDescription.cpp" />
     <ClCompile Include="src\gfx\GFXUniformGroup.cpp" />
@@ -214,13 +214,13 @@
     <ClCompile Include="src\gfx\ShadowUniformGroup.cpp" />
     <ClCompile Include="src\gfx\texture.cpp" />
     <ClCompile Include="src\GUI\GUI.cpp" />
-    <ClCompile Include="src\GUI\imgui.cpp" />
+    <ClCompile Include="src\External\imgui.cpp" />
     <ClCompile Include="src\GUI\ImguiHelpers.cpp" />
     <ClCompile Include="src\GUI\ImguiManager.cpp" />
     <ClCompile Include="src\GUI\ImguiPointerDisplay.cpp" />
-    <ClCompile Include="src\GUI\imgui_demo.cpp" />
-    <ClCompile Include="src\GUI\imgui_draw.cpp" />
-    <ClCompile Include="src\GUI\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="src\External\imgui_demo.cpp" />
+    <ClCompile Include="src\External\imgui_draw.cpp" />
+    <ClCompile Include="src\External\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="src\GUI\MainWindow.cpp" />
     <ClCompile Include="src\linesegment.cpp" />
     <ClCompile Include="src\OSM\CurlRequest.cpp" />
@@ -244,7 +244,7 @@
     <ClCompile Include="src\System\Serializer2.cpp" />
     <ClCompile Include="src\System\SerializerInputVariable.cpp" />
     <ClCompile Include="src\text.cpp" />
-    <ClCompile Include="src\tinyxml2.cpp" />
+    <ClCompile Include="src\External\tinyxml2.cpp" />
     <ClCompile Include="src\Utils\FileUtils.cpp" />
     <ClCompile Include="src\Utils\MathUtils.cpp" />
     <ClCompile Include="src\Utils\StringUtils.cpp" />
@@ -288,6 +288,7 @@
     <ClInclude Include="src\gfx\CullingOptions.h" />
     <ClInclude Include="src\gfx\DebugRenderer.h" />
     <ClInclude Include="src\gfx\DisplayOptions.h" />
+    <ClInclude Include="src\gfx\LightingOptionsUniformGroup.h" />
     <ClInclude Include="src\gfx\Framebuffer.h" />
     <ClInclude Include="src\gfx\GFXUniformDescription.h" />
     <ClInclude Include="src\gfx\GFXUniformGroup.h" />
@@ -307,12 +308,12 @@
     <ClInclude Include="src\gfx\texture.h" />
     <ClInclude Include="src\GUI\GUI.h" />
     <ClInclude Include="src\GUI\imconfig.h" />
-    <ClInclude Include="src\GUI\imgui.h" />
+    <ClInclude Include="src\External\imgui.h" />
     <ClInclude Include="src\GUI\ImguiHelpers.h" />
     <ClInclude Include="src\GUI\ImguiManager.h" />
     <ClInclude Include="src\GUI\ImguiPointerDisplay.h" />
-    <ClInclude Include="src\GUI\imgui_impl_glfw_gl3.h" />
-    <ClInclude Include="src\GUI\imgui_internal.h" />
+    <ClInclude Include="src\External\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="src\External\imgui_internal.h" />
     <ClInclude Include="src\GUI\MainWindow.h" />
     <ClInclude Include="src\linesegment.h" />
     <ClInclude Include="src\OSM\CurlRequest.h" />
@@ -327,9 +328,9 @@
     <ClInclude Include="src\OSM\relation.h" />
     <ClInclude Include="src\OSM\way.h" />
     <ClInclude Include="src\Settings.h" />
-    <ClInclude Include="src\stb_rect_pack.h" />
-    <ClInclude Include="src\stb_textedit.h" />
-    <ClInclude Include="src\stb_truetype.h" />
+    <ClInclude Include="src\External\stb_rect_pack.h" />
+    <ClInclude Include="src\External\stb_textedit.h" />
+    <ClInclude Include="src\External\stb_truetype.h" />
     <ClInclude Include="src\System\LigumX.h" />
     <ClInclude Include="src\System\Logging.h" />
     <ClInclude Include="src\System\LXAllClassInclude.h" />
@@ -346,7 +347,7 @@
     <ClInclude Include="src\System\serializer.h" />
     <ClInclude Include="src\System\Serializer2.h" />
     <ClInclude Include="src\System\SerializerInputVariable.h" />
-    <ClInclude Include="src\tinyxml2.h" />
+    <ClInclude Include="src\External\tinyxml2.h" />
     <ClInclude Include="src\Utils\FileUtils.h" />
     <ClInclude Include="src\Utils\MathUtils.h" />
     <ClInclude Include="src\Utils\StringUtils.h" />
