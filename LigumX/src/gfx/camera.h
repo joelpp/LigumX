@@ -133,11 +133,6 @@ public:
                      TOP_2D, TOP_3D};
     enum ControlType {QWEASDZXC_DRAG, QWEASDZXC_CONTINUOUS, QWEASDZXC_ARROWS};
 public:
-    //glm::vec3 position;
-	glm::mat4 vpMat;
-	//glm::mat4 m_ViewMatrix;
-	//glm::mat4 m_ProjectionMatrix;
-
     // TOP2D ad TOP3D parameters
     float angle;
 

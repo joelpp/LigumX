@@ -354,13 +354,12 @@ void Renderer::InitPipelines()
 	init_pipelines_text();
 
 	pPipelineBasic = new ProgramPipeline("Basic");
-	pPipelineBasicUV = new ProgramPipeline("BasicUV");
 	pPipelineShadowMap = new ProgramPipeline("ShadowMap");
 	pPipelineLines = new ProgramPipeline("general_lines");
 	pPipelineGround = new ProgramPipeline("Terrain");
 	//pPipelineEnvmap = new ProgramPipeline("Envmap");
 	pPipelineScreenSpaceTexture = new ProgramPipeline("ScreenSpaceTexture");
-	pPipelineNodes = new ProgramPipeline("nodes");
+	//pPipelineNodes = new ProgramPipeline("nodes"); // todo jpp revive this
 	pPipelinePicking = new ProgramPipeline("picking");
 	pPipelinePickingCompute = new ProgramPipeline("picking_compute", true);
 	pPipelineUVEdges = new ProgramPipeline("UVEdges");
@@ -823,20 +822,41 @@ void Renderer::SetWorldGridUniforms()
 
 void Renderer::SetViewUniforms(Camera* cam)
 {
-	SetVertexUniform(cam->GetViewProjectionMatrix(), "vpMat");
-	SetVertexUniform(cam->GetViewMatrix(),			"g_WorldToViewMatrix");
-	SetVertexUniform(cam->GetViewMatrixNoTranslation(), "g_WorldToViewMatrixNoTranslation");
-	SetVertexUniform(glm::mat4(glm::mat3(cam->GetViewMatrix())), "g_WorldToViewMatrixRotationOnly");
-	SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
+	GFXUniformGroup* group = activePipeline->GetUniformGroup("LightingOptions");
+	if (false || group)
+	{
+		SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrix", cam->GetViewMatrix());
+		SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixNoTranslation", cam->GetViewMatrixNoTranslation());
+		SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixRotationOnly", glm::mat4(glm::mat3(cam->GetViewMatrix())));
+		SetUniformDesc(group, GFXShaderStage_Vertex, "g_ProjectionMatrix", cam->GetProjectionMatrix());
 
-	SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewToWorldMatrix");
-	SetFragmentUniform(cam->GetViewProjectionMatrixInverse(), "g_ViewProjectionMatrixInverse");
-	SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewMatrixInverse");
-	SetFragmentUniform(cam->GetProjectionMatrixInverse(), "g_ProjectionMatrixInverse");
-	SetFragmentUniform(cam->GetPosition(),	"g_CameraPosition");
-	SetFragmentUniform(cam->GetNearPlane(),	"g_CameraNearPlane");
-	SetFragmentUniform(cam->GetFarPlane(), "g_CameraFarPlane");
-	SetFragmentUniform(cam->GetFrontVector(),	"g_CameraLookAt");
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewToWorldMatrix", cam->GetViewMatrixInverse());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewProjectionMatrixInverse", cam->GetViewProjectionMatrixInverse());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewMatrixInverse", cam->GetViewMatrixInverse());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ProjectionMatrixInverse", cam->GetProjectionMatrixInverse());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraPosition", cam->GetPosition());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraNearPlane", cam->GetNearPlane());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraFarPlane", cam->GetFarPlane());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraLookAt", cam->GetFrontVector());
+	}
+	else
+	{
+		SetVertexUniform(cam->GetViewMatrix(), "g_WorldToViewMatrix");
+		SetVertexUniform(cam->GetViewMatrixNoTranslation(), "g_WorldToViewMatrixNoTranslation");
+		SetVertexUniform(glm::mat4(glm::mat3(cam->GetViewMatrix())), "g_WorldToViewMatrixRotationOnly");
+		SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
+
+		SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewToWorldMatrix");
+		SetFragmentUniform(cam->GetViewProjectionMatrixInverse(), "g_ViewProjectionMatrixInverse");
+		SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewMatrixInverse");
+		SetFragmentUniform(cam->GetProjectionMatrixInverse(), "g_ProjectionMatrixInverse");
+		SetFragmentUniform(cam->GetPosition(), "g_CameraPosition");
+		SetFragmentUniform(cam->GetNearPlane(), "g_CameraNearPlane");
+		SetFragmentUniform(cam->GetFarPlane(), "g_CameraFarPlane");
+		SetFragmentUniform(cam->GetFrontVector(), "g_CameraLookAt");
+	}
+
+
 }
 
 void Renderer::SetDebugUniforms()

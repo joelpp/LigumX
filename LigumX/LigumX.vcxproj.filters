@@ -291,6 +291,9 @@
     <ClCompile Include="src\gfx\LightingOptionsUniformGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gfx\ViewUniformGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vec2i.h">
@@ -597,6 +600,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gfx\LightingOptionsUniformGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gfx\ViewUniformGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

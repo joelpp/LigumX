@@ -4,7 +4,6 @@ layout(location=1) in vec2 texCoord;
 layout(location=2) in vec3 v_Normal;
 
 //in int gl_VertexID;
-uniform mat4 vpMat;
 uniform mat4 g_ModelToWorldMatrix;
 uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;

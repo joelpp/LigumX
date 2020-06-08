@@ -9,8 +9,7 @@
 
 #include "ShadowUniformGroup.h"
 #include "LightingOptionsUniformGroup.h"
-
-
+#include "ViewUniformGroup.h"
 
 using namespace std;
 
@@ -33,7 +32,8 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 	StringList knownUniformGroups =
 	{
 		"LightingOptions",
-		"ShadowMap"
+		"ShadowMap",
+		"View",
 	};
 
 	this->shaderType = shaderType;
@@ -360,6 +360,7 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 
 			if (groupName == "ShadowMap") uniformGroup = ShadowUniformGroup();
 			else if (groupName == "LightingOptions") uniformGroup = LightingOptionsUniformGroup();
+			else if (groupName == "View") uniformGroup = ViewUniformGroup();
 			else lxAssert0();
 
 			uniformGroup.GetLocationsFromShader(this);

@@ -1,7 +1,6 @@
 #version 410 core
 
 //in int gl_VertexID;
-uniform mat4 vpMat;
 uniform mat4 g_ModelToWorldMatrix;
 uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;

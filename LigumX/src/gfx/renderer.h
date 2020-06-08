@@ -296,7 +296,6 @@ public:
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
     ProgramPipeline* pPipelineBasic;
-    ProgramPipeline* pPipelineBasicUV;
 	ProgramPipeline* pPipelineShadowMap;
 	ProgramPipeline* pPipelineUVEdges;
 	ProgramPipeline* pPipelineSolidColor;

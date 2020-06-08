@@ -213,6 +213,7 @@
     <ClCompile Include="src\gfx\SectorGraphicalData.cpp" />
     <ClCompile Include="src\gfx\ShadowUniformGroup.cpp" />
     <ClCompile Include="src\gfx\texture.cpp" />
+    <ClCompile Include="src\gfx\ViewUniformGroup.cpp" />
     <ClCompile Include="src\GUI\GUI.cpp" />
     <ClCompile Include="src\External\imgui.cpp" />
     <ClCompile Include="src\GUI\ImguiHelpers.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="src\gfx\SectorGraphicalData.h" />
     <ClInclude Include="src\gfx\ShadowUniformGroup.h" />
     <ClInclude Include="src\gfx\texture.h" />
+    <ClInclude Include="src\gfx\ViewUniformGroup.h" />
     <ClInclude Include="src\GUI\GUI.h" />
     <ClInclude Include="src\GUI\imconfig.h" />
     <ClInclude Include="src\External\imgui.h" />
