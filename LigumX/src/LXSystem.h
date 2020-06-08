@@ -37,6 +37,9 @@ typedef glm::highp_ivec2 lx2I64;
 typedef glm::vec2 lx2F32;
 typedef glm::vec3 lx3F32;
 
+#define LXMap std::unordered_map
+#define LXVector std::vector
+
 #include "tinyxml2\tinyxml2.h"
 
 /*

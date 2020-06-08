@@ -471,7 +471,8 @@ void Renderer::SetUniform(const glm::vec4& value, const char* name, GLuint locat
 
 void Renderer::SetUniform(glm::mat4x4& value, const char* name, GLuint location)
 {
-	glProgramUniformMatrix4fv(activePipeline->getShader(location)->glidShaderProgram, glGetUniformLocation(activePipeline->getShader(location)->glidShaderProgram, name), 1, false, value_ptr(value));
+	GLuint uniformLocation = glGetUniformLocation(activePipeline->getShader(location)->glidShaderProgram, name);
+	glProgramUniformMatrix4fv(activePipeline->getShader(location)->glidShaderProgram, uniformLocation, 1, false, value_ptr(value));
 }
 void Renderer::SetUniform(const glm::mat4x4& value, const char* name, GLuint location)
 {
@@ -506,7 +507,8 @@ void Renderer::SetVertexUniform(int value, const char* name)
 void Renderer::SetFragmentUniform(int value, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
-	glProgramUniform1i(prog, glGetUniformLocation(prog, name), value);
+	GLuint uniformLocation = glGetUniformLocation(prog, name);
+	glProgramUniform1i(prog, uniformLocation, value);
 }
 
 void Renderer::SetFragmentUniform(float value, const char* name)
@@ -716,12 +718,29 @@ void Renderer::SetPostEffectsUniforms()
 	SetFragmentUniform(m_PostEffects->GetToneMappingEnabled(), "g_ToneMappingEnabled");
 }
 
+void SetUniformDesc(GLuint shader, GFXUniformDescription& uniformDesc, GLfloat* data)
+{
+	LXType type = (LXType)uniformDesc.GetType();
+	switch (type)
+	{
+	case LXType_glmmat4:
+		glProgramUniformMatrix4fv(shader, (GLuint)uniformDesc.GetLocation(), 1, false, data);
+		break;
+	default:
+		lxAssert0();
+	}
+}
+
 void Renderer::SetShadowMapUniforms(Camera* cam)
 {
 	SetFragmentUniform(2, "g_DepthMapTexture");
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
 
-	SetVertexUniform(cam->GetViewProjectionMatrix(), "g_LightProjectionMatrix");
+	GFXUniformGroup& uniformGroup = activePipeline->GetUniformGroup("ShadowMap");
+
+	GFXUniformDescription& uniformDesc = uniformGroup.GetUniformDescription(GFXShaderStage_Vertex, "g_LightProjectionMatrix");
+	SetUniformDesc(activePipeline->getShader(GL_VERTEX_SHADER)->glidShaderProgram, uniformDesc, (GLfloat*)glm::value_ptr(cam->GetViewProjectionMatrix()));
+
 }
 
 void Renderer::SetWorldGridUniforms()

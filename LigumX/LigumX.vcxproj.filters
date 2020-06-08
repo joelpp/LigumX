@@ -75,9 +75,6 @@
     <ClCompile Include="src\Building.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\building_sides.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\callbacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -283,6 +280,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GFXUniformGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GFXUniformDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowUniformGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -570,6 +576,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\LightingOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GFXUniformGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShadowUniformGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GFXUniformDescription.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

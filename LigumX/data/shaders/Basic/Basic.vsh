@@ -7,7 +7,9 @@ uniform mat4 vpMat;
 uniform mat4 g_ModelToWorldMatrix;
 uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;
-uniform mat4 g_LightProjectionMatrix;
+
+#define PROVIDER_ShadowMap
+
 // Include ProvidersMarker
 
 out vec2 myTexCoord;

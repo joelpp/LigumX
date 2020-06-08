@@ -1,0 +1,13 @@
+
+enum UniformGroupType
+{
+	ShadowMap,
+	LightingOptions,
+	DisplayOptions
+}
+
+class GFXUniformGroup
+{ 
+	std::string GroupName;
+} 
+

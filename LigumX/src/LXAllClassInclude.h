@@ -16,6 +16,8 @@
 #include "EngineStats.h"
 #include "Entity.h"
 #include "Framebuffer.h"
+#include "GFXUniformDescription.h"
+#include "GFXUniformGroup.h"
 #include "GUI.h"
 #include "Heightfield.h"
 #include "ImguiManager.h"

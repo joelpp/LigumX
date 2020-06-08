@@ -7,6 +7,8 @@
 #include "serializer.h"
 #include "StringUtils.h"
 
+#include "ShadowUniformGroup.h"
+
 
 
 using namespace std;
@@ -25,7 +27,7 @@ ProgramPipeline::ShaderProgram::ShaderProgram()
 	
 }
 
-bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& name, string srcFilenames,	bool readSrcFilenamesAsSourceCode)
+bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& name, string srcFilenames, bool readSrcFilenamesAsSourceCode, LXVector<LXString>& uniformGroups)
 {
 	this->shaderType = shaderType;
 
@@ -47,6 +49,8 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 
 		int finalShaderLineNumber = 1; // in VS lines are counted starting at 1
 		m_FileIncludes.push_back(ShaderFileInclude(name, finalShaderLineNumber, 1));
+
+		//sourceCodeStrings[count] += "\b"
 		m_NumLinesInInclude = 0;
 		if (sourceCodeStream.is_open())
 		{
@@ -85,9 +89,26 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 				bool uniformGroupStatement = StringUtils::StringContains(line, g_UniformGroupMarker);
 				if (uniformGroupStatement)
 				{
-					
-				}
+					if (line == "#define PROVIDER_ShadowMap")
+					{
+						LXString groupName = "ShadowMap";
 
+						bool found = false;
+						for (int i = 0; i < uniformGroups.size(); ++i)
+						{
+							if (uniformGroups[i] == groupName)
+							{
+								found = true;
+								break;
+							}
+						}
+
+						if (!found)
+						{
+							uniformGroups.push_back(groupName);
+						}
+					}
+				}
 
 				sourceCodeStrings[count] += line + "\n";
 				finalShaderLineNumber++;
@@ -198,7 +219,7 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 			++it;
 		}
 	}
-	
+
 	return !hadError;
 }
 
@@ -282,12 +303,14 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
     path << g_PathShaders;
     path << name << "/";
     
+	LXVector<LXString> uniformGroups;
+
 	bool success = false;
 	if (isCompute)
 	{
 
 		ShaderProgram* cs = new ProgramPipeline::ShaderProgram();
-		success = cs->Initialize(GL_COMPUTE_SHADER, name, path.str() + name + ".csh", false);
+		success = cs->Initialize(GL_COMPUTE_SHADER, name, path.str() + name + ".csh", false, uniformGroups);
 
 		if (success)
 		{
@@ -297,20 +320,54 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 	else
 	{
 		ShaderProgram* vs = new ProgramPipeline::ShaderProgram();
-		success = vs->Initialize(GL_VERTEX_SHADER, name, path.str() + name + ".vsh", false);
+		success = vs->Initialize(GL_VERTEX_SHADER, name, path.str() + name + ".vsh", false, uniformGroups);
 
 		if (success)
 		{
 			useVertexShader(vs);
 
 			ShaderProgram* ps = new ProgramPipeline::ShaderProgram();
-			success &= ps->Initialize(GL_FRAGMENT_SHADER, name, path.str() + name + ".fsh", false);
+			success &= ps->Initialize(GL_FRAGMENT_SHADER, name, path.str() + name + ".fsh", false, uniformGroups);
 			if (success)
 			{
 				useFragmentShader(ps);
 			}
 		}
 
+	}
+
+
+	if (success)
+	{
+		// resolve uniform locations
+
+		for (int g = 0; g < uniformGroups.size(); ++g)
+		{
+			LXString& groupName = uniformGroups[g];
+
+			if (groupName == "ShadowMap")
+			{
+				ShadowUniformGroup group;
+				for (int i = 0; i < GFXShaderStage_Count; ++i)
+				{
+					GLenum progType = (i == GFXShaderStage_Vertex) ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER;
+
+					for (auto it = group.GetUniformMap((GFXShaderStage)i).begin(); it != group.GetUniformMap((GFXShaderStage)i).end(); ++it)
+					{
+						GFXUniformDescription& desc = it->second;
+
+						GLuint prog = getShader(progType)->glidShaderProgram;
+						GLuint uniformLocation =  glGetUniformLocation(prog, desc.GetUniformName().c_str());
+
+						lxAssert(uniformLocation != LX_LIMITS_UINT_MAX);
+
+						desc.SetLocation((int)uniformLocation);
+					}
+				}
+
+				m_UniformGroups.emplace(group.GetGroupName(), group);
+			}
+		}
 	}
 
 	//useTessellationShader(new ProgramPipeline::ShaderProgram(GL_TESS_EVALUATION_SHADER, path.str() + "evaluation.tes", false), new ProgramPipeline::ShaderProgram(GL_TESS_CONTROL_SHADER, path.str() + "control.tcs", false));
@@ -606,3 +663,9 @@ void ProgramPipeline::setUniform(std::string name, glm::vec3 color)
     glProgramUniform3f(this->getShader(GL_VERTEX_SHADER)->glidShaderProgram, glGetUniformLocation(this->getShader(GL_VERTEX_SHADER)->glidShaderProgram, name.c_str()), color.x, color.y, color.z);
 
 }
+
+GFXUniformGroup& ProgramPipeline::GetUniformGroup(const LXString& uniformGroupName)
+{
+	return m_UniformGroups[uniformGroupName];
+}
+

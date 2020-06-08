@@ -6,10 +6,12 @@ uniform mat4 vpMat;
 uniform mat4 g_ModelToWorldMatrix;
 uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_ProjectionMatrix;
-uniform mat4 g_LightProjectionMatrix;
 
 layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 
+#define PROVIDER_ShadowMap
+
+// Include ProvidersMarker
 
 out gl_PerVertex {
     vec4 gl_Position;

@@ -1,11 +1,8 @@
-#ifndef ProgramPipeline_H
-#define ProgramPipeline_H
+#pragma once
 
+#include "LXSystem.h"
+#include "GFXUniformGroup.h"
 #include "GL.h"
-#include "glm/glm.hpp"
-#include "Logging.h"
-#include <string>
-#include <sstream>
 
 // todo jpp : This assumes all include files in shaders are in the same block without in between lines
 /* todo jpp : Not sure this supports includes in includes.
@@ -31,6 +28,7 @@ struct ShaderFileInclude
     int m_NumLines = 0;
 };
 
+
 class ProgramPipeline
 {
 
@@ -45,9 +43,10 @@ public:
         ~ShaderProgram() {}
 
 		int m_NumLinesInInclude = 0;
-		bool Initialize(GLenum shaderType, LXString& name, std::string srcFilenames, bool readSrcFilenamesAsSourceCode);
+		bool Initialize(GLenum shaderType, LXString& name, std::string srcFilenames, bool readSrcFilenamesAsSourceCode, LXVector<LXString>& uniformGroups);
 
         std::vector<ShaderFileInclude> m_FileIncludes;
+
     };
 
     ShaderProgram  *pVertexShader,
@@ -75,11 +74,11 @@ public:
 
 	bool m_IsValid = false;
 
-
+    GFXUniformGroup& GetUniformGroup(const LXString& uniformGroupName);
 private:
     std::string m_name;
     REGISTERCLASS(ProgramPipeline);
 
+	LXMap<LXString, GFXUniformGroup> m_UniformGroups;
 };
 
-#endif // ProgramPipeline_H

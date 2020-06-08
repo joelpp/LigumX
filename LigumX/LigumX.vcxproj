@@ -160,7 +160,6 @@
     <ClCompile Include="src\AABB.cpp" />
     <ClCompile Include="src\BoundingBoxComponent.cpp" />
     <ClCompile Include="src\Building.cpp" />
-    <ClCompile Include="src\building_sides.cpp" />
     <ClCompile Include="src\callbacks.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\Component.cpp" />
@@ -181,6 +180,8 @@
     <ClCompile Include="src\FileUtils.cpp" />
     <ClCompile Include="src\filled_buildings.cpp" />
     <ClCompile Include="src\Framebuffer.cpp" />
+    <ClCompile Include="src\GFXUniformDescription.cpp" />
+    <ClCompile Include="src\GFXUniformGroup.cpp" />
     <ClCompile Include="src\GL.cpp" />
     <ClCompile Include="src\GUI.cpp" />
     <ClCompile Include="src\heightfield.cpp" />
@@ -235,6 +236,7 @@
     <ClCompile Include="src\Serializer2.cpp" />
     <ClCompile Include="src\SerializerInputVariable.cpp" />
     <ClCompile Include="src\Settings.cpp" />
+    <ClCompile Include="src\ShadowUniformGroup.cpp" />
     <ClCompile Include="src\StringUtils.cpp" />
     <ClCompile Include="src\SunLight.cpp" />
     <ClCompile Include="src\TerrainTool.cpp" />
@@ -269,6 +271,8 @@
     <ClInclude Include="src\EngineStats.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\FileUtils.h" />
+    <ClInclude Include="src\GFXUniformDescription.h" />
+    <ClInclude Include="src\GFXUniformGroup.h" />
     <ClInclude Include="src\ImguiHelpers.h" />
     <ClInclude Include="src\ImguiManager.h" />
     <ClInclude Include="src\ImguiPointerDisplay.h" />
@@ -329,6 +333,7 @@
     <ClInclude Include="src\Serializer2.h" />
     <ClInclude Include="src\SerializerInputVariable.h" />
     <ClInclude Include="src\Settings.h" />
+    <ClInclude Include="src\ShadowUniformGroup.h" />
     <ClInclude Include="src\stb_rect_pack.h" />
     <ClInclude Include="src\stb_textedit.h" />
     <ClInclude Include="src\stb_truetype.h" />

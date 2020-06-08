@@ -1,0 +1,8 @@
+
+class GFXUniformDescription
+{ 
+	int Type = -1;
+	std::string UniformName;
+	int Location = -1;
+} 
+
