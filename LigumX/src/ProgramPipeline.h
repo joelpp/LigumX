@@ -17,6 +17,7 @@
 First create a ShaderFile for Utils. Then create the ShaderFile for Lighting, using the resolved Utils.
 Finally create Basic - concatenate somehow all the resolved shaderfiles.
 */
+
 struct ShaderFileInclude
 {
     ShaderFileInclude(const LXString& filename, int start, int numLines)

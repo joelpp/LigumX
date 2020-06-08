@@ -36,6 +36,7 @@
 #include "Heightfield.h"
 
 #include "inputhandler.h" // todo jpp for data inspector, clean if not needed anymore
+#include "RenderdocManager.h" // todo jpp for data inspector, clean if not needed anymore
 
 #pragma region  CLASS_SOURCE Renderer
 
@@ -1647,10 +1648,14 @@ void Renderer::DrawBoundingBox(BoundingBoxComponent* bb)
 
 	SetViewUniforms(m_ActiveCamera);
 	//SetVertexUniform(bb->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
-	SetVertexUniform(bb->GetParentEntity()->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
-	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
-	DrawMesh(mesh);
+	if (bb->GetParentEntity())
+	{
+		SetVertexUniform(bb->GetParentEntity()->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+
+		Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
+		DrawMesh(mesh);
+	}
 
 	GL::SetCapability(GL::Blend, false);
 }
@@ -2122,10 +2127,16 @@ void Renderer::AddToDebugModels(Model* model)
 
 GPUProfileHolder::GPUProfileHolder(const char* sectionName)
 {
-	glPushDebugGroupKHR(GL_DEBUG_SOURCE_APPLICATION, 0, -1, sectionName);
+	if (RenderdocManager::GetInstance().GetIsEnabled())
+	{
+		glPushDebugGroupKHR(GL_DEBUG_SOURCE_APPLICATION, 0, -1, sectionName);
+	}
 }
 
 GPUProfileHolder::~GPUProfileHolder()
 {
-	glPopDebugGroupKHR();
+	if (RenderdocManager::GetInstance().GetIsEnabled())
+	{
+		glPopDebugGroupKHR();
+	}
 }

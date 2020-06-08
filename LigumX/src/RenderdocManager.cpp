@@ -15,6 +15,8 @@ void RenderdocManager::LoadRenderdoc()
 			(pRENDERDOC_GetAPI)GetProcAddress(mod, "RENDERDOC_GetAPI");
 		lxInt32 ret = RENDERDOC_GetAPI(eRENDERDOC_API_Version_1_1_2, (void **)&rdoc_api);
 		lxAssert(ret == 1);
+
+		m_IsEnabled = true;
 	}
 	else
 	{

@@ -1,0 +1,10 @@
+{
+  "FileVersion": 2,
+  "Id": "52ebc094-8dbd-4118-80cf-858d91358e68",
+  "Items": [
+    {
+      "Id": "edc4cf4e-5eea-4839-ae80-80fd4cc93907",
+      "Command": "/renderdoc"
+    }
+  ]
+}

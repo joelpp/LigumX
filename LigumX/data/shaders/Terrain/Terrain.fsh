@@ -3,12 +3,28 @@ in float v_Height;
 in vec2 v_TexCoords;
 in vec3 v_Normal;
 in float v_maxHeight;
+in vec4 FragPosLightSpace;
 
-#define PROVIDER_Material
-#define PROVIDER_DisplayOptions
 #define PROVIDER_View
+#define PROVIDER_Light
+#define PROVIDER_PostEffects
+#define PROVIDER_Material
+#define PROVIDER_ShadowMap
+#define PROVIDER_Sky
+#define PROVIDER_DisplayOptions
+#define PROVIDER_Debug
+#define PROVIDER_DataInspector
+#define PROVIDER_LightingOptions
 
 // Include ProvidersMarker
+
+// Include BasicUtils.glsl
+// Include ShadowUtils.glsl
+// Include LightUtils.glsl
+// Include MaterialUtils.glsl
+// Include LightingUtils.glsl
+// Include SkyUtils.glsl
+
 
 layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 layout(binding = 1) uniform sampler2D g_SplatMapTexture;
@@ -144,7 +160,24 @@ void main()
 	//diffuse = vec3(0.5f * (1.f + v_Height / 300.f), 0, 0);
 	//diffuse = c0;
 
-	pixelData.m_FinalColor = pixelData.m_DiffuseColor * lightPower;
+	pixelData.m_FinalColor = 0.f * pixelData.m_DiffuseColor * lightPower;
+
+
+	if (g_EnableSunlight)
+	{
+		vec2 sunDirFlat = vec2(cos(sunOrientation), sin(sunOrientation));
+		vec3 sunDir = cos(sunTime) * vec3(0, 0, 1) + sin(sunTime) * vec3(sunDirFlat.x, sunDirFlat.y, 0);
+		vec3 fragmentToLightDir = sunDir;
+
+		float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);
+
+		float shadow = 1.f - ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
+
+		float sunPower = 5.f;
+		float sunLight = shadow * NdotL * sunPower;
+		pixelData.m_FinalColor += pixelData.m_DiffuseColor * sunLight;
+	}
+
 	//vec3 finalColor = diffuse /** lightPower*/;
 	//finalColor *= vec3(v_TexCoords, 0);
 

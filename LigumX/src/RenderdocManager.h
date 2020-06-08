@@ -15,9 +15,12 @@ public:
 
 	void LoadRenderdoc();
 
+	bool GetIsEnabled() const { return m_IsEnabled; }
+
 private:
 
 	RenderdocManager(RenderdocManager const&) = delete;
 	void operator=(RenderdocManager const&) = delete;
 
+	bool m_IsEnabled = false;
 };

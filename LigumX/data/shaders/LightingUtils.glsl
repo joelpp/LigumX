@@ -1,11 +1,8 @@
 #ifndef GLSL_LIGHTING_UTILS
 #define GLSL_LIGHTING_UTILS
 
-vec3 GetDiffuseLighting(int lightIndex, vec3 fragmentToLight, vec3 fNormalWS)
+vec3 GetDiffuseLighting(int lightIndex, vec3 fragmentToLight, vec3 fNormalWS, vec4 diffuseColor)
 {
- 	// Diffuse
-	vec4 diffuseColor = GetDiffuseColor(myTexCoord);
-
 	if (g_Material.m_Unlit)
 	{
 		return diffuseColor.rgb;
@@ -55,11 +52,8 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec3 GetSpecularLighting(int lightIndex, vec3 fragmentToLight, vec3 fragmentToCamera, vec3 fNormalWS)
+vec3 GetSpecularLighting(int lightIndex, vec3 fragmentToLight, vec3 fragmentToCamera, vec3 fNormalWS, vec4 specularColor)
 {
-	// Specular
-	vec4 specularColor = GetSpecularColor(myTexCoord);
-
 	vec3 reflectionDir = reflect(-fragmentToLight, fNormalWS);
 	vec3 halfwayVector = normalize(fragmentToLight + fragmentToCamera);
 	float spec = 0;

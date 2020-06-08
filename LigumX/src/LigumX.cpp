@@ -47,7 +47,20 @@ int main(int argc, char *argv[])
 {
     srand(987654321);
 
-	RenderdocManager::GetInstance().LoadRenderdoc();
+    if (argc > 1)
+    {
+        for (int i = 1; i < argc; ++i)
+        {
+            const char* arg = argv[i];
+
+            // todo jpp this can be better than an if else chain...
+            if (strcmp(arg, "/renderdoc") == 0)
+            {
+				RenderdocManager::GetInstance().LoadRenderdoc();
+            }
+        }
+    }
+
 	
     LigumX& game = LigumX::GetInstance();
 	

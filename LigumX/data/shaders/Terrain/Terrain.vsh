@@ -19,6 +19,7 @@ out float v_Height;
 out vec2 v_TexCoords;
 out vec3 v_Normal;
 out float v_maxHeight;
+out vec4 FragPosLightSpace;
 
 vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 {
@@ -72,4 +73,8 @@ void main()
 
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * worldPosition;
 	gl_Position.z += 0.1f;
+
+	FragPosLightSpace = g_LightProjectionMatrix * vec4(worldPosition.xyz, 1.f);
+
+
 }

@@ -9,9 +9,9 @@ AmbientColor
 0.000000
 0.000000
 DiffuseColor
-1.000000
-1.000000
-1.000000
+0.539000
+0.632000
+0.500000
 SpecularColor
 0.000000
 0.000000
@@ -33,7 +33,7 @@ DiffuseTextureEnabled
 SpecularTextureEnabled
 0
 Unlit
-1
+0
 RefractionIndex
 0.000000
 IsGlass

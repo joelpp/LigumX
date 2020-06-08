@@ -16,6 +16,8 @@ const std::string g_ProviderIncludeMarker = "ProvidersMarker";
 
 const std::string g_ProviderIncludeFilePath = g_PathShaders + "ProviderDefinitions.h";
 
+const std::string g_UniformGroupMarker = "PROVIDER_";
+
 const std::string g_LineNumberRegex = "\\([0-9]+\\)";
 
 ProgramPipeline::ShaderProgram::ShaderProgram()
@@ -79,6 +81,13 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 
 					continue;
 				}
+
+				bool uniformGroupStatement = StringUtils::StringContains(line, g_UniformGroupMarker);
+				if (uniformGroupStatement)
+				{
+					
+				}
+
 
 				sourceCodeStrings[count] += line + "\n";
 				finalShaderLineNumber++;

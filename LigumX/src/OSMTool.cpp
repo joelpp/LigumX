@@ -338,7 +338,7 @@ void OSMTool::SetCOMMAND_CreateAllEntityModels_Callback(const bool& value)
 				if (entity)
 				{
 					OSMElementComponent* osmElementComponent = entity->GetComponent<OSMElementComponent>();
-					Visual* visual = osmElementComponent->GetParentEntity()->GetComponent<Visual>();
+					Visual* visual = entity->GetComponent<Visual>();
 					if (osmElementComponent && (visual == nullptr))
 					{
 						osmElementComponent->SetCOMMAND_CreateModel(true);
