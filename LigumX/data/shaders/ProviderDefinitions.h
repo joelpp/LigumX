@@ -67,6 +67,7 @@ uniform float g_CameraFarPlane;
 uniform mat4 g_CameraInverse;
 uniform mat4 g_WorldToViewMatrix;
 uniform mat4 g_WorldToViewMatrixNoTranslation;
+uniform mat4 g_WorldToViewMatrixRotationOnly;
 uniform mat4 g_ProjectionMatrix;
 uniform mat4 g_ViewProjectionMatrixInverse;
 uniform mat4 g_ViewMatrixInverse;

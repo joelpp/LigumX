@@ -4,9 +4,10 @@ layout(location=1) in vec2 texCoord;
 layout(location=2) in vec3 v_Normal;
 
 uniform mat4 g_ModelToWorldMatrix;
-uniform mat4 g_WorldToViewMatrix;
-uniform mat4 g_ProjectionMatrix;
-uniform mat4 g_LightProjectionMatrix;
+
+#define PROVIDER_View
+
+// Include ProvidersMarker
 
 out gl_PerVertex {
     vec4 gl_Position;

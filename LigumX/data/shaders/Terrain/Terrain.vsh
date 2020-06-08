@@ -3,11 +3,10 @@ layout(location=0) in vec3 pos;
 layout(location=1) in vec2 texCoord;
 
 uniform mat4 g_ModelToWorldMatrix;
-uniform mat4 g_WorldToViewMatrix;
-uniform mat4 g_ProjectionMatrix;
 
 layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 
+#define PROVIDER_View
 #define PROVIDER_ShadowMap
 
 // Include ProvidersMarker

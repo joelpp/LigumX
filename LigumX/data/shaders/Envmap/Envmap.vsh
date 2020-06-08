@@ -5,9 +5,11 @@ layout(location=2) in vec3 v_Normal;
 
 //in int gl_VertexID;
 uniform mat4 g_ModelToWorldMatrix;
-uniform mat4 g_WorldToViewMatrix;
-uniform mat4 g_ProjectionMatrix;
-uniform mat4 g_WorldToViewMatrixRotationOnly;
+
+#define PROVIDER_View
+
+// Include ProvidersMarker
+
 
 out vec3 normal;
 out vec3 direction;
