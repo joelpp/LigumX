@@ -4,9 +4,7 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>
-    </LocalDebuggerCommandArguments>
-    <RemoteDebuggerCommandArguments>
-    </RemoteDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/renderdoc</LocalDebuggerCommandArguments>
+    <RemoteDebuggerCommandArguments>/renderdoc</RemoteDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

@@ -366,7 +366,7 @@ void Renderer::InitPipelines()
 	pPipelineSolidColor = new ProgramPipeline("SolidColor");
 	pPipelineBlur = new ProgramPipeline("blur");
 	pPipelineGrid = new ProgramPipeline("Grid");
-	pPipelineAxisGizmo = new ProgramPipeline("AxisGizmo");
+	//pPipelineAxisGizmo = new ProgramPipeline("AxisGizmo");
 	GL::OutputErrors();
 
 
@@ -627,6 +627,16 @@ void Renderer::SetUniformDesc(GLuint shader, GFXUniformDescription* uniformDesc,
 			glProgramUniformMatrix4fv(shader, (GLuint)uniformDesc->GetLocation(), 1, false, data);
 			break;
 		}
+		case LXType_glmvec3:
+		{
+			glProgramUniform3f(shader, (GLuint)uniformDesc->GetLocation(), *data, *(data + 1), *(data + 2));
+			break;
+		}
+		case LXType_float:
+		{
+			glProgramUniform1f(shader, (GLuint)uniformDesc->GetLocation(), *data);
+			break;
+		}
 		default:
 		{
 			lxAssert0();
@@ -634,9 +644,8 @@ void Renderer::SetUniformDesc(GLuint shader, GFXUniformDescription* uniformDesc,
 	}
 }
 
-void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, GLfloat* data)
+void Renderer::SetUniformDescF(GFXUniformDescription* uniformDesc, GFXShaderStage stage, const char* name, GLfloat* data)
 {
-	GFXUniformDescription* uniformDesc = uniformGroup->GetUniformDescription(stage, name);
 	GLenum glStage = (stage == GFXShaderStage_Vertex) ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER;
 	if (uniformDesc)
 	{
@@ -646,22 +655,32 @@ void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stag
 
 void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const bool& data)
 {
-	SetUniformDesc(uniformGroup, stage, name, (GLfloat*)&data);
+	GFXUniformDescription* uniformDesc = uniformGroup->GetUniformDescription(stage, name);
+	lxAssert(uniformDesc->GetType() == LXType_bool);
+
+	GLfloat v = data ? 1 : 0;
+	SetUniformDescF(uniformDesc, stage, name, &v);
 }
 
 void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::vec3& data)
 {
-	SetUniformDesc(uniformGroup, stage, name, glm::value_ptr(data));
+	GFXUniformDescription* uniformDesc = uniformGroup->GetUniformDescription(stage, name);
+	lxAssert(uniformDesc->GetType() == LXType_glmvec3);
+	SetUniformDescF(uniformDesc, stage, name, (GLfloat*)glm::value_ptr(data));
 }
 
 void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::mat4& data)
 {
-	SetUniformDesc(uniformGroup, stage, name, glm::value_ptr(data));
+	GFXUniformDescription* uniformDesc = uniformGroup->GetUniformDescription(stage, name);
+	lxAssert(uniformDesc->GetType() == LXType_glmmat4);
+	SetUniformDescF(uniformDesc, stage, name, (GLfloat*)glm::value_ptr(data));
 }
 
 void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const float& data)
 {
-	SetUniformDesc(uniformGroup, stage, name, (GLfloat*)&data);
+	GFXUniformDescription* uniformDesc = uniformGroup->GetUniformDescription(stage, name);
+	lxAssert(uniformDesc->GetType() == LXType_float);
+	SetUniformDescF(uniformDesc, stage, name, (GLfloat*)&data);
 }
 
 
@@ -808,7 +827,7 @@ void Renderer::SetShadowMapUniforms(Camera* cam)
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
 
 	GFXUniformGroup* uniformGroup = activePipeline->GetUniformGroup("ShadowMap");
-	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_LightProjectionMatrix", (GLfloat*)glm::value_ptr(cam->GetViewProjectionMatrix()));
+	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_LightProjectionMatrix", cam->GetViewProjectionMatrix());
 
 }
 
@@ -822,41 +841,21 @@ void Renderer::SetWorldGridUniforms()
 
 void Renderer::SetViewUniforms(Camera* cam)
 {
-	GFXUniformGroup* group = activePipeline->GetUniformGroup("LightingOptions");
-	if (false || group)
-	{
-		SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrix", cam->GetViewMatrix());
-		SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixNoTranslation", cam->GetViewMatrixNoTranslation());
-		SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixRotationOnly", glm::mat4(glm::mat3(cam->GetViewMatrix())));
-		SetUniformDesc(group, GFXShaderStage_Vertex, "g_ProjectionMatrix", cam->GetProjectionMatrix());
+	GFXUniformGroup* group = activePipeline->GetUniformGroup("View");
 
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewToWorldMatrix", cam->GetViewMatrixInverse());
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewProjectionMatrixInverse", cam->GetViewProjectionMatrixInverse());
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewMatrixInverse", cam->GetViewMatrixInverse());
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_ProjectionMatrixInverse", cam->GetProjectionMatrixInverse());
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraPosition", cam->GetPosition());
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraNearPlane", cam->GetNearPlane());
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraFarPlane", cam->GetFarPlane());
-		SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraLookAt", cam->GetFrontVector());
-	}
-	else
-	{
-		SetVertexUniform(cam->GetViewMatrix(), "g_WorldToViewMatrix");
-		SetVertexUniform(cam->GetViewMatrixNoTranslation(), "g_WorldToViewMatrixNoTranslation");
-		SetVertexUniform(glm::mat4(glm::mat3(cam->GetViewMatrix())), "g_WorldToViewMatrixRotationOnly");
-		SetVertexUniform(cam->GetProjectionMatrix(), "g_ProjectionMatrix");
+	SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrix", cam->GetViewMatrix());
+	SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixNoTranslation", cam->GetViewMatrixNoTranslation());
+	SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixRotationOnly", glm::mat4(glm::mat3(cam->GetViewMatrix())));
+	SetUniformDesc(group, GFXShaderStage_Vertex, "g_ProjectionMatrix", cam->GetProjectionMatrix());
 
-		SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewToWorldMatrix");
-		SetFragmentUniform(cam->GetViewProjectionMatrixInverse(), "g_ViewProjectionMatrixInverse");
-		SetFragmentUniform(cam->GetViewMatrixInverse(), "g_ViewMatrixInverse");
-		SetFragmentUniform(cam->GetProjectionMatrixInverse(), "g_ProjectionMatrixInverse");
-		SetFragmentUniform(cam->GetPosition(), "g_CameraPosition");
-		SetFragmentUniform(cam->GetNearPlane(), "g_CameraNearPlane");
-		SetFragmentUniform(cam->GetFarPlane(), "g_CameraFarPlane");
-		SetFragmentUniform(cam->GetFrontVector(), "g_CameraLookAt");
-	}
-
-
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraPosition", cam->GetPosition());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewToWorldMatrix", cam->GetViewMatrixInverse());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewProjectionMatrixInverse", cam->GetViewProjectionMatrixInverse());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewMatrixInverse", cam->GetViewMatrixInverse());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ProjectionMatrixInverse", cam->GetProjectionMatrixInverse());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraNearPlane", cam->GetNearPlane());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraFarPlane", cam->GetFarPlane());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraLookAt", cam->GetFrontVector());
 }
 
 void Renderer::SetDebugUniforms()
@@ -1141,7 +1140,6 @@ void Renderer::RenderShadowMap()
 
 	m_SkyLight.m_Position = pos;
 	SetLightingUniforms();
-	SetLightingOptionsUniforms();
 
 	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 100.f);
 	m_ShadowCamera->SetFrontVector(pos);

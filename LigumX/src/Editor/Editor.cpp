@@ -1722,7 +1722,7 @@ void Editor::DisplayAxisGizmo()
 		return;
 	}
 
-	Renderer::GetInstance().RenderAxisGizmo();
+	//Renderer::GetInstance().RenderAxisGizmo();
 }
 
 

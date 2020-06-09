@@ -210,7 +210,7 @@ public:
 	void FreeBoundTexture(int slot);
 	void FreeBoundTexture();
 
-	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, GLfloat* data);
+	void SetUniformDescF(GFXUniformDescription* uniformDesc, GFXShaderStage stage, const char* name, GLfloat* data);
 	void SetUniformDesc(GLuint shader, GFXUniformDescription* uniformDesc, GLfloat* data);
 	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const bool& data);
 	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::vec3& data);

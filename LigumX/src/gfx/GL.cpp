@@ -410,7 +410,7 @@ void GL::OutputErrors()
 			case GL_INVALID_FRAMEBUFFER_OPERATION:  error = "INVALID_FRAMEBUFFER_OPERATION";  break;
 		}
 
-		PRINT(error.c_str());
+		lxLogMessage(lxFormat("GL Error : %s", error.c_str()).c_str());
 		err = glGetError();
 	}
 }
