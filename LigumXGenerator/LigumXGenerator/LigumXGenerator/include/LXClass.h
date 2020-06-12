@@ -187,6 +187,7 @@ struct LXClass
 	VariableList m_Members;
 	EnumList m_Enums;
 	bool m_IsValid = false;
+	std::string m_Subdirectory; // todo jpp has to be a better, usefuler way such as storing the GenFile
 
 	bool IsLXObject() 
 	{

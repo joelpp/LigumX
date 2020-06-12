@@ -39,6 +39,7 @@ class LightingOptions;
 class Camera;
 class MainWindow;
 
+
 #pragma endregion  FORWARD_DECLARATIONS Renderer
 
 class Framebuffer;

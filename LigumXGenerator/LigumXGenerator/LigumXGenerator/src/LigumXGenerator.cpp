@@ -49,6 +49,7 @@ int g_Now;
 struct GeneratorFile
 {
 	std::string m_Name;
+	std::string m_Subdirectory;
 	std::vector<LXClass> m_Contained;
 	bool m_SourceFilesNeedUpdate;
 };
@@ -259,7 +260,7 @@ std::string DefaultValueForType(bool isAPointer, const std::string& type)
 	}
 }
 
-ClassList createLXClass(std::vector<std::string>& lines)
+ClassList createLXClass(std::vector<std::string>& lines, GeneratorFile& genFile)
 {
 	ClassList classes;
 	bool generatingClass = false;
@@ -378,6 +379,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 					}
 
 					currentClass.m_IsValid = true;
+					currentClass.m_Subdirectory = genFile.m_Subdirectory;
 					classes.push_back(currentClass);
 					currentClass = LXClass();
 				}
@@ -469,6 +471,7 @@ ClassList createLXClass(std::vector<std::string>& lines)
 	if (classes.size() == 0)
 	{
 		// push it anyway
+		currentClass.m_Subdirectory = genFile.m_Subdirectory;
 		classes.push_back(currentClass);
 	}
 
@@ -483,11 +486,11 @@ void SetToZero(T* arr, int numElements)
 
 void processSingleGeneratorFile(GeneratorFile& genFile)
 {
-	std::string filePath = g_GenerationRootDir + genFile.m_Name;
+	std::string filePath = g_GenerationRootDir + genFile.m_Subdirectory + genFile.m_Name;
 	std::vector<std::string> lines = readFileLines(filePath.c_str());
 
 	//CodeRegion codeRegion;
-	ClassList classes = createLXClass(lines);
+	ClassList classes = createLXClass(lines, genFile);
 
 	LXClass& theClass = classes[0];
 
@@ -547,7 +550,7 @@ void OutputClassHierarchyData(std::vector<GeneratorFile>& generatorFiles)
 
 	// output class list .h
 	{
-		std::string filePath = g_GenerationRootDir + "LXClassList.h";
+		std::string filePath = g_GenerationRootDir + "System/" + "LXClassList.h";
 		std::string lastClassList = StringFromFile(filePath.c_str());
 		
 		std::string newClassList = classListFile.str();
@@ -567,7 +570,7 @@ void OutputClassHierarchyData(std::vector<GeneratorFile>& generatorFiles)
 
 	// output LXAllClassInclude .h
 	{
-		std::string filePath = g_GenerationRootDir + "LXAllClassInclude.h";
+		std::string filePath = g_GenerationRootDir + "System/" + "LXAllClassInclude.h";
 		std::string lastAllClassInclude = StringFromFile(filePath.c_str());
 
 		std::string newAllClassInclude = allClassIncludeFile.str();
@@ -807,21 +810,52 @@ struct ClassPropertyData
 void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToForce)
 {
 	HANDLE hFind;
-	WIN32_FIND_DATA data;
+	WIN32_FIND_DATA findData;
 
+	std::vector<std::string> subDirsList;
 	std::vector<std::string> srcFileList;
 
-	hFind = FindFirstFile("../../../LigumX/src/*", &data);
+	// first get list of all subdirs
+
+	std::string slash = "/";
+
+	subDirsList.push_back("");
+
+	hFind = FindFirstFile("../../../LigumX/src/*", &findData);
 	if (hFind != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
-			srcFileList.push_back(data.cFileName);
-		} while (FindNextFile(hFind, &data));
-
+			if ((findData.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY
+				&& (findData.cFileName[0] != '.'))
+			{
+				subDirsList.push_back(findData.cFileName + slash);
+			}
+		} while (FindNextFile(hFind, &findData) != 0);
 
 		FindClose(hFind);
 	}
+
+	for (int i = 0; i < subDirsList.size(); ++i)
+	{
+		std::string subDirPath = "../../../LigumX/src/" + subDirsList[i] + "*";
+		hFind = FindFirstFile(subDirPath.c_str(), &findData);
+		if (hFind != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				if ((findData.dwFileAttributes | FILE_ATTRIBUTE_DIRECTORY) != FILE_ATTRIBUTE_DIRECTORY
+					&& (findData.cFileName[0] != '.'))
+				{
+					srcFileList.push_back(subDirsList[i] + std::string(findData.cFileName));
+				}
+			} while (FindNextFile(hFind, &findData));
+
+
+			FindClose(hFind);
+		}
+	}
+
 
 
 	std::vector<GeneratorFile> generatorFiles;
@@ -851,8 +885,17 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 		}
 		else if (type == FileType_Generator)
 		{
+			std::vector<std::string> tokens = splitString(fileName, '/');
+			
 			GeneratorFile genFile;
-			genFile.m_Name = fileName + ".gen";
+			genFile.m_Name = tokens[tokens.size() - 1] + ".gen";
+			
+			genFile.m_Subdirectory = "";
+			for (int s = 0; s < tokens.size() - 1; ++s)
+			{
+				genFile.m_Subdirectory += tokens[s];
+			}
+			genFile.m_Subdirectory += "/";
 
 			struct _stat64i32 result;
 			int timeLastModified = 0;

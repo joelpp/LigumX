@@ -12,7 +12,7 @@ public:
 
 	std::string GenerateFileName()
 	{
-		return g_GenerationRootDir + m_Class.m_Name + m_FileExtension;
+		return g_GenerationRootDir + m_Class.m_Subdirectory + m_Class.m_Name + m_FileExtension;
 	}
 
 

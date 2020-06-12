@@ -685,7 +685,7 @@ public:
 		WriteEnums();
 
 		WriteFooter();
-
+		
 		WriteToFile();
 	}
 };
