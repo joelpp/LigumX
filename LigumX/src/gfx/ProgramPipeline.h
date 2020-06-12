@@ -43,7 +43,7 @@ public:
         ~ShaderProgram() {}
 
 		int m_NumLinesInInclude = 0;
-		bool Initialize(GLenum shaderType, LXString& name, std::string srcFilenames, bool readSrcFilenamesAsSourceCode, LXVector<LXString>& uniformGroups);
+		bool Initialize(GLenum shaderType, LXString& name, std::string srcFilenames, bool readSrcFilenamesAsSourceCode, LXVector<UniformGroupType>& uniformGroups);
 
         std::vector<ShaderFileInclude> m_FileIncludes;
 

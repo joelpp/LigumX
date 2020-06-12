@@ -3,11 +3,12 @@ enum UniformGroupType
 {
 	ShadowMap,
 	LightingOptions,
-	DisplayOptions
+	View
 }
 
 class GFXUniformGroup
 { 
 	std::string GroupName;
+	UniformGroupType UniformGroupType;
 } 
 

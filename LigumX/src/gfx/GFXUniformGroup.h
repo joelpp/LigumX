@@ -10,7 +10,7 @@ enum UniformGroupType
 {
 UniformGroupType_ShadowMap,
 UniformGroupType_LightingOptions,
-UniformGroupType_DisplayOptions,
+UniformGroupType_View,
 };
 
 extern const std::string EnumValues_UniformGroupType[3];
@@ -44,15 +44,19 @@ typedef LXObject super;
 
 const std::string& GetGroupName() { return m_GroupName; }; 
 void SetGroupName(std::string value) { m_GroupName = value; }; 
+const UniformGroupType& GetUniformGroupType() { return m_UniformGroupType; }; 
+void SetUniformGroupType(UniformGroupType value) { m_UniformGroupType = value; }; 
 private:
 std::string m_GroupName;
+UniformGroupType m_UniformGroupType;
 public:
-static const int g_PropertyCount = 1;
+static const int g_PropertyCount = 2;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_GFXUniformGroupPIDX
 {
 PIDX_GroupName,
+PIDX_UniformGroupType,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

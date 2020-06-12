@@ -27,15 +27,15 @@ ProgramPipeline::ShaderProgram::ShaderProgram()
 	
 }
 
-bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& name, string srcFilenames, bool readSrcFilenamesAsSourceCode, LXVector<LXString>& uniformGroups)
+bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& name, string srcFilenames, bool readSrcFilenamesAsSourceCode, LXVector<UniformGroupType>& uniformGroups)
 {
-	StringList knownUniformGroups =
-	{
-		"LightingOptions",
-		"ShadowMap",
-		"View",
-	};
-
+	//StringList knownUniformGroups =
+	//{
+	//	"LightingOptions",
+	//	"ShadowMap",
+	//	"View",
+	//};
+	
 	this->shaderType = shaderType;
 
 	int nbSources = 1;//int(srcFilenames.size());
@@ -99,14 +99,16 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 					StringList tokens = StringUtils::SplitString(line, '_');
 					lxAssert(tokens.size() == 2);
 
-					for (LXString& uniformGroupName : knownUniformGroups)
+					//for (const LXString& uniformGroupName : EnumValues_UniformGroupType)
+					for (int u = 0; u < EnumLength_UniformGroupType; ++u)
 					{
+						const LXString& uniformGroupName = EnumValues_UniformGroupType[u];
 						if (tokens[1] == uniformGroupName)
 						{
 							bool found = false;
 							for (int i = 0; i < uniformGroups.size(); ++i)
 							{
-								if (uniformGroups[i] == uniformGroupName)
+								if (uniformGroups[i] == u)
 								{
 									found = true;
 									break;
@@ -115,7 +117,8 @@ bool ProgramPipeline::ShaderProgram::Initialize(GLenum shaderType, LXString& nam
 
 							if (!found)
 							{
-								uniformGroups.push_back(uniformGroupName);
+								uniformGroups.push_back((UniformGroupType)u);
+								break;
 							}
 						}
 					}
@@ -315,7 +318,7 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
     path << g_PathShaders;
     path << name << "/";
     
-	LXVector<LXString> uniformGroups;
+	LXVector<UniformGroupType> uniformGroups;
 
 	bool success = false;
 	if (isCompute)
@@ -355,12 +358,12 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 
 		for (int g = 0; g < uniformGroups.size(); ++g)
 		{
-			LXString& groupName = uniformGroups[g];
+			UniformGroupType groupType = uniformGroups[g];
 			GFXUniformGroup uniformGroup;
 
-			if (groupName == "ShadowMap") uniformGroup = ShadowUniformGroup();
-			else if (groupName == "LightingOptions") uniformGroup = LightingOptionsUniformGroup();
-			else if (groupName == "View") uniformGroup = ViewUniformGroup();
+			if (groupType == UniformGroupType_ShadowMap) uniformGroup = ShadowUniformGroup();
+			else if (groupType == UniformGroupType_LightingOptions) uniformGroup = LightingOptionsUniformGroup();
+			else if (groupType == UniformGroupType_View) uniformGroup = ViewUniformGroup();
 			else lxAssert0();
 
 			uniformGroup.GetLocationsFromShader(this);

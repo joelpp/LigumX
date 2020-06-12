@@ -903,14 +903,14 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 			if ((fileSelectionMode != FileSelectionMode::ForceAll) && stat((g_GenerationRootDir + genFile.m_Name).c_str(), &result) == 0)
 			{
 				timeLastModified = (int)result.st_mtime;
-				genFile.m_SourceFilesNeedUpdate = g_LogFile.ProcessFile(fileName, (int)timeLastModified);
+				genFile.m_SourceFilesNeedUpdate = g_LogFile.ProcessFile(genFile.m_Name, (int)timeLastModified);
 				if (!genFile.m_SourceFilesNeedUpdate)
 				{
-					std::cout << "\"" << fileName << "\" : no change since " << timeLastModified << std::endl;
+					std::cout << "\"" << genFile.m_Name << "\" : no change since " << timeLastModified << std::endl;
 				}
 			}
 
-			std::cout << "\"" << fileName << "\" : has been updated." << std::endl;
+			std::cout << "\"" << genFile.m_Name << "\" : has been updated." << std::endl;
 			generatorFiles.push_back(genFile);
 		}
 		else if (type == FileType_Header)

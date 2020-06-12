@@ -8,6 +8,7 @@
 const ClassPropertyData GFXUniformGroup::g_Properties[] = 
 {
 { "GroupName", PIDX_GroupName, offsetof(GFXUniformGroup, m_GroupName), 0, LXType_stdstring, sizeof(std::string), LXType_stdstring, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "UniformGroupType", PIDX_UniformGroupType, offsetof(GFXUniformGroup, m_UniformGroupType), 0, LXType_Object, sizeof(UniformGroupType), LXType_UniformGroupType, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
 };
 void GFXUniformGroup::Serialize(Serializer2& serializer)
 {
@@ -34,6 +35,7 @@ void GFXUniformGroup::Clone(LXObject* otherObj)
 	super::Clone(otherObj);
 	GFXUniformGroup* other = (GFXUniformGroup*) otherObj;
 	other->SetGroupName(m_GroupName);
+	other->SetUniformGroupType(m_UniformGroupType);
 }
 const char* GFXUniformGroup::GetTypeName()
 {
@@ -43,14 +45,14 @@ const std::string EnumValues_UniformGroupType[] =
 {
 "ShadowMap",
 "LightingOptions",
-"DisplayOptions",
+"View",
 };
 
 const UniformGroupType Indirection_UniformGroupType[] =
 {
 	UniformGroupType_ShadowMap,
 	UniformGroupType_LightingOptions,
-	UniformGroupType_DisplayOptions,
+	UniformGroupType_View,
 };
 
 #pragma endregion  CLASS_SOURCE GFXUniformGroup
