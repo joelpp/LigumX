@@ -2,7 +2,7 @@
 
 LightingOptionsUniformGroup::LightingOptionsUniformGroup()
 {
-	SetGroupName("LightingOptions");
+	SetUniformGroupType(UniformGroupType_LightingOptions);
 
 	AddUniform(GFXShaderStage_Fragment, "g_EnableDynamicLights", LXType_bool);
 	AddUniform(GFXShaderStage_Fragment, "g_EnableSunlight", LXType_bool);

@@ -217,6 +217,7 @@ public:
 	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::vec3& data);
 	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const glm::mat4& data);
 	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const float& data);
+	void SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const int& data);
 
 	void SetUniform(int value, const char* name, GLuint location);
 	void SetUniform(float value, const char* name, GLuint location);

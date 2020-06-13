@@ -364,6 +364,8 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 			if (groupType == UniformGroupType_ShadowMap) uniformGroup = ShadowUniformGroup();
 			else if (groupType == UniformGroupType_LightingOptions) uniformGroup = LightingOptionsUniformGroup();
 			else if (groupType == UniformGroupType_View) uniformGroup = ViewUniformGroup();
+			else if (groupType == UniformGroupType_PostEffects) uniformGroup = PostEffectsUniformGroup();
+			else if (groupType == UniformGroupType_Picking) uniformGroup = PickingUniformGroup();
 			else lxAssert0();
 
 			uniformGroup.GetLocationsFromShader(this);
@@ -667,26 +669,16 @@ void ProgramPipeline::setUniform(std::string name, glm::vec3 color)
 
 }
 
-GFXUniformGroup* ProgramPipeline::GetUniformGroup(const LXString& uniformGroupName)
+GFXUniformGroup* ProgramPipeline::GetUniformGroup(UniformGroupType type)
 {
-
 	for (GFXUniformGroup& group : m_UniformGroups)
 	{
-		if (group.GetGroupName() == uniformGroupName)
+		if (group.GetUniformGroupType() == type)
 		{
 			return &group;
 		}
 	}
 	
 	return nullptr;
-	//try
-	//{
-	//	GFXUniformGroup& group = m_UniformGroups.at(uniformGroupName);
-	//	return &group;
-	//}
-	//catch (std::out_of_range e)
-	//{
-	//	return nullptr;
-	//}
 }
 

@@ -900,7 +900,7 @@ void DoMainProcessing(FileSelectionMode fileSelectionMode, std::string fileToFor
 			struct _stat64i32 result;
 			int timeLastModified = 0;
 
-			if ((fileSelectionMode != FileSelectionMode::ForceAll) && stat((g_GenerationRootDir + genFile.m_Name).c_str(), &result) == 0)
+			if ((fileSelectionMode != FileSelectionMode::ForceAll) && stat((g_GenerationRootDir + genFile.m_Subdirectory + genFile.m_Name).c_str(), &result) == 0)
 			{
 				timeLastModified = (int)result.st_mtime;
 				genFile.m_SourceFilesNeedUpdate = g_LogFile.ProcessFile(genFile.m_Name, (int)timeLastModified);

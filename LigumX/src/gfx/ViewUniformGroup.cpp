@@ -2,7 +2,7 @@
 
 ViewUniformGroup::ViewUniformGroup()
 {
-	SetGroupName("View");
+	SetUniformGroupType(UniformGroupType_View);
 
 	AddUniform(GFXShaderStage_Vertex, "g_WorldToViewMatrix", LXType_glmmat4);
 	AddUniform(GFXShaderStage_Vertex, "g_WorldToViewMatrixNoTranslation", LXType_glmmat4);

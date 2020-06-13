@@ -683,10 +683,17 @@ void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stag
 	SetUniformDescF(uniformDesc, stage, name, (GLfloat*)&data);
 }
 
+void Renderer::SetUniformDesc(GFXUniformGroup* uniformGroup, GFXShaderStage stage, const char* name, const int& data)
+{
+	GFXUniformDescription* uniformDesc = uniformGroup->GetUniformDescription(stage, name);
+	lxAssert(uniformDesc->GetType() == LXType_int);
+	SetUniformDescF(uniformDesc, stage, name, (GLfloat*)&data);
+}
+
 
 void Renderer::SetLightingOptionsUniforms()
 {
-	GFXUniformGroup* group = activePipeline->GetUniformGroup("LightingOptions");
+	GFXUniformGroup* group = activePipeline->GetUniformGroup(UniformGroupType_LightingOptions);
 	if (group)
 	{
 		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableDynamicLights", m_LightingOptions->GetEnableDynamicLights());
@@ -812,23 +819,20 @@ void Renderer::SetMaterialUniforms(Material* material)
 
 void Renderer::SetPostEffectsUniforms()
 {
-	int gamma = m_PostEffects->GetGammaCorrectionEnabled() ? 1 : 0;
-	SetFragmentUniform(gamma, "g_GammaCorrectionEnabled");
-	float val = m_PostEffects->GetGammaExponent();
-	SetFragmentUniform(val, "g_GammaCorrectionExponent");
+	GFXUniformGroup* group = activePipeline->GetUniformGroup(UniformGroupType_PostEffects);
 
-	SetFragmentUniform(m_PostEffects->GetToneMappingEnabled(), "g_ToneMappingEnabled");
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_GammaCorrectionEnabled", m_PostEffects->GetGammaCorrectionEnabled());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_GammaCorrectionExponent", m_PostEffects->GetGammaExponent());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ToneMappingEnabled", m_PostEffects->GetToneMappingEnabled());
 }
-
 
 void Renderer::SetShadowMapUniforms(Camera* cam)
 {
 	SetFragmentUniform(2, "g_DepthMapTexture");
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
 
-	GFXUniformGroup* uniformGroup = activePipeline->GetUniformGroup("ShadowMap");
+	GFXUniformGroup* uniformGroup = activePipeline->GetUniformGroup(UniformGroupType_ShadowMap);
 	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_LightProjectionMatrix", cam->GetViewProjectionMatrix());
-
 }
 
 void Renderer::SetWorldGridUniforms()
@@ -841,7 +845,7 @@ void Renderer::SetWorldGridUniforms()
 
 void Renderer::SetViewUniforms(Camera* cam)
 {
-	GFXUniformGroup* group = activePipeline->GetUniformGroup("View");
+	GFXUniformGroup* group = activePipeline->GetUniformGroup(UniformGroupType_View);
 
 	SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrix", cam->GetViewMatrix());
 	SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixNoTranslation", cam->GetViewMatrixNoTranslation());
@@ -1214,7 +1218,7 @@ void Renderer::RenderOpaque()
 			glm::mat4 toWorld = entity->GetModelToWorldMatrix();
 			glm::vec3 invScale = 1.f / entity->GetScale();
 			toWorld = glm::scale(toWorld, invScale);
-			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+
 			SetVertexUniform(toWorld, "g_ModelToWorldMatrix");
 			DrawMesh(g_DefaultObjects->DefaultCubeMesh);
 		}
@@ -1334,7 +1338,8 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	for (Sector* sector : g_RenderDataManager->GetVisibleSectors())
 	{
 		Entity* entity = sector->GetTerrainPatchEntity();
-		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+		GFXUniformGroup* group = activePipeline->GetUniformGroup(UniformGroupType_Picking);
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_PickingID", entity->GetPickingID());
 
 		SetVertexUniform(3, "g_HeightfieldTexture");
 		Bind2DTexture(3, sector->GetHeightfield()->GetHeightDataTexture()->GetHWObject());
@@ -1353,7 +1358,9 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 
 	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 	{
-		SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+		GFXUniformGroup* group = activePipeline->GetUniformGroup(UniformGroupType_Picking);
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_PickingID", entity->GetPickingID());
+
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 	
 		Visual* visual = entity->GetComponent<Visual>();
@@ -1371,7 +1378,9 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 	{
 		for (Entity* entity : m_World->GetDebugEntities())
 		{
-			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
+			GFXUniformGroup* group = activePipeline->GetUniformGroup(UniformGroupType_Picking);
+			SetUniformDesc(group, GFXShaderStage_Fragment, "g_PickingID", entity->GetPickingID());
+
 			SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 			Visual* visual = entity->GetComponent<Visual>();
@@ -1392,8 +1401,11 @@ void Renderer::RenderPickingBuffer(bool debugEntities)
 			glm::mat4 toWorld = entity->GetModelToWorldMatrix();
 			glm::vec3 invScale = 1.f / entity->GetScale();
 			toWorld = glm::scale(toWorld, invScale);
-			SetFragmentUniform(entity->GetPickingID(), "g_PickingID");
 			SetVertexUniform(toWorld, "g_ModelToWorldMatrix");
+
+			GFXUniformGroup* group = activePipeline->GetUniformGroup(UniformGroupType_Picking);
+			SetUniformDesc(group, GFXShaderStage_Fragment, "g_PickingID", entity->GetPickingID());
+
 			DrawMesh(g_DefaultObjects->DefaultCubeMesh);
 		}
 	}

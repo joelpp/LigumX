@@ -74,7 +74,7 @@ public:
 
 	bool m_IsValid = false;
 
-	GFXUniformGroup* GetUniformGroup(const LXString& uniformGroupName);
+	GFXUniformGroup* GetUniformGroup(UniformGroupType type);
 private:
     std::string m_name;
     REGISTERCLASS(ProgramPipeline);
