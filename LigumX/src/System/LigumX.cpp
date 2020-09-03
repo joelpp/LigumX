@@ -168,7 +168,7 @@ void LigumX::Initialize()
         e->SetCOMMAND_LoadModel(true);
     }
     // Generate a couple sectors
-	g_SectorManager->LoadSectorsAroundPoint(glm::vec2(1, 1), 4);
+	g_SectorManager->LoadSectorsAroundPoint(glm::vec2(1, 1), 8);
 
 
 }

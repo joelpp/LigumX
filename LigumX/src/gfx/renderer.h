@@ -148,7 +148,7 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Renderer
 public:
-	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+	const unsigned int SHADOW_WIDTH = 256, SHADOW_HEIGHT = 256;
 
 	Renderer::Renderer();
 
@@ -473,6 +473,9 @@ private:
 	GLuint m_TextInstanceVBO = 0;
 	GLuint m_TextInstanceSSBO = 0;
 
+	GLuint m_TerrainMatrixSSBO = 0;
+
+	glm::mat4 m_ShadowCascadeViewProjectionMatricesCache[NUM_SHADOWMAP_CASCADES];
 };
 
 class GPUProfileHolder

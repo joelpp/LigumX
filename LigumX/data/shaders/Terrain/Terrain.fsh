@@ -3,7 +3,10 @@ in float v_Height;
 in vec2 v_TexCoords;
 in vec3 v_Normal;
 in float v_maxHeight;
-in vec4 FragPosLightSpace;
+in vec4 FragPosCascade0;
+in vec4 FragPosCascade1;
+in vec4 FragPosCascade2;
+in vec4 FragPosCascade3;
 in vec3 vWorldPosition;
 
 #define PROVIDER_View
@@ -261,7 +264,7 @@ void main()
 
 		// add to outgoing radiance Lo
 		float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);
-		float shadow = ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy, sunDir);
+		float shadow = ShadowCalculation(FragPosCascade0, FragPosCascade1, FragPosCascade2, FragPosCascade3, pixelData.m_Normal, gl_FragCoord.xy, sunDir);
 		vec3 finalColor = (kD * materialAlbedo.rgb / PI + specular) * shadow * radiance * NdotL;
 
 		pixelData.m_FinalColor.rgb += finalColor;

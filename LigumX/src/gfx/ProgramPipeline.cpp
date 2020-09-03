@@ -371,6 +371,7 @@ ProgramPipeline::ProgramPipeline(std::string name, bool isCompute)
 			uniformGroup.GetLocationsFromShader(this);
 			//m_UniformGroups.emplace(uniformGroup.GetGroupName(), uniformGroup);
 			m_UniformGroups.push_back(uniformGroup);
+			m_UniformGroupIndexCache[groupType] = m_UniformGroups.size() - 1;
 
 		}
 	}
@@ -392,6 +393,11 @@ ProgramPipeline::ProgramPipeline()
     glBindProgramPipeline(glidProgramPipeline);
     glGenVertexArrays(1, &glidVao);
     glBindVertexArray(glidVao);
+
+	for (int i = 0; i < EnumLength_UniformGroupType; ++i)
+	{
+		m_UniformGroupIndexCache[i] = -1;
+	}
 }
 
 //void ProgramPipeline::useShaders(
@@ -671,6 +677,10 @@ void ProgramPipeline::setUniform(std::string name, glm::vec3 color)
 
 GFXUniformGroup* ProgramPipeline::GetUniformGroup(UniformGroupType type)
 {
+	//if (m_UniformGroupIndexCache[type] != -1)
+	//{
+	//	return &m_UniformGroups[m_UniformGroupIndexCache[type]];
+	//}
 	for (GFXUniformGroup& group : m_UniformGroups)
 	{
 		if (group.GetUniformGroupType() == type)

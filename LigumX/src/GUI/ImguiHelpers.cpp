@@ -617,6 +617,8 @@ bool ImguiHelpers::ShowObject(void* object, const ClassPropertyData& propertyDat
 		ImGui::EndPopup();
 	}
 
+	treeNodeIsOpen &= (value != nullptr);
+
 	if (treeNodeIsOpen)
 	{
 		value->ShowPropertyGrid();

@@ -191,6 +191,7 @@ struct TextInstance_VertexData
 };
 
 constexpr int g_MaxNumTextQuads = 1024;
+constexpr int g_MaxTerrainNodes = 1024;
 
 void Renderer::InitGL()
 {
@@ -248,6 +249,14 @@ void Renderer::InitGL()
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(TextInstance_VertexData) * g_MaxNumTextQuads, NULL, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
 
+	glGenBuffers(1, &m_TerrainMatrixSSBO);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_TerrainMatrixSSBO);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(glm::mat4) * g_MaxTerrainNodes, NULL, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
+
+	int numTextureUnits = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numTextureUnits);
+	lxLogMessage(lxFormat("Available texture units : %d", numTextureUnits).c_str());
 }
 
 void Renderer::BindFramebuffer(FramebufferType buffer)
@@ -843,18 +852,22 @@ void Renderer::SetShadowMapUniforms(Camera* cam)
 	SetFragmentUniform(2, "g_ShadowCascade0");
 	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMapCascade0]->GetDepthTexture());
 
-	SetFragmentUniform(3, "g_ShadowCascade1");
-	Bind2DTexture(3, m_Framebuffers[FramebufferType_ShadowMapCascade1]->GetDepthTexture());
+	SetFragmentUniform(12, "g_ShadowCascade1");
+	Bind2DTexture(12, m_Framebuffers[FramebufferType_ShadowMapCascade1]->GetDepthTexture());
 
-	SetFragmentUniform(4, "g_ShadowCascade2");
-	Bind2DTexture(4, m_Framebuffers[FramebufferType_ShadowMapCascade2]->GetDepthTexture());
+	SetFragmentUniform(13, "g_ShadowCascade2");
+	Bind2DTexture(13, m_Framebuffers[FramebufferType_ShadowMapCascade2]->GetDepthTexture());
 
-	SetFragmentUniform(5, "g_ShadowCascade3");
-	Bind2DTexture(5, m_Framebuffers[FramebufferType_ShadowMapCascade3]->GetDepthTexture());
-
+	SetFragmentUniform(14, "g_ShadowCascade3");
+	Bind2DTexture(14, m_Framebuffers[FramebufferType_ShadowMapCascade3]->GetDepthTexture());
 
 	GFXUniformGroup* uniformGroup = activePipeline->GetUniformGroup(UniformGroupType_ShadowMap);
-	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_LightProjectionMatrix", cam->GetViewProjectionMatrix());
+	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade0ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[0]);
+	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade1ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[1]);
+	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade2ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[2]);
+	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade3ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[3]);
+
+
 }
 
 void Renderer::SetWorldGridUniforms()
@@ -963,22 +976,9 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 	GL::OutputErrors();
 }
 
-GLuint slots[] =
-{
-	GL_TEXTURE0,
-	GL_TEXTURE1,
-	GL_TEXTURE2,
-	GL_TEXTURE3,
-	GL_TEXTURE4,
-	GL_TEXTURE5,
-	GL_TEXTURE6,
-	GL_TEXTURE7,
-	GL_TEXTURE8
-};
-
 void Renderer::Bind2DTexture(int slot, GLuint HWObject)
 {
-	GLuint theSlot = slots[slot];
+	GLuint theSlot = GL_TEXTURE0 + (GLuint)slot;
 	glActiveTexture(theSlot);
 	glBindTexture(GL_TEXTURE_2D, HWObject);
 }
@@ -990,7 +990,7 @@ void Renderer::Bind2DTexture(int slot, Texture* texture)
 
 void Renderer::BindCubemap(int slot, GLuint HWObject)
 {
-	GLuint theSlot = slots[slot];
+	GLuint theSlot = GL_TEXTURE0 + (GLuint)slot;
 	glActiveTexture(theSlot);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, HWObject);
 }
@@ -1104,7 +1104,42 @@ void Renderer::RenderTerrain()
 	SetFragmentUniform(6, "g_WoodTexture");
 	Bind2DTexture(6, g_Editor->GetDefaultTextureHolder()->GetWoodTexture());
 
+	if (g_RenderDataManager->GetVisibleSectors().size())
+	{
+		Sector* sector0 = g_RenderDataManager->GetVisibleSectors()[0];
+		if (sector0)
+		{
+			Entity* entity = sector0->GetTerrainPatchEntity();
+			if (entity)
+			{
+				Visual* visual = entity->GetComponent<Visual>();
+				if (visual)
+				{
+					Material* terrainMaterial = visual->GetModel()->GetMaterials()[0];
 
+					SetMaterialUniforms(terrainMaterial);
+
+					SetFragmentUniform(7, "g_AlbedoTexture");
+					Bind2DTexture(7, sector0->GetGraphicalData()->GetAlbedoTexture()->GetHWObject());
+
+					SetFragmentUniform(1, "g_SplatMapTexture");
+					Bind2DTexture(1, sector0->GetSplatMapTexture()->GetHWObject());
+
+					if (terrainMaterial->GetHeightfieldTexture())
+					{
+						SetFragmentUniform(3, "g_HeightfieldTexture");
+						Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
+					}
+
+				}
+			}
+		}
+	}
+
+	// todo jpp : instead of doing this every frame should be done when the entity is added to the world
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, m_TerrainMatrixSSBO);
+	glm::mat4* ptr;
+	ptr = (glm::mat4*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 
 	for (int i = 0; i < g_RenderDataManager->GetVisibleSectors().size(); ++i)
 	{
@@ -1116,32 +1151,43 @@ void Renderer::RenderTerrain()
 
 			if (entity)
 			{
-				SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
-
-				Visual* visual = entity->GetComponent<Visual>();
-				if (visual)
-				{
-					Material* terrainMaterial = visual->GetModel()->GetMaterials()[0];
-
-					SetFragmentUniform(7, "g_AlbedoTexture");
-					Bind2DTexture(7, sector->GetGraphicalData()->GetAlbedoTexture()->GetHWObject());
-
-					SetFragmentUniform(1, "g_SplatMapTexture");
-					Bind2DTexture(1, sector->GetSplatMapTexture()->GetHWObject());
-
-					if (terrainMaterial->GetHeightfieldTexture())
-					{
-						SetFragmentUniform(3, "g_HeightfieldTexture");
-						Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
-					}
-
-					DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
-				}
-
+				const glm::mat4& matrix = entity->GetModelToWorldMatrix();
+				ptr[i] = matrix;
 			}
 		}
 	}
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
+
+	Mesh* terrainMesh = g_DefaultObjects->DefaultTerrainMesh;
+	glBindVertexArray(terrainMesh->m_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainMesh->GetGPUBuffers().glidIndexBuffer);
+
+	glDrawElementsInstanced(GL_TRIANGLES, (int)terrainMesh->m_buffers.GetIndexBuffer().size(), GL_UNSIGNED_INT, 0, g_RenderDataManager->GetVisibleSectors().size());
+
+	//for (int i = 0; i < g_RenderDataManager->GetVisibleSectors().size(); ++i)
+	//{
+	//	Sector* sector = g_RenderDataManager->GetVisibleSectors()[i];
+
+	//	if (sector)
+	//	{
+	//		Entity* entity = sector->GetTerrainPatchEntity();
+
+	//		if (entity)
+	//		{
+	//			//SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+	//			SetVertexUniform(i, "g_TerrainPatchIndex");
+	//			Visual* visual = entity->GetComponent<Visual>();
+	//			if (visual)
+	//			{
+	//				Material* terrainMaterial = visual->GetModel()->GetMaterials()[0];
+	//				DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
+	//			}
+	//		}
+	//	}
+	//}
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, 0);
 
 
 }
@@ -1190,6 +1236,8 @@ void Renderer::RenderShadowMap()
 	m_ShadowCamera->SetRightVector(right);
 	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
 
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
 	for (int i = shadowParams->GetFirstCascadeToRender(); i <= shadowParams->GetLastCascadeToRender(); ++i)
 	{
 		BindFramebuffer((FramebufferType)(FramebufferType_ShadowMapCascade0 + i));
@@ -1197,6 +1245,9 @@ void Renderer::RenderShadowMap()
 
 		float orthoBorders = shadowParams->GetCascadeDistances()[i];
 		m_ShadowCamera->UpdateShadowCameraMatrices(orthoBorders, basePos);
+
+		// todo jpp : caching the matrices like this doesnt feel so elegant
+		m_ShadowCascadeViewProjectionMatricesCache[i] = m_ShadowCamera->GetViewProjectionMatrix();
 
 		SetViewUniforms(m_ShadowCamera);
 
@@ -1226,6 +1277,7 @@ void Renderer::RenderShadowMap()
 
 	}
 
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
 	BindFramebuffer(FramebufferType_Default);
 }

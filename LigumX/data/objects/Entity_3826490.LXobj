@@ -5,9 +5,9 @@ House
 Visible
 1
 Position
-52.000004
--40.000000
-37.430000
+63.000004
+-108.000008
+78.190002
 RotationAngle
 90.000000
 RotationAxis
@@ -15,9 +15,9 @@ RotationAxis
 0.000000
 0.000000
 Scale
-50.000000
-50.000000
-50.000000
+100.000000
+100.000000
+100.000000
 IsLight
 0
 Components

@@ -2,7 +2,12 @@
 layout(location=0) in vec3 pos;
 layout(location=1) in vec2 texCoord;
 
-uniform mat4 g_ModelToWorldMatrix;
+//uniform int g_TerrainPatchIndex;
+
+layout(std430, binding = 2) buffer g_TerrainPatchMatrices
+{
+	mat4 m_Data[];
+};
 
 layout(binding = 3) uniform sampler2D g_HeightfieldTexture;
 
@@ -19,7 +24,10 @@ out float v_Height;
 out vec2 v_TexCoords;
 out vec3 v_Normal;
 out float v_maxHeight;
-out vec4 FragPosLightSpace;
+out vec4 FragPosCascade0;
+out vec4 FragPosCascade1;
+out vec4 FragPosCascade2;
+out vec4 FragPosCascade3;
 out vec4 vWorldPosition;
 
 vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
@@ -54,8 +62,10 @@ return S;
 void main()
 { 
 	vec3 tempPos = pos;
+	uint instanceID = gl_InstanceID;
 
-	vec4 worldPosition = g_ModelToWorldMatrix * vec4(tempPos, 1);
+	mat4 modelToWorld = m_Data[instanceID];
+	vec4 worldPosition = modelToWorld * vec4(tempPos, 1);
 	// todo : find a better way to generate terrain normals...
 
 	vec2 heightTexCoords = texCoord;
@@ -74,7 +84,10 @@ void main()
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * worldPosition;
 	gl_Position.z += 0.1f;
 
-	FragPosLightSpace = g_LightProjectionMatrix * vec4(worldPosition.xyz, 1.f);
+	FragPosCascade0 = g_Cascade0ProjectionMatrix * vec4(worldPosition.xyz, 1.f);
+	FragPosCascade1 = g_Cascade1ProjectionMatrix * vec4(worldPosition.xyz, 1.f);
+	FragPosCascade2 = g_Cascade2ProjectionMatrix * vec4(worldPosition.xyz, 1.f);
+	FragPosCascade3 = g_Cascade3ProjectionMatrix * vec4(worldPosition.xyz, 1.f);
 
 	vWorldPosition = worldPosition;
 

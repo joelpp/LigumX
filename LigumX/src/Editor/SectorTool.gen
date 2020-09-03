@@ -18,7 +18,7 @@ class SectorTool : EditorTool
 	int LoadingRingSize = 1;
 
 
-	bool ShowSectorAABBs = true;
+	bool ShowSectorAABBs = false;
 	bool ShowGrid = true;
 	bool HighlightSelectedSector = true;
 	bool LoadSectorsOnClick = true;
