@@ -1789,6 +1789,68 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 			return;
 		}
 	}
+}
+
+ObjectTool* Editor::GetObjectTool()
+{
+	return (ObjectTool*)(m_Tools[EEditorTool_ObjectTool]);
+}
+
+struct ExtensionToLXType
+{
+	ExtensionToLXType(LXType type, StringList extensions)
+		: m_Type(type)
+		, m_Extensions(extensions)
+	{
+	}
+
+	LXType m_Type;
+	StringList m_Extensions;
+};
+
+void Editor::HandleFileDrop(const char* fileName)
+{
+	lxLogMessage(lxFormat("Dropped file %s", fileName).c_str());
+
+	std::vector<ExtensionToLXType> supportedExtensions =
+	{
+		ExtensionToLXType(LXType_Texture, { "jpg" })
+	};
+
+	StringList tokens = StringUtils::SplitString(fileName, '\\');
+	StringList fileNameTokens = StringUtils::SplitString(tokens[tokens.size() - 1], '.');
+
+	tokens[tokens.size() - 1] = fileNameTokens[0];
+	tokens.push_back(fileNameTokens[1]);
+
+	LXString& fileExtension = tokens[tokens.size() - 1];
+
+	LXType droppedType = LXType_Count;
+	for (ExtensionToLXType& mapping : supportedExtensions)
+	{
+		for (LXString& ext : mapping.m_Extensions)
+		{
+			if (ext == fileExtension)
+			{
+				droppedType = mapping.m_Type;
+				break;
+			}
+		}
+	}
+
+	if (droppedType != LXType_Count)
+	{
+		// Enable and display object tool
+		SetActiveTool(EEditorTool_ObjectTool);
+		m_ToolDisplayToggles[EEditorTool_ObjectTool] = true;
+
+		// Forward tokens to object tool
+		GetObjectTool()->HandleFileDrop(droppedType, tokens);
+	}
+	else 
+	{
+		lxLogMessage(lxFormat("ERROR : Extension %s is unsupported. Cancelling operation.").c_str());
+	}
 
 
 }

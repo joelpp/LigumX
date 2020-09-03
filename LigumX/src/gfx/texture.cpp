@@ -416,3 +416,59 @@ void Texture::EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel,
 
 	UpdateFromData();
 }
+
+bool Texture::HandleFileDrop(StringList& tokens)
+{
+	// Ensure we're on the proper path.
+	bool isInDataFolder = false;
+	bool isInTexturesFolder = false;
+	
+	int pathStart = 0;
+	for (int i = 0; i < tokens.size(); ++i)
+	{
+		LXString& token = tokens[i];
+		
+		// Validate we're in the data folder (very fragile...)
+		if (token == g_DataFolderName)
+		{
+			isInDataFolder = true;
+			continue;
+		}
+		// Validate we're in textures folder
+		if (isInDataFolder && (token == g_TexturesFolderName))
+		{
+			isInTexturesFolder = true;
+			pathStart = i + 1;
+			break;
+		}
+	}
+
+	if (isInTexturesFolder)
+	{
+		LXString fileName;
+		for (int i = pathStart; i < tokens.size(); ++i)
+		{
+			bool nextIsExt = (i == tokens.size() - 2);
+			bool atExt = (i == tokens.size() - 1);
+
+			fileName += tokens[i];
+
+			if (nextIsExt)
+			{
+				fileName += ".";
+			}
+			else if (atExt) { } // nothing to add after extension
+			else
+			{
+				fileName += "/";
+			}
+		}
+
+		m_Filename = fileName;
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
+}

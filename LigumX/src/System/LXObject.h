@@ -43,4 +43,6 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER LXObject
 
+virtual bool HandleFileDrop(std::vector<LXString>& tokens) { return false; }
+
 };

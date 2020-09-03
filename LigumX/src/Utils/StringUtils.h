@@ -27,6 +27,7 @@ namespace StringUtils
 	bool StringArrayContains(std::vector<std::string>& s, std::string& val);
 
 	std::vector<std::string> SplitString(const std::string &txt, char ch);
+	std::vector<std::string> SplitString(const char* txt, char ch);
 
 	constexpr unsigned int Str2int(const char* str, int h = 0);
 

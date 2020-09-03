@@ -128,6 +128,19 @@ void LigumX::HandleKeyboardInput(GLFWwindow* pWindow, int key, int scancode, int
 
 }
 
+void LigumX::HandleFileDragDrop(GLFWwindow* window, int count, const char** paths)
+{
+	if (count == 1)
+	{
+		g_Editor->HandleFileDrop(paths[0]);
+
+	}
+	else
+	{
+		lxLogMessage("Only handling 1 file drop at a time.");
+	}
+}
+
 void LigumX::glfwMouseButtonCallback(GLFWwindow* pWindow, int button, int action, int mods)
 {
 	bool caughtByImgui = ImGui::IsMouseHoveringAnyWindow() && !g_InputHandler->GetDragging();

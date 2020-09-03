@@ -137,6 +137,8 @@ void ObjectTool::SetCOMMAND_SaveCurrentObject_Callback(const bool& value)
 {
 	m_CurrentObject->Serialize(true);
 	g_ObjectManager->UpdateFileList();
+
+	m_COMMAND_SaveCurrentObject = false;
 }
 
 void ObjectTool::CreateNewObject(const LXString& typeName)
@@ -159,5 +161,27 @@ void ObjectTool::SetCOMMAND_CloneCurrentObject_Callback(const bool& value)
 		m_CurrentObject = newObject;
 
 		m_SelectedFileIndex = -1;
+	}
+}
+
+void ObjectTool::HandleFileDrop(LXType droppedType, StringList& tokens)
+{
+	LXString typeName = g_ObjectManager->GetClassnameFromLXType(droppedType);
+
+	CreateNewObject(typeName);
+	
+	LXString& objectName = tokens[tokens.size() - 2];
+
+	m_CurrentObject->SetName(objectName);
+
+	bool result = m_CurrentObject->HandleFileDrop(tokens); // should the following logic be in virtual?
+
+	if (result)
+	{
+
+	}
+	else
+	{
+		lxLogMessage("File import error.");
 	}
 }

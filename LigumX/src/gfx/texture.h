@@ -111,6 +111,8 @@ public:
 
 	void EditData(const glm::ivec2& startTexel, const glm::ivec2& endTexel, std::function<void(unsigned char*)> operation);
 
+	virtual bool HandleFileDrop(StringList& tokens);
+
 private:
 	GL::TextureMagFilterMode m_MagFilterMode;
 	GL::TextureMinFilterMode m_MinFilterMode;

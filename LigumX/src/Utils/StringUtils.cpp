@@ -81,7 +81,12 @@ bool StringUtils::StringArrayContains(std::vector<std::string>& s, std::string& 
 	return false;
 }
 
-std::vector<std::string> StringUtils::SplitString(const std::string &txt, char ch)
+std::vector<std::string> StringUtils::SplitString(const char* txt, char ch)
+{
+	return SplitString(LXString(txt), ch);
+}
+
+std::vector<std::string> StringUtils::SplitString(const std::string& txt, char ch)
 {
 	std::vector<std::string> strs;
 	unsigned int pos = (unsigned int) txt.find(ch);

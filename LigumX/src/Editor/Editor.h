@@ -28,6 +28,8 @@ class Node;
 class OSMDataProcessor;
 class DefaultTextureHolder;
 
+class ObjectTool;
+
 extern Editor* g_Editor;
 enum EEditorTool
 {
@@ -232,9 +234,12 @@ EditorTool* GetTool() { return m_Tools[m_ActiveTool]; }
 
 DEFINE_TOOL_GETTER(PickingTool);
 DEFINE_TOOL_GETTER(TerrainTool);
+ObjectTool* GetObjectTool();
 //PickingTool* GetPickingTool() { return (PickingTool*)m_Tools[EEditorTool_PickingTool]; }
 SectorTool* GetSectorTool() { return (SectorTool*)m_Tools[EEditorTool_SectorTool]; }
 OSMTool* GetOSMTool() { return (OSMTool*) m_Tools[EEditorTool_OSMTool]; }
+
+void HandleFileDrop(const char* fileName);
 
 private:
 	std::vector<int> m_ToolDisplayToggles;

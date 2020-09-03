@@ -304,6 +304,7 @@ void LigumX::SetCallbacks()
 	GLFWwindow* window = renderer.GetMainWindow()->pWindow;
     glfwSetMouseButtonCallback(window, glfwMouseButtonCallback );
     glfwSetKeyCallback(window, HandleKeyboardInput);
+    glfwSetDropCallback(window, HandleFileDragDrop);
     //glfwSetCharCallback( renderer.pWindow, glfwCharCallback );
     glfwSetCursorPosCallback(window, glfwMousePositionCallback );
     glfwSetCursorEnterCallback(window, glfwMouseEntersCallback );

@@ -67,6 +67,8 @@ virtual void DrawImguiWindow();
 
 LXObject* m_CurrentObject = nullptr;
 
+void HandleFileDrop(LXType droppedType, StringList& tokens);
+
 private:
 
 	void CreateNewObject(const LXString& typeName);
