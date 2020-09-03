@@ -34,6 +34,7 @@ const ClassPropertyData Camera::g_Properties[] =
 { "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FOVY", PIDX_FOVY, offsetof(Camera, m_FOVY), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FPSCamera", PIDX_FPSCamera, offsetof(Camera, m_FPSCamera), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
+{ "OrthoOffset", PIDX_OrthoOffset, offsetof(Camera, m_OrthoOffset), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void Camera::Serialize(Serializer2& serializer)
 {
@@ -50,6 +51,7 @@ void Camera::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_MovementSpeed], m_MovementSpeed);
 	serializer.SerializeFloat(g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], m_KeyMovementSpeedIncreaseFactor);
 	serializer.SerializeFloat(g_Properties[PIDX_FOVY], m_FOVY);
+	serializer.SerializeVec2(g_Properties[PIDX_OrthoOffset], m_OrthoOffset);
 }
 bool Camera::Serialize(bool writing)
 {
@@ -77,6 +79,7 @@ bool Camera::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], &m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FOVY], &m_FOVY , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSCamera], &m_FPSCamera  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OrthoOffset], &m_OrthoOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 void Camera::Clone(LXObject* otherObj)
@@ -103,6 +106,7 @@ void Camera::Clone(LXObject* otherObj)
 	other->SetKeyMovementSpeedIncreaseFactor(m_KeyMovementSpeedIncreaseFactor);
 	other->SetFOVY(m_FOVY);
 	other->SetFPSCamera(m_FPSCamera);
+	other->SetOrthoOffset(m_OrthoOffset);
 }
 const char* Camera::GetTypeName()
 {
@@ -226,8 +230,13 @@ void Camera::UpdateVPMatrix()
 	else
 	{
 		float borders = m_OrthoBorders;
-		m_ViewProjectionMatrix = ortho(-borders, borders, -borders, borders, GetNearPlane(), m_FarPlane) * m_ViewProjectionMatrix;
+
+		glm::vec3 target = glm::vec3(m_OrthoOffset.x, m_OrthoOffset.y, 0.f);
+		glm::mat4 lookAt = glm::lookAt(m_Position, target, m_UpVector);
+		m_ViewMatrix = lookAt;
 		m_ProjectionMatrix = ortho(-borders, borders, -borders, borders, GetNearPlane(), m_FarPlane);
+
+		m_ViewProjectionMatrix = m_ProjectionMatrix * lookAt;
 	}
 
 	m_ViewMatrixInverse = glm::inverse(m_ViewMatrix);

@@ -1149,11 +1149,15 @@ void Renderer::RenderShadowMap()
 	m_SkyLight.m_Position = pos;
 	SetLightingUniforms();
 
-	m_ShadowCamera->SetPosition(glm::vec3(0, 20, 1) + pos * 100.f);
+
+	glm::vec3 basePos = glm::vec3(m_ShadowCamera->GetOrthoOffset().x, m_ShadowCamera->GetOrthoOffset().y, 0.f);
+	m_ShadowCamera->SetPosition(basePos + pos * 500.f);
 	m_ShadowCamera->SetFrontVector(pos);
 
-	glm::vec3 up = (m_ShadowCamera->GetFrontVector().z > 0.99f) ? glm::vec3(1, 0, 0) : glm::vec3(0, 0, 1);
-	m_ShadowCamera->SetRightVector(normalize(glm::cross(up, m_ShadowCamera->GetFrontVector())));
+	glm::vec3 up = (m_ShadowCamera->GetFrontVector().z > 0.9999999f) ? glm::vec3(1, 0, 0) : glm::vec3(0, 0, 1);
+	glm::vec3 right = normalize(glm::cross(up, m_ShadowCamera->GetFrontVector()));
+
+	m_ShadowCamera->SetRightVector(right);
 	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
 
 	m_ShadowCamera->UpdateVPMatrix();

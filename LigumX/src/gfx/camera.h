@@ -70,6 +70,8 @@ float GetFOVY() { return m_FOVY; };
 void SetFOVY(float value) { m_FOVY = value; }; 
 bool GetFPSCamera() { return m_FPSCamera; }; 
 void SetFPSCamera(bool value) { m_FPSCamera = value; }; 
+glm::vec2& GetOrthoOffset() { return m_OrthoOffset; }; 
+void SetOrthoOffset(const glm::vec2& value) { m_OrthoOffset = value; }; 
 private:
 glm::vec3 m_Position = glm::vec3(0, 0, 0);
 glm::vec3 m_FrontVector = glm::vec3(0, 0, 0);
@@ -91,8 +93,9 @@ float m_MovementSpeed = 0.f;
 float m_KeyMovementSpeedIncreaseFactor = 1.5f;
 float m_FOVY = 45.f;
 bool m_FPSCamera = false;
+glm::vec2 m_OrthoOffset = glm::vec2(0.f, 0.f);
 public:
-static const int g_PropertyCount = 20;
+static const int g_PropertyCount = 21;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -117,6 +120,7 @@ PIDX_MovementSpeed,
 PIDX_KeyMovementSpeedIncreaseFactor,
 PIDX_FOVY,
 PIDX_FPSCamera,
+PIDX_OrthoOffset,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
