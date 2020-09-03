@@ -232,6 +232,9 @@ LXObject* ObjectManager::GetObjectFromIDAndType(bool createIfNotLoaded, ObjectID
 		int classHash = stdext::hash_value(typeName);
 
 		LXObject* newObject = ObjectFactory::GetNewObject(classHash, objectID);// Visual::GetNewChildObject();
+
+		AddObject(newObject);
+
 		return newObject;
 	}
 

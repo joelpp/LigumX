@@ -138,6 +138,8 @@ void ObjectTool::SetCOMMAND_SaveCurrentObject_Callback(const bool& value)
 	m_CurrentObject->Serialize(true);
 	g_ObjectManager->UpdateFileList();
 
+	g_ObjectManager->ReloadObject(&m_CurrentObject);
+
 	m_COMMAND_SaveCurrentObject = false;
 }
 

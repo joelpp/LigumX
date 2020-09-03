@@ -1365,14 +1365,22 @@ void Editor::RenderImgui()
 				TrySaveObject(g_Editor);
 				TrySaveObject(&Renderer::GetInstance());
 				bool saveWorld = m_Options->GetSaveWorldEnabled();
-				if (world && saveWorld)
+				if (saveWorld)
 				{
-					TrySaveObject(world);
+					if (world)
+					{
+						TrySaveObject(world);
+					}
+					else
+					{
+						lxLogMessage("No world to save.");
+					}
 				}
 				else
 				{
-					lxLogMessage("No world to save!");
+					lxLogMessage("World save is disabled.");
 				}
+
 			}
 			if (ImGui::MenuItem("Save Editor"))
 			{
