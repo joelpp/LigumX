@@ -1,0 +1,9 @@
+
+class ShadowParameters
+{ 
+	glm::vec4 CascadeDistances;
+	int FirstCascadeToRender = 0;
+	int LastCascadeToRender = 0;
+	glm::vec3 LookAtTarget;
+} 
+

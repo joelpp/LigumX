@@ -1708,7 +1708,7 @@ void Editor::ProcessScrolling()
 		}
 		else
 		{
-			activeCamera->SetOrthoBorders(activeCamera->GetOrthoBorders() + scrolling.y);
+			//activeCamera->SetOrthoBorders(activeCamera->GetOrthoBorders() + scrolling.y);
 		}
 	}
 }

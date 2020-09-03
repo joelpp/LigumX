@@ -205,6 +205,7 @@ LXObject* ObjectManager::CreateObject(const std::string& typeName, ObjectID id)
 	int classHash = stdext::hash_value(typeName);
 
 	LXObject* newObject = ObjectFactory::GetNewObject(classHash, id);// Visual::GetNewChildObject();
+	lxAssert(newObject != nullptr);
 	return newObject;
 }
 

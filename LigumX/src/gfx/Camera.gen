@@ -34,7 +34,6 @@ class Camera
 
 	float FarPlane
 	int ProjectionType
-	float OrthoBorders
 	float ViewSize
 
 	[min=0, max=30]
@@ -46,7 +45,5 @@ class Camera
 
 	[transient]
 	bool FPSCamera = false;
-
-	glm::vec2 OrthoOffset = glm::vec2(0.f, 0.f);
 
 }

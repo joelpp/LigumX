@@ -294,6 +294,9 @@
     <ClCompile Include="src\gfx\ViewUniformGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gfx\ShadowParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\vec2i.h">
@@ -605,6 +608,9 @@
     <ClInclude Include="src\gfx\ViewUniformGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gfx\ShadowParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="data\shaders\ShadowUtils.glsl" />
@@ -669,5 +675,6 @@
     <None Include="src\System\LXObject.gen" />
     <None Include="src\System\Serializer2.gen" />
     <None Include="src\System\SerializerInputVariable.gen" />
+    <None Include="src\gfx\ShadowParameters.gen" />
   </ItemGroup>
 </Project>

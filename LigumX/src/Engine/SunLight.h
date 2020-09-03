@@ -6,6 +6,7 @@ class Serializer2;
 
 class SunLight;
 class Texture;
+class ShadowParameters;
 
 
 #pragma endregion  FORWARD_DECLARATIONS SunLight
@@ -34,6 +35,8 @@ void SetUseSkybox(bool value) { SetUseSkybox_Callback(value); };
 void SetUseSkybox_Callback(const bool& value);
 Texture*& GetSkybox() { return m_Skybox; }; 
 void SetSkybox(Texture* value) { m_Skybox = value; }; 
+ShadowParameters*& GetShadowParameters() { return m_ShadowParameters; }; 
+void SetShadowParameters(ShadowParameters* value) { m_ShadowParameters = value; }; 
 private:
 bool m_UseShadowMap = false;
 float m_Time = 0.f;
@@ -41,8 +44,9 @@ float m_Orientation = 0.f;
 float m_Speed = 0.f;
 bool m_UseSkybox = false;
 Texture* m_Skybox = nullptr;
+ShadowParameters* m_ShadowParameters = nullptr;
 public:
-static const int g_PropertyCount = 6;
+static const int g_PropertyCount = 7;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 SunLight::SunLight();
@@ -54,6 +58,7 @@ PIDX_Orientation,
 PIDX_Speed,
 PIDX_UseSkybox,
 PIDX_Skybox,
+PIDX_ShadowParameters,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

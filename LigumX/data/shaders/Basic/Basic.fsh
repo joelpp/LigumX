@@ -157,7 +157,7 @@ void main()
 
 			// add to outgoing radiance Lo
 			float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);
-			float shadow = ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
+			float shadow = ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy, sunDir);
 			vec3 finalColor = (kD * materialAlbedo.rgb / PI + specular) * shadow * radiance * NdotL;
 
 			pixelData.m_FinalColor.rgb += finalColor;

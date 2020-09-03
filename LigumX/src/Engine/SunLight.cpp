@@ -10,6 +10,7 @@
 #include "SunLight.h"
 #include "serializer.h"
 #include "Texture.h"
+#include "ShadowParameters.h"
 const ClassPropertyData SunLight::g_Properties[] = 
 {
 { "UseShadowMap", PIDX_UseShadowMap, offsetof(SunLight, m_UseShadowMap), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -18,6 +19,7 @@ const ClassPropertyData SunLight::g_Properties[] =
 { "Speed", PIDX_Speed, offsetof(SunLight, m_Speed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "UseSkybox", PIDX_UseSkybox, offsetof(SunLight, m_UseSkybox), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(SunLight, UseSkybox, bool),}, 
 { "Skybox", PIDX_Skybox, offsetof(SunLight, m_Skybox), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_Hidden, 0, 0, 0,}, 
+{ "ShadowParameters", PIDX_ShadowParameters, offsetof(SunLight, m_ShadowParameters), 0, LXType_ObjectPtr, sizeof(ShadowParameters*), LXType_ShadowParameters, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void SunLight::Serialize(Serializer2& serializer)
 {
@@ -28,6 +30,7 @@ void SunLight::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_Speed], m_Speed);
 	serializer.SerializeBool(g_Properties[PIDX_UseSkybox], m_UseSkybox);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_Skybox], m_Skybox);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_ShadowParameters], m_ShadowParameters);
 }
 bool SunLight::Serialize(bool writing)
 {
@@ -47,6 +50,7 @@ bool SunLight::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_Speed], &m_Speed , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UseSkybox], &m_UseSkybox  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_Skybox], &m_Skybox  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_ShadowParameters], &m_ShadowParameters  );
 	return true;
 }
 void SunLight::Clone(LXObject* otherObj)
@@ -59,6 +63,7 @@ void SunLight::Clone(LXObject* otherObj)
 	other->SetSpeed(m_Speed);
 	other->SetUseSkybox(m_UseSkybox);
 	other->SetSkybox(m_Skybox);
+	other->SetShadowParameters(m_ShadowParameters);
 }
 const char* SunLight::GetTypeName()
 {

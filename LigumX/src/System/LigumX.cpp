@@ -162,6 +162,15 @@ void LigumX::Initialize()
 
     LoadWorld();
 
+    // Load all entity models
+    for (Entity* e : m_World->GetEntities())
+    {
+        e->SetCOMMAND_LoadModel(true);
+    }
+    // Generate a couple sectors
+	g_SectorManager->LoadSectorsAroundPoint(glm::vec2(1, 1), 4);
+
+
 }
 
 

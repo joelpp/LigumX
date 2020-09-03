@@ -32,6 +32,7 @@
 #include "OSMElementComponent.h"
 #include "Sector.h"
 #include "Sunlight.h"
+#include "ShadowParameters.h"
 #include "BoundingBoxComponent.h"
 #include "Heightfield.h"
 
@@ -129,17 +130,21 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_MainColorBuffer]->SetNumColorTargets(2);
 	m_Framebuffers[FramebufferType_MainColorBuffer]->Initialize();
 
-	m_Framebuffers[FramebufferType_ShadowMap] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GLPixelFormat_DepthComponent, GLPixelFormat_DepthComponent, GLPixelType_Float);
-	m_Framebuffers[FramebufferType_ShadowMap]->SetHasDepth(true);
-	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
-	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
-	
-	glBindTexture(GL_TEXTURE_2D, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	for (int i = 0; i < NUM_SHADOWMAP_CASCADES; ++i)
+	{
+		FramebufferType fb = (FramebufferType) (FramebufferType_ShadowMapCascade0 + i);
+		m_Framebuffers[fb] = new Framebuffer("Shadow Map Buffer", SHADOW_WIDTH, SHADOW_HEIGHT, GLPixelFormat_DepthComponent, GLPixelFormat_DepthComponent, GLPixelType_Float);
+		m_Framebuffers[fb]->SetHasDepth(true);
+		m_Framebuffers[fb]->SetNumColorTargets(0);
+		m_Framebuffers[fb]->Initialize();
+
+		glBindTexture(GL_TEXTURE_2D, m_Framebuffers[fb]->GetDepthTexture());
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_EngineSettings->GetPickingBufferSize(), g_EngineSettings->GetPickingBufferSize(), GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
@@ -400,7 +405,6 @@ void Renderer::Initialize()
 	m_ShadowCamera->SetProjectionType(ProjectionType_Orthographic);
 	m_ShadowCamera->SetPosition(glm::vec3(-16.13f, -5.9f, 20.2f));
 	m_ShadowCamera->SetFrontVector(glm::vec3(-0.47f, -0.81f, 0.34f));
-	m_ShadowCamera->SetOrthoBorders(64.f);
 
 	glm::vec3 up = (m_ShadowCamera->GetFrontVector().z > 0.99f) ? glm::vec3(1, 0, 0) : glm::vec3(0, 0, 1);
 	m_ShadowCamera->SetRightVector(normalize(glm::cross(up, m_ShadowCamera->GetFrontVector())));
@@ -836,8 +840,18 @@ void Renderer::SetPostEffectsUniforms()
 
 void Renderer::SetShadowMapUniforms(Camera* cam)
 {
-	SetFragmentUniform(2, "g_DepthMapTexture");
-	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
+	SetFragmentUniform(2, "g_ShadowCascade0");
+	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMapCascade0]->GetDepthTexture());
+
+	SetFragmentUniform(3, "g_ShadowCascade1");
+	Bind2DTexture(3, m_Framebuffers[FramebufferType_ShadowMapCascade1]->GetDepthTexture());
+
+	SetFragmentUniform(4, "g_ShadowCascade2");
+	Bind2DTexture(4, m_Framebuffers[FramebufferType_ShadowMapCascade2]->GetDepthTexture());
+
+	SetFragmentUniform(5, "g_ShadowCascade3");
+	Bind2DTexture(5, m_Framebuffers[FramebufferType_ShadowMapCascade3]->GetDepthTexture());
+
 
 	GFXUniformGroup* uniformGroup = activePipeline->GetUniformGroup(UniformGroupType_ShadowMap);
 	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_LightProjectionMatrix", cam->GetViewProjectionMatrix());
@@ -1142,10 +1156,6 @@ void Renderer::RenderShadowMap()
 	}
 
 	GL::SetViewport(SHADOW_WIDTH, SHADOW_HEIGHT);
-	
-	BindFramebuffer(FramebufferType_ShadowMap);
-	
-	GL::ClearDepthBuffer();
 	GL::SetDepthFunction(GL::Depth_Less);
 	GL::SetCapability(GL::CullFace, true);
 
@@ -1159,9 +1169,19 @@ void Renderer::RenderShadowMap()
 	m_SkyLight.m_Position = pos;
 	SetLightingUniforms();
 
+	SetPostEffectsUniforms();
+	SetDebugUniforms();
 
-	glm::vec3 basePos = glm::vec3(m_ShadowCamera->GetOrthoOffset().x, m_ShadowCamera->GetOrthoOffset().y, 0.f);
-	m_ShadowCamera->SetPosition(basePos + pos * 500.f);
+	ShadowParameters* shadowParams = m_World->GetSunLight()->GetShadowParameters();
+	if (!shadowParams)
+	{
+		return;
+	}
+
+	const glm::vec3& basePos = shadowParams->GetLookAtTarget();
+	float cascadeDistance = 500.f;
+
+	m_ShadowCamera->SetPosition(basePos + pos * cascadeDistance);
 	m_ShadowCamera->SetFrontVector(pos);
 
 	glm::vec3 up = (m_ShadowCamera->GetFrontVector().z > 0.9999999f) ? glm::vec3(1, 0, 0) : glm::vec3(0, 0, 1);
@@ -1170,32 +1190,38 @@ void Renderer::RenderShadowMap()
 	m_ShadowCamera->SetRightVector(right);
 	m_ShadowCamera->SetUpVector(glm::cross(m_ShadowCamera->GetFrontVector(), m_ShadowCamera->GetRightVector()));
 
-	m_ShadowCamera->UpdateVPMatrix();
-
-	SetViewUniforms(m_ShadowCamera);
-	SetPostEffectsUniforms();
-	SetDebugUniforms();
-
-	for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
+	for (int i = shadowParams->GetFirstCascadeToRender(); i <= shadowParams->GetLastCascadeToRender(); ++i)
 	{
-		if (!entity->GetVisible())
-		{
-			continue;
-		}
+		BindFramebuffer((FramebufferType)(FramebufferType_ShadowMapCascade0 + i));
+		GL::ClearDepthBuffer();
 
-		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+		float orthoBorders = shadowParams->GetCascadeDistances()[i];
+		m_ShadowCamera->UpdateShadowCameraMatrices(orthoBorders, basePos);
 
-		Visual* visual = entity->GetComponent<Visual>();
-		if (visual)
+		SetViewUniforms(m_ShadowCamera);
+
+		for (Entity* entity : g_RenderDataManager->GetVisibleEntities())
 		{
-			Model* model = visual->GetModel();
-			for (int i = 0; i < model->GetMeshes().size(); ++i)
+			if (!entity->GetVisible())
 			{
-				glBindVertexArray(model->GetMeshes()[i]->m_VAO);
-				DrawMesh(model->GetMeshes()[i]);
+				continue;
 			}
 
-			GL::OutputErrors();
+			SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
+
+			Visual* visual = entity->GetComponent<Visual>();
+			if (visual)
+			{
+				Model* model = visual->GetModel();
+				for (int i = 0; i < model->GetMeshes().size(); ++i)
+				{
+					glBindVertexArray(model->GetMeshes()[i]->m_VAO);
+					DrawMesh(model->GetMeshes()[i]);
+				}
+
+				GL::OutputErrors();
+			}
+
 		}
 
 	}

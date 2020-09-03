@@ -237,6 +237,14 @@ glm::ivec2 GetSectorIndexFromEarthLonLat(const glm::vec2& earthLonLat)
 	return sectorIndex;
 }
 
+void SectorManager::LoadSectorsAroundPoint(const glm::vec2& worldPosition, int loadingRingSize)
+{
+	glm::ivec2 normalizedSectorIndex = Sector::GetNormalizedSectorIndex(worldPosition);
+	glm::vec2 earthStartCoords = Sector::GetStartPosition(worldPosition);
+	glm::vec2 worldStartCoords = Sector::EarthToWorld(earthStartCoords);
+	return LoadSectors(loadingRingSize, earthStartCoords, worldStartCoords, normalizedSectorIndex);
+}
+
 void SectorManager::LoadSectors(int loadingRingSize, const glm::vec2& earthStartCoords, const glm::vec2& worldStartCoords, const glm::ivec2& normalizedSectorIndex)
 {
 	World* world = LigumX::GetInstance().GetWorld();

@@ -24,8 +24,6 @@ FarPlane
 5000.000000
 ProjectionType
 0
-OrthoBorders
-10.000000
 ViewSize
 -10.157000
 MovementSpeed
@@ -34,6 +32,3 @@ KeyMovementSpeedIncreaseFactor
 1.500000
 FOVY
 70.850006
-OrthoOffset
-0.000000
-0.000000

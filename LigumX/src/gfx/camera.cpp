@@ -28,13 +28,11 @@ const ClassPropertyData Camera::g_Properties[] =
 { "NearPlane", PIDX_NearPlane, offsetof(Camera, m_NearPlane), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FarPlane", PIDX_FarPlane, offsetof(Camera, m_FarPlane), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "ProjectionType", PIDX_ProjectionType, offsetof(Camera, m_ProjectionType), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
-{ "OrthoBorders", PIDX_OrthoBorders, offsetof(Camera, m_OrthoBorders), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "ViewSize", PIDX_ViewSize, offsetof(Camera, m_ViewSize), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "MovementSpeed", PIDX_MovementSpeed, offsetof(Camera, m_MovementSpeed), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, 0.f, 30.f, 0,}, 
 { "KeyMovementSpeedIncreaseFactor", PIDX_KeyMovementSpeedIncreaseFactor, offsetof(Camera, m_KeyMovementSpeedIncreaseFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FOVY", PIDX_FOVY, offsetof(Camera, m_FOVY), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "FPSCamera", PIDX_FPSCamera, offsetof(Camera, m_FPSCamera), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, PropertyFlags_Transient, 0, 0, 0,}, 
-{ "OrthoOffset", PIDX_OrthoOffset, offsetof(Camera, m_OrthoOffset), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void Camera::Serialize(Serializer2& serializer)
 {
@@ -46,12 +44,10 @@ void Camera::Serialize(Serializer2& serializer)
 	serializer.SerializeFloat(g_Properties[PIDX_NearPlane], m_NearPlane);
 	serializer.SerializeFloat(g_Properties[PIDX_FarPlane], m_FarPlane);
 	serializer.SerializeInt(g_Properties[PIDX_ProjectionType], m_ProjectionType);
-	serializer.SerializeFloat(g_Properties[PIDX_OrthoBorders], m_OrthoBorders);
 	serializer.SerializeFloat(g_Properties[PIDX_ViewSize], m_ViewSize);
 	serializer.SerializeFloat(g_Properties[PIDX_MovementSpeed], m_MovementSpeed);
 	serializer.SerializeFloat(g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], m_KeyMovementSpeedIncreaseFactor);
 	serializer.SerializeFloat(g_Properties[PIDX_FOVY], m_FOVY);
-	serializer.SerializeVec2(g_Properties[PIDX_OrthoOffset], m_OrthoOffset);
 }
 bool Camera::Serialize(bool writing)
 {
@@ -73,13 +69,11 @@ bool Camera::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_NearPlane], &m_NearPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FarPlane], &m_FarPlane , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ProjectionType], &m_ProjectionType , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OrthoBorders], &m_OrthoBorders , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ViewSize], &m_ViewSize , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_MovementSpeed], &m_MovementSpeed , 0.f, 30.f );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_KeyMovementSpeedIncreaseFactor], &m_KeyMovementSpeedIncreaseFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FOVY], &m_FOVY , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_FPSCamera], &m_FPSCamera  );
-	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_OrthoOffset], &m_OrthoOffset , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
 void Camera::Clone(LXObject* otherObj)
@@ -100,13 +94,11 @@ void Camera::Clone(LXObject* otherObj)
 	other->SetNearPlane(m_NearPlane);
 	other->SetFarPlane(m_FarPlane);
 	other->SetProjectionType(m_ProjectionType);
-	other->SetOrthoBorders(m_OrthoBorders);
 	other->SetViewSize(m_ViewSize);
 	other->SetMovementSpeed(m_MovementSpeed);
 	other->SetKeyMovementSpeedIncreaseFactor(m_KeyMovementSpeedIncreaseFactor);
 	other->SetFOVY(m_FOVY);
 	other->SetFPSCamera(m_FPSCamera);
-	other->SetOrthoOffset(m_OrthoOffset);
 }
 const char* Camera::GetTypeName()
 {
@@ -120,7 +112,6 @@ using namespace glm;
 
 Camera::Camera()
 {
-	m_OrthoBorders = 10.f;
     m_ViewProjectionMatrix = mat4(1);
     m_ViewSize = 1;
     angle = 0;
@@ -207,6 +198,15 @@ void Camera::moveFromUserInput(GLFWwindow *pWindow)
     }
 }
 
+void Camera::UpdateShadowCameraMatrices(float orthoBorders, const glm::vec3& lookAtTarget)
+{
+	glm::mat4 lookAt = glm::lookAt(m_Position, lookAtTarget, m_UpVector);
+	m_ViewMatrix = lookAt;
+	m_ProjectionMatrix = ortho(-orthoBorders, orthoBorders, -orthoBorders, orthoBorders, GetNearPlane(), m_FarPlane);
+
+	m_ViewProjectionMatrix = m_ProjectionMatrix * lookAt;
+}
+
 void Camera::UpdateVPMatrix()
 {
 
@@ -229,9 +229,9 @@ void Camera::UpdateVPMatrix()
 	}
 	else
 	{
-		float borders = m_OrthoBorders;
+		float borders = 10.f;
 
-		glm::vec3 target = glm::vec3(m_OrthoOffset.x, m_OrthoOffset.y, 0.f);
+		glm::vec3 target = glm::vec3(0.f, 0.f, 0.f);
 		glm::mat4 lookAt = glm::lookAt(m_Position, target, m_UpVector);
 		m_ViewMatrix = lookAt;
 		m_ProjectionMatrix = ortho(-borders, borders, -borders, borders, GetNearPlane(), m_FarPlane);

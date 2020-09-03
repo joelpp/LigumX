@@ -58,8 +58,6 @@ float GetFarPlane() { return m_FarPlane; };
 void SetFarPlane(float value) { m_FarPlane = value; }; 
 int GetProjectionType() { return m_ProjectionType; }; 
 void SetProjectionType(int value) { m_ProjectionType = value; }; 
-float GetOrthoBorders() { return m_OrthoBorders; }; 
-void SetOrthoBorders(float value) { m_OrthoBorders = value; }; 
 float GetViewSize() { return m_ViewSize; }; 
 void SetViewSize(float value) { m_ViewSize = value; }; 
 float GetMovementSpeed() { return m_MovementSpeed; }; 
@@ -70,8 +68,6 @@ float GetFOVY() { return m_FOVY; };
 void SetFOVY(float value) { m_FOVY = value; }; 
 bool GetFPSCamera() { return m_FPSCamera; }; 
 void SetFPSCamera(bool value) { m_FPSCamera = value; }; 
-glm::vec2& GetOrthoOffset() { return m_OrthoOffset; }; 
-void SetOrthoOffset(const glm::vec2& value) { m_OrthoOffset = value; }; 
 private:
 glm::vec3 m_Position = glm::vec3(0, 0, 0);
 glm::vec3 m_FrontVector = glm::vec3(0, 0, 0);
@@ -87,15 +83,13 @@ glm::mat4 m_ViewProjectionMatrixInverse;
 float m_NearPlane = 0.f;
 float m_FarPlane = 0.f;
 int m_ProjectionType = 0;
-float m_OrthoBorders = 0.f;
 float m_ViewSize = 0.f;
 float m_MovementSpeed = 0.f;
 float m_KeyMovementSpeedIncreaseFactor = 1.5f;
 float m_FOVY = 45.f;
 bool m_FPSCamera = false;
-glm::vec2 m_OrthoOffset = glm::vec2(0.f, 0.f);
 public:
-static const int g_PropertyCount = 21;
+static const int g_PropertyCount = 19;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_CameraPIDX
@@ -114,13 +108,11 @@ PIDX_ViewProjectionMatrixInverse,
 PIDX_NearPlane,
 PIDX_FarPlane,
 PIDX_ProjectionType,
-PIDX_OrthoBorders,
 PIDX_ViewSize,
 PIDX_MovementSpeed,
 PIDX_KeyMovementSpeedIncreaseFactor,
 PIDX_FOVY,
 PIDX_FPSCamera,
-PIDX_OrthoOffset,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);
@@ -162,6 +154,7 @@ public:
     void translateBy(glm::vec3 delta);
     void translateTo(glm::vec3 position);
     void moveFromUserInput(GLFWwindow* pWindow);
+    void UpdateShadowCameraMatrices(float orthoBorders, const glm::vec3& lookAt);
     void UpdateVPMatrix();
     void rotate(float _angle);
 

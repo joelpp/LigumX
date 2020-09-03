@@ -236,6 +236,7 @@
     <ClCompile Include="src\OSM\relation.cpp" />
     <ClCompile Include="src\OSM\way.cpp" />
     <ClCompile Include="src\Settings.cpp" />
+    <ClCompile Include="src\gfx\ShadowParameters.cpp" />
     <ClCompile Include="src\System\LigumX.cpp" />
     <ClCompile Include="src\System\Logging.cpp" />
     <ClCompile Include="src\System\LXObject.cpp" />
@@ -333,6 +334,7 @@
     <ClInclude Include="src\External\stb_rect_pack.h" />
     <ClInclude Include="src\External\stb_textedit.h" />
     <ClInclude Include="src\External\stb_truetype.h" />
+    <ClInclude Include="src\gfx\ShadowParameters.h" />
     <ClInclude Include="src\System\LigumX.h" />
     <ClInclude Include="src\System\Logging.h" />
     <ClInclude Include="src\System\LXAllClassInclude.h" />
@@ -401,6 +403,7 @@
     <None Include="src\gfx\renderer.gen" />
     <None Include="src\gfx\RenderingStats.gen" />
     <None Include="src\gfx\SectorGraphicalData.gen" />
+    <None Include="src\gfx\ShadowParameters.gen" />
     <None Include="src\gfx\Texture.gen" />
     <None Include="src\GUI\GUI.gen" />
     <None Include="src\GUI\ImguiManager.gen" />

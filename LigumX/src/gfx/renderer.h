@@ -51,12 +51,16 @@ class BoundingBoxComponent;
 class Renderer;
 extern Renderer* g_Instance;
 
+#define NUM_SHADOWMAP_CASCADES 4
 
 enum FramebufferType
 {
 	FramebufferType_Default = 0,
 	FramebufferType_MainColorBuffer,
-	FramebufferType_ShadowMap,
+	FramebufferType_ShadowMapCascade0,
+	FramebufferType_ShadowMapCascade1,
+	FramebufferType_ShadowMapCascade2,
+	FramebufferType_ShadowMapCascade3,
 	FramebufferType_Picking,
 	FramebufferType_PingPong0,
 	FramebufferType_PingPong1,
@@ -144,7 +148,7 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Renderer
 public:
-	const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
 	Renderer::Renderer();
 

@@ -40,6 +40,7 @@
 #include "Renderer.h"
 #include "RenderingStats.h"
 #include "SectorGraphicalData.h"
+#include "ShadowParameters.h"
 #include "Texture.h"
 #include "GUI.h"
 #include "ImguiManager.h"

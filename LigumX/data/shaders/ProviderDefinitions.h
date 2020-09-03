@@ -110,7 +110,10 @@ uniform bool g_ToneMappingEnabled;
 
 
 #ifdef PROVIDER_ShadowMap
-uniform sampler2DShadow g_DepthMapTexture;
+uniform sampler2DShadow g_ShadowCascade0;
+uniform sampler2DShadow g_ShadowCascade1;
+uniform sampler2DShadow g_ShadowCascade2;
+uniform sampler2DShadow g_ShadowCascade3;
 uniform mat4 g_LightProjectionMatrix;
 #endif
 

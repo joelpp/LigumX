@@ -85,6 +85,7 @@ public:
 
 	int EarthToQuantized(const float& earthPosition);
 
+	void LoadSectorsAroundPoint(const glm::vec2& worldStartCoords, int loadingRingSize);
 	void LoadSectors(int loadingRingSize, const glm::vec2& earthStartCoords, const glm::vec2& worldStartCoords, const glm::ivec2& normalizedSectorIndex);
 	void LoadRequest(CurlRequest* request, SectorData::EOSMDataType dataType);
 
