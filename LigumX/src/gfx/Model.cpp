@@ -323,3 +323,21 @@ bool Model::GetMinMax(glm::vec3& min, glm::vec3& max)
 
 	return true;
 }
+
+bool Model::HandleFileDrop(StringList& tokens)
+{
+	// Similar to Texture (as of yet... not sure how to abstract this)
+	StringList requiredPath = { g_DataFolderName, g_ModelsFolderName };
+	int pathStart = FileUtils::PathContains(requiredPath, tokens);
+
+	if (pathStart != -1)
+	{
+		LXString fileName = FileUtils::BuildPathFromTokens(tokens, pathStart);
+		m_Filename = fileName;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

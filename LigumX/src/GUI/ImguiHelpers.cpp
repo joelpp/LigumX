@@ -788,17 +788,29 @@ bool ImguiHelpers::ShowProperty2(void* object, const ClassPropertyData& property
 				childTypesNames.push_back(g_ObjectManager->GetClassnameFromLXType(lxType));
 			}
 
-			for (int i = 0; i < childTypesNames.size(); i++)
+			if (childTypesNames.size() == 1)
 			{
-				if (ImGui::MenuItem(childTypesNames[i].c_str(), "", nullptr))
-				{
-					lxLogMessage(lxFormat("Creating class of type %s", childTypesNames[i].c_str()).c_str());
+				// No need to display subclasses menu if there is only 1 
+				lxLogMessage(lxFormat("Creating class of type %s", childTypesNames[0].c_str()).c_str());
 
-					LXObject* newObject = g_ObjectManager->CreateNewObject(childTypesNames[i].c_str());
-					values.push_back(newObject);
-					break;
+				LXObject* newObject = g_ObjectManager->CreateNewObject(childTypesNames[0].c_str());
+				values.push_back(newObject);
+			}
+			else
+			{
+				for (int i = 0; i < childTypesNames.size(); i++)
+				{
+					if (ImGui::MenuItem(childTypesNames[i].c_str(), "", nullptr))
+					{
+						lxLogMessage(lxFormat("Creating class of type %s", childTypesNames[i].c_str()).c_str());
+
+						LXObject* newObject = g_ObjectManager->CreateNewObject(childTypesNames[i].c_str());
+						values.push_back(newObject);
+						break;
+					}
 				}
 			}
+
 				
 
 			ImGui::EndPopup();

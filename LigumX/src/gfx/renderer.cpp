@@ -900,7 +900,10 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 		}
 		else
 		{
-			lxAssert0();
+			// Need to fix this asap with better handling
+			int defaultDebugMaterialID = 32420;
+			material = g_ObjectManager->FindObjectByID<Material>(defaultDebugMaterialID, true);
+			lxAssert(material);
 		}
 		if (!material->GetEnabled())
 		{

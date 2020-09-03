@@ -81,3 +81,58 @@ void FileUtils::CloseFile(std::fstream& file)
 		lxAssert0();
 	}
 }
+
+
+int FileUtils::PathContains(StringList& pathElements, StringList& tokens)
+{
+	//// Ensure we're on the proper path.
+	//bool isInDataFolder = false;
+	//bool isInTexturesFolder = false;
+	size_t checker = (size_t)-1;
+	int pathStart = -1;
+
+	for (int i = 0; i < tokens.size(); ++i)
+	{
+		LXString& token = tokens[i];
+
+		// If checker == nb of tokens searched we won
+		if (checker == (pathElements.size() - 1))
+		{
+			break;
+		}
+
+		if (token == pathElements[checker + 1])
+		{
+			pathStart = i + 1;
+			checker++;
+		}
+	}
+
+	bool found = (checker == (pathElements.size() - 1));
+
+	return found ? pathStart : -1;
+}
+
+LXString FileUtils::BuildPathFromTokens(StringList& tokens, int startIndex)
+{
+	LXString fileName;
+	for (int i = startIndex; i < tokens.size(); ++i)
+	{
+		bool nextIsExt = (i == tokens.size() - 2);
+		bool atExt = (i == tokens.size() - 1);
+
+		fileName += tokens[i];
+
+		if (nextIsExt)
+		{
+			fileName += ".";
+		}
+		else if (atExt) {} // nothing to add after extension
+		else
+		{
+			fileName += "/";
+		}
+	}
+
+	return fileName;
+}

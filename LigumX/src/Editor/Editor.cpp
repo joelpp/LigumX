@@ -1822,7 +1822,8 @@ void Editor::HandleFileDrop(const char* fileName)
 
 	std::vector<ExtensionToLXType> supportedExtensions =
 	{
-		ExtensionToLXType(LXType_Texture, { "jpg" })
+		ExtensionToLXType(LXType_Model, { "obj" }),
+		ExtensionToLXType(LXType_Texture, { "jpg", "png" })
 	};
 
 	StringList tokens = StringUtils::SplitString(fileName, '\\');

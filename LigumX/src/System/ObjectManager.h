@@ -13,9 +13,10 @@ typedef std::map<ObjectID, ObjectPtr> ObjectMap;
 const std::string g_ProjectName = "LigumX";
 const std::string g_DataFolderName = "data";
 const std::string g_TexturesFolderName = "textures";
+const std::string g_ModelsFolderName = "models";
 
 const std::string g_PathMainData	= "C:/Users/User/Documents/Code/LigumX/" + g_ProjectName + "/" + g_DataFolderName + "/";
-const std::string g_PathModels		= g_PathMainData + "models/";
+const std::string g_PathModels		= g_PathMainData + g_ModelsFolderName + "/";
 const std::string g_PathTextures	= g_PathMainData + g_TexturesFolderName + "/";
 const std::string g_PathObjects		= g_PathMainData + "objects/";
 const std::string g_PathObjectsBkp  = g_PathMainData + "objects_backup/";

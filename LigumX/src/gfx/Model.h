@@ -93,4 +93,6 @@ public:
 
 	void CreateHWBuffers();
 
+	virtual bool HandleFileDrop(StringList& tokens);
+
 };

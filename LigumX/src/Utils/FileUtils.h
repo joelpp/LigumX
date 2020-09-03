@@ -9,4 +9,6 @@ namespace FileUtils
 	std::fstream OpenFile(const char* fileName);
 	void CloseFile(std::fstream& file);
 
+	int PathContains(StringList& pathElements, StringList& tokens);
+	LXString BuildPathFromTokens(StringList& tokens, int startIndex);
 }
