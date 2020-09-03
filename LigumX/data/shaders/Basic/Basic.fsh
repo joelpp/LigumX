@@ -39,12 +39,12 @@ layout(location = 0) out vec4 FinalColor;
 layout(location = 1) out vec4 BrightColor;
 #endif
 
-bool OutputDebugColors(out vec4 FinalColor, in vec3 screenCoords, in vec2 uvs)
+bool OutputDebugColors(inout PixelData pixelData, in vec3 screenCoords)
 {
 	if (g_DebugUVsEnabled > 0)
 	{
-		vec2 fractUV = fract(uvs);
-		FinalColor = vec4(fractUV.r, fractUV.g, 0.f, 1.f);
+		vec2 fractUV = fract(pixelData.m_UVs);
+		pixelData.m_FinalColor = vec4(fractUV.r, fractUV.g, 0.f, 1.f);
 		return true;
 	}
 
@@ -63,6 +63,11 @@ bool OutputDebugColors(out vec4 FinalColor, in vec3 screenCoords, in vec2 uvs)
 		return true;
 	}
 
+	if (g_DebugNormalsEnabled > 0)
+	{
+		FinalColor = GetDebugNormalColor(pixelData.m_Normal);
+		return true;
+	}
 	return false;
 }
 
@@ -78,14 +83,17 @@ void main()
 	pixelData.m_UVs = myTexCoord;
 	pixelData.m_FinalColor.rgb = vec3(0,0,0);
 	pixelData.m_Normal = normalize(vNormalWS);
+	pixelData.m_Normal *= (gl_FrontFacing ? 1 : -1);
+
 	pixelData.m_Depth = linearDepth / g_CameraFarPlane;
 
 	vec3 fragmentToCamera = normalize(g_CameraPosition - vWorldPosition.xyz);
 
-	if (OutputDebugColors(pixelData.m_FinalColor, screenCoords, pixelData.m_UVs))
+	if (OutputDebugColors(pixelData, screenCoords))
 	{
 		return;
 	}
+
 
 	pixelData.m_FinalColor = vec4(0.f, 0.f, 0.f, 1.f);
 
@@ -105,8 +113,8 @@ void main()
 		vec3 sunDir = cos(sunTime)*vec3(0, 0, 1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);
 
 		//vec3 skyLighting = vec3(0, 0, 1);
-		float sky = dot(sunDir, pixelData.m_Normal) * 0.1f;
-		pixelData.m_DiffuseColor = GetDiffuseColor(myTexCoord);
+		vec3 materialAlbedo = GetDiffuseColor(pixelData.m_UVs).rgb;
+		pixelData.m_DiffuseColor = vec4(materialAlbedo, 1.f);
 
 
 		if (g_EnableSunlight)
@@ -122,11 +130,17 @@ void main()
 			float attenuation = 1.f;
 
 			vec3 halfwayVector = normalize(fragmentToLightDir + fragmentToCamera);
-			vec3 radiance = sky * vec3(1, 1, 1)/* GetLightColor(lightIndex)*/ * attenuation;
+
+			float sky = dot(sunDir, pixelData.m_Normal) * 0.1f;
+
+			// Turn sun off at night
+			float nightFactor = saturate(sin(sunTime - (3.f * PI / 2.f)));
+
+			vec3 radiance = nightFactor * sky * vec3(1, 1, 1)/* GetLightColor(lightIndex)*/ * attenuation;
 
 
 			vec3 F0 = vec3(0.04);
-			F0 = mix(F0, GetDiffuseColor(pixelData.m_UVs).rgb, GetMetallic(pixelData.m_UVs));
+			F0 = mix(F0, materialAlbedo.rgb, GetMetallic(pixelData.m_UVs));
 			vec3 F = fresnelSchlick(max(dot(halfwayVector, fragmentToCamera), 0.0), F0);
 			float NDF = DistributionGGX(pixelData.m_Normal, halfwayVector, GetRoughness(pixelData.m_UVs));
 			float G = GeometrySmith(pixelData.m_Normal, fragmentToCamera, fragmentToLightDir, GetRoughness(pixelData.m_UVs));
@@ -144,16 +158,28 @@ void main()
 			// add to outgoing radiance Lo
 			float NdotL = max(dot(pixelData.m_Normal, fragmentToLightDir), 0.0);
 			float shadow = 1.f - ShadowCalculation(FragPosLightSpace, pixelData.m_Normal, gl_FragCoord.xy);
-			vec3 finalColor = (kD * GetDiffuseColor(pixelData.m_UVs).rgb / PI + specular) * shadow * radiance * NdotL;
+			vec3 finalColor = (kD * materialAlbedo.rgb / PI + specular) * shadow * radiance * NdotL;
 
 			pixelData.m_FinalColor.rgb += finalColor;
 		}
 
-		float ambient = 0.01f;
+		if (g_EnableAmbientLighting)
+		{
+
+			vec3 skyColor = vec3(0.52, 0.75, 0.88);
+
+			vec3 up = vec3(0, 0, 1);
+			
+			float upFactor = dot(up, pixelData.m_Normal); // [-1 down, 1 up]
+			upFactor = saturate(0.5f * (1.f + upFactor)); // 0 bottom hemisphere, 1 up
+
+			pixelData.m_FinalColor.rgb += (skyColor * upFactor * g_AmbientLightingGlobalFactor * materialAlbedo.rgb);
+
+		}
 
 		if (g_Material.m_Unlit)
 		{
-			pixelData.m_FinalColor = GetDiffuseColor(myTexCoord);
+			pixelData.m_FinalColor = vec4(materialAlbedo, 1.f);
 		}
 
 		// sky tests

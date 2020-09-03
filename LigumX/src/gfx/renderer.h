@@ -144,7 +144,7 @@ virtual const char* GetTypeName();
 
 #pragma endregion  HEADER Renderer
 public:
-	const unsigned int SHADOW_WIDTH = 800, SHADOW_HEIGHT = 800;
+	const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
 
 	Renderer::Renderer();
 

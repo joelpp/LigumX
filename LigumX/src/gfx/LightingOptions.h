@@ -25,6 +25,8 @@ bool GetEnableSunlight() { return m_EnableSunlight; };
 void SetEnableSunlight(bool value) { m_EnableSunlight = value; }; 
 bool GetEnableAmbientLighting() { return m_EnableAmbientLighting; }; 
 void SetEnableAmbientLighting(bool value) { m_EnableAmbientLighting = value; }; 
+float GetAmbientLightingGlobalFactor() { return m_AmbientLightingGlobalFactor; }; 
+void SetAmbientLightingGlobalFactor(float value) { m_AmbientLightingGlobalFactor = value; }; 
 bool GetEnableDiffuseComponent() { return m_EnableDiffuseComponent; }; 
 void SetEnableDiffuseComponent(bool value) { m_EnableDiffuseComponent = value; }; 
 bool GetEnableSpecularComponent() { return m_EnableSpecularComponent; }; 
@@ -51,6 +53,7 @@ private:
 bool m_EnableDynamicLights = true;
 bool m_EnableSunlight = true;
 bool m_EnableAmbientLighting = true;
+float m_AmbientLightingGlobalFactor = 1.f;
 bool m_EnableDiffuseComponent = true;
 bool m_EnableSpecularComponent = true;
 bool m_EnableReflection = true;
@@ -63,7 +66,7 @@ float m_ReplacementMetallic = 0.f;
 bool m_EnableReplacementRoughness = false;
 float m_ReplacementRoughness = 0.f;
 public:
-static const int g_PropertyCount = 14;
+static const int g_PropertyCount = 15;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_LightingOptionsPIDX
@@ -71,6 +74,7 @@ enum g_LightingOptionsPIDX
 PIDX_EnableDynamicLights,
 PIDX_EnableSunlight,
 PIDX_EnableAmbientLighting,
+PIDX_AmbientLightingGlobalFactor,
 PIDX_EnableDiffuseComponent,
 PIDX_EnableSpecularComponent,
 PIDX_EnableReflection,

@@ -4,6 +4,7 @@ class LightingOptions
 	bool EnableDynamicLights = true;
 	bool EnableSunlight = true;
 	bool EnableAmbientLighting = true;
+	float AmbientLightingGlobalFactor = 1.f;
 
 	bool EnableDiffuseComponent = true;
 	bool EnableSpecularComponent = true;

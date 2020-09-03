@@ -21,4 +21,9 @@ mat3 rotateAroundAxis(vec3 axis, float angle)
 		oc * axis.z * axis.x - axis.y * s, oc * axis.y * axis.z + axis.x * s, oc * axis.z * axis.z + c);
 }
 
+float saturate(float value)
+{
+	return clamp(value, 0.f, 1.f);
+}
+
 #endif

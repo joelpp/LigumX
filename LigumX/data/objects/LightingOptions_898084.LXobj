@@ -8,6 +8,8 @@ EnableSunlight
 1
 EnableAmbientLighting
 1
+AmbientLightingGlobalFactor
+0.040000
 EnableDiffuseComponent
 1
 EnableSpecularComponent

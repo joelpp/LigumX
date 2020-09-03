@@ -7,6 +7,7 @@ LightingOptionsUniformGroup::LightingOptionsUniformGroup()
 	AddUniform(GFXShaderStage_Fragment, "g_EnableDynamicLights", LXType_bool);
 	AddUniform(GFXShaderStage_Fragment, "g_EnableSunlight", LXType_bool);
 	AddUniform(GFXShaderStage_Fragment, "g_EnableAmbientLighting", LXType_bool);
+	AddUniform(GFXShaderStage_Fragment, "g_AmbientLightingGlobalFactor", LXType_float);
 	AddUniform(GFXShaderStage_Fragment, "g_EnableDiffuseComponent", LXType_bool);
 	AddUniform(GFXShaderStage_Fragment, "g_EnableSpecularComponent", LXType_bool);
 	AddUniform(GFXShaderStage_Fragment, "g_EnableReflection", LXType_bool);

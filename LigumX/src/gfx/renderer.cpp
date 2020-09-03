@@ -699,6 +699,7 @@ void Renderer::SetLightingOptionsUniforms()
 		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableDynamicLights", m_LightingOptions->GetEnableDynamicLights());
 		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableSunlight", m_LightingOptions->GetEnableSunlight());
 		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableAmbientLighting", m_LightingOptions->GetEnableAmbientLighting());
+		SetUniformDesc(group, GFXShaderStage_Fragment, "g_AmbientLightingGlobalFactor", m_LightingOptions->GetAmbientLightingGlobalFactor());
 		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableDiffuseComponent", m_LightingOptions->GetEnableDiffuseComponent());
 		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableSpecularComponent", m_LightingOptions->GetEnableSpecularComponent());
 		SetUniformDesc(group, GFXShaderStage_Fragment, "g_EnableReflection", m_LightingOptions->GetEnableReflection());

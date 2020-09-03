@@ -9,6 +9,7 @@ const ClassPropertyData LightingOptions::g_Properties[] =
 { "EnableDynamicLights", PIDX_EnableDynamicLights, offsetof(LightingOptions, m_EnableDynamicLights), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "EnableSunlight", PIDX_EnableSunlight, offsetof(LightingOptions, m_EnableSunlight), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "EnableAmbientLighting", PIDX_EnableAmbientLighting, offsetof(LightingOptions, m_EnableAmbientLighting), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
+{ "AmbientLightingGlobalFactor", PIDX_AmbientLightingGlobalFactor, offsetof(LightingOptions, m_AmbientLightingGlobalFactor), 0, LXType_float, sizeof(float), LXType_float, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 { "EnableDiffuseComponent", PIDX_EnableDiffuseComponent, offsetof(LightingOptions, m_EnableDiffuseComponent), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "EnableSpecularComponent", PIDX_EnableSpecularComponent, offsetof(LightingOptions, m_EnableSpecularComponent), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
 { "EnableReflection", PIDX_EnableReflection, offsetof(LightingOptions, m_EnableReflection), 0, LXType_bool, sizeof(bool), LXType_bool, false, LXType_None, false, 0, 0, 0, 0,}, 
@@ -27,6 +28,7 @@ void LightingOptions::Serialize(Serializer2& serializer)
 	serializer.SerializeBool(g_Properties[PIDX_EnableDynamicLights], m_EnableDynamicLights);
 	serializer.SerializeBool(g_Properties[PIDX_EnableSunlight], m_EnableSunlight);
 	serializer.SerializeBool(g_Properties[PIDX_EnableAmbientLighting], m_EnableAmbientLighting);
+	serializer.SerializeFloat(g_Properties[PIDX_AmbientLightingGlobalFactor], m_AmbientLightingGlobalFactor);
 	serializer.SerializeBool(g_Properties[PIDX_EnableDiffuseComponent], m_EnableDiffuseComponent);
 	serializer.SerializeBool(g_Properties[PIDX_EnableSpecularComponent], m_EnableSpecularComponent);
 	serializer.SerializeBool(g_Properties[PIDX_EnableReflection], m_EnableReflection);
@@ -54,6 +56,7 @@ bool LightingOptions::ShowPropertyGrid()
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EnableDynamicLights], &m_EnableDynamicLights  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EnableSunlight], &m_EnableSunlight  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EnableAmbientLighting], &m_EnableAmbientLighting  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_AmbientLightingGlobalFactor], &m_AmbientLightingGlobalFactor , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EnableDiffuseComponent], &m_EnableDiffuseComponent  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EnableSpecularComponent], &m_EnableSpecularComponent  );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_EnableReflection], &m_EnableReflection  );
@@ -74,6 +77,7 @@ void LightingOptions::Clone(LXObject* otherObj)
 	other->SetEnableDynamicLights(m_EnableDynamicLights);
 	other->SetEnableSunlight(m_EnableSunlight);
 	other->SetEnableAmbientLighting(m_EnableAmbientLighting);
+	other->SetAmbientLightingGlobalFactor(m_AmbientLightingGlobalFactor);
 	other->SetEnableDiffuseComponent(m_EnableDiffuseComponent);
 	other->SetEnableSpecularComponent(m_EnableSpecularComponent);
 	other->SetEnableReflection(m_EnableReflection);

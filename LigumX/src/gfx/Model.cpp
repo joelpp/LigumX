@@ -98,27 +98,7 @@ void Model::PostSerialization(bool writing, bool success)
 {
 	if (!writing) // reading
 	{
-		if (g_ObjectManager->FilenameIsID(m_Filename) && (m_Meshes.size() == 0))
-		{
-			StringList list;
-			list.push_back("<");
-			list.push_back(">");
 
-			std::string filenameCopy = StringUtils::RemoveSubstrings(m_Filename, list);
-
-			int hardcodedMeshID = std::atoi(filenameCopy.c_str());
-			Mesh* mesh = g_DefaultObjects->GetMeshFromID(hardcodedMeshID);
-			m_Meshes.push_back(mesh);
-		}
-		else
-		{
-			if (m_Meshes.size() > 0)
-			{
-			}
-			else
-			{
-			}
-		}
 	}
 }
 
@@ -135,25 +115,40 @@ void Model::CreateHWBuffers()
 
 void Model::LoadModel()
 {
-    Assimp::Importer import;
+	if (g_ObjectManager->FilenameIsID(m_Filename) && (m_Meshes.size() == 0))
+	{
+		StringList list;
+		list.push_back("<");
+		list.push_back(">");
 
-	std::string fullPath = g_PathModels + m_Filename;
+		std::string filenameCopy = StringUtils::RemoveSubstrings(m_Filename, list);
 
-	aiPropertyStore* props = aiCreatePropertyStore(); 
-	aiSetImportPropertyInteger(props, "PP_PTV_NORMALIZE", 1); 
-	const aiScene* scene = (aiScene*)aiImportFileExWithProperties(fullPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals /* aiProcess_FlipUVs | aiProcess_GenSmoothNormals */| aiProcess_JoinIdenticalVertices | aiProcess_PreTransformVertices, NULL, props); 
-	aiReleasePropertyStore(props);
+		int hardcodedMeshID = std::atoi(filenameCopy.c_str());
+		Mesh* mesh = g_DefaultObjects->GetMeshFromID(hardcodedMeshID);
+		m_Meshes.push_back(mesh);
+	}
+	else
+	{
+		Assimp::Importer import;
 
-    if(!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) 
-    {
-    	std::stringstream ss;
-    	ss << "ERROR::ASSIMP::" << import.GetErrorString();
-        PRINTSTRING(ss.str());
-		lxAssert0();
-        return;
-    }
-	
-    this->processNode(scene->mRootNode, scene);
+		std::string fullPath = g_PathModels + m_Filename;
+
+		aiPropertyStore* props = aiCreatePropertyStore();
+		aiSetImportPropertyInteger(props, "PP_PTV_NORMALIZE", 1);
+		const aiScene* scene = (aiScene*)aiImportFileExWithProperties(fullPath.c_str(), aiProcess_Triangulate | aiProcess_GenNormals /* aiProcess_FlipUVs | aiProcess_GenSmoothNormals */ | aiProcess_JoinIdenticalVertices | aiProcess_PreTransformVertices, NULL, props);
+		aiReleasePropertyStore(props);
+
+		if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			std::stringstream ss;
+			ss << "ERROR::ASSIMP::" << import.GetErrorString();
+			PRINTSTRING(ss.str());
+			lxAssert0();
+			return;
+		}
+
+		processNode(scene->mRootNode, scene);
+	}
 
 	CreateHWBuffers();
 }  

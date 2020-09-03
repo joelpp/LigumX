@@ -9,9 +9,9 @@ AmbientColor
 0.000000
 0.000000
 DiffuseColor
-0.000000
 1.000000
-0.000000
+1.000000
+1.000000
 SpecularColor
 0.000000
 0.000000
@@ -29,7 +29,7 @@ AO
 EmissiveFactor
 0.000000
 DiffuseTextureEnabled
-0
+1
 SpecularTextureEnabled
 0
 Unlit
@@ -40,6 +40,8 @@ IsGlass
 0
 ReflectEnvironment
 0
+DiffuseTexture
+3826070
 UVScale
 1.000000
 1.000000

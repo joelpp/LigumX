@@ -88,6 +88,7 @@ uniform int g_DebugLinearizeDepth;
 uniform bool g_EnableDynamicLights;
 uniform bool g_EnableSunlight;
 uniform bool g_EnableAmbientLighting;
+uniform float g_AmbientLightingGlobalFactor;
 uniform bool g_EnableDiffuseComponent;
 uniform bool g_EnableSpecularComponent;
 uniform bool g_EnableReflection;
