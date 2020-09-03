@@ -29,7 +29,7 @@ ShowFPS
 ShowDepth
 0
 ShowDebugIcons
-0
+1
 LinearizeDepth
 0
 BlinnPhongShading

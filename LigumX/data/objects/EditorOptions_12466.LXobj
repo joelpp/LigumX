@@ -25,7 +25,7 @@ DebugDisplay
 DisplayMessages
 1
 SaveWorldEnabled
-0
+1
 SaveSystemEnabled
 1
 DisplayPickingTool

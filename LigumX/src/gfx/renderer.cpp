@@ -901,7 +901,7 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 		else
 		{
 			// Need to fix this asap with better handling
-			int defaultDebugMaterialID = 32420;
+			int defaultDebugMaterialID = 3826464;
 			material = g_ObjectManager->FindObjectByID<Material>(defaultDebugMaterialID, true);
 			lxAssert(material);
 		}

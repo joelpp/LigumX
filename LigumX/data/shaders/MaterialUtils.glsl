@@ -47,20 +47,19 @@ vec4 GetDiffuseColor(vec2 uv)
 		return vec4(g_ReplacementAlbedo.xyz, 1.f);
 	}
 
-	vec4 diffuseColor;
+	vec4 diffuseColor = vec4(1.f, 1.f, 1.f, 1.f);
 	if (g_Material.m_DiffuseTextureEnabled)
 	{
-		diffuseColor = SampleTexture(g_Material.m_DiffuseTexture, uv * g_Material.m_UVScale);
+		vec4 textureColor = SampleTexture(g_Material.m_DiffuseTexture, uv * g_Material.m_UVScale);
+		diffuseColor *= textureColor;
 
 		if (g_GammaCorrectionEnabled > 0)
 		{
 			diffuseColor.rgb = pow(diffuseColor.rgb, vec3(g_GammaCorrectionExponent));
 		}
 	} 
-	else
-	{
-		diffuseColor = vec4(g_Material.m_DiffuseColor, 1.0f);
-	}
+
+	diffuseColor *= vec4(g_Material.m_DiffuseColor, 1.0f);
 
 	return diffuseColor;
 }
