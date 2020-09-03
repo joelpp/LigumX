@@ -133,6 +133,13 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_ShadowMap]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_ShadowMap]->SetNumColorTargets(0);
 	m_Framebuffers[FramebufferType_ShadowMap]->Initialize();
+	
+	glBindTexture(GL_TEXTURE_2D, m_Framebuffers[FramebufferType_ShadowMap]->GetDepthTexture());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	m_Framebuffers[FramebufferType_Picking] = new Framebuffer("Picking Buffer", g_EngineSettings->GetPickingBufferSize(), g_EngineSettings->GetPickingBufferSize(), GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
 	m_Framebuffers[FramebufferType_Picking]->SetHasDepth(true);
@@ -1108,8 +1115,11 @@ void Renderer::RenderTerrain()
 					SetFragmentUniform(1, "g_SplatMapTexture");
 					Bind2DTexture(1, sector->GetSplatMapTexture()->GetHWObject());
 
-					SetFragmentUniform(3, "g_HeightfieldTexture");
-					Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
+					if (terrainMaterial->GetHeightfieldTexture())
+					{
+						SetFragmentUniform(3, "g_HeightfieldTexture");
+						Bind2DTexture(3, terrainMaterial->GetHeightfieldTexture()->GetHWObject());
+					}
 
 					DrawMesh(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 				}

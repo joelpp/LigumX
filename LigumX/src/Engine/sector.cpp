@@ -191,6 +191,7 @@ void Sector::CreateHeightfield()
 
 	Texture* grassTexture = g_ObjectManager->GetLXObject<Texture>(10691);
 	terrainMaterial->SetDiffuseTexture(grassTexture);
+	terrainMaterial->SetDiffuseColor(glm::vec3(1, 1, 1));
 
 	Model* terrainPatchModel = new Model(g_DefaultObjects->DefaultTerrainMesh, terrainMaterial);
 

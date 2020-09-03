@@ -20,6 +20,7 @@ out vec2 v_TexCoords;
 out vec3 v_Normal;
 out float v_maxHeight;
 out vec4 FragPosLightSpace;
+out vec4 vWorldPosition;
 
 vec3 ComputeNormal(float heightMid, vec2 texCoord, float resolution)
 {
@@ -55,7 +56,6 @@ void main()
 	vec3 tempPos = pos;
 
 	vec4 worldPosition = g_ModelToWorldMatrix * vec4(tempPos, 1);
-
 	// todo : find a better way to generate terrain normals...
 
 	vec2 heightTexCoords = texCoord;
@@ -76,5 +76,6 @@ void main()
 
 	FragPosLightSpace = g_LightProjectionMatrix * vec4(worldPosition.xyz, 1.f);
 
+	vWorldPosition = worldPosition;
 
 }
