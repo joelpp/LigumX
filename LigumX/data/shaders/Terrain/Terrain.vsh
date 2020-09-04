@@ -75,14 +75,14 @@ void main()
 	float resolution = 1.f / 64;
 	vec3 normal = ComputeNormal(heightMid, heightTexCoords, resolution);
 
-	worldPosition.z += heightMid;
+	//worldPosition.z += heightMid;
 
 	v_Height = heightMid;
 	v_TexCoords = heightTexCoords / 0.01135;
 	v_Normal = normal;
 
 	gl_Position = g_ProjectionMatrix * g_WorldToViewMatrix * worldPosition;
-	gl_Position.z += 0.1f;
+	//gl_Position.z += 0.1f;
 
 	FragPosCascade0 = g_Cascade0ProjectionMatrix * vec4(worldPosition.xyz, 1.f);
 	FragPosCascade1 = g_Cascade1ProjectionMatrix * vec4(worldPosition.xyz, 1.f);

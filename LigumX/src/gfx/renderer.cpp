@@ -2135,6 +2135,7 @@ void Renderer::RenderSky()
 	GL::ClearDepthBuffer();
 	GL::SetDepthFunction(GL::Depth_Always);
 	GL::SetCapability(GL::CullFace, false);
+	GL::SetCapability(GL::DepthTest, false);
 
 	GLuint fragProg = envMapShader->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	float pi = 3.141592654f;
@@ -2150,6 +2151,7 @@ void Renderer::RenderSky()
 	Mesh* mesh = g_DefaultObjects->DefaultCubeMesh;
 	DrawMesh(mesh);
 
+	GL::SetCapability(GL::DepthTest, true);
 	GL::ClearDepthBuffer();
 }
 

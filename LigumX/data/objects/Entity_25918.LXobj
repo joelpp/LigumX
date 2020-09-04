@@ -5,9 +5,9 @@ Sphere
 Visible
 1
 Position
-14.640000
-17.000000
-3.030000
+5.000000
+3.000000
+1.360000
 RotationAngle
 0.000000
 RotationAxis
@@ -15,9 +15,9 @@ RotationAxis
 0.000000
 0.000000
 Scale
-10.000000
-10.000000
-10.000000
+2.000000
+2.000000
+2.000000
 IsLight
 0
 Components

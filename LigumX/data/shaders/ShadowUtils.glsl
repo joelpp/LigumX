@@ -1,7 +1,7 @@
 #ifndef GLSL_SHADOW_UTILS
 #define GLSL_SHADOW_UTILS
 
-#define EPSILON 0.00001
+#define EPSILON 0.001
 
 bool OutsideClipSpace(vec3 clipCoords)
 {
@@ -28,7 +28,7 @@ float ShadowCalculation(sampler2DShadow shadowMapTexture, vec3 projCoords, vec3 
     ivec2 end = ivec2(1, 1);
 
     float cosTheta = dot(normalWS, sunDirection);
-    float bias = 0.005 * tan(acos(cosTheta));
+    float bias = 0.0005 * tan(acos(cosTheta));
     bias = clamp(bias, 0, 0.01f);
 
     float Factor = 0.0;
