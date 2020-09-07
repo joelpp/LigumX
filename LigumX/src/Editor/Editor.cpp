@@ -197,11 +197,11 @@ void Editor::UpdateManipulator()
 		return;
 	}
 
-	if (!m_ManipulatorDragging || (m_XYZMask == glm::vec4(0, 0, 0, 0)))
+	if (false)// !m_ManipulatorDragging || (m_XYZMask == glm::vec4(0, 0, 0, 0)))
 	{
 		float pickedID = GetPickingTool()->GetPickedID();
 
-		for (Entity* entity : world->GetDebugEntities())
+		for (Entity* entity : world->GetEntities())
 		{
 			// todo : proper int rendertarget; how does depth work then? do we care?
 			if (MathUtils::FuzzyEquals(pickedID, entity->GetPickingID(), 0.05f))
@@ -220,9 +220,10 @@ void Editor::UpdateManipulator()
 		float distance = dragDistance.x / 10.f;
 		glm::vec3 toAdd = distance * glm::vec3(m_XYZMask);
 
-		if (GetPickingTool()->GetPickedEntity())
+		if (GetPickingTool()->GetPickedEntity() && (glm::length(toAdd) > 0.f))
 		{
 			GetPickingTool()->GetPickedEntity()->AddTo_Position(toAdd);
+			GetPickingTool()->GetPickedEntity()->SetHasMoved(true);
 		}
 	}
 }
@@ -348,6 +349,11 @@ void Editor::ApplyTool()
 
 	const glm::vec2& mousePosition = g_InputHandler->GetMousePosition();
 	const glm::vec2& dragDistance = g_InputHandler->GetDragDistance();
+
+	if (glm::length(m_XYZMask) > 0)
+	{
+		return;
+	}
 
 	for (int i = 0; i < m_Tools.size(); ++i)
 	{
@@ -1769,8 +1775,10 @@ void Editor::HandleInputEvent(int button, int action, int mods)
 	{
 		return;
 	}
+
 	int base = GLFW_KEY_0;
 	int max = EnumLength_EEditorTool;
+
 
 	if (button > base && button < base + max)
 	{

@@ -142,14 +142,15 @@ void main()
 		FragColor.rgb += (skyColor * upFactor * g_AmbientLightingGlobalFactor * materialAlbedo.rgb);
 	}
 
+	vec4 ssao = SampleTexture(g_SSAOTexture, uv);
+	FragColor.rgb *= ssao.rgb;
+
 	if (g_GammaCorrectionEnabled > 0)
 	{
 		FragColor.rgb = FragColor.rgb / (FragColor.rgb + vec3(1.f, 1.f, 1.f));
 		FragColor.rgb = pow(FragColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 	}
 
-	vec4 ssao = SampleTexture(g_SSAOTexture, uv);
-	FragColor.rgb *= ssao.rgb;
 
 	gl_FragDepth = gBufferDepth;
 }

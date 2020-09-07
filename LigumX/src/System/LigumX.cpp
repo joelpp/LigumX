@@ -98,6 +98,7 @@ void LigumX::DoFrame()
 	if (m_World && m_Renderer->GetActiveCamera())
 	{
 		m_World->Update();
+        g_Editor->UpdateManipulator();
 		g_RenderDataManager->GatherVisibleEntities(m_World, m_Renderer->GetActiveCamera());
 	}
 
