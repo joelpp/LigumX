@@ -625,8 +625,8 @@ void Renderer::SetSkyUniforms(int skyCubemapSlot)
 		SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
 		SetFragmentUniform(sunLight->GetTime(), "sunTime");
 
-		SetFragmentUniform(4, "g_NoiseTexture");
-		Bind2DTexture(4, g_Editor->GetDefaultTextureHolder()->GetNoiseTexture());
+		SetFragmentUniform(23, "g_NoiseTexture");
+		Bind2DTexture(23, g_Editor->GetDefaultTextureHolder()->GetNoiseTexture());
 
 	}
 
@@ -1701,7 +1701,7 @@ void Renderer::RenderGrid()
 	GL::GPUMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 
 	SetFragmentUniform(0, "g_DepthTexture");
-	Bind2DTexture(0, m_Framebuffers[FramebufferType_MainColorBuffer]->GetDepthTexture());
+	Bind2DTexture(0, m_Framebuffers[FramebufferType_GBuffer]->GetDepthTexture());
 
 	Mesh* mesh = g_DefaultObjects->DefaultQuadMesh;
 	DrawMesh(mesh);
@@ -2012,12 +2012,12 @@ void Renderer::Render(World* world)
 
 	BeforeWorldRender();
 
-	//RenderSky();
 
 	RenderOpaque();
 
 	RenderTerrain();
 
+	RenderSky();
 	DeferredResolve();
 
 	AfterWorldRender();
@@ -2199,7 +2199,11 @@ void Renderer::RenderSky()
 		return;
 	}	
 	
+	Framebuffer* colorBuffer = BindFramebuffer(FramebufferType_MainColorBuffer);
+	GL::SetViewport(colorBuffer->GetWidth(), colorBuffer->GetHeight());
+
 	GL::ClearDepthBuffer();
+
 	GL::SetDepthFunction(GL::Depth_Always);
 	GL::SetCapability(GL::CullFace, false);
 	GL::SetCapability(GL::DepthTest, false);

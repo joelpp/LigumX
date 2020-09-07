@@ -10,7 +10,7 @@ uniform vec2 windowSize;
 #define PROVIDER_View
 #define PROVIDER_Sky
 
-layout(binding = 4) uniform sampler2D g_NoiseTexture;
+layout(binding = 23) uniform sampler2D g_NoiseTexture;
 
 out vec3 color;
 

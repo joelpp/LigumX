@@ -1,5 +1,7 @@
 #version 440 core
 
+#define DEFERRED_RESOLVE
+
 in vec4 gl_FragCoord;
 in vec2 uv;
 
@@ -46,6 +48,12 @@ void main()
 	vec4 gBuffer3 = SampleTexture(g_GBuffer3, uv);
 	float gBufferDepth = SampleTexture(g_GBufferDepth, uv).r;
 	
+	// todo jpp : should be done with stencil maybe?
+	if (length(gBuffer0) == 0)
+	{
+		discard;
+	}
+
 	vec3 wsNormal = (gBuffer0.rgb * 2.f) - vec3(1.f);
 
 	float metallic = gBuffer0.a;
@@ -55,9 +63,7 @@ void main()
 
 	vec3 fragmentToCamera = normalize(g_CameraPosition - worldPosition.xyz);
 
-
 	FragColor.rgb = vec3(0.f);
-
 
 	if (g_UseLighting > 0)
 	{
@@ -140,5 +146,7 @@ void main()
 		FragColor.rgb = FragColor.rgb / (FragColor.rgb + vec3(1.f, 1.f, 1.f));
 		FragColor.rgb = pow(FragColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 	}
+
+	gl_FragDepth = gBufferDepth;
 }
 

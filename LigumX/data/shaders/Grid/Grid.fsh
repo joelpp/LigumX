@@ -25,13 +25,13 @@ vec3 GetWorldSpaceRay(vec3 ndc)
 	vec4 clipCoords = vec4(ndc.xyz, 1.0f);
 
 	vec4 cameraRay = g_ProjectionMatrixInverse * clipCoords;
+	cameraRay.xyz /= cameraRay.w;
+	//cameraRay.z = -1;
+	//cameraRay.w = 0;
 
-	cameraRay.z = -1;
-	cameraRay.w = 0;
+	vec4 worldSpaceRay = g_ViewMatrixInverse * vec4(cameraRay.xyz, 1.f);
 
-	vec4 worldSpaceRay = g_ViewMatrixInverse * cameraRay;
-
-	return normalize(worldSpaceRay.xyz);
+	return worldSpaceRay.xyz;
 }
 
 vec3 GetAimingWorldSpacePosition(vec3 worldSpaceRay)
@@ -67,41 +67,66 @@ void main()
 	vec2 normalizedMousePosition = vec2(g_MouseX, g_MouseY) / g_WindowSize;
 
 
-	//float closestDepth = texture(g_DepthTexture, myTexCoord.xy).r;
-	float closestDepth = texelFetch(g_DepthTexture, ivec2(gl_FragCoord.xy), 0).r;
+	float ndcDepth= texture(g_DepthTexture, myTexCoord.xy).r;
+	//float ndcDepth = texelFetch(g_DepthTexture, ivec2(gl_FragCoord.xy), 0).r;
+
 	if ((g_MouseX == int(gl_FragCoord.x)) && (g_MouseY == int(gl_FragCoord.y)))
 	{
-		g_InspectorData[5] = closestDepth;
+		g_InspectorData[5] = ndcDepth;
 	}
 
-	if (closestDepth < 1.f)
-	{
-		discard;
-	}
-	vec3 ndc = vec3(2.f * normalizedScreenPosition - vec2(1.f, 1.f), closestDepth);
+	//if (closestDepth < 0.1f)
+	//{
+	//	discard;
+	//}
 
-	vec3 worldSpaceRay = GetWorldSpaceRay(ndc);
+	float clipDepth = (ndcDepth * 2.f) - 1.f;
+	//float clipDepth = ndcDepth ;
+	vec3 clip = vec3(2.f * normalizedScreenPosition - vec2(1.f, 1.f), clipDepth);
 
-	if (worldSpaceRay.z > 0.f)
-	{
-		discard;
-	}
+	vec3 worldSpacePos = GetWorldSpaceRay(clip);
+	vec3 worldSpaceRay = normalize(worldSpacePos);
+
+	//if (worldSpaceRay.z > 0.f)
+	//{
+	//	discard;
+	//}
 
 	vec3 wsPosition = GetAimingWorldSpacePosition(worldSpaceRay);
+	if (worldSpacePos.z > 0.1f)
+	{
+		discard;
+	}
 
+	vec2 e = vec2(0.01f);
+	vec2 l = abs(fract(wsPosition.xy) - vec2(0.5f));
+	vec2 o = smoothstep(0.45f, 0.5f, l);
+
+	if (o == 0.f)
+	{
+		discard;
+	}
+
+	//if (closestDepth < 0.1f)
+	//{
+	//	discard;
+	//}
 	// from http://madebyevan.com/shaders/grid/
-	float line = GetLineWidth(wsPosition.xy, g_WorldScale);
-	float alpha = GetLineAlpha(line, 0.8f);
+	float line = GetLineWidth(worldSpacePos.xy, g_WorldScale);
+	float alpha = GetLineAlpha(line, 0.5f);
 
 	vec3 outputColor = g_SectorGridColor;
 
-	if ((abs(wsPosition.x) < 1.f) || (abs(wsPosition.y) < 1.f))
+	if ((abs(worldSpacePos.x) < 1.f) || (abs(worldSpacePos.y) < 1.f))
 	{
 		outputColor.gb *= 0.3f;
 	}
 
+
 	clamp(outputColor, vec3(0, 0, 0), vec3(1, 1, 1));
 
 	FinalColor = vec4(outputColor, alpha);
+	//FinalColor = vec4(worldSpacePos, 1);
+	//FinalColor = vec4(ndcDepth, ndcDepth, ndcDepth, 1);
 	//FinalColor = vec4((wsPosition.z < 0.f) ? 0.f : 1.f, 0, 0, 1);
 }

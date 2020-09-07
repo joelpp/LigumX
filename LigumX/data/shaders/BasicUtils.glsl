@@ -35,4 +35,15 @@ float LinearizeDepth(float nonLinearDepth, float cameraNear, float cameraFar)
 	return (2.0 * near * far) / (far + near - z * (far - near));
 }
 
+vec3 EncodeNormal(vec3 wsNormal)
+{
+	return 0.5f * (wsNormal + vec3(1.f));
+}
+vec3 DecodeNormal(vec3 codedNormal)
+{
+	return (codedNormal * 2.f) - vec3(1.f);
+}
+
+
+
 #endif

@@ -210,22 +210,19 @@ void Camera::UpdateShadowCameraMatrices(float orthoBorders, const glm::vec3& loo
 void Camera::UpdateVPMatrix()
 {
 
-    m_ViewProjectionMatrix = column(mat4(1), 0, vec4(m_RightVector, 0));
-    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 1, vec4(m_UpVector, 0));
-    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 2, vec4(m_FrontVector, 0));
-    m_ViewProjectionMatrix = column(m_ViewProjectionMatrix, 3, vec4(0, 0, 0, 1));
-    m_ViewProjectionMatrix = translate(m_Position) * m_ViewProjectionMatrix;
-    m_ViewProjectionMatrix = inverse(m_ViewProjectionMatrix);
-
-	m_ViewMatrix = m_ViewProjectionMatrix;
-
+	m_ViewMatrix = column(mat4(1), 0, vec4(m_RightVector, 0));
+	m_ViewMatrix = column(m_ViewMatrix, 1, vec4(m_UpVector, 0));
+	m_ViewMatrix = column(m_ViewMatrix, 2, vec4(m_FrontVector, 0));
+	m_ViewMatrix = column(m_ViewMatrix, 3, vec4(0, 0, 0, 1));
+	m_ViewMatrix = translate(m_Position) * m_ViewMatrix;
+	m_ViewMatrix = inverse(m_ViewMatrix);
 
 	// todo : with 2 types it might not worth it to subclass
 	// but also it might do
 	if (m_ProjectionType == ProjectionType_Perspective)
 	{
-		m_ViewProjectionMatrix = perspective(m_FOVY, aspectRatio, GetNearPlane(), m_FarPlane) * m_ViewProjectionMatrix;
 		m_ProjectionMatrix = perspective(m_FOVY, aspectRatio, GetNearPlane(), m_FarPlane);
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
 	else
 	{
