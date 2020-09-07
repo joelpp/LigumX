@@ -360,6 +360,7 @@
     <ClInclude Include="src\vec2i.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\shaders\GBufferUtils.glsl" />
     <None Include="src\Components\BoundingBoxComponent.gen" />
     <None Include="src\Components\Component.gen" />
     <None Include="src\Components\TestComponentA.gen" />

@@ -675,5 +675,6 @@
     <None Include="src\System\Serializer2.gen" />
     <None Include="src\System\SerializerInputVariable.gen" />
     <None Include="src\gfx\ShadowParameters.gen" />
+    <None Include="data\shaders\GBufferUtils.glsl" />
   </ItemGroup>
 </Project>

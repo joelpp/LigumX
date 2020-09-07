@@ -102,7 +102,7 @@ void Framebuffer::InitAttachment(GLuint& texture, GLuint attachment, GLPixelForm
 	GL::AttachTextureToFramebuffer(texture, attachment);
 }
 
-GLuint attachments[] = { GL_COLOR_ATTACHMENT0 , GL_COLOR_ATTACHMENT1 };
+GLuint attachments[] = { GL_COLOR_ATTACHMENT0 , GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 
 void Framebuffer::Initialize()
 {

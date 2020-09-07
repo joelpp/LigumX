@@ -199,6 +199,7 @@ public:
 	void RenderShadowMap();
 	void RenderOpaque();
 	void RenderTextureOverlay();
+	void DeferredResolve();
 
 	void RenderPickingBuffer(bool debugEntities);
 	void GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingData);
@@ -208,7 +209,7 @@ public:
 
 	void RenderHDRFramebuffer();
 
-	void BindFramebuffer(FramebufferType buffer);
+	Framebuffer* BindFramebuffer(FramebufferType buffer);
 	void BindCubemap(int slot, GLuint HWObject);
 	void Bind2DTexture(int slot, GLuint HWObject);
 	void Bind2DTexture(int slot, Texture* texture);
@@ -299,6 +300,7 @@ public:
 	ProgramPipeline* pPipelineBlur;
 	//ProgramPipeline* pPipelineEnvmap;
 	ProgramPipeline* pPipelineScreenSpaceTexture;
+	ProgramPipeline* pPipelineDeferredResolve;
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
     ProgramPipeline* pPipelineBasic;

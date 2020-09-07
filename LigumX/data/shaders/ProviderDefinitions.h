@@ -111,7 +111,7 @@ uniform bool g_ToneMappingEnabled;
 
 
 #ifdef PROVIDER_ShadowMap
-layout(binding = 2) uniform sampler2DShadow g_ShadowCascade0;
+layout(binding = 11) uniform sampler2DShadow g_ShadowCascade0;
 layout(binding = 12) uniform sampler2DShadow g_ShadowCascade1;
 layout(binding = 13) uniform sampler2DShadow g_ShadowCascade2;
 layout(binding = 14) uniform sampler2DShadow g_ShadowCascade3;
@@ -155,17 +155,6 @@ uniform vec3 g_SectorGridColor;
 #define DisplayMode_Normals 4
 
 uniform int g_DisplayMode;
-#endif
-
-#ifdef PROVIDER_View
-float LinearizeDepth(float nonLinearDepth)
-{
-	float near = g_CameraNearPlane;
-	float far = g_CameraFarPlane;
-
-	float z = nonLinearDepth * 2.0 - 1.0;
-	return (2.0 * near * far) / (far + near - z * (far - near));
-}
 #endif
 
 

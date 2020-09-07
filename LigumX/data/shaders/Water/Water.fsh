@@ -55,7 +55,7 @@ bool OutputDebugColors(inout PixelData pixelData, in vec3 screenCoords)
 		float depth = 0;
 		if (g_DebugLinearizeDepth > 0)
 		{
-			depth = LinearizeDepth(screenCoords.z) / g_CameraFarPlane;
+			depth = LinearizeDepth(screenCoords.z, g_CameraNearPlane, g_CameraFarPlane) / g_CameraFarPlane;
 		}
 		else
 		{
@@ -80,7 +80,7 @@ void main()
 	PixelData pixelData;
 
 	vec3 screenCoords = gl_FragCoord.xyz;
-	float linearDepth = LinearizeDepth(screenCoords.z);
+	float linearDepth = LinearizeDepth(screenCoords.z, g_CameraNearPlane, g_CameraFarPlane);
 
 	pixelData.m_UVs = myTexCoord;
 	pixelData.m_FinalColor.rgb = vec3(0,0,0);

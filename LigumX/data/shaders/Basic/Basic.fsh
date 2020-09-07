@@ -33,13 +33,15 @@ in vec4 FragPosCascade3;
 
 uniform vec4 g_DebugVec4;
 
-#if DEFERRED
-layout(location = 0) out vec4 Normal;
-layout(location = 1) out vec4 WorldPosition;
-#else
-layout(location = 0) out vec4 FinalColor;
-layout(location = 1) out vec4 BrightColor;
-#endif
+//#if DEFERRED
+layout(location = 0) out vec4 outGBuffer0;
+layout(location = 1) out vec4 outGBuffer1;
+layout(location = 2) out vec4 outGBuffer2;
+layout(location = 3) out vec4 outGBuffer3;
+//#else
+/*layout(location = 0) out*/ vec4 FinalColor;
+/*layout(location = 1) out*/ vec4 BrightColor;
+//#endif
 
 bool OutputDebugColors(inout PixelData pixelData, in vec3 screenCoords)
 {
@@ -55,7 +57,7 @@ bool OutputDebugColors(inout PixelData pixelData, in vec3 screenCoords)
 		float depth = 0;
 		if (g_DebugLinearizeDepth > 0)
 		{
-			depth = LinearizeDepth(screenCoords.z) / g_CameraFarPlane;
+			depth = LinearizeDepth(screenCoords.z, g_CameraNearPlane, g_CameraFarPlane) / g_CameraFarPlane;
 		}
 		else
 		{
@@ -80,7 +82,7 @@ void main()
 	PixelData pixelData;
 
 	vec3 screenCoords = gl_FragCoord.xyz;
-	float linearDepth = LinearizeDepth(screenCoords.z);
+	float linearDepth = LinearizeDepth(screenCoords.z, g_CameraNearPlane, g_CameraFarPlane);
 
 	pixelData.m_UVs = myTexCoord;
 	pixelData.m_FinalColor.rgb = vec3(0,0,0);
@@ -101,6 +103,8 @@ void main()
 
 	// todo : when i do proper attenuation i need to re-visit gamma
 
+	vec3 materialAlbedo = GetDiffuseColor(pixelData.m_UVs).rgb;
+
 	if (g_UseLighting > 0)
 	{
 		if (g_EnableDynamicLights)
@@ -115,7 +119,6 @@ void main()
 		vec3 sunDir = cos(sunTime)*vec3(0, 0, 1) + sin(sunTime)*vec3(sunDirFlat.x, sunDirFlat.y, 0);
 
 		//vec3 skyLighting = vec3(0, 0, 1);
-		vec3 materialAlbedo = GetDiffuseColor(pixelData.m_UVs).rgb;
 		pixelData.m_DiffuseColor = vec4(materialAlbedo, 1.f);
 
 
@@ -224,4 +227,12 @@ void main()
 	}
 	
 	FinalColor.rgb = BuildShaderOutput(pixelData);
+
+	outGBuffer0.rgb = 0.5f * (pixelData.m_Normal + vec3(1.f));
+	outGBuffer0.a = GetMetallic(pixelData.m_UVs);
+
+	outGBuffer1.rgb = vWorldPosition.xyz;
+	outGBuffer1.a = GetRoughness(pixelData.m_UVs);
+
+	outGBuffer2.rgb = materialAlbedo.rgb;
 }

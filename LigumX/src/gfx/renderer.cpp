@@ -259,14 +259,15 @@ void Renderer::InitGL()
 	lxLogMessage(lxFormat("Available texture units : %d", numTextureUnits).c_str());
 }
 
-void Renderer::BindFramebuffer(FramebufferType buffer)
+Framebuffer* Renderer::BindFramebuffer(FramebufferType buffer)
 {
 	if (buffer == FramebufferType_Default)
 	{
 		GL::BindFramebuffer(0);
-		return;
+		return nullptr;
 	}
 	GL::BindFramebuffer(m_Framebuffers[buffer]->GetHWObject());
+	return m_Framebuffers[buffer];
 }
 
 void Renderer::InitFreetype()
@@ -380,6 +381,7 @@ void Renderer::InitPipelines()
 	pPipelineGround = new ProgramPipeline("Terrain");
 	//pPipelineEnvmap = new ProgramPipeline("Envmap");
 	pPipelineScreenSpaceTexture = new ProgramPipeline("ScreenSpaceTexture");
+	pPipelineDeferredResolve = new ProgramPipeline("DeferredResolve");
 	//pPipelineNodes = new ProgramPipeline("nodes"); // todo jpp revive this
 	pPipelinePicking = new ProgramPipeline("picking");
 	pPipelinePickingCompute = new ProgramPipeline("picking_compute", true);
@@ -854,8 +856,8 @@ void Renderer::SetPostEffectsUniforms()
 
 void Renderer::SetShadowMapUniforms(Camera* cam)
 {
-	SetFragmentUniform(2, "g_ShadowCascade0");
-	Bind2DTexture(2, m_Framebuffers[FramebufferType_ShadowMapCascade0]->GetDepthTexture());
+	SetFragmentUniform(11, "g_ShadowCascade0");
+	Bind2DTexture(11, m_Framebuffers[FramebufferType_ShadowMapCascade0]->GetDepthTexture());
 
 	SetFragmentUniform(12, "g_ShadowCascade1");
 	Bind2DTexture(12, m_Framebuffers[FramebufferType_ShadowMapCascade1]->GetDepthTexture());
@@ -867,10 +869,10 @@ void Renderer::SetShadowMapUniforms(Camera* cam)
 	Bind2DTexture(14, m_Framebuffers[FramebufferType_ShadowMapCascade3]->GetDepthTexture());
 
 	GFXUniformGroup* uniformGroup = activePipeline->GetUniformGroup(UniformGroupType_ShadowMap);
-	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade0ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[0]);
-	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade1ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[1]);
-	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade2ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[2]);
-	SetUniformDesc(uniformGroup, GFXShaderStage_Vertex, "g_Cascade3ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[3]);
+	SetUniformDesc(uniformGroup, GFXShaderStage_Fragment, "g_Cascade0ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[0]);
+	SetUniformDesc(uniformGroup, GFXShaderStage_Fragment, "g_Cascade1ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[1]);
+	SetUniformDesc(uniformGroup, GFXShaderStage_Fragment, "g_Cascade2ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[2]);
+	SetUniformDesc(uniformGroup, GFXShaderStage_Fragment, "g_Cascade3ProjectionMatrix", m_ShadowCascadeViewProjectionMatricesCache[3]);
 
 
 }
@@ -1091,6 +1093,8 @@ void Renderer::RenderTerrain()
 		return;
 	}
 
+	BindFramebuffer(FramebufferType_GBuffer);
+
 	SetLightingUniforms();
 	SetLightingOptionsUniforms();
 
@@ -1102,8 +1106,8 @@ void Renderer::RenderTerrain()
 	SetPostEffectsUniforms();
 	SetDebugUniforms();
 
-	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, attachments);
+	unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(4, attachments);
 
 	SetFragmentUniform(4, "g_DirtTexture");
 	Bind2DTexture(4, g_Editor->GetDefaultTextureHolder()->GetDirtTexture());
@@ -1296,14 +1300,15 @@ void Renderer::RenderOpaque()
 {
 	lxGPUProfile(RenderOpaque);
 
-	
 	GL::SetDepthFunction(GL::Depth_Less);
 	GL::SetCapability(GL::CullFace, false);
 
 	GL::GPUMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 
-	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, attachments);
+	unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(4, attachments);
+
+	BindFramebuffer(FramebufferType_GBuffer);
 
 	if (m_DisplayOptions->GetRenderOpaque())
 	{
@@ -1331,6 +1336,49 @@ void Renderer::RenderOpaque()
 	}
 
 }
+
+void Renderer::DeferredResolve()
+{
+	Framebuffer* colorBuffer = BindFramebuffer(FramebufferType_MainColorBuffer);
+
+	GL::SetViewport(colorBuffer->GetWidth(), colorBuffer->GetHeight());
+
+	if (!SetPipeline(pPipelineDeferredResolve))
+	{
+		return;
+	}
+
+	Framebuffer* gBuffer = m_Framebuffers[FramebufferType_GBuffer];
+	
+	for (int i = 0; i < 4; ++i)
+	{
+		Bind2DTexture(i, gBuffer->GetColorTexture(i));
+	}
+
+	Bind2DTexture(4, gBuffer->GetDepthTexture());
+
+	SetViewUniforms(m_ActiveCamera);
+	SetShadowMapUniforms(m_ShadowCamera);
+	SetSkyUniforms(5);
+	SetDisplayModeUniforms();
+	SetDebugUniforms();
+	SetLightingOptionsUniforms();
+	SetLightingUniforms();
+	SetPostEffectsUniforms();
+//#define PROVIDER_ShadowMap
+//#define PROVIDER_Sky
+//#define PROVIDER_DisplayOptions
+//#define PROVIDER_Debug
+//#define PROVIDER_LightingOptions
+
+	//SetPostEffectsUniforms();
+
+	//SetFragmentUniform(0, "g_MainTexture");
+	//Bind2DTexture(0, m_Framebuffers[FramebufferType_Picking]->GetColorTexture(0));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
 
 void Renderer::RenderTextureOverlay()
 {
@@ -1568,7 +1616,7 @@ void Renderer::BeginFrame(World* world)
 
 	g_Editor->ApplyTool();
 
-	m_ColorFramebuffer = m_DisplayOptions->GetDeferredRendering() ? FramebufferType_GBuffer : FramebufferType_MainColorBuffer;
+	//m_ColorFramebuffer = m_DisplayOptions->GetDeferredRendering() ? FramebufferType_GBuffer : FramebufferType_MainColorBuffer;
 
 	m_GraphicFrameCount++;
 }
@@ -1613,6 +1661,11 @@ void Renderer::ApplyEmissiveGlow()
 void Renderer::BeforeWorldRender()
 {
 	lxGPUProfile(BeforeWorldRender);
+
+
+	BindFramebuffer(FramebufferType_GBuffer);
+	GL::ClearColorAndDepthBuffers();
+
 
 	BindFramebuffer(m_ColorFramebuffer);
 
@@ -1959,11 +2012,13 @@ void Renderer::Render(World* world)
 
 	BeforeWorldRender();
 
-	RenderSky();
+	//RenderSky();
 
 	RenderOpaque();
 
 	RenderTerrain();
+
+	DeferredResolve();
 
 	AfterWorldRender();
 
