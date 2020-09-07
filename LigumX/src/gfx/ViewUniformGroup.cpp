@@ -9,6 +9,8 @@ ViewUniformGroup::ViewUniformGroup()
 	AddUniform(GFXShaderStage_Vertex, "g_WorldToViewMatrixRotationOnly", LXType_glmmat4);
 	AddUniform(GFXShaderStage_Vertex, "g_ProjectionMatrix", LXType_glmmat4);
 
+	AddUniform(GFXShaderStage_Fragment, "g_ProjectionMatrix", LXType_glmmat4);
+	AddUniform(GFXShaderStage_Fragment, "g_WorldToViewMatrix2", LXType_glmmat4);
 	AddUniform(GFXShaderStage_Fragment, "g_ViewToWorldMatrix", LXType_glmmat4);
 	AddUniform(GFXShaderStage_Fragment, "g_ViewProjectionMatrixInverse", LXType_glmmat4);
 	AddUniform(GFXShaderStage_Fragment, "g_ViewMatrixInverse", LXType_glmmat4);

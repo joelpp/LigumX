@@ -125,6 +125,15 @@ private:
 
 };
 
+enum ERenderPass
+{
+	ERenderPass_Opaque,
+	ERenderPass_Water,
+	ERenderPass_Transparent,
+	ERenderPass_Terrain,
+	ERenderPass_Count
+};
+
 #pragma region  HEADER RenderDataManager
 class RenderDataManager : public LXObject
 {
@@ -226,6 +235,7 @@ public:
 	void ClearAABBJobs();
 
 	const std::vector<Entity*>& GetVisibleEntities() { return m_VisibleEntities; }
+	const std::vector<Entity*>& GetEntityRenderList(ERenderPass renderPass) { return m_EntityRenderList[renderPass]; }
 	const std::vector<Sector*>& GetVisibleSectors() { return m_VisibleSectors; }
 
 
@@ -243,6 +253,9 @@ private:
 
 	std::vector<Entity*> m_VisibleEntities;
 	const int m_MaxVisibleEntities = 32768;
+
+	std::vector<Entity*> m_EntityRenderList[ERenderPass_Count];
+
 
 	std::vector<Sector*> m_VisibleSectors;
 	const int m_MaxVisibleSectors = 4096;

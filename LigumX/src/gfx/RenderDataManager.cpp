@@ -191,6 +191,11 @@ RenderDataManager::RenderDataManager()
 
 	m_VisibleEntities.reserve(m_MaxVisibleEntities);
 
+	for (int i = 0; i < ERenderPass_Count; ++i)
+	{
+		m_EntityRenderList[i].reserve(m_MaxVisibleEntities);
+	}
+
 	m_CullingOptions = g_ObjectManager->CreateObject<CullingOptions>();
 	m_RenderingStats = g_ObjectManager->CreateObject<RenderingStats>();
 }
@@ -620,6 +625,16 @@ void RenderDataManager::Update()
 	}
 }
 
+ERenderPass GetRenderPassForMaterial(Material* mat)
+{
+	if (mat->GetShaderFamily() == ShaderFamily_Water)
+	{
+		return ERenderPass_Water;
+	}
+
+	return ERenderPass_Opaque;
+}
+
 void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entities, Camera* camera)
 {
 	for (Entity* e : entities)
@@ -650,6 +665,13 @@ void RenderDataManager::GatherVisibleEntities(const std::vector<Entity*>& entiti
 			AddTimedMessage(StringUtils::Format("Hit limit of %d entities visible", m_MaxVisibleEntities));
 			break;
 		}
+
+		// todo jpp fix 0th material sets everything
+		Material* mat = visual->GetModel()->GetMaterials()[0];
+		ERenderPass renderPass = GetRenderPassForMaterial(mat);
+
+		m_EntityRenderList[renderPass].push_back(e);
+
 	}
 }
 
@@ -848,7 +870,11 @@ void RenderDataManager::GatherVisibleEntities(World* world, Camera* camera)
 	lxAssert(world);
 	lxAssert(camera);
 
-	m_VisibleEntities.clear();
+	m_VisibleEntities.clear();	
+	for (int i = 0; i < ERenderPass_Count; ++i)
+	{
+		m_EntityRenderList[i].clear();
+	}
 	m_VisibleSectors.clear();
 
 	GatherVisibleEntities(world->GetEntities(), camera);

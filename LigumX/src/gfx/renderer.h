@@ -65,6 +65,7 @@ enum FramebufferType
 	FramebufferType_PingPong0,
 	FramebufferType_PingPong1,
 	FramebufferType_GBuffer,
+	FramebufferType_SSAO,
 	NBFramebuffers
 };
 
@@ -200,7 +201,8 @@ public:
 	void RenderOpaque();
 	void RenderTextureOverlay();
 	void DeferredResolve();
-
+	void RenderSSAO();
+	
 	void RenderPickingBuffer(bool debugEntities);
 	void GetPickingData(glm::vec2 mouseClickPosition, glm::vec4& pickingData);
 	void RenderEntityBB(Entity* entity);
@@ -300,6 +302,7 @@ public:
 	ProgramPipeline* pPipelineBlur;
 	//ProgramPipeline* pPipelineEnvmap;
 	ProgramPipeline* pPipelineScreenSpaceTexture;
+	ProgramPipeline* pPipelineSSAO;
 	ProgramPipeline* pPipelineDeferredResolve;
     ProgramPipeline* pPipelineText;
     ProgramPipeline* pPipelineNodes;
@@ -477,9 +480,14 @@ private:
 
 	GLuint m_TerrainMatrixSSBO = 0;
 
+	GLuint m_SSAONoiseTexture = 0;
+
 	glm::mat4 m_ShadowCascadeViewProjectionMatricesCache[NUM_SHADOWMAP_CASCADES];
 
 	int m_GraphicFrameCount = 0;
+
+	std::vector<glm::vec3> m_SSAOKernelSamples;
+
 };
 
 class GPUProfileHolder

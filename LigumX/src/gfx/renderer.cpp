@@ -1,6 +1,8 @@
 
 #include "renderer.h"
 
+#include <random>
+
 #include "ProgramPipeline.h"
 #include "RenderDataManager.h"
 #include "GL.h"
@@ -165,6 +167,11 @@ void Renderer::InitFramebuffers()
 	m_Framebuffers[FramebufferType_GBuffer]->SetHasDepth(true);
 	m_Framebuffers[FramebufferType_GBuffer]->SetNumColorTargets(4);
 	m_Framebuffers[FramebufferType_GBuffer]->Initialize();
+
+	m_Framebuffers[FramebufferType_SSAO] = new Framebuffer("SSAO", windowWidth, windowHeight, GLPixelFormat_RGBA16F, GLPixelFormat_RGBA, GLPixelType_Float);
+	m_Framebuffers[FramebufferType_SSAO]->SetHasDepth(false);
+	m_Framebuffers[FramebufferType_SSAO]->SetNumColorTargets(1);
+	m_Framebuffers[FramebufferType_SSAO]->Initialize();
 
 	BindFramebuffer(FramebufferType_Default);
 }
@@ -381,6 +388,7 @@ void Renderer::InitPipelines()
 	pPipelineGround = new ProgramPipeline("Terrain");
 	//pPipelineEnvmap = new ProgramPipeline("Envmap");
 	pPipelineScreenSpaceTexture = new ProgramPipeline("ScreenSpaceTexture");
+	pPipelineSSAO= new ProgramPipeline("SSAO");
 	pPipelineDeferredResolve = new ProgramPipeline("DeferredResolve");
 	//pPipelineNodes = new ProgramPipeline("nodes"); // todo jpp revive this
 	pPipelinePicking = new ProgramPipeline("picking");
@@ -428,6 +436,42 @@ void Renderer::Initialize()
 	InitFreetype();
 
 	InitPipelines();
+
+	std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+	std::default_random_engine generator;
+	std::vector<glm::vec3> ssaoKernel;
+	for (unsigned int i = 0; i < 64; ++i)
+	{
+		glm::vec3 sample(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator)
+		);
+		sample = glm::normalize(sample);
+		sample *= randomFloats(generator);
+		m_SSAOKernelSamples.push_back(sample);
+	}
+	std::vector<glm::vec3> ssaoNoise;
+	for (unsigned int i = 0; i < 16; i++)
+	{
+		glm::vec3 noise(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			0.0f);
+		ssaoNoise.push_back(noise);
+	}
+
+	unsigned int noiseTexture;
+	glGenTextures(1, &noiseTexture);
+	glBindTexture(GL_TEXTURE_2D, noiseTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	m_SSAONoiseTexture = noiseTexture;
+
 }
 
 void Renderer::Shutdown()
@@ -549,7 +593,6 @@ void Renderer::SetFragmentUniform(const std::vector<int>& values, const char* na
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
 	glProgramUniform1iv(prog, glGetUniformLocation(prog, name), (GLsizei)values.size(), values.data());
 }
-
 void Renderer::SetFragmentUniformArray(const std::vector<glm::vec3>& values, const char* name)
 {
 	GLuint prog = activePipeline->getShader(GL_FRAGMENT_SHADER)->glidShaderProgram;
@@ -894,6 +937,8 @@ void Renderer::SetViewUniforms(Camera* cam)
 	SetUniformDesc(group, GFXShaderStage_Vertex, "g_WorldToViewMatrixRotationOnly", glm::mat4(glm::mat3(cam->GetViewMatrix())));
 	SetUniformDesc(group, GFXShaderStage_Vertex, "g_ProjectionMatrix", cam->GetProjectionMatrix());
 
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ProjectionMatrix", cam->GetProjectionMatrix());
+	SetUniformDesc(group, GFXShaderStage_Fragment, "g_WorldToViewMatrix2", cam->GetViewMatrix());
 	SetUniformDesc(group, GFXShaderStage_Fragment, "g_CameraPosition", cam->GetPosition());
 	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewToWorldMatrix", cam->GetViewMatrixInverse());
 	SetUniformDesc(group, GFXShaderStage_Fragment, "g_ViewProjectionMatrixInverse", cam->GetViewProjectionMatrixInverse());
@@ -966,7 +1011,7 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 		SetFragmentUniform(m_DisplayOptions->GetDebugVec4(), "g_DebugVec4");
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
-		//if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
+		if (!m_ShaderBeenUsedThisFrame[material->GetShaderFamily()])
 		{
 			SetLightingUniforms();
 			SetLightingOptionsUniforms();
@@ -1272,15 +1317,14 @@ void Renderer::RenderShadowMap()
 				continue;
 			}
 
-			SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 
 			Visual* visual = entity->GetComponent<Visual>();
 			if (visual)
 			{
+				SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
 				Model* model = visual->GetModel();
 				for (int i = 0; i < model->GetMeshes().size(); ++i)
 				{
-					glBindVertexArray(model->GetMeshes()[i]->m_VAO);
 					DrawMesh(model->GetMeshes()[i]);
 				}
 
@@ -1312,7 +1356,7 @@ void Renderer::RenderOpaque()
 
 	if (m_DisplayOptions->GetRenderOpaque())
 	{
-		RenderEntities(ShaderFamily_Basic, g_RenderDataManager->GetVisibleEntities());
+		RenderEntities(ShaderFamily_Basic, g_RenderDataManager->GetEntityRenderList(ERenderPass_Opaque));
 
 		if (g_Editor->GetOptions()->GetDebugDisplay() && m_World)
 		{
@@ -1336,6 +1380,43 @@ void Renderer::RenderOpaque()
 	}
 
 }
+
+void Renderer::RenderSSAO()
+{
+	Framebuffer* colorBuffer = BindFramebuffer(FramebufferType_SSAO);
+
+	GL::SetViewport(colorBuffer->GetWidth(), colorBuffer->GetHeight());
+
+	if (!SetPipeline(pPipelineSSAO))
+	{
+		return;
+	}
+
+	Framebuffer* gBuffer = m_Framebuffers[FramebufferType_GBuffer];
+
+	for (int i = 0; i < 4; ++i)
+	{
+		Bind2DTexture(i, gBuffer->GetColorTexture(i));
+	}
+
+	Bind2DTexture(4, gBuffer->GetDepthTexture());
+
+	SetViewUniforms(m_ActiveCamera);
+	SetShadowMapUniforms(m_ShadowCamera);
+	SetSkyUniforms(5);
+	SetDisplayModeUniforms();
+	SetDebugUniforms();
+	SetLightingOptionsUniforms();
+	SetLightingUniforms();
+	SetPostEffectsUniforms();
+
+	SetFragmentUniformArray(m_SSAOKernelSamples, "g_SSAOKernelSamples");
+
+	Bind2DTexture(6, m_SSAONoiseTexture);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
 
 void Renderer::DeferredResolve()
 {
@@ -1365,7 +1446,9 @@ void Renderer::DeferredResolve()
 	SetLightingOptionsUniforms();
 	SetLightingUniforms();
 	SetPostEffectsUniforms();
-//#define PROVIDER_ShadowMap
+
+	Bind2DTexture(6, m_Framebuffers[FramebufferType_SSAO]->GetColorTexture(0));
+	//#define PROVIDER_ShadowMap
 //#define PROVIDER_Sky
 //#define PROVIDER_DisplayOptions
 //#define PROVIDER_Debug
@@ -2016,6 +2099,8 @@ void Renderer::Render(World* world)
 	RenderOpaque();
 
 	RenderTerrain();
+
+	RenderSSAO();
 
 	RenderSky();
 	DeferredResolve();

@@ -12,6 +12,7 @@ layout(binding = 1) uniform sampler2D g_GBuffer1;
 layout(binding = 2) uniform sampler2D g_GBuffer2;
 layout(binding = 3) uniform sampler2D g_GBuffer3;
 layout(binding = 4) uniform sampler2D g_GBufferDepth;
+layout(binding = 6) uniform sampler2D g_SSAOTexture;
 //in vec4 FragPosCascade0;
 //in vec4 FragPosCascade1;
 //in vec4 FragPosCascade2;
@@ -146,6 +147,9 @@ void main()
 		FragColor.rgb = FragColor.rgb / (FragColor.rgb + vec3(1.f, 1.f, 1.f));
 		FragColor.rgb = pow(FragColor.rgb, vec3(1.0f / g_GammaCorrectionExponent));
 	}
+
+	vec4 ssao = SampleTexture(g_SSAOTexture, uv);
+	FragColor.rgb *= ssao.rgb;
 
 	gl_FragDepth = gBufferDepth;
 }
