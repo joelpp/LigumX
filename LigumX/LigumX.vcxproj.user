@@ -7,4 +7,9 @@
     <LocalDebuggerCommandArguments>/renderdoc</LocalDebuggerCommandArguments>
     <RemoteDebuggerCommandArguments>/renderdoc</RemoteDebuggerCommandArguments>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LocalDebuggerCommandArguments>/renderdoc</LocalDebuggerCommandArguments>
+    <RemoteDebuggerCommandArguments>/renderdoc</RemoteDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

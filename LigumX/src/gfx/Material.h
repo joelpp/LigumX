@@ -15,11 +15,12 @@ ShaderFamily_SolidColor,
 ShaderFamily_Envmap,
 ShaderFamily_Terrain,
 ShaderFamily_Roads,
+ShaderFamily_Water,
 };
 
-extern const std::string EnumValues_ShaderFamily[5];
-extern const ShaderFamily Indirection_ShaderFamily[5];
-const int EnumLength_ShaderFamily = 5;
+extern const std::string EnumValues_ShaderFamily[6];
+extern const ShaderFamily Indirection_ShaderFamily[6];
+const int EnumLength_ShaderFamily = 6;
 
 
 #pragma endregion  FORWARD_DECLARATIONS Material
@@ -77,8 +78,8 @@ void SetSpecularTexture(Texture* value) { SetSpecularTexture_Callback(value); };
 void SetSpecularTexture_Callback(Texture* value);
 Texture*& GetHeightfieldTexture() { return m_HeightfieldTexture; }; 
 void SetHeightfieldTexture(Texture* value) { m_HeightfieldTexture = value; }; 
-const ShaderFamily& GetShaderFamily() { return m_ShaderFamily; }; 
-void SetShaderFamily(ShaderFamily value) { m_ShaderFamily = value; }; 
+int GetShaderFamily() { return m_ShaderFamily; }; 
+void SetShaderFamily(int value) { m_ShaderFamily = value; }; 
 glm::vec2& GetUVScale() { return m_UVScale; }; 
 void SetUVScale(const glm::vec2& value) { m_UVScale = value; }; 
 private:
@@ -101,7 +102,7 @@ bool m_ReflectEnvironment = false;
 Texture* m_DiffuseTexture = nullptr;
 Texture* m_SpecularTexture = nullptr;
 Texture* m_HeightfieldTexture = nullptr;
-ShaderFamily m_ShaderFamily;
+int m_ShaderFamily = 0;
 glm::vec2 m_UVScale = glm::vec2(1, 1);
 public:
 static const int g_PropertyCount = 21;

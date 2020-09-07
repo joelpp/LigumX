@@ -82,6 +82,7 @@ uniform int g_DebugNormalsEnabled;
 uniform int g_DebugDepthEnabled;
 uniform int g_DebugUVsEnabled;
 uniform int g_DebugLinearizeDepth;
+uniform int g_CurrentFrame;
 #endif
 
 #ifdef PROVIDER_LightingOptions

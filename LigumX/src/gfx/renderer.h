@@ -476,6 +476,8 @@ private:
 	GLuint m_TerrainMatrixSSBO = 0;
 
 	glm::mat4 m_ShadowCascadeViewProjectionMatricesCache[NUM_SHADOWMAP_CASCADES];
+
+	int m_GraphicFrameCount = 0;
 };
 
 class GPUProfileHolder

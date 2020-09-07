@@ -15,6 +15,7 @@ const ClassPropertyData DefaultTextureHolder::g_Properties[] =
 { "WoodTexture", PIDX_WoodTexture, offsetof(DefaultTextureHolder, m_WoodTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "SandTexture", PIDX_SandTexture, offsetof(DefaultTextureHolder, m_SandTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 { "WaterTexture", PIDX_WaterTexture, offsetof(DefaultTextureHolder, m_WaterTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
+{ "NoiseTexture", PIDX_NoiseTexture, offsetof(DefaultTextureHolder, m_NoiseTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
 };
 void DefaultTextureHolder::Serialize(Serializer2& serializer)
 {
@@ -26,6 +27,7 @@ void DefaultTextureHolder::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_WoodTexture], m_WoodTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SandTexture], m_SandTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_WaterTexture], m_WaterTexture);
+	serializer.SerializeObjectPtr(g_Properties[PIDX_NoiseTexture], m_NoiseTexture);
 }
 bool DefaultTextureHolder::Serialize(bool writing)
 {
@@ -46,6 +48,7 @@ bool DefaultTextureHolder::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_WoodTexture], &m_WoodTexture  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SandTexture], &m_SandTexture  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_WaterTexture], &m_WaterTexture  );
+	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_NoiseTexture], &m_NoiseTexture  );
 	return true;
 }
 void DefaultTextureHolder::Clone(LXObject* otherObj)
@@ -59,6 +62,7 @@ void DefaultTextureHolder::Clone(LXObject* otherObj)
 	other->SetWoodTexture(m_WoodTexture);
 	other->SetSandTexture(m_SandTexture);
 	other->SetWaterTexture(m_WaterTexture);
+	other->SetNoiseTexture(m_NoiseTexture);
 }
 const char* DefaultTextureHolder::GetTypeName()
 {

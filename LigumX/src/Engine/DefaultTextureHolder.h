@@ -35,6 +35,8 @@ Texture*& GetSandTexture() { return m_SandTexture; };
 void SetSandTexture(Texture* value) { m_SandTexture = value; }; 
 Texture*& GetWaterTexture() { return m_WaterTexture; }; 
 void SetWaterTexture(Texture* value) { m_WaterTexture = value; }; 
+Texture*& GetNoiseTexture() { return m_NoiseTexture; }; 
+void SetNoiseTexture(Texture* value) { m_NoiseTexture = value; }; 
 private:
 Texture* m_AsphaltTexture = nullptr;
 Texture* m_DirtTexture = nullptr;
@@ -43,8 +45,9 @@ Texture* m_RockTexture = nullptr;
 Texture* m_WoodTexture = nullptr;
 Texture* m_SandTexture = nullptr;
 Texture* m_WaterTexture = nullptr;
+Texture* m_NoiseTexture = nullptr;
 public:
-static const int g_PropertyCount = 7;
+static const int g_PropertyCount = 8;
 static const ClassPropertyData g_Properties[g_PropertyCount];
 
 enum g_DefaultTextureHolderPIDX
@@ -56,6 +59,7 @@ PIDX_RockTexture,
 PIDX_WoodTexture,
 PIDX_SandTexture,
 PIDX_WaterTexture,
+PIDX_NoiseTexture,
 };
 virtual void Serialize(Serializer2& serializer);
 virtual bool Serialize(bool writing);

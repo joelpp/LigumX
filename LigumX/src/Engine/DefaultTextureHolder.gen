@@ -7,5 +7,6 @@ class DefaultTextureHolder
 	Texture* WoodTexture;
 	Texture* SandTexture;
 	Texture* WaterTexture;
+	Texture* NoiseTexture;
 
 }

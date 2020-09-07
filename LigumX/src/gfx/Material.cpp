@@ -29,7 +29,7 @@ const ClassPropertyData Material::g_Properties[] =
 { "DiffuseTexture", PIDX_DiffuseTexture, offsetof(Material, m_DiffuseTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Material, DiffuseTexture, Texture*),}, 
 { "SpecularTexture", PIDX_SpecularTexture, offsetof(Material, m_SpecularTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, PropertyFlags_SetCallback, 0, 0, WriteSetFunction(Material, SpecularTexture, Texture*),}, 
 { "HeightfieldTexture", PIDX_HeightfieldTexture, offsetof(Material, m_HeightfieldTexture), 0, LXType_ObjectPtr, sizeof(Texture*), LXType_Texture, true, LXType_None, false, 0, 0, 0, 0,}, 
-{ "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_Object, sizeof(ShaderFamily), LXType_ShaderFamily, false, LXType_None, false, PropertyFlags_Enum, 0, 0, 0,}, 
+{ "ShaderFamily", PIDX_ShaderFamily, offsetof(Material, m_ShaderFamily), 0, LXType_int, sizeof(int), LXType_int, false, LXType_None, false, 0, (float)LX_LIMITS_INT_MIN, (float)LX_LIMITS_INT_MAX, 0,}, 
 { "UVScale", PIDX_UVScale, offsetof(Material, m_UVScale), 0, LXType_glmvec2, sizeof(glm::vec2), LXType_glmvec2, false, LXType_None, false, 0, LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX, 0,}, 
 };
 void Material::Serialize(Serializer2& serializer)
@@ -54,6 +54,7 @@ void Material::Serialize(Serializer2& serializer)
 	serializer.SerializeObjectPtr(g_Properties[PIDX_DiffuseTexture], m_DiffuseTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_SpecularTexture], m_SpecularTexture);
 	serializer.SerializeObjectPtr(g_Properties[PIDX_HeightfieldTexture], m_HeightfieldTexture);
+	serializer.SerializeInt(g_Properties[PIDX_ShaderFamily], m_ShaderFamily);
 	serializer.SerializeVec2(g_Properties[PIDX_UVScale], m_UVScale);
 }
 bool Material::Serialize(bool writing)
@@ -87,6 +88,7 @@ bool Material::ShowPropertyGrid()
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_DiffuseTexture], &m_DiffuseTexture  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_SpecularTexture], &m_SpecularTexture  );
 	ImguiHelpers::ShowObject2(this, g_Properties[PIDX_HeightfieldTexture], &m_HeightfieldTexture  );
+	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_ShaderFamily], &m_ShaderFamily , LX_LIMITS_INT_MIN, LX_LIMITS_INT_MAX );
 	ImguiHelpers::ShowProperty(this, g_Properties[PIDX_UVScale], &m_UVScale , LX_LIMITS_FLOAT_MIN, LX_LIMITS_FLOAT_MAX );
 	return true;
 }
@@ -127,6 +129,7 @@ const std::string EnumValues_ShaderFamily[] =
 "Envmap",
 "Terrain",
 "Roads",
+"Water",
 };
 
 const ShaderFamily Indirection_ShaderFamily[] =
@@ -136,6 +139,7 @@ const ShaderFamily Indirection_ShaderFamily[] =
 	ShaderFamily_Envmap,
 	ShaderFamily_Terrain,
 	ShaderFamily_Roads,
+	ShaderFamily_Water,
 };
 
 #pragma endregion  CLASS_SOURCE Material

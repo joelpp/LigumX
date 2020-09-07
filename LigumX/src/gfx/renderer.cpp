@@ -622,6 +622,10 @@ void Renderer::SetSkyUniforms(int skyCubemapSlot)
 		SetFragmentUniform(m_World->GetSunLight()->GetUseSkybox(), "g_UseSkybox");
 		SetFragmentUniform(sunLight->GetOrientation(), "sunOrientation");
 		SetFragmentUniform(sunLight->GetTime(), "sunTime");
+
+		SetFragmentUniform(4, "g_NoiseTexture");
+		Bind2DTexture(4, g_Editor->GetDefaultTextureHolder()->GetNoiseTexture());
+
 	}
 
 }
@@ -783,6 +787,7 @@ void Renderer::SetMaterialUniforms(Material* material)
 			SetFragmentUniform(material->GetDiffuseColor(), "g_Material.m_DiffuseColor");
 			break;
 		}
+		case ShaderFamily_Water:
 		case ShaderFamily_Basic:
 		{
 			SetFragmentUniform(material->GetAmbientColor(), "g_Material.m_AmbientColor");
@@ -916,6 +921,9 @@ void Renderer::SetDebugUniforms()
 	SetFragmentUniform(normalsEnabled, "g_DebugNormalsEnabled");
 	SetFragmentUniform(m_DisplayOptions->GetShowUVs(),	"g_DebugUVsEnabled");
 	SetFragmentUniform(linearizeDepth, "g_DebugLinearizeDepth");
+
+	SetVertexUniform(m_GraphicFrameCount, "g_CurrentFrame");
+	SetFragmentUniform(m_GraphicFrameCount, "g_CurrentFrame");
 	//SetFragmentUniform(gammaCorrection, "g_GammaCorrection");
 
 }
@@ -945,11 +953,13 @@ void Renderer::DrawModel(Entity* entity, Model* model)
 			continue;
 		}
 
-		if (!SetPipeline(material->GetShaderFamily()))
+		if (!SetPipeline((ShaderFamily)material->GetShaderFamily()))
 		{
 			continue;
 		}
 
+		// todo jpp super hack for water transparency
+		GL::SetCapability(GL::Blend, (material->GetShaderFamily() == ShaderFamily_Water));
 
 		SetFragmentUniform(m_DisplayOptions->GetDebugVec4(), "g_DebugVec4");
 		SetVertexUniform(entity->GetModelToWorldMatrix(), "g_ModelToWorldMatrix");
@@ -1559,6 +1569,8 @@ void Renderer::BeginFrame(World* world)
 	g_Editor->ApplyTool();
 
 	m_ColorFramebuffer = m_DisplayOptions->GetDeferredRendering() ? FramebufferType_GBuffer : FramebufferType_MainColorBuffer;
+
+	m_GraphicFrameCount++;
 }
 
 void Renderer::ApplyEmissiveGlow()

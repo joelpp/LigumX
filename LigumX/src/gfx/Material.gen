@@ -5,6 +5,7 @@ enum ShaderFamily
 	Envmap,
 	Terrain,
 	Roads,
+	Water,
 }
 
 class Material
@@ -51,7 +52,7 @@ class Material
 
 	Texture* HeightfieldTexture;
 
-	ShaderFamily ShaderFamily;
+	int ShaderFamily;
 
 	glm::vec2 UVScale = glm::vec2(1, 1);
 }

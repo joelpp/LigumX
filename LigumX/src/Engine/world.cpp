@@ -293,6 +293,8 @@ void World::Update()
 	{
 		sector->Update();
 	}
+
+	m_SunLight->SetTime(m_SunLight->GetTime() + m_SunLight->GetSpeed() / 100.f);
 }
 
 

@@ -11,7 +11,7 @@ AmbientColor
 DiffuseColor
 1.000000
 1.000000
-1.000000
+0.103000
 SpecularColor
 0.000000
 0.000000
@@ -19,11 +19,11 @@ SpecularColor
 IsPBR
 0
 Shininess
-0.000000
+145.000000
 Metallic
-0.419000
+0.857000
 Roughness
-0.809000
+0.114000
 AO
 0.000000
 EmissiveFactor
@@ -39,6 +39,8 @@ RefractionIndex
 IsGlass
 0
 ReflectEnvironment
+0
+ShaderFamily
 0
 UVScale
 1.000000
