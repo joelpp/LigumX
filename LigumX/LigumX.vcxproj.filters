@@ -613,7 +613,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\shaders\ShadowUtils.glsl" />
     <None Include="src\gfx\renderer.gen" />
     <None Include="src\Components\BoundingBoxComponent.gen" />
     <None Include="src\Components\Component.gen" />
